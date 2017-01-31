@@ -1,0 +1,49 @@
+#-------------------------------------------------------------------------------
+# Note for using the rate-limiting:
+#   The comment part won't be copied if you use the subgenerator docker-compose
+#   you have to manually copy it
+#-------------------------------------------------------------------------------
+version: '2'
+services:
+    podiumgateway-app:
+        image: podiumgateway
+        external_links:
+            - podiumgateway-postgresql:postgresql
+            # Uncomment to have Cassandra working with the gateway
+            # - podiumgateway-cassandra:cassandra
+            - podiumgateway-elasticsearch:elasticsearch
+            - podium-registry:registry
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_CLOUD_CONFIG_URI=http://admin:admin@registry:8761/config
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/podiumGateway
+            - SPRING_DATA_CASSANDRA_CONTACTPOINTS=cassandra
+            - PODIUM_SLEEP=80 # gives time for uaa and the Cassandra cluster to start and execute the migration scripts
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9300
+        ports:
+            - 8080:8080
+    podiumgateway-postgresql:
+        extends:
+            file: postgresql.yml
+            service: podiumgateway-postgresql
+    # Uncomment to have Cassandra working with the gateway
+    # podiumgateway-cassandra:
+    #     extends:
+    #         file: cassandra-cluster.yml
+    #         service: podiumgateway-cassandra
+    # podiumgateway-cassandra-migration:
+    #     extends:
+    #         file: cassandra-migration.yml
+    #         service: podiumgateway-cassandra-migration
+    #     environment:
+    #         - CREATE_KEYSPACE_SCRIPT=create-keyspace-prod.cql
+    podiumgateway-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: podiumgateway-elasticsearch
+    podium-registry:
+        extends:
+            file: podium-registry.yml
+            service: podium-registry
+        environment:
+            - SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS=file:./central-config/docker-config/

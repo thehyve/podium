@@ -1,0 +1,12 @@
+version: '2'
+services:
+    podiumgateway-postgresql:
+        container_name: podiumgateway-postgresql
+        image: postgres:9.5.4
+        # volumes:
+        #     - ~/volumes/podium/podiumGateway/postgresql/:/var/lib/postgresql/
+        environment:
+            - POSTGRES_USER=podiumGateway
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432

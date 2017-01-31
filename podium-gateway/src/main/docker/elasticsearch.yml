@@ -1,0 +1,10 @@
+version: '2'
+services:
+    podiumgateway-elasticsearch:
+        container_name: podiumgateway-elasticsearch
+        image: elasticsearch:2.4.1
+        # volumes:
+        #     - ~/volumes/podium/podiumGateway/elasticsearch/:/usr/share/elasticsearch/data/
+        ports:
+            - 9200:9200
+            - 9300:9300

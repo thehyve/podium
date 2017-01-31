@@ -1,0 +1,10 @@
+version: '2'
+services:
+    podiumuaa-elasticsearch:
+        container_name: podiumuaa-elasticsearch
+        image: elasticsearch:2.4.1
+        # volumes:
+        #     - ~/volumes/podium/podiumUaa/elasticsearch/:/usr/share/elasticsearch/data/
+        ports:
+            - 9200:9200
+            - 9300:9300

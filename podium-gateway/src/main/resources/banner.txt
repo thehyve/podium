@@ -1,0 +1,9 @@
+
+${AnsiColor.BLACK} ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗  ${AnsiColor.BRIGHT_BLUE} ██████╗  █████╗ ████████╗███████╗██╗    ██╗ █████╗ ██╗   ██╗
+${AnsiColor.BLACK} ██╔══██╗██╔══██╗████╗ ████║██╔══██╗██║  ${AnsiColor.BRIGHT_BLUE} ██╔════╝ ██╔══██╗╚══██╔══╝██╔════╝██║    ██║██╔══██╗╚██╗ ██╔╝
+${AnsiColor.BLACK} ██████╔╝██████╔╝██╔████╔██║██████╔╝██║  ${AnsiColor.BRIGHT_BLUE} ██║  ███╗███████║   ██║   █████╗  ██║ █╗ ██║███████║ ╚████╔╝
+${AnsiColor.BLACK} ██╔══██╗██╔══██╗██║╚██╔╝██║██╔══██╗██║  ${AnsiColor.BRIGHT_BLUE} ██║   ██║██╔══██║   ██║   ██╔══╝  ██║███╗██║██╔══██║  ╚██╔╝
+${AnsiColor.BLACK} ██████╔╝██████╔╝██║ ╚═╝ ██║██║  ██║██║  ${AnsiColor.BRIGHT_BLUE} ╚██████╔╝██║  ██║   ██║   ███████╗╚███╔███╔╝██║  ██║   ██║
+${AnsiColor.BLACK} ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ${AnsiColor.BRIGHT_BLUE}  ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝
+
+${AnsiColor.BRIGHT_BLUE}:: Podium Gateway :: Running Spring Boot ${spring-boot.version} ::

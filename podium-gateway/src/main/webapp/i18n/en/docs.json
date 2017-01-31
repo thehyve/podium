@@ -1,0 +1,9 @@
+{
+    "activate": {
+        "title": "Docs",
+        "messages": {
+            "success": "<strong>Docs</strong>",
+            "error": "<strong>Docs Error.</strong>"
+        }
+    }
+}
