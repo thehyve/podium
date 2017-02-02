@@ -10,7 +10,7 @@ import { StateStorageService } from '../auth/state-storage.service';
     selector: 'podium-login',
     templateUrl: './login.component.html'
 })
-export class PodiumLoginComponent implements OnInit, AfterViewInit {
+export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     authenticationError: boolean;
     password: string;
     rememberMe: boolean;
@@ -55,11 +55,11 @@ export class PodiumLoginComponent implements OnInit, AfterViewInit {
             rememberMe: this.rememberMe
         }).then(() => {
             this.authenticationError = false;
-          //  this.activeModal.dismiss('login success');
-            // if (this.$state.current.name === 'register' || this.$state.current.name === 'activate' ||
-            //     this.$state.current.name === 'finishReset' || this.$state.current.name === 'requestReset') {
-            //     this.$state.go('home');
-            // }
+           // this.activeModal.dismiss('login success');
+            if (this.router.url === '/register' || this.router.url === '/activate' ||
+                this.router.url === '/finishReset' || this.router.url === '/requestReset') {
+                this.router.navigate(['']);
+            }
 
             this.eventManager.broadcast({
                 name: 'authenticationSuccess',
@@ -68,18 +68,18 @@ export class PodiumLoginComponent implements OnInit, AfterViewInit {
 
             // // previousState was set in the authExpiredInterceptor before being redirected to login modal.
             // // since login is succesful, go to stored previousState and clear previousState
-            // let previousState = this.stateStorageService.getPreviousState();
-            // if (previousState) {
-            //     this.stateStorageService.resetPreviousState();
-            //     this.$state.go(previousState.name, previousState.params);
-            // }
+            let previousState = this.stateStorageService.getPreviousState();
+            if (previousState) {
+                this.stateStorageService.resetPreviousState();
+                this.router.navigate([previousState.name], { queryParams:  previousState.params });
+            }
         }).catch(() => {
             this.authenticationError = true;
         });
     }
 
     register () {
-       // this.activeModal.dismiss('to state register');
+        //this.activeModal.dismiss('to state register');
         this.router.navigate(['/register']);
     }
 

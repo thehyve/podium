@@ -8,16 +8,15 @@ import { AuthExpiredInterceptor } from './auth-expired.interceptor';
 import { ErrorHandlerInterceptor } from './errorhandler.interceptor';
 import { NotificationInterceptor } from './notification.interceptor';
 
-export const customHttpProvider = () => ({
-    provide: Http,
-    useFactory: (
-        backend: XHRBackend,
-        defaultOptions: RequestOptions,
-        localStorage: LocalStorageService,
-        sessionStorage: SessionStorageService,
-        injector: Injector,
-        eventManager: EventManager
-    ) => new InterceptableHttp(
+export function interceptableFactory(
+    backend: XHRBackend,
+    defaultOptions: RequestOptions,
+    localStorage: LocalStorageService,
+    sessionStorage: SessionStorageService,
+    injector: Injector,
+    eventManager: EventManager
+) {
+    return new InterceptableHttp(
         backend,
         defaultOptions,
         [
@@ -27,13 +26,20 @@ export const customHttpProvider = () => ({
             new ErrorHandlerInterceptor(eventManager),
             new NotificationInterceptor()
         ]
-    ),
-    deps: [
-        XHRBackend,
-        RequestOptions,
-        LocalStorageService,
-        SessionStorageService,
-        Injector,
-        EventManager
-    ]
-});
+    );
+};
+
+export function customHttpProvider() {
+    return {
+        provide: Http,
+        useFactory: interceptableFactory,
+        deps: [
+            XHRBackend,
+            RequestOptions,
+            LocalStorageService,
+            SessionStorageService,
+            Injector,
+            EventManager
+        ]
+    };
+};

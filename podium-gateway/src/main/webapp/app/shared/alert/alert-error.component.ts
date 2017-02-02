@@ -20,7 +20,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
     constructor(private alertService: AlertService, private eventManager: EventManager, private translateService: TranslateService) {
         this.alerts = [];
 
-        this.cleanHttpErrorListener = eventManager.subscribe('podiumApp.httpError', (response) => {
+        this.cleanHttpErrorListener = eventManager.subscribe('podiumGatewayApp.httpError', (response) => {
             let i;
             let httpResponse = response.content;
             switch (httpResponse.status) {
@@ -49,7 +49,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
                             let fieldError = fieldErrors[i];
                             // convert 'something[14].other[4].id' to 'something[].other[].id' so translations can be written to it
                             let convertedField = fieldError.field.replace(/\[\d*\]/g, '[]');
-                            let fieldName = translateService.instant('podiumApp.' +
+                            let fieldName = translateService.instant('podiumGatewayApp.' +
                                 fieldError.objectName + '.' + convertedField);
                             this.addErrorAlert(
                                 'Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {fieldName: fieldName});

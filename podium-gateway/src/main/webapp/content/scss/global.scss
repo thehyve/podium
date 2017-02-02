@@ -34,7 +34,7 @@ Generic styles
 /* other generic styles */
 
 .card {
-    padding: 30px;
+    padding: 1.5%;
     margin-top: 20px;
     border: none;
 }
@@ -76,7 +76,7 @@ table td[class*=col-], table th[class*=col-] {
     float: none;
 }
 
-footer {
+.footer {
     border-top: 1px solid rgba(0,0,0,.125);
 }
 
@@ -171,7 +171,7 @@ entity tables helpers
    justify-content: flex-end;
 }
 
-.pd-table > {
+.jh-table > {
     tbody > tr > td {
         /* Align text in td verifically (top aligned by Bootstrap) */
         vertical-align: middle;
@@ -192,14 +192,14 @@ entity tables helpers
 /* ==========================================================================
 entity detail page css
 ========================================================================== */
-.row.pd-entity-details > {
+.row.jh-entity-details > {
     dd {
         margin-bottom: 15px;
     }
 }
 
 @media screen and (min-width: 768px) {
-    .row.pd-entity-details > {
+    .row.jh-entity-details > {
         dt {
             margin-bottom: 15px;
         }
@@ -227,3 +227,6 @@ ui bootstrap tweaks
 .uib-datepicker-popup  > li > div.uib-datepicker > table:focus {
     outline: none;
 }
+
+
+/* jhipster-needle-scss-add-main JHipster will add new css style */

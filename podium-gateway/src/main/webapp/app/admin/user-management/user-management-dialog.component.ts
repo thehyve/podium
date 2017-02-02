@@ -4,10 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
 
-import { User } from './user.model';
 import { UserModalService } from './user-modal.service';
-import { UserService } from './user.service';
-import { JhiLanguageHelper } from '../../shared';
+import { JhiLanguageHelper, User, UserService } from '../../shared';
 
 @Component({
     selector: 'jhi-user-mgmt-dialog',
@@ -40,7 +38,7 @@ export class UserMgmtDialogComponent implements OnInit {
 
     clear() {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}]);
+        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 
     save() {
@@ -56,7 +54,7 @@ export class UserMgmtDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: 'userListModification', content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(result);
-        this.router.navigate([{ outlets: { popup: null }}]);
+        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 
     private onSaveError() {

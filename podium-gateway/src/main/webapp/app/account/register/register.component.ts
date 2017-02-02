@@ -51,7 +51,7 @@ export class RegisterComponent implements OnInit {
                 this.registerAccount.langKey = key;
                 this.registerService.save(this.registerAccount).subscribe(() => {
                     this.success = true;
-                }, this.processError);
+                }, (response) => this.processError(response));
             });
         }
     }
@@ -61,11 +61,10 @@ export class RegisterComponent implements OnInit {
     }
 
     private processError(response) {
-        // TODO handle this.logout(); on error
         this.success = null;
-        if (response.status === 400 && response.data === 'login already in use') {
+        if (response.status === 400 && response._body === 'login already in use') {
             this.errorUserExists = 'ERROR';
-        } else if (response.status === 400 && response.data === 'e-mail address already in use') {
+        } else if (response.status === 400 && response._body === 'e-mail address already in use') {
             this.errorEmailExists = 'ERROR';
         } else {
             this.error = 'ERROR';

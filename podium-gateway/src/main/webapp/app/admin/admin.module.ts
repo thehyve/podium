@@ -2,7 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ParseLinks } from 'ng-jhipster';
 
-import { PodiumSharedModule } from '../shared';
+import { PodiumGatewaySharedModule } from '../shared';
 
 import {
     adminState,
@@ -21,7 +21,6 @@ import {
     JhiConfigurationComponent,
     JhiDocsComponent,
     AuditsService,
-    UserService,
     JhiConfigurationService,
     JhiHealthService,
     JhiMetricsService,
@@ -36,7 +35,7 @@ import {
 
 @NgModule({
     imports: [
-        PodiumSharedModule,
+        PodiumGatewaySharedModule,
         RouterModule.forRoot(adminState, { useHash: true })
     ],
     declarations: [
@@ -69,11 +68,10 @@ import {
         JhiMetricsService,
         GatewayRoutesService,
         LogsService,
-        UserService,
         UserResolvePagingParams,
         UserResolve,
         UserModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumAdminModule {}
+export class PodiumGatewayAdminModule {}

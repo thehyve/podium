@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
 
-import { User } from './user.model';
+import { User, UserService } from '../../shared';
 import { UserModalService } from './user-modal.service';
-import { UserService } from './user.service';
 
 @Component({
     selector: 'jhi-user-mgmt-delete-dialog',
@@ -28,7 +26,7 @@ export class UserMgmtDeleteDialogComponent {
 
     clear () {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}]);
+        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 
     confirmDelete (login) {
@@ -36,7 +34,7 @@ export class UserMgmtDeleteDialogComponent {
             this.eventManager.broadcast({ name: 'userListModification',
                 content: 'Deleted a user'});
             this.activeModal.dismiss(true);
-            this.router.navigate([{ outlets: { popup: null }}]);
+            this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
         });
     }
 

@@ -3,12 +3,13 @@ import { DatePipe } from '@angular/common';
 
 import { CookieService } from 'angular2-cookie/services/cookies.service';
 import {
-    PodiumSharedLibsModule,
-    PodiumSharedCommonModule,
+    PodiumGatewaySharedLibsModule,
+    PodiumGatewaySharedCommonModule,
     CSRFService,
     AuthService,
     AuthServerProvider,
     AccountService,
+    UserService,
     StateStorageService,
     LoginService,
     LoginModalService,
@@ -20,8 +21,8 @@ import {
 
 @NgModule({
     imports: [
-        PodiumSharedLibsModule,
-        PodiumSharedCommonModule
+        PodiumGatewaySharedLibsModule,
+        PodiumGatewaySharedCommonModule
     ],
     declarations: [
         PodiumLoginComponent,
@@ -38,11 +39,12 @@ import {
         CSRFService,
         AuthServerProvider,
         AuthService,
+        UserService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
     exports: [
-        PodiumSharedCommonModule,
+        PodiumGatewaySharedCommonModule,
         PodiumLoginComponent,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
@@ -51,4 +53,4 @@ import {
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
 })
-export class PodiumSharedModule {}
+export class PodiumGatewaySharedModule {}

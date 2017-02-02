@@ -7,7 +7,7 @@ Navbar
     color: #ccc
 }
 
-.pd-navbar {
+.jh-navbar {
     background-color: #353d47;
     padding: .2em 1em;
     .profile-image {
@@ -31,7 +31,7 @@ Navbar
     a.nav-link {
         font-weight: 400;
     }
-    .pd-navbar-toggler {
+    .jh-navbar-toggler {
         color: #ccc;
         font-size: 1.5em;
         padding: 10px;
@@ -42,7 +42,7 @@ Navbar
 }
 
 @media screen and (max-width: 992px) {
-    .pd-logo-container {
+    .jh-logo-container {
         width: 100%;
     }
 }
@@ -63,6 +63,7 @@ Logo styles
             width: 70px;
             display: inline-block;
             vertical-align: middle;
+            background: url("../../../content/images/logo-jhipster.png") no-repeat center center;
             background-size: contain;
         }
     }
