@@ -35,7 +35,7 @@ export class UserService {
             search: params
         };
 
-        return this.http.get('api/users', options);
+        return this.http.get('podiumuaa/api/users', options);
     }
 
     delete(login: string): Observable<Response> {
