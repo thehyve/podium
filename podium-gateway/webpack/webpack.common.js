@@ -47,6 +47,15 @@ module.exports = function (options) {
                     loaders: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
                 },
                 {
+                    test: /\.css$/,
+                    loaders: ['to-string-loader', 'css-loader'],
+                    exclude: /(vendor\.css|global\.css)/
+                },
+                {
+                    test: /(vendor\.css|global\.css)/,
+                    loaders: ['style-loader', 'css-loader']
+                },
+                {
                     test: /\.(jpe?g|png|gif|svg|woff|woff2|ttf|eot)$/i,
                     loaders: [
                         'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
@@ -72,12 +81,12 @@ module.exports = function (options) {
             }),
             new webpack.DllReferencePlugin({
                 context: './',
-                manifest: require(path.resolve('./target/www/vendor.json'))
+                manifest: require(path.resolve('./target/www/vendor.json')),
             }),
             new CopyWebpackPlugin([
                 { from: './node_modules/swagger-ui/dist', to: 'swagger-ui/dist' },
                 { from: './src/main/webapp/swagger-ui/', to: 'swagger-ui' },
-                //{ from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
+                { from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
                 { from: './src/main/webapp/robots.txt', to: 'robots.txt' },
                 { from: './src/main/webapp/i18n', to: 'i18n' }
             ]),

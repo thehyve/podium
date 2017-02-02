@@ -36,8 +36,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumGateway
-        username: podiumGateway
-        password:
+        username: podiumUser
+        password: podiumUser
     jpa:
         database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
@@ -61,7 +61,7 @@ spring:
                 enabled: false
         elasticsearch:
             cluster-name:
-            cluster-nodes: localhost:9300
+            cluster-nodes:
     mail:
         host: localhost
         port: 25

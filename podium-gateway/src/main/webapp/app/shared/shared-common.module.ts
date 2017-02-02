@@ -5,7 +5,7 @@ import { TranslateService } from 'ng2-translate';
 import { AlertService } from 'ng-jhipster';
 
 import {
-    PodiumSharedLibsModule,
+    PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
     FindLanguageFromKeyPipe,
     JhiAlertComponent,
@@ -21,7 +21,7 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
 
 @NgModule({
     imports: [
-        PodiumSharedLibsModule
+        PodiumGatewaySharedLibsModule
     ],
     declarations: [
         FindLanguageFromKeyPipe,
@@ -38,10 +38,10 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
         Title
     ],
     exports: [
-        PodiumSharedLibsModule,
+        PodiumGatewaySharedLibsModule,
         FindLanguageFromKeyPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]
 })
-export class PodiumSharedCommonModule {}
+export class PodiumGatewaySharedCommonModule {}

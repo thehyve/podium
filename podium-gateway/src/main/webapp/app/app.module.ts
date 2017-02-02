@@ -6,10 +6,10 @@ import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 
-import { PodiumSharedModule, UserRouteAccessService } from './shared';
-import { PodiumAdminModule } from './admin/admin.module';
-import { PodiumEntityModule } from './entities/entity.module';
-import { PodiumAccountModule } from './account/account.module';
+import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
+import { PodiumGatewayAdminModule } from './admin/admin.module';
+import { PodiumGatewayAccountModule } from './account/account.module';
+import { PodiumGatewayEntityModule } from './entities/entity.module';
 
 import { LayoutRoutingModule } from './layouts';
 import { HomeComponent } from './home';
@@ -17,7 +17,7 @@ import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
 import {
-    PodiumMainComponent,
+    JhiMainComponent,
     NavbarComponent,
     FooterComponent,
     ProfileService,
@@ -31,14 +31,14 @@ import {
     imports: [
         BrowserModule,
         LayoutRoutingModule,
-        Ng2Webstorage.forRoot({ prefix: 'jhi'}),
-        PodiumSharedModule,
-        PodiumAdminModule,
-        PodiumEntityModule,
-        PodiumAccountModule
+        Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
+        PodiumGatewaySharedModule,
+        PodiumGatewayAdminModule,
+        PodiumGatewayAccountModule,
+        PodiumGatewayEntityModule
     ],
     declarations: [
-        PodiumMainComponent,
+        JhiMainComponent,
         HomeComponent,
         NavbarComponent,
         ErrorComponent,
@@ -54,6 +54,6 @@ import {
         PaginationConfig,
         UserRouteAccessService
     ],
-    bootstrap: [ PodiumMainComponent ]
+    bootstrap: [ JhiMainComponent ]
 })
-export class PodiumAppModule {}
+export class PodiumGatewayAppModule {}

@@ -1,14 +1,16 @@
-import {ComponentFixture, TestBed, async} from '@angular/core/testing';
-import {MockBackend} from '@angular/http/testing';
-import {Http, BaseRequestOptions} from '@angular/http';
-import {JhiHealthCheckComponent} from '../../../../../../main/webapp/app/admin/health/health.component';
-import {JhiHealthService} from '../../../../../../main/webapp/app/admin/health/health.service';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import { TranslatePipe } from 'ng2-translate';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { MockBackend } from '@angular/http/testing';
+import { Http, BaseRequestOptions } from '@angular/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { JhiLanguageService } from 'ng-jhipster';
+import { MockLanguageService } from '../../../helpers/mock-language.service';
+import { JhiHealthCheckComponent } from '../../../../../../main/webapp/app/admin/health/health.component';
+import { JhiHealthService } from '../../../../../../main/webapp/app/admin/health/health.service';
 
-describe('Controller Tests', () => {
 
-    describe('JhiHealthCheckController', () => {
+describe('Component Tests', () => {
+
+    describe('JhiHealthCheckComponent', () => {
 
         let comp: JhiHealthCheckComponent;
         let fixture: ComponentFixture<JhiHealthCheckComponent>;
@@ -16,7 +18,7 @@ describe('Controller Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                declarations: [JhiHealthCheckComponent, TranslatePipe],
+                declarations: [JhiHealthCheckComponent],
                 providers: [
                     MockBackend,
                     BaseRequestOptions,
@@ -29,14 +31,20 @@ describe('Controller Tests', () => {
                     },
                     JhiHealthService,
                     {
+                        provide: JhiLanguageService,
+                        useClass: MockLanguageService
+                    },
+                    {
                         provide: NgbModal,
                         useValue: null
                     }
                 ]
             })
-            .overrideComponent(JhiHealthCheckComponent, {set: {
-                template: ''
-            }})
+            .overrideComponent(JhiHealthCheckComponent, {
+                set: {
+                    template: ''
+                }
+            })
             .compileComponents();
         }));
 

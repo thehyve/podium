@@ -12,7 +12,7 @@ export class JhiHealthService {
     }
 
     checkHealth(): Observable<any> {
-        return this.http.get('management/health').map((res: Response) => res.json());
+        return this.http.get('podiumuaa/management/health').map((res: Response) => res.json());
     }
 
     transformHealthData(data): any {

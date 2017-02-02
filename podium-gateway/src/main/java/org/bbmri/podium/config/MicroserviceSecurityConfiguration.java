@@ -80,7 +80,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
 
     private String getKeyFromAuthorizationServer(RestTemplate keyUriRestTemplate) {
         // Load available UAA servers
-        List<String> lst = discoveryClient.getServices();
+        discoveryClient.getServices();
 
         HttpEntity<Void> request = new HttpEntity<Void>(new HttpHeaders());
         return (String) keyUriRestTemplate

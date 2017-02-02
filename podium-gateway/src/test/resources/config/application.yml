@@ -3,8 +3,8 @@
 #
 # This configuration is used for unit/integration tests.
 #
-# More information on profiles: https://podium.github.io/profiles/
-# More information on configuration properties: https://podium.github.io/common-application-properties/
+# More information on profiles: https://jhipster.github.io/profiles/
+# More information on configuration properties: https://jhipster.github.io/common-application-properties/
 # ===================================================================
 
 # ===================================================================
@@ -34,7 +34,7 @@ spring:
         username:
         password:
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedH2Dialect
+        database-platform: io.github.jhipster.domain.util.FixedH2Dialect
         database: H2
         open-in-view: false
         show-sql: true
@@ -85,12 +85,12 @@ server:
     address: localhost
 
 # ===================================================================
-# Podium specific properties
+# JHipster specific properties
 #
-# Full reference is available at: https://podium.github.io/common-application-properties/
+# Full reference is available at: https://jhipster.github.io/common-application-properties/
 # ===================================================================
 
-podium:
+jhipster:
     async:
         core-pool-size: 2
         max-pool-size: 50
@@ -98,7 +98,7 @@ podium:
     security:
         authentication:
             jwt:
-                secret:
+                secret: 
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
@@ -107,10 +107,10 @@ podium:
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
+# to have type-safe configuration, like in the JHipsterProperties above
 #
 # More documentation is available at:
-# https://podium.github.io/common-application-properties/
+# https://jhipster.github.io/common-application-properties/
 # ===================================================================
 
 application:

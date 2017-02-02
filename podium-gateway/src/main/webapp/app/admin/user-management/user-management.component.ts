@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { EventManager, PaginationUtil, ParseLinks, AlertService, JhiLanguageService } from 'ng-jhipster';
 
-import { User } from './user.model';
-import { UserService } from './user.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
+import { ITEMS_PER_PAGE, Principal, User, UserService } from '../../shared';
 import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
 
 @Component({
@@ -35,8 +32,7 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
         private parseLinks: ParseLinks,
         private alertService: AlertService,
         private principal: Principal,
-        private eventManager: EventManager,
-        private paginationUtil: PaginationUtil,
+        private eventManager: EventManager,        private paginationUtil: PaginationUtil,
         private paginationConfig: PaginationConfig,
         private activatedRoute: ActivatedRoute,
         private router: Router
@@ -113,7 +109,12 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
     }
 
     transition () {
-        this.router.navigate(['/user-management', {page: this.page, sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')}]);
+        this.router.navigate(['/user-management'], { queryParams:
+                {
+                    page: this.page,
+                    sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+                }
+        });
         this.loadAll();
     }
 

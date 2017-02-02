@@ -18,7 +18,7 @@ module.exports = {
             'ng-jhipster',
             'ng2-webstorage',
             'rxjs'
-        ],
+        ]
     },
     resolve: {
         extensions: ['.ts', '.js'],
@@ -37,18 +37,18 @@ module.exports = {
                     'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
                     'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
                 ]
-            },
+            }
         ]
     },
     output: {
         filename: '[name].dll.js',
         path: './target/www',
-        library: '[name]',
+        library: '[name]'
     },
     plugins: [
         new webpack.DllPlugin({
             name: '[name]',
-            path: './target/www/[name].json',
-        }),
+            path: './target/www/[name].json'
+        })
     ]
 };
