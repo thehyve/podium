@@ -29,7 +29,8 @@
                 <!--Username-->
                 <div class="form-group">
                     <label class="form-control-label" for="login" jhiTranslate="global.form.username">Username</label>
-                    <input type="text" class="form-control" [(ngModel)]="registerAccount.login" id="login" name="login" #login="ngModel" placeholder="{{'global.form.username.placeholder' | translate}}"
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.login" id="login" name="login"
+                           #login="ngModel" placeholder="{{'global.form.username.placeholder' | translate}}"
                             required minlength="1" maxlength="50" pattern="^[_'.@A-Za-z0-9-]*$">
                     <div *ngIf="login.dirty && login.invalid">
                         <small class="form-text text-danger" *ngIf="login.errors.required" jhiTranslate="register.messages.validate.login.required">
@@ -95,13 +96,13 @@
                     <label class="form-control-label" for="email" >E-mail</label>
                     <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                            placeholder="{{'global.form.email.placeholder' | translate}}"
-                           [(ngModel)]="registerAccount.email" minlength=5 maxlength=100 required>
+                           [(ngModel)]="registerAccount.email" minlength=5 maxlength=100 required emailValidator>
                     <div *ngIf="email.dirty && email.invalid">
                         <small class="form-text text-danger" *ngIf="email.errors.required"
                                 jhiTranslate="global.messages.validate.email.required">
                             Your e-mail is required.
                         </small>
-                        <small class="form-text text-danger" *ngIf="email.errors.invalid"
+                        <small class="form-text text-danger" *ngIf="email.errors.emailValidator"
                                jhiTranslate="global.messages.validate.email.invalid">
                             Your e-mail is invalid.
                         </small>

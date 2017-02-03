@@ -3,10 +3,9 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { Register } from './register.service';
-import { LoginModalService } from '../../shared';
+import { LoginModalService , EmailValidatorDirective} from '../../shared';
 
 @Component({
-    selector: 'jhi-register',
     templateUrl: './register.component.html'
 })
 export class RegisterComponent implements OnInit {
