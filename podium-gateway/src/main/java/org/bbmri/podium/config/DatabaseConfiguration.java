@@ -13,7 +13,6 @@ package org.bbmri.podium.config;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import liquibase.integration.spring.SpringLiquibase;
 import org.bbmri.podium.liquibase.AsyncSpringLiquibase;
-import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +28,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 @Configuration
 @EnableJpaRepositories("org.bbmri.podium.repository")
@@ -44,18 +42,6 @@ public class DatabaseConfiguration {
 
     public DatabaseConfiguration(Environment env) {
         this.env = env;
-    }
-
-    /**
-     * Open the TCP port for the H2 database, so it is available remotely.
-     *
-     * @return the H2 database TCP server
-     * @throws SQLException if the server failed to start
-     */
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile(PodiumConstants.SPRING_PROFILE_DEVELOPMENT)
-    public Server h2TCPServer() throws SQLException {
-        return Server.createTcpServer("-tcp","-tcpAllowOthers");
     }
 
     @Bean
