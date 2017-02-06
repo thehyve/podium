@@ -33,7 +33,8 @@
                            #login="ngModel" placeholder="{{'global.form.username.placeholder' | translate}}"
                             required minlength="1" maxlength="50" pattern="^[_'.@A-Za-z0-9-]*$">
                     <div *ngIf="login.dirty && login.invalid">
-                        <small class="form-text text-danger" *ngIf="login.errors.required" jhiTranslate="register.messages.validate.login.required">
+                        <small class="form-text text-danger" *ngIf="login.errors.required"
+                               jhiTranslate="register.messages.validate.login.required">
                             Your username is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="login.errors.minlength"
@@ -53,40 +54,40 @@
 
                 <!--First name-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="firstname" >First name</label>
-                    <input type="text" class="form-control" [(ngModel)]="registerAccount.firstname" id="firstname"
-                           #firstname="ngModel" name="firstname" required minlength="1"
-                           placeholder="{{'global.form.firstname.placeholder' | translate}}"
+                    <label  class="form-control-label" for="firstName" >First name</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.firstName" id="firstName"
+                           #firstName="ngModel" name="firstName" required minlength="1"
+                           placeholder="{{'global.form.firstName.placeholder' | translate}}"
                            pattern="^[_'.@A-Za-z]*$">
-                    <div *ngIf="firstname.dirty && firstname.invalid">
-                        <small class="form-text text-danger" *ngIf="firstname.errors.required">
-                            Your firstname is required.
+                    <div *ngIf="firstName.dirty && firstName.invalid">
+                        <small class="form-text text-danger" *ngIf="firstName.errors.required">
+                            Your first name is required.
                         </small>
-                        <small class="form-text text-danger" *ngIf="firstname.errors.minlength">
-                            Your firstname is required to be at least 1 character.
+                        <small class="form-text text-danger" *ngIf="firstName.errors.minlength">
+                            Your first name is required to be at least 1 character.
                         </small>
-                        <small class="form-text text-danger" *ngIf="firstname.errors.maxlength">
-                            Your firstname cannot be longer than 50 characters.
+                        <small class="form-text text-danger" *ngIf="firstName.errors.maxlength">
+                            Your first name cannot be longer than 50 characters.
                         </small>
                     </div>
                 </div>
 
                 <!--Last name-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="lastname" >Last name</label>
-                    <input type="text" class="form-control" [(ngModel)]="registerAccount.lastname" id="lastname"
-                           #lastname="ngModel" name="lastname" required minlength="1"
-                           placeholder="{{'global.form.lastname.placeholder' | translate}}"
+                    <label  class="form-control-label" for="lastName" >Last name</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.lastName" id="lastName"
+                           #lastName="ngModel" name="lastName" required minlength="1"
+                           placeholder="{{'global.form.lastName.placeholder' | translate}}"
                            pattern="^[_'.@A-Za-z]*$">
-                    <div *ngIf="lastname.dirty && lastname.invalid">
-                        <small class="form-text text-danger" *ngIf="lastname.errors.required">
-                            Your lastname is required.
+                    <div *ngIf="lastName.dirty && lastName.invalid">
+                        <small class="form-text text-danger" *ngIf="lastName.errors.required">
+                            Your last name is required.
                         </small>
-                        <small class="form-text text-danger" *ngIf="lastname.errors.minlength">
-                            Your lastname is required to be at least 1 character.
+                        <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
+                            Your last name is required to be at least 1 character.
                         </small>
-                        <small class="form-text text-danger" *ngIf="lastname.errors.maxlength">
-                            Your lastname cannot be longer than 50 characters.
+                        <small class="form-text text-danger" *ngIf="lastName.errors.maxlength">
+                            Your last name cannot be longer than 50 characters.
                         </small>
                     </div>
                 </div>
@@ -117,15 +118,12 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="telephone" >Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
-                           #telephone="ngModel" name="telephone" required minlength="1"
+                           #telephone="ngModel" name="telephone" required maxlength=100
                            placeholder="{{'global.form.telephone.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$">
                     <div *ngIf="telephone.dirty && telephone.invalid">
                         <small class="form-text text-danger" *ngIf="telephone.errors.required">
                             Your telephone is required.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="telephone.errors.minlength">
-                            Your telephone is required to be at least 1 character.
                         </small>
                         <small class="form-text text-danger" *ngIf="telephone.errors.maxlength">
                             Your telephone cannot be longer than 50 characters.
@@ -240,8 +238,11 @@
                     <jhi-password-strength-bar [passwordToCheck]="registerAccount.password"></jhi-password-strength-bar>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="confirmPassword" jhiTranslate="global.form.confirmpassword">New password confirmation</label>
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" #confirmPasswordInput="ngModel" placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
+                    <label class="form-control-label" for="confirmPassword" jhiTranslate="global.form.confirmpassword">
+                        New password confirmation</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                           #confirmPasswordInput="ngModel"
+                           placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
                             [(ngModel)]="confirmPassword" minlength=4 maxlength=50 required>
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
@@ -259,12 +260,16 @@
                     </div>
                 </div>
 
-                <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary" jhiTranslate="register.form.button">Register</button>
+                <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary"
+                        jhiTranslate="register.form.button">Register</button>
             </form>
             <p></p>
             <div class="alert alert-warning">
                 <span jhiTranslate="global.messages.info.authenticated.prefix">If you want to </span>
-                <a class="alert-link" (click)="openLogin()" jhiTranslate="global.messages.info.authenticated.link">sign in</a><span jhiTranslate="global.messages.info.authenticated.suffix">, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
+                <a class="alert-link" (click)="openLogin()" jhiTranslate="global.messages.info.authenticated.link">
+                    sign in</a><span jhiTranslate="global.messages.info.authenticated.suffix">, you can try the default
+                accounts:<br/>- Administrator (login="admin" and password="admin") <br/>
+                - User (login="user" and password="user").</span>
             </div>
         </div>
     </div>
