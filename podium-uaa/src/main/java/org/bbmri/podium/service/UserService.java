@@ -1,8 +1,10 @@
 package org.bbmri.podium.service;
 
 import org.bbmri.podium.domain.Authority;
+import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.AuthorityRepository;
+import org.bbmri.podium.repository.RoleRepository;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
 import org.bbmri.podium.security.AuthoritiesConstants;
@@ -39,7 +41,7 @@ public class UserService {
     private UserSearchRepository userSearchRepository;
 
     @Inject
-    private AuthorityRepository authorityRepository;
+    private RoleService roleService;
 
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
@@ -72,7 +74,7 @@ public class UserService {
 
     public Optional<User> requestPasswordReset(String mail) {
         return userRepository.findOneByEmail(mail)
-            .filter(User::getActivated)
+            .filter(User::isActivated)
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
                 user.setResetDate(ZonedDateTime.now());
@@ -84,8 +86,8 @@ public class UserService {
         String langKey) {
 
         User newUser = new User();
-        Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
-        Set<Authority> authorities = new HashSet<>();
+        Role role = roleService.findRoleByAuthorityName(Authority.RESEARCHER);
+        Set<Role> roles = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(login);
         // new user gets initially a generated password
@@ -98,8 +100,8 @@ public class UserService {
         newUser.setActivated(false);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
-        authorities.add(authority);
-        newUser.setAuthorities(authorities);
+        roles.add(role);
+        newUser.setRoles(roles);
         userRepository.save(newUser);
         userSearchRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
@@ -118,11 +120,14 @@ public class UserService {
             user.setLangKey(managedUserVM.getLangKey());
         }
         if (managedUserVM.getAuthorities() != null) {
-            Set<Authority> authorities = new HashSet<>();
-            managedUserVM.getAuthorities().forEach(
-                authority -> authorities.add(authorityRepository.findOne(authority))
-            );
-            user.setAuthorities(authorities);
+            Set<Role> roles = new HashSet<>();
+            managedUserVM.getAuthorities().forEach( authority -> {
+                Role role = roleService.findRoleByAuthorityName(authority);
+                if (role != null) {
+                    roles.add(role);
+                }
+            });
+            user.setRoles(roles);
         }
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
@@ -158,11 +163,15 @@ public class UserService {
                 user.setEmail(email);
                 user.setActivated(activated);
                 user.setLangKey(langKey);
-                Set<Authority> managedAuthorities = user.getAuthorities();
-                managedAuthorities.clear();
-                authorities.forEach(
-                    authority -> managedAuthorities.add(authorityRepository.findOne(authority))
-                );
+                Set<Role> managedRoles = user.getRoles();
+                managedRoles.clear();
+                Set<Role> roles = new HashSet<>();
+                authorities.forEach( authority -> {
+                    Role role = roleService.findRoleByAuthorityName(authority);
+                    if (role != null) {
+                        roles.add(role);
+                    }
+                });
                 log.debug("Changed Information for User: {}", user);
             });
     }
@@ -192,6 +201,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<User> getUserByUuid(UUID uuid) {
+        return userRepository.findOneByUuid(uuid).map(user -> {
+            user.getAuthorities().size();
+            return user;
+        });
+    }
+
+    @Transactional(readOnly = true)
     public User getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
         user.getAuthorities().size(); // eagerly load the association
@@ -209,7 +226,6 @@ public class UserService {
          return user;
     }
 
-
     /**
      * Not activated users should be automatically deleted after 3 days.
      * <p>
@@ -226,4 +242,5 @@ public class UserService {
             userSearchRepository.delete(user);
         }
     }
+
 }

@@ -9,16 +9,19 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.*;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * A DTO representing a user, with his authorities.
  */
-public class UserDTO {
+public class UserRepresentation {
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     private String login;
+
+    private UUID uuid;
 
     @Size(max = 50)
     private String firstName;
@@ -37,31 +40,26 @@ public class UserDTO {
 
     private Set<String> authorities;
 
-    public UserDTO() {
+    public UserRepresentation() {
     }
 
-    public UserDTO(User user) {
-        this(user.getLogin(), user.getFirstName(), user.getLastName(),
-            user.getEmail(), user.getActivated(), user.getLangKey(),
-            user.getAuthorities().stream().map(Authority::getName)
-                .collect(Collectors.toSet()));
-    }
-
-    public UserDTO(String login, String firstName, String lastName,
-        String email, boolean activated, String langKey, Set<String> authorities) {
-
-        this.login = login;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.activated = activated;
-        this.langKey = langKey;
-        this.authorities = authorities;
+    public UserRepresentation(User user) {
+        this.login = user.getLogin();
+        this.uuid = user.getUuid();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.activated = user.isActivated();
+        this.langKey = user.getLangKey();
+        this.authorities = user.getAuthorities().stream().map(Authority::getName)
+            .collect(Collectors.toSet());
     }
 
     public String getLogin() {
         return login;
     }
+
+    public UUID getUuid() { return uuid; }
 
     public String getFirstName() {
         return firstName;

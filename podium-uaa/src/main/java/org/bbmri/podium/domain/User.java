@@ -3,6 +3,7 @@ package org.bbmri.podium.domain;
 import org.bbmri.podium.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.Email;
@@ -17,6 +18,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.time.ZonedDateTime;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A user.
@@ -32,6 +35,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private UUID uuid;
 
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
@@ -81,11 +87,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "podium_user_authority",
-        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
+        name = "role_users",
+        joinColumns = {@JoinColumn(name = "users_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "roles_id", referencedColumnName = "id")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Authority> authorities = new HashSet<>();
+    @BatchSize(size = 20)
+    private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -93,6 +100,25 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Void.
+     * @param uuid
+     */
+    public void setUuid(UUID uuid) {
+        // pass
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
     }
 
     public String getLogin() {
@@ -136,7 +162,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.email = email;
     }
 
-    public boolean getActivated() {
+    public boolean isActivated() {
         return activated;
     }
 
@@ -177,12 +203,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
     }
 
     public Set<Authority> getAuthorities() {
-        return authorities;
+        return roles.stream().map(Role::getAuthority).collect(Collectors.toSet());
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
+    public Set<Role> getRoles() { return roles; }
+
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
 
     @Override
     public boolean equals(Object o) {

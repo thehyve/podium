@@ -1,0 +1,43 @@
+
+<div *ngIf="role">
+    <h2><span jhiTranslate="podiumGatewayApp.role.detail.title">Role</span> {{authoritiesMap[role.authority]?.name}}
+    <span *ngIf="role.organisation">for {{organisation?.shortName}}</span>
+    </h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row">
+        <dt><span jhiTranslate="podiumGatewayApp.role.authority">Authority</span></dt>
+        <dd>
+            <div *ngIf="role.authority">
+                {{authoritiesMap[role.authority]?.name}}
+            </div>
+        </dd>
+        <dt *ngIf="role.organisation"><span jhiTranslate="podiumGatewayApp.role.organisation">Organisation</span></dt>
+        <dd *ngIf="role.organisation">
+            <div>
+                <a [routerLink]="['../organisation', role.organisation.uuid]">{{organisation?.shortName}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="podiumGatewayApp.role.users">Users</span></dt>
+        <dd>
+            <ul>
+            <li *ngFor="let user of role.users">
+                {{users[user]?.login}}
+            </li>
+            </ul>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'role/'+ role.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>
