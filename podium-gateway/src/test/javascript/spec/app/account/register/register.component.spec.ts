@@ -33,7 +33,7 @@ describe('Component Tests', () => {
                         provide: JhiLanguageService,
                         useClass: MockLanguageService
                     },
-                    
+
                     {
                         provide: LoginModalService,
                         useValue: null
@@ -80,6 +80,7 @@ describe('Component Tests', () => {
 
                     expect(service.save).toHaveBeenCalledWith({
                         password: 'password',
+                        specialism: '',
                         langKey: 'en'
                     });
                     expect(comp.success).toEqual(true);
