@@ -76,10 +76,6 @@ table td[class*=col-], table th[class*=col-] {
     float: none;
 }
 
-.footer {
-    border-top: 1px solid rgba(0,0,0,.125);
-}
-
 /* ==========================================================================
 make sure browsers use the pointer cursor for anchors, even with no href
 ========================================================================== */
@@ -227,6 +223,5 @@ ui bootstrap tweaks
 .uib-datepicker-popup  > li > div.uib-datepicker > table:focus {
     outline: none;
 }
-
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
