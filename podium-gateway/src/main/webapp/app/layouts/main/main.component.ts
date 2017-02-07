@@ -4,7 +4,7 @@ import { Router, ActivatedRouteSnapshot, NavigationEnd, RoutesRecognized } from 
 import { JhiLanguageHelper, StateStorageService } from '../../shared';
 
 @Component({
-    selector: 'jhi-main',
+    selector: 'podium-main',
     templateUrl: './main.component.html'
 })
 export class JhiMainComponent implements OnInit {
@@ -16,7 +16,9 @@ export class JhiMainComponent implements OnInit {
     ) {}
 
     private getPageTitle(routeSnapshot: ActivatedRouteSnapshot) {
-        let title: string = (routeSnapshot.data && routeSnapshot.data['pageTitle']) ? routeSnapshot.data['pageTitle'] : 'podiumGatewayApp';
+        let title: string = (routeSnapshot.data && routeSnapshot.data['pageTitle'])
+            ? routeSnapshot.data['pageTitle']
+            : 'BBMRI Podium Request Portal';
         if (routeSnapshot.firstChild) {
             title = this.getPageTitle(routeSnapshot.firstChild) || title;
         }
