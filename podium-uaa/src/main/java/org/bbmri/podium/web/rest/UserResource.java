@@ -175,6 +175,22 @@ public class UserResource {
     }
 
     /**
+     * GET  /users/uuid/:uuid : get the "uuid" user.
+     *
+     * @param uuid the uuid of the user to find
+     * @return the ResponseEntity with status 200 (OK) and with body the "uuid" user, or with status 404 (Not Found)
+     */
+    @GetMapping("/users/uuid/{uuid}")
+    @Timed
+    public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
+        log.debug("REST request to get User : {}", uuid);
+        return userService.getUserByUuid(uuid)
+            .map(ManagedUserVM::new)
+            .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /**
      * DELETE /users/:login : delete the "login" User.
      *
      * @param login the login of the user to delete

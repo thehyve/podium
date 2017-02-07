@@ -1,12 +1,14 @@
 package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
+import org.bbmri.podium.domain.Role;
+import org.bbmri.podium.exceptions.ResourceNotFoundException;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 import org.bbmri.podium.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,11 +22,9 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Organisation.
@@ -36,11 +36,16 @@ public class OrganisationResource {
     private final Logger log = LoggerFactory.getLogger(OrganisationResource.class);
 
     private static final String ENTITY_NAME = "organisation";
-        
+
     private final OrganisationService organisationService;
 
     public OrganisationResource(OrganisationService organisationService) {
         this.organisationService = organisationService;
+    }
+
+    private void copyProperties(Organisation source, Organisation target) {
+        target.setName(source.getName());
+        target.setShortName(source.getShortName());
     }
 
     /**
@@ -57,7 +62,13 @@ public class OrganisationResource {
         if (organisation.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new organisation cannot already have an ID")).body(null);
         }
-        Organisation result = organisationService.save(organisation);
+        Organisation result = new Organisation();
+        copyProperties(organisation, result);
+        Set<Role> roles = organisationService.findOrganisationAuthorities().stream()
+            .map(authority -> new Role(authority, organisation))
+            .collect(Collectors.toSet());
+        organisation.setRoles(roles);
+        organisationService.save(result);
         return ResponseEntity.created(new URI("/api/organisations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -79,7 +90,12 @@ public class OrganisationResource {
         if (organisation.getId() == null) {
             return createOrganisation(organisation);
         }
-        Organisation result = organisationService.save(organisation);
+        Organisation result = organisationService.findOne(organisation.getId());
+        if (result == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisation.getId()));
+        }
+        copyProperties(organisation, result);
+        organisationService.save(result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, organisation.getId().toString()))
             .body(result);
@@ -113,7 +129,27 @@ public class OrganisationResource {
     public ResponseEntity<Organisation> getOrganisation(@PathVariable Long id) {
         log.debug("REST request to get Organisation : {}", id);
         Organisation organisation = organisationService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(organisation));
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %s.", id));
+        }
+        return ResponseEntity.ok(organisation);
+    }
+
+    /**
+     * GET  /organisations/uuid/:uuid : get the "uuid" organisation.
+     *
+     * @param uuid the uuid of the organisation to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
+     */
+    @GetMapping("/organisations/uuid/{uuid}")
+    @Timed
+    public ResponseEntity<Organisation> getOrganisation(@PathVariable UUID uuid) {
+        log.debug("REST request to get Organisation : {}", uuid);
+        Organisation organisation = organisationService.findByUuid(uuid);
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with uuid: %s.", uuid));
+        }
+        return ResponseEntity.ok(organisation);
     }
 
     /**
@@ -126,7 +162,11 @@ public class OrganisationResource {
     @Timed
     public ResponseEntity<Void> deleteOrganisation(@PathVariable Long id) {
         log.debug("REST request to delete Organisation : {}", id);
-        organisationService.delete(id);
+        Organisation organisation = organisationService.findOne(id);
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisation.getId()));
+        }
+        organisationService.delete(organisation);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -134,7 +174,7 @@ public class OrganisationResource {
      * SEARCH  /_search/organisations?query=:query : search for the organisation corresponding
      * to the query.
      *
-     * @param query the query of the organisation search 
+     * @param query the query of the organisation search
      * @param pageable the pagination information
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers

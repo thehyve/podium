@@ -7,29 +7,29 @@
         Added the constraints for entity Role.
     -->
     <changeSet id="20170202133114-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="roles_id"
                                  baseTableName="role_users"
                                  constraintName="fk_role_users_roles_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="role"/>
+                                 referencedTableName="podium_role"/>
         <addForeignKeyConstraint baseColumnNames="users_id"
                                  baseTableName="role_users"
                                  constraintName="fk_role_users_users_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-        
+                                 referencedTableName="podium_user"/>
+
         <addForeignKeyConstraint baseColumnNames="organisation_id"
-                                 baseTableName="role"
+                                 baseTableName="podium_role"
                                  constraintName="fk_role_organisation_id"
                                  referencedColumnNames="id"
                                  referencedTableName="organisation"/>
 
-        <addForeignKeyConstraint baseColumnNames="authority_id"
-                                 baseTableName="role"
-                                 constraintName="fk_role_authority_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="authority"/>
+        <addForeignKeyConstraint baseColumnNames="authority_name"
+                                 baseTableName="podium_role"
+                                 constraintName="fk_role_authority_name"
+                                 referencedColumnNames="name"
+                                 referencedTableName="podium_authority"/>
 
     </changeSet>
 </databaseChangeLog>

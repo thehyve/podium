@@ -1,5 +1,6 @@
 package org.bbmri.podium.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * A Role.
  */
 @Entity
-@Table(name = "role")
+@Table(name = "podium_role")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "role")
 public class Role implements Serializable {
@@ -22,8 +23,7 @@ public class Role implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToMany
@@ -36,8 +36,20 @@ public class Role implements Serializable {
     @ManyToOne
     private Organisation organisation;
 
+    @JsonProperty()
     @ManyToOne
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinColumn(name = "authority_name", referencedColumnName = "name")
     private Authority authority;
+
+    public Role() {
+
+    }
+
+    public Role(Authority authority, Organisation organisation) {
+        this.authority = authority;
+        this.organisation = organisation;
+    }
 
     public Long getId() {
         return id;

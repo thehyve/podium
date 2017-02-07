@@ -8,7 +8,7 @@ import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.security.AuthoritiesConstants;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
-import org.bbmri.podium.service.dto.UserDTO;
+import org.bbmri.podium.service.dto.UserRepresentation;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -370,7 +370,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testSaveInvalidLogin() throws Exception {
-        UserDTO invalidUser = new UserDTO(
+        UserRepresentation invalidUser = new UserRepresentation(
             "funky-log!n",          // login <-- invalid
             "Funky",                // firstName
             "One",                  // lastName

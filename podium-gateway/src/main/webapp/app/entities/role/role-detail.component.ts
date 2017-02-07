@@ -3,6 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Role } from './role.model';
 import { RoleService } from './role.service';
+import {Organisation} from '../organisation/organisation.model';
+import {User} from '../../shared/user/user.model';
+import {OrganisationService} from '../organisation/organisation.service';
+import {UserService} from '../../shared/user/user.service';
+import {Authority} from "../../shared/authority/authority";
+import {AUTHORITIES_MAP} from "../../shared/authority/authority.constants";
 
 @Component({
     selector: 'jhi-role-detail',
@@ -11,14 +17,21 @@ import { RoleService } from './role.service';
 export class RoleDetailComponent implements OnInit, OnDestroy {
 
     role: Role;
+    organisation: Organisation;
+    users: { [uuid: string]: User; };
+    authoritiesMap: { [token: string]: Authority; };
     private subscription: any;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private roleService: RoleService,
+        private organisationService: OrganisationService,
+        private userService: UserService,
         private route: ActivatedRoute
     ) {
         this.jhiLanguageService.setLocations(['role']);
+        this.authoritiesMap = AUTHORITIES_MAP;
+        this.users = {};
     }
 
     ngOnInit() {
@@ -27,9 +40,21 @@ export class RoleDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    load (id) {
+    load(id) {
         this.roleService.find(id).subscribe(role => {
             this.role = role;
+            if (role.organisation) {
+                this.organisationService.findByUuid(role.organisation).subscribe(organisation => {
+                    this.organisation = organisation;
+                });
+            }
+            for (let userUuid of role.users) {
+                if (!(userUuid in this.users)) {
+                    this.userService.findByUuid(userUuid).subscribe(user => {
+                        this.users[userUuid] = user;
+                    });
+                }
+            }
         });
     }
     previousState() {

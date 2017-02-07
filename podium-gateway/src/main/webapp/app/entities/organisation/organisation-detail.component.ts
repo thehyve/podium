@@ -23,12 +23,12 @@ export class OrganisationDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.route.params.subscribe(params => {
-            this.load(params['id']);
+            this.load(params['uuid']);
         });
     }
 
-    load (id) {
-        this.organisationService.find(id).subscribe(organisation => {
+    load (uuid) {
+        this.organisationService.findByUuid(uuid).subscribe(organisation => {
             this.organisation = organisation;
         });
     }

@@ -10,14 +10,14 @@ export class OrganisationPopupService {
         private organisationService: OrganisationService
     ) {}
 
-    open (component: Component, id?: number | any): NgbModalRef {
+    open (component: Component, uuid?: string | any): NgbModalRef {
         if (this.isOpen) {
             return;
         }
         this.isOpen = true;
 
-        if (id) {
-            this.organisationService.find(id).subscribe(organisation => {
+        if (uuid) {
+            this.organisationService.findByUuid(uuid).subscribe(organisation => {
                 this.organisationModalRef(component, organisation);
             });
         } else {

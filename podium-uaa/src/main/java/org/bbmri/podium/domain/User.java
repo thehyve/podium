@@ -3,9 +3,9 @@ package org.bbmri.podium.domain;
 import org.bbmri.podium.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A user.
@@ -35,8 +36,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(unique = true, nullable = false)
     private UUID uuid;
 
@@ -88,18 +87,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "podium_user_authority",
-        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Authority> authorities = new HashSet<>();
-
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "jhi_user_roles",
-        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+        name = "role_users",
+        joinColumns = {@JoinColumn(name = "users_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "roles_id", referencedColumnName = "id")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Role> roles = new HashSet<>();
@@ -116,8 +106,19 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return uuid;
     }
 
+    /**
+     * Void.
+     * @param uuid
+     */
     public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+        // pass
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
     }
 
     public String getLogin() {
@@ -202,11 +203,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     }
 
     public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+        return roles.stream().map(Role::getAuthority).collect(Collectors.toSet());
     }
 
     public Set<Role> getRoles() { return roles; }

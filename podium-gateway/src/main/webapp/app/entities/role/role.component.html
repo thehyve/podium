@@ -1,11 +1,5 @@
 <div>
-    <h2><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span>
-        <button class="btn btn-primary float-xs-right create-role" [routerLink]="['/', { outlets: { popup: ['role-new'] } }]">
-            <span class="fa fa-plus"></span>
-            <span class="hidden-sm-down"  jhiTranslate="podiumGatewayApp.role.home.createLabel">
-            Create new Role
-            </span>
-        </button></h2>
+    <h2><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span></h2>
     <jhi-alert></jhi-alert>
 
     <div class="container-fluid">
@@ -35,7 +29,8 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="organisation.id"><span jhiTranslate="podiumGatewayApp.role.organisation">Organisation</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="authority"><span jhiTranslate="podiumGatewayApp.role.authority">Authority</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="organisation"><span jhiTranslate="podiumGatewayApp.role.organisation">Organisation</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -43,8 +38,13 @@
             <tr *ngFor="let role of roles ;trackBy: trackId">
                 <td><a [routerLink]="['../role', role.id ]">{{role.id}}</a></td>
                 <td>
+                    <div *ngIf="role.authority">
+                        {{authoritiesMap[role.authority]?.name}}
+                    </div>
+                </td>
+                <td>
                     <div *ngIf="role.organisation">
-                        <a [routerLink]="['../organisation', role.organisation?.id ]" >{{role.organisation?.id}}</a>
+                        <a [routerLink]="['../organisation', role.organisation ]" >{{organisations[role.organisation]?.shortName}}</a>
                     </div>
                 </td>
                 <td class="text-xs-right">
@@ -62,21 +62,14 @@
                             <span class="fa fa-pencil"></span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'role/'+ role.id + '/delete'} }]"
-                                replaceUrl="true"
-                                class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
-                            <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
                     </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
-        <div class="text-xs-center" *ngIf="roles && roles.length">
-            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
+    <div class="text-xs-center" *ngIf="roles && roles.length">
+        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+    </div>
 </div>

@@ -60,7 +60,7 @@ export class OrganisationDeletePopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {
             this.modalRef = this.organisationPopupService
-                .open(OrganisationDeleteDialogComponent, params['id']);
+                .open(OrganisationDeleteDialogComponent, params['uuid']);
         });
     }
 

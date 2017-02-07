@@ -10,21 +10,9 @@
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
         <div class="form-group" [hidden]="!organisation.id">
-            <label for="id" jhiTranslate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                   [(ngModel)]="organisation.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="organisation.name"
-            required />
-            <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
-                <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">
-                   This field is required.
-                </small>
-            </div>
+            <label for="uuid" jhiTranslate="global.field.uuid">UUID</label>
+            <input type="text" class="form-control" id="uuid" name="uuid"
+                   [(ngModel)]="organisation.uuid" readonly />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.shortName" for="field_shortName">Short Name</label>
@@ -39,6 +27,18 @@
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.shortName?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
                    This field cannot be longer than 50 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                   [(ngModel)]="organisation.name"
+                   required />
+            <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
+                <small class="form-text text-danger"
+                       [hidden]="!editForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">
+                    This field is required.
                 </small>
             </div>
         </div>

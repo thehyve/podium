@@ -39,7 +39,7 @@ export const organisationRoute: Routes = [
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     }
   }, {
-    path: 'organisation/:id',
+    path: 'organisation/:uuid',
     component: OrganisationDetailComponent,
     data: {
         authorities: ['ROLE_USER'],
@@ -53,25 +53,25 @@ export const organisationPopupRoute: Routes = [
     path: 'organisation-new',
     component: OrganisationPopupComponent,
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     },
     outlet: 'popup'
   },
   {
-    path: 'organisation/:id/edit',
+    path: 'organisation/:uuid/edit',
     component: OrganisationPopupComponent,
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     },
     outlet: 'popup'
   },
   {
-    path: 'organisation/:id/delete',
+    path: 'organisation/:uuid/delete',
     component: OrganisationDeletePopupComponent,
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     },
     outlet: 'popup'

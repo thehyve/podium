@@ -1,14 +1,15 @@
 package org.bbmri.podium.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -23,12 +24,9 @@ public class Organisation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(unique = true, nullable = false)
     private UUID uuid;
 
@@ -40,6 +38,17 @@ public class Organisation implements Serializable {
     @Size(max = 50)
     @Column(name = "short_name", length = 50, nullable = false)
     private String shortName;
+
+    @JsonIgnore
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
+    @Column(name = "activated", nullable = false)
+    private boolean activated;
+
+    @JsonIgnore
+    @OneToMany
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
@@ -53,8 +62,19 @@ public class Organisation implements Serializable {
         return uuid;
     }
 
+    /**
+     * Void.
+     * @param uuid
+     */
     public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+        // pass
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
     }
 
     public String getName() {
@@ -81,6 +101,30 @@ public class Organisation implements Serializable {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     @Override

@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { PodiumGatewaySharedModule } from '../../shared';
 import { PodiumGatewayAdminModule } from '../../admin/admin.module';
+import { PodiumGatewayOrganisationModule } from '../organisation/organisation.module';
 
 import {
     RoleService,
@@ -11,8 +12,6 @@ import {
     RoleDetailComponent,
     RoleDialogComponent,
     RolePopupComponent,
-    RoleDeletePopupComponent,
-    RoleDeleteDialogComponent,
     roleRoute,
     rolePopupRoute,
     RoleResolvePagingParams,
@@ -27,22 +26,19 @@ let ENTITY_STATES = [
     imports: [
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
+        PodiumGatewayOrganisationModule,
         RouterModule.forRoot(ENTITY_STATES, { useHash: true })
     ],
     declarations: [
         RoleComponent,
         RoleDetailComponent,
         RoleDialogComponent,
-        RoleDeleteDialogComponent,
         RolePopupComponent,
-        RoleDeletePopupComponent,
     ],
     entryComponents: [
         RoleComponent,
         RoleDialogComponent,
         RolePopupComponent,
-        RoleDeleteDialogComponent,
-        RoleDeletePopupComponent,
     ],
     providers: [
         RoleService,

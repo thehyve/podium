@@ -32,8 +32,16 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="deleted" type="boolean" valueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="activated" type="boolean" valueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

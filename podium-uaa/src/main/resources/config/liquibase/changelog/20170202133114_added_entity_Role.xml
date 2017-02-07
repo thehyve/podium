@@ -20,7 +20,7 @@
         Added the entity Role.
     -->
     <changeSet id="20170202133114-1" author="jhipster">
-        <createTable tableName="role">
+        <createTable tableName="podium_role">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -28,13 +28,12 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="authority_id" type="bigint">
-                <constraints nullable="true" />
+            <column name="authority_name" type="varchar(50)">
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
         <createTable tableName="role_users">
             <column name="users_id" type="bigint">
                 <constraints nullable="false"/>
@@ -45,6 +44,6 @@
         </createTable>
 
         <addPrimaryKey columnNames="roles_id, users_id" tableName="role_users"/>
-        
+
     </changeSet>
 </databaseChangeLog>

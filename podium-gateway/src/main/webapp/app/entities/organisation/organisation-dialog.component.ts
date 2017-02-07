@@ -30,7 +30,7 @@ export class OrganisationDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
+        this.authorities = ['ROLE_PODIUM_ADMIN'];
     }
     clear () {
         this.activeModal.dismiss('cancel');
@@ -39,7 +39,7 @@ export class OrganisationDialogComponent implements OnInit {
 
     save () {
         this.isSaving = true;
-        if (this.organisation.id !== undefined) {
+        if (this.organisation.uuid !== undefined) {
             this.organisationService.update(this.organisation)
                 .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
         } else {
@@ -81,9 +81,9 @@ export class OrganisationPopupComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {
-            if ( params['id'] ) {
+            if ( params['uuid'] ) {
                 this.modalRef = this.organisationPopupService
-                    .open(OrganisationDialogComponent, params['id']);
+                    .open(OrganisationDialogComponent, params['uuid']);
             } else {
                 this.modalRef = this.organisationPopupService
                     .open(OrganisationDialogComponent);

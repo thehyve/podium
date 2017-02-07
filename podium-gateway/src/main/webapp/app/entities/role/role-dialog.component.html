@@ -16,16 +16,25 @@
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="podiumGatewayApp.role.users" for="field_users">Users</label>
-            <select class="form-control" id="field_users" #users="ngModel" multiple name="users" [(ngModel)]="role.users">
-                <option [ngValue]="getSelected(role.users, userOption)" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
+            <label jhiTranslate="podiumGatewayApp.role.authority" for="field_authority">Authority</label>
+            <select class="form-control" id="field_authority" name="authority" [(ngModel)]="role.authority" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="authorityOption.token === role.authority ? role.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
             </select>
         </div>
+
         <div class="form-group">
             <label jhiTranslate="podiumGatewayApp.role.organisation" for="field_organisation">Organisation</label>
             <select class="form-control" id="field_organisation" name="organisation" [(ngModel)]="role.organisation" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="organisationOption.id === role.organisation?.id ? role.organisation : organisationOption" *ngFor="let organisationOption of organisations; trackBy: trackOrganisationById">{{organisationOption.id}}</option>
+                <option [ngValue]="organisationOption.uuid" *ngFor="let organisationOption of organisations; trackBy: trackByUuid">{{organisationOption.shortName}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label jhiTranslate="podiumGatewayApp.role.users" for="field_users">Users</label>
+            <select class="form-control" id="field_users" multiple name="users" [(ngModel)]="role.users">
+                <option [ngValue]="userOption.uuid" *ngFor="let userOption of users; trackBy: trackByUuid">{{userOption.login}}</option>
             </select>
         </div>
     </div>

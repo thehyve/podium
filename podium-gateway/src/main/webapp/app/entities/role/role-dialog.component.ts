@@ -10,6 +10,9 @@ import { RolePopupService } from './role-popup.service';
 import { RoleService } from './role.service';
 import { User, UserService } from '../../shared';
 import { Organisation, OrganisationService } from '../organisation';
+import { Authority } from '../../shared/authority/authority';
+import { AUTHORITIES } from '../../shared/authority/authority.constants';
+
 @Component({
     selector: 'jhi-role-dialog',
     templateUrl: './role-dialog.component.html'
@@ -21,8 +24,9 @@ export class RoleDialogComponent implements OnInit {
     isSaving: boolean;
 
     users: User[];
-
     organisations: Organisation[];
+    authorityOptions: ReadonlyArray<Authority>;
+
     constructor(
         public activeModal: NgbActiveModal,
         private jhiLanguageService: JhiLanguageService,
@@ -39,6 +43,7 @@ export class RoleDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
+        this.authorityOptions = AUTHORITIES;
         this.userService.query().subscribe(
             (res: Response) => { this.users = res.json(); }, (res: Response) => this.onError(res.json()));
         this.organisationService.query().subscribe(
@@ -55,8 +60,7 @@ export class RoleDialogComponent implements OnInit {
             this.roleService.update(this.role)
                 .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
         } else {
-            this.roleService.create(this.role)
-                .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
+            this.onSaveError({message: 'Cannot save role without id.'});
         }
     }
 
@@ -76,23 +80,28 @@ export class RoleDialogComponent implements OnInit {
         this.alertService.error(error.message, null, null);
     }
 
-    trackUserById(index: number, item: User) {
-        return item.id;
+    trackAuthorityByToken(index: number, item: string) {
+        return item;
     }
 
-    trackOrganisationById(index: number, item: Organisation) {
-        return item.id;
+    trackByUuid(index: number, item: any) {
+        return item.uuid;
     }
 
-    getSelected(selectedVals: Array<any>, option: any) {
+    /**
+     * @param selectedVals
+     * @param option
+     */
+    getSelected(selectedVals: Array<string>, option: User): string {
+        console.log(`selectedVals: ${selectedVals}, option: ${option}.`);
         if (selectedVals) {
             for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
+                if (option.uuid === selectedVals[i]) {
                     return selectedVals[i];
                 }
             }
         }
-        return option;
+        return option.uuid;
     }
 }
 

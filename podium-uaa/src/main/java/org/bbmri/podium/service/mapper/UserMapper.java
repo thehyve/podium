@@ -2,7 +2,7 @@ package org.bbmri.podium.service.mapper;
 
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.service.dto.UserDTO;
+import org.bbmri.podium.service.dto.UserRepresentation;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = {})
 public interface UserMapper {
 
-    UserDTO userToUserDTO(User user);
+    UserRepresentation userToUserDTO(User user);
 
-    List<UserDTO> usersToUserDTOs(List<User> users);
+    List<UserRepresentation> usersToUserDTOs(List<User> users);
 
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
@@ -28,9 +28,9 @@ public interface UserMapper {
     @Mapping(target = "resetKey", ignore = true)
     @Mapping(target = "resetDate", ignore = true)
     @Mapping(target = "password", ignore = true)
-    User userDTOToUser(UserDTO userDTO);
+    User userDTOToUser(UserRepresentation userDTO);
 
-    List<User> userDTOsToUsers(List<UserDTO> userDTOs);
+    List<User> userDTOsToUsers(List<UserRepresentation> userDTOs);
 
     default User userFromId(Long id) {
         if (id == null) {

@@ -7,7 +7,6 @@ import { PaginationUtil } from 'ng-jhipster';
 import { RoleComponent } from './role.component';
 import { RoleDetailComponent } from './role-detail.component';
 import { RolePopupComponent } from './role-dialog.component';
-import { RoleDeletePopupComponent } from './role-delete-dialog.component';
 
 import { Principal } from '../../shared';
 
@@ -35,7 +34,7 @@ export const roleRoute: Routes = [
       'pagingParams': RoleResolvePagingParams
     },
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
     }
   }, {
@@ -50,30 +49,12 @@ export const roleRoute: Routes = [
 
 export const rolePopupRoute: Routes = [
   {
-    path: 'role-new',
-    component: RolePopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'podiumGatewayApp.role.home.title'
-    },
-    outlet: 'popup'
-  },
-  {
     path: 'role/:id/edit',
     component: RolePopupComponent,
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
     },
     outlet: 'popup'
   },
-  {
-    path: 'role/:id/delete',
-    component: RoleDeletePopupComponent,
-    data: {
-        authorities: ['ROLE_USER'],
-        pageTitle: 'podiumGatewayApp.role.home.title'
-    },
-    outlet: 'popup'
-  }
 ];

@@ -125,8 +125,8 @@ currentAccount: any;
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId (index: number, item: Organisation) {
-        return item.id;
+    trackUuid (index: number, item: Organisation) {
+        return item.uuid;
     }
 
 

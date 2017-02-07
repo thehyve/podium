@@ -11,13 +11,6 @@ export class RoleService {
 
     constructor(private http: Http) { }
 
-    create(role: Role): Observable<Role> {
-        let copy: Role = Object.assign({}, role);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
-    }
-
     update(role: Role): Observable<Role> {
         let copy: Role = Object.assign({}, role);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
@@ -32,13 +25,10 @@ export class RoleService {
     }
 
     query(req?: any): Observable<Response> {
+        console.log(`Query all roles...`);
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceUrl, options)
         ;
-    }
-
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
     }
 
     search(req?: any): Observable<Response> {

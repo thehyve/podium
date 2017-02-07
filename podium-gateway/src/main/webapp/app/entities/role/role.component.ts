@@ -6,8 +6,14 @@ import { EventManager, ParseLinks, PaginationUtil, JhiLanguageService, AlertServ
 
 import { Role } from './role.model';
 import { RoleService } from './role.service';
+import { Organisation } from '../organisation/organisation.model';
+import { OrganisationService } from '../organisation/organisation.service';
+import { User } from '../../shared/user/user.model';
+import { UserService } from '../../shared/user/user.service';
 import { ITEMS_PER_PAGE, Principal } from '../../shared';
 import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
+import { Authority } from '../../shared/authority/authority';
+import { AUTHORITIES_MAP } from '../../shared/authority/authority.constants';
 
 @Component({
     selector: 'jhi-role',
@@ -15,8 +21,12 @@ import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
 })
 export class RoleComponent implements OnInit, OnDestroy {
 
-currentAccount: any;
+    currentAccount: any;
     roles: Role[];
+    organisations: { [uuid: string]: Organisation; };
+    users: { [uuid: string]: User; };
+    authoritiesMap: { [token: string]: Authority; };
+
     error: any;
     success: any;
     eventSubscriber: Subscription;
@@ -34,6 +44,8 @@ currentAccount: any;
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private roleService: RoleService,
+        private organisationService: OrganisationService,
+        private userService: UserService,
         private parseLinks: ParseLinks,
         private alertService: AlertService,
         private principal: Principal,
@@ -52,6 +64,9 @@ currentAccount: any;
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['role']);
+        this.authoritiesMap = AUTHORITIES_MAP;
+        this.organisations = {};
+        this.users = {};
     }
 
     loadAll() {
@@ -59,16 +74,18 @@ currentAccount: any;
             this.roleService.search({
                 query: this.currentSearch,
                 size: this.itemsPerPage,
-                sort: this.sort()}).subscribe(
-                    (res: Response) => this.onSuccess(res.json(), res.headers),
-                    (res: Response) => this.onError(res.json())
-                );
+                sort: this.sort()
+            }).subscribe(
+                (res: Response) => this.onSuccess(res.json(), res.headers),
+                (res: Response) => this.onError(res.json())
+            );
             return;
         }
         this.roleService.query({
             page: this.page - 1,
             size: this.itemsPerPage,
-            sort: this.sort()}).subscribe(
+            sort: this.sort()
+        }).subscribe(
             (res: Response) => this.onSuccess(res.json(), res.headers),
             (res: Response) => this.onError(res.json())
         );
@@ -144,11 +161,27 @@ currentAccount: any;
     }
 
     private onSuccess (data, headers) {
+        console.log(`Success fetching roles...`);
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
         // this.page = pagingParams.page;
         this.roles = data;
+        for (let role of data) {
+            let organisationUuid = role.organisation;
+            if (organisationUuid && !(organisationUuid in this.organisations)) {
+                this.organisationService.findByUuid(organisationUuid).subscribe(organisation => {
+                    this.organisations[organisationUuid] = organisation;
+                });
+            }
+            for (let userUuid of role.users) {
+                if (!(userUuid in this.users)) {
+                    this.userService.findByUuid(userUuid).subscribe(user => {
+                        this.users[userUuid] = user;
+                    });
+                }
+            }
+        }
     }
 
     private onError (error) {

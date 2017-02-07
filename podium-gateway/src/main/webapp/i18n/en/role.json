@@ -14,7 +14,8 @@
                 "title": "Role"
             },
             "users": "Users",
-            "organisation": "Organisation"
+            "organisation": "Organisation",
+            "authority": "Authority"
         }
     },
     "podiumuaaApp": {

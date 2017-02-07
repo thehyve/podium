@@ -31,6 +31,12 @@ export class OrganisationService {
         });
     }
 
+    findByUuid(uuid: string): Observable<Organisation> {
+        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
     query(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceUrl, options)

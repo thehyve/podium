@@ -6,9 +6,11 @@ import org.bbmri.podium.config.SecurityBeanOverrideConfiguration;
 
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.repository.RoleRepository;
+import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.service.RoleService;
 import org.bbmri.podium.repository.search.RoleSearchRepository;
 
+import org.bbmri.podium.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +46,12 @@ public class RoleResourceIntTest {
     private RoleRepository roleRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
+    private OrganisationService organisationService;
+
+    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -65,7 +73,7 @@ public class RoleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        RoleResource roleResource = new RoleResource(roleService);
+        RoleResource roleResource = new RoleResource(roleService, userService, organisationService);
         this.restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
