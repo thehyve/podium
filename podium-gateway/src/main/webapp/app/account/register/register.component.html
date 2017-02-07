@@ -195,21 +195,11 @@
                 <!--Specialism-->
                 <div class="form-group">
                     <label  class="form-control-label" for="specialism" >Specialism</label>
-                    <input type="text" class="form-control" [(ngModel)]="registerAccount.specialism" id="specialism"
-                           #specialism="ngModel" name="specialism" required minlength="1"
-                           placeholder="{{'global.form.specialism.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
-                    <div *ngIf="specialism.dirty && specialism.invalid">
-                        <small class="form-text text-danger" *ngIf="specialism.errors.required">
-                            Your specialism is required.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="specialism.errors.minlength">
-                            Your specialism is required to be at least 1 character.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="specialism.errors.maxlength">
-                            Your specialism cannot be longer than 50 characters.
-                        </small>
-                    </div>
+                    <select name="specialism" [(ngModel)]="registerAccount.specialism" id="specialism" class="form-control">
+                        <option *ngFor="let specialism of specialismOptions" [value]="specialism.value">
+                            {{specialism.display}}
+                        </option>
+                    </select>
                 </div>
 
                 <br>

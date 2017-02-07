@@ -18,6 +18,7 @@ export class RegisterComponent implements OnInit {
     registerAccount: any;
     success: boolean;
     modalRef: NgbModalRef;
+    specialismOptions : any;
 
     constructor(
         private languageService: JhiLanguageService,
@@ -31,7 +32,13 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.success = false;
+        this.specialismOptions = [
+            { value: '', display: 'Please select specialism' },
+            { value: 'specialism1', display: 'Specialism One' },
+            { value: 'specialism2', display: 'Specialism Two' }
+        ];
         this.registerAccount = {};
+        this.registerAccount.specialism = '';
     }
 
     ngAfterViewInit() {
