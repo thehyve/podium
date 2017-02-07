@@ -16,6 +16,7 @@ import {
     Principal,
     HasAuthorityDirective,
     HasAnyAuthorityDirective,
+    EmailValidatorDirective,
     PodiumLoginComponent
 } from './';
 
@@ -26,6 +27,7 @@ import {
     ],
     declarations: [
         PodiumLoginComponent,
+        EmailValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective
     ],
@@ -46,6 +48,7 @@ import {
     exports: [
         PodiumGatewaySharedCommonModule,
         PodiumLoginComponent,
+        EmailValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
         DatePipe
