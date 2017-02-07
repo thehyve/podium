@@ -47,7 +47,7 @@ public class Organisation implements Serializable {
     private boolean activated;
 
     @JsonIgnore
-    @OneToMany
+    @OneToMany(mappedBy = "organisation")
     private Set<Role> roles;
 
     public Long getId() {

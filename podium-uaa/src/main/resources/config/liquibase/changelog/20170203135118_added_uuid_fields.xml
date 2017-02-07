@@ -33,7 +33,7 @@
                         tableName="podium_user"
                         primaryKey="id"/>
 
-        <addNotNullConstraint tableName="podium_user" columnName="uuid"/>
+        <addNotNullConstraint tableName="podium_user" columnName="uuid" columnDataType="uuid"/>
 
         <createIndex indexName="idx_user_uuid"
                      tableName="podium_user"
