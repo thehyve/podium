@@ -31,6 +31,15 @@ describe('SpecialismComponent (templateUrl)', () => {
         el = de.nativeElement;
     });
 
+    it('should not select anything when it is instantiated', () => {
+        fixture.detectChanges();
+        expect(comp.specialism).toBe(undefined);
+    });
+
+    it('should contain 20 options when it is instantiated', () => {
+        fixture.detectChanges();
+        expect(comp.specialismOptions.length).toEqual(20);
+    });
 
     it('should set specialism into selected specialism option when selected value has changed', () => {
         fixture.detectChanges();
