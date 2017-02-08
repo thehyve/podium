@@ -172,34 +172,30 @@
                 </div>
 
 
-                <!--Function-->
+                <!--Function (Job Title)-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="function" >Function</label>
-                    <input type="text" class="form-control" [(ngModel)]="registerAccount.function" id="function"
-                           #function="ngModel" name="function" required minlength="1"
-                           placeholder="{{'global.form.function.placeholder' | translate}}"
+                    <label  class="form-control-label" for="jobTitle" >Function</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.jobTitle" id="jobTitle"
+                           #jobTitle="ngModel" name="jobTitle" required minlength="1"
+                           placeholder="{{'global.form.jobTitle.placeholder' | translate}}"
                            pattern="^[_'.@A-Za-z]*$">
-                    <div *ngIf="function.dirty && function.invalid">
-                        <small class="form-text text-danger" *ngIf="function.errors.required">
-                            Your function is required.
+                    <div *ngIf="jobTitle.dirty && jobTitle.invalid">
+                        <small class="form-text text-danger" *ngIf="jobTitle.errors.required">
+                            Your jobTitle is required.
                         </small>
-                        <small class="form-text text-danger" *ngIf="function.errors.minlength">
-                            Your function is required to be at least 1 character.
+                        <small class="form-text text-danger" *ngIf="jobTitle.errors.minlength">
+                            Your jobTitle is required to be at least 1 character.
                         </small>
-                        <small class="form-text text-danger" *ngIf="function.errors.maxlength">
-                            Your function cannot be longer than 50 characters.
+                        <small class="form-text text-danger" *ngIf="jobTitle.errors.maxlength">
+                            Your jobTitle cannot be longer than 50 characters.
                         </small>
                     </div>
                 </div>
 
                 <!--Specialism-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="specialism" >Specialism</label>
-                    <select name="specialism" [(ngModel)]="registerAccount.specialism" id="specialism" class="form-control">
-                        <option *ngFor="let specialism of specialismOptions" [value]="specialism.value">
-                            {{specialism.display}}
-                        </option>
-                    </select>
+                    <label  class="form-control-label" for="jobTitle" >Specialism</label>
+                    <podium-specialism [(specialism)]="registerAccount.specialism"></podium-specialism>
                 </div>
 
                 <br>
