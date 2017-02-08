@@ -53,8 +53,8 @@
             "institute.placeholder": "Your institute",
             "department": "Department",
             "department.placeholder": "Your department",
-            "function": "Function",
-            "function.placeholder": "Your function",
+            "jobTitle": "Function",
+            "jobTitle.placeholder": "Your function",
             "Specialism": "Specialism",
             "specialism.placeholder": "Your specialism"
         },
