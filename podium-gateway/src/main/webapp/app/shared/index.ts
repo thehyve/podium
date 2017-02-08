@@ -1,3 +1,4 @@
+export * from './validators/email-validator.directive';
 export * from './alert/alert.component';
 export * from './alert/alert-error.component';
 export * from './auth/csrf.service';

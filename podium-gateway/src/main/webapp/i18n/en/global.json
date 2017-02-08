@@ -1,6 +1,6 @@
 {
     "global": {
-        "title": "PodiumGateway",
+        "title": "BBMRI Podium Request Portal",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
         "menu": {
             "home": "Home",
@@ -39,12 +39,26 @@
         "form": {
             "username": "Username",
             "username.placeholder": "Your username",
+            "firstname": "First name",
+            "firstname.placeholder": "Your firstname",
+            "lastname": "Last name",
+            "lastname.placeholder": "Your lastname",
             "newpassword": "New password",
             "newpassword.placeholder": "New password",
             "confirmpassword": "New password confirmation",
             "confirmpassword.placeholder": "Confirm the new password",
             "email": "E-mail",
-            "email.placeholder": "Your e-mail"
+            "email.placeholder": "Your e-mail",
+            "telephone": "Telephone",
+            "telephone.placeholder": "Your telephone number",
+            "institute": "Institute",
+            "institute.placeholder": "Your institute",
+            "department": "Department",
+            "department.placeholder": "Your department",
+            "function": "Function",
+            "function.placeholder": "Your function",
+            "Specialism": "Specialism",
+            "specialism.placeholder": "Your specialism"
         },
         "messages": {
             "info": {

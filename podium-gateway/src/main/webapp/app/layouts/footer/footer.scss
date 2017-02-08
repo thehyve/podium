@@ -1,0 +1,23 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
+.footer-bbmri {
+    width: 300px;
+    margin: 0 auto;
+
+    .logo {
+        height: 300px;
+        width: 300px;
+        display: inline-block;
+        vertical-align: middle;
+        background: url("../../../content/images/bbmri-logo.png") no-repeat center center;
+        background-size: contain;
+    }
+}

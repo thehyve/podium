@@ -5,6 +5,11 @@ export class User {
     public firstName?: string;
     public lastName?: string;
     public email?: string;
+    public telephone?: string;
+    public institute?: string;
+    public department?: string;
+    public jobTitle?: string;
+    public specialism?: string;
     public activated?: Boolean;
     public langKey?: string;
     public authorities?: any[];
@@ -20,6 +25,11 @@ export class User {
         firstName?: string,
         lastName?: string,
         email?: string,
+        telephone?: string,
+        institute?: string,
+        department?: string,
+        jobTitle?: string,
+        specialism?: string,
         activated?: Boolean,
         langKey?: string,
         authorities?: any[],
@@ -35,6 +45,11 @@ export class User {
         this.firstName = firstName ? firstName : null;
         this.lastName = lastName ? lastName : null;
         this.email = email ? email : null;
+        this.telephone = telephone ? telephone : null;
+        this.institute = institute ? institute : null;
+        this.department = department ? department : null;
+        this.jobTitle = jobTitle ? jobTitle : null;
+        this.specialism = specialism ? specialism : null;
         this.activated = activated ? activated : false;
         this.langKey = langKey ? langKey : null;
         this.authorities = authorities ? authorities : null;

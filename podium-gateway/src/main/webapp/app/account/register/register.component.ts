@@ -3,10 +3,9 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { Register } from './register.service';
-import { LoginModalService } from '../../shared';
+import { LoginModalService , EmailValidatorDirective} from '../../shared';
 
 @Component({
-    selector: 'jhi-register',
     templateUrl: './register.component.html'
 })
 export class RegisterComponent implements OnInit {
@@ -19,6 +18,7 @@ export class RegisterComponent implements OnInit {
     registerAccount: any;
     success: boolean;
     modalRef: NgbModalRef;
+    specialismOptions : any;
 
     constructor(
         private languageService: JhiLanguageService,
@@ -32,7 +32,29 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.success = false;
+        this.specialismOptions = [
+            { value: '', display: 'Please select specialism' },
+            { value: 'Gastroenterology', display: 'Gastroenterology'},
+            { value: 'Gynaecology', display: 'Gynaecology'},
+            { value: 'Dermatology', display: 'Dermatology'},
+            { value: 'Medical Oncology', display: 'Medical Oncology'},
+            { value: 'Internal Medicine', display: 'Internal Medicine'},
+            { value: 'Radiology', display: 'Radiology'},
+            { value: 'Radiotherapy', display: 'Radiotherapy'},
+            { value: 'Haematology', display: 'Haematology'},
+            { value: 'Throat-nose-ear', display: 'Throat-nose-ear'},
+            { value: 'Surgery', display: 'Surgery'},
+            { value: 'Epidemiology', display: 'Epidemiology'},
+            { value: 'Primary care', display: 'Primary care'},
+            { value: 'Cardiology', display: 'Cardiology'},
+            { value: 'Pathology', display: 'Pathology'},
+            { value: 'Lung Disease', display: 'Lung Disease'},
+            { value: 'Urology', display: 'Urology'},
+            { value: 'Neurology', display: 'Neurology'},
+            { value: 'Endocrinology', display: 'Endocrinology'}
+        ];
         this.registerAccount = {};
+        this.registerAccount.specialism = '';
     }
 
     ngAfterViewInit() {

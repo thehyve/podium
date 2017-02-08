@@ -25,12 +25,16 @@
         </div>
         <div class="col-md-8 offset-md-2">
             <form name="form" role="form" (ngSubmit)="register()" #registerForm="ngForm">
+
+                <!--Username-->
                 <div class="form-group">
                     <label class="form-control-label" for="login" jhiTranslate="global.form.username">Username</label>
-                    <input type="text" class="form-control" [(ngModel)]="registerAccount.login" id="login" name="login" #login="ngModel" placeholder="{{'global.form.username.placeholder' | translate}}"
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.login" id="login" name="login"
+                           #login="ngModel" placeholder="{{'global.form.username.placeholder' | translate}}"
                             required minlength="1" maxlength="50" pattern="^[_'.@A-Za-z0-9-]*$">
                     <div *ngIf="login.dirty && login.invalid">
-                        <small class="form-text text-danger" *ngIf="login.errors.required" jhiTranslate="register.messages.validate.login.required">
+                        <small class="form-text text-danger" *ngIf="login.errors.required"
+                               jhiTranslate="register.messages.validate.login.required">
                             Your username is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="login.errors.minlength"
@@ -47,22 +51,61 @@
                         </small>
                     </div>
                 </div>
+
+                <!--First name-->
                 <div class="form-group">
-                    <label class="form-control-label" for="email" jhiTranslate="global.form.email">E-mail</label>
-                    <input type="email" class="form-control" id="email" name="email" #email="ngModel" placeholder="{{'global.form.email.placeholder' | translate}}"
-                            [(ngModel)]="registerAccount.email" minlength=5 maxlength=100 required>
+                    <label  class="form-control-label" for="firstName" >First name</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.firstName" id="firstName"
+                           #firstName="ngModel" name="firstName" required minlength="1"
+                           placeholder="{{'global.form.firstName.placeholder' | translate}}"
+                           pattern="^[_'.@A-Za-z]*$">
+                    <div *ngIf="firstName.dirty && firstName.invalid">
+                        <small class="form-text text-danger" *ngIf="firstName.errors.required">
+                            Your first name is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="firstName.errors.minlength">
+                            Your first name is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="firstName.errors.maxlength">
+                            Your first name cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <!--Last name-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="lastName" >Last name</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.lastName" id="lastName"
+                           #lastName="ngModel" name="lastName" required minlength="1"
+                           placeholder="{{'global.form.lastName.placeholder' | translate}}"
+                           pattern="^[_'.@A-Za-z]*$">
+                    <div *ngIf="lastName.dirty && lastName.invalid">
+                        <small class="form-text text-danger" *ngIf="lastName.errors.required">
+                            Your last name is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="lastName.errors.minlength">
+                            Your last name is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="lastName.errors.maxlength">
+                            Your last name cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <!--E-mail-->
+                <div class="form-group">
+                    <label class="form-control-label" for="email" >E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" #email="ngModel"
+                           placeholder="{{'global.form.email.placeholder' | translate}}"
+                           [(ngModel)]="registerAccount.email" maxlength=100 required emailValidator>
                     <div *ngIf="email.dirty && email.invalid">
                         <small class="form-text text-danger" *ngIf="email.errors.required"
                                 jhiTranslate="global.messages.validate.email.required">
                             Your e-mail is required.
                         </small>
-                        <small class="form-text text-danger" *ngIf="email.errors.invalid"
+                        <small class="form-text text-danger" *ngIf="email.errors.emailValidator"
                                jhiTranslate="global.messages.validate.email.invalid">
                             Your e-mail is invalid.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="email.errors.minlength"
-                               jhiTranslate="global.messages.validate.email.minlength">
-                            Your e-mail is required to be at least 5 characters.
                         </small>
                         <small class="form-text text-danger" *ngIf="email.errors.maxlength"
                                jhiTranslate="global.messages.validate.email.maxlength">
@@ -70,10 +113,104 @@
                         </small>
                     </div>
                 </div>
+
+                <!--Telephone number-->
                 <div class="form-group">
-                    <label class="form-control-label" for="password" jhiTranslate="global.form.newpassword">New password</label>
-                    <input type="password" class="form-control" id="password" name="password" #password="ngModel" placeholder="{{'global.form.newpassword.placeholder' | translate}}"
-                            [(ngModel)]="registerAccount.password" minlength=4 maxlength=50 required>
+                    <label  class="form-control-label" for="telephone" >Telephone</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
+                           #telephone="ngModel" name="telephone" required maxlength=100
+                           placeholder="{{'global.form.telephone.placeholder' | translate}}"
+                           pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$">
+                    <div *ngIf="telephone.dirty && telephone.invalid">
+                        <small class="form-text text-danger" *ngIf="telephone.errors.required">
+                            Your telephone is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="telephone.errors.maxlength">
+                            Your telephone cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <!--Institute-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="institute" >Institute</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.institute" id="institute"
+                           #institute="ngModel" name="institute" required minlength="1"
+                           placeholder="{{'global.form.institute.placeholder' | translate}}"
+                           pattern="^[_'.@A-Za-z]*$">
+                    <div *ngIf="institute.dirty && institute.invalid">
+                        <small class="form-text text-danger" *ngIf="institute.errors.required">
+                            Your institute is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="institute.errors.minlength">
+                            Your institute is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="institute.errors.maxlength">
+                            Your institute cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <!--Department-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="department" >Department</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.department" id="department"
+                           #department="ngModel" name="department" required minlength="1"
+                           placeholder="{{'global.form.department.placeholder' | translate}}"
+                           pattern="^[_'.@A-Za-z]*$">
+                    <div *ngIf="department.dirty && department.invalid">
+                        <small class="form-text text-danger" *ngIf="department.errors.required">
+                            Your department is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="department.errors.minlength">
+                            Your department is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="department.errors.maxlength">
+                            Your department cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+
+                <!--Function-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="function" >Function</label>
+                    <input type="text" class="form-control" [(ngModel)]="registerAccount.function" id="function"
+                           #function="ngModel" name="function" required minlength="1"
+                           placeholder="{{'global.form.function.placeholder' | translate}}"
+                           pattern="^[_'.@A-Za-z]*$">
+                    <div *ngIf="function.dirty && function.invalid">
+                        <small class="form-text text-danger" *ngIf="function.errors.required">
+                            Your function is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="function.errors.minlength">
+                            Your function is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="function.errors.maxlength">
+                            Your function cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <!--Specialism-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="specialism" >Specialism</label>
+                    <select name="specialism" [(ngModel)]="registerAccount.specialism" id="specialism" class="form-control">
+                        <option *ngFor="let specialism of specialismOptions" [value]="specialism.value">
+                            {{specialism.display}}
+                        </option>
+                    </select>
+                </div>
+
+                <br>
+                <h3>Create Password</h3>
+
+                <!--Password-->
+                <div class="form-group">
+                    <label class="form-control-label" for="password">New password</label>
+                    <input type="password" class="form-control" id="password" name="password" #password="ngModel"
+                           placeholder="{{'global.form.newpassword.placeholder' | translate}}"
+                            [(ngModel)]="registerAccount.password" minlength=6 maxlength=50 required>
                     <div *ngIf="password.dirty && password.invalid">
                         <small class="form-text text-danger" *ngIf="password.errors.required"
                                 jhiTranslate="global.messages.validate.newpassword.required">
@@ -91,8 +228,11 @@
                     <jhi-password-strength-bar [passwordToCheck]="registerAccount.password"></jhi-password-strength-bar>
                 </div>
                 <div class="form-group">
-                    <label class="form-control-label" for="confirmPassword" jhiTranslate="global.form.confirmpassword">New password confirmation</label>
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" #confirmPasswordInput="ngModel" placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
+                    <label class="form-control-label" for="confirmPassword" jhiTranslate="global.form.confirmpassword">
+                        New password confirmation</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                           #confirmPasswordInput="ngModel"
+                           placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
                             [(ngModel)]="confirmPassword" minlength=4 maxlength=50 required>
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
@@ -110,12 +250,16 @@
                     </div>
                 </div>
 
-                <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary" jhiTranslate="register.form.button">Register</button>
+                <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary"
+                        jhiTranslate="register.form.button">Register</button>
             </form>
             <p></p>
             <div class="alert alert-warning">
                 <span jhiTranslate="global.messages.info.authenticated.prefix">If you want to </span>
-                <a class="alert-link" (click)="openLogin()" jhiTranslate="global.messages.info.authenticated.link">sign in</a><span jhiTranslate="global.messages.info.authenticated.suffix">, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
+                <a class="alert-link" (click)="openLogin()" jhiTranslate="global.messages.info.authenticated.link">
+                    sign in</a><span jhiTranslate="global.messages.info.authenticated.suffix">, you can try the default
+                accounts:<br/>- Administrator (login="admin" and password="admin") <br/>
+                - User (login="user" and password="user").</span>
             </div>
         </div>
     </div>
