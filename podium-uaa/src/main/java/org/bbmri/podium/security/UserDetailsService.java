@@ -26,6 +26,9 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Inject
     private UserRepository userRepository;
 
+    /**
+     * FIXME: create new UserDetails subclass that includes roles.
+     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
