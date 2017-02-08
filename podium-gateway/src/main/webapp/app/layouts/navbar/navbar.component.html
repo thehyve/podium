@@ -1,26 +1,136 @@
-<nav class="navbar navbar-dark jh-navbar">
+<nav class="navbar navbar-dark jh-navbar" *ngIf="isAuthenticated()">
     <div class="jh-logo-container float-xs-left">
         <a class="jh-navbar-toggler hidden-lg-up float-xs-left" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
-            <i class="fa fa-bars"></i>
+            <i class="material-icons">view_headline</i>
         </a>
         <a class="navbar-brand logo float-xs-right" routerLink="/" (click)="collapseNavbar()">
             <span class="logo-img"></span>
-            <span jhiTranslate="global.title" class="navbar-title">BBMRI Podium Request Portal</span> <span class="navbar-version">{{version}}</span>
+            <span jhiTranslate="global.title" class="navbar-title">Podium Request Portal</span> <span class="navbar-version">{{version}}</span>
         </a>
     </div>
     <div class="collapse navbar-toggleable-md float-lg-right" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
         <ul class="nav navbar-nav float-lg-right">
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
-                    <i class="fa fa-home" aria-hidden="true"></i>
+                    <i class="material-icons">home</i>
                     <span class="hidden-sm-down" jhiTranslate="global.menu.home">Home</span>
                 </a>
             </li>
-            <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
+
+            <!-- jhiHasAuthority="RESEARCHER" -->
+            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link" routerLink="/requests">
+                    <i class="material-icons">assignment_ind</i>
+                    <span class="hidden-sm-down" jhiTranslate="global.menu.requests">My Requests</span>
+                </a>
+            </li>
+
+            <!-- jhiHasAuthority="ORG_REVIEWER" -->
+            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link" routerLink="/reviews">
+                    <i class="material-icons">rate_review</i>
+                    <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_reviewer.reviews">My Reviews</span>
+                </a>
+            </li>
+
+            <!-- Any organisation role -->
+            <!-- jhiHasAuthority="ORG_ADMIN" -->
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+                <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
+                    <span>
+                        <i class="material-icons">business</i>
+                        <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.main">
+                            Organisation
+                        </span>
+                        <b class="caret"></b>
+                    </span>
+                </a>
+                <ul class="dropdown-menu" ngbDropdownMenu>
+                    <!-- Organisation Admin -->
+                    <li class="dropdown-header">
+                        <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_admin.main">
+                            Administration
+                        </span>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" routerLink="org-configuration" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">settings</i>
+                            <span jhiTranslate="global.menu.organisation.org_admin.orgConfiguration">Organisation configuration</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">supervisor_account</i>
+                            <span jhiTranslate="global.menu.organisation.org_admin.userManagement">User management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="form-configuration" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">assignment</i>
+                            <span jhiTranslate="global.menu.organisation.org_admin.formConfiguration">Form configuration</span>
+                        </a>
+                    </li>
+
+                    <!-- Organisation Coordinator -->
+                    <li class="dropdown-header">
+                        <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_coordinator.main">
+                            Coordination
+                        </span>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" routerLink="requests" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">archive</i>
+                            <span jhiTranslate="global.menu.organisation.org_coordinator.requests">Requests</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- jhiHasAuthority="BBMRI_ADMIN" -->
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+                <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="podium-menu">
+                    <span>
+                        <i class="material-icons">settings</i>
+                        <span class="hidden-sm-down" jhiTranslate="global.menu.bbmri_admin.main">
+                           BBMRI
+                        </span>
+                        <b class="caret"></b>
+                    </span>
+                </a>
+                <ul class="dropdown-menu" ngbDropdownMenu>
+                    <li class="dropdown-header">
+                        <span class="hidden-sm-down" jhiTranslate="global.menu.bbmri_admin.header">
+                            Global
+                        </span>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" routerLink="org-configuration" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">settings</i>
+                            <span jhiTranslate="global.menu.bbmri_admin.orgConfiguration">Organisation configuration</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">supervisor_account</i>
+                            <span jhiTranslate="global.menu.bbmri_admin.userManagement">User management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="form-configuration" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">assignment</i>
+                            <span jhiTranslate="global.menu.bbmri_admin.formConfiguration">Form configuration</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
-                        <i class="fa fa-th-list" aria-hidden="true"></i>
+                        <i class="material-icons">view_list</i>
                         <span class="hidden-sm-down" jhiTranslate="global.menu.entities.main">
                             Entities
                         </span>
@@ -28,13 +138,13 @@
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
-                    <li uiSrefActive="active" jhiHasAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN">
+                    <li uiSrefActive="active" jhiHasAnyAuthority="[ROLE_PODIUM_ADMIN, ROLE_BBMRI_ADMIN, ROLE_ORGANISATION_ADMIN]">
                         <a class="dropdown-item" routerLink="role" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.role">Role</span>
                         </a>
                     </li>
-                    <li uiSrefActive="active" jhiHasAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
+                    <li uiSrefActive="active" jhiHasAnyAuthority="[ROLE_PODIUM_ADMIN, ROLE_BBMRI_ADMIN]">
                         <a class="dropdown-item" routerLink="organisation" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
@@ -43,61 +153,74 @@
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
                 </ul>
             </li>
-            <li *ngSwitchCase="true" jhiHasAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN" ngbDropdown class="nav-item dropdown pointer">
+
+            <li *ngSwitchCase="true" jhiHasAnyAuthority="[ROLE_PODIUM_ADMIN, ROLE_BBMRI_ADMIN]" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>
-                        <i class="fa fa-user-plus" aria-hidden="true"></i>
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.admin.main">Administration</span>
+                        <i class="material-icons">supervisor_account</i>
+                        <span class="hidden-sm-down" jhiTranslate="global.menu.podium.main">Podium</span>
                         <b class="caret"></b>
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
+                    <li class="dropdown-header">
+                        <span class="hidden-sm-down">
+                            Service
+                        </span>
+                    </li>
+                    <li class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" routerLink="gateway" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-road" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.gateway">Gateway</span>
+                            <i class="material-icons">traffic</i>
+                            <span jhiTranslate="global.menu.podium.gateway">Gateway</span>
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-user" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.userManagement">User management</span>
+                            <i class="material-icons">supervisor_account</i>
+                            <span jhiTranslate="global.menu.podium.userManagement">User management</span>
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="jhi-metrics" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-tachometer" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.metrics">Metrics</span>
+                            <i class="material-icons">explore</i>
+                            <span jhiTranslate="global.menu.podium.metrics">Metrics</span>
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="jhi-health" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-heart" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.health">Health</span>
+                            <i class="material-icons">local_hospital</i>
+                            <span jhiTranslate="global.menu.podium.health">Health</span>
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="jhi-configuration" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-list" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.configuration">Configuration</span>
+                            <i class="material-icons">build</i>
+                            <span jhiTranslate="global.menu.podium.configuration">Configuration</span>
                         </a>
                     </li>
+                    <li class="dropdown-header">
+                        <span class="hidden-sm-down">
+                            Logging
+                        </span>
+                    </li>
+                    <li class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" routerLink="audits" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-bell" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.audits">Audits</span>
+                            <i class="material-icons">toll</i>
+                            <span jhiTranslate="global.menu.podium.audits">Audits</span>
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" routerLink="logs" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-tasks" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.logs">Logs</span>
+                            <i class="material-icons">receipt</i>
+                            <span jhiTranslate="global.menu.podium.logs">Logs</span>
                         </a>
                     </li>
                     <li *ngIf="swaggerEnabled">
                         <a class="dropdown-item" routerLink="docs" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-book" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.admin.apidocs">API</span>
+                            <i class="material-icons">library_books</i>
+                            <span jhiTranslate="global.menu.podium.apidocs">API</span>
                         </a>
                     </li>
                     <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
@@ -106,7 +229,7 @@
             <li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="languages.length > 1">
                     <span>
-                        <i class="fa fa-flag" aria-hidden="true"></i>
+                        <i class="material-icons">language</i>
                         <span class="hidden-sm-down" jhiTranslate="global.menu.language">Language</span>
                         <b class="caret"></b>
                     </span>
@@ -120,7 +243,7 @@
             <li ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">
-                    <i class="fa fa-user" aria-hidden="true"></i>
+                        <i class="material-icons">account_circle</i>
                     <span class="hidden-sm" jhiTranslate="global.menu.account.main">
                       Account
                     </span>
@@ -133,31 +256,31 @@
                 <ul class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
                     <li *ngSwitchCase="true">
                         <a class="dropdown-item" routerLink="settings" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-wrench" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.account.settings">Settings</span>
+                            <i class="material-icons">settings</i>
+                            <span jhiTranslate="global.menu.account.profile">Profile</span>
                         </a>
                     </li>
                     <li *ngSwitchCase="true">
                         <a class="dropdown-item" routerLink="password" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-clock-o" aria-hidden="true"></i>
+                            <i class="material-icons">fingerprint</i>
                             <span jhiTranslate="global.menu.account.password">Password</span>
                         </a>
                     </li>
                     <li *ngSwitchCase="true">
                         <a class="dropdown-item" (click)="logout()" id="logout">
-                            <i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>
+                            <i class="material-icons">exit_to_app</i>
                             <span jhiTranslate="global.menu.account.logout">Sign out</span>
                         </a>
                     </li>
                     <li *ngSwitchCase="false">
                         <a class="dropdown-item" (click)="login()" id="login">
-                            <i class="fa fa-fw fa-sign-in" aria-hidden="true"></i>
+                            <i class="material-icons">fingerprint</i>
                             <span jhiTranslate="global.menu.account.login">Sign in</span>
                         </a>
                     </li>
                     <li *ngSwitchCase="false">
                         <a class="dropdown-item" routerLink="register" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-registered" aria-hidden="true"></i>
+                            <i class="material-icons">mode_edit</i>
                             <span jhiTranslate="global.menu.account.register">Register</span>
                         </a>
                     </li>
