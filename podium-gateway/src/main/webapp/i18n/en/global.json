@@ -1,9 +1,10 @@
 {
     "global": {
-        "title": "BBMRI Podium Request Portal",
+        "title": "Podium Request Portal",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
         "menu": {
             "home": "Home",
+            "requests": "My Requests",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
@@ -11,15 +12,38 @@
             },
             "account": {
                 "main": "Account",
-                "settings": "Settings",
+                "profile": "Profile",
                 "password": "Password",
                 "sessions": "Sessions",
                 "login": "Sign in",
                 "logout": "Sign out",
                 "register": "Register"
             },
-            "admin": {
-                "main": "Administration",
+            "bbmri_admin": {
+                "main": "BBMRI",
+                "header": "Global",
+                "orgConfiguration": "Organisation configuration",
+                "userManagement": "User management",
+                "formConfiguration": "Form configuration"
+            },
+            "organisation": {
+                "main": "Organisation",
+                "org_admin": {
+                    "main": "Admin",
+                    "orgConfiguration": "Organisation configuration",
+                    "userManagement": "User management",
+                    "formConfiguration": "Form configuration"
+                },
+                "org_coordinator": {
+                    "main": "Coordination",
+                    "requests": "Requests"
+                },
+                "org_reviewer": {
+                    "reviews": "My Reviews"
+                }
+            },
+            "podium": {
+                "main": "Podium",
                 "gateway": "Gateway",
                 "userManagement": "User management",
                 "tracker": "User tracker",

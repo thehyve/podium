@@ -246,13 +246,15 @@ http://google.github.io/material-design-icons/
     font-weight: normal;
     font-style: normal;
     font-size: 24px;  /* Preferred icon size */
-    display: inline-block;
+    display: inline-flex;
     line-height: 1;
     text-transform: none;
     letter-spacing: normal;
     word-wrap: normal;
     white-space: nowrap;
     direction: ltr;
+    vertical-align: middle;
+    margin-bottom: 3px;
 
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
