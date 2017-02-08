@@ -2,20 +2,18 @@ package org.bbmri.podium.service;
 
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
+import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.OrganisationRepository;
 import org.bbmri.podium.repository.search.OrganisationSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -60,8 +58,26 @@ public class OrganisationService {
     public Organisation save(Organisation organisation) {
         log.debug("Request to save Organisation : {}", organisation);
         Organisation result = organisationRepository.save(organisation);
-        organisationSearchRepository.save(result);
+        log.info("Saved organisation: {}", result);
+        SearchOrganisation searchOrganisation = organisationSearchRepository.findOne(organisation.getId());
+        if (searchOrganisation == null) {
+            searchOrganisation = new SearchOrganisation(result);
+        }
+        searchOrganisation.copyProperties(result);
+        organisationSearchRepository.save(searchOrganisation);
+        log.info("Saved to elastic search: {}", result);
         return result;
+    }
+
+    /**
+     *  Get the number of organisations.
+     *
+     *  @return the number of entities
+     */
+    @Transactional(readOnly = true)
+    public Long count() {
+        log.debug("Request to count all Organisations");
+        return organisationRepository.countByDeletedFalse();
     }
 
     /**
@@ -73,7 +89,7 @@ public class OrganisationService {
     @Transactional(readOnly = true)
     public Page<Organisation> findAll(Pageable pageable) {
         log.debug("Request to get all Organisations");
-        Page<Organisation> result = organisationRepository.findAll(pageable);
+        Page<Organisation> result = organisationRepository.findAllByDeletedFalse(pageable);
         return result;
     }
 
@@ -86,7 +102,7 @@ public class OrganisationService {
     @Transactional(readOnly = true)
     public Organisation findOne(Long id) {
         log.debug("Request to get Organisation : {}", id);
-        Organisation organisation = organisationRepository.findOne(id);
+        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
         return organisation;
     }
 
@@ -99,7 +115,7 @@ public class OrganisationService {
     @Transactional(readOnly = true)
     public Organisation findByUuid(UUID uuid) {
         log.debug("Request to get Organisation : {}", uuid);
-        Organisation organisation = organisationRepository.findByUuid(uuid);
+        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
         return organisation;
     }
 
@@ -113,6 +129,7 @@ public class OrganisationService {
 
         organisation.setDeleted(true);
         save(organisation);
+        organisationSearchRepository.delete(organisation.getId());
     }
 
     /**
@@ -122,9 +139,9 @@ public class OrganisationService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Organisation> search(String query, Pageable pageable) {
+    public Page<SearchOrganisation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Organisations for query {}", query);
-        Page<Organisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
+        Page<SearchOrganisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

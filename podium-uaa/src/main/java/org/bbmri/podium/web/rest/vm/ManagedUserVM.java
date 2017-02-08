@@ -3,7 +3,7 @@ package org.bbmri.podium.web.rest.vm;
 import java.time.ZonedDateTime;
 
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.service.dto.UserRepresentation;
+import org.bbmri.podium.service.representation.UserRepresentation;
 import javax.validation.constraints.Size;
 
 /**
@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
  */
 public class ManagedUserVM extends UserRepresentation {
 
-    public static final int PASSWORD_MIN_LENGTH = 4;
-    public static final int PASSWORD_MAX_LENGTH = 100;
+    public static final int PASSWORD_MIN_LENGTH = 8;
+    public static final int PASSWORD_MAX_LENGTH = 1000;
 
     private Long id;
 
@@ -48,6 +48,9 @@ public class ManagedUserVM extends UserRepresentation {
         this.id = id;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getCreatedBy() {
         return createdBy;

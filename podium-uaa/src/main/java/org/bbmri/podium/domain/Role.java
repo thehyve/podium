@@ -51,6 +51,10 @@ public class Role implements Serializable {
         this.organisation = organisation;
     }
 
+    public Role(Authority authority) {
+        this.authority = authority;
+    }
+
     public Long getId() {
         return id;
     }

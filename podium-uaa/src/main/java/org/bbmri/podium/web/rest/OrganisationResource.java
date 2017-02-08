@@ -1,9 +1,9 @@
 package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.domain.Role;
+import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.exceptions.ResourceNotFoundException;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
@@ -181,10 +181,10 @@ public class OrganisationResource {
      */
     @GetMapping("/_search/organisations")
     @Timed
-    public ResponseEntity<List<Organisation>> searchOrganisations(@RequestParam String query, @ApiParam Pageable pageable)
+    public ResponseEntity<List<SearchOrganisation>> searchOrganisations(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of Organisations for query {}", query);
-        Page<Organisation> page = organisationService.search(query, pageable);
+        Page<SearchOrganisation> page = organisationService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/organisations");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

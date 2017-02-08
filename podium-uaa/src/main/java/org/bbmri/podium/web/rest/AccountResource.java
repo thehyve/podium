@@ -7,7 +7,7 @@ import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.security.SecurityUtils;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
-import org.bbmri.podium.service.dto.UserRepresentation;
+import org.bbmri.podium.service.representation.UserRepresentation;
 import org.bbmri.podium.web.rest.vm.KeyAndPasswordVM;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.bbmri.podium.web.rest.util.HeaderUtil;

@@ -2,15 +2,18 @@ package org.bbmri.podium.web.rest;
 
 import org.bbmri.podium.PodiumUaaApp;
 
-import org.bbmri.podium.config.SecurityBeanOverrideConfiguration;
-
+import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
+import org.bbmri.podium.domain.User;
+import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.RoleRepository;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.service.RoleService;
 import org.bbmri.podium.repository.search.RoleSearchRepository;
 
 import org.bbmri.podium.service.UserService;
+import org.bbmri.podium.service.representation.RoleRepresentation;
+import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +29,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -41,6 +47,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
 public class RoleResourceIntTest {
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -85,20 +94,38 @@ public class RoleResourceIntTest {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Role createEntity(EntityManager em) {
-        Role role = new Role();
+    public Role createEntity() {
+        Authority authority = authorityRepository.findOne(Authority.REVIEWER);
+        if (authority == null) {
+            authority = new Authority(Authority.REVIEWER);
+            authorityRepository.save(authority);
+        }
+        Role role = new Role(authority);
+        User user;
+        Optional<User> object = userService.getUserWithAuthoritiesByLogin("test");
+        if (object.isPresent()) {
+            user = object.get();
+        } else {
+            ManagedUserVM userVM = new ManagedUserVM();
+            userVM.setLogin("test");
+            userVM.setPassword("password");
+            user = userService.createUser(userVM);
+        }
+        Set<User> users = new HashSet<>();
+        users.add(user);
+        role.setUsers(users);
         return role;
     }
 
     @Before
     public void initTest() {
         roleSearchRepository.deleteAll();
-        role = createEntity(em);
+        role = createEntity();
     }
 
     @Test
     @Transactional
-    public void createRole() throws Exception {
+    public void createRoleNotAllowed() throws Exception {
         int databaseSizeBeforeCreate = roleRepository.findAll().size();
 
         // Create the Role
@@ -106,34 +133,9 @@ public class RoleResourceIntTest {
         restRoleMockMvc.perform(post("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(role)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isMethodNotAllowed());
 
-        // Validate the Role in the database
-        List<Role> roleList = roleRepository.findAll();
-        assertThat(roleList).hasSize(databaseSizeBeforeCreate + 1);
-        Role testRole = roleList.get(roleList.size() - 1);
-
-        // Validate the Role in Elasticsearch
-        Role roleEs = roleSearchRepository.findOne(testRole.getId());
-        assertThat(roleEs).isEqualToComparingFieldByField(testRole);
-    }
-
-    @Test
-    @Transactional
-    public void createRoleWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = roleRepository.findAll().size();
-
-        // Create the Role with an existing ID
-        Role existingRole = new Role();
-        existingRole.setId(1L);
-
-        // An entity with an existing ID cannot be created, so this API call must fail
-        restRoleMockMvc.perform(post("/api/roles")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(existingRole)))
-            .andExpect(status().isBadRequest());
-
-        // Validate the Alice in the database
+        // Validate the Role is not in the database
         List<Role> roleList = roleRepository.findAll();
         assertThat(roleList).hasSize(databaseSizeBeforeCreate);
     }
@@ -185,7 +187,7 @@ public class RoleResourceIntTest {
 
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedRole)))
+            .content(TestUtil.convertObjectToJsonBytes(new RoleRepresentation(updatedRole))))
             .andExpect(status().isOk());
 
         // Validate the Role in the database
@@ -203,22 +205,20 @@ public class RoleResourceIntTest {
     public void updateNonExistingRole() throws Exception {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
 
-        // Create the Role
-
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, status not found is returned
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(role)))
-            .andExpect(status().isCreated());
+            .content(TestUtil.convertObjectToJsonBytes(new RoleRepresentation(role))))
+            .andExpect(status().isNotFound());
 
-        // Validate the Role in the database
+        // Validate the Role is not inserted in the database
         List<Role> roleList = roleRepository.findAll();
-        assertThat(roleList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(roleList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
-    public void deleteRole() throws Exception {
+    public void deleteRoleNotAllowed() throws Exception {
         // Initialize the database
         roleService.save(role);
 
@@ -227,15 +227,11 @@ public class RoleResourceIntTest {
         // Get the role
         restRoleMockMvc.perform(delete("/api/roles/{id}", role.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
+            .andExpect(status().isMethodNotAllowed());
 
-        // Validate Elasticsearch is empty
-        boolean roleExistsInEs = roleSearchRepository.exists(role.getId());
-        assertThat(roleExistsInEs).isFalse();
-
-        // Validate the database is empty
+        // Validate the database is not empty
         List<Role> roleList = roleRepository.findAll();
-        assertThat(roleList).hasSize(databaseSizeBeforeDelete - 1);
+        assertThat(roleList).hasSize(databaseSizeBeforeDelete);
     }
 
     @Test

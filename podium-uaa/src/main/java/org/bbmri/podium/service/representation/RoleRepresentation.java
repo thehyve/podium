@@ -1,4 +1,4 @@
-package org.bbmri.podium.service.dto;
+package org.bbmri.podium.service.representation;
 
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;

@@ -9,7 +9,7 @@ import org.bbmri.podium.exceptions.ResourceNotFoundException;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.service.RoleService;
 import org.bbmri.podium.service.UserService;
-import org.bbmri.podium.service.dto.RoleRepresentation;
+import org.bbmri.podium.service.representation.RoleRepresentation;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 import org.bbmri.podium.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;

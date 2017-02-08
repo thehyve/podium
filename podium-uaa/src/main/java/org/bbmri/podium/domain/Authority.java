@@ -18,6 +18,8 @@ import java.io.Serializable;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Authority implements Serializable {
 
+    public static final String ANONYMOUS = "ROLE_ANONYMOUS";
+
     public static final String PODIUM_ADMIN                 = "ROLE_PODIUM_ADMIN";
     public static final String BBMRI_ADMIN                  = "ROLE_BBMRI_ADMIN";
     public static final String ORGANISATION_ADMIN           = "ROLE_ORGANISATION_ADMIN";
@@ -27,11 +29,18 @@ public class Authority implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
     @NotNull
     @Size(min = 0, max = 50)
     @Id
     @Column(length = 50)
     private String name;
+
+    public Authority() {}
+
+    public Authority(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;

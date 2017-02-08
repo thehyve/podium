@@ -2,7 +2,7 @@ package org.bbmri.podium.service.mapper;
 
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.service.dto.UserRepresentation;
+import org.bbmri.podium.service.representation.UserRepresentation;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -48,8 +48,7 @@ public interface UserMapper {
 
     default Set<Authority> authoritiesFromStrings(Set<String> strings) {
         return strings.stream().map(string -> {
-            Authority auth = new Authority();
-            auth.setName(string);
+            Authority auth = new Authority(string);
             return auth;
         }).collect(Collectors.toSet());
     }

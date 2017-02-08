@@ -2,9 +2,8 @@ package org.bbmri.podium.web.rest;
 
 import org.bbmri.podium.PodiumUaaApp;
 
-import org.bbmri.podium.config.SecurityBeanOverrideConfiguration;
-
 import org.bbmri.podium.domain.Organisation;
+import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.repository.OrganisationRepository;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.repository.search.OrganisationSearchRepository;
@@ -13,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -68,6 +69,8 @@ public class OrganisationResourceIntTest {
 
     private Organisation organisation;
 
+    Logger log = LoggerFactory.getLogger(getClass());
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -99,8 +102,9 @@ public class OrganisationResourceIntTest {
     @Test
     @Transactional
     public void createOrganisation() throws Exception {
+        log.info("Create organisation");
         int databaseSizeBeforeCreate = organisationRepository.findAll().size();
-
+        log.info("Database size: {}", databaseSizeBeforeCreate);
         // Create the Organisation
 
         restOrganisationMockMvc.perform(post("/api/organisations")
@@ -115,9 +119,15 @@ public class OrganisationResourceIntTest {
         assertThat(testOrganisation.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testOrganisation.getShortName()).isEqualTo(DEFAULT_SHORT_NAME);
 
+        log.info("testOrganisation: {}", testOrganisation);
+
         // Validate the Organisation in Elasticsearch
-        Organisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
-        assertThat(organisationEs).isEqualToComparingFieldByField(testOrganisation);
+        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+
+        log.info("organisationEs: {}", organisationEs);
+
+        assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
+        assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
 
     @Test
@@ -241,8 +251,9 @@ public class OrganisationResourceIntTest {
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
 
         // Validate the Organisation in Elasticsearch
-        Organisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
-        assertThat(organisationEs).isEqualToComparingFieldByField(testOrganisation);
+        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
+        assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
 
     @Test
@@ -269,7 +280,7 @@ public class OrganisationResourceIntTest {
         // Initialize the database
         organisationService.save(organisation);
 
-        int databaseSizeBeforeDelete = organisationRepository.findAll().size();
+        int databaseSizeBeforeDelete = organisationService.count().intValue();
 
         // Get the organisation
         restOrganisationMockMvc.perform(delete("/api/organisations/{id}", organisation.getId())
@@ -281,8 +292,8 @@ public class OrganisationResourceIntTest {
         assertThat(organisationExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Organisation> organisationList = organisationRepository.findAll();
-        assertThat(organisationList).hasSize(databaseSizeBeforeDelete - 1);
+        int databaseSize = organisationService.count().intValue();
+        assertThat(databaseSize).isEqualTo(databaseSizeBeforeDelete - 1);
     }
 
     @Test

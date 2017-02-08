@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -18,7 +20,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "organisation")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "organisation")
 public class Organisation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -151,6 +152,7 @@ public class Organisation implements Serializable {
     public String toString() {
         return "Organisation{" +
             "id=" + id +
+            ", uuid='" + uuid + "'" +
             ", name='" + name + "'" +
             ", shortName='" + shortName + "'" +
             '}';

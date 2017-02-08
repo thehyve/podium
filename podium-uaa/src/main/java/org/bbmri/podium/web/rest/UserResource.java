@@ -2,10 +2,10 @@ package org.bbmri.podium.web.rest;
 
 import org.bbmri.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
+import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
-import org.bbmri.podium.security.AuthoritiesConstants;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
@@ -87,7 +87,7 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
         log.debug("REST request to save User : {}", managedUserVM);
 
@@ -119,7 +119,7 @@ public class UserResource {
      */
     @PutMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
         log.debug("REST request to update User : {}", managedUserVM);
         Optional<User> existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
@@ -148,6 +148,7 @@ public class UserResource {
      */
     @GetMapping("/users")
     @Timed
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN, Authority.ORGANISATION_ADMIN})
     public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userRepository.findAllWithAuthorities(pageable);
@@ -198,7 +199,7 @@ public class UserResource {
      */
     @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);

@@ -1,5 +1,6 @@
 package org.bbmri.podium.security;
 
+import org.bbmri.podium.domain.Authority;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +44,7 @@ public final class SecurityUtils {
         Authentication authentication = securityContext.getAuthentication();
         if (authentication != null) {
             return authentication.getAuthorities().stream()
-                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(AuthoritiesConstants.ANONYMOUS));
+                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Authority.ANONYMOUS));
         }
         return false;
     }
