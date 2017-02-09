@@ -206,7 +206,7 @@
                     <label class="form-control-label" for="password">New password</label>
                     <input type="password" class="form-control" id="password" name="password" #password="ngModel"
                            placeholder="{{'global.form.newpassword.placeholder' | translate}}"
-                            [(ngModel)]="registerAccount.password" minlength=6 maxlength=50 required>
+                            [(ngModel)]="registerAccount.password" minlength=8 maxlength=1000 required>
                     <div *ngIf="password.dirty && password.invalid">
                         <small class="form-text text-danger" *ngIf="password.errors.required"
                                 jhiTranslate="global.messages.validate.newpassword.required">
@@ -214,11 +214,11 @@
                         </small>
                         <small class="form-text text-danger" *ngIf="password.errors.minlength"
                                 jhiTranslate="global.messages.validate.newpassword.minlength">
-                            Your password is required to be at least 4 characters.
+                            Your password is required to be at least 8 characters.
                         </small>
                         <small class="form-text text-danger" *ngIf="password.errors.maxlength"
                                 jhiTranslate="global.messages.validate.newpassword.maxlength">
-                            Your password cannot be longer than 50 characters.
+                            Your password cannot be longer than 1000 characters.
                         </small>
                     </div>
                     <jhi-password-strength-bar [passwordToCheck]="registerAccount.password"></jhi-password-strength-bar>
@@ -237,11 +237,11 @@
                         </small>
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.minlength"
                               jhiTranslate="global.messages.validate.confirmpassword.minlength">
-                            Your confirmation password is required to be at least 4 characters.
+                            Your confirmation password is required to be at least 8 characters.
                         </small>
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength"
                                jhiTranslate="global.messages.validate.confirmpassword.maxlength">
-                            Your confirmation password cannot be longer than 50 characters.
+                            Your confirmation password cannot be longer than 1000 characters.
                         </small>
                     </div>
                 </div>
