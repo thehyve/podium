@@ -39,10 +39,10 @@
         "form": {
             "username": "Username",
             "username.placeholder": "Your username",
-            "firstname": "First name",
-            "firstname.placeholder": "Your firstname",
-            "lastname": "Last name",
-            "lastname.placeholder": "Your lastname",
+            "firstName": "First name",
+            "firstName.placeholder": "Your first name",
+            "lastName": "Last name",
+            "lastName.placeholder": "Your last name",
             "newpassword": "New password",
             "newpassword.placeholder": "New password",
             "confirmpassword": "New password confirmation",
@@ -55,8 +55,8 @@
             "institute.placeholder": "Your institute",
             "department": "Department",
             "department.placeholder": "Your department",
-            "function": "Function",
-            "function.placeholder": "Your function",
+            "jobTitle": "Function",
+            "jobTitle.placeholder": "Your function",
             "Specialism": "Specialism",
             "specialism.placeholder": "Your specialism"
         },
@@ -78,14 +78,14 @@
             "validate": {
                 "newpassword": {
                     "required": "Your password is required.",
-                    "minlength": "Your password is required to be at least 4 characters.",
-                    "maxlength": "Your password cannot be longer than 50 characters.",
+                    "minlength": "Your password is required to be at least 8 characters.",
+                    "maxlength": "Your password cannot be longer than 1000 characters.",
                     "strength": "Password strength:"
                 },
                 "confirmpassword": {
                     "required": "Your confirmation password is required.",
-                    "minlength": "Your confirmation password is required to be at least 4 characters.",
-                    "maxlength": "Your confirmation password cannot be longer than 50 characters."
+                    "minlength": "Your confirmation password is required to be at least 8 characters.",
+                    "maxlength": "Your confirmation password cannot be longer than 1000 characters."
                 },
                 "email": {
                     "required": "Your e-mail is required.",

@@ -1,0 +1,9 @@
+<select id="specialism" name="specialism" class="form-control" [(ngModel)]="selectedSpecialism" (change)="onChange()"
+        required >
+    <option  *ngFor="let specialismOption of specialismOptions" [value]="specialismOption.value">
+        {{specialismOption.display}}
+    </option>
+</select>
+<input type="text" class="form-control specialism-other-input" [(ngModel)]="specialism"
+       *ngIf="selectedSpecialism == 'Other'" required>
+

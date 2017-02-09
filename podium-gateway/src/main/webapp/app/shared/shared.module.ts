@@ -17,7 +17,8 @@ import {
     HasAuthorityDirective,
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
-    PodiumLoginComponent
+    PodiumLoginComponent,
+    SpecialismComponent
 } from './';
 
 @NgModule({
@@ -27,6 +28,7 @@ import {
     ],
     declarations: [
         PodiumLoginComponent,
+        SpecialismComponent,
         EmailValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective
@@ -48,6 +50,7 @@ import {
     exports: [
         PodiumGatewaySharedCommonModule,
         PodiumLoginComponent,
+        SpecialismComponent,
         EmailValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
