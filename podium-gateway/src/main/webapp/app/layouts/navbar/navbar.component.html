@@ -1,6 +1,8 @@
 <nav class="navbar navbar-dark jh-navbar" *ngIf="isAuthenticated()">
     <div class="jh-logo-container float-xs-left">
-        <a class="jh-navbar-toggler hidden-lg-up float-xs-left" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
+        <a class="jh-navbar-toggler hidden-lg-up float-xs-left" href="javascript:void(0);"
+           data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+           aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
             <i class="material-icons">view_headline</i>
         </a>
         <a class="navbar-brand logo float-xs-right" routerLink="/" (click)="collapseNavbar()">
@@ -8,7 +10,8 @@
             <span jhiTranslate="global.title" class="navbar-title">Podium Request Portal</span> <span class="navbar-version">{{version}}</span>
         </a>
     </div>
-    <div class="collapse navbar-toggleable-md float-lg-right" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
+    <div class="collapse navbar-toggleable-md float-lg-right" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed"
+         [ngSwitch]="isAuthenticated()">
         <ul class="nav navbar-nav float-lg-right">
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
@@ -17,23 +20,30 @@
                 </a>
             </li>
 
-            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" jhiHasAuthority="ROLE_RESEARCHER">
+            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                jhiHasAuthority="ROLE_RESEARCHER">
                 <a class="nav-link" routerLink="/requests">
                     <i class="material-icons">assignment_ind</i>
                     <span class="hidden-sm-down" jhiTranslate="global.menu.requests">My Requests</span>
                 </a>
             </li>
 
-            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" jhiHasAuthority="ROLE_REVIEWER" >
+            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                jhiHasAuthority="ROLE_REVIEWER" >
                 <a class="nav-link" routerLink="/reviews">
                     <i class="material-icons">rate_review</i>
-                    <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_reviewer.reviews">My Reviews</span>
+                    <span class="hidden-sm-down"
+                          jhiTranslate="global.menu.organisation.org_reviewer.reviews">
+                        My Reviews
+                    </span>
                 </a>
             </li>
 
             <!-- Organisation role -->
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAnyAuthority="ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR" >
-                <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer"
+                jhiHasAnyAuthority="ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR" >
+                <a class="nav-link dropdown-toggle" routerLinkActive="active"
+                   ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
                     <span>
                         <i class="material-icons">business</i>
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.main">
@@ -123,8 +133,10 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
-                <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer"
+                jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
+                <a class="nav-link dropdown-toggle"
+                   routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
                         <i class="material-icons">view_list</i>
                         <span class="hidden-sm-down" jhiTranslate="global.menu.entities.main">
@@ -232,7 +244,10 @@
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu *ngIf="languages.length > 1">
                     <li *ngFor="let language of languages">
-                        <a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);" (click)="changeLanguage(language);collapseNavbar();">{{language | findLanguageFromKey}}</a>
+                        <a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);"
+                           (click)="changeLanguage(language);collapseNavbar();">
+                            {{language | findLanguageFromKey}}
+                        </a>
                     </li>
                 </ul>
             </li>

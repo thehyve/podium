@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        // private eventManager: EventManager,
         private principal: Principal
     ) {
         this.jhiLanguageService.setLocations(['dashboard']);
