@@ -34,14 +34,14 @@ export const roleRoute: Routes = [
       'pagingParams': RoleResolvePagingParams
     },
     data: {
-        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
     }
   }, {
     path: 'role/:id',
     component: RoleDetailComponent,
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
     }
   }
@@ -52,7 +52,7 @@ export const rolePopupRoute: Routes = [
     path: 'role/:id/edit',
     component: RolePopupComponent,
     data: {
-        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
     },
     outlet: 'popup'

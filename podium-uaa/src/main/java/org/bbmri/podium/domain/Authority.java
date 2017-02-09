@@ -60,7 +60,7 @@ public class Authority implements Serializable {
     }
 
     public static final boolean isOrganisationAuthority(String name) {
-        return ORGANISATION_COORDINATOR.contains(name);
+        return ORGANISATION_AUTHORITIES.contains(name);
     }
 
     public final boolean isOrganisationAuthority() {

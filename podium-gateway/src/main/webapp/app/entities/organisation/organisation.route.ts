@@ -35,14 +35,14 @@ export const organisationRoute: Routes = [
       'pagingParams': OrganisationResolvePagingParams
     },
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     }
   }, {
     path: 'organisation/:uuid',
     component: OrganisationDetailComponent,
     data: {
-        authorities: ['ROLE_USER'],
+        authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     }
   }

@@ -157,8 +157,7 @@ public class UserService {
     }
 
     public void updateUser(ManagedUserVM managedUserVM) {
-
-        Optional.of(userRepository
+       Optional.of(userRepository
             .findOne(managedUserVM.getId()))
             .ifPresent(user -> {
                 user.setLogin(managedUserVM.getLogin());
@@ -166,12 +165,14 @@ public class UserService {
                 user.setActivated(managedUserVM.isActivated());
                 Set<Role> managedRoles = user.getRoles();
                 managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
-                Set<Role> roles = new HashSet<>();
                 managedUserVM.getAuthorities().forEach( authority -> {
                     if (!Authority.isOrganisationAuthority(authority)) {
+                        log.info("Adding role: {}", authority);
                         Role role = roleService.findRoleByAuthorityName(authority);
                         if (role != null) {
-                            roles.add(role);
+                            managedRoles.add(role);
+                        } else {
+                            log.error("Could not find role: {}", authority);
                         }
                     }
                 });

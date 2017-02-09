@@ -28,13 +28,13 @@
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
-                    <li uiSrefActive="active">
+                    <li uiSrefActive="active" jhiHasAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN">
                         <a class="dropdown-item" routerLink="role" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.role">Role</span>
                         </a>
                     </li>
-                    <li uiSrefActive="active">
+                    <li uiSrefActive="active" jhiHasAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
                         <a class="dropdown-item" routerLink="organisation" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
@@ -43,7 +43,7 @@
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
                 </ul>
             </li>
-            <li *ngSwitchCase="true" jhiHasAuthority="ROLE_ADMIN" ngbDropdown class="nav-item dropdown pointer">
+            <li *ngSwitchCase="true" jhiHasAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
