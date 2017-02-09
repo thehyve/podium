@@ -72,6 +72,8 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             if (previousState) {
                 this.stateStorageService.resetPreviousState();
                 this.router.navigate([previousState.name], { queryParams:  previousState.params });
+            } else {
+                this.router.navigate(['/dashboard']);
             }
         }).catch(() => {
             this.authenticationError = true;
