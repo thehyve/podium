@@ -57,8 +57,7 @@
                     <label  class="form-control-label" for="firstName" >First name</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.firstName" id="firstName"
                            #firstName="ngModel" name="firstName" required minlength="1"
-                           placeholder="{{'global.form.firstName.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           placeholder="{{'global.form.firstName.placeholder' | translate}}">
                     <div *ngIf="firstName.dirty && firstName.invalid">
                         <small class="form-text text-danger" *ngIf="firstName.errors.required">
                             Your first name is required.
@@ -77,8 +76,7 @@
                     <label  class="form-control-label" for="lastName" >Last name</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.lastName" id="lastName"
                            #lastName="ngModel" name="lastName" required minlength="1"
-                           placeholder="{{'global.form.lastName.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           placeholder="{{'global.form.lastName.placeholder' | translate}}">
                     <div *ngIf="lastName.dirty && lastName.invalid">
                         <small class="form-text text-danger" *ngIf="lastName.errors.required">
                             Your last name is required.
@@ -119,8 +117,7 @@
                     <label  class="form-control-label" for="telephone" >Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
                            #telephone="ngModel" name="telephone" required maxlength=100
-                           placeholder="{{'global.form.telephone.placeholder' | translate}}"
-                           pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$">
+                           placeholder="{{'global.form.telephone.placeholder' | translate}}">
                     <div *ngIf="telephone.dirty && telephone.invalid">
                         <small class="form-text text-danger" *ngIf="telephone.errors.required">
                             Your telephone is required.
@@ -136,8 +133,7 @@
                     <label  class="form-control-label" for="institute" >Institute</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.institute" id="institute"
                            #institute="ngModel" name="institute" required minlength="1"
-                           placeholder="{{'global.form.institute.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           placeholder="{{'global.form.institute.placeholder' | translate}}">
                     <div *ngIf="institute.dirty && institute.invalid">
                         <small class="form-text text-danger" *ngIf="institute.errors.required">
                             Your institute is required.
@@ -156,8 +152,7 @@
                     <label  class="form-control-label" for="department" >Department</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.department" id="department"
                            #department="ngModel" name="department" required minlength="1"
-                           placeholder="{{'global.form.department.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           placeholder="{{'global.form.department.placeholder' | translate}}">
                     <div *ngIf="department.dirty && department.invalid">
                         <small class="form-text text-danger" *ngIf="department.errors.required">
                             Your department is required.
