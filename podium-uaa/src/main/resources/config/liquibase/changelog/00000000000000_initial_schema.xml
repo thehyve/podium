@@ -93,7 +93,8 @@
                                  referencedColumnNames="id"
                                  referencedTableName="podium_user"/>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/users.csv"
+                  file="../users.csv"
+                  relativeToChangelogFile="true"
                   separator=";"
                   tableName="podium_user">
             <column name="activated" type="boolean"/>
@@ -102,12 +103,14 @@
         <dropDefaultValue tableName="podium_user" columnName="created_date" columnDataType="datetime"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/authorities.csv"
+                  file="../authorities.csv"
+                  relativeToChangelogFile="true"
                   separator=";"
                   tableName="podium_authority"/>
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/users_authorities.csv"
+                  file="../users_authorities.csv"
+                  relativeToChangelogFile="true"
                   separator=";"
                   tableName="podium_user_authority"/>
         <createTable tableName="podium_persistent_audit_event">

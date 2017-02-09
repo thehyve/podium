@@ -1,5 +1,6 @@
 export class User {
     public id?: any;
+    public uuid?: string;
     public login?: string;
     public firstName?: string;
     public lastName?: string;
@@ -19,6 +20,7 @@ export class User {
     public password?: string;
     constructor(
         id?: any,
+        uuid?: string,
         login?: string,
         firstName?: string,
         lastName?: string,
@@ -38,6 +40,7 @@ export class User {
         password?: string
     ) {
         this.id = id ? id : null;
+        this.uuid = uuid ? uuid : null;
         this.login = login ? login : null;
         this.firstName = firstName ? firstName : null;
         this.lastName = lastName ? lastName : null;

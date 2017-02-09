@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Spring Data JPA repository for the User entity.
@@ -26,7 +27,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByLogin(String login);
 
-    @Query(value = "select distinct user from User user left join fetch user.authorities",
+    Optional<User> findOneByUuid(UUID uuid);
+
+    @Query(value = "select distinct user from User user left join fetch user.roles r left join fetch r.authority",
         countQuery = "select count(user) from User user")
     Page<User> findAllWithAuthorities(Pageable pageable);
+
 }

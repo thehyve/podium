@@ -2,16 +2,14 @@ package org.bbmri.podium.web.rest.vm;
 
 import java.time.ZonedDateTime;
 
-import java.util.Set;
-
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.service.dto.UserDTO;
+import org.bbmri.podium.service.representation.UserRepresentation;
 import javax.validation.constraints.Size;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.
  */
-public class ManagedUserVM extends UserDTO {
+public class ManagedUserVM extends UserRepresentation {
 
     public static final int PASSWORD_MIN_LENGTH = 8;
     public static final int PASSWORD_MAX_LENGTH = 1000;
@@ -42,18 +40,6 @@ public class ManagedUserVM extends UserDTO {
         this.password = null;
     }
 
-    public ManagedUserVM(Long id, String login, String password, String firstName, String lastName,
-                         String email, boolean activated, String langKey, Set<String> authorities,
-                         String createdBy, ZonedDateTime createdDate, String lastModifiedBy, ZonedDateTime lastModifiedDate) {
-        super(login, firstName, lastName, email, activated, langKey, authorities);
-        this.id = id;
-        this.createdBy = createdBy;
-        this.createdDate = createdDate;
-        this.lastModifiedBy = lastModifiedBy;
-        this.lastModifiedDate = lastModifiedDate;
-        this.password = password;
-    }
-
     public Long getId() {
         return id;
     }
@@ -62,6 +48,9 @@ public class ManagedUserVM extends UserDTO {
         this.id = id;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getCreatedBy() {
         return createdBy;

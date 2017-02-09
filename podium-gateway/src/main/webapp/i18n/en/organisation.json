@@ -1,0 +1,27 @@
+{
+    "podiumGatewayApp": {
+        "organisation" : {
+            "home": {
+                "title": "Organisations",
+                "createLabel": "Create a new organisation",
+                "createOrEditLabel": "Create or edit an organisation",
+                "search": "Search for organisation"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete organisation {{ id }}?"
+            },
+            "detail": {
+                "title": "Organisation"
+            },
+            "name": "Name",
+            "shortName": "Short name"
+        }
+    },
+    "podiumuaaApp": {
+        "organisation" : {
+            "created": "A new organisation is created with identifier {{ param }}",
+            "updated": "An organisation is updated with identifier {{ param }}",
+            "deleted": "An organisation is deleted with identifier {{ param }}"
+        }
+    }
+}
