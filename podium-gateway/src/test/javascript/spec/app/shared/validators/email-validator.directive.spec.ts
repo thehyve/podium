@@ -1,9 +1,9 @@
-import { AbstractControl, FormControl } from '@angular/forms';
-import { EmailValidatorDirective } from '../../../../../../main/webapp/app/shared/validators/email-validator.directive'
+import { FormControl } from '@angular/forms';
+import { EmailValidatorDirective } from '../../../../../../main/webapp/app/shared/validators/email-validator.directive';
 
 describe('EmailValidatorDirective (simple)', () => {
 
-    let validator : EmailValidatorDirective;
+    let validator: EmailValidatorDirective;
     let invalidResultObj = {
         emailValidator: {
             valid : false
