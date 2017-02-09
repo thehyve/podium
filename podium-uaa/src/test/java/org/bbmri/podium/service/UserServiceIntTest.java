@@ -6,6 +6,8 @@ import org.bbmri.podium.repository.UserRepository;
 import java.time.ZonedDateTime;
 import org.bbmri.podium.service.util.RandomUtil;
 import java.time.LocalDate;
+
+import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,17 +49,30 @@ public class UserServiceIntTest {
         assertThat(maybeUser.get().getResetKey()).isNotNull();
     }
 
+    ManagedUserVM createTestUser() {
+        ManagedUserVM userVM = new ManagedUserVM();
+        userVM.setLogin("johndoe");
+        userVM.setLogin("johndoes");
+        userVM.setFirstName("John");
+        userVM.setLastName("Doe");
+        userVM.setEmail("john.doe@localhost");
+        userVM.setLangKey("en");
+        return userVM;
+    }
+
     @Test
     public void assertThatOnlyActivatedUserCanRequestPasswordReset() {
-        User user = userService.createUser("johndoe", "johndoe", "John", "Doe", "john.doe@localhost", "en-US");
-        Optional<User> maybeUser = userService.requestPasswordReset("john.doe@localhost");
+        ManagedUserVM testUserData = createTestUser();
+        User user = userService.createUser(testUserData);
+        Optional<User> maybeUser = userService.requestPasswordReset(testUserData.getEmail());
         assertThat(maybeUser.isPresent()).isFalse();
         userRepository.delete(user);
     }
 
     @Test
     public void assertThatResetKeyMustNotBeOlderThan24Hours() {
-        User user = userService.createUser("johndoe", "johndoe", "John", "Doe", "john.doe@localhost", "en-US");
+        ManagedUserVM testUserData = createTestUser();
+        User user = userService.createUser(testUserData);
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
         String resetKey = RandomUtil.generateResetKey();
@@ -76,7 +91,8 @@ public class UserServiceIntTest {
 
     @Test
     public void assertThatResetKeyMustBeValid() {
-        User user = userService.createUser("johndoe", "johndoe", "John", "Doe", "john.doe@localhost", "en-US");
+        ManagedUserVM testUserData = createTestUser();
+        User user = userService.createUser(testUserData);
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
         user.setActivated(true);
@@ -90,7 +106,8 @@ public class UserServiceIntTest {
 
     @Test
     public void assertThatUserCanResetPassword() {
-        User user = userService.createUser("johndoe", "johndoe", "John", "Doe", "john.doe@localhost", "en-US");
+        ManagedUserVM testUserData = createTestUser();
+        User user = userService.createUser(testUserData);
         String oldPassword = user.getPassword();
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(2);
         String resetKey = RandomUtil.generateResetKey();

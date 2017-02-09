@@ -64,6 +64,21 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 100, unique = true)
     private String email;
 
+    @Column(name="telephone")
+    private String telephone;
+
+    @Column(name="institute")
+    private String institute;
+
+    @Column(name="department")
+    private String department;
+
+    @Column(name="job_title")
+    private String jobTitle;
+
+    @Column(name="specialism")
+    private String specialism;
+
     @NotNull
     @Column(nullable = false)
     private boolean activated = false;
@@ -160,6 +175,46 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public String getSpecialism() {
+        return specialism;
+    }
+
+    public void setSpecialism(String specialism) {
+        this.specialism = specialism;
     }
 
     public boolean isActivated() {

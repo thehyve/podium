@@ -86,13 +86,6 @@ public class RoleService {
         return role;
     }
 
-    private static final Set<String> globalRoleAuthorities = new HashSet<>(3);
-    {
-        globalRoleAuthorities.add(Authority.RESEARCHER);
-        globalRoleAuthorities.add(Authority.PODIUM_ADMIN);
-        globalRoleAuthorities.add(Authority.BBMRI_ADMIN);
-    }
-
     /**
      *  Get the role for an authority.
      *  Only for global roles, not for organisation roles.
@@ -102,7 +95,7 @@ public class RoleService {
     @Transactional(readOnly = true)
     public Role findRoleByAuthorityName(String authorityName) {
         log.debug("Request to get role for an authority");
-        if (!globalRoleAuthorities.contains(authorityName)) {
+        if (Authority.isOrganisationAuthority(authorityName)) {
             return null;
         }
         Role role = roleRepository.findByAuthorityName(authorityName);

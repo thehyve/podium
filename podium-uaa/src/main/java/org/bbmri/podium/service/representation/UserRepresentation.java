@@ -30,8 +30,18 @@ public class UserRepresentation {
     private String lastName;
 
     @Email
-    @Size(min = 5, max = 100)
+    @Size(max = 100)
     private String email;
+
+    private String telephone;
+
+    private String institute;
+
+    private String department;
+
+    private String jobTitle;
+
+    private String specialism;
 
     private boolean activated = false;
 
@@ -49,6 +59,11 @@ public class UserRepresentation {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
+        this.telephone = user.getTelephone();
+        this.institute = user.getInstitute();
+        this.department = user.getDepartment();
+        this.jobTitle = user.getJobTitle();
+        this.specialism = user.getSpecialism();
         this.activated = user.isActivated();
         this.langKey = user.getLangKey();
         this.authorities = user.getAuthorities().stream().map(Authority::getName)
@@ -99,6 +114,26 @@ public class UserRepresentation {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public String getInstitute() {
+        return institute;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public String getSpecialism() {
+        return specialism;
     }
 
     public boolean isActivated() {

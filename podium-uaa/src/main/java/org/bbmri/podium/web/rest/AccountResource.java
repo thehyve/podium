@@ -63,10 +63,7 @@ public class AccountResource {
             .orElseGet(() -> userRepository.findOneByEmail(managedUserVM.getEmail())
                 .map(user -> new ResponseEntity<>("e-mail address already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
                 .orElseGet(() -> {
-                    User user = userService
-                        .createUser(managedUserVM.getLogin(), managedUserVM.getPassword(),
-                            managedUserVM.getFirstName(), managedUserVM.getLastName(),
-                            managedUserVM.getEmail().toLowerCase(), managedUserVM.getLangKey());
+                    User user = userService.registerUser(managedUserVM);
 
                     mailService.sendActivationEmail(user);
                     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -130,8 +127,7 @@ public class AccountResource {
         return userRepository
             .findOneByLogin(SecurityUtils.getCurrentUserLogin())
             .map(u -> {
-                userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
-                    userDTO.getLangKey());
+                userService.updateUserAccount(userDTO);
                 return new ResponseEntity<String>(HttpStatus.OK);
             })
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));

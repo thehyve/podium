@@ -6,6 +6,7 @@ import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
 import org.bbmri.podium.security.SecurityUtils;
+import org.bbmri.podium.service.representation.UserRepresentation;
 import org.bbmri.podium.service.util.RandomUtil;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
@@ -79,20 +80,37 @@ public class UserService {
             });
     }
 
-    public User createUser(String login, String password, String firstName, String lastName, String email,
-        String langKey) {
+    /**
+     * Copy user properties, except login, password, email, activated.
+     * @param source
+     * @param target
+     */
+    private void copyProperties(UserRepresentation source, User target) {
+        target.setFirstName(source.getFirstName());
+        target.setLastName(source.getLastName());
+        target.setLangKey(source.getLangKey());
+        // update language key if set in source, or set default if not set in target.
+        if (source.getLangKey() != null) {
+            target.setLangKey(source.getLangKey());
+        } else if (target.getLangKey() == null) {
+            target.setLangKey("en"); // default language
+        }
+        target.setTelephone(source.getTelephone());
+        target.setInstitute(source.getInstitute());
+        target.setDepartment(source.getDepartment());
+        target.setJobTitle(source.getJobTitle());
+        target.setSpecialism(source.getSpecialism());
+    }
 
+    public User registerUser(ManagedUserVM managedUserVM) {
         User newUser = new User();
         Role role = roleService.findRoleByAuthorityName(Authority.RESEARCHER);
         Set<Role> roles = new HashSet<>();
-        String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(login);
-        // new user gets initially a generated password
+        newUser.setLogin(managedUserVM.getLogin());
+        newUser.setEmail(managedUserVM.getEmail());
+        String encryptedPassword = passwordEncoder.encode(managedUserVM.getPassword());
         newUser.setPassword(encryptedPassword);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setEmail(email);
-        newUser.setLangKey(langKey);
+        copyProperties(managedUserVM, newUser);
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
@@ -108,14 +126,7 @@ public class UserService {
     public User createUser(ManagedUserVM managedUserVM) {
         User user = new User();
         user.setLogin(managedUserVM.getLogin());
-        user.setFirstName(managedUserVM.getFirstName());
-        user.setLastName(managedUserVM.getLastName());
-        user.setEmail(managedUserVM.getEmail());
-        if (managedUserVM.getLangKey() == null) {
-            user.setLangKey("en"); // default language
-        } else {
-            user.setLangKey(managedUserVM.getLangKey());
-        }
+        copyProperties(managedUserVM, user);
         if (managedUserVM.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
             managedUserVM.getAuthorities().forEach( authority -> {
@@ -137,38 +148,34 @@ public class UserService {
         return user;
     }
 
-    public void updateUser(String firstName, String lastName, String email, String langKey) {
+    public void updateUserAccount(UserRepresentation userData) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setEmail(email);
-            user.setLangKey(langKey);
+            copyProperties(userData, user);
             userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
         });
     }
 
-    public void updateUser(Long id, String login, String firstName, String lastName, String email,
-        boolean activated, String langKey, Set<String> authorities) {
+    public void updateUser(ManagedUserVM managedUserVM) {
 
         Optional.of(userRepository
-            .findOne(id))
+            .findOne(managedUserVM.getId()))
             .ifPresent(user -> {
-                user.setLogin(login);
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
-                user.setEmail(email);
-                user.setActivated(activated);
-                user.setLangKey(langKey);
+                user.setLogin(managedUserVM.getLogin());
+                user.setEmail(managedUserVM.getEmail());
+                user.setActivated(managedUserVM.isActivated());
                 Set<Role> managedRoles = user.getRoles();
-                managedRoles.clear();
+                managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
                 Set<Role> roles = new HashSet<>();
-                authorities.forEach( authority -> {
-                    Role role = roleService.findRoleByAuthorityName(authority);
-                    if (role != null) {
-                        roles.add(role);
+                managedUserVM.getAuthorities().forEach( authority -> {
+                    if (!Authority.isOrganisationAuthority(authority)) {
+                        Role role = roleService.findRoleByAuthorityName(authority);
+                        if (role != null) {
+                            roles.add(role);
+                        }
                     }
                 });
+                copyProperties(managedUserVM, user);
                 log.debug("Changed Information for User: {}", user);
             });
     }
