@@ -17,25 +17,22 @@
                 </a>
             </li>
 
-            <!-- jhiHasAuthority="RESEARCHER" -->
-            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" jhiHasAuthority="ROLE_RESEARCHER">
                 <a class="nav-link" routerLink="/requests">
                     <i class="material-icons">assignment_ind</i>
                     <span class="hidden-sm-down" jhiTranslate="global.menu.requests">My Requests</span>
                 </a>
             </li>
 
-            <!-- jhiHasAuthority="ORG_REVIEWER" -->
-            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" jhiHasAuthority="ROLE_REVIEWER" >
                 <a class="nav-link" routerLink="/reviews">
                     <i class="material-icons">rate_review</i>
                     <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_reviewer.reviews">My Reviews</span>
                 </a>
             </li>
 
-            <!-- Any organisation role -->
-            <!-- jhiHasAuthority="ORG_ADMIN" -->
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+            <!-- Organisation role -->
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAnyAuthority="[ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR]" >
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
                     <span>
                         <i class="material-icons">business</i>
@@ -45,7 +42,7 @@
                         <b class="caret"></b>
                     </span>
                 </a>
-                <ul class="dropdown-menu" ngbDropdownMenu>
+                <ul class="dropdown-menu" ngbDropdownMenu jhiHasAuthority="ROLE_ORGANISATION_ADMIN">
                     <!-- Organisation Admin -->
                     <li class="dropdown-header">
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_admin.main">
@@ -73,7 +70,7 @@
                     </li>
 
                     <!-- Organisation Coordinator -->
-                    <li class="dropdown-header">
+                    <li class="dropdown-header" jhiHasAuthority="ROLE_ORGANISATION_COORDINATOR">
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_coordinator.main">
                             Coordination
                         </span>
@@ -88,8 +85,7 @@
                 </ul>
             </li>
 
-            <!-- jhiHasAuthority="BBMRI_ADMIN" -->
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAuthority="ROLE_BBMRI_ADMIN">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="podium-menu">
                     <span>
                         <i class="material-icons">settings</i>
@@ -127,7 +123,7 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer">
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAuthority="ROLE_BBMRI_ADMIN">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
                         <i class="material-icons">view_list</i>
