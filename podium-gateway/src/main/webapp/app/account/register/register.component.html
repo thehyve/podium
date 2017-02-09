@@ -181,13 +181,13 @@
                            pattern="^[_'.@A-Za-z]*$">
                     <div *ngIf="jobTitle.dirty && jobTitle.invalid">
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.required">
-                            Your jobTitle is required.
+                            Your job title is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.minlength">
-                            Your jobTitle is required to be at least 1 character.
+                            Your job title is required to be at least 1 character.
                         </small>
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.maxlength">
-                            Your jobTitle cannot be longer than 50 characters.
+                            Your job title cannot be longer than 50 characters.
                         </small>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            #confirmPasswordInput="ngModel"
                            placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
-                            [(ngModel)]="confirmPassword" minlength=4 maxlength=50 required>
+                            [(ngModel)]="confirmPassword" minlength=8 maxlength=1000 required>
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
                                jhiTranslate="global.messages.validate.confirmpassword.required">
