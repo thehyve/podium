@@ -32,7 +32,7 @@
             </li>
 
             <!-- Organisation role -->
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAnyAuthority="[ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR]" >
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAnyAuthority="ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR" >
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
                     <span>
                         <i class="material-icons">business</i>
@@ -123,7 +123,7 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAuthority="ROLE_BBMRI_ADMIN">
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
                         <i class="material-icons">view_list</i>
@@ -134,15 +134,15 @@
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
-                    <li uiSrefActive="active" jhiHasAnyAuthority="[ROLE_PODIUM_ADMIN, ROLE_BBMRI_ADMIN, ROLE_ORGANISATION_ADMIN]">
+                    <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN">
                         <a class="dropdown-item" routerLink="role" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <i class="material-icons">library_books</i>
                             <span jhiTranslate="global.menu.entities.role">Role</span>
                         </a>
                     </li>
-                    <li uiSrefActive="active" jhiHasAnyAuthority="[ROLE_PODIUM_ADMIN, ROLE_BBMRI_ADMIN]">
+                    <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
                         <a class="dropdown-item" routerLink="organisation" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <i class="material-icons">library_books</i>
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
                         </a>
                     </li>
@@ -150,7 +150,7 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" jhiHasAnyAuthority="[ROLE_PODIUM_ADMIN, ROLE_BBMRI_ADMIN]" ngbDropdown class="nav-item dropdown pointer">
+            <li *ngSwitchCase="true" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>
                         <i class="material-icons">supervisor_account</i>
