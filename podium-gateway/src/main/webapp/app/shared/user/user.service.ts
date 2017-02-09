@@ -22,6 +22,10 @@ export class UserService {
         return this.http.get(`${this.resourceUrl}/${login}`).map((res: Response) => res.json());
     }
 
+    findByUuid(uuid: string): Observable<User> {
+        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => res.json());
+    }
+
     query(req?: any): Observable<Response> {
         let params: URLSearchParams = new URLSearchParams();
         if (req) {

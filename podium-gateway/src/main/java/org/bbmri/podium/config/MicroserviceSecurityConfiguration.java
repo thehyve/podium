@@ -1,6 +1,6 @@
 package org.bbmri.podium.config;
 
-import org.bbmri.podium.security.AuthoritiesConstants;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -53,7 +52,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
             .authorizeRequests()
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/**").authenticated()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/management/**").hasAuthority(AuthorityConstants.PODIUM_ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll();
     }
 

@@ -2,10 +2,10 @@ package org.bbmri.podium.web.rest;
 
 import org.bbmri.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
+import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
-import org.bbmri.podium.security.AuthoritiesConstants;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
@@ -87,7 +87,7 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
         log.debug("REST request to save User : {}", managedUserVM);
 
@@ -119,7 +119,7 @@ public class UserResource {
      */
     @PutMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
         log.debug("REST request to update User : {}", managedUserVM);
         Optional<User> existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
@@ -148,6 +148,7 @@ public class UserResource {
      */
     @GetMapping("/users")
     @Timed
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN, Authority.ORGANISATION_ADMIN})
     public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userRepository.findAllWithAuthorities(pageable);
@@ -175,6 +176,22 @@ public class UserResource {
     }
 
     /**
+     * GET  /users/uuid/:uuid : get the "uuid" user.
+     *
+     * @param uuid the uuid of the user to find
+     * @return the ResponseEntity with status 200 (OK) and with body the "uuid" user, or with status 404 (Not Found)
+     */
+    @GetMapping("/users/uuid/{uuid}")
+    @Timed
+    public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
+        log.debug("REST request to get User : {}", uuid);
+        return userService.getUserByUuid(uuid)
+            .map(ManagedUserVM::new)
+            .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /**
      * DELETE /users/:login : delete the "login" User.
      *
      * @param login the login of the user to delete
@@ -182,7 +199,7 @@ public class UserResource {
      */
     @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);

@@ -7,7 +7,7 @@ import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.security.SecurityUtils;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
-import org.bbmri.podium.service.dto.UserDTO;
+import org.bbmri.podium.service.representation.UserRepresentation;
 import org.bbmri.podium.web.rest.vm.KeyAndPasswordVM;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
@@ -108,9 +108,9 @@ public class AccountResource {
      */
     @GetMapping("/account")
     @Timed
-    public ResponseEntity<UserDTO> getAccount() {
+    public ResponseEntity<UserRepresentation> getAccount() {
         return Optional.ofNullable(userService.getUserWithAuthorities())
-            .map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
+            .map(user -> new ResponseEntity<>(new UserRepresentation(user), HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
@@ -122,7 +122,7 @@ public class AccountResource {
      */
     @PostMapping("/account")
     @Timed
-    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserRepresentation userDTO) {
         Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
