@@ -13,6 +13,8 @@ import { PodiumGatewayEntityModule } from './entities/entity.module';
 
 import { LayoutRoutingModule } from './layouts';
 import { HomeComponent } from './home';
+import { DashboardComponent } from './dashboard';
+
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
@@ -26,12 +28,11 @@ import {
     ErrorComponent
 } from './layouts';
 
-
 @NgModule({
     imports: [
         BrowserModule,
         LayoutRoutingModule,
-        Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
+        Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         PodiumGatewayAccountModule,
@@ -40,6 +41,7 @@ import {
     declarations: [
         JhiMainComponent,
         HomeComponent,
+        DashboardComponent,
         NavbarComponent,
         ErrorComponent,
         PageRibbonComponent,
