@@ -6,7 +6,8 @@ import { OrganisationService } from './organisation.service';
 
 @Component({
     selector: 'jhi-organisation-detail',
-    templateUrl: './organisation-detail.component.html'
+    templateUrl: './organisation-detail.component.html',
+    providers: [OrganisationService]
 })
 export class OrganisationDetailComponent implements OnInit, OnDestroy {
 
