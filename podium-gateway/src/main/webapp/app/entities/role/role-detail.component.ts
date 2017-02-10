@@ -22,7 +22,8 @@ import {AUTHORITIES_MAP} from "../../shared/authority/authority.constants";
 
 @Component({
     selector: 'jhi-role-detail',
-    templateUrl: './role-detail.component.html'
+    templateUrl: './role-detail.component.html',
+    providers: [OrganisationService, UserService]
 })
 export class RoleDetailComponent implements OnInit, OnDestroy {
 
