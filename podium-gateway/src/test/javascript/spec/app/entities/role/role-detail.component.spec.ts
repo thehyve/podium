@@ -13,7 +13,8 @@ import { RoleDetailComponent } from '../../../../../../main/webapp/app/entities/
 import { RoleService } from '../../../../../../main/webapp/app/entities/role/role.service';
 import { Role } from '../../../../../../main/webapp/app/entities/role/role.model';
 import { Organisation, OrganisationService } from '../../../../../../main/webapp/app/entities/organisation';
-import { User, UserService } from '../../../../../../main/webapp/app/shared/user';
+import { User, UserService} from '../../../../../../main/webapp/app/shared/';
+
 
 describe('Component Tests', () => {
 
