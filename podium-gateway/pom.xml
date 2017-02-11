@@ -748,9 +748,9 @@
                     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
                     <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                     <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432/podiumGateway</url>
+                    <url>jdbc:postgresql://localhost:5432/podiumgateway</url>
                     <defaultSchemaName></defaultSchemaName>
-                    <username>podiumUser</username>
+                    <username>podiumuser</username>
                     <password>podiumUser</password>
                     <referenceUrl>hibernate:spring:org.bbmri.podium.domain?dialect=org.hibernate.dialect.PostgreSQL82Dialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
                     <verbose>true</verbose>
