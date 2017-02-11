@@ -4,26 +4,29 @@ set -e
 #-------------------------------------------------------------------------------
 # Check Javadoc generation for UAA and gateway
 #-------------------------------------------------------------------------------
-cd "$PODIUM_BASE"/podium-uaa
-mvn -q "$MAVEN_OPTS" javadoc:javadoc
-cd "$PODIUM_BASE"/podium-gateway
-mvn -q "$MAVEN_OPTS" javadoc:javadoc
-
-mkdir -p "$PODIUM_BASE"/podium-gateway/src/test/features
+if [ -f "mvn" ]; then
+    cd "$HOME"/podium-uaa
+    mvn javadoc:javadoc
+    cd "$HOME"/podium-gateway
+    mvn javadoc:javadoc
+fi
 
 #-------------------------------------------------------------------------------
 # Launch UAA tests
 #-------------------------------------------------------------------------------
-cd "$PODIUM_BASE"/podium-uaa
-mvn -q "$MAVEN_OPTS" test
+cd "$HOME"/podium-uaa
+if [ -f "mvn" ]; then
+    mvn test
+fi
 #-------------------------------------------------------------------------------
 # Launch gateway tests
 #-------------------------------------------------------------------------------
-cd "$PODIUM_BASE"/podium-gateway
-mvn  -q "$MAVEN_OPTS" test \
-    -Dlogging.level.org.bbmri.podium.sample=ERROR \
-    -Dlogging.level.org.bbmri.podium.travis=ERROR
-
+cd "$HOME"/podium-gateway
+if [ -f "mvn" ]; then
+    mvn test \
+        -Dlogging.level.org.bbmri.podium.sample=ERROR \
+        -Dlogging.level.org.bbmri.podium.travis=ERROR
+fi
 if [ -f "tsconfig.json" ]; then
     yarn run test
 fi

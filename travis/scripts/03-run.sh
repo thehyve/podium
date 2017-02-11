@@ -33,7 +33,7 @@ launchCurlOrProtractor() {
     do
         result=0
         if [[ -f "tsconfig.json" ]]; then
-          cd "$PODIUM_BASE"/podium-gateway
+          cd "$HOME"/podium-gateway
           yarn run e2e
         fi
         result=$?
@@ -48,18 +48,27 @@ launchCurlOrProtractor() {
 #-------------------------------------------------------------------------------
 # Package UAA
 #-------------------------------------------------------------------------------
-cd "$PODIUM_BASE"/podium-uaa
-mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
-mv target/*.war podium-uaa.war
+cd "$HOME"/podium-uaa
+if [ -f "mvn" ]; then
+    mvn package -DskipTests=true -P"$PROFILE"
+        mv target/*.war podium-uaa.war
+else
+    echo "No maven for UAA"
+    exit 0
+fi
 
 
 #-------------------------------------------------------------------------------
 # Package gateway
 #-------------------------------------------------------------------------------
-cd "$PODIUM_BASE"/podium-gateway
-mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
-mv target/*.war podium-gateway.war
-
+cd "$HOME"/podium-gateway
+if [ -f "mvn" ]; then
+    mvn package -DskipTests=true -P"$PROFILE"
+    mv target/*.war podium-gateway.war
+else
+    echo "No maven for gateway"
+    exit 0
+fi
 if [ $? -ne 0 ]; then
     echo "Error when packaging"
     exit 1
@@ -69,14 +78,14 @@ fi
 # Run the application
 #-------------------------------------------------------------------------------
 if [ "$RUN_PODIUM" == 1 ]; then
-    cd "$PODIUM_BASE"/podium-uaa
+    cd "$HOME"/podium-uaa
     java -jar podium-uaa.war \
         --spring.profiles.active="$PROFILE" \
         --logging.level.org.bbmri.podium.sample=ERROR \
         --logging.level.org.bbmri.podium.travis=ERROR &
     sleep 80
 
-    cd "$PODIUM_BASE"/podium-gateway
+    cd "$HOME"/podium-gateway
     java -jar podium-gateway.war \
         --spring.profiles.active="$PROFILE" \
         --logging.level.org.bbmri.podium.sample=ERROR \
@@ -86,7 +95,5 @@ if [ "$RUN_PODIUM" == 1 ]; then
     #-------------------------------------------------------------------------------
     # Once everything is started, run the tests
     #-------------------------------------------------------------------------------
-    if [ "$PROTRACTOR" == 1 ]; then
-        launchCurlOrProtractor
-    fi
+    launchCurlOrProtractor
 fi

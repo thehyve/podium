@@ -5,5 +5,8 @@ services:
         image: thehyve/podium-postgresql:latest
         # volumes:
         #     - ~/volumes/podium/podiumGateway/postgresql/:/var/lib/postgresql/
+        environment:
+            - POSTGRES_USER=podiumUser
+            - POSTGRES_PASSWORD=podiumUser
         ports:
             - 5432:5432
