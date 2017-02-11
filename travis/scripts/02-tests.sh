@@ -5,23 +5,23 @@ set -e
 # Check Javadoc generation for UAA and gateway
 #-------------------------------------------------------------------------------
 if [ -f "mvn" ]; then
-    cd "$HOME"/podium-uaa
+    cd "$PODIUM_BASE"/podium-uaa
     mvn javadoc:javadoc
-    cd "$HOME"/podium-gateway
+    cd "$PODIUM_BASE"/podium-gateway
     mvn javadoc:javadoc
 fi
 
 #-------------------------------------------------------------------------------
 # Launch UAA tests
 #-------------------------------------------------------------------------------
-cd "$HOME"/podium-uaa
+cd "$PODIUM_BASE"/podium-uaa
 if [ -f "mvn" ]; then
     mvn test
 fi
 #-------------------------------------------------------------------------------
 # Launch gateway tests
 #-------------------------------------------------------------------------------
-cd "$HOME"/podium-gateway
+cd "$PODIUM_BASE"/podium-gateway
 if [ -f "mvn" ]; then
     mvn test \
         -Dlogging.level.org.bbmri.podium.sample=ERROR \

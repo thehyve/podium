@@ -33,7 +33,7 @@ launchCurlOrProtractor() {
     do
         result=0
         if [[ -f "tsconfig.json" ]]; then
-          cd "$HOME"/podium-gateway
+          cd "$PODIUM_BASE"/podium-gateway
           yarn run e2e
         fi
         result=$?
@@ -48,7 +48,7 @@ launchCurlOrProtractor() {
 #-------------------------------------------------------------------------------
 # Package UAA
 #-------------------------------------------------------------------------------
-cd "$HOME"/podium-uaa
+cd "$PODIUM_BASE"/podium-uaa
 if [ -f "mvn" ]; then
     mvn package -DskipTests=true -P"$PROFILE"
         mv target/*.war podium-uaa.war
@@ -61,7 +61,7 @@ fi
 #-------------------------------------------------------------------------------
 # Package gateway
 #-------------------------------------------------------------------------------
-cd "$HOME"/podium-gateway
+cd "$PODIUM_BASE"/podium-gateway
 if [ -f "mvn" ]; then
     mvn package -DskipTests=true -P"$PROFILE"
     mv target/*.war podium-gateway.war
@@ -78,14 +78,14 @@ fi
 # Run the application
 #-------------------------------------------------------------------------------
 if [ "$RUN_PODIUM" == 1 ]; then
-    cd "$HOME"/podium-uaa
+    cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
         --spring.profiles.active="$PROFILE" \
         --logging.level.org.bbmri.podium.sample=ERROR \
         --logging.level.org.bbmri.podium.travis=ERROR &
     sleep 80
 
-    cd "$HOME"/podium-gateway
+    cd "$PODIUM_BASE"/podium-gateway
     java -jar podium-gateway.war \
         --spring.profiles.active="$PROFILE" \
         --logging.level.org.bbmri.podium.sample=ERROR \
