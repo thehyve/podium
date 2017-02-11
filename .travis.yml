@@ -21,6 +21,7 @@ env:
     - PROFILE=dev
     - RUN_PODIUM=1
     - PROTRACTOR=1
+    - PODIUM_BASE = $TRAVIS_BUILD_DIR
     - PODIUM_TRAVIS=$TRAVIS_BUILD_DIR/travis
     - PODIUM_SCRIPTS=$PODIUM_TRAVIS/scripts
     # environment properties
