@@ -38,6 +38,7 @@ before_install:
   - date
   - sudo /etc/init.d/mysql stop
   - sudo /etc/init.d/postgresql stop
+  - chmod +x $PODIUM_SCRIPTS/*
 install: cd podium-gateway && yarn install
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
