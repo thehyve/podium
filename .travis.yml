@@ -2,11 +2,6 @@ os:
   - linux
 services:
   - docker
-addons:
-  browserstack:
-    username: thehyve1
-    access_key:
-  secure: bEEU1AWnFH5VQ1hCFwhimqj2hwUm/25OrzIAg+Ykt7AYnNix/bjPOp4OP3NJwvICVEcP1CaskFfbbE5Kwgj0NkNm6/aSKEjpxUbG7SGtlnTlfz3j8VVx4p5GqEustbV35N0n6hwAJrk3nu45KEX5VDFN9kqf6NohUi2nRMEbB1a4r/qx2YHTZnetZGiSODpPpgBobMvcfISWgjKryW2o0VIJfNTbZRdTgrV70A010FVcHLKAsXji0TedRtabxpjsWYWFt99C/NXV3iewLxAD0vz7R4t29b5m1d5n4hfT2s1O7sy01TvY5qlvo71Q4FdfEarbYXrZmHlxmXJdf3jtj/BQbn6yfOngV8CMr914NNuuc58cwUCmtf+cOCCenbpVSTptQFJdCkZBE5z8j3ES96O7nztP5nhVCDwdFEmWa9kWvu0huX2aN4eUL1o/fW+WOQwsgMj5pIFWl6Mast3ZXLDknP2K5AUXUx2cc4CXRMEV90Xfqzw+K6GxhNCEyUcPXuqnfjvJ4+jUNuCn7+rm4BT36zAdafLA319YvRDjMLDArT01bntENUVnUG1MlH6Thp9J4aDbsQZslz9Vr8u7r7dRT+58zJR6hyeyXXhFTVU6dWcodDtoyHE/YfZP+hwGNvJpIa/e3J4oI+8FY5/kB0r+vihe/+cWdM6c4BW72Gg=
 language: java
 node_js:
   - "7.5.0"
