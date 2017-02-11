@@ -9,6 +9,8 @@ mvn javadoc:javadoc
 cd "$PODIUM_BASE"/podium-gateway
 mvn javadoc:javadoc
 
+mkdir "$PODIUM_BASE"/podium-gateway/src/tests/features
+
 #-------------------------------------------------------------------------------
 # Launch UAA tests
 #-------------------------------------------------------------------------------
