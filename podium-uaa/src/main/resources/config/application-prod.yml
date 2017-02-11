@@ -32,7 +32,7 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaa
         name: podiumUaa
-        username: podiumUser
+        username: podiumuser
         password: podiumUser
     jpa:
         database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
