@@ -49,26 +49,17 @@ launchCurlOrProtractor() {
 # Package UAA
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-uaa
-if [ -f "mvn" ]; then
-    mvn package -DskipTests=true -P"$PROFILE"
-        mv target/*.war podium-uaa.war
-else
-    echo "No maven for UAA"
-    exit 0
-fi
+mvn package -DskipTests=true -P"$PROFILE"
+mv target/*.war podium-uaa.war
 
 
 #-------------------------------------------------------------------------------
 # Package gateway
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-gateway
-if [ -f "mvn" ]; then
-    mvn package -DskipTests=true -P"$PROFILE"
-    mv target/*.war podium-gateway.war
-else
-    echo "No maven for gateway"
-    exit 0
-fi
+mvn package -DskipTests=true -P"$PROFILE"
+mv target/*.war podium-gateway.war
+
 if [ $? -ne 0 ]; then
     echo "Error when packaging"
     exit 1

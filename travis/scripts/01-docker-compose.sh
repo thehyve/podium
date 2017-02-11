@@ -16,9 +16,5 @@ fi
 if [ -a src/main/docker/elasticsearch.yml ]; then
     docker-compose -f src/main/docker/elasticsearch.yml up -d
 fi
-cd "$PODIUM_BASE"/podium-uaa
-if [ -a src/main/docker/postgresql.yml ]; then
-    docker-compose -f src/main/docker/postgresql.yml up -d
-fi
 
 docker ps -a
