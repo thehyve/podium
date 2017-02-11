@@ -39,6 +39,8 @@ before_install:
   - sudo /etc/init.d/mysql stop
   - sudo /etc/init.d/postgresql stop
   - chmod +x $PODIUM_SCRIPTS/*
+  - ls -la $HOME
+  - ls -la $TRAVIS_BUILD_DIR
 install: cd podium-gateway && yarn install
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
