@@ -41,7 +41,7 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         #url: jdbc:h2:file:./target/h2db/db/podiumgateway;DB_CLOSE_DELAY=-1
-        url: jdbc:postgresql://localhost:5432/podiumGateway
+        url: jdbc:postgresql://localhost:5432/podiumgateway
         username: podiumuser
         password: podiumUser
     h2:
