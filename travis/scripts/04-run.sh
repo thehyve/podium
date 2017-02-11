@@ -86,5 +86,7 @@ if [ "$RUN_PODIUM" == 1 ]; then
     #-------------------------------------------------------------------------------
     # Once everything is started, run the tests
     #-------------------------------------------------------------------------------
-    launchCurlOrProtractor
+    if [ "$PROTRACTOR" == 1 ]; then
+        launchCurlOrProtractor
+    fi
 fi
