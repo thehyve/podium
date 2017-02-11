@@ -2,7 +2,7 @@ version: '2'
 services:
     podiumgateway-postgresql:
         container_name: podiumgateway-postgresql
-        image: postgres:9.5.4
+        image: thehyve/podium-postgresql:latest
         # volumes:
         #     - ~/volumes/podium/podiumGateway/postgresql/:/var/lib/postgresql/
         environment:
