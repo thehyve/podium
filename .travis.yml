@@ -40,6 +40,8 @@ before_install:
   - sudo /etc/init.d/mysql stop
   - sudo /etc/init.d/postgresql stop
   - chmod +x $PODIUM_SCRIPTS/*
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 install: cd podium-gateway && yarn install
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
