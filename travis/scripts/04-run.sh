@@ -49,7 +49,7 @@ launchCurlOrProtractor() {
 # Package UAA
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-uaa
-mvn  -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
+mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
 mv target/*.war podium-uaa.war
 
 
@@ -57,7 +57,7 @@ mv target/*.war podium-uaa.war
 # Package gateway
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-gateway
-mvn  -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
+mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
 mv target/*.war podium-gateway.war
 
 if [ $? -ne 0 ]; then
