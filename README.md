@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=master)](https://travis-ci.org/thehyve/podium)
+[![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=dev)](https://travis-ci.org/thehyve/podium)
+
 # Welcome to the Podium Request Portal
 Podium is the request portal for samples, data and images from BBMRI Biobanks, with the purpose to uniformize the request and review processes for all associated users and organisations.
 
@@ -7,16 +10,18 @@ This application is configured for Service Discovery and Configuration with the 
 
 ## Table of contents
  - [What is Podium?](#description)
- - [Development](#issue)
- - [Feature Requests](#feature)
- - [Submission Guidelines](#submit)
- - [Coding Rules](#rules)
- - [Git Commit Guidelines](#commit)
-
+ - [Development](#development)
+    - [Managing Dependencies](#dependencies)
+ - [Building for Production](#building-for-production)
+ - [Testing](#testing)
+    - [Client Tests](#testing-client)
+    - [Performance Tests](#testing-performance)
+ - [Docker](#docker)
+ - [Continuous Integration](#continuous-integration)
 
 ## What is Podium?
 
-## Development
+## <a href="development"></a>Development
 Before you can build this project, you must install and configure the following dependencies on your machine:
 1. [Node.js][]: We use Node to run a development web server and build the project.
    Depending on your system, you can install Node either from source or as a pre-packaged bundle.
@@ -42,7 +47,7 @@ Add the `help` flag on any command to see how you can use it. For example, `yarn
 
 The `yarn run` command will list all of the scripts available to run for this project.
 
-### Managing dependencies
+### <a href="dependencies"></a>Managing dependencies
 
 For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
 
@@ -66,7 +71,7 @@ Edit `src/main/webapp/content/css/vendor.css` file:
 
 Note: there are still few other things remaining to do for Leaflet that we won't detail here.
 
-## Building for production
+## <a href="building-for-production"></a>" Building for production
 
 To optimize the podiumGateway application for production, run:
 
@@ -79,13 +84,13 @@ To ensure everything worked, run:
 
 Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
 
-## Testing
+## <a href="testing"></a> Testing
 
 To launch your application's tests, run:
 
     mvn clean test
 
-### Client tests
+### <a href="testing-client"></a>Client tests
 
 Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in `src/test/javascript/` and can be run with:
 
@@ -94,7 +99,7 @@ Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in
 UI end-to-end tests are powered by [Protractor][], which is built on top of WebDriverJS. They're located in `src/test/javascript/e2e`
 and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`yarn e2e`) in a second one.
 
-### Performance tests
+### <a href="testing-performance"></a>Performance tests
 
 Performance tests are run by [Gatling][] and written in Scala. They're located in `src/test/gatling` and can be run with:
 
@@ -102,7 +107,7 @@ Performance tests are run by [Gatling][] and written in Scala. They're located i
 
 For more information, refer to the [Running tests page][].
 
-## Using Docker to simplify development (optional)
+## <a href="docker"></a>Using Docker to simplify development (optional)
 
 You can use Docker to improve your Podium development experience. A number of docker-compose configuration are available in the `src/main/docker` folder to launch required third party services.
 For example, to start a postgresql database in a docker container, run:
@@ -124,7 +129,7 @@ Then run:
 
 For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`yo podium:docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
 
-## Continuous Integration (optional)
+## <a href="continuous-integration"></a>Continuous Integration (optional)
 
 To set up a CI environment, consult the [Setting up Continuous Integration][] page.
 
