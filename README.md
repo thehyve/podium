@@ -1,8 +1,6 @@
 [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=master)](https://travis-ci.org/thehyve/podium)
 [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=dev)](https://travis-ci.org/thehyve/podium)
 
-<img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png" style="display:inline;" width="160" height="40">
-
 # Welcome to the Podium Request Portal
 Podium is the request portal for samples, data and images from BBMRI Biobanks, with the purpose to uniformize the request and review processes for all associated users and organisations.
 
@@ -73,7 +71,7 @@ Edit `src/main/webapp/content/css/vendor.css` file:
 
 Note: there are still few other things remaining to do for Leaflet that we won't detail here.
 
-## <a href="building-for-production"></a> Building for production
+## <a href="building-for-production"></a>" Building for production
 
 To optimize the podiumGateway application for production, run:
 
