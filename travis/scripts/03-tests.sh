@@ -4,10 +4,12 @@ set -e
 #-------------------------------------------------------------------------------
 # Check Javadoc generation for UAA and gateway
 #-------------------------------------------------------------------------------
+export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
+
 cd "$PODIUM_BASE"/podium-uaa
-mvn -q javadoc:javadoc
+mvn -B -q javadoc:javadoc
 cd "$PODIUM_BASE"/podium-gateway
-mvn -q javadoc:javadoc
+mvn -B -q javadoc:javadoc
 
 mkdir -p "$PODIUM_BASE"/podium-gateway/src/test/features
 
