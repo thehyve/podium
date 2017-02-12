@@ -27,6 +27,7 @@ env:
     # environment properties
     - SPRING_OUTPUT_ANSI_ENABLED=ALWAYS
     - SPRING_JPA_SHOW_SQL=false
+    - MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
 before_install:
   - nvm install $NODE_VERSION
   - npm install -g npm
