@@ -6,7 +6,7 @@ services:
         # volumes:
         #     - ~/volumes/podium/podiumUaa/postgresql/:/var/lib/postgresql/
         environment:
-            - POSTGRES_USER=podiumUaa
-            - POSTGRES_PASSWORD=
+            - POSTGRES_USER=podiumuser
+            - POSTGRES_PASSWORD=podiumUser
         ports:
-            - 5432:5432
+            - 5432:5433
