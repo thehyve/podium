@@ -28,7 +28,7 @@ spring:
         username: podiumUser
         password: podiumUser
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedH2Dialect
+        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         open-in-view: false
         show-sql: true
