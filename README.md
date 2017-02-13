@@ -1,10 +1,12 @@
-[![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=master)](https://travis-ci.org/thehyve/podium)
-[![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=dev)](https://travis-ci.org/thehyve/podium)
+MASTER: [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=master)](https://travis-ci.org/thehyve/podium)
+DEV: [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=dev)](https://travis-ci.org/thehyve/podium)
+
+<img src="https://github.com/thehyve/podium/assets/browserstack-logo.png" width="250" height="75">
 
 # Welcome to the Podium Request Portal
 Podium is the request portal for samples, data and images from BBMRI Biobanks, with the purpose to uniformize the request and review processes for all associated users and organisations.
 
-This application was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
+The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
 
 This application is configured for Service Discovery and Configuration with the Podium-Registry. On launch, it will refuse to start if it is not able to connect to the Podium-Registry at [http://localhost:8761](http://localhost:8761).
 
@@ -71,7 +73,7 @@ Edit `src/main/webapp/content/css/vendor.css` file:
 
 Note: there are still few other things remaining to do for Leaflet that we won't detail here.
 
-## <a href="building-for-production"></a>" Building for production
+## <a href="building-for-production"></a> Building for production
 
 To optimize the podiumGateway application for production, run:
 
