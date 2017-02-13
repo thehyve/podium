@@ -34,8 +34,8 @@ spring:
         username:
         password:
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedH2Dialect
-        database: H2
+        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
+        database: POSTGRESQL
         open-in-view: false
         show-sql: true
         hibernate:
@@ -98,7 +98,7 @@ jhipster:
     security:
         authentication:
             jwt:
-                secret: 
+                secret:
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration

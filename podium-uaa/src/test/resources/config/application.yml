@@ -24,13 +24,12 @@ spring:
         serialization.write_dates_as_timestamps: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:h2:mem:podiumUaa;DB_CLOSE_DELAY=-1
-        name:
-        username:
-        password:
+        url: jdbc:postgresql://localhost:5432/podiumUaa
+        username: podiumUser
+        password: podiumUser
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedH2Dialect
-        database: H2
+        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
+        database: POSTGRESQL
         open-in-view: false
         show-sql: true
         hibernate:
