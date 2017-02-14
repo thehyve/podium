@@ -58,14 +58,19 @@ describe('Component Tests', () => {
                 set: {
                     template: ''
                 }
-            }).compileComponents();
+            }).compileComponents()
+            .then(() => {
+                fixture = TestBed.createComponent(OrganisationDetailComponent);
+                comp = fixture.componentInstance;
+                service = fixture.debugElement.injector.get(OrganisationService);
+            });
         }));
-
+/*
         beforeEach(() => {
             fixture = TestBed.createComponent(OrganisationDetailComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(OrganisationService);
-        });
+        });*/
 
 
         describe('OnInit', () => {

@@ -37,6 +37,8 @@ import {
     ActiveMenuDirective,
     ErrorComponent
 } from './layouts';
+import {OrganisationService} from "./entities/organisation/organisation.service";
+import {RoleService} from "./entities/role/role.service";
 
 @NgModule({
     imports: [
@@ -64,7 +66,9 @@ import {
         { provide: Document, useValue: document },
         customHttpProvider(),
         PaginationConfig,
-        UserRouteAccessService
+        UserRouteAccessService,
+        OrganisationService,
+        RoleService
     ],
     bootstrap: [ JhiMainComponent ]
 })
