@@ -114,6 +114,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.bbmri.podium</groupId>
+            <artifactId>podium-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
         </dependency>
@@ -505,6 +510,11 @@
             <artifactId>cucumber-spring</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bbmri.podium</groupId>
+            <artifactId>podium-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>

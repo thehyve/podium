@@ -13,6 +13,7 @@ package org.bbmri.podium.domain;
 import org.bbmri.podium.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.bbmri.podium.security.AuthenticatedUser;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -20,15 +21,13 @@ import org.hibernate.validator.constraints.Email;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
+import javax.security.auth.Subject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
 @Table(name = "podium_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "user")
-public class User extends AbstractAuditingEntity implements Serializable {
+public class User extends AbstractAuditingEntity implements AuthenticatedUser, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -89,10 +88,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name="specialism")
     private String specialism;
 
-    @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
-
     @Size(min = 2, max = 5)
     @Column(name = "lang_key", length = 5)
     private String langKey;
@@ -102,12 +97,33 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     private String activationKey;
 
+    @Column(name = "activation_key_date", nullable = true)
+    private ZonedDateTime activationKeyDate = null;
+
     @Size(max = 20)
     @Column(name = "reset_key", length = 20)
     private String resetKey;
 
     @Column(name = "reset_date", nullable = true)
     private ZonedDateTime resetDate = null;
+
+    @Column(name="deleted")
+    private boolean deleted = false;
+
+    @Column(name="email_verified")
+    private boolean emailVerified = false;
+
+    @Column(name="admin_verified")
+    private boolean adminVerified = false;
+
+    @Column(name="failed_login_attempts")
+    private int failedLoginAttempts = 0;
+
+    @Column(name="account_locked")
+    private boolean accountLocked = false;
+
+    @Column(name = "account_lock_date", nullable = true)
+    private ZonedDateTime accountLockDate = null;
 
     @JsonIgnore
     @ManyToMany
@@ -157,6 +173,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public Collection<String> getAuthorityNames() {
+        return getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
     }
 
     public void setPassword(String password) {
@@ -228,11 +249,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     }
 
     public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+        return emailVerified && adminVerified;
     }
 
     public String getActivationKey() {
@@ -267,8 +284,85 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.langKey = langKey;
     }
 
+    public ZonedDateTime getActivationKeyDate() {
+        return activationKeyDate;
+    }
+
+    public void setActivationKeyDate(ZonedDateTime activationKeyDate) {
+        this.activationKeyDate = activationKeyDate;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public boolean isAdminVerified() {
+        return adminVerified;
+    }
+
+    public void setAdminVerified(boolean adminVerified) {
+        this.adminVerified = adminVerified;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void resetFailedLoginAttempts() {
+        this.failedLoginAttempts = 0;
+    }
+
+    public void increaseFailedLoginAttempts() {
+        this.failedLoginAttempts++;
+    }
+
+    public boolean isAccountLocked() {
+        return accountLocked;
+    }
+
+    public void setAccountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
+    public ZonedDateTime getAccountLockDate() {
+        return accountLockDate;
+    }
+
+    public void setAccountLockDate(ZonedDateTime accountLockDate) {
+        this.accountLockDate = accountLockDate;
+    }
+
     public Set<Authority> getAuthorities() {
         return roles.stream().map(Role::getAuthority).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Map<UUID, Collection<String>> getOrganisationAuthorities() {
+        Map<UUID, Collection<String>> result = new HashMap<>();
+        for(Role role: getRoles()) {
+            if (role.getOrganisation() != null) {
+                UUID organisationUuid = role.getOrganisation().getUuid();
+                Collection<String> organisationAuthorities = result.get(organisationUuid);
+                if (organisationAuthorities == null) {
+                    organisationAuthorities = new HashSet<>();
+                    result.put(organisationUuid, organisationAuthorities);
+                }
+                organisationAuthorities.add(role.getAuthority().getName());
+            }
+        }
+        return result;
     }
 
     public Set<Role> getRoles() { return roles; }
@@ -299,13 +393,18 @@ public class User extends AbstractAuditingEntity implements Serializable {
     }
 
     @Override
+    public String getName() {
+        return login;
+    }
+
+    @Override
     public String toString() {
         return "User{" +
             "login='" + login + '\'' +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", activated='" + activated + '\'' +
+            ", activated='" + isActivated() + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
             "}";

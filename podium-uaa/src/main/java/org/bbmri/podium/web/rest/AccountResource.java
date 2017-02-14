@@ -46,9 +46,6 @@ public class AccountResource {
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     @Inject
-    private UserRepository userRepository;
-
-    @Inject
     private UserService userService;
 
     @Inject
@@ -68,9 +65,9 @@ public class AccountResource {
         HttpHeaders textPlainHeaders = new HttpHeaders();
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
 
-        return userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase())
+        return userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase())
             .map(user -> new ResponseEntity<>("login already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
-            .orElseGet(() -> userRepository.findOneByEmail(managedUserVM.getEmail())
+            .orElseGet(() -> userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail())
                 .map(user -> new ResponseEntity<>("e-mail address already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
                 .orElseGet(() -> {
                     User user = userService.registerUser(managedUserVM);
@@ -130,12 +127,12 @@ public class AccountResource {
     @PostMapping("/account")
     @Timed
     public ResponseEntity<String> saveAccount(@Valid @RequestBody UserRepresentation userDTO) {
-        Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
+        Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
         }
-        return userRepository
-            .findOneByLogin(SecurityUtils.getCurrentUserLogin())
+        return userService
+            .getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin())
             .map(u -> {
                 userService.updateUserAccount(userDTO);
                 return new ResponseEntity<String>(HttpStatus.OK);

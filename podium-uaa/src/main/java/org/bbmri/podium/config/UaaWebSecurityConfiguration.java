@@ -32,6 +32,9 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Inject
     private UserDetailsService userDetailsService;
 
+    @Inject
+    public CustomAuthenticationProvider customAuthenticationProvider;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -40,6 +43,7 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Inject
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
+            .authenticationProvider(customAuthenticationProvider)
             .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder());
     }

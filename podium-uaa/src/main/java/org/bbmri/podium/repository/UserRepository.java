@@ -27,20 +27,20 @@ import java.util.UUID;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findOneByActivationKey(String activationKey);
+    Optional<User> findOneByDeletedIsFalseAndActivationKey(String activationKey);
 
-    List<User> findAllByActivatedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
+    List<User> findAllByDeletedIsFalseAndActivatedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
 
-    Optional<User> findOneByResetKey(String resetKey);
+    Optional<User> findOneByDeletedIsFalseAndResetKey(String resetKey);
 
-    Optional<User> findOneByEmail(String email);
+    Optional<User> findOneByDeletedIsFalseAndEmail(String email);
 
-    Optional<User> findOneByLogin(String login);
+    Optional<User> findOneByDeletedIsFalseAndLogin(String login);
 
-    Optional<User> findOneByUuid(UUID uuid);
+    Optional<User> findOneByDeletedIsFalseAndUuid(UUID uuid);
 
-    @Query(value = "select distinct user from User user left join fetch user.roles r left join fetch r.authority",
-        countQuery = "select count(user) from User user")
+    @Query(value = "select distinct user from User user left join fetch user.roles r left join fetch r.authority where user.deleted = false",
+        countQuery = "select count(user) from User user where user.deleted = false")
     Page<User> findAllWithAuthorities(Pageable pageable);
 
 }

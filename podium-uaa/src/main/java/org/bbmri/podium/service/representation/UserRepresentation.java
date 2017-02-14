@@ -17,6 +17,7 @@ import org.bbmri.podium.domain.User;
 
 import org.hibernate.validator.constraints.Email;
 
+import javax.persistence.Column;
 import javax.validation.constraints.*;
 import java.util.Set;
 import java.util.UUID;
@@ -53,7 +54,12 @@ public class UserRepresentation {
 
     private String specialism;
 
-    private boolean activated = false;
+    private boolean emailVerified;
+
+    private boolean adminVerified;
+
+    private boolean accountLocked;
+
 
     @Size(min = 2, max = 5)
     private String langKey;
@@ -74,7 +80,9 @@ public class UserRepresentation {
         this.department = user.getDepartment();
         this.jobTitle = user.getJobTitle();
         this.specialism = user.getSpecialism();
-        this.activated = user.isActivated();
+        this.emailVerified = user.isEmailVerified();
+        this.adminVerified = user.isAdminVerified();
+        this.accountLocked = user.isAccountLocked();
         this.langKey = user.getLangKey();
         this.authorities = user.getAuthorities().stream().map(Authority::getName)
             .collect(Collectors.toSet());
@@ -98,10 +106,6 @@ public class UserRepresentation {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
     }
 
     public void setLangKey(String langKey) {
@@ -146,12 +150,20 @@ public class UserRepresentation {
         return specialism;
     }
 
-    public boolean isActivated() {
-        return activated;
-    }
-
     public String getLangKey() {
         return langKey;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public boolean isAdminVerified() {
+        return adminVerified;
+    }
+
+    public boolean isAccountLocked() {
+        return accountLocked;
     }
 
     public Set<String> getAuthorities() {
@@ -165,7 +177,6 @@ public class UserRepresentation {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
             ", authorities=" + authorities +
             "}";
