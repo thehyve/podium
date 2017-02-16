@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
+export * from './validators/email-validator.directive';
 export * from './alert/alert.component';
 export * from './alert/alert-error.component';
 export * from './auth/csrf.service';
@@ -18,6 +29,7 @@ export * from './constants/pagination.constants';
 export * from './user/account.model';
 export * from './user/user.model';
 export * from './user/user.service';
+export * from './specialism/specialism.component';
 export * from './shared-libs.module';
 export * from './shared-common.module';
 export * from './shared.module';

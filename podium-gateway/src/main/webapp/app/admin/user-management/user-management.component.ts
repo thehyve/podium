@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,7 +42,8 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
         private parseLinks: ParseLinks,
         private alertService: AlertService,
         private principal: Principal,
-        private eventManager: EventManager,        private paginationUtil: PaginationUtil,
+        private eventManager: EventManager,
+        private paginationUtil: PaginationUtil,
         private paginationConfig: PaginationConfig,
         private activatedRoute: ActivatedRoute,
         private router: Router

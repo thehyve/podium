@@ -1,0 +1,28 @@
+{
+    "podiumGatewayApp": {
+        "role" : {
+            "home": {
+                "title": "Roles",
+                "createLabel": "Create a new Role",
+                "createOrEditLabel": "Create or edit a Role",
+                "search": "Search for Role"
+            },
+            "delete": {
+                "question": "Are you sure you want to delete Role {{ id }}?"
+            },
+            "detail": {
+                "title": "Role"
+            },
+            "users": "Users",
+            "organisation": "Organisation",
+            "authority": "Authority"
+        }
+    },
+    "podiumuaaApp": {
+        "role" : {
+            "created": "A new Role is created with identifier {{ param }}",
+            "updated": "A Role is updated with identifier {{ param }}",
+            "deleted": "A Role is deleted with identifier {{ param }}"
+        }
+    }
+}

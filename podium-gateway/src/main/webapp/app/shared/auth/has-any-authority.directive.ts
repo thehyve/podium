@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 import { Directive, ElementRef, Input, Renderer, OnInit } from '@angular/core';
 import { Principal } from './principal.service';
 
@@ -22,11 +32,11 @@ export class HasAnyAuthorityDirective implements OnInit {
     }
 
     private setVisible () {
-        this.renderer.setElementClass(this.el.nativeElement, 'invisible', false);
+        this.renderer.setElementClass(this.el.nativeElement, 'hidden', false);
     }
 
     private setHidden () {
-        this.renderer.setElementClass(this.el.nativeElement, 'invisible', true);
+        this.renderer.setElementClass(this.el.nativeElement, 'hidden', true);
     }
 
     private setVisibilitySync () {

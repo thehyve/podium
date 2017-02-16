@@ -1,3 +1,13 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 
 /* ==========================================================================
 Navbar
@@ -10,6 +20,7 @@ Navbar
 .jh-navbar {
     background-color: #353d47;
     padding: .2em 1em;
+    border-radius: 0;
     .profile-image {
         margin: -10px 0px;
         height: 40px;

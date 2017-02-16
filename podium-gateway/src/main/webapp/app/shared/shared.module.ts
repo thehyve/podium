@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
@@ -16,7 +26,9 @@ import {
     Principal,
     HasAuthorityDirective,
     HasAnyAuthorityDirective,
-    PodiumLoginComponent
+    EmailValidatorDirective,
+    PodiumLoginComponent,
+    SpecialismComponent
 } from './';
 
 @NgModule({
@@ -26,6 +38,8 @@ import {
     ],
     declarations: [
         PodiumLoginComponent,
+        SpecialismComponent,
+        EmailValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective
     ],
@@ -46,6 +60,8 @@ import {
     exports: [
         PodiumGatewaySharedCommonModule,
         PodiumLoginComponent,
+        SpecialismComponent,
+        EmailValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
         DatePipe

@@ -1,3 +1,13 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 
 /* ==============================================================
 Bootstrap tweaks
@@ -74,10 +84,6 @@ table td[class*=col-], table th[class*=col-] {
     position: static;
     display: table-cell;
     float: none;
-}
-
-.footer {
-    border-top: 1px solid rgba(0,0,0,.125);
 }
 
 /* ==========================================================================
@@ -228,5 +234,55 @@ ui bootstrap tweaks
     outline: none;
 }
 
+
+/* ==========================================================================
+Material design icons - self hosting
+http://google.github.io/material-design-icons/
+========================================================================== */
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(~material-design-icons/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(~material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+    url(~material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
+    url(~material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-flex;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    vertical-align: middle;
+    margin-bottom: 3px;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+/* ==========================================================================
+Additional classes
+========================================================================== */
+.hidden {
+    display: none !important;
+}
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */

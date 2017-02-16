@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 package org.bbmri.podium.web.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,6 +21,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Utility class for testing REST controllers.
@@ -95,6 +107,24 @@ public class TestUtil {
      */
     public static ZonedDateTimeMatcher sameInstant(ZonedDateTime date) {
         return new ZonedDateTimeMatcher(date);
+    }
+
+    /**
+     * Verifies the equals/hashcode contract on the domain object.
+     */
+    public static void equalsVerifier(Class clazz) throws Exception {
+        Object domainObject1 = clazz.getConstructor().newInstance();
+        assertThat(domainObject1.toString()).isNotNull();
+        assertThat(domainObject1).isEqualTo(domainObject1);
+        assertThat(domainObject1.hashCode()).isEqualTo(domainObject1.hashCode());
+        // Test with an instance of another class
+        Object testOtherObject = new Object();
+        assertThat(domainObject1).isNotEqualTo(testOtherObject);
+        // Test with an instance of the same class
+        Object domainObject2 = clazz.getConstructor().newInstance();
+        assertThat(domainObject1).isNotEqualTo(domainObject2);
+        // HashCodes are equals because the objects are not persisted yet
+        assertThat(domainObject1.hashCode()).isEqualTo(domainObject2.hashCode());
     }
 
 }

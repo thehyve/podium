@@ -1,3 +1,13 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
 <div *ngIf="user">
     <h2><span jhiTranslate="userManagement.detail.title">User</span> "{{user.login}}"</h2>
     <dl class="row">
@@ -9,6 +19,16 @@
         <dd>{{user.lastName}}</dd>
         <dt><span jhiTranslate="userManagement.email">Email</span></dt>
         <dd>{{user.email}}</dd>
+        <dt><span jhiTranslate="userManagement.telephone">Telephone</span></dt>
+        <dd>{{user.telephone}}</dd>
+        <dt><span jhiTranslate="userManagement.institute">Institute</span></dt>
+        <dd>{{user.institute}}</dd>
+        <dt><span jhiTranslate="userManagement.department">Department</span></dt>
+        <dd>{{user.email}}</dd>
+        <dt><span jhiTranslate="userManagement.jobTitle">Function</span></dt>
+        <dd>{{user.jobTitle}}</dd>
+        <dt><span jhiTranslate="userManagement.specialism">Specialism</span></dt>
+        <dd>{{user.specialism}}</dd>
         <dt><span jhiTranslate="userManagement.activated">Activated</span></dt>
         <dd>{{user.activated}}</dd>
         <dt><span jhiTranslate="userManagement.langKey">Lang Key</span></dt>

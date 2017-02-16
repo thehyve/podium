@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
 <databaseChangeLog
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="./changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170202131910_added_entity_Organisation.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170202133114_added_entity_Role.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170203135118_added_uuid_fields.xml" relativeToChangelogFile="true"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="./changelog/20170202133114_added_entity_constraints_Role.xml" relativeToChangelogFile="true"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <include file="./changelog/20170207104100_added_organisation_and_roles_data.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170209105123_added_user_fields.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

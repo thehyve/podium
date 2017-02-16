@@ -1,9 +1,21 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 
 /* ==========================================================================
 Main page styles
 ========================================================================== */
 
 .welcome-container {
+    margin-top: 70px;
+
     h1.title-header, p.sub-title-header {
         text-align: center;
     }

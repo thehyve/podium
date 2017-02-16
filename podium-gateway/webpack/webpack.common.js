@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 const webpack = require('webpack');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -58,7 +68,7 @@ module.exports = function (options) {
                 {
                     test: /\.(jpe?g|png|gif|svg|woff|woff2|ttf|eot)$/i,
                     loaders: [
-                        'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+                        'file-loader?hash=sha512&digest=hex&limit=100000&name=[hash].[ext]',
                         'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
                     ]
                 },

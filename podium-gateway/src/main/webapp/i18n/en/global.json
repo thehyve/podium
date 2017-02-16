@@ -1,25 +1,51 @@
 {
     "global": {
-        "title": "PodiumGateway",
+        "title": "Podium Request Portal",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
         "menu": {
             "home": "Home",
+            "requests": "My Requests",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
+                "role": "Role",
+                "organisation": "Organisation",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
                 "main": "Account",
-                "settings": "Settings",
+                "profile": "Profile",
                 "password": "Password",
                 "sessions": "Sessions",
                 "login": "Sign in",
                 "logout": "Sign out",
                 "register": "Register"
             },
-            "admin": {
-                "main": "Administration",
+            "bbmri_admin": {
+                "main": "BBMRI",
+                "header": "Global",
+                "orgConfiguration": "Organisation configuration",
+                "userManagement": "User management",
+                "formConfiguration": "Form configuration"
+            },
+            "organisation": {
+                "main": "Organisation",
+                "org_admin": {
+                    "main": "Admin",
+                    "orgConfiguration": "Organisation configuration",
+                    "userManagement": "User management",
+                    "formConfiguration": "Form configuration"
+                },
+                "org_coordinator": {
+                    "main": "Coordination",
+                    "requests": "Requests"
+                },
+                "org_reviewer": {
+                    "reviews": "My Reviews"
+                }
+            },
+            "podium": {
+                "main": "Podium",
                 "gateway": "Gateway",
                 "userManagement": "User management",
                 "tracker": "User tracker",
@@ -37,12 +63,26 @@
         "form": {
             "username": "Username",
             "username.placeholder": "Your username",
+            "firstName": "First name",
+            "firstName.placeholder": "Your first name",
+            "lastName": "Last name",
+            "lastName.placeholder": "Your last name",
             "newpassword": "New password",
             "newpassword.placeholder": "New password",
             "confirmpassword": "New password confirmation",
             "confirmpassword.placeholder": "Confirm the new password",
             "email": "E-mail",
-            "email.placeholder": "Your e-mail"
+            "email.placeholder": "Your e-mail",
+            "telephone": "Telephone",
+            "telephone.placeholder": "Your telephone number",
+            "institute": "Institute",
+            "institute.placeholder": "Your institute",
+            "department": "Department",
+            "department.placeholder": "Your department",
+            "jobTitle": "Function",
+            "jobTitle.placeholder": "Your function",
+            "Specialism": "Specialism",
+            "specialism.placeholder": "Your specialism"
         },
         "messages": {
             "info": {
@@ -62,14 +102,14 @@
             "validate": {
                 "newpassword": {
                     "required": "Your password is required.",
-                    "minlength": "Your password is required to be at least 4 characters.",
-                    "maxlength": "Your password cannot be longer than 50 characters.",
+                    "minlength": "Your password is required to be at least 8 characters.",
+                    "maxlength": "Your password cannot be longer than 1000 characters.",
                     "strength": "Password strength:"
                 },
                 "confirmpassword": {
                     "required": "Your confirmation password is required.",
-                    "minlength": "Your confirmation password is required to be at least 4 characters.",
-                    "maxlength": "Your confirmation password cannot be longer than 50 characters."
+                    "minlength": "Your confirmation password is required to be at least 8 characters.",
+                    "maxlength": "Your confirmation password cannot be longer than 1000 characters."
                 },
                 "email": {
                     "required": "Your e-mail is required.",
