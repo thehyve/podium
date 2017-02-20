@@ -140,7 +140,7 @@ public class AccountResource {
                 userService.updateUserAccount(userDTO);
                 return new ResponseEntity<String>(HttpStatus.OK);
             })
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**
@@ -174,7 +174,10 @@ public class AccountResource {
             .map(user -> {
                 mailService.sendPasswordResetMail(user);
                 return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
-            }).orElse(new ResponseEntity<>("e-mail address not registered", HttpStatus.BAD_REQUEST));
+            }).orElseGet(() -> {
+                mailService.sendPasswordResetMailNoUser(mail);
+                return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
+            });
     }
 
     /**
