@@ -142,7 +142,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="institute" >Institute</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.institute" id="institute"
-                           #institute="ngModel" name="institute" required minlength="1" maxlength="100"
+                           #institute="ngModel" name="institute" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.institute.placeholder' | translate}}">
                     <div *ngIf="institute.dirty && institute.invalid">
                         <small class="form-text text-danger" *ngIf="institute.errors.required">
@@ -161,7 +161,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="department" >Department</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.department" id="department"
-                           #department="ngModel" name="department" required minlength="1" maxlength="100"
+                           #department="ngModel" name="department" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.department.placeholder' | translate}}">
                     <div *ngIf="department.dirty && department.invalid">
                         <small class="form-text text-danger" *ngIf="department.errors.required">
@@ -181,7 +181,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="jobTitle" >Function</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.jobTitle" id="jobTitle"
-                           #jobTitle="ngModel" name="jobTitle" required minlength="1" maxlength="100"
+                           #jobTitle="ngModel" name="jobTitle" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.jobTitle.placeholder' | translate}}">
                     <div *ngIf="jobTitle.dirty && jobTitle.invalid">
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.required">
