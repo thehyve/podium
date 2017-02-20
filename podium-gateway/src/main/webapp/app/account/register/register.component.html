@@ -66,7 +66,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="firstName" >First name</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.firstName" id="firstName"
-                           #firstName="ngModel" name="firstName" required minlength="1"
+                           #firstName="ngModel" name="firstName" required minlength="1" maxlength="50"
                            placeholder="{{'global.form.firstName.placeholder' | translate}}">
                     <div *ngIf="firstName.dirty && firstName.invalid">
                         <small class="form-text text-danger" *ngIf="firstName.errors.required">
@@ -85,7 +85,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="lastName" >Last name</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.lastName" id="lastName"
-                           #lastName="ngModel" name="lastName" required minlength="1"
+                           #lastName="ngModel" name="lastName" required minlength="1" maxlength="50"
                            placeholder="{{'global.form.lastName.placeholder' | translate}}">
                     <div *ngIf="lastName.dirty && lastName.invalid">
                         <small class="form-text text-danger" *ngIf="lastName.errors.required">
@@ -126,14 +126,17 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="telephone" >Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
-                           #telephone="ngModel" name="telephone" required maxlength=100
+                           #telephone="ngModel" name="telephone" required maxlength=15 pattern="^[0-9]+$"
                            placeholder="{{'global.form.telephone.placeholder' | translate}}">
                     <div *ngIf="telephone.dirty && telephone.invalid">
                         <small class="form-text text-danger" *ngIf="telephone.errors.required">
                             Your telephone is required.
                         </small>
+                        <small class="form-text text-danger" *ngIf="telephone.errors.pattern">
+                            Your telephone must be numbers only.
+                        </small>
                         <small class="form-text text-danger" *ngIf="telephone.errors.maxlength">
-                            Your telephone cannot be longer than 50 characters.
+                            Your telephone cannot be longer than 15 characters.
                         </small>
                     </div>
                 </div>
@@ -142,7 +145,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="institute" >Institute</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.institute" id="institute"
-                           #institute="ngModel" name="institute" required minlength="1"
+                           #institute="ngModel" name="institute" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.institute.placeholder' | translate}}">
                     <div *ngIf="institute.dirty && institute.invalid">
                         <small class="form-text text-danger" *ngIf="institute.errors.required">
@@ -152,7 +155,7 @@
                             Your institute is required to be at least 1 character.
                         </small>
                         <small class="form-text text-danger" *ngIf="institute.errors.maxlength">
-                            Your institute cannot be longer than 50 characters.
+                            Your institute cannot be longer than 150 characters.
                         </small>
                     </div>
                 </div>
@@ -161,7 +164,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="department" >Department</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.department" id="department"
-                           #department="ngModel" name="department" required minlength="1"
+                           #department="ngModel" name="department" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.department.placeholder' | translate}}">
                     <div *ngIf="department.dirty && department.invalid">
                         <small class="form-text text-danger" *ngIf="department.errors.required">
@@ -171,7 +174,7 @@
                             Your department is required to be at least 1 character.
                         </small>
                         <small class="form-text text-danger" *ngIf="department.errors.maxlength">
-                            Your department cannot be longer than 50 characters.
+                            Your department cannot be longer than 150 characters.
                         </small>
                     </div>
                 </div>
@@ -181,9 +184,8 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="jobTitle" >Function</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.jobTitle" id="jobTitle"
-                           #jobTitle="ngModel" name="jobTitle" required minlength="1"
-                           placeholder="{{'global.form.jobTitle.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           #jobTitle="ngModel" name="jobTitle" required minlength="1" maxlength="150"
+                           placeholder="{{'global.form.jobTitle.placeholder' | translate}}">
                     <div *ngIf="jobTitle.dirty && jobTitle.invalid">
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.required">
                             Your job title is required.
@@ -192,7 +194,7 @@
                             Your job title is required to be at least 1 character.
                         </small>
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.maxlength">
-                            Your job title cannot be longer than 50 characters.
+                            Your job title cannot be longer than 150 characters.
                         </small>
                     </div>
                 </div>
