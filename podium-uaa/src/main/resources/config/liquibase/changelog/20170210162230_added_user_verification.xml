@@ -18,23 +18,22 @@
 
     <!--
         Added fields to User: telephone, institute, department, job_title, specialism.
-.
     -->
     <changeSet id="20170210162230-1" author="gijs@thehyve.nl">
         <addColumn tableName="podium_user">
-            <column name="deleted" type="boolean">
+            <column name="deleted" type="boolean" valueBoolean="false">
             </column>
-            <column name="email_verified" type="boolean">
+            <column name="email_verified" type="boolean" valueBoolean="true">
             </column>
-            <column name="admin_verified" type="boolean">
+            <column name="admin_verified" type="boolean" valueBoolean="true">
             </column>
-            <column name="failed_login_attempts" type="number">
+            <column name="failed_login_attempts" type="integer" defaultValue="0">
             </column>
-            <column name="account_locked" type="boolean">
+            <column name="account_locked" type="boolean" valueBoolean="false">
             </column>
-            <column name="account_lock_date" type="date">
+            <column name="account_lock_date" type="timestamp">
             </column>
-            <column name="activation_key_date" type="date">
+            <column name="activation_key_date" type="timestamp">
             </column>
         </addColumn>
         <dropColumn tableName="podium_user" columnName="activated"/>

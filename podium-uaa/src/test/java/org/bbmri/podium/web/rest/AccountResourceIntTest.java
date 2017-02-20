@@ -54,9 +54,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AccountResourceIntTest {
 
     @Inject
-    private UserRepository userRepository;
-
-    @Inject
     private AuthorityRepository authorityRepository;
 
     @Inject
@@ -78,12 +75,10 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail((User) anyObject());
 
         AccountResource accountResource = new AccountResource();
-        ReflectionTestUtils.setField(accountResource, "userRepository", userRepository);
         ReflectionTestUtils.setField(accountResource, "userService", userService);
         ReflectionTestUtils.setField(accountResource, "mailService", mockMailService);
 
         AccountResource accountUserMockResource = new AccountResource();
-        ReflectionTestUtils.setField(accountUserMockResource, "userRepository", userRepository);
         ReflectionTestUtils.setField(accountUserMockResource, "userService", mockUserService);
         ReflectionTestUtils.setField(accountUserMockResource, "mailService", mockMailService);
 
@@ -156,7 +151,6 @@ public class AccountResourceIntTest {
         validUser.setFirstName("Joe");
         validUser.setLastName("Shmoe");
         validUser.setEmail("joe@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -166,7 +160,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> user = userRepository.findOneByLogin("joe");
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isTrue();
     }
 
@@ -180,7 +174,6 @@ public class AccountResourceIntTest {
         invalidUser.setFirstName("Funky");
         invalidUser.setLastName("One");
         invalidUser.setEmail("funky@example.com");
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -190,7 +183,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByEmail("funky@example.com");
+        Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
     }
 
@@ -204,7 +197,6 @@ public class AccountResourceIntTest {
         invalidUser.setFirstName("Bob");
         invalidUser.setLastName("Green");
         invalidUser.setEmail("invalid"); // invalid
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -214,7 +206,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByLogin("bob");
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("bob");
         assertThat(user.isPresent()).isFalse();
     }
 
@@ -228,7 +220,6 @@ public class AccountResourceIntTest {
         invalidUser.setFirstName("Bob");
         invalidUser.setLastName("Green");
         invalidUser.setEmail("bob@example.com"); // invalid
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -238,7 +229,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByLogin("bob");
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("bob");
         assertThat(user.isPresent()).isFalse();
     }
 
@@ -250,7 +241,6 @@ public class AccountResourceIntTest {
         duplicate.setFirstName(original.getFirstName());
         duplicate.setLastName(original.getLastName());
         duplicate.setEmail(original.getEmail());
-        duplicate.setActivated(original.isActivated());
         duplicate.setLangKey(original.getLangKey());
         duplicate.setAuthorities(original.getAuthorities());
         return duplicate;
@@ -267,7 +257,6 @@ public class AccountResourceIntTest {
         validUser.setFirstName("Alice");
         validUser.setLastName("Something");
         validUser.setEmail("alice@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -289,7 +278,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().is4xxClientError());
 
-        Optional<User> userDup = userRepository.findOneByEmail("alicejr@example.com");
+        Optional<User> userDup = userService.getUserWithAuthoritiesByEmail("alicejr@example.com");
         assertThat(userDup.isPresent()).isFalse();
     }
 
@@ -304,7 +293,6 @@ public class AccountResourceIntTest {
         validUser.setFirstName("John");
         validUser.setLastName("Doe");
         validUser.setEmail("john@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -326,7 +314,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().is4xxClientError());
 
-        Optional<User> userDup = userRepository.findOneByLogin("johnjr");
+        Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("johnjr");
         assertThat(userDup.isPresent()).isFalse();
     }
 
@@ -340,7 +328,6 @@ public class AccountResourceIntTest {
         validUser.setFirstName("Bad");
         validUser.setLastName("Guy");
         validUser.setEmail("badguy@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
 
@@ -350,7 +337,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> userDup = userRepository.findOneByLogin("badguy");
+        Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
         assertThat(userDup.get().getAuthorities()).hasSize(1)
             .containsExactly(authorityRepository.findOne(Authority.RESEARCHER));
@@ -364,7 +351,6 @@ public class AccountResourceIntTest {
         invalidUser.setFirstName("Funky");
         invalidUser.setLastName("One");
         invalidUser.setEmail("funky@example.com");
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -374,7 +360,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByEmail("funky@example.com");
+        Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
     }
 }

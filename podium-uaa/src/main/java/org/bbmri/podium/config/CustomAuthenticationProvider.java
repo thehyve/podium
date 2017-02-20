@@ -24,10 +24,10 @@ import java.util.Optional;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    static final long MAX_FAILED_LOGIN_ATTEMPTS = 10;
-    static final long ACCOUNT_BLOCKING_PERIOD_MINUTES = 5; // 5 minutes
-
     private final Logger log = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
+
+    @Autowired
+    UaaProperties uaaProperties;
 
     @Autowired
     UserService userService;
@@ -56,7 +56,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
         if (user.isAccountLocked()) {
             long intervalMinutes = Duration.between(ZonedDateTime.now(), user.getAccountLockDate()).toMinutes();
-            if (intervalMinutes > ACCOUNT_BLOCKING_PERIOD_MINUTES) {
+            if (intervalMinutes > uaaProperties.getSecurity().getAccountBlockingPeriodMinutes()) {
                 // unblock account
                 log.info("Unblocking blocked account for user " + user.getLogin());
                 user.resetFailedLoginAttempts();
@@ -81,7 +81,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // failed login attempt
         user.increaseFailedLoginAttempts();
         log.info("Login failed for user " + user.getLogin() + ". Failed attempt number " + user.getFailedLoginAttempts() + ".");
-        if (user.getFailedLoginAttempts() >= MAX_FAILED_LOGIN_ATTEMPTS) {
+        if (user.getFailedLoginAttempts() >= uaaProperties.getSecurity().getMaxFailedLoginAttempts()) {
             // block account
             user.setAccountLocked(true);
             user.setAccountLockDate(ZonedDateTime.now());

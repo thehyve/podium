@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByDeletedIsFalseAndActivationKey(String activationKey);
 
-    List<User> findAllByDeletedIsFalseAndActivatedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
+    List<User> findAllByDeletedIsFalseAndEmailVerifiedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
 
     Optional<User> findOneByDeletedIsFalseAndResetKey(String resetKey);
 

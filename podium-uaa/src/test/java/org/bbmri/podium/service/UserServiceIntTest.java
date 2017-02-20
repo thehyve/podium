@@ -86,7 +86,6 @@ public class UserServiceIntTest {
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
         String resetKey = RandomUtil.generateResetKey();
-        user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
 
@@ -105,7 +104,6 @@ public class UserServiceIntTest {
         User user = userService.createUser(testUserData);
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
-        user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey("1234");
         userRepository.save(user);
@@ -121,7 +119,6 @@ public class UserServiceIntTest {
         String oldPassword = user.getPassword();
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(2);
         String resetKey = RandomUtil.generateResetKey();
-        user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
         userRepository.save(user);
@@ -138,7 +135,7 @@ public class UserServiceIntTest {
     public void testFindNotActivatedUsersByCreationDateBefore() {
         userService.removeNotActivatedUsers();
         ZonedDateTime now = ZonedDateTime.now();
-        List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minusDays(3));
+        List<User> users = userRepository.findAllByDeletedIsFalseAndEmailVerifiedIsFalseAndCreatedDateBefore(now.minusDays(3));
         assertThat(users).isEmpty();
     }
 }
