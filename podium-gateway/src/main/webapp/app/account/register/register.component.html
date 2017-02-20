@@ -182,8 +182,7 @@
                     <label  class="form-control-label" for="jobTitle" >Function</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.jobTitle" id="jobTitle"
                            #jobTitle="ngModel" name="jobTitle" required minlength="1"
-                           placeholder="{{'global.form.jobTitle.placeholder' | translate}}"
-                           pattern="^[_'.@A-Za-z]*$">
+                           placeholder="{{'global.form.jobTitle.placeholder' | translate}}">
                     <div *ngIf="jobTitle.dirty && jobTitle.invalid">
                         <small class="form-text text-danger" *ngIf="jobTitle.errors.required">
                             Your job title is required.
