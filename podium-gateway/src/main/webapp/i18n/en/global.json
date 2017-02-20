@@ -82,7 +82,8 @@
             "jobTitle": "Function",
             "jobTitle.placeholder": "Your function",
             "Specialism": "Specialism",
-            "specialism.placeholder": "Your specialism"
+            "specialism.placeholder": "Your specialism",
+            "otherSpecialism.placeholder": "Other specialism"
         },
         "messages": {
             "info": {
