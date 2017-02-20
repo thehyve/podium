@@ -1,4 +1,5 @@
 import {browser} from "protractor";
+import {Promise} from 'es6-promise'
 
 export interface Persona {
     firstName?: string;
@@ -9,7 +10,7 @@ export interface Persona {
 
 export interface Page {
     url: string;
-    at?(): boolean;
+    at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
 }
 
@@ -38,14 +39,21 @@ export class Director {
         }
     }
 
+    public getCurrentPage(){
+        return this.currentPage;
+    }
+
     private setCurrentPersonaTo(personaName: string) {
         try {
-            console.log(this.personaDictionary);
-            console.log(this.personaDictionary[personaName]);
             return this.currentPersona = this.personaDictionary[personaName];
         } catch (error) {
             this.fatalError('The persona: ' + personaName + ' does not exist.\n error: ' + error);
         }
+    }
+
+    public getPersona(personaName: string){
+        this.setCurrentPersonaTo(personaName);
+        return this.currentPersona;
     }
 
     //public API
@@ -55,8 +63,17 @@ export class Director {
         return browser.get(page.url);
     }
 
-    public testPersona(personaName: string){
-        let persona = this.setCurrentPersonaTo(personaName);
-        console.log(persona.firstName);
+    public at(pageName: string){
+        let page = this.setCurrentPageTo(pageName);
+        return Promise.resolve(page.at()).then(function(v) {
+            return new Promise(function(resolve, reject) {
+                if (v) {
+                    resolve();
+                }
+                else {
+                    reject(Error('not at page: ' + pageName));
+                }
+            })
+        });
     }
 }
