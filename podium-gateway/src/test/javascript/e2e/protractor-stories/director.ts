@@ -8,7 +8,9 @@ export interface Persona {
 }
 
 export interface Page {
-    url?: string;
+    url: string;
+    at?(): boolean;
+    ignoreSynchronization?: boolean;
 }
 
 export class Director {
@@ -40,7 +42,7 @@ export class Director {
         try {
             console.log(this.personaDictionary);
             console.log(this.personaDictionary[personaName]);
-            return this.currentPage = this.personaDictionary[personaName];
+            return this.currentPersona = this.personaDictionary[personaName];
         } catch (error) {
             this.fatalError('The persona: ' + personaName + ' does not exist.\n error: ' + error);
         }
@@ -49,7 +51,7 @@ export class Director {
     //public API
     public goToPage(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        // browser.ignoreSynchronization = page.ignoreSynchronization;
+        browser.ignoreSynchronization = page.ignoreSynchronization == null ? false : page.ignoreSynchronization;
         return browser.get(page.url);
     }
 
