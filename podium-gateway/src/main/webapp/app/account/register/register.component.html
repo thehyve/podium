@@ -126,14 +126,17 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="telephone" >Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
-                           #telephone="ngModel" name="telephone" required maxlength=100
+                           #telephone="ngModel" name="telephone" required maxlength=15 pattern="^[0-9]+$"
                            placeholder="{{'global.form.telephone.placeholder' | translate}}">
                     <div *ngIf="telephone.dirty && telephone.invalid">
                         <small class="form-text text-danger" *ngIf="telephone.errors.required">
                             Your telephone is required.
                         </small>
+                        <small class="form-text text-danger" *ngIf="telephone.errors.pattern">
+                            Your telephone must be numbers only.
+                        </small>
                         <small class="form-text text-danger" *ngIf="telephone.errors.maxlength">
-                            Your telephone cannot be longer than 100 characters.
+                            Your telephone cannot be longer than 15 characters.
                         </small>
                     </div>
                 </div>
