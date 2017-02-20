@@ -1,9 +1,9 @@
 import {Persona} from "../protractor-stories/director"
-import ExamplePersona = require("./ExamplePersona")
+import AdminPersona = require("./AdminPersona")
 
 let PersonaDictionary: {[key: string]: Persona} = Object.create(null);
 
-PersonaDictionary['ExamplePersona'] = ExamplePersona;
+PersonaDictionary['AdminPersona'] = AdminPersona;
 
 
 export = PersonaDictionary;
