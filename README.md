@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=master)](https://travis-ci.org/thehyve/podium)
 [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=dev)](https://travis-ci.org/thehyve/podium)
 
-<img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png" style="display:inline;" width="160" height="40">
+<img src="https://github.com/thehyve/podium/assets/browserstack-logo.png" style="display:inline;" width="200" height="60">
 
 # Welcome to the Podium Request Portal
 Podium is the request portal for samples, data and images from BBMRI Biobanks, with the purpose to uniformize the request and review processes for all associated users and organisations.
