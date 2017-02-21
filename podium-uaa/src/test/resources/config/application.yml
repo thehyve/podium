@@ -99,3 +99,7 @@ podium:
         contactEmail:
         license:
         licenseUrl:
+
+uaa:
+    security:
+        accountBlockingPeriodSeconds: 3
