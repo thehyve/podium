@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Base64;
-import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 
@@ -36,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration
-@Transactional
 @SpringBootTest(classes = PodiumUaaApp.class)
 public class AuthenticationIntTest {
 
@@ -60,21 +58,13 @@ public class AuthenticationIntTest {
 
     @Before
     public void setup() {
-        User user;
-        //Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(testUserName);
-        //if (userOptional.isPresent()) {
-        //    user = userOptional.get();
-        //} else {
-            ManagedUserVM testUser = new ManagedUserVM();
-            testUser.setLogin(testUserName);
-            testUser.setPassword(testPassword);
-            testUser.setEmail(testEmail);
-            user = userService.registerUser(testUser);
-            user.setEmailVerified(true);
-            user.setAdminVerified(true);
-        //}
-        //user.setAccountLocked(false);
-        //user.resetFailedLoginAttempts();
+        ManagedUserVM testUser = new ManagedUserVM();
+        testUser.setLogin(testUserName);
+        testUser.setPassword(testPassword);
+        testUser.setEmail(testEmail);
+        User user = userService.registerUser(testUser);
+        user.setEmailVerified(true);
+        user.setAdminVerified(true);
         userService.save(user);
         this.mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
@@ -83,6 +73,7 @@ public class AuthenticationIntTest {
     }
 
     @Test
+    @Transactional
     public void testSuccessfulAuthentication() throws Exception {
         mockMvc.perform(
             post("/oauth/token")
@@ -99,6 +90,7 @@ public class AuthenticationIntTest {
     }
 
     @Test
+    @Transactional
     public void testAccountBlockedAfterFailedAttempts() throws Exception {
         // 4 times "Bad credentials"
         for(int i = 0; i < 4; i++) {
@@ -142,6 +134,7 @@ public class AuthenticationIntTest {
     }
 
     @Test
+    @Transactional
     public void testAccountUnblockedAfterTimeout() throws Exception {
         // 4 times "Bad credentials"
         for(int i = 0; i < 4; i++) {
