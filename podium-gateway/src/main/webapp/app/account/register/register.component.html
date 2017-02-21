@@ -223,10 +223,6 @@
                             Your password must be at least 8 characters length, containing alphanumeric and
                             non-alphanumeric characters.
                         </small>
-                        <small class="form-text text-danger" *ngIf="password.errors.minlength"
-                                jhiTranslate="global.messages.validate.newpassword.minlength">
-                            Your password is required to be at least 8 characters.
-                        </small>
                         <small class="form-text text-danger" *ngIf="password.errors.maxlength"
                                 jhiTranslate="global.messages.validate.newpassword.maxlength">
                             Your password cannot be longer than 1000 characters.
