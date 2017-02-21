@@ -130,13 +130,13 @@
                            placeholder="{{'global.form.telephone.placeholder' | translate}}">
                     <div *ngIf="telephone.dirty && telephone.invalid">
                         <small class="form-text text-danger" *ngIf="telephone.errors.required">
-                            Your telephone is required.
+                            Your telephone number is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="telephone.errors.pattern">
-                            Your telephone must be numbers only.
+                            Your telephone number must be numbers only.
                         </small>
                         <small class="form-text text-danger" *ngIf="telephone.errors.maxlength">
-                            Your telephone cannot be longer than 15 characters.
+                            Your telephone number cannot be longer than 15 characters.
                         </small>
                     </div>
                 </div>
