@@ -110,4 +110,16 @@ public class MailService {
         String subject = messageSource.getMessage("email.reset.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
+
+    @Async
+    public void sendPasswordResetMailNoUser(String email) {
+        log.debug("Sending no user password reset e-mail to '{}'", email);
+        // Send email in english
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        String content = templateEngine.process("passwordResetEmailNoUser", context);
+        String subject = messageSource.getMessage("email.reset.noUser.title", null, locale);
+        sendEmail(email, subject, content, false, true);
+    }
 }
