@@ -13,7 +13,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { Register } from './register.service';
-import { LoginModalService, EmailValidatorDirective, SpecialismComponent } from '../../shared';
+import { LoginModalService, EmailValidatorDirective, SpecialismComponent, PasswordValidatorDirective } from '../../shared';
 
 @Component({
     templateUrl: './register.component.html'

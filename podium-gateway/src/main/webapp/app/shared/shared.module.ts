@@ -27,6 +27,7 @@ import {
     HasAuthorityDirective,
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
+    PasswordValidatorDirective,
     PodiumLoginComponent,
     SpecialismComponent
 } from './';
@@ -40,6 +41,7 @@ import {
         PodiumLoginComponent,
         SpecialismComponent,
         EmailValidatorDirective,
+        PasswordValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective
     ],
@@ -62,6 +64,7 @@ import {
         PodiumLoginComponent,
         SpecialismComponent,
         EmailValidatorDirective,
+        PasswordValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
         DatePipe
