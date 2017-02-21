@@ -23,6 +23,6 @@ export class Activate {
 
         return this.http.get('podiumuaa/api/activate', {
             search: params
-        }).map((res: Response) => res.json());
+        }).map((res: Response) => res);
     }
 }

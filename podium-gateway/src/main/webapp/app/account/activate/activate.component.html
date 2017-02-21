@@ -16,8 +16,8 @@
             <div class="alert alert-success" *ngIf="success">
                 <span jhiTranslate="activate.messages.success">
                     <strong>Your user has been activated.</strong> Please
-                    <a class="alert-link" (click)="login()" jhiTranslate="global.messages.info.authenticated.link">sign in</a>.
                 </span>
+                <a class="alert-link" (click)="login()" jhiTranslate="global.messages.info.authenticated.link">sign in</a>.
             </div>
 
             <div class="alert alert-danger" *ngIf="error" jhiTranslate="activate.messages.error">
