@@ -45,7 +45,9 @@ before_install:
   - chmod +x $PODIUM_SCRIPTS/*
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-install: cd podium-gateway && yarn install
+install:
+  - pushd podium-gateway && yarn install && popd
+  - pushd podium-common && mvn install && popd
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
   - $PODIUM_SCRIPTS/02-tests.sh
