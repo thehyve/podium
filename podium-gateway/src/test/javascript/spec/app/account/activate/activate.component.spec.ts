@@ -11,13 +11,12 @@
 import { TestBed, async, tick, fakeAsync, inject } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 
-import { MockActivatedRoute } from '../../../helpers/mock-route.service';
-import { LoginModalService } from '../../../../../../main/webapp/app/shared';
+import { MockActivatedRoute, MockRouter } from '../../../helpers/mock-route.service';
 import { Activate } from '../../../../../../main/webapp/app/account/activate/activate.service';
 import { ActivateComponent } from '../../../../../../main/webapp/app/account/activate/activate.component';
 
@@ -50,8 +49,8 @@ describe('Component Tests', () => {
                         useValue: new MockActivatedRoute({'key': 'ABC123'})
                     },
                     {
-                        provide: LoginModalService,
-                        useValue: null
+                        provide: Router,
+                        useValue: new MockRouter
                     }
                 ]
             }).overrideComponent(ActivateComponent, {

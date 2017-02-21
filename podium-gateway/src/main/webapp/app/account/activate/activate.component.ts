@@ -27,7 +27,6 @@ export class ActivateComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private activate: Activate,
-        private loginModalService: LoginModalService,
         private route: ActivatedRoute,
         private router: Router
     ) {
