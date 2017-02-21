@@ -15,5 +15,5 @@
     </option>
 </select>
 <input type="text" class="form-control specialism-other-input" [(ngModel)]="specialism"
-       *ngIf="selectedSpecialism == 'Other'" required>
-
+       *ngIf="selectedSpecialism == 'Other'" placeholder="{{'global.form.otherSpecialism.placeholder' | translate}}"
+       required>

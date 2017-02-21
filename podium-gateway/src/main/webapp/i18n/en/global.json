@@ -74,7 +74,7 @@
             "email": "E-mail",
             "email.placeholder": "Your e-mail",
             "telephone": "Telephone",
-            "telephone.placeholder": "Your telephone number",
+            "telephone.placeholder": "Your telephone number (only numbers e.g. 0208888999) ",
             "institute": "Institute",
             "institute.placeholder": "Your institute",
             "department": "Department",
@@ -82,7 +82,8 @@
             "jobTitle": "Function",
             "jobTitle.placeholder": "Your function",
             "Specialism": "Specialism",
-            "specialism.placeholder": "Your specialism"
+            "specialism.placeholder": "Your specialism",
+            "otherSpecialism.placeholder": "Other specialism"
         },
         "messages": {
             "info": {
