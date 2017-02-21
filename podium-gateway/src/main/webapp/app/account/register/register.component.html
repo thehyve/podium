@@ -105,7 +105,7 @@
                     <label class="form-control-label" for="email" >E-mail</label>
                     <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                            placeholder="{{'global.form.email.placeholder' | translate}}"
-                           [(ngModel)]="registerAccount.email" maxlength=100 required emailValidator>
+                           [(ngModel)]="registerAccount.email" maxlength="100" required emailValidator>
                     <div *ngIf="email.dirty && email.invalid">
                         <small class="form-text text-danger" *ngIf="email.errors.required"
                                 jhiTranslate="global.messages.validate.email.required">
@@ -126,7 +126,7 @@
                 <div class="form-group">
                     <label  class="form-control-label" for="telephone" >Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
-                           #telephone="ngModel" name="telephone" required maxlength=15 pattern="^[0-9]+$"
+                           #telephone="ngModel" name="telephone" required maxlength="15" pattern="^[0-9]+$"
                            placeholder="{{'global.form.telephone.placeholder' | translate}}">
                     <div *ngIf="telephone.dirty && telephone.invalid">
                         <small class="form-text text-danger" *ngIf="telephone.errors.required">
@@ -213,7 +213,7 @@
                     <label class="form-control-label" for="password">New password</label>
                     <input type="password" class="form-control" id="password" name="password" #password="ngModel"
                            placeholder="{{'global.form.newpassword.placeholder' | translate}}"
-                            [(ngModel)]="registerAccount.password" minlength=8 maxlength=1000 required>
+                            [(ngModel)]="registerAccount.password" minlength="8" maxlength="1000" required>
                     <div *ngIf="password.dirty && password.invalid">
                         <small class="form-text text-danger" *ngIf="password.errors.required"
                                 jhiTranslate="global.messages.validate.newpassword.required">
@@ -236,7 +236,7 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            #confirmPasswordInput="ngModel"
                            placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
-                            [(ngModel)]="confirmPassword" minlength=8 maxlength=1000 required>
+                            [(ngModel)]="confirmPassword" minlength=8 maxlength="1000" required>
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
                                jhiTranslate="global.messages.validate.confirmpassword.required">
