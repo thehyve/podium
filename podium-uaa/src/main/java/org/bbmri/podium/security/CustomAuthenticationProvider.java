@@ -1,16 +1,17 @@
-package org.bbmri.podium.config;
+package org.bbmri.podium.security;
 
+import org.bbmri.podium.config.UaaProperties;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.AccountNotVerifiedException;
 import org.bbmri.podium.exceptions.EmailNotVerifiedException;
 import org.bbmri.podium.exceptions.UserAccountBlockedException;
-import org.bbmri.podium.security.UserAuthenticationToken;
 import org.bbmri.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +38,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        log.info("username: " + authentication.getName());
         if (authentication == null || authentication.getName() == null) {
             throw new BadCredentialsException("Invalid credentials.");
         }
@@ -55,8 +55,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new AccountNotVerifiedException("The user account has not been verified yet.");
         }
         if (user.isAccountLocked()) {
-            long intervalMinutes = Duration.between(ZonedDateTime.now(), user.getAccountLockDate()).toMinutes();
-            if (intervalMinutes > uaaProperties.getSecurity().getAccountBlockingPeriodMinutes()) {
+            long intervalSeconds = Duration.between(user.getAccountLockDate(), ZonedDateTime.now()).abs().getSeconds();
+
+            log.info("Account locked. interval = {} seconds (blocking period is {} seconds)",
+                intervalSeconds,
+                uaaProperties.getSecurity().getAccountBlockingPeriodSeconds());
+            if (intervalSeconds > uaaProperties.getSecurity().getAccountBlockingPeriodSeconds()) {
                 // unblock account
                 log.info("Unblocking blocked account for user " + user.getLogin());
                 user.resetFailedLoginAttempts();
@@ -65,7 +69,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             } else {
                 // account is temporarily blocked, deny access.
                 log.info("Account still blocked for user " + user.getLogin() + ". Access denied.");
-                throw new UserAccountBlockedException("User account blocked.");
+                throw new UserAccountBlockedException("The user account is blocked.");
             }
         }
         if (passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
@@ -75,6 +79,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 user = userService.save(user);
             }
             UserAuthenticationToken token = new UserAuthenticationToken(user);
+            token.setAuthenticated(true);
             log.info("Token: " + token);
             return token;
         }
@@ -94,7 +99,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication == UserAuthenticationToken.class;
+        return authentication == UsernamePasswordAuthenticationToken.class;
     }
 
 }

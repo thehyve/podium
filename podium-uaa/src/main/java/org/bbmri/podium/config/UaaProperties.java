@@ -21,7 +21,7 @@ public class UaaProperties {
     public static class Security {
 
         private long maxFailedLoginAttempts = 5;
-        private long accountBlockingPeriodMinutes = 5; // 5 minutes
+        private long accountBlockingPeriodSeconds = 5 * 60; // 5 minutes
 
         public long getMaxFailedLoginAttempts() {
             return maxFailedLoginAttempts;
@@ -31,12 +31,12 @@ public class UaaProperties {
             this.maxFailedLoginAttempts = maxFailedLoginAttempts;
         }
 
-        public long getAccountBlockingPeriodMinutes() {
-            return accountBlockingPeriodMinutes;
+        public long getAccountBlockingPeriodSeconds() {
+            return accountBlockingPeriodSeconds;
         }
 
-        public void setAccountBlockingPeriodMinutes(long accountBlockingPeriodMinutes) {
-            this.accountBlockingPeriodMinutes = accountBlockingPeriodMinutes;
+        public void setAccountBlockingPeriodSeconds(long accountBlockingPeriodSeconds) {
+            this.accountBlockingPeriodSeconds = accountBlockingPeriodSeconds;
         }
 
     }

@@ -11,7 +11,6 @@
 package org.bbmri.podium.security;
 
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

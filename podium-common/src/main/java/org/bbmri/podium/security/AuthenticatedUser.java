@@ -1,10 +1,11 @@
 package org.bbmri.podium.security;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public interface AuthenticatedUser {
+public interface AuthenticatedUser extends Principal {
 
     UUID getUuid();
 
