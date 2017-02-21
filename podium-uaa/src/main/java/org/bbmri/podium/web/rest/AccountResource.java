@@ -175,9 +175,9 @@ public class AccountResource {
                 mailService.sendPasswordResetMail(user);
                 return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
             }).orElseGet(() -> {
-                mailService.sendPasswordResetMailNoUser(mail);
-                return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
-            });
+                    mailService.sendPasswordResetMailNoUser(mail);
+                    return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
+                });
     }
 
     /**
