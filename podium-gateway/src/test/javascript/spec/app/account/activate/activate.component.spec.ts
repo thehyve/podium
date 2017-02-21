@@ -50,7 +50,7 @@ describe('Component Tests', () => {
                     },
                     {
                         provide: Router,
-                        useValue: new MockRouter
+                        useValue: new MockRouter()
                     }
                 ]
             }).overrideComponent(ActivateComponent, {
