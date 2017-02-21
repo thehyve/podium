@@ -24,6 +24,7 @@
         <p>
            <span th:text="#{email.activation.text2}">Please follow this link to verify your account:</span>
             <br />
+            <br />
             <a th:href="@{|${baseUrl}/#/activate&#63;key=${user.activationKey}|}">
                 <span th:text="@{|${baseUrl}/#/activate?key=${user.activationKey}|}"></span>
             </a>
