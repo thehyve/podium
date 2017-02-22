@@ -12,7 +12,6 @@ import './vendor.ts';
 import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 
@@ -35,7 +34,8 @@ import {
     ProfileService,
     PageRibbonComponent,
     ActiveMenuDirective,
-    ErrorComponent
+    ErrorComponent,
+    CompletedComponent
 } from './layouts';
 
 @NgModule({
@@ -54,6 +54,7 @@ import {
         DashboardComponent,
         NavbarComponent,
         ErrorComponent,
+        CompletedComponent,
         PageRibbonComponent,
         ActiveMenuDirective,
         FooterComponent

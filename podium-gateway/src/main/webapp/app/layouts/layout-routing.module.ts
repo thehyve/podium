@@ -15,12 +15,14 @@ import { homeRoute } from '../home';
 import { navbarRoute } from '../app.route';
 import { errorRoute } from './';
 import {dashboardRoute} from '../dashboard/dashboard.route';
+import {completedRoute} from "./completed/completed.route";
 
 let LAYOUT_ROUTES = [
     homeRoute,
     dashboardRoute,
     navbarRoute,
-    ...errorRoute
+    ...errorRoute,
+    ...completedRoute
 ];
 
 @NgModule({
