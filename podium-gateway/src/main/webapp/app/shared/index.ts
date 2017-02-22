@@ -8,6 +8,8 @@
  *
  */
 
+export * from './message/message.model';
+export * from './message/message.service';
 export * from './validators/password-validator.directive';
 export * from './validators/email-validator.directive';
 export * from './alert/alert.component';
