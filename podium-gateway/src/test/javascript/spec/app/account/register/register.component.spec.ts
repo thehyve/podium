@@ -18,6 +18,9 @@ import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { LoginModalService } from '../../../../../../main/webapp/app/shared';
 import { Register } from '../../../../../../main/webapp/app/account/register/register.service';
 import { RegisterComponent } from '../../../../../../main/webapp/app/account/register/register.component';
+import { MessageService } from '../../../../../../main/webapp/app/shared/message/message.service';
+import { Router } from '@angular/router';
+import { Message } from '../../../../../../main/webapp/app/shared/message/message.model';
 
 
 describe('Component Tests', () => {
@@ -25,12 +28,16 @@ describe('Component Tests', () => {
     describe('RegisterComponent', () => {
         let fixture: ComponentFixture<RegisterComponent>;
         let comp: RegisterComponent;
+        let router = {
+            navigate: jasmine.createSpy('navigate')
+        };
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
                 declarations: [RegisterComponent],
                 providers: [MockBackend,
                     Register,
+                    MessageService,
                     BaseRequestOptions,
                     {
                         provide: Http,
@@ -51,6 +58,10 @@ describe('Component Tests', () => {
                     {
                         provide: Renderer,
                         useValue: null
+                    },
+                    {
+                        provide: Router,
+                        useValue: router
                     },
                     {
                         provide: ElementRef,
@@ -80,9 +91,12 @@ describe('Component Tests', () => {
         });
 
         it('should update success to OK after creating an account',
-            inject([Register, JhiLanguageService],
-                fakeAsync((service: Register, mockTranslate: MockLanguageService) => {
+            inject([Register, JhiLanguageService, MessageService, Router],
+                fakeAsync((service: Register, mockTranslate: MockLanguageService, messageService: MessageService) => {
+
                     spyOn(service, 'save').and.returnValue(Observable.of({}));
+                    spyOn(messageService, 'store');
+
                     comp.registerAccount.password = comp.confirmPassword = 'password';
 
                     comp.register();
@@ -93,7 +107,12 @@ describe('Component Tests', () => {
                         specialism: '',
                         langKey: 'en'
                     });
+
                     expect(comp.success).toEqual(true);
+                    expect(messageService.store).toHaveBeenCalledWith(
+                        new Message('Thank you', 'Registration is completed')
+                    );
+                    expect(router.navigate).toHaveBeenCalledWith(['/completed']);
                     expect(comp.registerAccount.langKey).toEqual('en');
                     expect(mockTranslate.getCurrentSpy).toHaveBeenCalled();
                     expect(comp.errorUserExists).toBeNull();
