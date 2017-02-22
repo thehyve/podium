@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017. The Hyve and respective contributors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  *
  * See the file LICENSE in the root of this repository.
@@ -11,9 +11,16 @@
 import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { Register } from './register.service';
-import { LoginModalService, EmailValidatorDirective, SpecialismComponent, PasswordValidatorDirective } from '../../shared';
+import {
+    LoginModalService,
+    MessageService,
+    EmailValidatorDirective,
+    SpecialismComponent,
+    PasswordValidatorDirective
+} from '../../shared';
+import { Router } from '@angular/router';
+import { Message } from '../../shared/message/message.model';
 
 @Component({
     templateUrl: './register.component.html'
@@ -29,13 +36,13 @@ export class RegisterComponent implements OnInit {
     success: boolean;
     modalRef: NgbModalRef;
 
-    constructor(
-        private languageService: JhiLanguageService,
-        private loginModalService: LoginModalService,
-        private registerService: Register,
-        private elementRef: ElementRef,
-        private renderer: Renderer
-    ) {
+    constructor(private languageService: JhiLanguageService,
+                private loginModalService: LoginModalService,
+                private messageService: MessageService,
+                private registerService: Register,
+                private elementRef: ElementRef,
+                private renderer: Renderer,
+                private router: Router) {
         this.languageService.setLocations(['register']);
     }
 
@@ -61,6 +68,8 @@ export class RegisterComponent implements OnInit {
                 this.registerAccount.langKey = key;
                 this.registerService.save(this.registerAccount).subscribe(() => {
                     this.success = true;
+                    this.messageService.store(new Message('Thank you', 'Registration is completed'));
+                    this.router.navigate(['/completed']);
                 }, (response) => this.processError(response));
             });
         }
