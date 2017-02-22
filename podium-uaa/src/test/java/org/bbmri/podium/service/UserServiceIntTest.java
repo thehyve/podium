@@ -15,7 +15,6 @@ import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import java.time.ZonedDateTime;
 import org.bbmri.podium.service.util.RandomUtil;
-import java.time.LocalDate;
 
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Test;
@@ -26,7 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.Optional;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -39,6 +37,8 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(classes = PodiumUaaApp.class)
 @Transactional
 public class UserServiceIntTest {
+
+    private static final String VALID_PASSWORD = "johndoe2!";
 
     @Inject
     private UserRepository userRepository;
@@ -91,7 +91,7 @@ public class UserServiceIntTest {
 
         userRepository.save(user);
 
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
 
         assertThat(maybeUser.isPresent()).isFalse();
 
@@ -107,7 +107,7 @@ public class UserServiceIntTest {
         user.setResetDate(daysAgo);
         user.setResetKey("1234");
         userRepository.save(user);
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
         assertThat(maybeUser.isPresent()).isFalse();
         userRepository.delete(user);
     }
@@ -122,7 +122,7 @@ public class UserServiceIntTest {
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
         userRepository.save(user);
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
         assertThat(maybeUser.isPresent()).isTrue();
         assertThat(maybeUser.get().getResetDate()).isNull();
         assertThat(maybeUser.get().getResetKey()).isNull();

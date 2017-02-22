@@ -10,6 +10,8 @@
 
 package org.bbmri.podium.web.rest.vm;
 
+import org.bbmri.podium.validation.ValidPassword;
+
 /**
  * View Model object for storing the user's key and password.
  */
@@ -17,6 +19,7 @@ public class KeyAndPasswordVM {
 
     private String key;
 
+    @ValidPassword
     private String newPassword;
 
     public KeyAndPasswordVM() {

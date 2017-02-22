@@ -13,16 +13,15 @@ package org.bbmri.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.security.SecurityUtils;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.service.representation.UserRepresentation;
+import org.bbmri.podium.validation.PasswordValidator;
 import org.bbmri.podium.web.rest.vm.KeyAndPasswordVM;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -150,7 +149,7 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> changePassword(@RequestBody String password) {
-        if (!checkPasswordLength(password)) {
+        if (!PasswordValidator.validate(password)) {
             return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
         }
         userService.changePassword(password);
@@ -188,17 +187,9 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
-        if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
-            return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
-        }
         return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
               .map(user -> new ResponseEntity<String>(HttpStatus.OK))
               .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    private boolean checkPasswordLength(String password) {
-        return (!StringUtils.isEmpty(password) &&
-            password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
-            password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH);
-    }
 }
