@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.Email;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
-import javax.security.auth.Subject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -69,7 +68,8 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, S
     private String lastName;
 
     @Email
-    @Size(max = 100)
+    @NotNull
+    @Size(min=3, max = 100)
     @Column(length = 100, unique = true)
     private String email;
 

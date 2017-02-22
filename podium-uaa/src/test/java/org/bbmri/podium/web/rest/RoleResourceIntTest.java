@@ -118,6 +118,7 @@ public class RoleResourceIntTest {
         } else {
             ManagedUserVM userVM = new ManagedUserVM();
             userVM.setLogin("test");
+            userVM.setEmail("test@localhost");
             userVM.setPassword("password");
             user = userService.createUser(userVM);
         }
