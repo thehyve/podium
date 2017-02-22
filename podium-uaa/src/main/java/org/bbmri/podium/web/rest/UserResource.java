@@ -146,6 +146,29 @@ public class UserResource {
     }
 
     /**
+     * PUT  /users/uuid/:uuid/unlock : Unlocks an existing User account.
+     *
+     * @param uuid the uuid of the user to unlock
+     * @return the ResponseEntity with status 200 (OK) and with body the updated user,
+     * or with status 404 (Not found) if the user could not be found.
+     */
+    @PutMapping("/users/uuid/{uuid}/unlock")
+    @Timed
+    //@Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    public ResponseEntity<ManagedUserVM> unlockUser(@PathVariable UUID uuid) {
+        log.debug("REST request to unlock User : {}", uuid);
+        Optional<User> userOptional = userService.getUserByUuid(uuid);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("User not found.");
+        }
+        User user = userService.unlockAccount(userOptional.get());
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("userManagement.unlocked", user.getLogin()))
+            .body(new ManagedUserVM(user));
+    }
+
+    /**
      * GET  /users : get all users.
      *
      * @param pageable the pagination information

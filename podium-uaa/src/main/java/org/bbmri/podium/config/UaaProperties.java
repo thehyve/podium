@@ -21,8 +21,14 @@ public class UaaProperties {
     public static class Security {
 
         private long maxFailedLoginAttempts = 5;
-        private long accountBlockingPeriodSeconds = 5 * 60; // 5 minutes
+        private boolean timeBasedUnlockingEnabled = false;
+        private long accountLockingPeriodSeconds = 5 * 60; // 5 minutes
 
+        /**
+         * Maximum number of failed login attempts before the user account is locked.
+         *
+         * Property: uaa.security.maxFailedLoginAttempts (default: 5)
+         */
         public long getMaxFailedLoginAttempts() {
             return maxFailedLoginAttempts;
         }
@@ -31,12 +37,32 @@ public class UaaProperties {
             this.maxFailedLoginAttempts = maxFailedLoginAttempts;
         }
 
-        public long getAccountBlockingPeriodSeconds() {
-            return accountBlockingPeriodSeconds;
+        /**
+         * If true, the account will only be temporarily locked, see {@link #accountLockingPeriodSeconds};
+         * otherwise, an admin action is required to unlock the account.
+         *
+         * Property: uaa.security.timeBasedUnlockingEnabled (default: false)
+         */
+        public boolean isTimeBasedUnlockingEnabled() {
+            return timeBasedUnlockingEnabled;
         }
 
-        public void setAccountBlockingPeriodSeconds(long accountBlockingPeriodSeconds) {
-            this.accountBlockingPeriodSeconds = accountBlockingPeriodSeconds;
+        public void setTimeBasedUnlockingEnabled(boolean timeBasedUnlockingEnabled) {
+            this.timeBasedUnlockingEnabled = timeBasedUnlockingEnabled;
+        }
+
+        /**
+         * The number of seconds an account is locked after too many failed login attempts.
+         * Automatic unlocking is only active if {@link #timeBasedUnlockingEnabled}.
+         *
+         * Property: uaa.security.accountBlockingPeriodSeconds (default: 300 = 5 minutes)
+         */
+        public long getAccountLockingPeriodSeconds() {
+            return accountLockingPeriodSeconds;
+        }
+
+        public void setAccountLockingPeriodSeconds(long accountBlockingPeriodSeconds) {
+            this.accountLockingPeriodSeconds = accountBlockingPeriodSeconds;
         }
 
     }

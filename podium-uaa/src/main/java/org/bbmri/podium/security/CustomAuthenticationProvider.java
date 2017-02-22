@@ -55,21 +55,26 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new AccountNotVerifiedException("The user account has not been verified yet.");
         }
         if (user.isAccountLocked()) {
-            long intervalSeconds = Duration.between(user.getAccountLockDate(), ZonedDateTime.now()).abs().getSeconds();
-
-            log.info("Account locked. interval = {} seconds (blocking period is {} seconds)",
-                intervalSeconds,
-                uaaProperties.getSecurity().getAccountBlockingPeriodSeconds());
-            if (intervalSeconds > uaaProperties.getSecurity().getAccountBlockingPeriodSeconds()) {
-                // unblock account
-                log.info("Unblocking blocked account for user " + user.getLogin());
-                user.resetFailedLoginAttempts();
-                user.setAccountLocked(false);
-                user = userService.save(user);
+            if (!uaaProperties.getSecurity().isTimeBasedUnlockingEnabled()) {
+                // account is llocked, deny access.
+                log.info("Account still locked for user " + user.getLogin() + ". Access denied.");
+                throw new UserAccountBlockedException("The user account is locked.");
             } else {
-                // account is temporarily blocked, deny access.
-                log.info("Account still blocked for user " + user.getLogin() + ". Access denied.");
-                throw new UserAccountBlockedException("The user account is blocked.");
+                long intervalSeconds = Duration.between(user.getAccountLockDate(), ZonedDateTime.now()).abs().getSeconds();
+                log.info("Account locked. interval = {} seconds (locking period is {} seconds)",
+                    intervalSeconds,
+                    uaaProperties.getSecurity().getAccountLockingPeriodSeconds());
+                if (intervalSeconds > uaaProperties.getSecurity().getAccountLockingPeriodSeconds()) {
+                    // unblock account
+                    log.info("Unlocking locked account for user " + user.getLogin());
+                    user.resetFailedLoginAttempts();
+                    user.setAccountLocked(false);
+                    user = userService.save(user);
+                } else {
+                    // account is temporarily locked, deny access.
+                    log.info("Account still locked for user " + user.getLogin() + ". Access denied.");
+                    throw new UserAccountBlockedException("The user account is locked.");
+                }
             }
         }
         if (passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
@@ -91,7 +96,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             user.setAccountLocked(true);
             user.setAccountLockDate(ZonedDateTime.now());
             userService.save(user);
-            throw new UserAccountBlockedException("The user account is blocked.");
+            throw new UserAccountBlockedException("The user account is locked.");
         }
         userService.save(user);
         throw new BadCredentialsException("Invalid credentials.");

@@ -102,4 +102,4 @@ podium:
 
 uaa:
     security:
-        accountBlockingPeriodSeconds: 3
+        accountLockingPeriodSeconds: 3

@@ -24,6 +24,8 @@
                 <th jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <span class="fa fa-sort"></span></th>
                 <th></th>
+                <th></th>
+                <th></th>
                 <th  jhiSortBy="langKey"> <span jhiTranslate="userManagement.langKey">Lang Key</span> <span class="fa fa-sort"></span></th>
                 <th><span jhiTranslate="userManagement.profiles">Profiles</span></th>
                 <th jhiSortBy="createdDate"><span jhiTranslate="userManagement.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
@@ -38,10 +40,20 @@
                 <td>{{user.login}}</td>
                 <td>{{user.email}}</td>
                 <td>
-                    <span class="tag tag-danger" (click)="setActive(user, true)" *ngIf="!user.activated"
-                          jhiTranslate="userManagement.deactivated" style="cursor: pointer;">Deactivated</span>
-                    <span class="tag tag-success" (click)="setActive(user, false)" *ngIf="user.activated"
-                          jhiTranslate="userManagement.activated" style="cursor: pointer;">Activated</span>
+                    <span class="tag tag-success" *ngIf="user.emailVerified"
+                          jhiTranslate="userManagement.emailVerified">Email verified</span>
+                    <span class="tag tag-danger" *ngIf="!user.emailVerified"
+                          jhiTranslate="userManagement.emailUnverified">Email unverified</span>
+                </td>
+                <td>
+                    <span class="tag tag-success" *ngIf="user.adminVerified"
+                          jhiTranslate="userManagement.adminVerified">Account verified</span>
+                    <span class="tag tag-danger" *ngIf="!user.adminVerified"
+                          jhiTranslate="userManagement.adminUnverified">Account unverified</span>
+                </td>
+                <td>
+                    <span class="tag tag-danger" *ngIf="user.accountLocked"
+                          jhiTranslate="userManagement.accountLocked">Locked</span>
                 </td>
                 <td>{{user.langKey}}</td>
                 <td>
@@ -66,6 +78,13 @@
                                 class="btn btn-primary btn-sm">
                             <span class="fa fa-pencil"></span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'user-management/'+ user.login + '/unlock'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm" [disabled]="!user.accountLocked">
+                            <span class="fa fa-unlock"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.unlock">Unlock</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'user-management/'+ user.login + '/delete'} }]"

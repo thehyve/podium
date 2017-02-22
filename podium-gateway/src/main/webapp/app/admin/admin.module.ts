@@ -41,6 +41,10 @@ import {
     UserResolve,
     UserModalService
 } from './';
+import {
+    UserMgmtUnlockDialogComponent,
+    UserUnlockDialogComponent
+} from "./user-management/user-management-unlock-dialog.component";
 
 
 @NgModule({
@@ -53,9 +57,11 @@ import {
         UserMgmtComponent,
         UserDialogComponent,
         UserDeleteDialogComponent,
+        UserUnlockDialogComponent,
         UserMgmtDetailComponent,
         UserMgmtDialogComponent,
         UserMgmtDeleteDialogComponent,
+        UserMgmtUnlockDialogComponent,
         LogsComponent,
         JhiConfigurationComponent,
         JhiHealthCheckComponent,
@@ -68,6 +74,7 @@ import {
     entryComponents: [
         UserMgmtDialogComponent,
         UserMgmtDeleteDialogComponent,
+        UserMgmtUnlockDialogComponent,
         JhiHealthModalComponent,
         JhiMetricsMonitoringModalComponent,
     ],

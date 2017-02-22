@@ -74,10 +74,8 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
         this.eventManager.subscribe('userListModification', (response) => this.loadAll());
     }
 
-    setActive (user, isActivated) {
-        user.activated = isActivated;
-
-        this.userService.update(user).subscribe(
+    unlock (user) {
+        this.userService.unlock(user).subscribe(
             response => {
                 if (response.status === 200) {
                     this.error = null;
