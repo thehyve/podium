@@ -1,5 +1,6 @@
-import {browser} from "protractor";
-import {Promise} from 'es6-promise'
+import {browser, ElementFinder} from "protractor";
+import {Promise} from "es6-promise";
+import {isUndefined} from "util";
 
 export interface Persona {
     firstName?: string;
@@ -12,6 +13,7 @@ export interface Page {
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
+    elements: {[name: string]: ElementFinder};
 }
 
 export class Director {
@@ -33,13 +35,15 @@ export class Director {
 
     private setCurrentPageTo(pageName: string) {
         try {
-            return this.currentPage = this.PageDictionary[pageName];
+            this.currentPage = this.PageDictionary[pageName];
         } catch (error) {
             this.fatalError('The page: ' + pageName + ' does not exist.\n error: ' + error);
         }
+        browser.ignoreSynchronization = this.currentPage.ignoreSynchronization == null ? false : this.currentPage.ignoreSynchronization;
+        return this.currentPage
     }
 
-    public getCurrentPage(){
+    public getCurrentPage() {
         return this.currentPage;
     }
 
@@ -51,22 +55,20 @@ export class Director {
         }
     }
 
-    public getPersona(personaName: string){
+    public getPersona(personaName: string) {
         this.setCurrentPersonaTo(personaName);
         return this.currentPersona;
     }
 
-    //public API
     public goToPage(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        browser.ignoreSynchronization = page.ignoreSynchronization == null ? false : page.ignoreSynchronization;
         return browser.get(page.url);
     }
 
-    public at(pageName: string){
+    public at = (pageName: string) => {
         let page = this.setCurrentPageTo(pageName);
-        return Promise.resolve(page.at()).then(function(v) {
-            return new Promise(function(resolve, reject) {
+        return Promise.resolve(page.at()).then(function (v) {
+            return new Promise(function (resolve, reject) {
                 if (v) {
                     resolve();
                 }
@@ -75,5 +77,26 @@ export class Director {
                 }
             })
         });
+    };
+
+    private getElement(elementName: string) {
+        let element = this.getCurrentPage().elements[elementName];
+        if (isUndefined(element)) {
+            this.fatalError(elementName + ' is not defined as an element of the active page');
+        }
+        return element;
+    }
+
+    public clickOn(elementName: string) {
+        return this.getElement(elementName).click();
+    }
+
+    public waitForPage(pageName: string) {
+        let page = this.setCurrentPageTo(pageName);
+        return browser.wait(page.at
+            , 10 * 1000).then(function () {
+        }, function (err) {
+            throw 'Page: ' + pageName + ' did not appear fast enough.\n error: ' + err;
+        })
     }
 }
