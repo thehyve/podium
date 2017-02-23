@@ -24,7 +24,7 @@ import { Router } from '@angular/router';
 import { Message } from '../../../../../../main/webapp/app/shared/message/message.model';
 
 
-fdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('RegisterComponent', () => {
         let fixture: ComponentFixture<RegisterComponent>;
