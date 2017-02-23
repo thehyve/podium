@@ -12,6 +12,7 @@ import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
+import { TranslateService } from 'ng2-translate';
 import {
     LoginModalService,
     MessageService,
@@ -21,6 +22,7 @@ import {
 } from '../../shared';
 import { Router } from '@angular/router';
 import { Message } from '../../shared/message/message.model';
+import { Observable } from 'rxjs';
 
 @Component({
     templateUrl: './register.component.html'
@@ -34,6 +36,7 @@ export class RegisterComponent implements OnInit {
     errorUserExists: string;
     registerAccount: any;
     success: boolean;
+    successMessage: Message;
     modalRef: NgbModalRef;
 
     constructor(private languageService: JhiLanguageService,
@@ -42,6 +45,7 @@ export class RegisterComponent implements OnInit {
                 private registerService: Register,
                 private elementRef: ElementRef,
                 private renderer: Renderer,
+                private translate: TranslateService,
                 private router: Router) {
         this.languageService.setLocations(['register']);
     }
@@ -66,17 +70,31 @@ export class RegisterComponent implements OnInit {
             this.errorEmailExists = null;
             this.languageService.getCurrent().then(key => {
                 this.registerAccount.langKey = key;
-                this.registerService.save(this.registerAccount).subscribe(() => {
-                    this.success = true;
-                    this.messageService.store(new Message('Thank you', 'Registration is completed'));
-                    this.router.navigate(['/completed']);
-                }, (response) => this.processError(response));
+                this.registerService.save(this.registerAccount).subscribe(
+                    () => this.processSuccess(),
+                    (response) => this.processError(response)
+                );
             });
         }
     }
 
     openLogin() {
         this.modalRef = this.loginModalService.open();
+    }
+
+    private processSuccess() {
+        this.success = true;
+
+        // Get i18n success page content
+        let successTitle = this.translate.get('register.messages.successTitle');
+        let successContent = this.translate.get('register.messages.success');
+
+        Observable.forkJoin(successTitle, successContent).subscribe(
+            messages => {
+                this.successMessage = new Message(messages[0], messages[1]);
+                this.messageService.store(this.successMessage);
+                this.router.navigate(['/completed']);
+            });
     }
 
     private processError(response) {
