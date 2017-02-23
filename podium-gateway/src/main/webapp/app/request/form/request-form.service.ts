@@ -8,12 +8,16 @@
  *
  */
 
-export class Organisation {
-    constructor(
-        public id?: number,
-        public uuid?: string,
-        public name?: string,
-        public shortName?: string,
-    ) { }
+import { Injectable } from '@angular/core';
+import { Http, Response, URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 
+@Injectable()
+export class RequestFormService {
+
+    constructor(private http: Http) {
+
+    }
 }
+
+

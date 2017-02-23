@@ -8,7 +8,7 @@
  *
  */
 
-import { Routes, CanActivate } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import {
     auditsRoute,
@@ -36,8 +36,8 @@ let ADMIN_ROUTES = [
 ];
 
 
-export const adminState: Routes = [{
-    path: '',
+export const adminRoute: Routes = [{
+    path: 'admin',
     data: {
         authorities: ['ROLE_PODIUM_ADMIN']
     },
