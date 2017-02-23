@@ -20,7 +20,7 @@ import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 
 import { Principal } from '../../shared';
-import {UserUnlockDialogComponent} from "./user-management-unlock-dialog.component";
+import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
 
 
 @Injectable()

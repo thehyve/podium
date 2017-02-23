@@ -22,6 +22,7 @@ import { StateStorageService } from '../auth/state-storage.service';
 })
 export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     authenticationError: boolean;
+    userAccountLocked: boolean;
     password: string;
     rememberMe: boolean;
     username: string;
@@ -55,6 +56,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             rememberMe: true
         };
         this.authenticationError = false;
+        this.userAccountLocked = false;
         //this.activeModal.dismiss('cancel');
     }
 
@@ -65,6 +67,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             rememberMe: this.rememberMe
         }).then(() => {
             this.authenticationError = false;
+            this.userAccountLocked = false;
            // this.activeModal.dismiss('login success');
             if (this.router.url === '/register' || this.router.url === '/activate' ||
                 this.router.url === '/finishReset' || this.router.url === '/requestReset') {
@@ -85,8 +88,15 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             } else {
                 this.router.navigate(['/dashboard']);
             }
-        }).catch(() => {
+        }).catch(err => {
             this.authenticationError = true;
+            this.userAccountLocked = false;
+            if (err && err._body) {
+                let response =  JSON.parse(err._body);
+                if (response.error_description === 'The user account is locked.') {
+                    this.userAccountLocked = true;
+                }
+            }
         });
     }
 

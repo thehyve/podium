@@ -13,8 +13,16 @@
         <h1 >Sign in</h1>
     </div>
     <div class="col-md-8 offset-md-2">
-        <div class="alert alert-danger" *ngIf="authenticationError" >
-            <strong>Failed to sign in!</strong> Please check your credentials and try again.
+        <div class="alert alert-danger" *ngIf="authenticationError && !userAccountLocked" >
+            <strong>Failed to sign in!</strong>
+            Please check your credentials and try again.
+            <br/>
+            <br/>
+            <a class="alert-link" (click)="requestResetPassword()" >Did you forget your password?</a>
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && userAccountLocked" >
+            <strong>Your user account is locked!</strong>
+            Please contact the servicedesk.
         </div>
     </div>
     <div class="col-md-8 offset-md-2">
@@ -38,11 +46,8 @@
             <button type="submit" class="btn btn-primary" >Sign in</button>
         </form>
         <p></p>
-        <div class="alert alert-warning">
-            <a class="alert-link" (click)="requestResetPassword()" >Did you forget your password?</a>
-        </div>
-        <div class="alert alert-warning">
-            <span >You don't have an account yet?</span>
+        <div class="alert alert-info">
+            <span >You don&rsquo;t have an account yet?</span>
             <a class="alert-link" (click)="register()" >Register a new account</a>
         </div>
     </div>

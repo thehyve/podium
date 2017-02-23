@@ -218,6 +218,7 @@ public class UserService {
     public User unlockAccount(User user) {
         user.setAccountLocked(false);
         user.setAccountLockDate(null);
+        user.resetFailedLoginAttempts();
         return save(user);
     }
 
