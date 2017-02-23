@@ -10,12 +10,11 @@
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ParseLinks } from 'ng-jhipster';
 
 import { PodiumGatewaySharedModule } from '../shared';
 
 import {
-    adminState,
+    adminRoute,
     AuditsComponent,
     UserMgmtComponent,
     UserDialogComponent,
@@ -44,11 +43,10 @@ import {
     UserModalService
 } from './';
 
-
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(adminState, { useHash: true })
+        RouterModule.forRoot(adminRoute, { useHash: true })
     ],
     declarations: [
         AuditsComponent,

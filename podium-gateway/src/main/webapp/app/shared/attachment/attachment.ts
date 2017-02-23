@@ -8,12 +8,12 @@
  *
  */
 
-export class Organisation {
+import { AttachmentType } from './attachment-type';
+
+export class Attachment {
     constructor(
         public id?: number,
-        public uuid?: string,
         public name?: string,
-        public shortName?: string,
+        public type?: AttachmentType
     ) { }
-
 }

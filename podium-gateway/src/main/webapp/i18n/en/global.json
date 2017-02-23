@@ -5,7 +5,10 @@
         "menu": {
             "home": "Home",
             "dashboard": "Dashboard",
-            "requests": "My Requests",
+            "requests": {
+                "new": "New Request",
+                "overview": "My Requests"
+            },
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",

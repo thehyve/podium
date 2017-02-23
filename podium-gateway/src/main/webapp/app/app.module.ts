@@ -9,7 +9,6 @@
  */
 
 import './vendor.ts';
-import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,7 +27,7 @@ import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
 import {
-    JhiMainComponent,
+    PdmMainComponent,
     NavbarComponent,
     FooterComponent,
     ProfileService,
@@ -40,6 +39,8 @@ import {
 import { OrganisationService } from './entities/organisation/organisation.service';
 import { RoleService } from './entities/role/role.service';
 
+import {PodiumGatewayRequestModule} from './request/request.module';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -47,11 +48,12 @@ import { RoleService } from './entities/role/role.service';
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
+        PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
-        PodiumGatewayEntityModule
+        PodiumGatewayEntityModule,
     ],
     declarations: [
-        JhiMainComponent,
+        PdmMainComponent,
         HomeComponent,
         DashboardComponent,
         NavbarComponent,
@@ -71,6 +73,6 @@ import { RoleService } from './entities/role/role.service';
         OrganisationService,
         RoleService
     ],
-    bootstrap: [ JhiMainComponent ]
+    bootstrap: [ PdmMainComponent ]
 })
 export class PodiumGatewayAppModule {}

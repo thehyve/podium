@@ -8,12 +8,7 @@
  *
  */
 
-export class Organisation {
-    constructor(
-        public id?: number,
-        public uuid?: string,
-        public name?: string,
-        public shortName?: string,
-    ) { }
-
-}
+export * from './form/request-form.component';
+export * from './form/request-form.route';
+export * from './form/request-form.service';
+export * from './request.route';

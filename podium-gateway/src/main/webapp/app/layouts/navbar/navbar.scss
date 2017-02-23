@@ -12,9 +12,12 @@
 /* ==========================================================================
 Navbar
 ========================================================================== */
+
+$link-color: #ccc;
+
 .navbar-version {
     font-size: 10px;
-    color: #ccc
+    color: $link-color;
 }
 
 .jh-navbar {
@@ -38,10 +41,22 @@ Navbar
         .nav-item+.nav-item {
             margin-left: 1.5rem;
         }
+
+        .nav-item > * {
+            color: $link-color;
+        }
+
+        .nav-item {
+            :hover {
+                color: rgb(250, 250, 250);
+            }
+        }
     }
+
     a.nav-link {
         font-weight: 400;
     }
+
     .jh-navbar-toggler {
         color: #ccc;
         font-size: 1.5em;
@@ -61,6 +76,7 @@ Navbar
 .navbar-title {
     display: inline-block;
     vertical-align: middle;
+    color: $link-color;
 }
 
 /* ==========================================================================
