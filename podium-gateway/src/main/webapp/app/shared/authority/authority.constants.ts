@@ -22,7 +22,9 @@ const authorityNames: { [token: string]: string; } = {
 function convertNamesToAuthorities(names: { [token: string]: string; }): Array<Authority> {
     let result: Array<Authority> = [];
     for (const token in names) {
-        result.push({ token: token, name: names[token] });
+        if (names.hasOwnProperty(token)) {
+            result.push({token: token, name: names[token]});
+        }
     }
     return result;
 }
@@ -30,7 +32,9 @@ function convertNamesToAuthorities(names: { [token: string]: string; }): Array<A
 function convertToAuthorityMap(authorities: ReadonlyArray<Authority>): { [token: string]: Authority; } {
     let result: { [token: string]: Authority; } = {};
     for (let authority of authorities) {
-        result[authority.token] = authority;
+        if (authorities.indexOf(authority) > -1) {
+            result[authority.token] = authority;
+        }
     }
     return result;
 }
