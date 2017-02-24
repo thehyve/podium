@@ -319,7 +319,7 @@ form {
         border-radius: 3px;
         display: inline-block;
         position: relative;
-        margin: 2px 15px 0 25px;
+        margin: 2px 15px 0 0;
         vertical-align: top;
 
         +label {
@@ -355,6 +355,10 @@ form {
             color: #99a1a7;
         }
 
+    }
+
+    .checkbox-group {
+        margin-left: 25px;
     }
 }
 

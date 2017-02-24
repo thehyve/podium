@@ -7,19 +7,16 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-.checkbox-group {
-    margin-top: 10px;
+.upload-drop-zone {
+    border: dotted 3px lightgray;
+    width: 100%;
+    text-align: center;
+    font-weight: 300;
+    font-size: 32px;
+    color: #ccc;
 }
 
-h3 {
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(0,0,0,.1);
-    margin-bottom: 10px;
+.upload-dropzone-hover {
+    border: dotted 3px green;
 }
-
-.action-container {
-    margin-top: 30px;
-}
-
 

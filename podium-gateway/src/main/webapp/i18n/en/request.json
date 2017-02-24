@@ -70,22 +70,26 @@
                     "background": {
                         "required": "A background description is required.",
                         "minlength": "The background description has to be at least 1 character long.",
-                        "maxlength": "The background description cannot be longer than 50 characters."
+                        "maxlength": "The background description cannot be longer than 2000 characters.",
+                        "wordLength": "The background description cannot be longer than 750 words."
                     },
                     "researchQuestion": {
                         "required": "A research question is required.",
                         "minlength": "The research question has to be at least 1 character long.",
-                        "maxlength": "The research question cannot be longer than 300 characters."
+                        "maxlength": "The research question cannot be longer than 300 characters.",
+                        "wordLength": "The research question cannot be longer than 30 words."
                     },
                     "hypothesis": {
                         "required": "Hypothesis and / or goals are required.",
                         "minlength": "The hypothesis has to be at least 1 character long.",
-                        "maxlength": "The hypothesis cannot be longer than 5000 characters."
+                        "maxlength": "The hypothesis cannot be longer than 5000 characters.",
+                        "wordLength": "The research question cannot be longer than 300 words."
                     },
                     "methods": {
                         "required": "Description of methods is required.",
                         "minlength": "Description of methods has to be at least 1 character long.",
-                        "maxlength": "Description of methods cannot be longer than 10000 characters."
+                        "maxlength": "Description of methods cannot be longer than 10000 characters.",
+                        "wordLength": "The research question cannot be longer than 500 words."
                     },
                     "relatedRequestNumber": {
                         "maxlength": "The related request number cannot be longer than 50 characters."

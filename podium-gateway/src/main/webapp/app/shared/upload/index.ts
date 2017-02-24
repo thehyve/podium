@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2017. The Hyve and respective contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -8,18 +8,6 @@
  *
  */
 
-.checkbox-group {
-    margin-top: 10px;
-}
-
-h3 {
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(0,0,0,.1);
-    margin-bottom: 10px;
-}
-
-.action-container {
-    margin-top: 30px;
-}
-
-
+export * from './upload.route';
+export * from './upload-dialog.component';
+export * from './upload-dialog.service';

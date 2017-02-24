@@ -1,0 +1,17 @@
+{
+    "upload": {
+        "dialog": {
+            "header": "Upload management",
+            "actions": {
+                "cancel": "Cancel",
+                "confirm": "Confirm",
+                "upload": "Upload",
+                "remove": "Remove",
+                "uploadAll": "Upload all",
+                "cancelAll": "Cancel all",
+                "removeAll": "Remove all"
+            }
+
+        }
+    }
+}
