@@ -174,15 +174,6 @@
                     <podium-specialism [(specialism)]="settingsAccount.specialism"></podium-specialism>
                 </div>
 
-                <div class="form-group" *ngIf="languages && languages.length > 0">
-                    <label for="langKey" jhiTranslate="settings.form.language">Language</label>
-                    <select class="form-control" id="langKey" name="langKey" [(ngModel)]="settingsAccount.langKey">
-                        <option *ngFor="let language of languages" [value]="language">{{language |
-                            findLanguageFromKey}}
-                        </option>
-                    </select>
-                </div>
-
                 <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-primary"
                         jhiTranslate="settings.form.button">Save
                 </button>
