@@ -12,61 +12,42 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import { Organisation } from './organisation.model';
-@Injectable()
-export class OrganisationService {
+import { RequestDetail } from './request-detail';
 
-    private resourceUrl = 'podiumuaa/api/organisations';
-    private resourceSearchUrl = 'podiumuaa/api/_search/organisations';
+@Injectable()
+export class RequestService {
+
+    private resourceUrl = 'api/requests';
+    private resourceSearchUrl = 'api/_search/requests';
 
     constructor(private http: Http) { }
 
-    create(organisation: Organisation): Observable<Organisation> {
-        let copy: Organisation = Object.assign({}, organisation);
+    createBase(request: RequestDetail): Observable<RequestDetail> {
+        let copy: RequestDetail = Object.assign({}, request);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
         });
     }
 
-    update(organisation: Organisation): Observable<Organisation> {
-        let copy: Organisation = Object.assign({}, organisation);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
-    }
-
-    find(id: number): Observable<Organisation> {
+    findBase(id: number): Observable<RequestDetail> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
             return res.json();
         });
     }
 
-    findAvailable(): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
-            return res.json();
-        });
-    }
-
-    findByUuid(uuid: string): Observable<Organisation> {
+    findBaseByUuid(uuid: string): Observable<RequestDetail> {
         return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
             return res.json();
         });
     }
 
-    query(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-        ;
-    }
-
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(uuid: number): Observable<Response> {
+        return this.http.delete(`${this.resourceUrl}/${uuid}`);
     }
 
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-        ;
+        return this.http.get(this.resourceSearchUrl, options);
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {

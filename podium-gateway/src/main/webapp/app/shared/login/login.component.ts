@@ -57,7 +57,6 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         };
         this.authenticationError = false;
         this.userAccountLocked = false;
-        //this.activeModal.dismiss('cancel');
     }
 
     login () {
@@ -68,7 +67,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         }).then(() => {
             this.authenticationError = false;
             this.userAccountLocked = false;
-           // this.activeModal.dismiss('login success');
+
             if (this.router.url === '/register' || this.router.url === '/activate' ||
                 this.router.url === '/finishReset' || this.router.url === '/requestReset') {
                 this.router.navigate(['']);
@@ -79,8 +78,8 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
                 content: 'Sending Authentication Success'
             });
 
-            // // previousState was set in the authExpiredInterceptor before being redirected to login modal.
-            // // since login is succesful, go to stored previousState and clear previousState
+            // previousState was set in the authExpiredInterceptor before being redirected to login modal.
+            // since login is succesful, go to stored previousState and clear previousState
             let previousState = this.stateStorageService.getPreviousState();
             if (previousState) {
                 this.stateStorageService.resetPreviousState();
@@ -101,12 +100,10 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     }
 
     register () {
-        //this.activeModal.dismiss('to state register');
         this.router.navigate(['/register']);
     }
 
     requestResetPassword () {
-        //this.activeModal.dismiss('to state requestReset');
         this.router.navigate(['/reset', 'request']);
     }
 }

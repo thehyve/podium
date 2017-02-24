@@ -45,12 +45,6 @@ $link-color: #ccc;
         .nav-item > * {
             color: $link-color;
         }
-
-        .nav-item {
-            :hover {
-                color: rgb(250, 250, 250);
-            }
-        }
     }
 
     a.nav-link {

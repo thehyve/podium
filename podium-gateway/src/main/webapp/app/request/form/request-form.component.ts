@@ -15,8 +15,10 @@ import { RequestDetail } from '../../shared/request/request-detail';
 import { RequestFormService } from './request-form.service';
 import { RequestType } from '../../shared/request/request-type';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload/ng2-file-upload';
+import { OrganisationService } from '../../entities/organisation/organisation.service';
+import { Organisation } from '../../entities/organisation/organisation.model';
 
-const URL = 'api/upload/';
+
 
 @Component({
     selector: 'pdm-request-form',
@@ -25,17 +27,20 @@ const URL = 'api/upload/';
 })
 export class RequestFormComponent implements OnInit {
 
-    public uploader: FileUploader = new FileUploader({ url: URL });
     error: string;
     success: string;
-    request: RequestDetail;
+    request: RequestDetail = new RequestDetail();
     requestTypes = RequestType;
+    availableOrganisations: Organisation[];
+
+
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestFormService: RequestFormService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private organisationService: OrganisationService
     ) {
         this.jhiLanguageService.setLocations(['request']);
     }
@@ -44,8 +49,21 @@ export class RequestFormComponent implements OnInit {
         /**
          * Organisation resolve
          */
+        this.organisationService.findAvailable().map((availableOrganisations) => {
+            // this.availableOrganisations = availableOrganisations;
+        });
 
-        this.request = new RequestDetail();
+        /**
+         * Resolve Tags
+         */
+
+        /**
+         * Resolve Drafts
+         */
+
+
     }
+
+
 
 }
