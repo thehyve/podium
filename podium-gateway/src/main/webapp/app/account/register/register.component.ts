@@ -72,7 +72,10 @@ export class RegisterComponent implements OnInit {
                 this.registerAccount.langKey = key;
                 this.registerService.save(this.registerAccount).subscribe(
                     () => this.processSuccess(),
-                    (response) => this.processError(response)
+                    (response) => {
+                        this.processError(response);
+                        window.scrollTo(0, 0);
+                    }
                 );
             });
         }
