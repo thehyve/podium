@@ -59,6 +59,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     }
 
     login () {
+        console.log('asdads')
         this.loginService.login({
             username: this.username,
             password: this.password,
