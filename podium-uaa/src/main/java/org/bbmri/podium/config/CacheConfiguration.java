@@ -55,6 +55,10 @@ public class CacheConfiguration {
     @Bean
     public HazelcastInstance hazelcastInstance(PodiumProperties podiumProperties) {
         log.debug("Configuring Hazelcast");
+        HazelcastInstance instance = Hazelcast.getHazelcastInstanceByName("podiumUaa");
+        if (instance != null) {
+            instance.shutdown();
+        }
         Config config = new Config();
         config.setInstanceName("podiumUaa");
         config.getNetworkConfig().setPort(5701);

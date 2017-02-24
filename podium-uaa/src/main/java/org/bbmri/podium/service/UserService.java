@@ -21,7 +21,8 @@ import org.bbmri.podium.service.util.RandomUtil;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,11 +54,16 @@ public class UserService {
 
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
-        return userRepository.findOneByActivationKey(key)
+        return userRepository.findOneByDeletedIsFalseAndActivationKey(key)
+            .filter(user -> {
+                ZonedDateTime oneWeekAgo = ZonedDateTime.now().minusWeeks(1);
+                return user.getActivationKeyDate().isAfter(oneWeekAgo);
+            })
             .map(user -> {
                 // activate given user for the registration key.
-                user.setActivated(true);
+                user.setEmailVerified(true);
                 user.setActivationKey(null);
+                user.setActivationKeyDate(null);
                 userSearchRepository.save(user);
                 log.debug("Activated user: {}", user);
                 return user;
@@ -67,12 +73,19 @@ public class UserService {
     public Optional<User> completePasswordReset(String newPassword, String key) {
        log.debug("Reset user password for reset key {}", key);
 
-       return userRepository.findOneByResetKey(key)
+       return userRepository.findOneByDeletedIsFalseAndResetKey(key)
             .filter(user -> {
                 ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
            })
            .map(user -> {
+                if (!user.isEmailVerified()) {
+                    user.setEmailVerified(true);
+                    user.setActivationKey(null);
+                    user.setActivationKeyDate(null);
+                    userSearchRepository.save(user);
+                    log.debug("Activated user: {}", user);
+                }
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
@@ -81,7 +94,7 @@ public class UserService {
     }
 
     public Optional<User> requestPasswordReset(String mail) {
-        return userRepository.findOneByEmail(mail)
+        return userRepository.findOneByDeletedIsFalseAndEmail(mail)
             .filter(User::isActivated)
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
@@ -122,12 +135,14 @@ public class UserService {
         newUser.setPassword(encryptedPassword);
         copyProperties(managedUserVM, newUser);
         // new user is not active
-        newUser.setActivated(false);
+        newUser.setEmailVerified(false);
+        newUser.setAdminVerified(false);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
+        newUser.setActivationKeyDate(ZonedDateTime.now());
         roles.add(role);
         newUser.setRoles(roles);
-        userRepository.save(newUser);
+        save(newUser);
         userSearchRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -136,6 +151,7 @@ public class UserService {
     public User createUser(ManagedUserVM managedUserVM) {
         User user = new User();
         user.setLogin(managedUserVM.getLogin());
+        user.setEmail(managedUserVM.getEmail());
         copyProperties(managedUserVM, user);
         if (managedUserVM.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
@@ -151,15 +167,15 @@ public class UserService {
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(ZonedDateTime.now());
-        user.setActivated(true);
-        userRepository.save(user);
+        user.setEmailVerified(false);
+        save(user);
         userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
         return user;
     }
 
     public void updateUserAccount(UserRepresentation userData) {
-        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
+        userRepository.findOneByDeletedIsFalseAndLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             copyProperties(userData, user);
             userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
@@ -172,7 +188,7 @@ public class UserService {
             .ifPresent(user -> {
                 user.setLogin(managedUserVM.getLogin());
                 user.setEmail(managedUserVM.getEmail());
-                user.setActivated(managedUserVM.isActivated());
+                user.setAdminVerified(managedUserVM.isAdminVerified());
                 Set<Role> managedRoles = user.getRoles();
                 managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
                 managedUserVM.getAuthorities().forEach( authority -> {
@@ -191,25 +207,35 @@ public class UserService {
             });
     }
 
-    public void deleteUser(String login) {
-        userRepository.findOneByLogin(login).ifPresent(user -> {
-            userRepository.delete(user);
-            userSearchRepository.delete(user);
-            log.debug("Deleted User: {}", user);
-        });
-    }
-
     public void changePassword(String password) {
-        userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
+        userRepository.findOneByDeletedIsFalseAndLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             String encryptedPassword = passwordEncoder.encode(password);
             user.setPassword(encryptedPassword);
             log.debug("Changed password for User: {}", user);
         });
     }
 
+    public User unlockAccount(User user) {
+        user.setAccountLocked(false);
+        user.setAccountLockDate(null);
+        user.resetFailedLoginAttempts();
+        return save(user);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public void delete(User user) {
+        user.setDeleted(true);
+        save(user);
+        userSearchRepository.delete(user);
+        log.debug("Deleted User: {}", user);
+    }
+
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneByLogin(login).map(user -> {
+        return userRepository.findOneByDeletedIsFalseAndLogin(login).map(user -> {
             user.getAuthorities().size();
             return user;
         });
@@ -217,7 +243,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserByUuid(UUID uuid) {
-        return userRepository.findOneByUuid(uuid).map(user -> {
+        return userRepository.findOneByDeletedIsFalseAndUuid(uuid).map(user -> {
             user.getAuthorities().size();
             return user;
         });
@@ -232,7 +258,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
-        Optional<User> optionalUser = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(SecurityUtils.getCurrentUserLogin());
         User user = null;
         if (optionalUser.isPresent()) {
           user = optionalUser.get();
@@ -241,21 +267,14 @@ public class UserService {
          return user;
     }
 
-    /**
-     * Not activated users should be automatically deleted after 3 days.
-     * <p>
-     * This is scheduled to get fired everyday, at 01:00 (am).
-     * </p>
-     */
-    @Scheduled(cron = "0 0 1 * * ?")
-    public void removeNotActivatedUsers() {
-        ZonedDateTime now = ZonedDateTime.now();
-        List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minusDays(3));
-        for (User user : users) {
-            log.debug("Deleting not activated user {}", user.getLogin());
-            userRepository.delete(user);
-            userSearchRepository.delete(user);
-        }
+    public Optional<User> getUserWithAuthoritiesByEmail(String email) {
+        return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
+            user.getAuthorities().size();
+            return user;
+        });
     }
 
+    public Page<User> getUsers(Pageable pageable) {
+        return userRepository.findAllWithAuthorities(pageable);
+    }
 }
