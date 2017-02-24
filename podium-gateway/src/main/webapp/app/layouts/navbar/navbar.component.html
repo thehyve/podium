@@ -15,7 +15,7 @@
            aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
             <i class="material-icons">view_headline</i>
         </a>
-        <a class="navbar-brand logo float-xs-right" routerLink="/" (click)="collapseNavbar()">
+        <a class="navbar-brand logo float-xs-right" routerLink="/dashboard" (click)="collapseNavbar()">
             <span class="logo-img"></span>
             <span jhiTranslate="global.title" class="navbar-title">Podium Request Portal</span> <span class="navbar-version">{{version}}</span>
         </a>
@@ -24,9 +24,9 @@
          [ngSwitch]="isAuthenticated()">
         <ul class="nav navbar-nav float-lg-right">
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
-                    <i class="material-icons">home</i>
-                    <span class="hidden-sm-down" jhiTranslate="global.menu.home">Home</span>
+                <a class="nav-link" routerLink="/dashboard" (click)="collapseNavbar()">
+                    <i class="material-icons">dashboard</i>
+                    <span class="hidden-sm-down" jhiTranslate="global.menu.dashboard">Dashboard</span>
                 </a>
             </li>
 
