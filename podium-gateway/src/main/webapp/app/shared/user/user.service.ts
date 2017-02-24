@@ -28,6 +28,10 @@ export class UserService {
         return this.http.put(this.resourceUrl, user);
     }
 
+    unlock(user: User): Observable<Response> {
+        return this.http.put(`${this.resourceUrl}/uuid/${user.uuid}/unlock`, {});
+    }
+
     find(login: string): Observable<User> {
         return this.http.get(`${this.resourceUrl}/${login}`).map((res: Response) => res.json());
     }

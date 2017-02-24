@@ -13,16 +13,15 @@ package org.bbmri.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.security.SecurityUtils;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.service.representation.UserRepresentation;
+import org.bbmri.podium.validation.PasswordValidator;
 import org.bbmri.podium.web.rest.vm.KeyAndPasswordVM;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -46,9 +45,6 @@ public class AccountResource {
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
     @Inject
-    private UserRepository userRepository;
-
-    @Inject
     private UserService userService;
 
     @Inject
@@ -68,9 +64,9 @@ public class AccountResource {
         HttpHeaders textPlainHeaders = new HttpHeaders();
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
 
-        return userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase())
+        return userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase())
             .map(user -> new ResponseEntity<>("login already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
-            .orElseGet(() -> userRepository.findOneByEmail(managedUserVM.getEmail())
+            .orElseGet(() -> userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail())
                 .map(user -> new ResponseEntity<>("e-mail address already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
                 .orElseGet(() -> {
                     User user = userService.registerUser(managedUserVM);
@@ -130,12 +126,12 @@ public class AccountResource {
     @PostMapping("/account")
     @Timed
     public ResponseEntity<String> saveAccount(@Valid @RequestBody UserRepresentation userDTO) {
-        Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
+        Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
         }
-        return userRepository
-            .findOneByLogin(SecurityUtils.getCurrentUserLogin())
+        return userService
+            .getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin())
             .map(u -> {
                 userService.updateUserAccount(userDTO);
                 return new ResponseEntity<String>(HttpStatus.OK);
@@ -153,7 +149,7 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> changePassword(@RequestBody String password) {
-        if (!checkPasswordLength(password)) {
+        if (!PasswordValidator.validate(password)) {
             return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
         }
         userService.changePassword(password);
@@ -191,17 +187,9 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
-        if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
-            return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
-        }
         return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
               .map(user -> new ResponseEntity<String>(HttpStatus.OK))
               .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    private boolean checkPasswordLength(String password) {
-        return (!StringUtils.isEmpty(password) &&
-            password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
-            password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH);
-    }
 }

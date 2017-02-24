@@ -20,7 +20,9 @@ export class User {
     public department?: string;
     public jobTitle?: string;
     public specialism?: string;
-    public activated?: Boolean;
+    public emailVerified?: Boolean;
+    public adminVerified?: Boolean;
+    public accountLocked?: Boolean;
     public langKey?: string;
     public authorities?: any[];
     public createdBy?: string;
@@ -40,7 +42,9 @@ export class User {
         department?: string,
         jobTitle?: string,
         specialism?: string,
-        activated?: Boolean,
+        emailVerified?: Boolean,
+        adminVerified?: Boolean,
+        accountLocked?: Boolean,
         langKey?: string,
         authorities?: any[],
         createdBy?: string,
@@ -60,7 +64,9 @@ export class User {
         this.department = department ? department : null;
         this.jobTitle = jobTitle ? jobTitle : null;
         this.specialism = specialism ? specialism : null;
-        this.activated = activated ? activated : false;
+        this.emailVerified = emailVerified ? emailVerified : false;
+        this.adminVerified = adminVerified ? adminVerified : false;
+        this.accountLocked = accountLocked ? accountLocked : false;
         this.langKey = langKey ? langKey : null;
         this.authorities = authorities ? authorities : null;
         this.createdBy = createdBy ? createdBy : null;

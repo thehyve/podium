@@ -41,17 +41,6 @@ describe('Role e2e test', () => {
         });
     });
 
-    it('should load create Role dialog', function () {
-        element(by.css('button.create-role')).click().then(() => {
-            const expectVal = /podiumGatewayApp.role.home.createOrEditLabel/;
-            element.all(by.css('h4.modal-title')).first().getAttribute('jhiTranslate').then((value) => {
-                expect(value).toMatch(expectVal);
-            });
-
-            element(by.css('button.close')).click();
-        });
-    });
-
     afterAll(function () {
         accountMenu.click();
         logout.click();

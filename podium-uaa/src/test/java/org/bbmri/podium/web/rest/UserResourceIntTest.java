@@ -42,9 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserResourceIntTest {
 
     @Inject
-    private UserRepository userRepository;
-
-    @Inject
     private UserService userService;
 
     private MockMvc restUserMockMvc;
@@ -59,7 +56,6 @@ public class UserResourceIntTest {
         User user = new User();
         user.setLogin("test");
         user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(true);
         user.setEmail("test@test.com");
         user.setFirstName("test");
         user.setLastName("test");
@@ -72,7 +68,6 @@ public class UserResourceIntTest {
     @Before
     public void setup() {
         UserResource userResource = new UserResource();
-        ReflectionTestUtils.setField(userResource, "userRepository", userRepository);
         ReflectionTestUtils.setField(userResource, "userService", userService);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }

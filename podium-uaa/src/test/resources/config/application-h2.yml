@@ -1,0 +1,22 @@
+# ===================================================================
+# Spring Boot configuration for the "h2" profile.
+#
+# This configuration overrides the application.yml file.
+# ===================================================================
+
+spring:
+    profiles:
+        active: test
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        url: jdbc:h2:mem:podiumUaa;DB_CLOSE_DELAY=-1
+        name:
+        username:
+        password:
+    h2:
+        console:
+            enabled: false
+    jpa:
+        database-platform: org.bbmri.podium.domain.util.FixedH2Dialect
+        database: H2
+        show-sql: true

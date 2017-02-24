@@ -14,6 +14,7 @@ import org.bbmri.podium.config.Constants;
 import org.bbmri.podium.config.DefaultProfileUtil;
 import org.bbmri.podium.config.PodiumProperties;
 
+import org.bbmri.podium.config.UaaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +24,6 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +35,7 @@ import java.util.Collection;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class })
-@EnableConfigurationProperties({ PodiumProperties.class, LiquibaseProperties.class })
+@EnableConfigurationProperties({ PodiumProperties.class, UaaProperties.class, LiquibaseProperties.class })
 @EnableDiscoveryClient
 public class PodiumUaaApp {
 

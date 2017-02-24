@@ -11,7 +11,7 @@
 package org.bbmri.podium.security;
 
 import org.bbmri.podium.domain.User;
-import org.bbmri.podium.repository.UserRepository;
+import org.bbmri.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,17 +34,14 @@ public class UserDetailsService implements org.springframework.security.core.use
     private final Logger log = LoggerFactory.getLogger(UserDetailsService.class);
 
     @Inject
-    private UserRepository userRepository;
+    private UserService userService;
 
-    /**
-     * FIXME: create new UserDetails subclass that includes roles.
-     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userFromDatabase = userRepository.findOneByLogin(lowercaseLogin);
+        Optional<User> userFromDatabase = userService.getUserWithAuthoritiesByLogin(lowercaseLogin);
         return userFromDatabase.map(user -> {
             if (!user.isActivated()) {
                 throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");

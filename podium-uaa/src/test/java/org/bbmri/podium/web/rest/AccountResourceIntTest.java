@@ -15,7 +15,6 @@ import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.AuthorityRepository;
-import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.service.representation.UserRepresentation;
@@ -53,8 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = PodiumUaaApp.class)
 public class AccountResourceIntTest {
 
-    @Inject
-    private UserRepository userRepository;
+    private static final String VALID_PASSWORD = "johndoe2!";
 
     @Inject
     private AuthorityRepository authorityRepository;
@@ -78,12 +76,10 @@ public class AccountResourceIntTest {
         doNothing().when(mockMailService).sendActivationEmail((User) anyObject());
 
         AccountResource accountResource = new AccountResource();
-        ReflectionTestUtils.setField(accountResource, "userRepository", userRepository);
         ReflectionTestUtils.setField(accountResource, "userService", userService);
         ReflectionTestUtils.setField(accountResource, "mailService", mockMailService);
 
         AccountResource accountUserMockResource = new AccountResource();
-        ReflectionTestUtils.setField(accountUserMockResource, "userRepository", userRepository);
         ReflectionTestUtils.setField(accountUserMockResource, "userService", mockUserService);
         ReflectionTestUtils.setField(accountUserMockResource, "mailService", mockMailService);
 
@@ -152,11 +148,10 @@ public class AccountResourceIntTest {
         ManagedUserVM validUser = new ManagedUserVM();
         validUser.setId(null);
         validUser.setLogin("joe");
-        validUser.setPassword("password");
+        validUser.setPassword(VALID_PASSWORD);
         validUser.setFirstName("Joe");
         validUser.setLastName("Shmoe");
         validUser.setEmail("joe@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -166,7 +161,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> user = userRepository.findOneByLogin("joe");
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isTrue();
     }
 
@@ -176,11 +171,10 @@ public class AccountResourceIntTest {
         ManagedUserVM invalidUser = new ManagedUserVM();
         invalidUser.setId(null);
         invalidUser.setLogin("funky-log!n"); // invalid
-        invalidUser.setPassword("password");
+        invalidUser.setPassword(VALID_PASSWORD);
         invalidUser.setFirstName("Funky");
         invalidUser.setLastName("One");
         invalidUser.setEmail("funky@example.com");
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -190,7 +184,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByEmail("funky@example.com");
+        Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
     }
 
@@ -200,11 +194,10 @@ public class AccountResourceIntTest {
         ManagedUserVM invalidUser = new ManagedUserVM();
         invalidUser.setId(null);
         invalidUser.setLogin("bob");
-        invalidUser.setPassword("password");
+        invalidUser.setPassword(VALID_PASSWORD);
         invalidUser.setFirstName("Bob");
         invalidUser.setLastName("Green");
         invalidUser.setEmail("invalid"); // invalid
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -214,32 +207,47 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByLogin("bob");
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("bob");
         assertThat(user.isPresent()).isFalse();
     }
 
     @Test
     @Transactional
     public void testRegisterInvalidPassword() throws Exception {
-        ManagedUserVM invalidUser = new ManagedUserVM();
-        invalidUser.setId(null);
-        invalidUser.setLogin("bob");
-        invalidUser.setPassword("123"); // password with only 3 digits
-        invalidUser.setFirstName("Bob");
-        invalidUser.setLastName("Green");
-        invalidUser.setEmail("bob@example.com"); // invalid
-        invalidUser.setActivated(true);
-        invalidUser.setLangKey("en");
-        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        StringBuilder tooLongPassword = new StringBuilder();
+        for (int i=0; i < 100; i++) {
+            tooLongPassword.append("Abcdef12345%^&*");
+        }
+        String[] invalidPasswords = {
+            null, // empty password
+            "", // empty password
+            "1234567", // password with less than 8 characters
+            "12345678", // password with only numbers
+            "abcde123", // password without special characters
+            "abc&%$;.Y", // password without numbers
+            "123456^&*(", // password without alphabetical symbols
+            tooLongPassword.toString() // password larger than 1000 characters
+        };
+        for(String password: invalidPasswords) {
+            ManagedUserVM invalidUser = new ManagedUserVM();
+            invalidUser.setId(null);
+            invalidUser.setLogin("bob");
+            invalidUser.setPassword(password);
+            invalidUser.setFirstName("Bob");
+            invalidUser.setLastName("Green");
+            invalidUser.setEmail("bob@example.com");
+            invalidUser.setLangKey("en");
+            invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
-        restUserMockMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
-            .andExpect(status().isBadRequest());
+            restUserMockMvc.perform(
+                post("/api/register")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
+                .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByLogin("bob");
-        assertThat(user.isPresent()).isFalse();
+            Optional<User> user = userService.getUserWithAuthoritiesByLogin("bob");
+            assertThat(user.isPresent()).isFalse();
+        }
     }
 
     private ManagedUserVM duplicateManagedUserVM(ManagedUserVM original) {
@@ -250,7 +258,6 @@ public class AccountResourceIntTest {
         duplicate.setFirstName(original.getFirstName());
         duplicate.setLastName(original.getLastName());
         duplicate.setEmail(original.getEmail());
-        duplicate.setActivated(original.isActivated());
         duplicate.setLangKey(original.getLangKey());
         duplicate.setAuthorities(original.getAuthorities());
         return duplicate;
@@ -263,11 +270,10 @@ public class AccountResourceIntTest {
         ManagedUserVM validUser = new ManagedUserVM();
         validUser.setId(null);
         validUser.setLogin("alice");
-        validUser.setPassword("password");
+        validUser.setPassword(VALID_PASSWORD);
         validUser.setFirstName("Alice");
         validUser.setLastName("Something");
         validUser.setEmail("alice@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -289,7 +295,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().is4xxClientError());
 
-        Optional<User> userDup = userRepository.findOneByEmail("alicejr@example.com");
+        Optional<User> userDup = userService.getUserWithAuthoritiesByEmail("alicejr@example.com");
         assertThat(userDup.isPresent()).isFalse();
     }
 
@@ -300,11 +306,10 @@ public class AccountResourceIntTest {
         ManagedUserVM validUser = new ManagedUserVM();
         validUser.setId(null);
         validUser.setLogin("john");
-        validUser.setPassword("password");
+        validUser.setPassword(VALID_PASSWORD);
         validUser.setFirstName("John");
         validUser.setLastName("Doe");
         validUser.setEmail("john@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -326,7 +331,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().is4xxClientError());
 
-        Optional<User> userDup = userRepository.findOneByLogin("johnjr");
+        Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("johnjr");
         assertThat(userDup.isPresent()).isFalse();
     }
 
@@ -336,11 +341,10 @@ public class AccountResourceIntTest {
         ManagedUserVM validUser = new ManagedUserVM();
         validUser.setId(null);
         validUser.setLogin("badguy");
-        validUser.setPassword("password");
+        validUser.setPassword(VALID_PASSWORD);
         validUser.setFirstName("Bad");
         validUser.setLastName("Guy");
         validUser.setEmail("badguy@example.com");
-        validUser.setActivated(true);
         validUser.setLangKey("en");
         validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
 
@@ -350,7 +354,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> userDup = userRepository.findOneByLogin("badguy");
+        Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
         assertThat(userDup.get().getAuthorities()).hasSize(1)
             .containsExactly(authorityRepository.findOne(Authority.RESEARCHER));
@@ -364,7 +368,6 @@ public class AccountResourceIntTest {
         invalidUser.setFirstName("Funky");
         invalidUser.setLastName("One");
         invalidUser.setEmail("funky@example.com");
-        invalidUser.setActivated(true);
         invalidUser.setLangKey("en");
         invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
 
@@ -374,7 +377,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userRepository.findOneByEmail("funky@example.com");
+        Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
     }
 }
