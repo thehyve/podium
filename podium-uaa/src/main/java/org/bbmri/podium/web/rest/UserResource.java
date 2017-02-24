@@ -14,6 +14,7 @@ import org.bbmri.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.exceptions.ResourceNotFoundException;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
 import org.bbmri.podium.service.MailService;
@@ -72,9 +73,6 @@ public class UserResource {
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
     @Inject
-    private UserRepository userRepository;
-
-    @Inject
     private MailService mailService;
 
     @Inject
@@ -102,11 +100,11 @@ public class UserResource {
         log.debug("REST request to save User : {}", managedUserVM);
 
         //Lowercase the user login before comparing with database
-        if (userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase()).isPresent()) {
+        if (userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase()).isPresent()) {
             return ResponseEntity.badRequest()
                 .headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use"))
                 .body(null);
-        } else if (userRepository.findOneByEmail(managedUserVM.getEmail()).isPresent()) {
+        } else if (userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail()).isPresent()) {
             return ResponseEntity.badRequest()
                 .headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "Email already in use"))
                 .body(null);
@@ -132,11 +130,11 @@ public class UserResource {
     @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
         log.debug("REST request to update User : {}", managedUserVM);
-        Optional<User> existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
+        Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "E-mail already in use")).body(null);
         }
-        existingUser = userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase());
+        existingUser = userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use")).body(null);
         }
@@ -145,6 +143,29 @@ public class UserResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createAlert("userManagement.updated", managedUserVM.getLogin()))
             .body(new ManagedUserVM(userService.getUserWithAuthorities(managedUserVM.getId())));
+    }
+
+    /**
+     * PUT  /users/uuid/:uuid/unlock : Unlocks an existing User account.
+     *
+     * @param uuid the uuid of the user to unlock
+     * @return the ResponseEntity with status 200 (OK) and with body the updated user,
+     * or with status 404 (Not found) if the user could not be found.
+     */
+    @PutMapping("/users/uuid/{uuid}/unlock")
+    @Timed
+    //@Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    public ResponseEntity<ManagedUserVM> unlockUser(@PathVariable UUID uuid) {
+        log.debug("REST request to unlock User : {}", uuid);
+        Optional<User> userOptional = userService.getUserByUuid(uuid);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("User not found.");
+        }
+        User user = userService.unlockAccount(userOptional.get());
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert("userManagement.unlocked", user.getLogin()))
+            .body(new ManagedUserVM(user));
     }
 
     /**
@@ -159,7 +180,7 @@ public class UserResource {
     @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN, Authority.ORGANISATION_ADMIN})
     public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        Page<User> page = userRepository.findAllWithAuthorities(pageable);
+        Page<User> page = userService.getUsers(pageable);
         List<ManagedUserVM> managedUserVMs = page.getContent().stream()
             .map(ManagedUserVM::new)
             .collect(Collectors.toList());
@@ -210,8 +231,12 @@ public class UserResource {
     @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
-        userService.deleteUser(login);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
+        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("User not found.");
+        }
+        userService.delete(userOptional.get());
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
     }
 
     /**

@@ -11,6 +11,7 @@
 package org.bbmri.podium.security;
 
 import org.bbmri.podium.domain.Authority;
+import org.bbmri.podium.domain.User;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +38,21 @@ public class SecurityUtilsUnitTest {
         SecurityContextHolder.setContext(securityContext);
         String login = SecurityUtils.getCurrentUserLogin();
         assertThat(login).isEqualTo("admin");
+    }
+
+    @Test
+    public void testforUserAuthenticationToken() {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        User user = new User();
+        user.setLogin("admin");
+        UserAuthenticationToken token = new UserAuthenticationToken(user);
+        token.setAuthenticated(true);
+        securityContext.setAuthentication(token);
+        SecurityContextHolder.setContext(securityContext);
+        String login = SecurityUtils.getCurrentUserLogin();
+        assertThat(login).isEqualTo("admin");
+        boolean isAuthenticated = SecurityUtils.isAuthenticated();
+        assertThat(isAuthenticated).isTrue();
     }
 
     @Test

@@ -138,6 +138,7 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
+            "unlock": "Unlock",
             "view": "View"
         },
         "detail": {
@@ -146,6 +147,9 @@
         },
         "delete": {
             "title": "Confirm delete operation"
+        },
+        "unlock": {
+            "title": "Confirm unlock operation"
         },
         "validation": {
             "required": "This field is required.",

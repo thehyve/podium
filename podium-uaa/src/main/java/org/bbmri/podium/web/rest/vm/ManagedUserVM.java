@@ -14,15 +14,12 @@ import java.time.ZonedDateTime;
 
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.service.representation.UserRepresentation;
-import javax.validation.constraints.Size;
+import org.bbmri.podium.validation.ValidPassword;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.
  */
 public class ManagedUserVM extends UserRepresentation {
-
-    public static final int PASSWORD_MIN_LENGTH = 8;
-    public static final int PASSWORD_MAX_LENGTH = 1000;
 
     private Long id;
 
@@ -34,7 +31,7 @@ public class ManagedUserVM extends UserRepresentation {
 
     private ZonedDateTime lastModifiedDate;
 
-    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
+    @ValidPassword
     private String password;
 
     public ManagedUserVM() {

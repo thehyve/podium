@@ -15,7 +15,6 @@ import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import java.time.ZonedDateTime;
 import org.bbmri.podium.service.util.RandomUtil;
-import java.time.LocalDate;
 
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Test;
@@ -26,7 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
 import java.util.Optional;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -39,6 +37,8 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(classes = PodiumUaaApp.class)
 @Transactional
 public class UserServiceIntTest {
+
+    private static final String VALID_PASSWORD = "johndoe2!";
 
     @Inject
     private UserRepository userRepository;
@@ -86,13 +86,12 @@ public class UserServiceIntTest {
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
         String resetKey = RandomUtil.generateResetKey();
-        user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
 
         userRepository.save(user);
 
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
 
         assertThat(maybeUser.isPresent()).isFalse();
 
@@ -105,11 +104,10 @@ public class UserServiceIntTest {
         User user = userService.createUser(testUserData);
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
-        user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey("1234");
         userRepository.save(user);
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
         assertThat(maybeUser.isPresent()).isFalse();
         userRepository.delete(user);
     }
@@ -121,11 +119,10 @@ public class UserServiceIntTest {
         String oldPassword = user.getPassword();
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(2);
         String resetKey = RandomUtil.generateResetKey();
-        user.setActivated(true);
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
         userRepository.save(user);
-        Optional<User> maybeUser = userService.completePasswordReset("johndoe2", user.getResetKey());
+        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
         assertThat(maybeUser.isPresent()).isTrue();
         assertThat(maybeUser.get().getResetDate()).isNull();
         assertThat(maybeUser.get().getResetKey()).isNull();
@@ -134,11 +131,4 @@ public class UserServiceIntTest {
         userRepository.delete(user);
     }
 
-    @Test
-    public void testFindNotActivatedUsersByCreationDateBefore() {
-        userService.removeNotActivatedUsers();
-        ZonedDateTime now = ZonedDateTime.now();
-        List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minusDays(3));
-        assertThat(users).isEmpty();
-    }
 }
