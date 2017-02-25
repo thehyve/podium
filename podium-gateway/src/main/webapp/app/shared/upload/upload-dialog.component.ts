@@ -10,7 +10,6 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Response } from '@angular/http';
 
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
@@ -48,7 +47,19 @@ export class UploadDialogComponent implements OnInit {
     }
 
     clear () {
+        /**
+         * Remove pending files
+         */
         this.activeModal.dismiss('cancel');
+        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+    }
+
+    confirm () {
+        this.eventManager.broadcast({
+            name: 'uploadListModification',
+            content: 'File list updated'
+        });
+        this.activeModal.dismiss(true);
         this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 
@@ -80,6 +91,10 @@ export class UploadPopupComponent implements OnInit, OnDestroy {
             } else {*/
                 this.modalRef = this.uploadPopupService
                     .open(UploadDialogComponent);
+
+                this.modalRef.result
+                    .then((res) => console.log('results ', res))
+                    .catch((err) => console.log('err ', err));
             // }
 
         });

@@ -33,6 +33,8 @@ import {
     PodiumLoginComponent,
     SpecialismComponent
 } from './';
+import { AttachmentService } from './attachment/attachment.service';
+import { RequestService } from './request/request.service';
 
 @NgModule({
     imports: [
@@ -60,6 +62,8 @@ import {
         AuthServerProvider,
         AuthService,
         UserService,
+        AttachmentService,
+        RequestService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],

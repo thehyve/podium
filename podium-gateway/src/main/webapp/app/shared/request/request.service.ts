@@ -13,6 +13,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 
 import { RequestDetail } from './request-detail';
+import { RequestBase } from './request-base';
 
 @Injectable()
 export class RequestService {
@@ -22,9 +23,21 @@ export class RequestService {
 
     constructor(private http: Http) { }
 
-    createBase(request: RequestDetail): Observable<RequestDetail> {
-        let copy: RequestDetail = Object.assign({}, request);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
+    initRequestBase(): Observable<RequestBase> {
+        return this.http.get(`${this.resourceUrl}/initialize`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
+    findAvailableRequestDrafts(uuid: string): Observable<RequestBase[]> {
+        return this.http.get(`${this.resourceUrl}/drafts/${uuid}`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
+    saveRequestDraft(requestBase: RequestBase): Observable<RequestBase> {
+        let draftCopy: RequestBase = Object.assign({}, requestBase);
+        return this.http.post(`${this.resourceUrl}/draft`, draftCopy).map((res: Response) => {
             return res.json();
         });
     }

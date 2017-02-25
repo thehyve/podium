@@ -39,3 +39,4 @@ export * from './shared-common.module';
 export * from './shared.module';
 export * from './auth/user-route-access-service';
 export * from './upload/upload.module';
+export * from './attachment/attachment.service';
