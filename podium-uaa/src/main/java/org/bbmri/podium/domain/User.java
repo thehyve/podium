@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
+import org.bbmri.podium.common.domain.AbstractAuditingEntity;
 
 /**
  * A user.
