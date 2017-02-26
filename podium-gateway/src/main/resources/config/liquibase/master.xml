@@ -15,4 +15,9 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="./changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170225153853_added_entity_Request.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170226012932_added_entity_Attachment.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170225153853_added_entity_Requestdetail.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170225153853_added_entity_constraints_Request.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170226012932_added_entity_constraints_Attachment.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

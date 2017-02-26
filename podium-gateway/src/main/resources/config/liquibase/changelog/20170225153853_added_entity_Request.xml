@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="now" value="GETDATE()" dbms="mssql"/>
+
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity Request.
+    -->
+    <changeSet id="20170225153853-1" author="jhipster">
+        <createTable tableName="request">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="parent_request_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="request_detail_id" type="bigint">
+                <constraints unique="true" nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+
+        <createTable tableName="request_organisations">
+            <column name="organisations_uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="requests_id, organisations_uuid" tableName="request_organisations"/>
+
+        <createTable tableName="request_attachments">
+            <column name="attachments_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="requests_id, attachments_id" tableName="request_attachments"/>
+
+    </changeSet>
+</databaseChangeLog>

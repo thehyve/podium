@@ -1,0 +1,56 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "uploader",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "uuid"
+        },
+        {
+            "relationshipName": "request",
+            "otherEntityName": "request",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "filename",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "AttachmentType",
+            "fieldValues": "MTA,DTA,RESEARCH_PROPOSAL,ORG_TERMS,METC_LETTER",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "date",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "mimeType",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20170226012932",
+    "dto": "no",
+    "service": "serviceClass",
+    "entityTableName": "attachment",
+    "pagination": "pagination"
+}

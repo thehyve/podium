@@ -1,0 +1,51 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "organisations",
+            "otherEntityName": "organisation",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "request"
+        },
+        {
+            "relationshipName": "parentRequest",
+            "otherEntityName": "request",
+            "relationshipType": "many-to-one",
+            "otherEntityRelationshipName": "hasSpawned",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "requestDetail",
+            "otherEntityName": "requestDetail",
+            "relationshipType": "one-to-one",
+            "otherEntityRelationshipName": "parentRequest",
+            "ownerSide": true,
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "attachments",
+            "otherEntityName": "attachment",
+            "relationshipType": "many-to-many",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "request"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "status",
+            "fieldType": "RequestStatus",
+            "fieldValues": "DRAFT,FIRST_CHECK,REVIEW,DATA_DELIVERY",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170225153853",
+    "dto": "mapstruct",
+    "service": "serviceClass",
+    "entityTableName": "request",
+    "pagination": "pagination"
+}

@@ -24,7 +24,7 @@
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
     <changeSet id="00000000000000" author="podium" dbms="postgresql,oracle">
-        <createSequence sequenceName="hibernate_sequence" startValue="1000" incrementBy="1"/>
+        <createSequence sequenceName="hibernate_sequence" startValue="1000" incrementBy="50"/>
     </changeSet>
 
     <!--
