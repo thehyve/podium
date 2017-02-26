@@ -1,6 +1,7 @@
 package org.bbmri.podium.service;
 
 import org.bbmri.podium.domain.Request;
+import org.bbmri.podium.domain.enumeration.RequestStatus;
 import org.bbmri.podium.repository.RequestRepository;
 import org.bbmri.podium.repository.search.RequestSearchRepository;
 import org.bbmri.podium.service.dto.RequestDTO;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,7 +29,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class RequestService {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
-    
+
     private final RequestRepository requestRepository;
 
     private final RequestMapper requestMapper;
@@ -57,7 +59,7 @@ public class RequestService {
 
     /**
      *  Get all the requests.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -65,7 +67,13 @@ public class RequestService {
     public Page<RequestDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAll(pageable);
-        return result.map(request -> requestMapper.requestToRequestDTO(request));
+        return result.map(requestMapper::requestToRequestDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public List<RequestDTO> findAllRequestDraftsByUserUuid(UUID uuid) {
+        List<Request> result = requestRepository.findAllByRequesterAndStatus(uuid, RequestStatus.DRAFT);
+        return requestMapper.requestsToRequestDTOs(result);
     }
 
     /**

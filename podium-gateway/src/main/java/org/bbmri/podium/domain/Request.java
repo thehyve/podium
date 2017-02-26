@@ -28,7 +28,7 @@ import org.bbmri.podium.domain.enumeration.RequestStatus;
 @Table(name = "request")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "request")
-public class Request implements Serializable {
+public class Request extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,8 +57,11 @@ public class Request implements Serializable {
     private Request parentRequest;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = true, name = "request_detail_id")
     private RequestDetail requestDetail;
+
+    @Column(nullable = false)
+    private UUID requester;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -158,6 +161,14 @@ public class Request implements Serializable {
 
     public void setAttachments(Set<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public UUID getRequester() {
+        return requester;
+    }
+
+    public void setRequester(UUID requester) {
+        this.requester = requester;
     }
 
     @Override

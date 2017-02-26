@@ -10,7 +10,7 @@
 
 export enum RequestStatus {
     DRAFT,
-    SUBMITTED,
     FIRST_CHECK,
-    APPROVED
+    REVIEW,
+    DELIVERY
 }

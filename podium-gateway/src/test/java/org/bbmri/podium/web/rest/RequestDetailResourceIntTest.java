@@ -33,7 +33,7 @@ import org.bbmri.podium.domain.enumeration.RequestType;
 /**
  * Test class for the RequestdetailResource REST controller.
  *
- * @see RequestdetailResource
+ * @see RequestDetailResource
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumGatewayApp.class)
@@ -91,8 +91,8 @@ public class RequestDetailResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        RequestdetailResource requestdetailResource = new RequestdetailResource(requestDetailService);
-        this.restRequestdetailMockMvc = MockMvcBuilders.standaloneSetup(requestdetailResource)
+        RequestDetailResource requestDetailResource = new RequestDetailResource(requestDetailService);
+        this.restRequestdetailMockMvc = MockMvcBuilders.standaloneSetup(requestDetailResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
     }

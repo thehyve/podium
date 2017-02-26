@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -37,7 +38,7 @@ public class RequestResource {
     private final Logger log = LoggerFactory.getLogger(RequestResource.class);
 
     private static final String ENTITY_NAME = "request";
-        
+
     private final RequestService requestService;
 
     public RequestResource(RequestService requestService) {
@@ -62,6 +63,14 @@ public class RequestResource {
         return ResponseEntity.created(new URI("/api/requests/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
+    }
+
+    @GetMapping("/requests/drafts/{uuid}")
+    @Timed
+    public ResponseEntity<List<RequestDTO>> getAllDraftsForUser(@PathVariable String uuid) {
+        log.debug("Get all request drafts for uuid");
+        List<RequestDTO> requests = requestService.findAllRequestDraftsByUserUuid(UUID.fromString(uuid));
+        return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
     /**
@@ -135,7 +144,7 @@ public class RequestResource {
      * SEARCH  /_search/requests?query=:query : search for the request corresponding
      * to the query.
      *
-     * @param query the query of the request search 
+     * @param query the query of the request search
      * @param pageable the pagination information
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
