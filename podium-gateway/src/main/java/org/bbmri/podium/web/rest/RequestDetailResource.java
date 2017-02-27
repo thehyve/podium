@@ -27,15 +27,15 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-public class RequestdetailResource {
+public class RequestDetailResource {
 
-    private final Logger log = LoggerFactory.getLogger(RequestdetailResource.class);
+    private final Logger log = LoggerFactory.getLogger(RequestDetailResource.class);
 
     private static final String ENTITY_NAME = "requestdetail";
 
     private final RequestDetailService requestDetailService;
 
-    public RequestdetailResource(RequestDetailService requestDetailService) {
+    public RequestDetailResource(RequestDetailService requestDetailService) {
         this.requestDetailService = requestDetailService;
     }
 
@@ -150,6 +150,4 @@ public class RequestdetailResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requestdetails");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-
 }
