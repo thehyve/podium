@@ -50,18 +50,9 @@ public class RequestService {
     /**
      * Save a request.
      *
-     * @param requestDTO the entity to save
+     * @param request the entity to save
      * @return the persisted entity
      */
-    /*public RequestDTO save(RequestDTO requestDTO) {
-        log.debug("Request to save Request : {}", requestDTO);
-        Request request = requestMapper.requestDTOToRequest(requestDTO);
-        request = requestRepository.save(request);
-        RequestDTO result = requestMapper.requestToRequestDTO(request);
-        requestSearchRepository.save(request);
-        return result;
-    }*/
-
     @Transactional
     public Request save(Request request) {
         return requestRepository.save(request);
@@ -100,20 +91,6 @@ public class RequestService {
         save(request);
         return requestMapper.requestToRequestDTO(request);
     }
-
-    /**
-     *  Get one request by id.
-     *
-     *  @param id the id of the entity
-     *  @return the entity
-     */
-    /*@Transactional(readOnly = true)
-    public RequestDTO findOne(Long id) {
-        log.debug("Request to get Request : {}", id);
-        Request request = requestRepository.findOneWithEagerRelationships(id);
-        RequestDTO requestDTO = requestMapper.requestToRequestDTO(request);
-        return requestDTO;
-    }*/
 
     /**
      *  Delete the  request by id.
