@@ -1,14 +1,14 @@
 class AdminPersona {
-    firstName: string;
-    lastName: string;
-    userName: string;
-    password: string;
+    public name: string;
+    public properties: {[key: string]: any};
 
     constructor() {
-        this.firstName = "firstName";
-        this.lastName = "lastName";
-        this.userName = "admin";
-        this.password = "admin";
+        this.name = "'THE' admin";
+        this.properties = {
+            "userName": "admin",
+            "password": "admin",
+        }
+
     }
 }
 

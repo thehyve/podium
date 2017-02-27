@@ -3,17 +3,21 @@ import {Promise} from "es6-promise";
 import {isUndefined} from "util";
 
 export interface Persona {
-    firstName?: string;
-    lastName?: string;
-    userName?: string;
-    password?: string;
+    name: string;
+    properties: {[key: string]: any};
 }
 
 export interface Page {
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
-    elements: {[name: string]: ElementFinder};
+    elements: {[name: string]: Interactable};
+}
+
+export interface Interactable {
+    locator: ElementFinder;
+    destination?: string; //name of the expected page after the element is clicked
+    strict?: boolean; //if true will call the at() function after the transition
 }
 
 export class Director {
@@ -39,7 +43,7 @@ export class Director {
         } catch (error) {
             this.fatalError('The page: ' + pageName + ' does not exist.\n error: ' + error);
         }
-        browser.ignoreSynchronization = this.currentPage.ignoreSynchronization == null ? false : this.currentPage.ignoreSynchronization;
+        browser.ignoreSynchronization = isUndefined(this.currentPage.ignoreSynchronization) ? false : this.currentPage.ignoreSynchronization;
         return this.currentPage
     }
 
@@ -65,8 +69,9 @@ export class Director {
         return browser.get(page.url);
     }
 
-    public at = (pageName: string) => {
+    public at(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
+        browser.waitForAngular('make sure the page is loaded before doing a check');
         return Promise.resolve(page.at()).then(function (v) {
             return new Promise(function (resolve, reject) {
                 if (v) {
@@ -87,8 +92,26 @@ export class Director {
         return element;
     }
 
+    private handleDestination(element: Interactable) {
+        if (!isUndefined(element.destination)) {
+            this.setCurrentPageTo(element.destination);
+        }
+        if (element.strict) {
+            this.at(element.destination);
+        }
+    }
+
     public clickOn(elementName: string) {
-        return this.getElement(elementName).click();
+        let element = this.getElement(elementName);
+        this.handleDestination(element);
+        return element.locator.click()
+    }
+
+    public enterText(fieldName: string, text: string) {
+        return Promise.all([
+            this.getCurrentPage().elements[fieldName].locator.clear(),
+            this.getCurrentPage().elements[fieldName].locator.sendKeys(text)
+        ])
     }
 
     public waitForPage(pageName: string) {

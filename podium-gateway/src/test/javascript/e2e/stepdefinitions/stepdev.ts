@@ -1,8 +1,9 @@
-import {browser} from "protractor";
+import {browser, $} from "protractor";
 import {Director} from "../protractor-stories/director";
-import SigninPage = require("../Pages/SigninPage")
-import PageDictionary = require("../Pages/PageDictionary")
-import PersonaDictionary = require("../Personas/PersonaDictionary")
+import {Promise} from "es6-promise";
+import SigninPage = require("../pages/SigninPage")
+import PageDictionary = require("../pages/PageDictionary")
+import PersonaDictionary = require("../personas/PersonaDictionary")
 
 let director = new Director(__dirname + '/..', PageDictionary, PersonaDictionary);
 
@@ -13,12 +14,16 @@ export = function () {
     });
 
     this.Given(/^(.*) signs in$/, function (personaName, callback) {
-        let page = director.getCurrentPage() as SigninPage;
         let persona = director.getPersona(personaName + 'Persona');
-        page.login(persona.userName, persona.password).then(callback, callback);
+        Promise.all([
+            director.enterText('usernameInput', persona.properties['userName']),
+            director.enterText('passwordInput', persona.properties['password'])
+        ]).then(function () {
+            director.clickOn('submitButton')
+        }).then(callback, callback);
     });
 
     this.Then(/^I am on the (.*) page$/, function (pageName, callback) {
-        director.at(pageName + 'Page').then(callback,callback);
+        director.at(pageName + 'Page').then(callback, callback);
     });
 }
