@@ -13,12 +13,17 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../shared/shared.module';
 import { PodiumGatewayAdminModule } from '../../admin/admin.module';
 import { RouterModule } from '@angular/router';
-import { UserMgmtComponent } from './user-management.component';
-import { UserDialogComponent, UserMgmtDialogComponent } from './user-management-dialog.component';
-import { UserDeleteDialogComponent, UserMgmtDeleteDialogComponent } from './user-management-delete-dialog.component';
-import { UserUnlockDialogComponent, UserMgmtUnlockDialogComponent } from './user-management-unlock-dialog.component';
-import { UserMgmtDetailComponent } from './user-management-detail.component';
-import { UserModalService } from './user-modal.service';
+import {
+    UserMgmtComponent,
+    UserDialogComponent,
+    UserMgmtDialogComponent,
+    UserDeleteDialogComponent,
+    UserMgmtDeleteDialogComponent,
+    UserUnlockDialogComponent,
+    UserMgmtUnlockDialogComponent,
+    UserMgmtDetailComponent,
+    UserModalService
+} from '../';
 
 let ENTITY_STATES = [
         ...userMgmtRoute,
