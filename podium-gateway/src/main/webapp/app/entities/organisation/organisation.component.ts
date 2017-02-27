@@ -153,11 +153,44 @@ currentAccount: any;
         return result;
     }
 
+    setActive (organisation, isActivated) {
+        organisation.activated = isActivated;
+        this.organisationService.update(organisation)
+            .subscribe(
+                (res: Response) => {
+                    if (res.status === 200) {
+                        this.error = null;
+                        this.success = 'OK';
+                        this.loadAll();
+                    } else {
+                        this.success = null;
+                        this.error = 'ERROR';
+                    }
+                }
+            );
+    }
+
+    toggleActivated (organisation) {
+        organisation.activated = organisation.activated ? false : true;
+        this.organisationService.update(organisation)
+            .subscribe(
+                (res: Response) => {
+                    if (res.status === 200) {
+                        this.error = null;
+                        this.success = 'OK';
+                        this.loadAll();
+                    } else {
+                        this.success = null;
+                        this.error = 'ERROR';
+                    }
+                }
+            );
+    }
+
     private onSuccess (data, headers) {
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
-        // this.page = pagingParams.page;
         this.organisations = data;
     }
 
