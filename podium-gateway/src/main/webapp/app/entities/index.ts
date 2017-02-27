@@ -23,11 +23,11 @@ export * from './role/role-dialog.component';
 export * from './role/role-detail.component';
 export * from './role/role.component';
 export * from './role/role.route';
-export * from './user-management//user-management-dialog.component';
-export * from './user-management//user-management-delete-dialog.component';
-export * from './user-management//user-management-detail.component';
-export * from './user-management//user-management-unlock-dialog.component';
-export * from './user-management//user-management.component';
-export * from './user-management//user-management.route';
-export * from './user-management//user-modal.service';
+export * from './user-management/user-management-dialog.component';
+export * from './user-management/user-management-delete-dialog.component';
+export * from './user-management/user-management-detail.component';
+export * from './user-management/user-management-unlock-dialog.component';
+export * from './user-management/user-management.component';
+export * from './user-management/user-management.route';
+export * from './user-management/user-modal.service';
 
