@@ -24,7 +24,6 @@ import {
     OrganisationService,
     OrganisationResolvePagingParams,
 } from '../';
-import { } from './organisation.component';
 
 let ENTITY_STATES = [
     ...organisationRoute,
