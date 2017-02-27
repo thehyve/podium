@@ -9,7 +9,6 @@
  */
 
 import { User } from '../../shared';
-import { Organisation } from '../organisation';
 
 export class Role {
     constructor(

@@ -21,7 +21,6 @@ import {
 } from './';
 
 import { UserRouteAccessService } from '../shared';
-// import { userMgmtRoute, userDialogRoute } from '../entities/user-management/user-management.route';
 
 let ADMIN_ROUTES = [
     auditsRoute,
