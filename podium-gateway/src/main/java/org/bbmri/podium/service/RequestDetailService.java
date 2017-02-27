@@ -60,7 +60,6 @@ public class RequestDetailService {
         return result;
     }
 
-
     /**
      *  get all the requestdetails where Request is null.
      *  @return the list of entities

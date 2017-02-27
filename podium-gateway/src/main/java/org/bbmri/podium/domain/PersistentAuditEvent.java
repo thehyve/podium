@@ -46,7 +46,7 @@ public class PersistentAuditEvent implements Serializable {
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = {
             @Parameter(name = "sequence_name", value = "audit_event_seq"),
-            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "initial_value", value = "1000"),
             @Parameter(name = "increment_size", value = "50")
         }
     )

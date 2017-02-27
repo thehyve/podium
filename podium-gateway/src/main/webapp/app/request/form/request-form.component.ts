@@ -40,6 +40,8 @@ export class RequestFormComponent implements OnInit {
 
     public availableOrganisations: Organisation[];
     public availableRequestDrafts: RequestBase[];
+    public selectDraft: boolean;
+    public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
     public selectedRequestDraft: RequestBase;
 
@@ -110,27 +112,32 @@ export class RequestFormComponent implements OnInit {
 
     processAvailableDrafts(requestDrafts) {
         if (!requestDrafts.length) {
+            this.selectDraft = false;
             return this.initializeBaseRequest();
         }
 
+        this.selectDraft = true;
         this.availableRequestDrafts = requestDrafts;
         this.requestDraftsAvailable = true;
     }
 
     initializeBaseRequest() {
-        this.requestService.initRequestBase()
+        let uuid = this.currentUser.uuid;
+        this.requestService.initRequestBase(uuid)
             .subscribe(
                 (requestBase) => {
                     this.requestBase = requestBase;
                     this.request = new RequestDetail();
+                    this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
             );
     }
 
     selectRequestDraft (requestBase: RequestBase) {
+        this.selectDraft = false;
         this.requestBase = requestBase;
-        this.request = requestBase.detail;
+        this.request = requestBase.detail || new RequestDetail();
     }
 
     saveRequestDraft () {

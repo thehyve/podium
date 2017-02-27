@@ -1,6 +1,8 @@
 package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.bbmri.podium.domain.Request;
+import org.bbmri.podium.security.SecurityUtils;
 import org.bbmri.podium.service.RequestService;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 import org.bbmri.podium.web.rest.util.PaginationUtil;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,7 +56,7 @@ public class RequestResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new requestDTO, or with status 400 (Bad Request) if the request has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/requests")
+    /*@PostMapping("/requests")
     @Timed
     public ResponseEntity<RequestDTO> createRequest(@Valid @RequestBody RequestDTO requestDTO) throws URISyntaxException {
         log.debug("REST request to save Request : {}", requestDTO);
@@ -63,7 +67,7 @@ public class RequestResource {
         return ResponseEntity.created(new URI("/api/requests/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
-    }
+    }*/
 
     @GetMapping("/requests/drafts/{uuid}")
     @Timed
@@ -71,6 +75,15 @@ public class RequestResource {
         log.debug("Get all request drafts for uuid");
         List<RequestDTO> requests = requestService.findAllRequestDraftsByUserUuid(UUID.fromString(uuid));
         return new ResponseEntity<>(requests, HttpStatus.OK);
+    }
+
+    @GetMapping("/requests/initialize/{uuid}")
+    @Timed
+    public ResponseEntity<RequestDTO> initializeRequest(@PathVariable String uuid) throws URISyntaxException {
+        RequestDTO result = requestService.initializeBaseRequest(UUID.fromString(uuid));
+        return ResponseEntity.created(new URI("/api/requests/initialize/"+uuid))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
     }
 
     /**
@@ -82,7 +95,7 @@ public class RequestResource {
      * or with status 500 (Internal Server Error) if the requestDTO couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PutMapping("/requests")
+    /*@PutMapping("/requests")
     @Timed
     public ResponseEntity<RequestDTO> updateRequest(@Valid @RequestBody RequestDTO requestDTO) throws URISyntaxException {
         log.debug("REST request to update Request : {}", requestDTO);
@@ -93,7 +106,7 @@ public class RequestResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, requestDTO.getId().toString()))
             .body(result);
-    }
+    }*/
 
     /**
      * GET  /requests : get all the requests.
@@ -118,13 +131,13 @@ public class RequestResource {
      * @param id the id of the requestDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the requestDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/requests/{id}")
+    /*@GetMapping("/requests/{id}")
     @Timed
     public ResponseEntity<RequestDTO> getRequest(@PathVariable Long id) {
         log.debug("REST request to get Request : {}", id);
         RequestDTO requestDTO = requestService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(requestDTO));
-    }
+    }*/
 
     /**
      * DELETE  /requests/:id : delete the "id" request.

@@ -1,7 +1,7 @@
 package org.bbmri.podium.service.mapper;
 
-import org.bbmri.podium.common.domain.Organisation;
 import org.bbmri.podium.domain.*;
+import org.bbmri.podium.service.dto.OrganisationDTO;
 import org.bbmri.podium.service.dto.RequestDTO;
 
 import org.mapstruct.*;
@@ -13,31 +13,31 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { })
+@Mapper(componentModel = "spring", uses = { OrganisationMapper.class })
 public interface RequestMapper {
 
-    @Mapping(source = "parentRequest.id", target = "parentRequestId")
-    @Mapping(source = "requestDetail.id", target = "requestDetailId")
+    @Mapping(source = "parentRequest", target = "parentRequest")
+    @Mapping(source = "requestDetail", target = "requestDetail")
     RequestDTO requestToRequestDTO(Request request);
 
     List<RequestDTO> requestsToRequestDTOs(List<Request> requests);
 
-    @Mapping(source = "parentRequestId", target = "parentRequest")
-    @Mapping(source = "requestDetailId", target = "requestDetail")
+    @Mapping(source = "parentRequest", target = "parentRequest")
+    @Mapping(source = "requestDetail", target = "requestDetail")
     Request requestDTOToRequest(RequestDTO requestDTO);
 
     List<Request> requestDTOsToRequests(List<RequestDTO> requestDTOs);
 
-    default List<UUID> uuidsFromOrganisations (List<Organisation> organisations) {
-        return organisations.stream().map(Organisation::getUuid)
-            .collect(Collectors.toList());
+    default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {
+        return organisations.stream().map(OrganisationDTO::getUuid)
+            .collect(Collectors.toSet());
     }
 
-    default Organisation organisationFromUUID(UUID uuid) {
+    default OrganisationDTO organisationFromUUID(UUID uuid) {
         if (uuid == null) {
             return null;
         }
-        Organisation organisation = new Organisation();
+        OrganisationDTO organisation = new OrganisationDTO();
         organisation.setUuid(uuid);
         return organisation;
     }

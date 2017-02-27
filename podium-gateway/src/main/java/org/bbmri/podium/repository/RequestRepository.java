@@ -15,13 +15,6 @@ import java.util.UUID;
  */
 @SuppressWarnings("unused")
 public interface RequestRepository extends JpaRepository<Request,Long> {
-
-    @Query("select distinct request from Request request left join fetch request.organisations left join fetch request.attachments")
-    List<Request> findAllWithEagerRelationships();
-
-    @Query("select request from Request request left join fetch request.organisations left join fetch request.attachments where request.id =:id")
-    Request findOneWithEagerRelationships(@Param("id") Long id);
-
     List<Request> findAllByRequesterAndStatus(UUID requester, RequestStatus status);
 
 }

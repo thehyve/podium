@@ -28,8 +28,31 @@ export class RequestDetail {
 
     attachments: Attachment[];
 
-    constructor() {
-        this.principalInvestigator = new PrincipalInvestigator();
+    constructor(
+        principalInvestigator?: PrincipalInvestigator,
+        relatedRequest?: string,
+        title?: string,
+        background?: string,
+        researchQuestion?: string,
+        hypothesis?: string,
+        methods?: string,
+        searchQuery?: string,
+        combinedRequest?: boolean,
+        requestType?: RequestType[],
+        attachments?: Attachment[]
+    ) {
+          this.principalInvestigator
+              = principalInvestigator ? principalInvestigator : new PrincipalInvestigator();
+          this.relatedRequest = relatedRequest ? relatedRequest : null;
+          this.title = title ? title : null;
+          this.background = background ? background : null;
+          this.researchQuestion = researchQuestion ? researchQuestion : null;
+          this.hypothesis = hypothesis ? hypothesis : null;
+          this.methods = methods ? methods : null;
+          this.searchQuery = searchQuery ? searchQuery : null;
+          this.combinedRequest = combinedRequest ? combinedRequest : null;
+          this.requestType = requestType ? requestType : null;
+          this.attachments = attachments ? attachments : null;
     }
 }
 

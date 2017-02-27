@@ -62,7 +62,7 @@ public class Attachment implements Serializable {
     private String mimeType;
 
     @NotNull
-    @Column(name = "uploader_uuid")
+    @Column(name = "uploader")
     private UUID uploader;
 
     @ManyToOne

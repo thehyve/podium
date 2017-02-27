@@ -10,9 +10,9 @@
 
 <div class="row">
     <div class="col-md-6 offset-md-3">
-        <h1 *ngIf="!request?.id" jhiTranslate="request.form.header.new">New Request</h1>
-        <h1 *ngIf="request?.id" jhiTranslate="request.form.header.edit">Edit Request</h1>
-        <h1 *ngIf="requestDraftsAvailable && !request" jhiTranslate="request.form.header.selectDraft">Select Draft</h1>
+        <h1 *ngIf="!requestBase?.id" jhiTranslate="request.form.header.new">New Request</h1>
+        <h1 *ngIf="requestBase?.id" jhiTranslate="request.form.header.edit">Edit Request</h1>
+        <p *ngIf="selectDraft && !requestBase" jhiTranslate="request.form.header.selectDraft">Select Draft</p>
     </div>
     <!--<div class="col-md-8 offset-md-2">
         <div class="alert alert-danger" *ngIf="authenticationError" >
@@ -21,16 +21,23 @@
     </div>-->
     <div class="col-md-6 offset-md-3 card-container">
         <!-- Request Drafts Selection -->
-        <div *ngIf="requestDraftsAvailable && !request">
+        <div *ngIf="selectDraft && !request">
+
+            <select class="custom-select" [(ngModel)]="selectedDraft">
+                <option selected>Please select a request draft</option>
+                <option *ngFor="let requestDraft of availableRequestDrafts">
+                    [ {{ requestDraft.id }} ] {{ requestDraft.detail?.title ? requestDraft.detail.title : 'Request ' + requestDraft.id }}
+                </option>
+            </select>
 
             <!-- Request drafts selection actions -->
             <div class="action-container">
                 <button type="button" class="btn btn-default" (click)="initializeBaseRequest()">New request draft</button>
-                <button type="submit" class="btn btn-primary" (click)="selectRequestDraft()">Select</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!selectedDraft" (click)="selectRequestDraft(selectedDraft)">Select</button>
             </div>
         </div>
 
-        <form class="form" role="form" (ngSubmit)="submit()" *ngIf="request">
+        <form class="form" role="form" (ngSubmit)="submit()" *ngIf="!selectDraft && requestBase">
             <fieldset [disabled]="requestFormDisabled">
                 <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 

@@ -9,7 +9,8 @@
                 "principalInvestigator": "Principal Investigator Details",
                 "requestDetails": "Request Details",
                 "additionalInformation": "Additional Information",
-                "organisations": "Organisations"
+                "organisations": "Organisations",
+                "selectDraft": "Select draft or create new request"
             },
             "title": {
                 "label": "Title",
@@ -35,7 +36,6 @@
                 "label": "Related Request Number",
                 "placeholder": "Relates to request with number..."
             },
-
             "principalInvestigator": {
                 "name": {
                     "label": "Name",

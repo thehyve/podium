@@ -1,6 +1,5 @@
 package org.bbmri.podium.domain;
 
-import org.bbmri.podium.common.domain.Organisation;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -14,7 +13,6 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,7 +37,7 @@ public class Request extends AbstractAuditingEntity implements Serializable {
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = {
             @Parameter(name = "sequence_name", value = "request_seq"),
-            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "initial_value", value = "1000"),
             @Parameter(name = "increment_size", value = "50")
         }
     )
@@ -50,14 +48,19 @@ public class Request extends AbstractAuditingEntity implements Serializable {
     @Column(name = "status", nullable = false)
     private RequestStatus status;
 
-    @ElementCollection
-    private List<UUID> organisations = new ArrayList<>();
+    @ElementCollection(targetClass = java.util.UUID.class)
+    @CollectionTable(
+        name="request_organisations",
+        joinColumns=@JoinColumn(name="request_id")
+    )
+    @Column(name = "organisation_uuid")
+    private Set<UUID> organisations = new HashSet<>();
 
     @ManyToOne
     private Request parentRequest;
 
     @OneToOne
-    @JoinColumn(unique = true, name = "request_detail_id")
+    @JoinColumn(unique = true, name = "request_detail")
     private RequestDetail requestDetail;
 
     @Column(nullable = false)
@@ -66,8 +69,8 @@ public class Request extends AbstractAuditingEntity implements Serializable {
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "request_attachments",
-               joinColumns = @JoinColumn(name="requests_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="attachments_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="attachment_id", referencedColumnName="id"))
     private Set<Attachment> attachments = new HashSet<>();
 
     public Long getId() {
@@ -91,11 +94,11 @@ public class Request extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
-    public List<UUID> getOrganisations() {
+    public Set<UUID> getOrganisations() {
         return organisations;
     }
 
-    public Request organisations(List<UUID> organisations) {
+    public Request organisations(Set<UUID> organisations) {
         this.organisations = organisations;
         return this;
     }
@@ -110,7 +113,7 @@ public class Request extends AbstractAuditingEntity implements Serializable {
         return this;
     }
 
-    public void setOrganisations(List<UUID> organisations) {
+    public void setOrganisations(Set<UUID> organisations) {
         this.organisations = organisations;
     }
 
@@ -198,4 +201,5 @@ public class Request extends AbstractAuditingEntity implements Serializable {
             ", status='" + status + "'" +
             '}';
     }
+
 }

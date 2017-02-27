@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
-import org.bbmri.podium.common.domain.Organisation;
 import org.bbmri.podium.domain.Attachment;
+import org.bbmri.podium.domain.RequestDetail;
 import org.bbmri.podium.domain.enumeration.RequestStatus;
 
 /**
@@ -23,11 +23,11 @@ public class RequestDTO implements Serializable {
     @NotNull
     private RequestStatus status;
 
-    private List<Organisation> organisations = new ArrayList<>();
+    private List<OrganisationDTO> organisations = new ArrayList<>();
 
-    private Long parentRequestId;
+    private RequestDTO parentRequest;
 
-    private Long requestDetailId;
+    private RequestDetail requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();
 
@@ -46,28 +46,28 @@ public class RequestDTO implements Serializable {
         this.status = status;
     }
 
-    public List<Organisation> getOrganisations() {
+    public List<OrganisationDTO> getOrganisations() {
         return organisations;
     }
 
-    public void setOrganisations(List<Organisation> organisations) {
+    public void setOrganisations(List<OrganisationDTO> organisations) {
         this.organisations = organisations;
     }
 
-    public Long getParentRequestId() {
-        return parentRequestId;
+    public RequestDTO getParentRequest() {
+        return parentRequest;
     }
 
-    public void setParentRequestId(Long requestId) {
-        this.parentRequestId = requestId;
+    public void setParentRequest(RequestDTO requestId) {
+        this.parentRequest = requestId;
     }
 
-    public Long getRequestDetailId() {
-        return requestDetailId;
+    public RequestDetail getRequestDetail() {
+        return requestDetail;
     }
 
-    public void setRequestDetailId(Long requestDetailId) {
-        this.requestDetailId = requestDetailId;
+    public void setRequestDetail(RequestDetail requestDetail) {
+        this.requestDetail = requestDetail;
     }
 
     public Set<Attachment> getAttachments() {
@@ -103,7 +103,11 @@ public class RequestDTO implements Serializable {
     public String toString() {
         return "RequestDTO{" +
             "id=" + id +
-            ", status='" + status + "'" +
+            ", status=" + status +
+            ", organisations=" + organisations +
+            ", parentRequest=" + parentRequest +
+            ", requestDetail=" + requestDetail +
+            ", attachments=" + attachments +
             '}';
     }
 }

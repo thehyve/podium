@@ -1,6 +1,7 @@
 package org.bbmri.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.bbmri.podium.validation.groups.RequestDetailCreate;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -34,33 +35,33 @@ public class RequestDetail implements Serializable {
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = {
             @Parameter(name = "sequence_name", value = "request_detail_seq"),
-            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "initial_value", value = "1000"),
             @Parameter(name = "increment_size", value = "50")
         }
     )
     private Long id;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 50)
     @Column(name = "title", length = 50, nullable = false)
     private String title;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 2000)
     @Column(name = "background", length = 2000, nullable = false)
     private String background;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 300)
     @Column(name = "research_question", length = 300, nullable = false)
     private String researchQuestion;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 5000)
     @Column(name = "hypothesis", length = 5000, nullable = false)
     private String hypothesis;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 10000)
     @Column(name = "methods", length = 10000, nullable = false)
     private String methods;
@@ -69,12 +70,12 @@ public class RequestDetail implements Serializable {
     @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 500)
     @Column(name = "search_query", length = 500, nullable = false)
     private String searchQuery;
 
-    @NotNull
+    @NotNull(groups = { RequestDetailCreate.class })
     @Enumerated(EnumType.STRING)
     @Column(name = "request_type", nullable = false)
     private RequestType requestType;

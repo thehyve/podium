@@ -8,32 +8,32 @@
     -->
     <changeSet id="20170225153853-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="requests_id"
+        <addForeignKeyConstraint baseColumnNames="request_id"
                                  baseTableName="request_organisations"
-                                 constraintName="fk_request_organisations_requests_id"
+                                 constraintName="fk_request_organisations_request_id"
                                  referencedColumnNames="id"
                                  referencedTableName="request"/>
 
-        <addForeignKeyConstraint baseColumnNames="parent_request_id"
+        <addForeignKeyConstraint baseColumnNames="parent_request"
                                  baseTableName="request"
                                  constraintName="fk_request_parent_request_id"
                                  referencedColumnNames="id"
                                  referencedTableName="request"/>
 
-        <addForeignKeyConstraint baseColumnNames="request_detail_id"
+        <addForeignKeyConstraint baseColumnNames="request_detail"
                                  baseTableName="request"
-                                 constraintName="fk_request_request_detail_id"
+                                 constraintName="fk_request_request_detail"
                                  referencedColumnNames="id"
                                  referencedTableName="request_detail"/>
 
-        <addForeignKeyConstraint baseColumnNames="requests_id"
+        <addForeignKeyConstraint baseColumnNames="request_id"
                                  baseTableName="request_attachments"
-                                 constraintName="fk_request_attachments_requests_id"
+                                 constraintName="fk_request_attachments_request_id"
                                  referencedColumnNames="id"
                                  referencedTableName="request"/>
-        <addForeignKeyConstraint baseColumnNames="attachments_id"
+        <addForeignKeyConstraint baseColumnNames="attachment_id"
                                  baseTableName="request_attachments"
-                                 constraintName="fk_request_attachments_attachments_id"
+                                 constraintName="fk_request_attachments_attachment_id"
                                  referencedColumnNames="id"
                                  referencedTableName="attachment"/>
 

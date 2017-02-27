@@ -1,6 +1,7 @@
 package org.bbmri.podium.service;
 
 import org.bbmri.podium.domain.Request;
+import org.bbmri.podium.domain.RequestDetail;
 import org.bbmri.podium.domain.enumeration.RequestStatus;
 import org.bbmri.podium.repository.RequestRepository;
 import org.bbmri.podium.repository.search.RequestSearchRepository;
@@ -8,6 +9,7 @@ import org.bbmri.podium.service.dto.RequestDTO;
 import org.bbmri.podium.service.mapper.RequestMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,16 +32,19 @@ public class RequestService {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
 
-    private final RequestRepository requestRepository;
+    @Autowired
+    private RequestRepository requestRepository;
 
-    private final RequestMapper requestMapper;
+    @Autowired
+    private RequestMapper requestMapper;
 
-    private final RequestSearchRepository requestSearchRepository;
+    @Autowired
+    private RequestSearchRepository requestSearchRepository;
 
-    public RequestService(RequestRepository requestRepository, RequestMapper requestMapper, RequestSearchRepository requestSearchRepository) {
-        this.requestRepository = requestRepository;
-        this.requestMapper = requestMapper;
-        this.requestSearchRepository = requestSearchRepository;
+    @Autowired
+    private RequestDetailService requestDetailService;
+
+    public RequestService() {
     }
 
     /**
@@ -48,13 +53,18 @@ public class RequestService {
      * @param requestDTO the entity to save
      * @return the persisted entity
      */
-    public RequestDTO save(RequestDTO requestDTO) {
+    /*public RequestDTO save(RequestDTO requestDTO) {
         log.debug("Request to save Request : {}", requestDTO);
         Request request = requestMapper.requestDTOToRequest(requestDTO);
         request = requestRepository.save(request);
         RequestDTO result = requestMapper.requestToRequestDTO(request);
         requestSearchRepository.save(request);
         return result;
+    }*/
+
+    @Transactional
+    public Request save(Request request) {
+        return requestRepository.save(request);
     }
 
     /**
@@ -76,19 +86,34 @@ public class RequestService {
         return requestMapper.requestsToRequestDTOs(result);
     }
 
+    @Transactional
+    public RequestDTO initializeBaseRequest(UUID requester) {
+        Request request = new Request();
+        request.setStatus(RequestStatus.DRAFT);
+        request.setRequester(requester);
+
+        // RequestDetail requestDetail = new RequestDetail();
+
+        // requestDetailService.save(requestDetail);
+        // request.setRequestDetail(requestDetail);
+
+        save(request);
+        return requestMapper.requestToRequestDTO(request);
+    }
+
     /**
      *  Get one request by id.
      *
      *  @param id the id of the entity
      *  @return the entity
      */
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public RequestDTO findOne(Long id) {
         log.debug("Request to get Request : {}", id);
         Request request = requestRepository.findOneWithEagerRelationships(id);
         RequestDTO requestDTO = requestMapper.requestToRequestDTO(request);
         return requestDTO;
-    }
+    }*/
 
     /**
      *  Delete the  request by id.

@@ -23,8 +23,8 @@ export class RequestService {
 
     constructor(private http: Http) { }
 
-    initRequestBase(): Observable<RequestBase> {
-        return this.http.get(`${this.resourceUrl}/initialize`).map((res: Response) => {
+    initRequestBase(uuid: string): Observable<RequestBase> {
+        return this.http.get(`${this.resourceUrl}/initialize/${uuid}`).map((res: Response) => {
             return res.json();
         });
     }
