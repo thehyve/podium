@@ -129,12 +129,6 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="material-icons">supervisor_account</i>
-                            <span jhiTranslate="global.menu.bbmri_admin.userManagement">User management</span>
-                        </a>
-                    </li>
-                    <li>
                         <a class="dropdown-item" routerLink="form-configuration" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">assignment</i>
                             <span jhiTranslate="global.menu.bbmri_admin.formConfiguration">Form configuration</span>
@@ -168,6 +162,12 @@
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">supervisor_account</i>
+                            <span jhiTranslate="global.menu.bbmri_admin.userManagement">User management</span>
+                        </a>
+                    </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
                 </ul>
             </li>
@@ -191,12 +191,6 @@
                         <a class="dropdown-item" routerLink="gateway" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">traffic</i>
                             <span jhiTranslate="global.menu.podium.gateway">Gateway</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="material-icons">supervisor_account</i>
-                            <span jhiTranslate="global.menu.podium.userManagement">User management</span>
                         </a>
                     </li>
                     <li>
