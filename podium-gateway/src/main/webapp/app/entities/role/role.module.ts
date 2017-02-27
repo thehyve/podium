@@ -14,18 +14,14 @@ import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../../shared';
 import { PodiumGatewayAdminModule } from '../../admin/admin.module';
 import { PodiumGatewayOrganisationModule } from '../organisation/organisation.module';
+import { roleRoute, rolePopupRoute, RoleResolvePagingParams } from './role.route';
+import { RoleComponent } from './role.component';
+import { RoleDetailComponent } from './role-detail.component';
+import { RoleDialogComponent, RolePopupComponent } from './role-dialog.component';
+import { RoleService } from './role.service';
+import { RolePopupService } from './role-popup.service';
 
-import {
-    RoleService,
-    RolePopupService,
-    RoleComponent,
-    RoleDetailComponent,
-    RoleDialogComponent,
-    RolePopupComponent,
-    roleRoute,
-    rolePopupRoute,
-    RoleResolvePagingParams,
-} from './';
+
 
 let ENTITY_STATES = [
     ...roleRoute,

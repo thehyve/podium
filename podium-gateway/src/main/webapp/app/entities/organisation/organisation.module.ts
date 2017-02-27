@@ -12,20 +12,16 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { PodiumGatewaySharedModule } from '../../shared';
-
+import { organisationRoute, organisationPopupRoute, OrganisationResolvePagingParams } from './organisation.route';
+import { OrganisationComponent } from './organisation.component';
+import { OrganisationDetailComponent } from './organisation-detail.component';
+import { OrganisationDialogComponent, OrganisationPopupComponent } from './organisation-dialog.component';
 import {
-    OrganisationService,
-    OrganisationPopupService,
-    OrganisationComponent,
-    OrganisationDetailComponent,
-    OrganisationDialogComponent,
-    OrganisationPopupComponent,
-    OrganisationDeletePopupComponent,
     OrganisationDeleteDialogComponent,
-    organisationRoute,
-    organisationPopupRoute,
-    OrganisationResolvePagingParams,
-} from './';
+    OrganisationDeletePopupComponent
+} from './organisation-delete-dialog.component';
+import { OrganisationService } from './organisation.service';
+import { OrganisationPopupService } from './organisation-popup.service';
 
 let ENTITY_STATES = [
     ...organisationRoute,
