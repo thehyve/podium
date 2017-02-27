@@ -142,7 +142,7 @@
                 <a class="nav-link dropdown-toggle"
                    routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
-                        <i class="material-icons">view_list</i>
+                        <i class="material-icons">apps</i>
                         <span class="hidden-sm-down" jhiTranslate="global.menu.entities.main">
                             Entities
                         </span>
@@ -152,13 +152,13 @@
                 <ul class="dropdown-menu" ngbDropdownMenu>
                     <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN">
                         <a class="dropdown-item" routerLink="role" (click)="collapseNavbar()">
-                            <i class="material-icons">library_books</i>
+                            <i class="material-icons">portrait</i>
                             <span jhiTranslate="global.menu.entities.role">Role</span>
                         </a>
                     </li>
                     <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
                         <a class="dropdown-item" routerLink="organisation" (click)="collapseNavbar()">
-                            <i class="material-icons">library_books</i>
+                            <i class="material-icons">account_balance</i>
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
                         </a>
                     </li>
