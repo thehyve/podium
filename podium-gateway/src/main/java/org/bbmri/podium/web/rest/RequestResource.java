@@ -50,25 +50,11 @@ public class RequestResource {
     }
 
     /**
-     * POST  /requests : Create a new request.
+     * Fetch drafts for user
      *
-     * @param requestDTO the requestDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new requestDTO, or with status 400 (Bad Request) if the request has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param uuid The UUID to perform the lookup for
+     * @return A transformed list of RequestDTOs
      */
-    /*@PostMapping("/requests")
-    @Timed
-    public ResponseEntity<RequestDTO> createRequest(@Valid @RequestBody RequestDTO requestDTO) throws URISyntaxException {
-        log.debug("REST request to save Request : {}", requestDTO);
-        if (requestDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new request cannot already have an ID")).body(null);
-        }
-        RequestDTO result = requestService.save(requestDTO);
-        return ResponseEntity.created(new URI("/api/requests/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }*/
-
     @GetMapping("/requests/drafts/{uuid}")
     @Timed
     public ResponseEntity<List<RequestDTO>> getAllDraftsForUser(@PathVariable String uuid) {
@@ -77,6 +63,13 @@ public class RequestResource {
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
+    /**
+     * Setup an initial request
+     *
+     * @param uuid The UUID to create the request by
+     * @return The requestDTO of the initialized request
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     */
     @GetMapping("/requests/initialize/{uuid}")
     @Timed
     public ResponseEntity<RequestDTO> initializeRequest(@PathVariable String uuid) throws URISyntaxException {
@@ -85,28 +78,6 @@ public class RequestResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
-
-    /**
-     * PUT  /requests : Updates an existing request.
-     *
-     * @param requestDTO the requestDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated requestDTO,
-     * or with status 400 (Bad Request) if the requestDTO is not valid,
-     * or with status 500 (Internal Server Error) if the requestDTO couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    /*@PutMapping("/requests")
-    @Timed
-    public ResponseEntity<RequestDTO> updateRequest(@Valid @RequestBody RequestDTO requestDTO) throws URISyntaxException {
-        log.debug("REST request to update Request : {}", requestDTO);
-        if (requestDTO.getId() == null) {
-            return createRequest(requestDTO);
-        }
-        RequestDTO result = requestService.save(requestDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, requestDTO.getId().toString()))
-            .body(result);
-    }*/
 
     /**
      * GET  /requests : get all the requests.
@@ -124,20 +95,6 @@ public class RequestResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-    /**
-     * GET  /requests/:id : get the "id" request.
-     *
-     * @param id the id of the requestDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the requestDTO, or with status 404 (Not Found)
-     */
-    /*@GetMapping("/requests/{id}")
-    @Timed
-    public ResponseEntity<RequestDTO> getRequest(@PathVariable Long id) {
-        log.debug("REST request to get Request : {}", id);
-        RequestDTO requestDTO = requestService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(requestDTO));
-    }*/
 
     /**
      * DELETE  /requests/:id : delete the "id" request.

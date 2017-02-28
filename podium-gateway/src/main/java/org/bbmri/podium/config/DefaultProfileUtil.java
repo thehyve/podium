@@ -46,6 +46,9 @@ public final class DefaultProfileUtil {
 
     /**
      * Get the profiles that are applied else get default profiles.
+     *
+     * @param env The current environment
+     * @return String[] with the current active profiles
      */
     public static String[] getActiveProfiles(Environment env) {
         String[] profiles = env.getActiveProfiles();

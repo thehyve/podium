@@ -24,7 +24,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class AttachmentService {
 
     private final Logger log = LoggerFactory.getLogger(AttachmentService.class);
-    
+
     private final AttachmentRepository attachmentRepository;
 
     private final AttachmentSearchRepository attachmentSearchRepository;
@@ -49,7 +49,7 @@ public class AttachmentService {
 
     /**
      *  Get all the attachments.
-     *  
+     *
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -88,6 +88,7 @@ public class AttachmentService {
      * Search for the attachment corresponding to the query.
      *
      *  @param query the query of the search
+     *  @param pageable the pagination information
      *  @return the list of entities
      */
     @Transactional(readOnly = true)

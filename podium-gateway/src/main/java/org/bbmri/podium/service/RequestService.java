@@ -71,6 +71,12 @@ public class RequestService {
         return result.map(requestMapper::requestToRequestDTO);
     }
 
+    /**
+     * Perform look up of request drafts by UUID
+     *
+     * @param uuid The UUID to perform the lookup for
+     * @return the transformed DTO list of requests
+     */
     @Transactional(readOnly = true)
     public List<RequestDTO> findAllRequestDraftsByUserUuid(UUID uuid) {
         List<Request> result = requestRepository.findAllByRequesterAndStatus(uuid, RequestStatus.DRAFT);
@@ -102,6 +108,7 @@ public class RequestService {
      * Search for the request corresponding to the query.
      *
      *  @param query the query of the search
+     *  @param pageable the pagination informatio
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
