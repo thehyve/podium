@@ -78,11 +78,11 @@
                                 [ngClass]="{'btn-warning': !organisation.activated, 'btn-success': organisation.activated}"
                                 (click)="toggleActivated (organisation)">
                             <i *ngIf="!organisation.activated" class="material-icons">pause_circle_filled</i>
-                            <span class="hidden-md-down"  *ngIf="!organisation.activated"
+                            <span class="hidden-md-down" *ngIf="!organisation.activated"
                                   jhiTranslate="podiumGatewayApp.organisation.deactivated">Deactivated
                             </span>
                             <i *ngIf="organisation.activated" class="material-icons">check_circle</i>
-                            <span class="hidden-md-down"  *ngIf="organisation.activated"
+                            <span class="hidden-md-down" *ngIf="organisation.activated"
                                   jhiTranslate="podiumGatewayApp.organisation.activated">Activated
                             </span>
                         </button>

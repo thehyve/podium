@@ -139,8 +139,6 @@ currentAccount: any;
         return item.uuid;
     }
 
-
-
     registerChangeInOrganisations() {
         this.eventSubscriber = this.eventManager.subscribe('organisationListModification', (response) => this.loadAll());
     }
@@ -151,23 +149,6 @@ currentAccount: any;
             result.push('id');
         }
         return result;
-    }
-
-    setActive (organisation, isActivated) {
-        organisation.activated = isActivated;
-        this.organisationService.update(organisation)
-            .subscribe(
-                (res: Response) => {
-                    if (res.status === 200) {
-                        this.error = null;
-                        this.success = 'OK';
-                        this.loadAll();
-                    } else {
-                        this.success = null;
-                        this.error = 'ERROR';
-                    }
-                }
-            );
     }
 
     toggleActivated (organisation) {
