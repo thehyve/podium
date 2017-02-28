@@ -16,7 +16,7 @@ exports.config = {
     allScriptsTimeout: 20000,
 
     specs: [
-        './e2e/Features/*.feature',
+        './e2e/features/*.feature',
     ],
 
     capabilities: {

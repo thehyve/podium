@@ -2,8 +2,8 @@
  * Created by barteldklasens on 2/22/17.
  */
 import {Director} from "../protractor-stories/director";
-import PageDictionary = require("../Pages/PageDictionary")
-import PersonaDictionary = require("../Personas/PersonaDictionary")
+import PageDictionary = require("../pages/PageDictionary")
+import PersonaDictionary = require("../personas/PersonaDictionary")
 
 class World {
     public director;
