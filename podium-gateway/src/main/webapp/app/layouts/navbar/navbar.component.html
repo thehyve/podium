@@ -137,12 +137,6 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="material-icons">supervisor_account</i>
-                            <span jhiTranslate="global.menu.bbmri_admin.userManagement">User management</span>
-                        </a>
-                    </li>
-                    <li>
                         <a class="dropdown-item" routerLink="form-configuration" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">assignment</i>
                             <span jhiTranslate="global.menu.bbmri_admin.formConfiguration">Form configuration</span>
@@ -156,7 +150,7 @@
                 <a class="nav-link dropdown-toggle"
                    routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
-                        <i class="material-icons">view_list</i>
+                        <i class="material-icons">apps</i>
                         <span class="hidden-sm-down" jhiTranslate="global.menu.entities.main">
                             Entities
                         </span>
@@ -166,14 +160,20 @@
                 <ul class="dropdown-menu" ngbDropdownMenu>
                     <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN">
                         <a class="dropdown-item" routerLink="role" (click)="collapseNavbar()">
-                            <i class="material-icons">library_books</i>
+                            <i class="material-icons">portrait</i>
                             <span jhiTranslate="global.menu.entities.role">Role</span>
                         </a>
                     </li>
                     <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
                         <a class="dropdown-item" routerLink="organisation" (click)="collapseNavbar()">
-                            <i class="material-icons">library_books</i>
+                            <i class="material-icons">account_balance</i>
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
+                            <i class="material-icons">supervisor_account</i>
+                            <span jhiTranslate="global.menu.bbmri_admin.userManagement">User management</span>
                         </a>
                     </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
@@ -202,13 +202,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="user-management" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="material-icons">supervisor_account</i>
-                            <span jhiTranslate="global.menu.podium.userManagement">User management</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" routerLink="admin/jhi-metrics" routerLinkActive="active" (click)="collapseNavbar()">
+                        <a class="dropdown-item" routerLink="jhi-metrics" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">explore</i>
                             <span jhiTranslate="global.menu.podium.metrics">Metrics</span>
                         </a>

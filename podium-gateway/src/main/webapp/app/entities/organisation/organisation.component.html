@@ -10,12 +10,14 @@
 
 <div>
     <h2><span jhiTranslate="podiumGatewayApp.organisation.home.title">Organisations</span>
-        <button class="btn btn-primary float-xs-right create-organisation" [routerLink]="['/', { outlets: { popup: ['organisation-new'] } }]">
+        <button class="btn btn-primary float-xs-right create-organisation"
+                [routerLink]="['/', { outlets: { popup: ['organisation-new'] } }]">
             <span class="fa fa-plus"></span>
-            <span class="hidden-sm-down"  jhiTranslate="podiumGatewayApp.organisation.home.createLabel">
+            <span class="hidden-sm-down" jhiTranslate="podiumGatewayApp.organisation.home.createLabel">
             Create new Organisation
             </span>
-        </button></h2>
+        </button>
+    </h2>
     <jhi-alert></jhi-alert>
 
     <div class="container-fluid">
@@ -23,8 +25,10 @@
             <div class="col-xs-8 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right">
-                        <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'podiumGatewayApp.organisation.home.search' | translate }}">
-                        <span  class="input-group-btn width-min">
+                        <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
+                               name="currentSearch"
+                               placeholder="{{ 'podiumGatewayApp.organisation.home.search' | translate }}">
+                        <span class="input-group-btn width-min">
                             <button class="btn btn-info" (click)="search(currentSearch)">
                                 <span class="fa fa-search"></span>
                             </button>
@@ -44,9 +48,11 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="shortName"><span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="name"><span jhiTranslate="podiumGatewayApp.organisation.name">Name</span> <span class="fa fa-sort"></span></th>
-            <th></th>
+                <th jhiSortBy="shortName"><span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
+                    <span class="fa fa-sort"></span></th>
+                <th jhiSortBy="name"><span jhiTranslate="podiumGatewayApp.organisation.name">Name</span> <span
+                    class="fa fa-sort"></span></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -68,6 +74,18 @@
                             <span class="fa fa-pencil"></span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
+                        <button type="button" class="btn btn-sm"
+                                [ngClass]="{'btn-warning': !organisation.activated, 'btn-success': organisation.activated}"
+                                (click)="toggleActivated (organisation)">
+                            <i *ngIf="!organisation.activated" class="material-icons">pause_circle_filled</i>
+                            <span class="hidden-md-down" *ngIf="!organisation.activated"
+                                  jhiTranslate="podiumGatewayApp.organisation.deactivated">Deactivated
+                            </span>
+                            <i *ngIf="organisation.activated" class="material-icons">check_circle</i>
+                            <span class="hidden-md-down" *ngIf="organisation.activated"
+                                  jhiTranslate="podiumGatewayApp.organisation.activated">Activated
+                            </span>
+                        </button>
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'organisation/'+ organisation.uuid + '/delete'} }]"
                                 replaceUrl="true"
@@ -81,8 +99,8 @@
             </tbody>
         </table>
     </div>
-        <div class="text-xs-center" *ngIf="organisations && organisations.length">
-            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
+    <div class="text-xs-center" *ngIf="organisations && organisations.length">
+        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+    </div>
 </div>

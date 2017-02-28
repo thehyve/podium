@@ -16,14 +16,6 @@ import { PodiumGatewaySharedModule } from '../shared';
 import {
     adminRoute,
     AuditsComponent,
-    UserMgmtComponent,
-    UserDialogComponent,
-    UserDeleteDialogComponent,
-    UserMgmtDetailComponent,
-    UserMgmtDialogComponent,
-    UserMgmtDeleteDialogComponent,
-    UserMgmtUnlockDialogComponent,
-    UserUnlockDialogComponent,
     LogsComponent,
     JhiMetricsMonitoringModalComponent,
     JhiMetricsMonitoringComponent,
@@ -38,9 +30,6 @@ import {
     GatewayRoutesService,
     JhiGatewayComponent,
     LogsService,
-    UserResolvePagingParams,
-    UserResolve,
-    UserModalService
 } from './';
 
 @NgModule({
@@ -50,14 +39,6 @@ import {
     ],
     declarations: [
         AuditsComponent,
-        UserMgmtComponent,
-        UserDialogComponent,
-        UserDeleteDialogComponent,
-        UserUnlockDialogComponent,
-        UserMgmtDetailComponent,
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
-        UserMgmtUnlockDialogComponent,
         LogsComponent,
         JhiConfigurationComponent,
         JhiHealthCheckComponent,
@@ -68,9 +49,6 @@ import {
         JhiMetricsMonitoringModalComponent
     ],
     entryComponents: [
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
-        UserMgmtUnlockDialogComponent,
         JhiHealthModalComponent,
         JhiMetricsMonitoringModalComponent,
     ],
@@ -81,9 +59,6 @@ import {
         JhiMetricsService,
         GatewayRoutesService,
         LogsService,
-        UserResolvePagingParams,
-        UserResolve,
-        UserModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

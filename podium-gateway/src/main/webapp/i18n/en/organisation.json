@@ -14,7 +14,10 @@
                 "title": "Organisation"
             },
             "name": "Name",
-            "shortName": "Short name"
+            "shortName": "Short name",
+            "activated": "Activated",
+            "deactivated": "Deactivated"
+
         }
     },
     "podiumuaaApp": {

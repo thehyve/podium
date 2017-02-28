@@ -35,7 +35,6 @@ export class RoleService {
     }
 
     query(req?: any): Observable<Response> {
-        console.log(`Query all roles...`);
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceUrl, options)
         ;
