@@ -11,6 +11,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { PodiumGatewayRoleModule } from './role/role.module';
+import { PodiumGatewayUserMgmtModule } from './user-management/user-management.module';
 import { PodiumGatewayOrganisationModule } from './organisation/organisation.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -18,6 +19,7 @@ import { PodiumGatewayOrganisationModule } from './organisation/organisation.mod
     imports: [
         PodiumGatewayRoleModule,
         PodiumGatewayOrganisationModule,
+        PodiumGatewayUserMgmtModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

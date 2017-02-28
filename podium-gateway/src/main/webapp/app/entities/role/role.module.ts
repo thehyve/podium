@@ -16,16 +16,17 @@ import { PodiumGatewayAdminModule } from '../../admin/admin.module';
 import { PodiumGatewayOrganisationModule } from '../organisation/organisation.module';
 
 import {
-    RoleService,
-    RolePopupService,
+    roleRoute,
+    rolePopupRoute,
+    RoleResolvePagingParams,
     RoleComponent,
     RoleDetailComponent,
     RoleDialogComponent,
     RolePopupComponent,
-    roleRoute,
-    rolePopupRoute,
-    RoleResolvePagingParams,
-} from './';
+    RoleService,
+    RolePopupService
+} from '../';
+
 
 let ENTITY_STATES = [
     ...roleRoute,
@@ -37,7 +38,7 @@ let ENTITY_STATES = [
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         PodiumGatewayOrganisationModule,
-        RouterModule.forRoot(ENTITY_STATES, { useHash: true })
+        RouterModule.forRoot(ENTITY_STATES, {useHash: true})
     ],
     declarations: [
         RoleComponent,

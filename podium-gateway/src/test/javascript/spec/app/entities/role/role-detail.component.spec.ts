@@ -22,8 +22,9 @@ import { MockActivatedRoute } from '../../../helpers/mock-route.service';
 import { RoleDetailComponent } from '../../../../../../main/webapp/app/entities/role/role-detail.component';
 import { RoleService } from '../../../../../../main/webapp/app/entities/role/role.service';
 import { Role } from '../../../../../../main/webapp/app/entities/role/role.model';
-import { Organisation, OrganisationService } from '../../../../../../main/webapp/app/entities/organisation';
 import { User, UserService} from '../../../../../../main/webapp/app/shared/';
+import { OrganisationService } from '../../../../../../main/webapp/app/entities/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/entities/organisation/organisation.model';
 
 
 describe('Component Tests', () => {

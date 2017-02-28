@@ -17,9 +17,7 @@ import {
     healthRoute,
     logsRoute,
     metricsRoute,
-    gatewayRoute,
-    userMgmtRoute,
-    userDialogRoute
+    gatewayRoute
 } from './';
 
 import { UserRouteAccessService } from '../shared';
@@ -31,7 +29,7 @@ let ADMIN_ROUTES = [
     healthRoute,
     logsRoute,
     gatewayRoute,
-    ...userMgmtRoute,
+    // ...userMgmtRoute,
     metricsRoute
 ];
 
@@ -44,5 +42,5 @@ export const adminState: Routes = [{
     canActivate: [UserRouteAccessService],
     children: ADMIN_ROUTES
 },
-    ...userDialogRoute
+    // ...userDialogRoute
 ];
