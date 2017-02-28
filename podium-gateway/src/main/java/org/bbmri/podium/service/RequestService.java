@@ -83,11 +83,6 @@ public class RequestService {
         request.setStatus(RequestStatus.DRAFT);
         request.setRequester(requester);
 
-        // RequestDetail requestDetail = new RequestDetail();
-
-        // requestDetailService.save(requestDetail);
-        // request.setRequestDetail(requestDetail);
-
         save(request);
         return requestMapper.requestToRequestDTO(request);
     }

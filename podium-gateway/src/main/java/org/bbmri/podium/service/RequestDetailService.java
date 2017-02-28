@@ -48,56 +48,6 @@ public class RequestDetailService {
     }
 
     /**
-     *  Get all the requestdetails.
-     *
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<RequestDetail> findAll(Pageable pageable) {
-        log.debug("Request to get all Requestdetails");
-        Page<RequestDetail> result = requestDetailRepository.findAll(pageable);
-        return result;
-    }
-
-    /**
-     *  get all the requestdetails where Request is null.
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public List<RequestDetail> findAllWhereRequestIsNull() {
-        log.debug("Request to get all requestdetails where Request is null");
-        return StreamSupport
-            .stream(requestDetailRepository.findAll().spliterator(), false)
-            .filter(requestdetail -> requestdetail.getRequest() == null)
-            .collect(Collectors.toList());
-    }
-
-    /**
-     *  Get one requestdetail by id.
-     *
-     *  @param id the id of the entity
-     *  @return the entity
-     */
-    @Transactional(readOnly = true)
-    public RequestDetail findOne(Long id) {
-        log.debug("Request to get RequestDetail : {}", id);
-        RequestDetail requestDetail = requestDetailRepository.findOne(id);
-        return requestDetail;
-    }
-
-    /**
-     *  Delete the  requestdetail by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete RequestDetail : {}", id);
-        requestDetailRepository.delete(id);
-        requestdetailSearchRepository.delete(id);
-    }
-
-    /**
      * Search for the requestdetail corresponding to the query.
      *
      *  @param query the query of the search

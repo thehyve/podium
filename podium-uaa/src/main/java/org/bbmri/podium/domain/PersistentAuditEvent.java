@@ -10,6 +10,8 @@
 
 package org.bbmri.podium.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,7 +27,16 @@ import java.util.Map;
 public class PersistentAuditEvent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "audit_seq_gen")
+    @GenericGenerator(
+        name = "audit_seq_gen",
+        strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+        parameters = {
+            @Parameter(name = "sequence_name", value = "audit_event_seq"),
+            @Parameter(name = "initial_value", value = "1000"),
+            @Parameter(name = "increment_size", value = "50")
+        }
+    )
     @Column(name = "event_id")
     private Long id;
 

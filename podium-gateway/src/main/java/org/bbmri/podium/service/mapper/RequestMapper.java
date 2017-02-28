@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { OrganisationMapper.class })
+@Mapper(componentModel = "spring", uses = { })
 public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")
