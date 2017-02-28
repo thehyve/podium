@@ -39,11 +39,9 @@ export class UploadDialogComponent implements OnInit {
         private eventManager: EventManager,
         private router: Router
     ) {
-        // this.jhiLanguageService.setLocations(['upload']);
     }
 
     ngOnInit() {
-        // this.isSaving = false;
     }
 
     clear () {
@@ -85,18 +83,8 @@ export class UploadPopupComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {
-            /*if ( params['uuid'] ) {
-                this.modalRef = this.organisationPopupService
-                    .open(OrganisationDialogComponent, params['uuid']);
-            } else {*/
-                this.modalRef = this.uploadPopupService
-                    .open(UploadDialogComponent);
-
-                this.modalRef.result
-                    .then((res) => console.log('results ', res))
-                    .catch((err) => console.log('err ', err));
-            // }
-
+            this.modalRef = this.uploadPopupService
+                .open(UploadDialogComponent);
         });
     }
 

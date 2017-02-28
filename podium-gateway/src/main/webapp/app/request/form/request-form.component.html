@@ -14,11 +14,7 @@
         <h1 *ngIf="requestBase?.id" jhiTranslate="request.form.header.edit">Edit Request</h1>
         <p *ngIf="selectDraft && !requestBase" jhiTranslate="request.form.header.selectDraft">Select Draft</p>
     </div>
-    <!--<div class="col-md-8 offset-md-2">
-        <div class="alert alert-danger" *ngIf="authenticationError" >
-            <strong>Failed to sign in!</strong> Please check your credentials and try again.
-        </div>
-    </div>-->
+
     <div class="col-md-6 offset-md-3 card-container">
         <!-- Request Drafts Selection -->
         <div *ngIf="selectDraft && !request">
@@ -33,7 +29,10 @@
             <!-- Request drafts selection actions -->
             <div class="action-container">
                 <button type="button" class="btn btn-default" (click)="initializeBaseRequest()">New request draft</button>
-                <button type="submit" class="btn btn-primary" [disabled]="!selectedDraft" (click)="selectRequestDraft(selectedDraft)">Select</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!selectedDraft"
+                        (click)="selectRequestDraft(selectedDraft)">
+                    Select
+                </button>
             </div>
         </div>
 
@@ -100,8 +99,8 @@
                            jhiTranslate="request.form.researchQuestion.label">Research Question</label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
-                              required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel" [wordLengthValidator]="30"
-                              [(ngModel)]="request.researchQuestion">
+                              required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
+                              [wordLengthValidator]="30" [(ngModel)]="request.researchQuestion">
                 </textarea>
 
                     <div *ngIf="researchQuestion.dirty && researchQuestion.invalid">

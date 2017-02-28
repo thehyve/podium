@@ -24,13 +24,7 @@ export class UploadPopupService {
         }
         this.isOpen = true;
 
-        /*if (uuid) {
-            this.organisationService.findByUuid(uuid).subscribe(organisation => {
-                this.organisationModalRef(component, organisation);
-            });
-        } else { */
-            return this.uploadModalRef(component);
-        // }
+        return this.uploadModalRef(component);
 
         /**
          * Load request by UUID
@@ -43,12 +37,9 @@ export class UploadPopupService {
 
     uploadModalRef(component: Component): NgbModalRef {
         let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
-        // modalRef.componentInstance.organisation = organisation;
         modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
             this.isOpen = false;
         }, (reason) => {
-            console.log(`Dismissed ${reason}`);
             this.isOpen = false;
         });
         return modalRef;

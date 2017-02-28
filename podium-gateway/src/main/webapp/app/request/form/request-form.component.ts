@@ -14,7 +14,7 @@ import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { RequestDetail } from '../../shared/request/request-detail';
 import { RequestFormService } from './request-form.service';
 import { RequestType } from '../../shared/request/request-type';
-import { Organisation, OrganisationService } from '../../entities/organisation';
+import { Organisation, OrganisationService } from '../../entities/';
 import { AttachmentService } from '../../shared/attachment/attachment.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
@@ -71,15 +71,13 @@ export class RequestFormComponent implements OnInit {
         /**
          * Organisation resolve
          */
-        console.log('Finding available organisations');
         this.organisationService.findAvailable().map((availableOrganisations) => {
-            // this.availableOrganisations = availableOrganisations;
+
         });
 
         /**
          * Resolve Tags
          */
-        console.log('Finding available tags');
     }
 
     ngAfterContentInit () {
@@ -97,7 +95,6 @@ export class RequestFormComponent implements OnInit {
     }
 
     registerChangeInFilesUploaded () {
-        console.log('Registering for file upload change.');
         this.eventManager.subscribe('uploadListModification', (response) => this.loadAttachmentsForRequest());
     }
 
@@ -149,11 +146,10 @@ export class RequestFormComponent implements OnInit {
     }
 
     private postSaveUpdate (requestBase: RequestBase) {
-        console.log('Updated request with {}', requestBase);
     }
 
     onError(error) {
-        console.log('An error occurred ', error);
+        console.warn('An error occurred ', error);
     }
 
 }
