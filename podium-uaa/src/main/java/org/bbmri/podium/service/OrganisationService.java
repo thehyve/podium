@@ -12,18 +12,21 @@ package org.bbmri.podium.service;
 
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
+import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.OrganisationRepository;
 import org.bbmri.podium.repository.search.OrganisationSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -36,19 +39,18 @@ public class OrganisationService {
 
     private final Logger log = LoggerFactory.getLogger(OrganisationService.class);
 
-    private final OrganisationRepository organisationRepository;
+    @Autowired
+    private OrganisationRepository organisationRepository;
 
-    private final OrganisationSearchRepository organisationSearchRepository;
+    @Autowired
+    private OrganisationSearchRepository organisationSearchRepository;
 
-    private final AuthorityRepository authorityRepository;
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
-    public OrganisationService(OrganisationRepository organisationRepository,
-                               OrganisationSearchRepository organisationSearchRepository,
-                               AuthorityRepository authorityRepository) {
-        this.organisationRepository = organisationRepository;
-        this.organisationSearchRepository = organisationSearchRepository;
-        this.authorityRepository = authorityRepository;
-    }
+    @Autowired
+    private RoleService roleService;
+
 
     @Transactional(readOnly = true)
     public Set<Authority> findOrganisationAuthorities() {
@@ -67,6 +69,12 @@ public class OrganisationService {
      */
     public Organisation save(Organisation organisation) {
         log.debug("Request to save Organisation : {}", organisation);
+        if (organisation.getRoles() == null || organisation.getRoles().isEmpty()) {
+            Set<Role> roles = findOrganisationAuthorities().stream()
+                .map(authority -> roleService.save(new Role(authority, organisation)))
+                .collect(Collectors.toSet());
+            organisation.setRoles(roles);
+        }
         Organisation result = organisationRepository.save(organisation);
         log.info("Saved organisation: {}", result);
         SearchOrganisation searchOrganisation = organisationSearchRepository.findOne(organisation.getId());

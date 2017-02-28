@@ -11,6 +11,7 @@
 package org.bbmri.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.bbmri.podium.common.IdentifiableOrganisation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -22,6 +23,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A Role.
@@ -30,7 +32,7 @@ import java.util.Objects;
 @Table(name = "podium_role")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "role")
-public class Role implements Serializable {
+public class Role implements Serializable, IdentifiableOrganisation {
 
     private static final long serialVersionUID = 1L;
 
@@ -111,6 +113,13 @@ public class Role implements Serializable {
 
     public Organisation getOrganisation() {
         return organisation;
+    }
+
+    public UUID getOrganisationUuid() {
+        if (getOrganisation() != null) {
+            return getOrganisation().getOrganisationUuid();
+        }
+        return null;
     }
 
     public Role organisation(Organisation organisation) {

@@ -10,13 +10,14 @@
 
 package org.bbmri.podium.security;
 
+import org.bbmri.podium.domain.User;
+import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
@@ -46,7 +47,7 @@ public class OAuth2TokenMockUtil {
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
-        User principal = new User(username, "test", true, true, true, true, authorities);
+        org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(username, "test", true, true, true, true, authorities);
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(),
             principal.getAuthorities());
 
@@ -66,6 +67,30 @@ public class OAuth2TokenMockUtil {
 
         return new OAuth2PostProcessor(uuid);
     }
+
+    private OAuth2Authentication createAuthentication(User user) {
+        Authentication authentication = new UserAuthenticationToken(user);
+        authentication.setAuthenticated(true);
+
+        Set<String> scopes = Sets.newSet("some-client");
+        // Create the authorization request and OAuth2Authentication object
+        OAuth2Request authRequest = new OAuth2Request(null, "testClient", null, true, scopes, null, null, null,
+            null);
+        return new OAuth2Authentication(authRequest, authentication);
+    }
+
+    public RequestPostProcessor oauth2Authentication(User user) {
+        String uuid = String.valueOf(UUID.randomUUID());
+
+        Set<String> scopes = Sets.newSet("some-client");
+        given(tokenServices.loadAuthentication(uuid))
+            .willReturn(createAuthentication(user));
+
+        given(tokenServices.readAccessToken(uuid)).willReturn(new DefaultOAuth2AccessToken(uuid));
+
+        return new OAuth2PostProcessor(uuid);
+    }
+
 
     public RequestPostProcessor oauth2Authentication(String username, Set<String> scopes) {
         return oauth2Authentication(username, scopes, Collections.emptySet());

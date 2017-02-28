@@ -119,7 +119,7 @@ public class RoleResourceIntTest {
             ManagedUserVM userVM = new ManagedUserVM();
             userVM.setLogin("test");
             userVM.setEmail("test@localhost");
-            userVM.setPassword("password");
+            userVM.setPassword("Password123!");
             user = userService.createUser(userVM);
         }
         Set<User> users = new HashSet<>();

@@ -10,6 +10,7 @@
 
 package org.bbmri.podium.web.rest;
 
+import org.bbmri.podium.aop.security.SecuredByAuthority;
 import org.bbmri.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import org.bbmri.podium.domain.Authority;
@@ -93,9 +94,9 @@ public class UserResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new user, or with status 400 (Bad Request) if the login or email is already in use
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @PostMapping("/users")
     @Timed
-    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
         log.debug("REST request to save User : {}", managedUserVM);
 
@@ -125,9 +126,9 @@ public class UserResource {
      * or with status 400 (Bad Request) if the login or email is already in use,
      * or with status 500 (Internal Server Error) if the user couldn't be updated
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @PutMapping("/users")
     @Timed
-    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
         log.debug("REST request to update User : {}", managedUserVM);
         Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
@@ -152,9 +153,9 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK) and with body the updated user,
      * or with status 404 (Not found) if the user could not be found.
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @PutMapping("/users/uuid/{uuid}/unlock")
     @Timed
-    //@Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<ManagedUserVM> unlockUser(@PathVariable UUID uuid) {
         log.debug("REST request to unlock User : {}", uuid);
         Optional<User> userOptional = userService.getUserByUuid(uuid);
@@ -175,9 +176,9 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK) and with body all users
      * @throws URISyntaxException if the pagination headers couldn't be generated
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN, Authority.ORGANISATION_ADMIN})
     @GetMapping("/users")
     @Timed
-    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN, Authority.ORGANISATION_ADMIN})
     public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userService.getUsers(pageable);
@@ -194,6 +195,7 @@ public class UserResource {
      * @param login the login of the user to find
      * @return the ResponseEntity with status 200 (OK) and with body the "login" user, or with status 404 (Not Found)
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     @Timed
     public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
@@ -210,6 +212,7 @@ public class UserResource {
      * @param uuid the uuid of the user to find
      * @return the ResponseEntity with status 200 (OK) and with body the "uuid" user, or with status 404 (Not Found)
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @GetMapping("/users/uuid/{uuid}")
     @Timed
     public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
@@ -226,9 +229,9 @@ public class UserResource {
      * @param login the login of the user to delete
      * @return the ResponseEntity with status 200 (OK)
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     @Timed
-    @Secured({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
@@ -246,6 +249,7 @@ public class UserResource {
      * @param query the query to search
      * @return the result of the search
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @GetMapping("/_search/users/{query}")
     @Timed
     public List<User> search(@PathVariable String query) {

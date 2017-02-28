@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
 * Test class for the SecurityUtils utility class.
 *
-* @see SecurityUtils
+* @see SecurityService
 */
 public class SecurityUtilsUnitTest {
 
@@ -36,7 +36,7 @@ public class SecurityUtilsUnitTest {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
         SecurityContextHolder.setContext(securityContext);
-        String login = SecurityUtils.getCurrentUserLogin();
+        String login = SecurityService.getCurrentUserLogin();
         assertThat(login).isEqualTo("admin");
     }
 
@@ -49,9 +49,9 @@ public class SecurityUtilsUnitTest {
         token.setAuthenticated(true);
         securityContext.setAuthentication(token);
         SecurityContextHolder.setContext(securityContext);
-        String login = SecurityUtils.getCurrentUserLogin();
+        String login = SecurityService.getCurrentUserLogin();
         assertThat(login).isEqualTo("admin");
-        boolean isAuthenticated = SecurityUtils.isAuthenticated();
+        boolean isAuthenticated = SecurityService.isAuthenticated();
         assertThat(isAuthenticated).isTrue();
     }
 
@@ -60,7 +60,7 @@ public class SecurityUtilsUnitTest {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
         SecurityContextHolder.setContext(securityContext);
-        boolean isAuthenticated = SecurityUtils.isAuthenticated();
+        boolean isAuthenticated = SecurityService.isAuthenticated();
         assertThat(isAuthenticated).isTrue();
     }
 
@@ -71,7 +71,7 @@ public class SecurityUtilsUnitTest {
         authorities.add(new SimpleGrantedAuthority(Authority.ANONYMOUS));
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("anonymous", "anonymous", authorities));
         SecurityContextHolder.setContext(securityContext);
-        boolean isAuthenticated = SecurityUtils.isAuthenticated();
+        boolean isAuthenticated = SecurityService.isAuthenticated();
         assertThat(isAuthenticated).isFalse();
     }
 }

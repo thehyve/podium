@@ -20,6 +20,10 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.Email;
 
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -39,7 +43,7 @@ import org.bbmri.podium.common.domain.AbstractAuditingEntity;
 @Table(name = "podium_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "user")
-public class User extends AbstractAuditingEntity implements AuthenticatedUser, Serializable {
+public class User extends AbstractAuditingEntity implements AuthenticatedUser, UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -159,6 +163,8 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, S
         return uuid;
     }
 
+    public UUID getUserUuid() { return getUuid(); }
+
     /**
      * Void.
      * @param uuid
@@ -188,8 +194,35 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, S
     }
 
     @Override
+    public String getUsername() {
+        return getLogin();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !isAccountLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEmailVerified() && isAdminVerified();
+    }
+
+    @Override
     public Collection<String> getAuthorityNames() {
-        return getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        return getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toSet());
     }
 
     public void setPassword(String password) {
@@ -356,8 +389,12 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, S
         this.accountLockDate = accountLockDate;
     }
 
-    public Set<Authority> getAuthorities() {
-        return roles.stream().map(Role::getAuthority).collect(Collectors.toSet());
+    public Set<GrantedAuthority> getAuthorities() {
+        return roles.stream()
+            .map(Role::getAuthority)
+            .map(Authority::getName)
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toSet());
     }
 
     @Override

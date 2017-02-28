@@ -15,7 +15,7 @@ import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
-import org.bbmri.podium.security.SecurityUtils;
+import org.bbmri.podium.security.SecurityService;
 import org.bbmri.podium.service.representation.UserRepresentation;
 import org.bbmri.podium.service.util.RandomUtil;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
@@ -175,7 +175,7 @@ public class UserService {
     }
 
     public void updateUserAccount(UserRepresentation userData) {
-        userRepository.findOneByDeletedIsFalseAndLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
+        userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin()).ifPresent(user -> {
             copyProperties(userData, user);
             userSearchRepository.save(user);
             log.debug("Changed Information for User: {}", user);
@@ -208,7 +208,7 @@ public class UserService {
     }
 
     public void changePassword(String password) {
-        userRepository.findOneByDeletedIsFalseAndLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
+        userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin()).ifPresent(user -> {
             String encryptedPassword = passwordEncoder.encode(password);
             user.setPassword(encryptedPassword);
             log.debug("Changed password for User: {}", user);
@@ -258,7 +258,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
-        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(SecurityUtils.getCurrentUserLogin());
+        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
         User user = null;
         if (optionalUser.isPresent()) {
           user = optionalUser.get();

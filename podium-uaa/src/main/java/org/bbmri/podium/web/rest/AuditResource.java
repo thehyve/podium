@@ -10,6 +10,8 @@
 
 package org.bbmri.podium.web.rest;
 
+import org.bbmri.podium.aop.security.SecuredByAuthority;
+import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.service.AuditEventService;
 import org.bbmri.podium.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
@@ -29,6 +31,7 @@ import java.util.List;
 /**
  * REST controller for getting the audit events.
  */
+@SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
 @RestController
 @RequestMapping("/management/audits")
 public class AuditResource {
@@ -63,7 +66,6 @@ public class AuditResource {
      * @return the ResponseEntity with status 200 (OK) and the list of AuditEvents in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-
     @GetMapping(params = {"fromDate", "toDate"})
     public ResponseEntity<List<AuditEvent>> getByDates(
         @RequestParam(value = "fromDate") LocalDate fromDate,

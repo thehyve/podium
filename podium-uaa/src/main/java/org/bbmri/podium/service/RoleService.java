@@ -109,6 +109,27 @@ public class RoleService {
             return null;
         }
         Role role = roleRepository.findByAuthorityName(authorityName);
+        if (role != null) {
+            role.getUsers().size();
+        }
+        return role;
+    }
+
+    /**
+     *  Get the role for an authority within an organisation.
+     *
+     *  @return the entity
+     */
+    @Transactional(readOnly = true)
+    public Role findRoleByOrganisationAndAuthorityName(Organisation organisation, String authorityName) {
+        log.debug("Request to get role for an authority within an organisation");
+        if (!Authority.isOrganisationAuthority(authorityName)) {
+            return null;
+        }
+        Role role = roleRepository.findByOrganisationAndAuthorityName(organisation, authorityName);
+        if (role != null) {
+            role.getUsers().size();
+        }
         return role;
     }
 

@@ -7,12 +7,14 @@
 
 package org.bbmri.podium.security;
 
+import org.bbmri.podium.common.IdentifiableUser;
+
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public interface AuthenticatedUser extends Principal {
+public interface AuthenticatedUser extends Principal, IdentifiableUser {
 
     UUID getUuid();
 

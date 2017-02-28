@@ -12,6 +12,11 @@ package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
+import org.bbmri.podium.aop.security.OrganisationParameter;
+import org.bbmri.podium.aop.security.OrganisationUuidParameter;
+import org.bbmri.podium.aop.security.SecuredByOrganisation;
+import org.bbmri.podium.aop.security.SecuredByAuthority;
+import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
@@ -85,12 +90,14 @@ public class RoleResource {
      * @param role the role to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated role,
      * or with status 400 (Bad Request) if the role is not valid,
-     * or with status 500 (Internal Server Error) if the role couldnt be updated
+     * or with status 500 (Internal Server Error) if the role couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    @SecuredByOrganisation(authorities= {Authority.ORGANISATION_ADMIN})
     @PutMapping("/roles")
     @Timed
-    public ResponseEntity<RoleRepresentation> updateRole(@RequestBody RoleRepresentation role) throws URISyntaxException {
+    public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation role) throws URISyntaxException {
         log.debug("REST request to update Role : {}", role);
         if (role.getId() == null) {
             throw new ResourceNotFoundException(String.format("Role not found with id: %s.", role.getId()));
@@ -113,6 +120,7 @@ public class RoleResource {
      * @return the ResponseEntity with status 200 (OK) and the list of roles in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @GetMapping("/roles")
     @Timed
     public ResponseEntity<List<RoleRepresentation>> getAllRoles(@ApiParam Pageable pageable)
@@ -132,9 +140,11 @@ public class RoleResource {
      * @param uuid the uuid of the organisation
      * @return the ResponseEntity with status 200 (OK) and the list of roles in body
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    @SecuredByOrganisation
     @GetMapping("/roles/organisation/{uuid}")
     @Timed
-    public ResponseEntity<List<RoleRepresentation>> getOrganisationRoles(@PathVariable UUID uuid) {
+    public ResponseEntity<List<RoleRepresentation>> getOrganisationRoles(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get all Roles of Organisation {}", uuid);
         Organisation organisation = organisationService.findByUuid(uuid);
         List<RoleRepresentation> roles = roleService.findAllByOrganisation(organisation).stream()
@@ -149,6 +159,7 @@ public class RoleResource {
      * @param id the id of the role to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the role, or with status 404 (Not Found)
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @GetMapping("/roles/{id}")
     @Timed
     public ResponseEntity<RoleRepresentation> getRole(@PathVariable Long id) {
@@ -169,6 +180,7 @@ public class RoleResource {
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
+    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
     @GetMapping("/_search/roles")
     @Timed
     public ResponseEntity<List<Role>> searchRoles(@RequestParam String query, @ApiParam Pageable pageable)
