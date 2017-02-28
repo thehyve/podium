@@ -10,21 +10,12 @@
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ParseLinks } from 'ng-jhipster';
 
 import { PodiumGatewaySharedModule } from '../shared';
 
 import {
     adminState,
     AuditsComponent,
-    UserMgmtComponent,
-    UserDialogComponent,
-    UserDeleteDialogComponent,
-    UserMgmtDetailComponent,
-    UserMgmtDialogComponent,
-    UserMgmtDeleteDialogComponent,
-    UserMgmtUnlockDialogComponent,
-    UserUnlockDialogComponent,
     LogsComponent,
     JhiMetricsMonitoringModalComponent,
     JhiMetricsMonitoringComponent,
@@ -39,9 +30,6 @@ import {
     GatewayRoutesService,
     JhiGatewayComponent,
     LogsService,
-    UserResolvePagingParams,
-    UserResolve,
-    UserModalService
 } from './';
 
 
@@ -52,14 +40,6 @@ import {
     ],
     declarations: [
         AuditsComponent,
-        UserMgmtComponent,
-        UserDialogComponent,
-        UserDeleteDialogComponent,
-        UserUnlockDialogComponent,
-        UserMgmtDetailComponent,
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
-        UserMgmtUnlockDialogComponent,
         LogsComponent,
         JhiConfigurationComponent,
         JhiHealthCheckComponent,
@@ -70,9 +50,6 @@ import {
         JhiMetricsMonitoringModalComponent
     ],
     entryComponents: [
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
-        UserMgmtUnlockDialogComponent,
         JhiHealthModalComponent,
         JhiMetricsMonitoringModalComponent,
     ],
@@ -83,9 +60,6 @@ import {
         JhiMetricsService,
         GatewayRoutesService,
         LogsService,
-        UserResolvePagingParams,
-        UserResolve,
-        UserModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

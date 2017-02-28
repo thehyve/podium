@@ -13,8 +13,11 @@ import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventManager, PaginationUtil, ParseLinks, AlertService, JhiLanguageService } from 'ng-jhipster';
 
-import { ITEMS_PER_PAGE, Principal, User, UserService } from '../../shared';
 import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
+import { Principal } from '../../shared/auth/principal.service';
+import { UserService } from '../../shared/user/user.service';
+import { User } from '../../shared/user/user.model';
+import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
 
 @Component({
     selector: 'jhi-user-mgmt',

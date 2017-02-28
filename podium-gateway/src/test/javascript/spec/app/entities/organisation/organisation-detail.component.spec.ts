@@ -19,7 +19,9 @@ import { DateUtils, DataUtils } from 'ng-jhipster';
 import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { MockActivatedRoute } from '../../../helpers/mock-route.service';
-import { Organisation, OrganisationService, OrganisationDetailComponent } from '../../../../../../main/webapp/app/entities/organisation';
+import { OrganisationDetailComponent } from '../../../../../../main/webapp/app/entities/organisation/organisation-detail.component';
+import { OrganisationService } from '../../../../../../main/webapp/app/entities/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/entities/organisation/organisation.model';
 
 describe('Component Tests', () => {
 

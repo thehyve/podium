@@ -10,17 +10,13 @@
 
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes, CanActivate } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
 import { PaginationUtil } from 'ng-jhipster';
-
 import { UserMgmtComponent } from './user-management.component';
 import { UserMgmtDetailComponent } from './user-management-detail.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
-
-import { Principal } from '../../shared';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
+import { Principal } from '../../shared/auth/principal.service';
 
 
 @Injectable()
