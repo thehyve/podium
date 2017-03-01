@@ -19,7 +19,7 @@ function validateEmailFactory(): ValidatorFn {
         // tslint:disable max-length
         let pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
         // tslint:enable
-        let isValid =pattern.test(c.value);
+        let isValid = pattern.test(c.value);
 
         if(isValid) {
             return null;

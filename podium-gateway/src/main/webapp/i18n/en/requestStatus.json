@@ -1,0 +1,11 @@
+{
+    "podiumGatewayApp": {
+        "RequestStatus" : {
+            "null": "",
+            "DRAFT": "DRAFT",
+            "FIRST_CHECK": "FIRST_CHECK",
+            "REVIEW": "REVIEW",
+            "DATA_DELIVERY": "DATA_DELIVERY"
+        }
+    }
+}

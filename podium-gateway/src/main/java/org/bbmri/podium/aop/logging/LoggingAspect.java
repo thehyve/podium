@@ -49,6 +49,8 @@ public class LoggingAspect {
 
     /**
      * Advice that logs methods throwing exceptions.
+     * @param joinPoint The binding joinpoint
+     * @param e The thrown exception
      */
     @AfterThrowing(pointcut = "loggingPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
@@ -64,6 +66,10 @@ public class LoggingAspect {
 
     /**
      * Advice that logs when a method is entered and exited.
+     *
+     * @param joinPoint The binding joinpoint
+     * @throws Throwable Throws IllegalArgumentException
+     * @return Object The result object
      */
     @Around("loggingPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {

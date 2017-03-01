@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
+import { PodiumUploadModule } from './upload/upload.module';
 
 @NgModule({
     imports: [
@@ -31,6 +32,7 @@ import { InfiniteScrollModule } from 'angular2-infinite-scroll';
         CommonModule,
         NgbModule,
         NgJhipsterModule,
+        PodiumUploadModule,
         InfiniteScrollModule
     ]
 })

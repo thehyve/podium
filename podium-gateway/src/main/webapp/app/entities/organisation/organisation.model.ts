@@ -15,4 +15,5 @@ export class Organisation {
         public name?: string,
         public shortName?: string,
     ) { }
+
 }

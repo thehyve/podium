@@ -41,6 +41,12 @@ export class OrganisationService {
         });
     }
 
+    findAvailable(): Observable<Organisation> {
+        return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
     findByUuid(uuid: string): Observable<Organisation> {
         return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
             return res.json();
@@ -60,7 +66,6 @@ export class OrganisationService {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);
     }
-
 
     private createRequestOption(req?: any): BaseRequestOptions {
         let options: BaseRequestOptions = new BaseRequestOptions();

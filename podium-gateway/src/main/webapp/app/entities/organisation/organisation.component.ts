@@ -25,7 +25,7 @@ import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
 })
 export class OrganisationComponent implements OnInit, OnDestroy {
 
-currentAccount: any;
+    currentAccount: any;
     organisations: Organisation[];
     error: any;
     success: any;

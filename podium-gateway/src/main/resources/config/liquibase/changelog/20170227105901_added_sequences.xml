@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+
+    <changeSet id="20170227105901-1" author="berndvdveen">
+        <createSequence sequenceName="request_detail_seq" startValue="1000" incrementBy="50"/>
+        <createSequence sequenceName="request_seq" startValue="1000" incrementBy="50"/>
+        <createSequence sequenceName="attachment_seq" startValue="1000" incrementBy="50"/>
+        <createSequence sequenceName="audit_event_seq" startValue="1000" incrementBy="50"/>
+        <createSequence sequenceName="principal_investigator_seq" startValue="1000" incrementBy="50"/>
+
+    </changeSet>
+
+</databaseChangeLog>

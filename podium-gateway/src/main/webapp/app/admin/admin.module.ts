@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../shared';
 
 import {
-    adminState,
+    adminRoute,
     AuditsComponent,
     LogsComponent,
     JhiMetricsMonitoringModalComponent,
@@ -32,11 +32,10 @@ import {
     LogsService,
 } from './';
 
-
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(adminState, { useHash: true })
+        RouterModule.forRoot(adminRoute, { useHash: true })
     ],
     declarations: [
         AuditsComponent,

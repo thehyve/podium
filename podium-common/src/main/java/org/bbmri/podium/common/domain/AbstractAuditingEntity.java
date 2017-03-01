@@ -8,7 +8,7 @@
  *
  */
 
-package org.bbmri.podium.domain;
+package org.bbmri.podium.common.domain;
 
 import java.io.Serializable;
 

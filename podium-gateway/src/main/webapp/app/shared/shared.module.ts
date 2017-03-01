@@ -29,9 +29,12 @@ import {
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
     PasswordValidatorDirective,
+    WordLengthValidatorDirective,
     PodiumLoginComponent,
     SpecialismComponent
 } from './';
+import { AttachmentService } from './attachment/attachment.service';
+import { RequestService } from './request/request.service';
 
 @NgModule({
     imports: [
@@ -43,6 +46,7 @@ import {
         SpecialismComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
+        WordLengthValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective
     ],
@@ -58,6 +62,8 @@ import {
         AuthServerProvider,
         AuthService,
         UserService,
+        AttachmentService,
+        RequestService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
@@ -67,6 +73,7 @@ import {
         SpecialismComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
+        WordLengthValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
         DatePipe

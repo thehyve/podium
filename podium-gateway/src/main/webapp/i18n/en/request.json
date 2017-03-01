@@ -1,0 +1,142 @@
+{
+    "request": {
+        "pageTitle": "Request",
+        "form": {
+            "header": {
+                "new": "New Request",
+                "edit": "Edit Request",
+                "researchProposal": "Research Proposal",
+                "principalInvestigator": "Principal Investigator Details",
+                "requestDetails": "Request Details",
+                "additionalInformation": "Additional Information",
+                "organisations": "Organisations",
+                "selectDraft": "Select draft or create new request"
+            },
+            "title": {
+                "label": "Title",
+                "placeholder": "Request title"
+            },
+            "background": {
+                "label": "Background",
+                "placeholder": "Your research background description"
+            },
+            "researchQuestion": {
+                "label": "Research Question",
+                "placeholder": "Your research question"
+            },
+            "hypothesis": {
+                "label": "Hypothesis / Goals",
+                "placeholder": "Your research hypothesis and / or goals"
+            },
+            "methods": {
+                "label": "Methods",
+                "placeholder": "Your research methods"
+            },
+            "relatedRequestNumber": {
+                "label": "Related Request Number",
+                "placeholder": "Relates to request with number..."
+            },
+            "principalInvestigator": {
+                "name": {
+                    "label": "Name",
+                    "placeholder": "Name of the principal investigator"
+                },
+                "email": {
+                    "label": "Email",
+                    "placeholder": "Email of the principal investigator"
+                },
+                "function": {
+                    "label": "Function",
+                    "placeholder": "Function of the principal investigator"
+                },
+                "affiliation": {
+                    "label": "Affiliation",
+                    "placeholder": "Affiliation of the principal investigator"
+                }
+            },
+
+            "searchQuery": {
+                "label": "Search Query",
+                "placeholder": "Search query for sample selection"
+            },
+
+            "messages": {
+                "validate": {
+                    "title": {
+                        "required": "A title is required.",
+                        "minlength": "The title has to be at least 1 character long.",
+                        "maxlength": "The title cannot be longer than 50 characters."
+                    },
+                    "background": {
+                        "required": "A background description is required.",
+                        "minlength": "The background description has to be at least 1 character long.",
+                        "maxlength": "The background description cannot be longer than 2000 characters.",
+                        "wordLength": "The background description cannot be longer than 750 words."
+                    },
+                    "researchQuestion": {
+                        "required": "A research question is required.",
+                        "minlength": "The research question has to be at least 1 character long.",
+                        "maxlength": "The research question cannot be longer than 300 characters.",
+                        "wordLength": "The research question cannot be longer than 30 words."
+                    },
+                    "hypothesis": {
+                        "required": "Hypothesis and / or goals are required.",
+                        "minlength": "The hypothesis has to be at least 1 character long.",
+                        "maxlength": "The hypothesis cannot be longer than 5000 characters.",
+                        "wordLength": "The research question cannot be longer than 300 words."
+                    },
+                    "methods": {
+                        "required": "Description of methods is required.",
+                        "minlength": "Description of methods has to be at least 1 character long.",
+                        "maxlength": "Description of methods cannot be longer than 10000 characters.",
+                        "wordLength": "The research question cannot be longer than 500 words."
+                    },
+                    "relatedRequestNumber": {
+                        "maxlength": "The related request number cannot be longer than 50 characters."
+                    },
+
+                    "principalInvestigator": {
+                        "name": {
+                            "required": "A principal investigator name is required.",
+                            "minlength": "The principal investigator name has to be at least 1 character long.",
+                            "maxlength": "The principal investigator name cannot be longer than 150 characters."
+                        },
+                        "email": {
+                            "required": "A principal investigator email is required.",
+                            "minlength": "The principal investigator email has to be at least 1 character long.",
+                            "maxlength": "The principal investigator email cannot be longer than 150 characters."
+                        },
+                        "function": {
+                            "required": "A principal investigator function is required.",
+                            "minlength": "The principal investigator function has to be at least 1 character long.",
+                            "maxlength": "The principal investigator function cannot be longer than 150 characters."
+                        },
+                        "affiliation": {
+                            "required": "A principal investigator affiliation is required.",
+                            "minlength": "The principal investigator affiliation has to be at least 1 character long.",
+                            "maxlength": "The principal investigator affiliation cannot be longer than 150 characters."
+                        }
+                    },
+
+                    "searchQuery": {
+                        "required": "Search query is required.",
+                        "minlength": "Search query has to be at least 1 character long.",
+                        "maxlength": "Search query cannot be longer than 500 characters."
+                    },
+                    "combinedRequest": {
+                        "required": ""
+                    },
+                    "requestType": {
+                        "required": "Request type is required",
+                        "minlength": "Select atleast 1 request type"
+                    },
+                    "organisation": {
+                        "required": "Organisation is required",
+                        "minlength": "Select atleast 1 organisation"
+                    }
+                }
+            }
+        }
+
+    }
+}
