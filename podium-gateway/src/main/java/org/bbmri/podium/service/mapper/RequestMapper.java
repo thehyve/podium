@@ -1,7 +1,7 @@
 package org.bbmri.podium.service.mapper;
 
 import org.bbmri.podium.domain.*;
-import org.bbmri.podium.service.dto.OrganisationDTO;
+import org.bbmri.podium.common.service.dto.OrganisationDTO;
 import org.bbmri.podium.service.dto.RequestDTO;
 
 import org.mapstruct.*;

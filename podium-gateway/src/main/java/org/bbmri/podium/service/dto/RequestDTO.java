@@ -12,6 +12,7 @@ import java.util.Objects;
 import org.bbmri.podium.domain.Attachment;
 import org.bbmri.podium.domain.RequestDetail;
 import org.bbmri.podium.domain.enumeration.RequestStatus;
+import org.bbmri.podium.common.service.dto.OrganisationDTO;
 
 /**
  * A DTO for the Request entity.
