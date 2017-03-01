@@ -57,6 +57,12 @@ public class OrganisationResourceIntTest {
     private static final String DEFAULT_SHORT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_SHORT_NAME = "BBBBBBBBBB";
 
+    private static final boolean DEFAULT_ACTIVATED = false;
+    private static final boolean UPDATED_ACTIVATED = true;
+
+    private static final boolean DEFAULT_DELETED = false;
+    private static final boolean UPDATED_DELETED = true;
+
     @Autowired
     private OrganisationRepository organisationRepository;
 
@@ -100,6 +106,8 @@ public class OrganisationResourceIntTest {
         Organisation organisation = new Organisation()
                 .name(DEFAULT_NAME)
                 .shortName(DEFAULT_SHORT_NAME);
+        organisation.setDeleted(DEFAULT_DELETED);
+        organisation.setActivated(DEFAULT_ACTIVATED);
         return organisation;
     }
 
@@ -128,6 +136,8 @@ public class OrganisationResourceIntTest {
         Organisation testOrganisation = organisationList.get(organisationList.size() - 1);
         assertThat(testOrganisation.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testOrganisation.getShortName()).isEqualTo(DEFAULT_SHORT_NAME);
+        assertThat(testOrganisation.isActivated()).isEqualTo(DEFAULT_ACTIVATED);
+        assertThat(testOrganisation.isDeleted()).isEqualTo(DEFAULT_DELETED);
 
         log.info("testOrganisation: {}", testOrganisation);
 
@@ -244,9 +254,10 @@ public class OrganisationResourceIntTest {
 
         // Update the organisation
         Organisation updatedOrganisation = organisationRepository.findOne(organisation.getId());
-        updatedOrganisation
-                .name(UPDATED_NAME)
-                .shortName(UPDATED_SHORT_NAME);
+        updatedOrganisation.name(UPDATED_NAME);
+        updatedOrganisation.shortName(UPDATED_SHORT_NAME);
+        updatedOrganisation.setActivated(UPDATED_ACTIVATED);
+        updatedOrganisation.setDeleted(UPDATED_DELETED);
 
         restOrganisationMockMvc.perform(put("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -259,6 +270,8 @@ public class OrganisationResourceIntTest {
         Organisation testOrganisation = organisationList.get(organisationList.size() - 1);
         assertThat(testOrganisation.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
+        assertThat(testOrganisation.isDeleted()).isEqualTo(UPDATED_DELETED);
+        assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
 
         // Validate the Organisation in Elasticsearch
         SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());

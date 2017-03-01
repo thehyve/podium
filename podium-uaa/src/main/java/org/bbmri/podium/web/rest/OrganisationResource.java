@@ -56,6 +56,8 @@ public class OrganisationResource {
     private void copyProperties(Organisation source, Organisation target) {
         target.setName(source.getName());
         target.setShortName(source.getShortName());
+        target.setActivated(source.isActivated());
+        target.setDeleted(source.isDeleted());
     }
 
     /**
