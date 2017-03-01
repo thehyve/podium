@@ -35,7 +35,6 @@
         <awaitility.version>1.7.0</awaitility.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
-        <cucumber.version>1.2.4</cucumber.version>
         <gatling.version>2.2.0</gatling.version>
         <gatling-maven-plugin.version>2.2.0</gatling-maven-plugin.version>
         <hazelcast.version>3.7</hazelcast.version>
@@ -502,28 +501,12 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-data</artifactId>
         </dependency>
-        <!-- cucumber -->
-        <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-spring</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <testResources>
             <testResource>
                 <directory>src/test/resources/</directory>
-            </testResource>
-            <testResource>
-                <directory>src/test/features</directory>
             </testResource>
         </testResources>
         <plugins>
@@ -661,19 +644,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/Abstract*.java</exclude>
-                                <exclude>**/*Cucumber*.java</exclude>
                             </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>without-cucumber</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                              <include>**/*Cucumber*.java</include>
-                            </includes>
                         </configuration>
                     </execution>
                 </executions>
