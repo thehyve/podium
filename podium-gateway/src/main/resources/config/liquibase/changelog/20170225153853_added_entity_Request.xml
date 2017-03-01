@@ -36,6 +36,7 @@
             <column name="parent_request" type="bigint">
                 <constraints nullable="true" />
             </column>
+
             <column name="request_detail" type="bigint">
                 <constraints unique="true" nullable="true" />
             </column>
@@ -47,9 +48,11 @@
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
+
             <column name="created_date" type="timestamp" defaultValueDate="${now}">
                 <constraints nullable="false"/>
             </column>
+
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->

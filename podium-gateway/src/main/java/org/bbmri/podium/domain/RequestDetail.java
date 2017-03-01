@@ -70,6 +70,10 @@ public class RequestDetail implements Serializable {
     @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
+    @OneToOne(mappedBy = "requestDetail")
+    @JsonIgnore
+    private PrincipalInvestigator principalInvestigator;
+
     @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 500)
     @Column(name = "search_query", length = 500, nullable = false)
@@ -171,6 +175,18 @@ public class RequestDetail implements Serializable {
 
     public void setRelatedRequestNumber(String relatedRequestNumber) {
         this.relatedRequestNumber = relatedRequestNumber;
+    }
+
+    public PrincipalInvestigator getPrincipalInvestigator() {
+        return principalInvestigator;
+    }
+
+    public void setPrincipalInvestigator(PrincipalInvestigator principalInvestigator) {
+        this.principalInvestigator = principalInvestigator;
+    }
+
+    public Boolean getCombinedRequest() {
+        return combinedRequest;
     }
 
     public String getSearchQuery() {

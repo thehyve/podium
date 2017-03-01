@@ -23,6 +23,7 @@
         <createSequence sequenceName="request_seq" startValue="1000" incrementBy="50"/>
         <createSequence sequenceName="attachment_seq" startValue="1000" incrementBy="50"/>
         <createSequence sequenceName="audit_event_seq" startValue="1000" incrementBy="50"/>
+        <createSequence sequenceName="principal_investigator_seq" startValue="1000" incrementBy="50"/>
 
     </changeSet>
 

@@ -21,4 +21,6 @@
     <include file="./changelog/20170225153853_added_entity_constraints_Request.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170226012932_added_entity_constraints_Attachment.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170227105901_added_sequences.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170301063637_added_entity_PrincipalInvestigator.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170301063637_added_entity_constraints_PrincipalInvestigator.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

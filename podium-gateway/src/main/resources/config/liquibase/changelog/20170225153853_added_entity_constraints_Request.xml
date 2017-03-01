@@ -31,6 +31,7 @@
                                  constraintName="fk_request_attachments_request_id"
                                  referencedColumnNames="id"
                                  referencedTableName="request"/>
+
         <addForeignKeyConstraint baseColumnNames="attachment_id"
                                  baseTableName="request_attachments"
                                  constraintName="fk_request_attachments_attachment_id"
