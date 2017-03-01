@@ -1,3 +1,12 @@
+/*
+ *
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ */
 import {browser, ElementFinder} from "protractor";
 import {Promise} from "es6-promise";
 import {isUndefined} from "util";
@@ -20,6 +29,11 @@ export interface Interactable {
     strict?: boolean; //if true will call the at() function after the transition
 }
 
+/*
+ *
+ * The main class threw which actions should be taken. Using the 'Persona' and 'Page' interfaces, it provides
+ * additional page/persona tracking.
+ */
 export class Director {
     private searchDir: string;
     private currentPage: Page;
