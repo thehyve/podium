@@ -10,7 +10,8 @@
 
 package org.bbmri.podium.security;
 
-import org.bbmri.podium.domain.Authority;
+import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.common.security.UserAuthenticationToken;
 import org.bbmri.podium.domain.User;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

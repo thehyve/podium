@@ -10,9 +10,8 @@
 
 package org.bbmri.podium.web.rest;
 
-import org.bbmri.podium.security.AuthorityConstants;
-import org.bbmri.podium.security.annotations.SecuredByAuthority;
-import org.bbmri.podium.domain.Authority;
+import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.common.security.annotations.SecuredByAuthority;
 import org.bbmri.podium.web.rest.vm.LoggerVM;
 
 import ch.qos.logback.classic.Level;

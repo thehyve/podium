@@ -11,15 +11,14 @@
 package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.exceptions.ResourceNotFoundException;
-import org.bbmri.podium.security.AuthorityConstants;
-import org.bbmri.podium.security.annotations.OrganisationParameter;
-import org.bbmri.podium.security.annotations.OrganisationUuidParameter;
-import org.bbmri.podium.security.annotations.SecuredByAuthority;
-import org.bbmri.podium.security.annotations.SecuredByOrganisation;
+import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.common.security.annotations.OrganisationParameter;
+import org.bbmri.podium.common.security.annotations.OrganisationUuidParameter;
+import org.bbmri.podium.common.security.annotations.SecuredByAuthority;
+import org.bbmri.podium.common.security.annotations.SecuredByOrganisation;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 import org.bbmri.podium.web.rest.util.PaginationUtil;

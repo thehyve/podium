@@ -13,7 +13,7 @@ package org.bbmri.podium.domain;
 import org.bbmri.podium.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.bbmri.podium.security.AuthenticatedUser;
+import org.bbmri.podium.common.security.AuthenticatedUser;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;

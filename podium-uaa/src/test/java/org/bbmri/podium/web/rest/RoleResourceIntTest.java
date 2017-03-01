@@ -17,7 +17,7 @@ import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.RoleRepository;
-import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.service.RoleService;
 import org.bbmri.podium.repository.search.RoleSearchRepository;

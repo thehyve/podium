@@ -10,7 +10,7 @@
 
 package org.bbmri.podium.web.rest;
 
-import org.bbmri.podium.security.annotations.Public;
+import org.bbmri.podium.common.security.annotations.Public;
 import org.bbmri.podium.config.DefaultProfileUtil;
 import org.bbmri.podium.config.PodiumProperties;
 import org.springframework.core.env.Environment;

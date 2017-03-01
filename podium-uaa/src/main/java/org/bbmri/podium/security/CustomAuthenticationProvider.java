@@ -7,6 +7,7 @@
 
 package org.bbmri.podium.security;
 
+import org.bbmri.podium.common.security.UserAuthenticationToken;
 import org.bbmri.podium.config.UaaProperties;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.AccountNotVerifiedException;

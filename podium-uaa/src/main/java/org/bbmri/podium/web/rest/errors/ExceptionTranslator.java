@@ -12,7 +12,7 @@ package org.bbmri.podium.web.rest.errors;
 
 import java.util.List;
 
-import org.bbmri.podium.security.annotations.Public;
+import org.bbmri.podium.common.security.annotations.Public;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;

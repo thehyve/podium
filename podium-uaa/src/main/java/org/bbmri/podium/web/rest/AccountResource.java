@@ -12,8 +12,8 @@ package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
-import org.bbmri.podium.security.annotations.AnyAuthorisedUser;
-import org.bbmri.podium.security.annotations.Public;
+import org.bbmri.podium.common.security.annotations.AnyAuthorisedUser;
+import org.bbmri.podium.common.security.annotations.Public;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.security.SecurityService;
 import org.bbmri.podium.service.MailService;

@@ -10,7 +10,7 @@
 
 package org.bbmri.podium.config;
 
-import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

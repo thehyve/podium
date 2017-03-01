@@ -10,11 +10,10 @@
 
 package org.bbmri.podium.web.rest;
 
-import org.bbmri.podium.security.AuthorityConstants;
-import org.bbmri.podium.security.annotations.SecuredByAuthority;
+import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.common.security.annotations.SecuredByAuthority;
 import org.bbmri.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
-import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.ResourceNotFoundException;
 import org.bbmri.podium.repository.search.UserSearchRepository;

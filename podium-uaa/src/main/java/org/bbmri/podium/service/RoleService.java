@@ -14,7 +14,7 @@ import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.repository.RoleRepository;
 import org.bbmri.podium.repository.search.RoleSearchRepository;
-import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

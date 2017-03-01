@@ -5,9 +5,9 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.security.annotations;
+package org.bbmri.podium.common.security.annotations;
 
-import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.common.security.AuthorityConstants;
 
 import java.lang.annotation.*;
 

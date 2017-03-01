@@ -12,7 +12,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.bbmri.podium.security.annotations.*;
+import org.bbmri.podium.common.security.annotations.*;
 import org.bbmri.podium.service.AccessPolicyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

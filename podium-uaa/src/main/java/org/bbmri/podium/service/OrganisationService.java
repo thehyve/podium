@@ -17,7 +17,7 @@ import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.OrganisationRepository;
 import org.bbmri.podium.repository.search.OrganisationSearchRepository;
-import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

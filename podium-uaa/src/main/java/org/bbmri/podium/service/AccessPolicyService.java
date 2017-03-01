@@ -13,7 +13,7 @@ import org.bbmri.podium.aop.security.*;
 import org.bbmri.podium.common.IdentifiableOrganisation;
 import org.bbmri.podium.common.IdentifiableUser;
 import org.bbmri.podium.security.SecurityService;
-import org.bbmri.podium.security.annotations.*;
+import org.bbmri.podium.common.security.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
