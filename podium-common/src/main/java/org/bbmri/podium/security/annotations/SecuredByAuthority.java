@@ -5,15 +5,22 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.aop.security;
+package org.bbmri.podium.security.annotations;
 
 import java.lang.annotation.*;
 
 /**
- * Mark a controller method as accessible for any authorised user,
- * i.e., any user that is logged in or has a provided a valid authorisation token.
+ * Mark a controller method as accessible for any authorised user with
+ * any of the authorities in {@link #value()}.
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface AnyAuthorisedUser {}
+public @interface SecuredByAuthority {
+
+    /**
+     * Authority names. See {@link org.bbmri.podium.domain.Authority}.
+     */
+    String[] value() default {};
+
+}

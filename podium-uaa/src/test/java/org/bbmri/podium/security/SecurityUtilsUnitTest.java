@@ -68,7 +68,7 @@ public class SecurityUtilsUnitTest {
     public void testAnonymousIsNotAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(Authority.ANONYMOUS));
+        authorities.add(new SimpleGrantedAuthority(AuthorityConstants.ANONYMOUS));
         securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("anonymous", "anonymous", authorities));
         SecurityContextHolder.setContext(securityContext);
         boolean isAuthenticated = SecurityService.isAuthenticated();

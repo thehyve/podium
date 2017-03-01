@@ -10,7 +10,8 @@
 
 package org.bbmri.podium.web.rest;
 
-import org.bbmri.podium.aop.security.SecuredByAuthority;
+import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.security.annotations.SecuredByAuthority;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.service.AuditEventService;
 import org.bbmri.podium.web.rest.util.PaginationUtil;
@@ -31,7 +32,7 @@ import java.util.List;
 /**
  * REST controller for getting the audit events.
  */
-@SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+@SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
 @RestController
 @RequestMapping("/management/audits")
 public class AuditResource {

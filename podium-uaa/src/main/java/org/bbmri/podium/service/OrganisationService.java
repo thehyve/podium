@@ -17,6 +17,7 @@ import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.OrganisationRepository;
 import org.bbmri.podium.repository.search.OrganisationSearchRepository;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,10 @@ public class OrganisationService {
 
     @Transactional(readOnly = true)
     public Set<Authority> findOrganisationAuthorities() {
-        Set<Authority> result = new LinkedHashSet<>(2);
-        result.add(authorityRepository.findOne(Authority.ORGANISATION_ADMIN));
-        result.add(authorityRepository.findOne(Authority.ORGANISATION_COORDINATOR));
-        result.add(authorityRepository.findOne(Authority.REVIEWER));
+        Set<Authority> result = new LinkedHashSet<>(3);
+        result.add(authorityRepository.findOne(AuthorityConstants.ORGANISATION_ADMIN));
+        result.add(authorityRepository.findOne(AuthorityConstants.ORGANISATION_COORDINATOR));
+        result.add(authorityRepository.findOne(AuthorityConstants.REVIEWER));
         return result;
     }
 

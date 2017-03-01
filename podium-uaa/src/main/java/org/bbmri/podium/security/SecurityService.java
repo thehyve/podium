@@ -47,7 +47,7 @@ public class SecurityService {
         Authentication authentication = securityContext.getAuthentication();
         if (authentication != null) {
             return authentication.getAuthorities().stream()
-                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(Authority.ANONYMOUS));
+                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(AuthorityConstants.ANONYMOUS));
         }
         return false;
     }

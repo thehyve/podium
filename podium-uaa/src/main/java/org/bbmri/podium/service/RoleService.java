@@ -10,11 +10,11 @@
 
 package org.bbmri.podium.service;
 
-import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.repository.RoleRepository;
 import org.bbmri.podium.repository.search.RoleSearchRepository;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,9 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -105,7 +103,7 @@ public class RoleService {
     @Transactional(readOnly = true)
     public Role findRoleByAuthorityName(String authorityName) {
         log.debug("Request to get role for an authority");
-        if (Authority.isOrganisationAuthority(authorityName)) {
+        if (AuthorityConstants.isOrganisationAuthority(authorityName)) {
             return null;
         }
         Role role = roleRepository.findByAuthorityName(authorityName);
@@ -123,7 +121,8 @@ public class RoleService {
     @Transactional(readOnly = true)
     public Role findRoleByOrganisationAndAuthorityName(Organisation organisation, String authorityName) {
         log.debug("Request to get role for an authority within an organisation");
-        if (!Authority.isOrganisationAuthority(authorityName)) {
+        if (!AuthorityConstants.isOrganisationAuthority(authorityName)) {
+            log.warn("{} is not an organisation authority!", authorityName);
             return null;
         }
         Role role = roleRepository.findByOrganisationAndAuthorityName(organisation, authorityName);

@@ -5,13 +5,16 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.aop.security;
+package org.bbmri.podium.security.annotations;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-@Target({ElementType.PARAMETER})
+/**
+ * Mark a controller method as public.
+ * The associated url with be accessible for any user,
+ * even unauthorised users.
+ */
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UserUuidParameter {}
+@Documented
+public @interface Public {}

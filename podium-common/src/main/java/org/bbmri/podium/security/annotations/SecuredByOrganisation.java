@@ -5,9 +5,9 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.aop.security;
+package org.bbmri.podium.security.annotations;
 
-import org.bbmri.podium.domain.Authority;
+import org.bbmri.podium.security.AuthorityConstants;
 
 import java.lang.annotation.*;
 
@@ -37,10 +37,13 @@ public @interface SecuredByOrganisation {
     String objectParameter() default "";
 
     /**
-     * Authority names (see {@link org.bbmri.podium.domain.Authority}).
+     * Authority names (see {@link AuthorityConstants}.).
      *
      * Defaults to all organisation roles.
      */
-    String[] authorities() default {Authority.ORGANISATION_ADMIN, Authority.ORGANISATION_COORDINATOR, Authority.REVIEWER};
+    String[] authorities() default {
+        AuthorityConstants.ORGANISATION_ADMIN,
+        AuthorityConstants.ORGANISATION_COORDINATOR,
+        AuthorityConstants.REVIEWER};
 
 }

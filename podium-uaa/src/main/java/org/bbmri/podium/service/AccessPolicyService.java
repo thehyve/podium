@@ -12,12 +12,11 @@ import org.aspectj.lang.Signature;
 import org.bbmri.podium.aop.security.*;
 import org.bbmri.podium.common.IdentifiableOrganisation;
 import org.bbmri.podium.common.IdentifiableUser;
-import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.security.SecurityService;
+import org.bbmri.podium.security.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

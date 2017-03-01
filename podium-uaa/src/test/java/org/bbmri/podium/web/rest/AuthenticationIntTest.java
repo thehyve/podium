@@ -10,6 +10,7 @@ package org.bbmri.podium.web.rest;
 import org.bbmri.podium.PodiumUaaApp;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.bbmri.podium.security.OAuth2TokenMockUtil;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
@@ -77,7 +78,7 @@ public class AuthenticationIntTest {
         return tokenUtil.oauth2Authentication(
             "bbmri_admin",
             Sets.newSet("some-client"),
-            Sets.newSet(Authority.BBMRI_ADMIN));
+            Sets.newSet(AuthorityConstants.BBMRI_ADMIN));
     }
 
     @Before

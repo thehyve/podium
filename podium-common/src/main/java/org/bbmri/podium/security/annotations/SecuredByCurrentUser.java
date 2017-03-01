@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.aop.security;
+package org.bbmri.podium.security.annotations;
 
 import java.lang.annotation.*;
 

@@ -15,6 +15,7 @@ import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.bbmri.podium.security.OAuth2TokenMockUtil;
 import org.bbmri.podium.security.UserAuthenticationToken;
 import org.bbmri.podium.service.OrganisationService;
@@ -105,6 +106,9 @@ public class AccessPolicyIntTest {
         organisation.setShortName(organisationName);
         organisation = organisationService.save(organisation);
         entityManager.persist(organisation);
+        for(Role role: organisation.getRoles()) {
+            entityManager.persist(role);
+        }
         entityManager.flush();
         return organisation;
     }
@@ -142,8 +146,6 @@ public class AccessPolicyIntTest {
                 log.info("Assigning role {} for organisation {}", authority, organisation.getName());
                 Role role = roleService.findRoleByOrganisationAndAuthorityName(organisation, authority);
                 assert (role != null);
-                //role.getUsers().add(user);
-                //roleService.save(role);
                 user.getRoles().add(role);
                 user = userService.save(user);
             }
@@ -151,8 +153,6 @@ public class AccessPolicyIntTest {
             log.info("Assigning role {}", authority);
             Role role = roleService.findRoleByAuthorityName(authority);
             assert (role != null);
-            //role.getUsers().add(user);
-            //roleService.save(role);
             user.getRoles().add(role);
             user = userService.save(user);
         }
@@ -173,19 +173,19 @@ public class AccessPolicyIntTest {
     }
 
     private void createUsers() {
-        podiumAdmin = createUser("podiumAdmin", Authority.PODIUM_ADMIN);
-        bbmriAdmin = createUser("bbmriAdmin", Authority.BBMRI_ADMIN);
-        adminOrganisationA = createUser("adminOrganisationA", Authority.ORGANISATION_ADMIN, organisationA);
-        adminOrganisationB = createUser("adminOrganisationB", Authority.ORGANISATION_ADMIN, organisationB);
-        adminOrganisationAandB = createUser("adminOrganisationAandB", Authority.ORGANISATION_ADMIN, organisationA, organisationB);
-        coordinatorOrganisationA = createUser("coordinatorOrganisationA", Authority.ORGANISATION_COORDINATOR, organisationA);
-        coordinatorOrganisationB = createUser("coordinatorOrganisationB", Authority.ORGANISATION_COORDINATOR, organisationB);
-        coordinatorOrganisationAandB= createUser("coordinatorOrganisationAandB", Authority.ORGANISATION_COORDINATOR, organisationA, organisationB);
-        reviewerAandB = createUser("reviewerAandB", Authority.REVIEWER, organisationA, organisationB);
-        reviewerA = createUser("reviewerA", Authority.REVIEWER, organisationA);
-        researcher = createUser("researcher", Authority.RESEARCHER);
-        testUser1 = createUser("testUser1", Authority.RESEARCHER);
-        testUser2 = createUser("testUser2", Authority.RESEARCHER);
+        podiumAdmin = createUser("podiumAdmin", AuthorityConstants.PODIUM_ADMIN);
+        bbmriAdmin = createUser("bbmriAdmin", AuthorityConstants.BBMRI_ADMIN);
+        adminOrganisationA = createUser("adminOrganisationA", AuthorityConstants.ORGANISATION_ADMIN, organisationA);
+        adminOrganisationB = createUser("adminOrganisationB", AuthorityConstants.ORGANISATION_ADMIN, organisationB);
+        adminOrganisationAandB = createUser("adminOrganisationAandB", AuthorityConstants.ORGANISATION_ADMIN, organisationA, organisationB);
+        coordinatorOrganisationA = createUser("coordinatorOrganisationA", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA);
+        coordinatorOrganisationB = createUser("coordinatorOrganisationB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationB);
+        coordinatorOrganisationAandB= createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
+        reviewerAandB = createUser("reviewerAandB", AuthorityConstants.REVIEWER, organisationA, organisationB);
+        reviewerA = createUser("reviewerA", AuthorityConstants.REVIEWER, organisationA);
+        researcher = createUser("researcher", AuthorityConstants.RESEARCHER);
+        testUser1 = createUser("testUser1", AuthorityConstants.RESEARCHER);
+        testUser2 = createUser("testUser2", AuthorityConstants.RESEARCHER);
         anonymous = null;
         allUsers.addAll(Arrays.asList(
             podiumAdmin,
@@ -216,15 +216,15 @@ public class AccessPolicyIntTest {
     private Role reviewerBRole;
 
     private void getRoles() {
-        podiumAdminRole = roleService.findRoleByAuthorityName(Authority.PODIUM_ADMIN);
-        bbmriAdminRole = roleService.findRoleByAuthorityName(Authority.BBMRI_ADMIN);
-        researcherRole = roleService.findRoleByAuthorityName(Authority.RESEARCHER);
-        orgAdminARole = roleService.findRoleByOrganisationAndAuthorityName(organisationA, Authority.ORGANISATION_ADMIN);
-        orgAdminBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, Authority.ORGANISATION_ADMIN);
-        orgCoordinatorARole = roleService.findRoleByOrganisationAndAuthorityName(organisationA, Authority.ORGANISATION_COORDINATOR);
-        orgCoordinatorBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, Authority.ORGANISATION_COORDINATOR);
-        reviewerARole = roleService.findRoleByOrganisationAndAuthorityName(organisationA, Authority.REVIEWER);
-        reviewerBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, Authority.REVIEWER);
+        podiumAdminRole = roleService.findRoleByAuthorityName(AuthorityConstants.PODIUM_ADMIN);
+        bbmriAdminRole = roleService.findRoleByAuthorityName(AuthorityConstants.BBMRI_ADMIN);
+        researcherRole = roleService.findRoleByAuthorityName(AuthorityConstants.RESEARCHER);
+        orgAdminARole = roleService.findRoleByOrganisationAndAuthorityName(organisationA, AuthorityConstants.ORGANISATION_ADMIN);
+        orgAdminBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, AuthorityConstants.ORGANISATION_ADMIN);
+        orgCoordinatorARole = roleService.findRoleByOrganisationAndAuthorityName(organisationA, AuthorityConstants.ORGANISATION_COORDINATOR);
+        orgCoordinatorBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, AuthorityConstants.ORGANISATION_COORDINATOR);
+        reviewerARole = roleService.findRoleByOrganisationAndAuthorityName(organisationA, AuthorityConstants.REVIEWER);
+        reviewerBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, AuthorityConstants.REVIEWER);
     }
 
     static class Action {

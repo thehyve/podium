@@ -15,6 +15,7 @@ import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.AuthorityRepository;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.service.representation.UserRepresentation;
@@ -110,7 +111,7 @@ public class AccountResourceIntTest {
     @Test
     public void testGetExistingAccount() throws Exception {
         Set<Role> roles = new HashSet<>();
-        Authority authority = new Authority(Authority.PODIUM_ADMIN);
+        Authority authority = new Authority(AuthorityConstants.PODIUM_ADMIN);
         Role role = new Role(authority);
         roles.add(role);
 
@@ -130,7 +131,7 @@ public class AccountResourceIntTest {
                 .andExpect(jsonPath("$.firstName").value("john"))
                 .andExpect(jsonPath("$.lastName").value("doe"))
                 .andExpect(jsonPath("$.email").value("john.doe@bbmri-podium.com"))
-                .andExpect(jsonPath("$.authorities").value(Authority.PODIUM_ADMIN));
+                .andExpect(jsonPath("$.authorities").value(AuthorityConstants.PODIUM_ADMIN));
     }
 
     @Test
@@ -153,7 +154,7 @@ public class AccountResourceIntTest {
         validUser.setLastName("Shmoe");
         validUser.setEmail("joe@example.com");
         validUser.setLangKey("en");
-        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         restMvc.perform(
             post("/api/register")
@@ -176,7 +177,7 @@ public class AccountResourceIntTest {
         invalidUser.setLastName("One");
         invalidUser.setEmail("funky@example.com");
         invalidUser.setLangKey("en");
-        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         restUserMockMvc.perform(
             post("/api/register")
@@ -199,7 +200,7 @@ public class AccountResourceIntTest {
         invalidUser.setLastName("Green");
         invalidUser.setEmail("invalid"); // invalid
         invalidUser.setLangKey("en");
-        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         restUserMockMvc.perform(
             post("/api/register")
@@ -237,7 +238,7 @@ public class AccountResourceIntTest {
             invalidUser.setLastName("Green");
             invalidUser.setEmail("bob@example.com");
             invalidUser.setLangKey("en");
-            invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+            invalidUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
             restUserMockMvc.perform(
                 post("/api/register")
@@ -275,7 +276,7 @@ public class AccountResourceIntTest {
         validUser.setLastName("Something");
         validUser.setEmail("alice@example.com");
         validUser.setLangKey("en");
-        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         // Duplicate login, different e-mail
         ManagedUserVM duplicatedUser = duplicateManagedUserVM(validUser);
@@ -311,7 +312,7 @@ public class AccountResourceIntTest {
         validUser.setLastName("Doe");
         validUser.setEmail("john@example.com");
         validUser.setLangKey("en");
-        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         // Duplicate e-mail, different login
         ManagedUserVM duplicatedUser = duplicateManagedUserVM(validUser);
@@ -346,7 +347,7 @@ public class AccountResourceIntTest {
         validUser.setLastName("Guy");
         validUser.setEmail("badguy@example.com");
         validUser.setLangKey("en");
-        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.PODIUM_ADMIN)));
 
         restMvc.perform(
             post("/api/register")
@@ -357,7 +358,7 @@ public class AccountResourceIntTest {
         Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
         assertThat(userDup.get().getAuthorityNames()).hasSize(1)
-            .containsExactly(authorityRepository.findOne(Authority.RESEARCHER).getName());
+            .containsExactly(authorityRepository.findOne(AuthorityConstants.RESEARCHER).getName());
     }
 
     @Test
@@ -369,7 +370,7 @@ public class AccountResourceIntTest {
         invalidUser.setLastName("One");
         invalidUser.setEmail("funky@example.com");
         invalidUser.setLangKey("en");
-        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.RESEARCHER)));
+        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         restUserMockMvc.perform(
             post("/api/account")

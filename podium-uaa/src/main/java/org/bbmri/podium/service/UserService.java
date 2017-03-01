@@ -10,11 +10,11 @@
 
 package org.bbmri.podium.service;
 
-import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
+import org.bbmri.podium.security.AuthorityConstants;
 import org.bbmri.podium.security.SecurityService;
 import org.bbmri.podium.service.representation.UserRepresentation;
 import org.bbmri.podium.service.util.RandomUtil;
@@ -127,7 +127,7 @@ public class UserService {
 
     public User registerUser(ManagedUserVM managedUserVM) {
         User newUser = new User();
-        Role role = roleService.findRoleByAuthorityName(Authority.RESEARCHER);
+        Role role = roleService.findRoleByAuthorityName(AuthorityConstants.RESEARCHER);
         Set<Role> roles = new HashSet<>();
         newUser.setLogin(managedUserVM.getLogin());
         newUser.setEmail(managedUserVM.getEmail());
@@ -192,7 +192,7 @@ public class UserService {
                 Set<Role> managedRoles = user.getRoles();
                 managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
                 managedUserVM.getAuthorities().forEach( authority -> {
-                    if (!Authority.isOrganisationAuthority(authority)) {
+                    if (!AuthorityConstants.isOrganisationAuthority(authority)) {
                         log.info("Adding role: {}", authority);
                         Role role = roleService.findRoleByAuthorityName(authority);
                         if (role != null) {

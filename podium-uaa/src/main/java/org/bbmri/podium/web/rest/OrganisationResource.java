@@ -11,12 +11,15 @@
 package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.bbmri.podium.aop.security.*;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Organisation;
-import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.search.SearchOrganisation;
 import org.bbmri.podium.exceptions.ResourceNotFoundException;
+import org.bbmri.podium.security.AuthorityConstants;
+import org.bbmri.podium.security.annotations.OrganisationParameter;
+import org.bbmri.podium.security.annotations.OrganisationUuidParameter;
+import org.bbmri.podium.security.annotations.SecuredByAuthority;
+import org.bbmri.podium.security.annotations.SecuredByOrganisation;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.web.rest.util.HeaderUtil;
 import org.bbmri.podium.web.rest.util.PaginationUtil;
@@ -34,14 +37,12 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Organisation.
  */
-@SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+@SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
 @RestController
 @RequestMapping("/api")
 public class OrganisationResource {
@@ -92,8 +93,8 @@ public class OrganisationResource {
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
-    @SecuredByOrganisation(authorities = Authority.ORGANISATION_ADMIN)
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_ADMIN)
     @PutMapping("/organisations")
     @Timed
     public ResponseEntity<Organisation> updateOrganisation(@OrganisationParameter @Valid @RequestBody Organisation organisation)
@@ -120,7 +121,7 @@ public class OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations")
     @Timed
     public ResponseEntity<List<Organisation>> getAllOrganisations(@ApiParam Pageable pageable)
@@ -137,7 +138,7 @@ public class OrganisationResource {
      * @param id the id of the organisation to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
-    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations/{id}")
     @Timed
     public ResponseEntity<Organisation> getOrganisation(@PathVariable Long id) {
@@ -155,7 +156,7 @@ public class OrganisationResource {
      * @param uuid the uuid of the organisation to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
-    @SecuredByAuthority({Authority.PODIUM_ADMIN, Authority.BBMRI_ADMIN})
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation
     @GetMapping("/organisations/uuid/{uuid}")
     @Timed
