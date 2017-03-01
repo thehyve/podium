@@ -257,7 +257,6 @@ public class OrganisationResourceIntTest {
         updatedOrganisation.name(UPDATED_NAME);
         updatedOrganisation.shortName(UPDATED_SHORT_NAME);
         updatedOrganisation.setActivated(UPDATED_ACTIVATED);
-        updatedOrganisation.setDeleted(UPDATED_DELETED);
 
         restOrganisationMockMvc.perform(put("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -270,7 +269,6 @@ public class OrganisationResourceIntTest {
         Organisation testOrganisation = organisationList.get(organisationList.size() - 1);
         assertThat(testOrganisation.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
-        assertThat(testOrganisation.isDeleted()).isEqualTo(UPDATED_DELETED);
         assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
 
         // Validate the Organisation in Elasticsearch
