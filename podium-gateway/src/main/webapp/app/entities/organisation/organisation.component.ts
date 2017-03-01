@@ -152,20 +152,19 @@ export class OrganisationComponent implements OnInit, OnDestroy {
     }
 
     toggleActivated (organisation) {
-        organisation.activated = organisation.activated ? false : true;
-        this.organisationService.update(organisation)
-            .subscribe(
-                (res: Response) => {
-                    if (res.status === 200) {
-                        this.error = null;
-                        this.success = 'OK';
-                        this.loadAll();
-                    } else {
-                        this.success = null;
-                        this.error = 'ERROR';
-                    }
+        organisation.activated = !organisation.activated;
+        this.organisationService.activate(organisation.id, organisation.activated).subscribe(
+            (res: Response) => {
+                if (res.status === 200) {
+                    this.error = null;
+                    this.success = 'OK';
+                    this.loadAll();
+                } else {
+                    this.success = null;
+                    this.error = 'ERROR';
                 }
-            );
+            }
+        );
     }
 
     private onSuccess (data, headers) {

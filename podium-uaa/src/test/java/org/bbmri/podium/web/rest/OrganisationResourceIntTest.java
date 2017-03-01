@@ -256,7 +256,6 @@ public class OrganisationResourceIntTest {
         Organisation updatedOrganisation = organisationRepository.findOne(organisation.getId());
         updatedOrganisation.name(UPDATED_NAME);
         updatedOrganisation.shortName(UPDATED_SHORT_NAME);
-        updatedOrganisation.setActivated(UPDATED_ACTIVATED);
 
         restOrganisationMockMvc.perform(put("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -269,7 +268,6 @@ public class OrganisationResourceIntTest {
         Organisation testOrganisation = organisationList.get(organisationList.size() - 1);
         assertThat(testOrganisation.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
-        assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
 
         // Validate the Organisation in Elasticsearch
         SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
@@ -293,6 +291,36 @@ public class OrganisationResourceIntTest {
         // Validate the Organisation in the database
         List<Organisation> organisationList = organisationRepository.findAll();
         assertThat(organisationList).hasSize(databaseSizeBeforeUpdate + 1);
+    }
+
+    @Test
+    @Transactional
+    public void setOrganisationActivation() throws  Exception {
+        // Initialize the database
+        organisationService.save(organisation);
+
+        int databaseSizeBeforeUpdate = organisationRepository.findAll().size();
+
+        // Update the organisation
+        Organisation updatedOrganisation = organisationRepository.findOne(organisation.getId());
+
+        restOrganisationMockMvc.perform(
+            put("/api/organisations/{id}/activation?value={activate}", organisation.getId(),
+                UPDATED_ACTIVATED)
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedOrganisation)))
+            .andExpect(status().isOk());
+
+        // Validate the Organisation in the database
+        List<Organisation> organisationList = organisationRepository.findAll();
+        assertThat(organisationList).hasSize(databaseSizeBeforeUpdate);
+        Organisation testOrganisation = organisationList.get(organisationList.size() - 1);
+        assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
+
+        // Validate the Organisation in Elasticsearch
+        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
+        assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
 
     @Test

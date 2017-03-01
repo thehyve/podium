@@ -164,6 +164,33 @@ public class OrganisationResource {
     }
 
     /**
+     * PUT /organisations/:id/activation : activate/deactivate the "id" organisation
+     * @param id id the id of the organisation to be activated/deactivated
+     * @param activation activation flag (true or false)
+     * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
+     * or with status 400 (Bad Request) if the organisation is not valid,
+     * or with status 500 (Internal Server Error) if the organisation couldnt be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/organisations/{id}/activation")
+    @Timed
+    public ResponseEntity<Organisation> setOrganisationActivation(
+        @PathVariable Long id,  @RequestParam (value = "value",required = true) boolean activation) throws
+        URISyntaxException {
+        log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
+        Organisation organisation = organisationService.findOne(id);
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d",
+                organisation.getId()));
+        }
+        organisation.setActivated(activation);
+        organisationService.save(organisation);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, organisation.getId().toString()))
+            .body(organisation);
+    }
+
+    /**
      * DELETE  /organisations/:id : delete the "id" organisation.
      *
      * @param id the id of the organisation to delete
