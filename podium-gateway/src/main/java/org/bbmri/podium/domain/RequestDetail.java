@@ -82,6 +82,7 @@ public class RequestDetail implements Serializable {
 
     @NotNull(groups = { RequestDetailCreate.class })
     @ElementCollection(targetClass = RequestType.class)
+    @Enumerated(EnumType.STRING)
     @CollectionTable(
         name="request_detail_request_types",
         joinColumns=@JoinColumn(name="request_detail_id")
