@@ -19,7 +19,7 @@
     <!--
         Added the entity Attachment.
     -->
-    <changeSet id="20170226012932-1" author="jhipster">
+    <changeSet id="20170226012932-1" author="berndvdveen">
         <createTable tableName="attachment">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>

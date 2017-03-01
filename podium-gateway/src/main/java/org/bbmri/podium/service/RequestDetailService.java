@@ -29,9 +29,12 @@ public class RequestDetailService {
 
     private final RequestdetailSearchRepository requestdetailSearchRepository;
 
-    public RequestDetailService(RequestDetailRepository requestDetailRepository, RequestdetailSearchRepository requestdetailSearchRepository) {
-        this.requestDetailRepository = requestDetailRepository;
-        this.requestdetailSearchRepository = requestdetailSearchRepository;
+    public RequestDetailService(
+        RequestDetailRepository requestDetailRepository,
+        RequestdetailSearchRepository requestdetailSearchRepository
+    ) {
+            this.requestDetailRepository = requestDetailRepository;
+            this.requestdetailSearchRepository = requestdetailSearchRepository;
     }
 
     /**

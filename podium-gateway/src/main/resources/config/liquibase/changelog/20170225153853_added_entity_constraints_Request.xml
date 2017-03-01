@@ -6,7 +6,7 @@
     <!--
         Added the constraints for entity Request.
     -->
-    <changeSet id="20170225153853-2" author="jhipster">
+    <changeSet id="20170225153853-2" author="berndvdveen">
 
         <addForeignKeyConstraint baseColumnNames="request_id"
                                  baseTableName="request_organisations"
@@ -23,6 +23,12 @@
         <addForeignKeyConstraint baseColumnNames="request_detail"
                                  baseTableName="request"
                                  constraintName="fk_request_request_detail"
+                                 referencedColumnNames="id"
+                                 referencedTableName="request_detail"/>
+
+        <addForeignKeyConstraint baseColumnNames="request_detail_id"
+                                 baseTableName="request_detail_request_types"
+                                 constraintName="fk_request_detail_request_types_request_detail_id"
                                  referencedColumnNames="id"
                                  referencedTableName="request_detail"/>
 

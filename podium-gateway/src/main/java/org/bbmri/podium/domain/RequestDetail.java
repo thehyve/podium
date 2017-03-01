@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 import org.bbmri.podium.domain.enumeration.RequestType;
 
@@ -80,9 +81,12 @@ public class RequestDetail implements Serializable {
     private String searchQuery;
 
     @NotNull(groups = { RequestDetailCreate.class })
-    @Enumerated(EnumType.STRING)
-    @Column(name = "request_type", nullable = false)
-    private RequestType requestType;
+    @ElementCollection(targetClass = RequestType.class)
+    @CollectionTable(
+        name="request_detail_request_types",
+        joinColumns=@JoinColumn(name="request_detail_id")
+    )
+    private Set<RequestType> requestType;
 
     @Column(name = "combined_request")
     private Boolean combinedRequest;
@@ -202,18 +206,9 @@ public class RequestDetail implements Serializable {
         this.searchQuery = searchQuery;
     }
 
-    public RequestType getRequestType() {
-        return requestType;
-    }
+    public Set<RequestType> getRequestType() { return requestType; }
 
-    public RequestDetail requestType(RequestType requestType) {
-        this.requestType = requestType;
-        return this;
-    }
-
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
-    }
+    public void setRequestType(Set<RequestType> requestType) { this.requestType = requestType; }
 
     public Boolean isCombinedRequest() {
         return combinedRequest;
