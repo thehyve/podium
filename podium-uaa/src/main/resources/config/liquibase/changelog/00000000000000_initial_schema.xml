@@ -23,10 +23,6 @@
 
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
-    <changeSet id="00000000000000" author="podium" dbms="postgresql,oracle">
-        <createSequence sequenceName="hibernate_sequence" startValue="1000" incrementBy="1"/>
-    </changeSet>
-
     <!--
         Podium core tables.
         The initial schema has the '00000000000001' id, so that it is over-written if we re-generate it.

@@ -14,13 +14,15 @@ import org.bbmri.podium.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bbmri.podium.security.AuthenticatedUser;
-import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.Email;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -28,6 +30,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
+import org.bbmri.podium.common.domain.AbstractAuditingEntity;
 
 /**
  * A user.
@@ -41,7 +44,16 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, S
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_gen")
+    @GenericGenerator(
+        name = "user_seq_gen",
+        strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+        parameters = {
+            @Parameter(name = "sequence_name", value = "user_seq"),
+            @Parameter(name = "initial_value", value = "1000"),
+            @Parameter(name = "increment_size", value = "50")
+        }
+    )
     private Long id;
 
     @Column(unique = true, nullable = false)

@@ -17,7 +17,7 @@ import { JhiLanguageHelper, StateStorageService } from '../../shared';
     selector: 'podium-main',
     templateUrl: './main.component.html'
 })
-export class JhiMainComponent implements OnInit {
+export class PdmMainComponent implements OnInit {
 
     constructor(
         private jhiLanguageHelper: JhiLanguageHelper,

@@ -13,6 +13,10 @@
 Bootstrap tweaks
 ===============================================================*/
 
+html, body {
+    background-color: #f5f5f5;
+}
+
 body, h1, h2, h3, h4 {
     font-weight: 300;
 }
@@ -43,10 +47,17 @@ Generic styles
 
 /* other generic styles */
 
-.card {
+.card-wrapper {
     padding: 1.5%;
     margin-top: 20px;
     border: none;
+    background-color: transparent;
+}
+
+.card-container {
+    background-color: rgb(250, 250, 250);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    padding: 25px;
 }
 
 .error {
@@ -284,5 +295,72 @@ Additional classes
 .hidden {
     display: none !important;
 }
+
+form {
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    h3:not(:first-child) {
+        margin: 60px 0 15px 0;
+    }
+
+    input, textarea {
+        font-size: 14px!important;
+    }
+
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        background-color: #fafafa;
+        border: 1px solid #cacece;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+        padding: 9px;
+        border-radius: 3px;
+        display: inline-block;
+        position: relative;
+        margin: 2px 15px 0 0;
+        vertical-align: top;
+
+        +label {
+            font-weight: 600;
+        }
+
+        &:active, &:checked:active {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1)
+        }
+
+        &:checked {
+            background-color: #e9ecee;
+            border: 1px solid #adb8c0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+            color: #99a1a7;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &:checked:after {
+            content: '\2713';
+            line-height: 18px;
+            font-size: 16px;
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: #99a1a7;
+        }
+
+    }
+
+    .checkbox-group {
+        margin-left: 25px;
+    }
+}
+
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
