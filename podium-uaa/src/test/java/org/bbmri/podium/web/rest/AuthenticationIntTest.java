@@ -10,6 +10,7 @@ package org.bbmri.podium.web.rest;
 import org.bbmri.podium.PodiumUaaApp;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.security.OAuth2TokenMockUtil;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
@@ -81,7 +82,7 @@ public class AuthenticationIntTest {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws UserAccountException {
         ManagedUserVM testUser = new ManagedUserVM();
         testUser.setLogin(testUserName);
         testUser.setPassword(testPassword);

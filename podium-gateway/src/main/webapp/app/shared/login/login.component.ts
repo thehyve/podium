@@ -23,6 +23,8 @@ import { StateStorageService } from '../auth/state-storage.service';
 export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     authenticationError: boolean;
     userAccountLocked: boolean;
+    emailNotVerified: boolean;
+    accountNotVerified: boolean;
     password: string;
     rememberMe: boolean;
     username: string;
@@ -57,6 +59,8 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         };
         this.authenticationError = false;
         this.userAccountLocked = false;
+        this.emailNotVerified = false;
+        this.accountNotVerified = false;
     }
 
     login () {
@@ -67,6 +71,8 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         }).then(() => {
             this.authenticationError = false;
             this.userAccountLocked = false;
+            this.emailNotVerified = false;
+            this.accountNotVerified = false;
 
             if (this.router.url === '/register' || this.router.url === '/verify' ||
                 this.router.url === '/finishReset' || this.router.url === '/requestReset') {
@@ -90,10 +96,20 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         }).catch(err => {
             this.authenticationError = true;
             this.userAccountLocked = false;
+            this.emailNotVerified = false;
+            this.accountNotVerified = false;
             if (err && err._body) {
                 let response =  JSON.parse(err._body);
-                if (response.error_description === 'The user account is locked.') {
-                    this.userAccountLocked = true;
+                switch(response.error_description) {
+                    case 'The user account is locked.':
+                        this.userAccountLocked = true;
+                        break;
+                    case 'Email address has not been verified yet.':
+                        this.emailNotVerified = true;
+                        break;
+                    case 'The user account has not been verified yet.':
+                        this.accountNotVerified = true;
+                        break;
                 }
             }
         });

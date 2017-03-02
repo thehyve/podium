@@ -184,7 +184,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
         return login;
     }
 
-    //Lowercase the login before saving it in database
+    // Lowercase the login before saving it in database
     public void setLogin(String login) {
         this.login = login.toLowerCase(Locale.ENGLISH);
     }
@@ -250,7 +250,8 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        // Lowercase e-mail address before saving
+        this.email = email.toLowerCase(Locale.ENGLISH);
     }
 
     public String getTelephone() {

@@ -15,6 +15,9 @@ import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.VerificationKeyExpired;
+import org.bbmri.podium.exceptions.EmailAddressAlreadyInUse;
+import org.bbmri.podium.exceptions.LoginAlreadyInUse;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
 import org.bbmri.podium.common.security.AuthorityConstants;
@@ -171,7 +174,40 @@ public class UserService {
         target.setSpecialism(source.getSpecialism());
     }
 
-    public User registerUser(ManagedUserVM managedUserVM) {
+    /**
+     * Check is the login and e-mail address that are being set are not already in use by another
+     * user account.
+     * Throws a {@link UserAccountException} if the e-mail address or login are already in use.
+     *
+     * @param updatedUserData the updated user account data.
+     * @param userId the id of the user to be updated. Can be {@code null} for new accounts.
+     * @throws UserAccountException if the e-mail address or login are already in use.
+     */
+    private void checkForExistingLoginAndEmail(ManagedUserVM updatedUserData, Long userId) throws UserAccountException {
+        {
+            Optional<User> existingAccount = getUserWithAuthoritiesByLogin(updatedUserData.getLogin().toLowerCase());
+            if (existingAccount.isPresent()) {
+                if (userId != null || existingAccount.get().getId().equals(userId)) {
+                    // It's okay, we found the user we are updating
+                } else {
+                    throw new LoginAlreadyInUse("Login already in use");
+                }
+            }
+        }
+        {
+            Optional<User> existingAccount = getUserWithAuthoritiesByEmail(updatedUserData.getEmail().toLowerCase());
+            if (existingAccount.isPresent()) {
+                if (userId != null || existingAccount.get().getId().equals(userId)) {
+                    // It's okay, we found the user we are updating
+                } else {
+                    throw new EmailAddressAlreadyInUse("E-mail already in use");
+                }
+            }
+        }
+    }
+
+    public User registerUser(ManagedUserVM managedUserVM) throws UserAccountException {
+        checkForExistingLoginAndEmail(managedUserVM, null);
         User newUser = new User();
         Role role = roleService.findRoleByAuthorityName(AuthorityConstants.RESEARCHER);
         Set<Role> roles = new HashSet<>();
@@ -194,7 +230,8 @@ public class UserService {
         return newUser;
     }
 
-    public User createUser(ManagedUserVM managedUserVM) {
+    public User createUser(ManagedUserVM managedUserVM) throws UserAccountException {
+        checkForExistingLoginAndEmail(managedUserVM, null);
         User user = new User();
         user.setLogin(managedUserVM.getLogin());
         user.setEmail(managedUserVM.getEmail());
@@ -228,29 +265,30 @@ public class UserService {
         });
     }
 
-    public void updateUser(ManagedUserVM managedUserVM) {
-       Optional.of(userRepository
-            .findOne(managedUserVM.getId()))
-            .ifPresent(user -> {
-                user.setLogin(managedUserVM.getLogin());
-                user.setEmail(managedUserVM.getEmail());
-                user.setAdminVerified(managedUserVM.isAdminVerified());
-                Set<Role> managedRoles = user.getRoles();
-                managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
-                managedUserVM.getAuthorities().forEach( authority -> {
-                    if (!AuthorityConstants.isOrganisationAuthority(authority)) {
-                        log.info("Adding role: {}", authority);
-                        Role role = roleService.findRoleByAuthorityName(authority);
-                        if (role != null) {
-                            managedRoles.add(role);
-                        } else {
-                            log.error("Could not find role: {}", authority);
-                        }
-                    }
-                });
-                copyProperties(managedUserVM, user);
-                log.debug("Changed Information for User: {}", user);
-            });
+    public void updateUser(ManagedUserVM managedUserVM) throws UserAccountException {
+        User user = userRepository.findOne(managedUserVM.getId());
+        if (user == null) {
+           return;
+        }
+        checkForExistingLoginAndEmail(managedUserVM, user.getId());
+        user.setLogin(managedUserVM.getLogin());
+        user.setEmail(managedUserVM.getEmail());
+        user.setAdminVerified(managedUserVM.isAdminVerified());
+        Set<Role> managedRoles = user.getRoles();
+        managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
+        managedUserVM.getAuthorities().forEach( authority -> {
+            if (!AuthorityConstants.isOrganisationAuthority(authority)) {
+                log.info("Adding role: {}", authority);
+                Role role = roleService.findRoleByAuthorityName(authority);
+                if (role != null) {
+                    managedRoles.add(role);
+                } else {
+                    log.error("Could not find role: {}", authority);
+                }
+            }
+        });
+        copyProperties(managedUserVM, user);
+        log.debug("Changed Information for User: {}", user);
     }
 
     public void changePassword(String password) {

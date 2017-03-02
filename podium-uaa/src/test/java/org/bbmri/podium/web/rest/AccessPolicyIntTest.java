@@ -14,6 +14,7 @@ import org.bbmri.podium.domain.Organisation;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.security.OAuth2TokenMockUtil;
 import org.bbmri.podium.common.security.UserAuthenticationToken;
 import org.bbmri.podium.service.OrganisationService;
@@ -127,7 +128,7 @@ public class AccessPolicyIntTest {
     private User anonymous;
     private Set<User> allUsers = new LinkedHashSet<>();
 
-    private User createUser(String name, String authority, Organisation ... organisations) {
+    private User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
         log.info("Creating user {}", name);
         ManagedUserVM userVM = new ManagedUserVM();
         userVM.setLogin("test_" + name);
@@ -165,7 +166,7 @@ public class AccessPolicyIntTest {
         return user;
     }
 
-    private void createUsers() {
+    private void createUsers() throws UserAccountException {
         podiumAdmin = createUser("podiumAdmin", AuthorityConstants.PODIUM_ADMIN);
         bbmriAdmin = createUser("bbmriAdmin", AuthorityConstants.BBMRI_ADMIN);
         adminOrganisationA = createUser("adminOrganisationA", AuthorityConstants.ORGANISATION_ADMIN, organisationA);
@@ -326,7 +327,7 @@ public class AccessPolicyIntTest {
             .allow(podiumAdmin, bbmriAdmin));
     }
 
-    private void setupData() {
+    private void setupData() throws UserAccountException {
         createOrganisations();
         createUsers();
         getRoles();

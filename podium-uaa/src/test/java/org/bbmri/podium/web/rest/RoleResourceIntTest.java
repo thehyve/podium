@@ -15,6 +15,7 @@ import org.bbmri.podium.PodiumUaaApp;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.RoleRepository;
 import org.bbmri.podium.common.security.AuthorityConstants;
@@ -105,7 +106,7 @@ public class RoleResourceIntTest {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public Role createEntity() {
+    public Role createEntity() throws UserAccountException {
         Authority authority = authorityRepository.findOne(AuthorityConstants.REVIEWER);
         if (authority == null) {
             authority = new Authority(AuthorityConstants.REVIEWER);
@@ -130,7 +131,7 @@ public class RoleResourceIntTest {
     }
 
     @Before
-    public void initTest() {
+    public void initTest() throws UserAccountException {
         roleSearchRepository.deleteAll();
         role = createEntity();
     }
