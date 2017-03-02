@@ -88,7 +88,7 @@ public class AccountResource {
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
         return userService.activateRegistration(key)
             .map(user -> new ResponseEntity<String>(HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            .orElse(new ResponseEntity<>("Invalid activation key.", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**

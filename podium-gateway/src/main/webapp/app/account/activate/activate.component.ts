@@ -22,6 +22,7 @@ import { LoginModalService } from '../../shared';
 })
 export class ActivateComponent implements OnInit {
     error: string;
+    errorMsg: string;
     success: string;
 
     constructor(
@@ -38,9 +39,10 @@ export class ActivateComponent implements OnInit {
             this.activate.get(params['key']).subscribe(() => {
                 this.error = null;
                 this.success = 'OK';
-            }, () => {
+            }, (error) => {
                 this.success = null;
                 this.error = 'ERROR';
+                this.errorMsg = error._body;
             });
         });
     }

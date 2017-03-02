@@ -10,6 +10,7 @@
 
 package org.bbmri.podium.service;
 
+import org.bbmri.podium.config.UaaProperties;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
@@ -21,8 +22,10 @@ import org.bbmri.podium.service.util.RandomUtil;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,12 +55,16 @@ public class UserService {
     @Inject
     private RoleService roleService;
 
+    @Autowired
+    private UaaProperties uaaProperties;
+
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);
         return userRepository.findOneByDeletedIsFalseAndActivationKey(key)
             .filter(user -> {
-                ZonedDateTime oneWeekAgo = ZonedDateTime.now().minusWeeks(1);
-                return user.getActivationKeyDate().isAfter(oneWeekAgo);
+                Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
+                ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
+                return user.getActivationKeyDate().isAfter(keyValidPeriod);
             })
             .map(user -> {
                 // activate given user for the registration key.
@@ -276,5 +283,27 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
+    }
+
+    /**
+     * Not activated users should be automatically deleted after a configured period of time (default 1 week).
+     * <p>
+     * This is scheduled to get fired every 15 minutes
+     * </p>
+     */
+    @Scheduled(cron = "* */15 * * * *")
+    public void removeNotActivatedUsers() {
+        log.info("Deleting unactivated users... ");
+        ZonedDateTime now = ZonedDateTime.now();
+        Long activationValiditySeconds = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
+        List<User> users = userRepository
+            .findAllByDeletedIsFalseAndEmailVerifiedIsFalseAndCreatedDateBefore(now.minusSeconds(activationValiditySeconds));
+
+        for (User user : users) {
+            log.debug("Deleting not activated user {}", user.getLogin());
+            // TODO email user
+            userRepository.delete(user);
+            userSearchRepository.delete(user);
+        }
     }
 }

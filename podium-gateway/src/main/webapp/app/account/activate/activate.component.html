@@ -25,6 +25,10 @@
                 <strong>Your user could not be activated.</strong> Please use the registration form to sign up.
             </div>
 
+            <div class="alert alert-danger" *ngIf="errorMsg">
+                {{ errorMsg }}
+            </div>
+
         </div>
     </div>
 </div>

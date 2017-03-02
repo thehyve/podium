@@ -85,3 +85,7 @@ podium:
     ribbon:
         # comma separated list of profiles to show a ribbon on the GUI
         displayOnActiveProfiles: dev
+
+uaa:
+    security:
+        activationKeyValiditySeconds: 604800 # One week in seconds
