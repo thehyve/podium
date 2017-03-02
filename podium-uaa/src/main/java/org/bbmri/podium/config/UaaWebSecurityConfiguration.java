@@ -12,6 +12,8 @@ package org.bbmri.podium.config;
 
 import org.bbmri.podium.security.CustomAuthenticationProvider;
 import org.bbmri.podium.security.UserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +33,8 @@ import javax.inject.Inject;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final Logger log = LoggerFactory.getLogger(UaaWebSecurityConfiguration.class);
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -47,7 +51,8 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth
             .authenticationProvider(customAuthenticationProvider)
             .userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder());
+            .passwordEncoder(passwordEncoder())
+            ;
     }
 
     @Override

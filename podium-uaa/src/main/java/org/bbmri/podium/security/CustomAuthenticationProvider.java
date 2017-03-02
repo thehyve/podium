@@ -7,6 +7,7 @@
 
 package org.bbmri.podium.security;
 
+import org.bbmri.podium.common.security.UserAuthenticationToken;
 import org.bbmri.podium.config.UaaProperties;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.AccountNotVerifiedException;
@@ -22,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -109,6 +111,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 }
             }
         }
+        // if oauth2 authentication
+        if (authentication instanceof OAuth2Authentication) {
+            log.info("Checking OAuth2 authentication.");
+            if (authentication.isAuthenticated()) {
+                UserAuthenticationToken token = new UserAuthenticationToken(user);
+                token.setAuthenticated(true);
+                log.info("Token: " + token);
+                return token;
+            }
+            throw new BadCredentialsException("Invalid credentials.");
+        }
+        // if username and password authentication
         if (passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
             log.info("Authentication manager: OK");
             if (user.getFailedLoginAttempts() > 0) {
@@ -136,7 +150,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication == UsernamePasswordAuthenticationToken.class;
+        return authentication == UsernamePasswordAuthenticationToken.class ||
+            authentication == OAuth2Authentication.class;
     }
 
 }

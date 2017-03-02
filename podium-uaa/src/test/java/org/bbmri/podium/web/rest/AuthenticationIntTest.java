@@ -8,8 +8,8 @@
 package org.bbmri.podium.web.rest;
 
 import org.bbmri.podium.PodiumUaaApp;
-import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.bbmri.podium.security.OAuth2TokenMockUtil;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.web.rest.vm.ManagedUserVM;
@@ -69,15 +69,15 @@ public class AuthenticationIntTest {
     private static final String testPassword = "TestPassword123!";
     private static final String incorrectPassword = "--Incorrect--Password--789--";
 
-    public static RequestPostProcessor scope() {
+    public static RequestPostProcessor client() {
         return httpBasic("web_app", "");
     }
 
     private RequestPostProcessor bbmriAdminToken() {
         return tokenUtil.oauth2Authentication(
             "bbmri_admin",
-            Sets.newSet("some-scope"),
-            Sets.newSet(Authority.BBMRI_ADMIN));
+            Sets.newSet("some-client"),
+            Sets.newSet(AuthorityConstants.BBMRI_ADMIN));
     }
 
     @Before
@@ -114,7 +114,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
             .accept(MediaType.APPLICATION_JSON)
-            .with(scope())
+            .with(client())
             .param("grant_type", "password")
             .param("username", testUserName)
             .param("password", testPassword)
@@ -134,7 +134,7 @@ public class AuthenticationIntTest {
             mockMvc.perform(
                 post("/oauth/token")
                 .accept(MediaType.APPLICATION_JSON)
-                .with(scope())
+                .with(client())
                 .param("grant_type", "password")
                 .param("username", testUserName)
                 .param("password", incorrectPassword)
@@ -147,7 +147,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
             .accept(MediaType.APPLICATION_JSON)
-            .with(scope())
+            .with(client())
             .param("grant_type", "password")
             .param("username", testUserName)
             .param("password", incorrectPassword)
@@ -159,7 +159,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
             .accept(MediaType.APPLICATION_JSON)
-            .with(scope())
+            .with(client())
             .param("grant_type", "password")
             .param("username", testUserName)
             .param("password", testPassword)
@@ -178,7 +178,7 @@ public class AuthenticationIntTest {
             mockMvc.perform(
                 post("/oauth/token")
                 .accept(MediaType.APPLICATION_JSON)
-                .with(scope())
+                .with(client())
                 .param("grant_type", "password")
                 .param("username", testUserName)
                 .param("password", incorrectPassword)
@@ -191,7 +191,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
             .accept(MediaType.APPLICATION_JSON)
-            .with(scope())
+            .with(client())
             .param("grant_type", "password")
             .param("username", testUserName)
             .param("password", incorrectPassword)
@@ -205,7 +205,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
             .accept(MediaType.APPLICATION_JSON)
-            .with(scope())
+            .with(client())
             .param("grant_type", "password")
             .param("username", testUserName)
             .param("password", testPassword)
@@ -224,7 +224,7 @@ public class AuthenticationIntTest {
             mockMvc.perform(
                 post("/oauth/token")
                 .accept(MediaType.APPLICATION_JSON)
-                .with(scope())
+                .with(client())
                 .param("grant_type", "password")
                 .param("username", testUserName)
                 .param("password", incorrectPassword)
@@ -237,7 +237,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
             .accept(MediaType.APPLICATION_JSON)
-            .with(scope())
+            .with(client())
             .param("grant_type", "password")
             .param("username", testUserName)
             .param("password", incorrectPassword)
@@ -256,7 +256,7 @@ public class AuthenticationIntTest {
         mockMvc.perform(
             post("/oauth/token")
                 .accept(MediaType.APPLICATION_JSON)
-                .with(scope())
+                .with(client())
                 .param("grant_type", "password")
                 .param("username", testUserName)
                 .param("password", testPassword)

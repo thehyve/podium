@@ -5,14 +5,16 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.security;
+package org.bbmri.podium.common.security;
+
+import org.bbmri.podium.common.IdentifiableUser;
 
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public interface AuthenticatedUser extends Principal {
+public interface AuthenticatedUser extends Principal, IdentifiableUser {
 
     UUID getUuid();
 

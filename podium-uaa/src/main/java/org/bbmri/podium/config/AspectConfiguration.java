@@ -11,15 +11,27 @@
 package org.bbmri.podium.config;
 
 import org.bbmri.podium.aop.logging.LoggingAspect;
+import org.bbmri.podium.aop.security.AccessPolicyAspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.*;
 
 @Configuration
 @EnableAspectJAutoProxy
-public class LoggingAspectConfiguration {
+public class AspectConfiguration {
+
+    Logger log = LoggerFactory.getLogger(AspectConfiguration.class);
 
     @Bean
     @Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
     public LoggingAspect loggingAspect() {
         return new LoggingAspect();
     }
+
+    @Bean
+    public AccessPolicyAspect accessPolicyAspect() {
+        log.info("Initialising access policy aspect.");
+        return new AccessPolicyAspect();
+    }
+
 }

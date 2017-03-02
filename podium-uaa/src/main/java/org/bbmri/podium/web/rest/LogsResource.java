@@ -10,6 +10,8 @@
 
 package org.bbmri.podium.web.rest;
 
+import org.bbmri.podium.common.security.AuthorityConstants;
+import org.bbmri.podium.common.security.annotations.SecuredByAuthority;
 import org.bbmri.podium.web.rest.vm.LoggerVM;
 
 import ch.qos.logback.classic.Level;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Controller for view and managing Log Level at runtime.
  */
+@SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
 @RestController
 @RequestMapping("/management")
 public class LogsResource {

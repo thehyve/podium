@@ -10,12 +10,14 @@
 
 package org.bbmri.podium.service.representation;
 
+import org.bbmri.podium.common.IdentifiableUser;
 import org.bbmri.podium.config.Constants;
 
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
 import javax.validation.constraints.*;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * A DTO representing a user, with his authorities.
  */
-public class UserRepresentation {
+public class UserRepresentation implements IdentifiableUser {
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
@@ -84,7 +86,7 @@ public class UserRepresentation {
         this.adminVerified = user.isAdminVerified();
         this.accountLocked = user.isAccountLocked();
         this.langKey = user.getLangKey();
-        this.authorities = user.getAuthorities().stream().map(Authority::getName)
+        this.authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
             .collect(Collectors.toSet());
     }
 
@@ -117,6 +119,8 @@ public class UserRepresentation {
     }
 
     public UUID getUuid() { return uuid; }
+
+    public UUID getUserUuid() { return getUuid(); }
 
     public String getFirstName() {
         return firstName;

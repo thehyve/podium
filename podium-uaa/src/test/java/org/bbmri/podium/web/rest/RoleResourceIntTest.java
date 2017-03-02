@@ -17,6 +17,7 @@ import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.repository.AuthorityRepository;
 import org.bbmri.podium.repository.RoleRepository;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.bbmri.podium.service.OrganisationService;
 import org.bbmri.podium.service.RoleService;
 import org.bbmri.podium.repository.search.RoleSearchRepository;
@@ -105,9 +106,9 @@ public class RoleResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public Role createEntity() {
-        Authority authority = authorityRepository.findOne(Authority.REVIEWER);
+        Authority authority = authorityRepository.findOne(AuthorityConstants.REVIEWER);
         if (authority == null) {
-            authority = new Authority(Authority.REVIEWER);
+            authority = new Authority(AuthorityConstants.REVIEWER);
             authorityRepository.save(authority);
         }
         Role role = new Role(authority);
@@ -119,7 +120,7 @@ public class RoleResourceIntTest {
             ManagedUserVM userVM = new ManagedUserVM();
             userVM.setLogin("test");
             userVM.setEmail("test@localhost");
-            userVM.setPassword("password");
+            userVM.setPassword("Password123!");
             user = userService.createUser(userVM);
         }
         Set<User> users = new HashSet<>();
