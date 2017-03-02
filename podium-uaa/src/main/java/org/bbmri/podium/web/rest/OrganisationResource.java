@@ -164,9 +164,10 @@ public class OrganisationResource {
     }
 
     /**
-     * PUT /organisations/:id/activation : activate/deactivate the "id" organisation
-     * @param id id the id of the organisation to be activated/deactivated
-     * @param activation activation flag (true or false)
+     * PUT /organisations/:id/activation?value=:activation : activate or deactivate the "id" organisation
+     *
+     * @param id the id of the organisation to be activated/deactivated
+     * @param activation boolean activation flag (true or false)
      * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
      * or with status 400 (Bad Request) if the organisation is not valid,
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
