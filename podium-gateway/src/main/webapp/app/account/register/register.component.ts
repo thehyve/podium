@@ -63,6 +63,7 @@ export class RegisterComponent implements OnInit {
     register() {
         if (this.registerAccount.password !== this.confirmPassword) {
             this.doNotMatch = 'ERROR';
+            window.scrollTo(0, 0);
         } else {
             this.doNotMatch = null;
             this.error = null;
