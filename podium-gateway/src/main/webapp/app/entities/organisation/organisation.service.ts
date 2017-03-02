@@ -58,6 +58,12 @@ export class OrganisationService {
         return this.http.get(this.resourceUrl, options);
     }
 
+    activate(id: number, activate: boolean): Observable<Response> {
+        return this.http.put(`${this.resourceUrl}/${id}/activation?value=${activate}`, {}).map((res: Response) => {
+            return res.json();
+        });
+    }
+
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
