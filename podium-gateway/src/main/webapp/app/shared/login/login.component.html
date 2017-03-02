@@ -46,9 +46,15 @@
             <button type="submit" class="btn btn-primary" >Sign in</button>
         </form>
         <p></p>
+
         <div class="alert alert-info">
-            <span >You don&rsquo;t have an account yet?</span>
-            <a class="alert-link" (click)="register()" >Register a new account</a>
+            <ul>
+                <li><a (click)="requestResetPassword()" class="alert-link">Forget your password?</a></li>
+                <li>
+                    <span >You don&rsquo;t have an account yet?</span>
+                    <a class="alert-link" (click)="register()" >Register a new account</a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
