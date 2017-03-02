@@ -10,6 +10,12 @@
 
 export * from './message/message.model';
 export * from './message/message.service';
+export * from './request/request-base';
+export * from './request/request-detail';
+export * from './request/request-status';
+export * from './request/request-type';
+export * from './request/request.service';
+export * from './request/request';
 export * from './validators/password-validator.directive';
 export * from './validators/email-validator.directive';
 export * from './validators/word-length-validator.directive';
@@ -39,4 +45,6 @@ export * from './shared-common.module';
 export * from './shared.module';
 export * from './auth/user-route-access-service';
 export * from './upload/upload.module';
+export * from './attachment/attachment';
 export * from './attachment/attachment.service';
+export * from './attachment/attachment-type';

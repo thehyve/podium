@@ -246,7 +246,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off"  #piEmail="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.email.placeholder' | translate}}"
-                                   [(ngModel)]="request.principalInvestigator.email" />
+                                   [(ngModel)]="request.principalInvestigator.email" emailValidator>
 
                             <div *ngIf="piEmail.dirty && piEmail.invalid">
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.required"
@@ -256,6 +256,10 @@
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.minlength"
                                        jhiTranslate="request.form.messages.validate.principalInvestigator.email.minlength">
                                     The principal investigator email has to be at least 1 character long.
+                                </small>
+                                <small class="form-text text-danger" *ngIf="piEmail.errors.emailValidator"
+                                       jhiTranslate="global.messages.validate.email.invalid">
+                                    Your e-mail is invalid.
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.maxlength"
                                        jhiTranslate="request.form.messages.validate.principalInvestigator.email.maxlength">

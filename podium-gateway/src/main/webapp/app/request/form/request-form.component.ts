@@ -11,16 +11,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
-import { RequestDetail } from '../../shared/request/request-detail';
-import { RequestFormService } from './request-form.service';
-import { RequestType } from '../../shared/request/request-type';
 import { Organisation, OrganisationService } from '../../entities/';
-import { AttachmentService } from '../../shared/attachment/attachment.service';
-import { RequestBase } from '../../shared/request/request-base';
-import { RequestService } from '../../shared/request/request.service';
-import { Principal } from '../../shared/auth/principal.service';
-import { User } from '../../shared/user/user.model';
-import { Attachment } from '../../shared/attachment/attachment';
+import { RequestFormService } from './request-form.service';
+import {
+    RequestDetail,
+    RequestType,
+    AttachmentService,
+    RequestBase,
+    RequestService,
+    Principal,
+    User,
+    Attachment,
+    EmailValidatorDirective
+} from '../../shared';
 
 @Component({
     selector: 'pdm-request-form',
@@ -47,21 +50,19 @@ export class RequestFormComponent implements OnInit {
 
     attachments: Attachment[];
 
-    constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private requestFormService: RequestFormService,
-        private requestService: RequestService,
-        private attachmentService: AttachmentService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private principal: Principal,
-        private eventManager: EventManager,
-        private organisationService: OrganisationService
-    ) {
+    constructor(private jhiLanguageService: JhiLanguageService,
+                private requestFormService: RequestFormService,
+                private requestService: RequestService,
+                private attachmentService: AttachmentService,
+                private route: ActivatedRoute,
+                private router: Router,
+                private principal: Principal,
+                private eventManager: EventManager,
+                private organisationService: OrganisationService) {
         this.jhiLanguageService.setLocations(['request']);
     }
 
-    ngOnInit () {
+    ngOnInit() {
         this.principal.identity().then((account) => {
             console.log('Got user ', account);
             this.currentUser = account;
@@ -80,11 +81,11 @@ export class RequestFormComponent implements OnInit {
          */
     }
 
-    ngAfterContentInit () {
+    ngAfterContentInit() {
         this.registerChangeInFilesUploaded();
     }
 
-    initializeRequestForm () {
+    initializeRequestForm() {
         // Resolve Draft Requests
         let uuid = this.currentUser.uuid;
         this.requestService.findAvailableRequestDrafts(uuid)
@@ -94,11 +95,11 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
-    registerChangeInFilesUploaded () {
+    registerChangeInFilesUploaded() {
         this.eventManager.subscribe('uploadListModification', (response) => this.loadAttachmentsForRequest());
     }
 
-    loadAttachmentsForRequest () {
+    loadAttachmentsForRequest() {
         this.attachmentService
             .findAttachmentsForRequest(this.requestBase.uuid)
             .subscribe(
@@ -131,13 +132,13 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
-    selectRequestDraft (requestBase: RequestBase) {
+    selectRequestDraft(requestBase: RequestBase) {
         this.selectDraft = false;
         this.requestBase = requestBase;
         this.request = requestBase.detail || new RequestDetail();
     }
 
-    saveRequestDraft () {
+    saveRequestDraft() {
         this.requestService.saveRequestDraft(this.requestBase)
             .subscribe(
                 (requestBase) => this.postSaveUpdate(requestBase),
@@ -145,7 +146,7 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
-    private postSaveUpdate (requestBase: RequestBase) {
+    private postSaveUpdate(requestBase: RequestBase) {
     }
 
     onError(error) {
