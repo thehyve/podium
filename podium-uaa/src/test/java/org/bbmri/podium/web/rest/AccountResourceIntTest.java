@@ -10,7 +10,6 @@
 
 package org.bbmri.podium.web.rest;
 
-import org.apache.lucene.util.ThreadInterruptedException;
 import org.bbmri.podium.PodiumUaaApp;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
@@ -40,7 +39,6 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -375,7 +373,7 @@ public class AccountResourceIntTest {
         validUser.setLastName("Guy");
         validUser.setEmail("badguy@example.com");
         validUser.setLangKey("en");
-        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.PODIUM_ADMIN)));
 
         restMvc.perform(
             post("/api/register")
@@ -409,7 +407,7 @@ public class AccountResourceIntTest {
         validUser.setLastName("Guy");
         validUser.setEmail("badguy@example.com");
         validUser.setLangKey("en");
-        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.PODIUM_ADMIN)));
 
         restMvc.perform(
             post("/api/register")
