@@ -38,7 +38,7 @@ before_install:
   - sudo apt-get install -y -qq yarn=0.21.3-1
   - node -v
   - npm -v
-  - yarn -v
+  - yarn --version
   - java -version
   - export TZ=Europe/Amsterdam
   - date
