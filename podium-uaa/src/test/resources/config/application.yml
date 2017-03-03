@@ -103,3 +103,4 @@ podium:
 uaa:
     security:
         accountLockingPeriodSeconds: 3
+        activationKeyValiditySeconds: 4 # 4 seconds for testing

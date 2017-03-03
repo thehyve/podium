@@ -10,6 +10,7 @@
 
 package org.bbmri.podium.web.rest;
 
+import org.apache.lucene.util.ThreadInterruptedException;
 import org.bbmri.podium.PodiumUaaApp;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
@@ -29,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -73,7 +76,7 @@ public class AccountResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendActivationEmail((User) anyObject());
+        doNothing().when(mockMailService).sendVerificationEmail((User) anyObject());
 
         AccountResource accountResource = new AccountResource();
         ReflectionTestUtils.setField(accountResource, "userService", userService);
@@ -358,6 +361,79 @@ public class AccountResourceIntTest {
         assertThat(userDup.isPresent()).isTrue();
         assertThat(userDup.get().getAuthorities()).hasSize(1)
             .containsExactly(authorityRepository.findOne(Authority.RESEARCHER));
+    }
+
+    @Test
+    @Transactional
+    public void testVerifyUserEmail() throws Exception {
+        ManagedUserVM validUser = new ManagedUserVM();
+        validUser.setId(null);
+        validUser.setLogin("badguy");
+        validUser.setPassword(VALID_PASSWORD);
+        validUser.setFirstName("Bad");
+        validUser.setLastName("Guy");
+        validUser.setEmail("badguy@example.com");
+        validUser.setLangKey("en");
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
+
+        restMvc.perform(
+            post("/api/register")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(validUser)))
+            .andExpect(status().isCreated());
+
+        userService.getUserWithAuthoritiesByLogin("badguy")
+            .map(user -> {
+                assertThat(user.getActivationKey() != null);
+
+                try {
+                    restMvc.perform(get("/api/verify")
+                        .param("key", user.getActivationKey()))
+                        .andExpect(status().isOk());
+                } catch (Exception ex) { }
+
+                return user;
+            });
+
+    }
+
+    @Test
+    @Transactional
+    public void testVerifyUserEmailInvalid() throws Exception {
+        ManagedUserVM validUser = new ManagedUserVM();
+        validUser.setId(null);
+        validUser.setLogin("badguy");
+        validUser.setPassword(VALID_PASSWORD);
+        validUser.setFirstName("Bad");
+        validUser.setLastName("Guy");
+        validUser.setEmail("badguy@example.com");
+        validUser.setLangKey("en");
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(Authority.PODIUM_ADMIN)));
+
+        restMvc.perform(
+            post("/api/register")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(validUser)))
+            .andExpect(status().isCreated());
+
+        userService.getUserWithAuthoritiesByLogin("badguy")
+            .map(user -> {
+                assertThat(user.getActivationKey() != null);
+
+                try {
+                    Thread.sleep(4400);
+
+                    MvcResult result = restMvc.perform(get("/api/verify")
+                        .param("key", user.getActivationKey()))
+                        .andExpect(status().is5xxServerError())
+                        .andReturn();
+
+                    assertThat(result.getResponse().getContentAsString()).isEqualTo("renew");
+                } catch (Exception ex) {}
+
+                return user;
+            });
+
     }
 
     @Test
