@@ -14,6 +14,7 @@ import org.bbmri.podium.config.UaaProperties;
 import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.exceptions.VerificationKeyExpired;
 import org.bbmri.podium.repository.UserRepository;
 import org.bbmri.podium.repository.search.UserSearchRepository;
 import org.bbmri.podium.security.SecurityUtils;
@@ -58,21 +59,58 @@ public class UserService {
     @Autowired
     private UaaProperties uaaProperties;
 
-    public Optional<User> activateRegistration(String key) {
-        log.debug("Activating user for activation key {}", key);
+    @Autowired
+    private MailService mailService;
+
+    /**
+     * Activate a user by a given key.
+     * If the activation key has expired return null
+     *
+     * @param key The activation key
+     * @throws VerificationKeyExpired
+     *
+     * @return the user
+     */
+    public Optional<User> verifyRegistration(String key) throws VerificationKeyExpired {
+        log.debug("Verifying user for activation key {}", key);
+
+        Optional<User> foundUser = userRepository.findOneByDeletedIsFalseAndActivationKey(key);
+        Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
+        ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
+
+        if (foundUser.isPresent()) {
+            User user = foundUser.get();
+
+            if(user.getActivationKeyDate().isBefore(keyValidPeriod)) {
+                throw new VerificationKeyExpired();
+            }
+            // activate given user for the registration key.
+            user.setEmailVerified(true);
+            user.setActivationKey(null);
+            user.setActivationKeyDate(null);
+            userSearchRepository.save(user);
+            save(user);
+            log.debug("Activated user: {}", user);
+        }
+
+        return foundUser;
+    }
+
+    public Optional<User> renewVerificationKey(String key) {
+        log.debug("Renewing activation key ", key);
+
         return userRepository.findOneByDeletedIsFalseAndActivationKey(key)
+            // Filter for expired activation keys
             .filter(user -> {
                 Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
                 ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
-                return user.getActivationKeyDate().isAfter(keyValidPeriod);
+                return user.getActivationKeyDate().isBefore(keyValidPeriod);
             })
             .map(user -> {
-                // activate given user for the registration key.
-                user.setEmailVerified(true);
-                user.setActivationKey(null);
-                user.setActivationKeyDate(null);
-                userSearchRepository.save(user);
-                log.debug("Activated user: {}", user);
+                user.setActivationKey(RandomUtil.generateActivationKey());
+                user.setActivationKeyDate(ZonedDateTime.now());
+                save(user);
+                mailService.sendVerificationEmail(user);
                 return user;
             });
     }
@@ -283,27 +321,5 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
-    }
-
-    /**
-     * Not activated users should be automatically deleted after a configured period of time (default 1 week).
-     * <p>
-     * This is scheduled to get fired every 15 minutes
-     * </p>
-     */
-    @Scheduled(cron = "* */15 * * * *")
-    public void removeNotActivatedUsers() {
-        log.info("Deleting unactivated users... ");
-        ZonedDateTime now = ZonedDateTime.now();
-        Long activationValiditySeconds = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
-        List<User> users = userRepository
-            .findAllByDeletedIsFalseAndEmailVerifiedIsFalseAndCreatedDateBefore(now.minusSeconds(activationValiditySeconds));
-
-        for (User user : users) {
-            log.debug("Deleting not activated user {}", user.getLogin());
-            // TODO email user
-            userRepository.delete(user);
-            userSearchRepository.delete(user);
-        }
     }
 }

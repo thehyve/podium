@@ -13,6 +13,7 @@ package org.bbmri.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.exceptions.VerificationKeyExpired;
 import org.bbmri.podium.security.SecurityUtils;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
@@ -71,7 +72,7 @@ public class AccountResource {
                 .orElseGet(() -> {
                     User user = userService.registerUser(managedUserVM);
 
-                    mailService.sendActivationEmail(user);
+                    mailService.sendVerificationEmail(user);
                     return new ResponseEntity<>(HttpStatus.CREATED);
                 })
         );
@@ -81,14 +82,31 @@ public class AccountResource {
      * GET  /activate : activate the registered user.
      *
      * @param key the activation key
-     * @return the ResponseEntity with status 200 (OK) and the activated user in body, or status 500 (Internal Server Error) if the user couldn't be activated
+     * @return  the ResponseEntity with status 200 (OK) and the activated user in body,
+     *          or status 500 (Internal Server Error) if the user couldn't be activated
      */
-    @GetMapping("/activate")
+    @GetMapping("/verify")
     @Timed
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
-        return userService.activateRegistration(key)
+        try {
+            Optional<User> user = userService.verifyRegistration(key);
+
+            if (user.isPresent() && user.get().getActivationKey() == null) {
+                return new ResponseEntity<String>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("error", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } catch(VerificationKeyExpired vke) {
+            return new ResponseEntity<>("renew", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/reverify")
+    @Timed
+    public ResponseEntity<String> renewVerification(@RequestParam(value = "key") String key) {
+        return userService.renewVerificationKey(key)
             .map(user -> new ResponseEntity<String>(HttpStatus.OK))
-            .orElse(new ResponseEntity<>("Invalid activation key.", HttpStatus.INTERNAL_SERVER_ERROR));
+            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     /**
@@ -107,7 +125,8 @@ public class AccountResource {
     /**
      * GET  /account : get the current user.
      *
-     * @return the ResponseEntity with status 200 (OK) and the current user in body, or status 500 (Internal Server Error) if the user couldn't be returned
+     * @return the ResponseEntity with status 200 (OK) and the current user in body,
+     * or status 500 (Internal Server Error) if the user couldn't be returned
      */
     @GetMapping("/account")
     @Timed
@@ -171,9 +190,9 @@ public class AccountResource {
                 mailService.sendPasswordResetMail(user);
                 return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
             }).orElseGet(() -> {
-                    mailService.sendPasswordResetMailNoUser(mail);
-                    return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
-                });
+                mailService.sendPasswordResetMailNoUser(mail);
+                return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
+            });
     }
 
     /**

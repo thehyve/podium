@@ -14,17 +14,17 @@ import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../shared';
 import {
     Register,
-    Activate,
     Password,
     PasswordResetInit,
     PasswordResetFinish,
     PasswordStrengthBarComponent,
     RegisterComponent,
-    ActivateComponent,
     PasswordComponent,
     PasswordResetInitComponent,
     PasswordResetFinishComponent,
     SettingsComponent,
+    VerifyComponent,
+    Verify,
     accountState
 } from './';
 
@@ -34,7 +34,7 @@ import {
         RouterModule.forRoot(accountState, { useHash: true })
     ],
     declarations: [
-        ActivateComponent,
+        VerifyComponent,
         RegisterComponent,
         PasswordComponent,
         PasswordStrengthBarComponent,
@@ -44,7 +44,7 @@ import {
     ],
     providers: [
         Register,
-        Activate,
+        Verify,
         Password,
         PasswordResetInit,
         PasswordResetFinish

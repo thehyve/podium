@@ -76,14 +76,14 @@ public class MailService {
     }
 
     @Async
-    public void sendActivationEmail(User user) {
-        log.debug("Sending activation e-mail to '{}'", user.getEmail());
+    public void sendVerificationEmail(User user) {
+        log.debug("Sending verification e-mail to '{}'", user.getEmail());
         Locale locale = Locale.forLanguageTag(user.getLangKey());
         Context context = new Context(locale);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
-        String content = templateEngine.process("activationEmail", context);
-        String subject = messageSource.getMessage("email.activation.title", null, locale);
+        String content = templateEngine.process("verificationEmail", context);
+        String subject = messageSource.getMessage("email.verification.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
@@ -95,7 +95,7 @@ public class MailService {
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         String content = templateEngine.process("creationEmail", context);
-        String subject = messageSource.getMessage("email.activation.title", null, locale);
+        String subject = messageSource.getMessage("email.verification.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 

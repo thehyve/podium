@@ -10,10 +10,8 @@
 
 import { Routes, CanActivate } from '@angular/router';
 
-import { UserRouteAccessService } from '../shared';
-
 import {
-    activateRoute,
+    verifyRoute,
     passwordRoute,
     passwordResetFinishRoute,
     passwordResetInitRoute,
@@ -22,7 +20,7 @@ import {
 } from './';
 
 let ACCOUNT_ROUTES = [
-   activateRoute,
+   verifyRoute,
    passwordRoute,
    passwordResetFinishRoute,
    passwordResetInitRoute,

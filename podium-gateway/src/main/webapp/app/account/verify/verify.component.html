@@ -1,0 +1,51 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 jhiTranslate="verify.title">Activation</h1>
+
+            <div class="alert alert-success" *ngIf="success">
+                <span jhiTranslate="verify.messages.success">
+                    <strong>Your user has been verified.</strong> You will be notified when a BBMRI admin has verified your account.
+                </span>
+                <a class="alert-link"
+                   (click)="login()" jhiTranslate="verify.messages.loginPage">Go to login page</a>.
+            </div>
+
+            <div class="alert alert-success" *ngIf="renewSuccess">
+                <span jhiTranslate="verify.messages.renew.success">
+                    <strong>A new verification key has been sent to your email. Please follow the instructions.</strong>
+                </span>
+            </div>
+
+            <div class="alert alert-danger" *ngIf="error && errorMsg != 'renew'" jhiTranslate="verify.messages.error">
+                <strong>Your user could not be verified.</strong> Please use the registration form to sign up.
+            </div>
+
+            <div class="alert alert-danger" *ngIf="error && errorMsg == 'renew'">
+                <span jhiTranslate="verify.messages.renew.message">
+                    <strong>Your verification key has expired.</strong> Please
+                </span>
+                <a class="alert-link"
+                   (click)="requestNewVerificationKey()" jhiTranslate="verify.messages.renew.requestNew">
+                    request a new verification key
+                </a>.
+            </div>
+
+            <div class="alert alert-danger" *ngIf="renewError">
+                <span jhiTranslate="verify.messages.renew.error">
+                    <strong>Unable to renew the verification key.</strong>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
