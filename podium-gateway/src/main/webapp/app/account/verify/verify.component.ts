@@ -9,43 +9,57 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import {ActivatedRoute, Router} from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 
-import { Activate } from './activate.service';
-import { LoginModalService } from '../../shared';
+import { Verify } from './verify.service';
 
 @Component({
-    selector: 'jhi-activate',
-    templateUrl: './activate.component.html'
+    selector: 'jhi-verify',
+    templateUrl: './verify.component.html'
 })
-export class ActivateComponent implements OnInit {
+export class VerifyComponent implements OnInit {
     error: string;
+    errorMsg: string;
     success: string;
+    renewSuccess: string;
+    renewError: string;
+    verifyKey: string;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private activate: Activate,
+        private verify: Verify,
         private route: ActivatedRoute,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['activate']);
+        this.jhiLanguageService.setLocations(['verify']);
     }
 
     ngOnInit () {
         this.route.queryParams.subscribe(params => {
-            this.activate.get(params['key']).subscribe(() => {
+            this.verifyKey = params['key'];
+            this.verify.get(params['key']).subscribe(() => {
                 this.error = null;
                 this.success = 'OK';
-            }, () => {
+            }, (error) => {
                 this.success = null;
                 this.error = 'ERROR';
+                this.errorMsg = error._body;
             });
         });
     }
 
     login() {
         this.router.navigate(['/']);
+    }
+
+    requestNewVerificationKey() {
+        this.verify.renew(this.verifyKey).subscribe(() => {
+            this.error = null;
+            this.renewSuccess = 'OK';
+        }, (error) => {
+            this.success = null;
+            this.renewError = 'ERROR';
+        });
     }
 }

@@ -68,7 +68,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             this.authenticationError = false;
             this.userAccountLocked = false;
 
-            if (this.router.url === '/register' || this.router.url === '/activate' ||
+            if (this.router.url === '/register' || this.router.url === '/verify' ||
                 this.router.url === '/finishReset' || this.router.url === '/requestReset') {
                 this.router.navigate(['']);
             }

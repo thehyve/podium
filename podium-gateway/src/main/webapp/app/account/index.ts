@@ -8,9 +8,9 @@
  *
  */
 
-export * from './activate/activate.component';
-export * from './activate/activate.service';
-export * from './activate/activate.route';
+export * from './verify/verify.component';
+export * from './verify/verify.service';
+export * from './verify/verify.route';
 export * from './password/password.component';
 export * from './password/password-strength-bar.component';
 export * from './password/password.service';

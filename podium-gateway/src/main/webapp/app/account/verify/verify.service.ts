@@ -13,7 +13,7 @@ import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
 @Injectable()
-export class Activate {
+export class Verify {
 
     constructor (private http: Http) {}
 
@@ -21,7 +21,16 @@ export class Activate {
         let params: URLSearchParams = new URLSearchParams();
         params.set('key', key);
 
-        return this.http.get('podiumuaa/api/activate', {
+        return this.http.get('podiumuaa/api/verify', {
+            search: params
+        }).map((res: Response) => res);
+    }
+
+    renew(key: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('key', key);
+
+        return this.http.get('podiumuaa/api/reverify', {
             search: params
         }).map((res: Response) => res);
     }

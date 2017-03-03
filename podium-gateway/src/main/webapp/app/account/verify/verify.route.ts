@@ -11,14 +11,14 @@
 import { Route } from '@angular/router';
 
 import { UserRouteAccessService } from '../../shared';
-import { ActivateComponent } from './activate.component';
+import { VerifyComponent } from './verify.component';
 
-export const activateRoute: Route = {
-  path: 'activate',
-  component: ActivateComponent,
+export const verifyRoute: Route = {
+  path: 'verify',
+  component: VerifyComponent,
   data: {
     authorities: [],
-    pageTitle: 'activate.title'
+    pageTitle: 'verify.title'
   },
   canActivate: [UserRouteAccessService]
 };

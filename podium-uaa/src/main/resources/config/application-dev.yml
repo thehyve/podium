@@ -113,3 +113,7 @@ podium:
             host: localhost
             port: 5000
             queueSize: 512
+
+uaa:
+    security:
+        activationKeyValiditySeconds: 60 # One minute in seconds

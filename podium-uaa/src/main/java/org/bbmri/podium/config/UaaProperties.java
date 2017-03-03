@@ -30,6 +30,7 @@ public class UaaProperties {
         private long maxFailedLoginAttempts = 5;
         private boolean timeBasedUnlockingEnabled = false;
         private long accountLockingPeriodSeconds = 5 * 60; // 5 minutes
+        private long activationKeyValiditySeconds = 60 * 60 * 24 * 7; // One week
 
         /**
          * Maximum number of failed login attempts before the user account is locked.
@@ -70,6 +71,17 @@ public class UaaProperties {
 
         public void setAccountLockingPeriodSeconds(long accountBlockingPeriodSeconds) {
             this.accountLockingPeriodSeconds = accountBlockingPeriodSeconds;
+        }
+
+        /**
+         * The number of seconds an activation key is valid.
+         *
+         * Property: uaa.security.activationKeyValiditySeconds { default: 604800 }
+         */
+        public long getActivationKeyValiditySeconds() { return activationKeyValiditySeconds; }
+
+        public void setActivationKeyValiditySeconds(long activationKeyValidity) {
+            this.activationKeyValiditySeconds = activationKeyValidity;
         }
 
     }

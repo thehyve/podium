@@ -11,34 +11,34 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.activation.title}">BBMRI Podium account verification</title>
+        <title th:text="#{email.verification.title}">BBMRI Podium account verification</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        <p th:text="#{email.activation.greeting(${user.firstName}, ${user.lastName})}">
+        <p th:text="#{email.verification.greeting(${user.firstName}, ${user.lastName})}">
             Dear
         </p>
         <p>
-            <span th:text="#{email.activation.text1}">
+            <span th:text="#{email.verification.text1}">
                 You have created an account for Podium.
             </span>
             <br />
-            <span th:text="#{email.activation.text2}">
+            <span th:text="#{email.verification.text2}">
                 Before you can submit your request to organizations within Podium,
                 your account needs to be verified by you and a BBMRI Admin.
             </span>
         </p>
         <p>
-           <span th:text="#{email.activation.text3}">Please follow this link to verify your account:</span>
+           <span th:text="#{email.verification.text3}">Please follow this link to verify your account:</span>
             <br />
             <br />
-            <a th:href="@{|${baseUrl}/#/activate&#63;key=${user.activationKey}|}">
-                <span th:text="@{|${baseUrl}/#/activate?key=${user.activationKey}|}"></span>
+            <a th:href="@{|${baseUrl}/#/verify&#63;key=${user.activationKey}|}">
+                <span th:text="@{|${baseUrl}/#/verify?key=${user.activationKey}|}"></span>
             </a>
         </p>
         <p>
             <strong>
-                <span th:text="#{email.activation.text4}">After your account is verified,
+                <span th:text="#{email.verification.text4}">After your account is verified,
                     a BBMRI Request Portal Admin will verify your information and activate your account.</span>
             </strong>
         </p>
