@@ -12,9 +12,12 @@ package org.bbmri.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import org.bbmri.podium.common.security.annotations.AnyAuthorisedUser;
+import org.bbmri.podium.common.security.annotations.Public;
 import org.bbmri.podium.domain.User;
+
 import org.bbmri.podium.exceptions.VerificationKeyExpired;
-import org.bbmri.podium.security.SecurityUtils;
+import org.bbmri.podium.security.SecurityService;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.bbmri.podium.service.representation.UserRepresentation;
@@ -57,6 +60,7 @@ public class AccountResource {
      * @param managedUserVM the managed user View Model
      * @return the ResponseEntity with status 201 (Created) if the user is registered or 400 (Bad Request) if the login or e-mail is already in use
      */
+    @Public
     @PostMapping(path = "/register",
                     produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
@@ -85,6 +89,7 @@ public class AccountResource {
      * @return  the ResponseEntity with status 200 (OK) and the activated user in body,
      *          or status 500 (Internal Server Error) if the user couldn't be activated
      */
+    @Public
     @GetMapping("/verify")
     @Timed
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
@@ -101,6 +106,7 @@ public class AccountResource {
         }
     }
 
+    @Public
     @GetMapping("/reverify")
     @Timed
     public ResponseEntity<String> renewVerification(@RequestParam(value = "key") String key) {
@@ -128,6 +134,7 @@ public class AccountResource {
      * @return the ResponseEntity with status 200 (OK) and the current user in body,
      * or status 500 (Internal Server Error) if the user couldn't be returned
      */
+    @AnyAuthorisedUser
     @GetMapping("/account")
     @Timed
     public ResponseEntity<UserRepresentation> getAccount() {
@@ -142,6 +149,7 @@ public class AccountResource {
      * @param userDTO the current user information
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) or 500 (Internal Server Error) if the user couldn't be updated
      */
+    @AnyAuthorisedUser
     @PostMapping("/account")
     @Timed
     public ResponseEntity<String> saveAccount(@Valid @RequestBody UserRepresentation userDTO) {
@@ -150,7 +158,7 @@ public class AccountResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
         }
         return userService
-            .getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin())
+            .getUserWithAuthoritiesByLogin(SecurityService.getCurrentUserLogin())
             .map(u -> {
                 userService.updateUserAccount(userDTO);
                 return new ResponseEntity<String>(HttpStatus.OK);
@@ -164,6 +172,7 @@ public class AccountResource {
      * @param password the new password
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) if the new password is not strong enough
      */
+    @AnyAuthorisedUser
     @PostMapping(path = "/account/change_password",
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
@@ -181,6 +190,7 @@ public class AccountResource {
      * @param mail the mail of the user
      * @return the ResponseEntity with status 200 (OK) if the e-mail was sent, or status 400 (Bad Request) if the e-mail address is not registered
      */
+    @Public
     @PostMapping(path = "/account/reset_password/init",
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
@@ -202,6 +212,7 @@ public class AccountResource {
      * @return the ResponseEntity with status 200 (OK) if the password has been reset,
      * or status 400 (Bad Request) or 500 (Internal Server Error) if the password could not be reset
      */
+    @Public
     @PostMapping(path = "/account/reset_password/finish",
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed

@@ -10,7 +10,7 @@
 
 package org.bbmri.podium.config;
 
-import org.bbmri.podium.domain.Authority;
+import org.bbmri.podium.common.security.AuthorityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -70,10 +70,10 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
                 .antMatchers("/api/account/reset_password/finish").permitAll()
                 .antMatchers("/api/profile-info").permitAll()
                 .antMatchers("/api/**").authenticated()
-                .antMatchers("/management/**").hasAuthority(Authority.PODIUM_ADMIN)
+                .antMatchers("/management/**").hasAuthority(AuthorityConstants.PODIUM_ADMIN)
                 .antMatchers("/v2/api-docs/**").permitAll()
                 .antMatchers("/swagger-resources/configuration/ui").permitAll()
-                .antMatchers("/swagger-ui/index.html").hasAuthority(Authority.PODIUM_ADMIN);
+                .antMatchers("/swagger-ui/index.html").hasAuthority(AuthorityConstants.PODIUM_ADMIN);
         }
 
         @Override

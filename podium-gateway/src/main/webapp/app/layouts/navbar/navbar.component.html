@@ -290,7 +290,7 @@
                         </a>
                     </li>
                     <li *ngSwitchCase="true">
-                        <a class="dropdown-item" (click)="logout()" id="logout">
+                        <a class="dropdown-item" routerLink="logout" routerLinkActive="active" (click)="logout()">
                             <i class="material-icons">exit_to_app</i>
                             <span jhiTranslate="global.menu.account.logout">Sign out</span>
                         </a>

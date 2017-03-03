@@ -10,6 +10,7 @@
 
 package org.bbmri.podium.web.rest;
 
+import org.bbmri.podium.common.security.annotations.Public;
 import org.bbmri.podium.config.DefaultProfileUtil;
 import org.bbmri.podium.config.PodiumProperties;
 import org.springframework.core.env.Environment;
@@ -23,6 +24,7 @@ import java.util.List;
 /**
  * Resource to return information about the currently running Spring profiles.
  */
+@Public
 @RestController
 @RequestMapping("/api")
 public class ProfileInfoResource {

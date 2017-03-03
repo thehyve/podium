@@ -39,5 +39,11 @@ public interface RoleRepository extends JpaRepository<Role,Long> {
     @Query("select role from Role role inner join role.authority authority where authority.name = :authorityName")
     Role findByAuthorityName(@Param("authorityName") String authorityName);
 
+    @Query("select role from Role role inner join role.authority authority" +
+        " where role.organisation = :organisation and authority.name = :authorityName")
+    Role findByOrganisationAndAuthorityName(
+        @Param("organisation") Organisation organisation,
+        @Param("authorityName") String authorityName);
+
     List<Role> findAllByAuthority(Authority authority);
 }

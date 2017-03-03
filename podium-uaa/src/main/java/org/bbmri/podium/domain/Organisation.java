@@ -11,6 +11,7 @@
 package org.bbmri.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.bbmri.podium.common.IdentifiableOrganisation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -32,7 +33,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "organisation")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Organisation implements Serializable {
+public class Organisation implements Serializable, IdentifiableOrganisation {
 
     private static final long serialVersionUID = 1L;
 
@@ -82,6 +83,10 @@ public class Organisation implements Serializable {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public UUID getOrganisationUuid() {
+        return getUuid();
     }
 
     /**

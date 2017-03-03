@@ -10,6 +10,8 @@
 
 package org.bbmri.podium.service.representation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.bbmri.podium.common.IdentifiableOrganisation;
 import org.bbmri.podium.domain.Role;
 import org.bbmri.podium.domain.User;
 
@@ -17,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class RoleRepresentation {
+public class RoleRepresentation implements IdentifiableOrganisation {
 
     private Long id;
 
@@ -37,6 +39,11 @@ public class RoleRepresentation {
 
     public UUID getOrganisation() {
         return organisation;
+    }
+
+    @JsonIgnore
+    public UUID getOrganisationUuid() {
+        return getOrganisation();
     }
 
     public void setOrganisation(UUID organisation) {

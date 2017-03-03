@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package org.bbmri.podium.security;
+package org.bbmri.podium.common.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

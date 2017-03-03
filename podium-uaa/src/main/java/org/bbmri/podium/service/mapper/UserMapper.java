@@ -14,6 +14,8 @@ import org.bbmri.podium.domain.Authority;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.service.representation.UserRepresentation;
 import org.mapstruct.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 import java.util.Set;
@@ -61,5 +63,15 @@ public interface UserMapper {
             Authority auth = new Authority(string);
             return auth;
         }).collect(Collectors.toSet());
+    }
+
+    default Set<String> stringsFromGrantedAuthorities (Set<GrantedAuthority> authorities) {
+        return authorities.stream().map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toSet());
+    }
+
+    default Set<GrantedAuthority> grantedAuthoritiesFromStrings (Set<String> strings) {
+        return strings.stream().map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toSet());
     }
 }
