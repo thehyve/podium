@@ -2,9 +2,9 @@
     "verify": {
         "title": "Verification",
         "messages": {
-            "success": "<strong>Your user has been verified.</strong> You will be notified when a BBMRI admin has verified your account.",
+            "success": "<strong>Your email address has been verified.</strong> You will be notified when a BBMRI admin has verified your account.",
             "loginPage": "Go to login page",
-            "error": "<strong>Your user could not be verified.</strong> Please use the registration form to sign up.",
+            "error": "<strong>Your email address could not be verified.</strong> Please use the registration form to sign up.",
             "renew": {
                 "message": "<strong>Your verification key has expired.</strong> Please ",
                 "requestNew": "request a new verification key",

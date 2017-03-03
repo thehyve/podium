@@ -15,7 +15,7 @@
 
             <div class="alert alert-success" *ngIf="success">
                 <span jhiTranslate="verify.messages.success">
-                    <strong>Your user has been verified.</strong> You will be notified when a BBMRI admin has verified your account.
+                    <strong>Your email address has been verified.</strong> You will be notified when a BBMRI admin has verified your account.
                 </span>
                 <a class="alert-link"
                    (click)="login()" jhiTranslate="verify.messages.loginPage">Go to login page</a>.
@@ -28,7 +28,7 @@
             </div>
 
             <div class="alert alert-danger" *ngIf="error && errorMsg != 'renew'" jhiTranslate="verify.messages.error">
-                <strong>Your user could not be verified.</strong> Please use the registration form to sign up.
+                <strong>Your email address could not be verified.</strong> Please use the registration form to sign up.
             </div>
 
             <div class="alert alert-danger" *ngIf="error && errorMsg == 'renew'">
