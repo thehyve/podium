@@ -43,7 +43,7 @@ spring:
         console:
             enabled: false
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
+        database-platform: nl.thehyve.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         show-sql: true
         properties:

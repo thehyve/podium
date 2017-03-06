@@ -4,9 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.bbmri.podium</groupId>
+    <parent>
+        <groupId>nl.thehyve.podium</groupId>
+        <artifactId>podium</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
     <artifactId>podium-common</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <name>Podium Common</name>
 
     <prerequisites>
         <maven>3.0.0</maven>

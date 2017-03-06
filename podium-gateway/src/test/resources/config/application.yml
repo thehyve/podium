@@ -34,7 +34,7 @@ spring:
         username:
         password:
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedH2Dialect
+        database-platform: nl.thehyve.podium.domain.util.FixedH2Dialect
         database: H2
         open-in-view: false
         show-sql: true

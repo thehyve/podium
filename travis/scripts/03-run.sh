@@ -72,15 +72,15 @@ if [ "$RUN_PODIUM" == 1 ]; then
     cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
         --spring.profiles.active="$PROFILE" \
-        --logging.level.org.bbmri.podium.sample=ERROR \
-        --logging.level.org.bbmri.podium.travis=ERROR &
+        --logging.level.nl.thehyve.podium.sample=ERROR \
+        --logging.level.nl.thehyve.podium.travis=ERROR &
     sleep 80
 
     cd "$PODIUM_BASE"/podium-gateway
     java -jar podium-gateway.war \
         --spring.profiles.active="$PROFILE" \
-        --logging.level.org.bbmri.podium.sample=ERROR \
-        --logging.level.org.bbmri.podium.travis=ERROR &
+        --logging.level.nl.thehyve.podium.sample=ERROR \
+        --logging.level.nl.thehyve.podium.travis=ERROR &
     sleep 40
 
     #-------------------------------------------------------------------------------
