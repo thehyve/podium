@@ -16,26 +16,16 @@ import java.lang.annotation.*;
  * Mark a controller method as accessible for any authorised user
  * that has access to a certain organisation and has any of the authorities
  * in {@link #authorities()} for that organisation.
+ *
+ * The organisation UUID parameter of the controller can be indicated with the
+ * {@link OrganisationUuidParameter} annotation. Or, alternatively, an
+ * {@link IdentifiableOrganisation} object can be indicated
+ * using the {@link OrganisationParameter} annotation.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SecuredByOrganisation {
-
-    /**
-     * The name of the parameter that holds the uuid of an organisation.
-     *
-     * This should not be combined with {@link #objectParameter()}.
-     */
-    String uuidParameter() default "";
-
-    /**
-     * The name of the parameter that holds an object that is associated with an organisation.
-     * The object should implement the {@link IdentifiableOrganisation} interface.
-     *
-     * This should not be combined with {@link #uuidParameter()}.
-     */
-    String objectParameter() default "";
 
     /**
      * Authority names (see {@link AuthorityConstants}.).

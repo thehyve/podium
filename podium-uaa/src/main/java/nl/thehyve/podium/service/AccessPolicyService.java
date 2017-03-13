@@ -181,6 +181,12 @@ public class AccessPolicyService {
      */
     private boolean checkSecuredByOrganisation(SecuredByOrganisation annotation, JoinPoint joinPoint) {
         String signature = joinPoint.getSignature().toShortString();
+        if (!securityService.isCurrentUserInAnyRole(annotation.authorities())) {
+            log.debug("Access denied to user on method {}",
+                signature);
+            return false;
+        }
+
         UUID organisationUuid = getUuid(joinPoint, AccessPolicyService::getOrganisationUuid,
             OrganisationParameter.class, OrganisationUuidParameter.class);
         if (organisationUuid == null) {
