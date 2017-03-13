@@ -31,11 +31,7 @@ env:
 before_install:
   - nvm install $NODE_VERSION
   - npm install -g npm
-  # Install Yarn from repo
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - sudo apt-get update -qq
-  - sudo apt-get install yarn
+  - npm install -g yarn@0.21.3
   - node -v
   - npm -v
   - yarn --version
@@ -59,3 +55,4 @@ notifications:
     on_success: change  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
     on_start: false     # default: false
+
