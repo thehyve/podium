@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.dto;
+package nl.thehyve.podium.service.representation;
 
 
 import javax.validation.constraints.*;
@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * A DTO for the PrincipalInvestigator entity.
  */
-public class PrincipalInvestigatorDTO implements Serializable {
+public class PrincipalInvestigatorRepresentation implements Serializable {
 
     private Long id;
 
@@ -79,7 +79,7 @@ public class PrincipalInvestigatorDTO implements Serializable {
             return false;
         }
 
-        PrincipalInvestigatorDTO principalInvestigatorDTO = (PrincipalInvestigatorDTO) o;
+        PrincipalInvestigatorRepresentation principalInvestigatorDTO = (PrincipalInvestigatorRepresentation) o;
 
         if ( ! Objects.equals(id, principalInvestigatorDTO.id)) { return false; }
 

@@ -46,8 +46,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = PodiumGatewayApp.class)
 public class RequestResourceIntTest {
 
-    private static final RequestStatus DEFAULT_STATUS = RequestStatus.DRAFT;
-    private static final RequestStatus UPDATED_STATUS = RequestStatus.FIRST_CHECK;
+    private static final RequestStatus DEFAULT_STATUS = RequestStatus.Draft;
+    private static final RequestStatus UPDATED_STATUS = RequestStatus.Review;
 
     private static final UUID REQUESTER_UUID = UUID.randomUUID();
 

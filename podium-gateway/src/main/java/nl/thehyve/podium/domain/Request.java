@@ -69,6 +69,10 @@ public class Request extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(unique = true, name = "request_detail")
     private RequestDetail requestDetail;
 
+    @OneToOne
+    @JoinColumn(unique = true, name = "request_review_process")
+    private RequestReviewProcess requestReviewProcess;
+
     @Column(nullable = false)
     private UUID requester;
 

@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.dto;
+package nl.thehyve.podium.service.representation;
 
 
 import javax.validation.constraints.*;
@@ -24,7 +24,7 @@ import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 /**
  * A DTO for the Request entity.
  */
-public class RequestDTO implements Serializable {
+public class RequestRepresentation implements Serializable {
 
     private Long id;
 
@@ -33,7 +33,7 @@ public class RequestDTO implements Serializable {
 
     private List<OrganisationDTO> organisations = new ArrayList<>();
 
-    private RequestDTO parentRequest;
+    private RequestRepresentation parentRequest;
 
     private RequestDetail requestDetail;
 
@@ -62,11 +62,11 @@ public class RequestDTO implements Serializable {
         this.organisations = organisations;
     }
 
-    public RequestDTO getParentRequest() {
+    public RequestRepresentation getParentRequest() {
         return parentRequest;
     }
 
-    public void setParentRequest(RequestDTO requestId) {
+    public void setParentRequest(RequestRepresentation requestId) {
         this.parentRequest = requestId;
     }
 
@@ -95,7 +95,7 @@ public class RequestDTO implements Serializable {
             return false;
         }
 
-        RequestDTO requestDTO = (RequestDTO) o;
+        RequestRepresentation requestDTO = (RequestRepresentation) o;
 
         if ( ! Objects.equals(id, requestDTO.id)) { return false; }
 

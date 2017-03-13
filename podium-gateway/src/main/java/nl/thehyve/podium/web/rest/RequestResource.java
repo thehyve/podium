@@ -8,10 +8,10 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.service.dto.RequestDTO;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +52,9 @@ public class RequestResource {
      */
     @GetMapping("/requests/drafts/{uuid}")
     @Timed
-    public ResponseEntity<List<RequestDTO>> getAllDraftsForUser(@PathVariable String uuid) {
+    public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@PathVariable String uuid) {
         log.debug("Get all request drafts for uuid");
-        List<RequestDTO> requests = requestService.findAllRequestDraftsByUserUuid(UUID.fromString(uuid));
+        List<RequestRepresentation> requests = requestService.findAllRequestDraftsByUserUuid(UUID.fromString(uuid));
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
@@ -67,8 +67,8 @@ public class RequestResource {
      */
     @GetMapping("/requests/initialize/{uuid}")
     @Timed
-    public ResponseEntity<RequestDTO> initializeRequest(@PathVariable String uuid) throws URISyntaxException {
-        RequestDTO result = requestService.initializeBaseRequest(UUID.fromString(uuid));
+    public ResponseEntity<RequestRepresentation> initializeRequest(@PathVariable String uuid) throws URISyntaxException {
+        RequestRepresentation result = requestService.initializeBaseRequest(UUID.fromString(uuid));
         return ResponseEntity.created(new URI("/api/requests/initialize/"+uuid))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -83,10 +83,10 @@ public class RequestResource {
      */
     @GetMapping("/requests")
     @Timed
-    public ResponseEntity<List<RequestDTO>> getAllRequests(@ApiParam Pageable pageable)
+    public ResponseEntity<List<RequestRepresentation>> getAllRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Requests");
-        Page<RequestDTO> page = requestService.findAll(pageable);
+        Page<RequestRepresentation> page = requestService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -116,10 +116,10 @@ public class RequestResource {
      */
     @GetMapping("/_search/requests")
     @Timed
-    public ResponseEntity<List<RequestDTO>> searchRequests(@RequestParam String query, @ApiParam Pageable pageable)
+    public ResponseEntity<List<RequestRepresentation>> searchRequests(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of Requests for query {}", query);
-        Page<RequestDTO> page = requestService.search(query, pageable);
+        Page<RequestRepresentation> page = requestService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
