@@ -13,6 +13,7 @@ import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.AccountNotVerifiedException;
 import org.bbmri.podium.exceptions.EmailNotVerifiedException;
 import org.bbmri.podium.exceptions.UserAccountLockedException;
+import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Locale;
@@ -47,7 +49,31 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     UserService userService;
 
     @Autowired
+    MailService mailService;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
+
+    /**
+     * Returns a {@link UserAuthenticationToken} for the user if the email address and account
+     * have been verified. Throws an {@link AuthenticationException} otherwise.
+     *
+     * @param user the user to create the token for.
+     * @return a {@link UserAuthenticationToken} for the user.
+     * @throws AuthenticationException if the email address or account have not been verified.
+     */
+    private Authentication getToken(@NotNull User user) throws AuthenticationException {
+        if (!user.isEmailVerified()) {
+            throw new EmailNotVerifiedException("Email address has not been verified yet.");
+        }
+        if (!user.isAdminVerified()) {
+            throw new AccountNotVerifiedException("The user account has not been verified yet.");
+        }
+        UserAuthenticationToken token = new UserAuthenticationToken(user);
+        token.setAuthenticated(true);
+        log.info("Token: " + token);
+        return token;
+    }
 
     /**
      * Authenticates a user based on a {@link UsernamePasswordAuthenticationToken} token.
@@ -82,15 +108,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Invalid credentials.");
         }
         User user = userOptional.get();
-        if (!user.isEmailVerified()) {
-            throw new EmailNotVerifiedException("Email address has not been verified yet.");
-        }
-        if (!user.isAdminVerified()) {
-            throw new AccountNotVerifiedException("The user account has not been verified yet.");
-        }
         if (user.isAccountLocked()) {
             if (!uaaProperties.getSecurity().isTimeBasedUnlockingEnabled()) {
-                // account is llocked, deny access.
+                // account is locked, deny access.
                 log.info("Account still locked for user " + user.getLogin() + ". Access denied.");
                 throw new UserAccountLockedException("The user account is locked.");
             } else {
@@ -115,24 +135,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (authentication instanceof OAuth2Authentication) {
             log.info("Checking OAuth2 authentication.");
             if (authentication.isAuthenticated()) {
-                UserAuthenticationToken token = new UserAuthenticationToken(user);
-                token.setAuthenticated(true);
-                log.info("Token: " + token);
-                return token;
+                return getToken(user);
             }
             throw new BadCredentialsException("Invalid credentials.");
         }
         // if username and password authentication
         if (passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
-            log.info("Authentication manager: OK");
+            log.info("Credentials correct.");
             if (user.getFailedLoginAttempts() > 0) {
                 user.resetFailedLoginAttempts();
                 user = userService.save(user);
             }
-            UserAuthenticationToken token = new UserAuthenticationToken(user);
-            token.setAuthenticated(true);
-            log.info("Token: " + token);
-            return token;
+            return getToken(user);
         }
         // failed login attempt
         user.increaseFailedLoginAttempts();
@@ -142,6 +156,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             user.setAccountLocked(true);
             user.setAccountLockDate(ZonedDateTime.now());
             userService.save(user);
+            mailService.sendAccountLockedMail(user);
             throw new UserAccountLockedException("The user account is locked.");
         }
         userService.save(user);

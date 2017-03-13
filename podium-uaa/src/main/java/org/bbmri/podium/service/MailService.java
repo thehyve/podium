@@ -122,4 +122,28 @@ public class MailService {
         String subject = messageSource.getMessage("email.reset.noUser.title", null, locale);
         sendEmail(email, subject, content, false, true);
     }
+
+    @Async
+    public void sendAccountLockedMail(User user) {
+        log.debug("Sending account locked e-mail to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        String content = templateEngine.process("accountLockedEmail", context);
+        String subject = messageSource.getMessage("email.accountLocked.title", null, locale);
+        sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    public void sendAccountAlreadyExists(User user) {
+        log.debug("Sending account already exists e-mail to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        String content = templateEngine.process("accountAlreadyExistsEmail", context);
+        String subject = messageSource.getMessage("email.accountAlreadyExists.title", null, locale);
+        sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
 }

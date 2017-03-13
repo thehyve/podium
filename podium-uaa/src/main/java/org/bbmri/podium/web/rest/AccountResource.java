@@ -17,6 +17,9 @@ import org.bbmri.podium.common.security.annotations.Public;
 import org.bbmri.podium.domain.User;
 
 import org.bbmri.podium.exceptions.VerificationKeyExpired;
+import org.bbmri.podium.exceptions.EmailAddressAlreadyInUse;
+import org.bbmri.podium.exceptions.LoginAlreadyInUse;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.security.SecurityService;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
@@ -64,22 +67,22 @@ public class AccountResource {
     @PostMapping(path = "/register",
                     produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
-    public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
-
+    public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) throws UserAccountException {
         HttpHeaders textPlainHeaders = new HttpHeaders();
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
-
-        return userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase())
-            .map(user -> new ResponseEntity<>("login already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
-            .orElseGet(() -> userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail())
-                .map(user -> new ResponseEntity<>("e-mail address already in use", textPlainHeaders, HttpStatus.BAD_REQUEST))
-                .orElseGet(() -> {
-                    User user = userService.registerUser(managedUserVM);
-
-                    mailService.sendVerificationEmail(user);
-                    return new ResponseEntity<>(HttpStatus.CREATED);
-                })
-        );
+        try {
+            User user = userService.registerUser(managedUserVM);
+            mailService.sendVerificationEmail(user);
+        } catch(EmailAddressAlreadyInUse e) {
+            Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
+            if (userOptional.isPresent()) {
+                mailService.sendAccountAlreadyExists(userOptional.get());
+            }
+        } catch (LoginAlreadyInUse e) {
+            log.error("Login already in use: {}", managedUserVM.getLogin());
+            throw e;
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**

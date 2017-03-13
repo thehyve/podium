@@ -40,6 +40,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -327,11 +328,15 @@ public class AccountResourceIntTest {
             .andExpect(status().isCreated());
 
         // Duplicate e-mail
+        // Status CREATED is returned, but the account is not created. A notification
+        // email is sent instead.
         restMvc.perform(
             post("/api/register")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isCreated());
+
+        verify(mockMailService).sendAccountAlreadyExists((User)anyObject());
 
         Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("johnjr");
         assertThat(userDup.isPresent()).isFalse();

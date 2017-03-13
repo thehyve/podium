@@ -16,6 +16,7 @@ import org.bbmri.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import org.bbmri.podium.domain.User;
 import org.bbmri.podium.exceptions.ResourceNotFoundException;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.repository.search.UserSearchRepository;
 import org.bbmri.podium.service.MailService;
 import org.bbmri.podium.service.UserService;
@@ -95,7 +96,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
     @Timed
-    public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
+    public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException, UserAccountException {
         log.debug("REST request to save User : {}", managedUserVM);
 
         //Lowercase the user login before comparing with database
@@ -127,7 +128,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users")
     @Timed
-    public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
+    public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) throws UserAccountException {
         log.debug("REST request to update User : {}", managedUserVM);
         Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {

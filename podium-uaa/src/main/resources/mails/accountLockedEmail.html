@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017. The Hyve and respective contributors
-  ~
+  ~ Copyright (c) 2017  The Hyve and respective contributors.
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
-  ~
   ~ See the file LICENSE in the root of this repository.
-  ~
   -->
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{email.activation.title}">BBMRI Podium Request Portal account verification</title>
+    <title th:text="#{email.activation.title}">BBMRI Podium Request Portal &ndash; user account locked</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 	<body>
-    <p th:text="#{email.greeting(${user.firstName}, ${user.lastName})}">
-        Dear
-    </p>
+        <p th:text="#{email.greeting(${user.firstName}, ${user.lastName})}">
+            Dear
+        </p>
 		<p>
-            <span th:text="#{email.creation.text1}">
-			    Your Podium account has been created, please click on the URL below to access it:
+            <span th:text="#{email.accountLocked.text1}">
+			    Your Podium account is locked.
             </span>
-            <br />
-            <br />
-            <a th:href="@{|${baseUrl}/#/reset/finish&#63;key=${user.resetKey}|}">
-                <span th:text="@{|${baseUrl}/#/reset/finish?key=${user.resetKey}|}"></span>
-            </a>
+            <br/>
+            <span th:text="#{email.accountLocked.text2}">
+			    Please contact the BBMRI Request Portal service desk to have your account unlocked again.
+            </span>
 		</p>
+
+        <br />
 
 		<p>
 			<span th:text="#{email.signature.signoff}">With kind regards,</span>

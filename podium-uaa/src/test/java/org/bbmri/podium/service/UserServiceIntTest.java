@@ -12,6 +12,7 @@ package org.bbmri.podium.service;
 
 import org.bbmri.podium.PodiumUaaApp;
 import org.bbmri.podium.domain.User;
+import org.bbmri.podium.exceptions.UserAccountException;
 import org.bbmri.podium.repository.UserRepository;
 import java.time.ZonedDateTime;
 import org.bbmri.podium.service.util.RandomUtil;
@@ -71,7 +72,7 @@ public class UserServiceIntTest {
     }
 
     @Test
-    public void assertThatOnlyActivatedUserCanRequestPasswordReset() {
+    public void assertThatOnlyActivatedUserCanRequestPasswordReset() throws UserAccountException {
         ManagedUserVM testUserData = createTestUser();
         User user = userService.createUser(testUserData);
         Optional<User> maybeUser = userService.requestPasswordReset(testUserData.getEmail());
@@ -80,7 +81,7 @@ public class UserServiceIntTest {
     }
 
     @Test
-    public void assertThatResetKeyMustNotBeOlderThan24Hours() {
+    public void assertThatResetKeyMustNotBeOlderThan24Hours() throws UserAccountException {
         ManagedUserVM testUserData = createTestUser();
         User user = userService.createUser(testUserData);
 
@@ -99,7 +100,7 @@ public class UserServiceIntTest {
     }
 
     @Test
-    public void assertThatResetKeyMustBeValid() {
+    public void assertThatResetKeyMustBeValid() throws UserAccountException {
         ManagedUserVM testUserData = createTestUser();
         User user = userService.createUser(testUserData);
 
@@ -113,7 +114,7 @@ public class UserServiceIntTest {
     }
 
     @Test
-    public void assertThatUserCanResetPassword() {
+    public void assertThatUserCanResetPassword() throws UserAccountException {
         ManagedUserVM testUserData = createTestUser();
         User user = userService.createUser(testUserData);
         String oldPassword = user.getPassword();
