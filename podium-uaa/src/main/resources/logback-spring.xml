@@ -32,7 +32,7 @@
     </appender>
 -->
 
-    <logger name="org.bbmri.podium" level="#logback.loglevel#"/>
+    <logger name="nl.thehyve.podium" level="#logback.loglevel#"/>
 
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>

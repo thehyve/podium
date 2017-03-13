@@ -17,6 +17,6 @@ spring:
         console:
             enabled: false
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedH2Dialect
+        database-platform: nl.thehyve.podium.domain.util.FixedH2Dialect
         database: H2
         show-sql: true

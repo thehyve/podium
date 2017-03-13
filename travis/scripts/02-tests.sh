@@ -21,8 +21,8 @@ mvn -q "$MAVEN_OPTS" test
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-gateway
 mvn  -q "$MAVEN_OPTS" test \
-    -Dlogging.level.org.bbmri.podium.sample=ERROR \
-    -Dlogging.level.org.bbmri.podium.travis=ERROR
+    -Dlogging.level.nl.thehyve.podium.sample=ERROR \
+    -Dlogging.level.nl.thehyve.podium.travis=ERROR
 
 if [ -f "tsconfig.json" ]; then
     yarn run test
