@@ -7,17 +7,12 @@
 
 package nl.thehyve.podium.validation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
-
-    private static Logger log = LoggerFactory.getLogger(PasswordValidator.class);
 
     public static final int MIN_PASSWORD_LENGTH = 8;
     public static final int MAX_PASSWORD_LENGTH = 1000;
@@ -46,12 +41,6 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
         Matcher numericalMatcher = numericalPattern.matcher(password);
         Matcher alphabeticalMatcher = alphabeticalPattern.matcher(password);
         Matcher specialCharsMatcher = specialsCharsPattern.matcher(password);
-
-        log.info("Password: {}, l = {}, special = {}, alpha = {}, numeric = {}",
-            password, password.length(),
-            specialCharsMatcher.find(),
-            alphabeticalMatcher.find(),
-            numericalMatcher.find());
 
         return password.length() >= MIN_PASSWORD_LENGTH &&
             password.length() <= MAX_PASSWORD_LENGTH &&
