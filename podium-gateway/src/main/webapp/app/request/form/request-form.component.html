@@ -99,9 +99,9 @@
                            jhiTranslate="request.form.researchQuestion.label">Research Question</label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
-                              required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
+                              required [minlength]="1" [maxlength]="300" rows="5" #researchQuestion="ngModel"
                               [wordLengthValidator]="30" [(ngModel)]="request.researchQuestion">
-                </textarea>
+                    </textarea>
 
                     <div *ngIf="researchQuestion.dirty && researchQuestion.invalid">
                         <small class="form-text text-danger" *ngIf="researchQuestion.errors.required"

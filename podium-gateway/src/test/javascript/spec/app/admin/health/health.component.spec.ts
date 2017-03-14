@@ -23,6 +23,7 @@ import { PdmHealthService } from '../../../../../../main/webapp/app/admin/health
 describe('Component Tests', () => {
     describe('PdmHealthCheckComponent', () => {
 
+
         let comp: PdmHealthCheckComponent;
         let fixture: ComponentFixture<PdmHealthCheckComponent>;
         let service: PdmHealthService;
