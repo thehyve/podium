@@ -167,6 +167,7 @@ public class UserService {
         target.setDepartment(source.getDepartment());
         target.setJobTitle(source.getJobTitle());
         target.setSpecialism(source.getSpecialism());
+        target.setAdminVerified(source.isAdminVerified());
     }
 
     /**
