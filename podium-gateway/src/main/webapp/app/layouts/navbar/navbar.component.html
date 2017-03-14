@@ -21,7 +21,7 @@
         </a>
     </div>
     <div class="collapse navbar-toggleable-md float-lg-right" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed"
-         [ngSwitch]="isAuthenticated()">
+         *ngIf="isAuthenticated()">
         <ul class="nav navbar-nav float-lg-right">
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/dashboard" (click)="collapseNavbar()">
@@ -31,7 +31,7 @@
             </li>
 
             <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                jhiHasAuthority="ROLE_RESEARCHER">
+                *pdmHasAuthority="'ROLE_RESEARCHER'">
                 <a class="nav-link" routerLink="/requests">
                     <i class="material-icons">assignment_ind</i>
                     <span class="hidden-sm-down" jhiTranslate="global.menu.requests.overview">My Requests</span>
@@ -39,7 +39,7 @@
             </li>
 
             <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                jhiHasAuthority="ROLE_RESEARCHER">
+                *pdmHasAuthority="'ROLE_RESEARCHER'">
                 <a class="nav-link" routerLink="/requests/new">
                     <i class="material-icons">assignment_ind</i>
                     <span class="hidden-sm-down" jhiTranslate="global.menu.requests.new">New Request</span>
@@ -47,7 +47,7 @@
             </li>
 
             <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                jhiHasAuthority="ROLE_REVIEWER" >
+                *pdmHasAuthority="'ROLE_REVIEWER'">
                 <a class="nav-link" routerLink="/reviews">
                     <i class="material-icons">rate_review</i>
                     <span class="hidden-sm-down"
@@ -58,8 +58,8 @@
             </li>
 
             <!-- Organisation role -->
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer"
-                jhiHasAnyAuthority="ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR" >
+            <li ngbDropdown class="nav-item dropdown pointer"
+                *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN, ROLE_ORGANISATION_COORDINATOR'">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active"
                    ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
                     <span>
@@ -70,7 +70,7 @@
                         <b class="caret"></b>
                     </span>
                 </a>
-                <ul class="dropdown-menu" ngbDropdownMenu jhiHasAuthority="ROLE_ORGANISATION_ADMIN">
+                <ul class="dropdown-menu" ngbDropdownMenu *pdmHasAuthority="'ROLE_ORGANISATION_ADMIN'">
                     <!-- Organisation Admin -->
                     <li class="dropdown-header">
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_admin.main">
@@ -98,7 +98,7 @@
                     </li>
 
                     <!-- Organisation Coordinator -->
-                    <li class="dropdown-header" jhiHasAuthority="ROLE_ORGANISATION_COORDINATOR">
+                    <li class="dropdown-header" *pdmHasAuthority="'ROLE_ORGANISATION_COORDINATOR'">
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_coordinator.main">
                             Coordination
                         </span>
@@ -113,7 +113,7 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" jhiHasAuthority="ROLE_BBMRI_ADMIN">
+            <li ngbDropdown class="nav-item dropdown pointer" *pdmHasAuthority="'ROLE_BBMRI_ADMIN'">
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="podium-menu">
                     <span>
                         <i class="material-icons">settings</i>
@@ -145,8 +145,8 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer"
-                jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
+            <li ngbDropdown class="nav-item dropdown pointer"
+                *pdmHasAnyAuthority="'ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN'">
                 <a class="nav-link dropdown-toggle"
                    routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
@@ -158,13 +158,13 @@
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
-                    <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN">
+                    <li uiSrefActive="active" *pdmHasAnyAuthority="'ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN,ROLE_ORGANISATION_ADMIN'">
                         <a class="dropdown-item" routerLink="role" (click)="collapseNavbar()">
                             <i class="material-icons">portrait</i>
                             <span jhiTranslate="global.menu.entities.role">Role</span>
                         </a>
                     </li>
-                    <li uiSrefActive="active" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN">
+                    <li uiSrefActive="active" *pdmHasAnyAuthority="'ROLE_PODIUM_ADMIN,ROLE_BBMRI_ADMIN'">
                         <a class="dropdown-item" routerLink="organisation" (click)="collapseNavbar()">
                             <i class="material-icons">account_balance</i>
                             <span jhiTranslate="global.menu.entities.organisation">Organisation</span>
@@ -180,7 +180,7 @@
                 </ul>
             </li>
 
-            <li *ngSwitchCase="true" jhiHasAnyAuthority="ROLE_PODIUM_ADMIN" ngbDropdown class="nav-item dropdown pointer">
+            <li *pdmHasAuthority="'ROLE_PODIUM_ADMIN'" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>
                         <i class="material-icons">supervisor_account</i>
@@ -263,7 +263,7 @@
                     </li>
                 </ul>
             </li>
-            <li ngbDropdown class="nav-item dropdown pointer">
+            <li [ngSwitch]="isAuthenticated()" ngbDropdown class="nav-item dropdown pointer">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">
                         <i class="material-icons">account_circle</i>
