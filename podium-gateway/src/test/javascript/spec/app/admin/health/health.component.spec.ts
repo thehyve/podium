@@ -14,21 +14,22 @@ import { Http, BaseRequestOptions } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { JhiHealthCheckComponent } from '../../../../../../main/webapp/app/admin/health/health.component';
-import { JhiHealthService } from '../../../../../../main/webapp/app/admin/health/health.service';
+import {
+    PdmHealthCheckComponent
+} from '../../../../../../main/webapp/app/admin/health/health.component';
+import { PdmHealthService } from '../../../../../../main/webapp/app/admin/health/health.service';
 
 
 describe('Component Tests', () => {
+    describe('PdmHealthCheckComponent', () => {
 
-    describe('JhiHealthCheckComponent', () => {
-
-        let comp: JhiHealthCheckComponent;
-        let fixture: ComponentFixture<JhiHealthCheckComponent>;
-        let service: JhiHealthService;
+        let comp: PdmHealthCheckComponent;
+        let fixture: ComponentFixture<PdmHealthCheckComponent>;
+        let service: PdmHealthService;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                declarations: [JhiHealthCheckComponent],
+                declarations: [PdmHealthCheckComponent],
                 providers: [
                     MockBackend,
                     BaseRequestOptions,
@@ -39,7 +40,7 @@ describe('Component Tests', () => {
                         },
                         deps: [MockBackend, BaseRequestOptions]
                     },
-                    JhiHealthService,
+                    PdmHealthService,
                     {
                         provide: JhiLanguageService,
                         useClass: MockLanguageService
@@ -50,7 +51,7 @@ describe('Component Tests', () => {
                     }
                 ]
             })
-            .overrideComponent(JhiHealthCheckComponent, {
+            .overrideComponent(PdmHealthCheckComponent, {
                 set: {
                     template: ''
                 }
@@ -59,9 +60,9 @@ describe('Component Tests', () => {
         }));
 
         beforeEach(() => {
-            fixture = TestBed.createComponent(JhiHealthCheckComponent);
+            fixture = TestBed.createComponent(PdmHealthCheckComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(JhiHealthService);
+            service = fixture.debugElement.injector.get(PdmHealthService);
         });
 
         describe('baseName and subSystemName', () => {
