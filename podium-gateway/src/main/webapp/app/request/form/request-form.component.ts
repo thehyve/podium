@@ -11,7 +11,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
-import { Organisation, OrganisationService } from '../../entities/';
+import { Organisation, OrganisationService } from '../../backoffice/';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,

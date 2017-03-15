@@ -26,8 +26,8 @@ let ENTITY_ROUTES = [
     userDialogRoute
 ];
 
-export const entityState: Routes = [{
-    path: '',
+export const backofficeState: Routes = [{
+    path: 'backoffice',
     data: {
         authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_PODIUM_BBMRI']
     },

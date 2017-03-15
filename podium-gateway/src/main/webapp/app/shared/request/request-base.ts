@@ -9,7 +9,7 @@
  */
 
 import { Request } from './request';
-import { Organisation } from '../../entities/organisation/organisation.model';
+import { Organisation } from '../../backoffice/organisation/organisation.model';
 import { RequestStatus } from './request-status';
 import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';
