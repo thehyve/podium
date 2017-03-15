@@ -17,7 +17,7 @@ import { Ng2Webstorage } from 'ng2-webstorage';
 import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
-import { PodiumGatewayEntityModule } from './entities/entity.module';
+import { PodiumGatewayBackofficeModule } from './backoffice/backoffice.module';
 
 import { LayoutRoutingModule } from './layouts';
 import { HomeComponent } from './home';
@@ -36,8 +36,8 @@ import {
     ErrorComponent,
     CompletedComponent
 } from './layouts';
-import { OrganisationService } from './entities/organisation/organisation.service';
-import { RoleService } from './entities/role/role.service';
+import { OrganisationService } from './backoffice/organisation/organisation.service';
+import { RoleService } from './backoffice/role/role.service';
 
 import {PodiumGatewayRequestModule} from './request/request.module';
 
@@ -50,7 +50,7 @@ import {PodiumGatewayRequestModule} from './request/request.module';
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
-        PodiumGatewayEntityModule,
+        PodiumGatewayBackofficeModule,
     ],
     declarations: [
         PdmMainComponent,

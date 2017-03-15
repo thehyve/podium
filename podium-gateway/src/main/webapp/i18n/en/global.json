@@ -9,12 +9,10 @@
                 "new": "New Request",
                 "overview": "My Requests"
             },
-            "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
-            "entities": {
-                "main": "Entities",
+            "backoffice": {
+                "main": "Backoffice",
                 "role": "Role",
-                "organisation": "Organisation",
-                "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+                "organisation": "Organisation"
             },
             "account": {
                 "main": "Account",
@@ -59,8 +57,7 @@
                 "logs": "Logs",
                 "audits": "Audits",
                 "apidocs": "API",
-                "database": "Database",
-                "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
+                "database": "Database"
             },
             "language": "Language"
         },
