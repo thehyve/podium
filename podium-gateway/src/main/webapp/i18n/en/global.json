@@ -122,7 +122,8 @@
             }
         },
         "field": {
-            "id": "ID"
+            "id": "ID",
+            "uuid": "UUID"
         },
         "ribbon": {
             "dev":"Development"
