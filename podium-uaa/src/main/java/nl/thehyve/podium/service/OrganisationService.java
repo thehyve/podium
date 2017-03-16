@@ -55,8 +55,6 @@ public class OrganisationService {
     @Autowired
     private OrganisationMapper organisationMapper;
 
-    public OrganisationService() { }
-
     @Transactional(readOnly = true)
     public Set<Authority> findOrganisationAuthorities() {
         Set<Authority> result = new LinkedHashSet<>(3);
@@ -108,6 +106,7 @@ public class OrganisationService {
     public Organisation save(Organisation organisation) {
         log.debug("Request to save Organisation : {}", organisation);
 
+        // FIXME: Check cascase ALL
         organisationRepository.save(organisation);
 
         if(!roleService.organisationHasAnyRole(organisation)) {
@@ -210,7 +209,7 @@ public class OrganisationService {
      *
      *  @param id the organisation to mark deleted.
      */
-    public OrganisationDTO delete(Long id) {
+    public void delete(Long id) {
         log.debug("Request to delete Organisation : {}", id);
 
         Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
@@ -219,9 +218,8 @@ public class OrganisationService {
         }
 
         organisation.setDeleted(true);
+        organisationRepository.save(organisation);
         organisationSearchRepository.delete(organisation.getId());
-        save(organisation);
-        return organisationMapper.organisationToOrganisationDTO(organisation);
     }
 
     /**

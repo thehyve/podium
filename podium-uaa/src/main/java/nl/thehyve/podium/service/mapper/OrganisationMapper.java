@@ -41,7 +41,10 @@ public interface OrganisationMapper {
         @Mapping(target = "deleted", ignore = true),
         @Mapping(target = "activated", defaultValue = "false")
     })
-    Organisation updateOrganisationFromOrganisationDTO(OrganisationDTO organisationDTO, @MappingTarget Organisation organisation);
+    Organisation updateOrganisationFromOrganisationDTO(
+        OrganisationDTO organisationDTO,
+        @MappingTarget Organisation organisation
+    );
 
     List<Organisation> createOrganisationsFromOrganisationDTOs(List<OrganisationDTO> organisationDTOs);
 }
