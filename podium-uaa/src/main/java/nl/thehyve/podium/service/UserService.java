@@ -167,7 +167,6 @@ public class UserService {
         target.setDepartment(source.getDepartment());
         target.setJobTitle(source.getJobTitle());
         target.setSpecialism(source.getSpecialism());
-        target.setAdminVerified(source.isAdminVerified());
     }
 
     /**
@@ -247,6 +246,7 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(ZonedDateTime.now());
         user.setEmailVerified(false);
+        user.setAdminVerified(true);
         save(user);
         userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
@@ -283,7 +283,9 @@ public class UserService {
                 }
             }
         });
+
         copyProperties(managedUserVM, user);
+        save(user);
         log.debug("Changed Information for User: {}", user);
     }
 
