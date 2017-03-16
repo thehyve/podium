@@ -87,7 +87,7 @@ public class OrganisationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganisationResource organisationResource = new OrganisationResource(organisationService);
+        OrganisationResource organisationResource = new OrganisationResource();
         this.restOrganisationMockMvc = MockMvcBuilders.standaloneSetup(organisationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
