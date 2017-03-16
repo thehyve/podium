@@ -14,6 +14,7 @@ import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.ResourceNotFoundException;
@@ -143,8 +144,7 @@ public class RoleResource {
     @Timed
     public ResponseEntity<List<RoleRepresentation>> getOrganisationRoles(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get all Roles of Organisation {}", uuid);
-        Organisation organisation = organisationService.findByUuid(uuid);
-        List<RoleRepresentation> roles = roleService.findAllByOrganisation(organisation).stream()
+        List<RoleRepresentation> roles = roleService.findAllByOrganisationUUID(uuid).stream()
             .map(RoleRepresentation::new)
             .collect(Collectors.toList());
         return new ResponseEntity<>(roles, HttpStatus.OK);
