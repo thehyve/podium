@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
@@ -14,12 +15,14 @@ import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -32,14 +35,16 @@ public class RoleService {
 
     private final Logger log = LoggerFactory.getLogger(RoleService.class);
 
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    private final RoleSearchRepository roleSearchRepository;
+    @Autowired
+    private OrganisationRepository organisationRepository;
 
-    public RoleService(RoleRepository roleRepository, RoleSearchRepository roleSearchRepository) {
-        this.roleRepository = roleRepository;
-        this.roleSearchRepository = roleSearchRepository;
-    }
+    @Autowired
+    private RoleSearchRepository roleSearchRepository;
+
+    public RoleService() { }
 
     /**
      * Save a role.
@@ -69,12 +74,14 @@ public class RoleService {
     /**
      *  Get all the roles for an organisation.
      *
-     *  @param organisation the organisation to fetch the roles for.
+     *  @param uuid the organisation UUID to fetch the roles for.
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Role> findAllByOrganisation(Organisation organisation) {
-        log.debug("Request to get all Roles for Organisation: {}", organisation.getUuid());
+    public List<Role> findAllByOrganisationUUID(UUID uuid) {
+        log.debug("Request to get all Roles for Organisation UUID: {}", uuid);
+        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
+
         return roleRepository.findAllByOrganisation(organisation);
     }
 
@@ -151,6 +158,11 @@ public class RoleService {
         log.debug("Request to search for a page of Roles for query {}", query);
         Page<Role> result = roleSearchRepository.search(queryStringQuery(query), pageable);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean organisationHasAnyRole(Organisation organisation) {
+        return roleRepository.existsByOrganisation(organisation);
     }
 
 }
