@@ -142,12 +142,12 @@ export class RequestFormComponent implements OnInit {
     }
 
     private postSaveUpdate(requestBase: RequestBase) {
-        console.log('postSaveUpdate', requestBase);
+        // TODO
     }
 
     private onError(error) {
         this.error =  'ERROR';
-        console.error('An error occurred ', error);
+       // TODO
     }
 
 }
