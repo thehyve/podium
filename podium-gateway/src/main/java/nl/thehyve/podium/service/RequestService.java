@@ -62,6 +62,17 @@ public class RequestService {
     }
 
     /**
+     *
+     * @param request
+     * @return
+     */
+    @Transactional
+    public RequestDTO saveDraft(Request request) {
+        Request result = save(request);
+        return requestMapper.requestToRequestDTO(result);
+    }
+
+    /**
      *  Get all the requests.
      *
      *  @param pageable the pagination information
@@ -84,6 +95,19 @@ public class RequestService {
     public List<RequestDTO> findAllRequestDraftsByUserUuid(UUID uuid) {
         List<Request> result = requestRepository.findAllByRequesterAndStatus(uuid, RequestStatus.DRAFT);
         return requestMapper.requestsToRequestDTOs(result);
+    }
+
+    /**
+     * Get one requestDetail by id
+     *
+     * @param id requestDetail id
+     * @return requestDetail entity
+     */
+    @Transactional(readOnly = true)
+    public RequestDTO findOne(Long id) {
+        log.info("Request to get a requestDetail : {}", id);
+        Request request = requestRepository.findOne(id);
+        return requestMapper.requestToRequestDTO(request);
     }
 
     @Transactional

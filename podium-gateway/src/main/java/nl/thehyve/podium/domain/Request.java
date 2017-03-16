@@ -65,7 +65,7 @@ public class Request extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     private Request parentRequest;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
     private RequestDetail requestDetail;
 
