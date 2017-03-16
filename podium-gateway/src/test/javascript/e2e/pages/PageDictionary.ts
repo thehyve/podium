@@ -10,12 +10,15 @@
 import {Page} from "../protractor-stories/director";
 import SigninPage = require("./SigninPage")
 import DashboardPage = require("./DashboardPage")
+import ProfilePage = require("./ProfilePage")
+
 /*
  * pages must be added to this dictionary for the director class to find them.
  */
 let PageDictionary: {[key: string]: Page} = Object.create(null);
 
-PageDictionary['SigninPage'] = new SigninPage;
-PageDictionary['DashboardPage'] = new DashboardPage;
+PageDictionary['sign in'] = new SigninPage;
+PageDictionary['Dashboard'] = new DashboardPage;
+PageDictionary['profile'] = new ProfilePage;
 
 export = PageDictionary;

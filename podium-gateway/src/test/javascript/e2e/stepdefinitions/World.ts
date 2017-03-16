@@ -19,6 +19,7 @@ import PersonaDictionary = require("../personas/PersonaDictionary")
  */
 class World {
     public director;
+    public scenarioData;
 
     constructor() {
         this.director = new Director(__dirname + '/..', PageDictionary, PersonaDictionary);

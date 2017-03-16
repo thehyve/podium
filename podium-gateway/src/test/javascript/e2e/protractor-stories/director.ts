@@ -17,6 +17,7 @@ export interface Persona {
 }
 
 export interface Page {
+    name: string;
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
@@ -38,12 +39,12 @@ export class Director {
     private searchDir: string;
     private currentPage: Page;
     private currentPersona: Persona;
-    private PageDictionary: {[key: string]: Page};
+    private pageDictionary: {[key: string]: Page};
     private personaDictionary: {[key: string]: Persona};
 
     constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}) {
         this.searchDir = searchDir;
-        this.PageDictionary = PageDictionary;
+        this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
     }
 
@@ -52,11 +53,10 @@ export class Director {
     }
 
     private setCurrentPageTo(pageName: string) {
-        try {
-            this.currentPage = this.PageDictionary[pageName];
-        } catch (error) {
-            this.fatalError('The page: ' + pageName + ' does not exist.\n error: ' + error);
+        if (!(pageName in this.pageDictionary)) {
+            this.fatalError('The page: ' + pageName + ' does not exist.\n check your pageDictionary to see the available pages');
         }
+        this.currentPage = this.pageDictionary[pageName];
         browser.ignoreSynchronization = isUndefined(this.currentPage.ignoreSynchronization) ? false : this.currentPage.ignoreSynchronization;
         return this.currentPage
     }
@@ -66,15 +66,16 @@ export class Director {
     }
 
     private setCurrentPersonaTo(personaName: string) {
-        try {
-            return this.currentPersona = this.personaDictionary[personaName];
-        } catch (error) {
-            this.fatalError('The persona: ' + personaName + ' does not exist.\n error: ' + error);
+        if (!(personaName in this.personaDictionary)) {
+            this.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
         }
+        return this.currentPersona = this.personaDictionary[personaName];
     }
 
     public getPersona(personaName: string) {
-        this.setCurrentPersonaTo(personaName);
+        if (personaName != "he" && personaName != "she") {
+            this.setCurrentPersonaTo(personaName);
+        }
         return this.currentPersona;
     }
 
@@ -98,10 +99,10 @@ export class Director {
         });
     };
 
-    private getElement(elementName: string) {
+    public getElement(elementName: string) {
         let element = this.getCurrentPage().elements[elementName];
         if (isUndefined(element)) {
-            this.fatalError(elementName + ' is not defined as an element of the active page');
+            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for '+ elementName +'.\n');
         }
         return element;
     }
@@ -109,9 +110,6 @@ export class Director {
     private handleDestination(element: Interactable) {
         if (!isUndefined(element.destination)) {
             this.setCurrentPageTo(element.destination);
-        }
-        if (element.strict) {
-            this.at(element.destination);
         }
     }
 
@@ -122,6 +120,9 @@ export class Director {
     }
 
     public enterText(fieldName: string, text: string) {
+        if (isUndefined(this.getCurrentPage().elements[fieldName])) {
+            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for '+ fieldName +'.\n');
+        }
         return Promise.all([
             this.getCurrentPage().elements[fieldName].locator.clear(),
             this.getCurrentPage().elements[fieldName].locator.sendKeys(text)
@@ -130,8 +131,9 @@ export class Director {
 
     public waitForPage(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        return browser.wait(page.at
-            , 10 * 1000).then(function () {
+        return browser.wait(function () {
+                return page.at()
+        }, 10 * 1000).then(function () {
         }, function (err) {
             throw 'Page: ' + pageName + ' did not appear fast enough.\n error: ' + err;
         })

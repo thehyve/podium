@@ -9,12 +9,19 @@
  */
 import {Persona} from "../protractor-stories/director";
 import AdminPersona = require("./AdminPersona")
+import Rob = require("./Rob")
+import Simone = require("./Simone")
+
+
 /*
  * pages must be added to this dictionary for the director class to find them.
  */
 let PersonaDictionary: {[key: string]: Persona} = Object.create(null);
 
 PersonaDictionary['AdminPersona'] = AdminPersona;
+PersonaDictionary['Rob'] = Rob;
+PersonaDictionary['Simone'] = Simone;
+
 
 
 export = PersonaDictionary;

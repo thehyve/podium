@@ -14,15 +14,17 @@ import {Interactable} from "../protractor-stories/director";
  * pages hold all stateless information on a page.
  */
 class SigninPage {
+    public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
 
     constructor() {
+        this.name = "sign in";
         this.url = "";
         this.elements = {
             "usernameInput": {locator: $('#username')},
             "passwordInput": {locator: $('#password')},
-            "submitButton": {locator: $('button[type=submit]'), destination: 'DashboardPage', strict: true},
+            "submitButton": {locator: $('button[type=submit]'), destination: 'Dashboard'},
         }
     }
 }
