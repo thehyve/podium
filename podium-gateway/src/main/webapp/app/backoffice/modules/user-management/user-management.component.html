@@ -52,25 +52,25 @@
             <tbody *ngIf ="users">
             <tr *ngFor="let user of users; trackBy: trackIdentity">
                 <td><a [routerLink]="['./detail', user.login]">{{user.id}}</a></td>
-                <td>{{user.login}}</td>
-                <td>{{user.email}}</td>
+                <td class="test-login">{{user.login}}</td>
+                <td class="test-email">{{user.email}}</td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="tag tag-success" *ngIf="user.emailVerified"
+                    <span class="tag tag-success test-emailVerified" *ngIf="user.emailVerified"
                           jhiTranslate="userManagement.emailVerified">Email verified</span>
-                    <span class="tag tag-danger" *ngIf="!user.emailVerified"
+                    <span class="tag tag-danger test-emailVerified" *ngIf="!user.emailVerified"
                           jhiTranslate="userManagement.emailUnverified">Email unverified</span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="tag tag-success" *ngIf="user.adminVerified"
+                    <span class="tag tag-success test-adminVerified" *ngIf="user.adminVerified"
                           jhiTranslate="userManagement.adminVerified">Account verified</span>
-                    <span class="tag tag-danger" *ngIf="!user.adminVerified"
+                    <span class="tag tag-danger test-adminVerified" *ngIf="!user.adminVerified"
                           jhiTranslate="userManagement.adminUnverified">Account unverified</span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="tag tag-danger" *ngIf="user.accountLocked"
+                    <span class="tag tag-danger test-accountLocked" *ngIf="user.accountLocked"
                           jhiTranslate="userManagement.accountLocked">Locked</span>
                 </td>
-                <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
+                <td class="test-authority" *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
                     <div *ngFor="let authority of user.authorities">
                         <span class="tag tag-info">{{ authority }}</span>
                     </div>

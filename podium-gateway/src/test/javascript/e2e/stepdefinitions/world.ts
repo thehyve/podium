@@ -7,9 +7,11 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { Director } from '../protractor-stories/director';
-import PageDictionary = require("../pages/PageDictionary")
-import PersonaDictionary = require("../personas/PersonaDictionary")
+import {Director} from "../protractor-stories/director";
+import {AdminConsole} from "../protractor-stories/admin-console";
+import initPages = require ("../pages/page-dictionary");
+import PersonaDictionary = require("../personas/persona-dictionary")
+import initDataDictionary = require("../data/data-dictionary")
 
 /*
  *
@@ -19,9 +21,15 @@ import PersonaDictionary = require("../personas/PersonaDictionary")
  */
 class World {
     public director;
+    public adminConsole;
+    public scenarioData;
 
     constructor() {
-        this.director = new Director(__dirname + '/..', PageDictionary, PersonaDictionary);
+        let Pages = initPages();
+        let DataDictionary = initDataDictionary;
+
+        this.director = new Director(__dirname + '/..', Pages, PersonaDictionary, DataDictionary);
+        this.adminConsole = new AdminConsole();
     }
 }
 
