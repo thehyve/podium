@@ -36,11 +36,9 @@ export class RequestFormComponent implements OnInit {
     private currentUser: User;
     public error: string;
     public success: string;
-
     public requestBase: RequestBase;
-    public request?: RequestDetail;
+    public requestDetail?: RequestDetail;
     public requestTypes = RequestType;
-
     public availableOrganisations: Organisation[];
     public availableRequestDrafts: RequestBase[];
     public selectDraft: boolean;
@@ -64,7 +62,6 @@ export class RequestFormComponent implements OnInit {
 
     ngOnInit() {
         this.principal.identity().then((account) => {
-            console.log('Got user ', account);
             this.currentUser = account;
             this.initializeRequestForm();
         });
@@ -73,12 +70,10 @@ export class RequestFormComponent implements OnInit {
          * Organisation resolve
          */
         this.organisationService.findAvailable().map((availableOrganisations) => {
-
+            // TODO display list available organisations
         });
 
-        /**
-         * Resolve Tags
-         */
+        console.log('this', this);
     }
 
     ngAfterContentInit() {
@@ -86,7 +81,6 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        // Resolve Draft Requests
         let uuid = this.currentUser.uuid;
         this.requestService.findAvailableRequestDrafts(uuid)
             .subscribe(
@@ -125,7 +119,7 @@ export class RequestFormComponent implements OnInit {
             .subscribe(
                 (requestBase) => {
                     this.requestBase = requestBase;
-                    this.request = new RequestDetail();
+                    this.requestDetail = new RequestDetail();
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
@@ -135,10 +129,11 @@ export class RequestFormComponent implements OnInit {
     selectRequestDraft(requestBase: RequestBase) {
         this.selectDraft = false;
         this.requestBase = requestBase;
-        this.request = requestBase.detail || new RequestDetail();
+        this.requestDetail = requestBase.requestDetail || new RequestDetail();
     }
 
     saveRequestDraft() {
+        this.requestBase.requestDetail = this.requestDetail;
         this.requestService.saveRequestDraft(this.requestBase)
             .subscribe(
                 (requestBase) => this.postSaveUpdate(requestBase),
@@ -147,10 +142,12 @@ export class RequestFormComponent implements OnInit {
     }
 
     private postSaveUpdate(requestBase: RequestBase) {
+        console.log('postSaveUpdate', requestBase);
     }
 
-    onError(error) {
-        console.warn('An error occurred ', error);
+    private onError(error) {
+        this.error =  'ERROR';
+        console.error('An error occurred ', error);
     }
 
 }
