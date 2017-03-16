@@ -55,9 +55,6 @@ public class OrganisationResource {
     @Autowired
     private OrganisationService organisationService;
 
-
-    public OrganisationResource() {}
-
     private void copyProperties(Organisation source, Organisation target) {
         target.setName(source.getName());
         target.setShortName(source.getShortName());
@@ -209,8 +206,8 @@ public class OrganisationResource {
     public ResponseEntity<Void> deleteOrganisation(@PathVariable Long id) {
         log.debug("REST request to delete Organisation : {}", id);
 
-        OrganisationDTO organisationDTO = organisationService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, organisationDTO.toString())).build();
+        organisationService.delete(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
     /**
