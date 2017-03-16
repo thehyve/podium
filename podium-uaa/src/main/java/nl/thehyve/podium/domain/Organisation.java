@@ -9,12 +9,14 @@ package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -65,6 +67,7 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
 
     @JsonIgnore
     @OneToMany(mappedBy = "organisation")
+    @Cascade(CascadeType.ALL)
     private Set<Role> roles;
 
     public Long getId() {

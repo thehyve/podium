@@ -7,14 +7,17 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Role;
+import nl.thehyve.podium.exceptions.ResourceNotFoundException;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,10 @@ public class OrganisationService {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private OrganisationMapper organisationMapper;
+
+    public OrganisationService() { }
 
     @Transactional(readOnly = true)
     public Set<Authority> findOrganisationAuthorities() {
@@ -60,6 +67,39 @@ public class OrganisationService {
     }
 
     /**
+     * Create an organisation
+     *
+     * @param organisationDTO the organisation to create
+     * @return the created organisation
+     */
+    public OrganisationDTO create(OrganisationDTO organisationDTO) {
+        Organisation organisation = organisationMapper.createOrganisationFromOrganisationDTO(organisationDTO);
+        organisation = save(organisation);
+
+        return organisationMapper.organisationToOrganisationDTO(organisation);
+    }
+
+    /**
+     * Update an organisation
+     *
+     * @param organisationDTO The organisation to update
+     * @return the updated organisation
+     */
+    public OrganisationDTO update(OrganisationDTO organisationDTO) {
+
+        Organisation organisation = findOne(organisationDTO.getId());
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisationDTO.getId()));
+        }
+
+        organisation = organisationMapper.updateOrganisationFromOrganisationDTO(organisationDTO, organisation);
+
+        save(organisation);
+
+        return organisationMapper.organisationToOrganisationDTO(organisation);
+    }
+
+    /**
      * Save a organisation.
      *
      * @param organisation the entity to save
@@ -67,22 +107,25 @@ public class OrganisationService {
      */
     public Organisation save(Organisation organisation) {
         log.debug("Request to save Organisation : {}", organisation);
-        if (organisation.getRoles() == null || organisation.getRoles().isEmpty()) {
+
+        organisationRepository.save(organisation);
+
+        if(!roleService.organisationHasAnyRole(organisation)) {
             Set<Role> roles = findOrganisationAuthorities().stream()
                 .map(authority -> roleService.save(new Role(authority, organisation)))
                 .collect(Collectors.toSet());
             organisation.setRoles(roles);
         }
-        Organisation result = organisationRepository.save(organisation);
-        log.info("Saved organisation: {}", result);
+
+        log.info("Saved organisation: {}", organisation);
         SearchOrganisation searchOrganisation = organisationSearchRepository.findOne(organisation.getId());
         if (searchOrganisation == null) {
-            searchOrganisation = new SearchOrganisation(result);
+            searchOrganisation = new SearchOrganisation(organisation);
         }
-        searchOrganisation.copyProperties(result);
+        searchOrganisation.copyProperties(organisation);
         organisationSearchRepository.save(searchOrganisation);
-        log.info("Saved to elastic search: {}", result);
-        return result;
+        log.info("Saved to elastic search: {}", organisation);
+        return organisation;
     }
 
     /**
@@ -103,10 +146,23 @@ public class OrganisationService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Organisation> findAll(Pageable pageable) {
+    public Page<OrganisationDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Organisations");
         Page<Organisation> result = organisationRepository.findAllByDeletedFalse(pageable);
-        return result;
+        return result.map(organisationMapper::organisationToOrganisationDTO);
+    }
+
+    /**
+     *  Get one organisationDTO by id.
+     *
+     *  @param id the id of the entity
+     *  @return the entity DTO
+     */
+    @Transactional(readOnly = true)
+    public OrganisationDTO findOneDTO(Long id) {
+        log.debug("Request to get Organisation DTO: {}", id);
+        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
+        return organisationMapper.organisationToOrganisationDTO(organisation);
     }
 
     /**
@@ -118,8 +174,7 @@ public class OrganisationService {
     @Transactional(readOnly = true)
     public Organisation findOne(Long id) {
         log.debug("Request to get Organisation : {}", id);
-        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
-        return organisation;
+        return organisationRepository.findByIdAndDeletedFalse(id);
     }
 
     /**
@@ -129,23 +184,44 @@ public class OrganisationService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public Organisation findByUuid(UUID uuid) {
+    public OrganisationDTO findByUuid(UUID uuid) {
         log.debug("Request to get Organisation : {}", uuid);
         Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
-        return organisation;
+        return organisationMapper.organisationToOrganisationDTO(organisation);
+    }
+
+    /**
+     * (De-)activate the organisation
+     */
+    public OrganisationDTO activation(Long id, boolean activated) {
+        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
+
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", id));
+        }
+
+        organisation.setActivated(activated);
+        save(organisation);
+        return organisationMapper.organisationToOrganisationDTO(organisation);
     }
 
     /**
      *  Mark the organisation as deleted.
      *
-     *  @param organisation the organisation to mark deleted.
+     *  @param id the organisation to mark deleted.
      */
-    public void delete(Organisation organisation) {
-        log.debug("Request to delete Organisation : {}", organisation.getUuid());
+    public OrganisationDTO delete(Long id) {
+        log.debug("Request to delete Organisation : {}", id);
+
+        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
+        if (organisation == null) {
+            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisation.getId()));
+        }
 
         organisation.setDeleted(true);
-        save(organisation);
         organisationSearchRepository.delete(organisation.getId());
+        save(organisation);
+        return organisationMapper.organisationToOrganisationDTO(organisation);
     }
 
     /**
