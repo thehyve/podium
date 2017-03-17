@@ -8,43 +8,44 @@
  *
  */
 
-import { Directive, ElementRef, Input, Renderer, OnInit } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Principal } from './principal.service';
 
 @Directive({
-    selector: '[jhiHasAuthority]'
+    selector: '[pdmHasAuthority]'
 })
-export class HasAuthorityDirective implements OnInit {
+export class HasAuthorityDirective {
 
-    @Input() jhiHasAuthority: string;
-    authority: string;
-
-    constructor(private principal: Principal, private el: ElementRef, private renderer: Renderer) {
-    }
-
-    ngOnInit() {
-        this.authority = this.jhiHasAuthority.replace(/\s+/g, '');
+    @Input() set pdmHasAuthority(value: string) {
+        this.authority = value.replace(/\s+/g, '');
 
         if (this.authority.length > 0) {
             this.setVisibilityAsync();
         }
-        this.principal.getAuthenticationState().subscribe(identity => this.setVisibilitySync());
+    };
+    authority: string;
+
+    constructor(
+        private principal: Principal,
+        private templateRef: TemplateRef<any>,
+        private viewContainer: ViewContainerRef
+    ) {
     }
 
     private setVisibilitySync() {
-      if (this.principal.hasAnyAuthority([this.authority])) {
-        this.setVisible();
-      } else {
-        this.setHidden();
-      }
+        if (this.principal.hasAnyAuthority([this.authority])) {
+            this.setVisible();
+        } else {
+            this.setHidden();
+        }
     }
 
     private setVisible () {
-        this.renderer.setElementClass(this.el.nativeElement, 'hidden', false);
+        this.viewContainer.createEmbeddedView(this.templateRef);
     }
 
     private setHidden () {
-        this.renderer.setElementClass(this.el.nativeElement, 'hidden', true);
+        this.viewContainer.clear();
     }
 
     private setVisibilityAsync () {
@@ -56,4 +57,5 @@ export class HasAuthorityDirective implements OnInit {
             }
         });
     }
+
 }

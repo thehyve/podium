@@ -13,7 +13,7 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
 @Injectable()
-export class JhiConfigurationService {
+export class PdmConfigurationService {
 
     constructor(private http: Http) {
     }

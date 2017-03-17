@@ -11,13 +11,13 @@
 import { Component } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 
-import { JhiConfigurationService } from './configuration.service';
+import { PdmConfigurationService } from './configuration.service';
 
 @Component({
-    selector: 'jhi-configuration',
+    selector: 'pdm-configuration',
     templateUrl: './configuration.component.html'
 })
-export class JhiConfigurationComponent {
+export class PdmConfigurationComponent {
     allConfiguration: any = null;
     configuration: any = null;
     configKeys: any[];
@@ -27,7 +27,7 @@ export class JhiConfigurationComponent {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private configurationService: JhiConfigurationService
+        private configurationService: PdmConfigurationService
     ) {
         this.jhiLanguageService.setLocations(['configuration']);
         this.configKeys = [];

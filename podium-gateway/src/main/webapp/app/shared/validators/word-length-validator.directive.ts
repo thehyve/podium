@@ -21,13 +21,13 @@ import {NG_VALIDATORS, AbstractControl, ValidatorFn, Validator, FormControl} fro
 export class WordLengthValidatorDirective implements Validator {
     validator: ValidatorFn;
 
-    @Input('wordLengthValidator') maxWords: number;
+    @Input() wordLengthValidator: number;
 
    constructor() {
     }
 
     validate(c: FormControl) {
-       if (!c.value || c.value.split(' ').length <= this.maxWords) {
+       if (!c.value || c.value.split(' ').length <= this.wordLengthValidator) {
             return null;
        } else {
            return {

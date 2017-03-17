@@ -19,7 +19,7 @@ import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from '.
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
 
 @Component({
-    selector: 'jhi-navbar',
+    selector: 'pdm-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: [
         'navbar.scss'
@@ -72,7 +72,7 @@ export class NavbarComponent implements OnInit {
     }
 
     login() {
-        this.modalRef = this.loginModalService.open();
+        this.router.navigate(['']);
     }
 
     logout() {

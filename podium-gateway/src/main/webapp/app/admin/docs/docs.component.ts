@@ -11,9 +11,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'jhi-docs',
+    selector: 'pdm-docs',
     templateUrl: './docs.component.html'
 })
-export class JhiDocsComponent {
+export class PdmDocsComponent {
     constructor () {}
 }

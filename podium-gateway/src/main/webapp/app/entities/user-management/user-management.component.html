@@ -26,10 +26,8 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th  jhiSortBy="langKey"> <span jhiTranslate="userManagement.langKey">Lang Key</span> <span class="fa fa-sort"></span></th>
                 <th><span jhiTranslate="userManagement.profiles">Profiles</span></th>
                 <th jhiSortBy="createdDate"><span jhiTranslate="userManagement.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
-                <th jhiSortBy="lastModifiedBy"><span jhiTranslate="userManagement.lastModifiedBy">Last Modified By</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="lastModifiedDate"><span jhiTranslate="userManagement.lastModifiedDate">Last Modified Date</span> <span class="fa fa-sort"></span></th>
                 <th></th>
             </tr>
@@ -55,14 +53,12 @@
                     <span class="tag tag-danger" *ngIf="user.accountLocked"
                           jhiTranslate="userManagement.accountLocked">Locked</span>
                 </td>
-                <td>{{user.langKey}}</td>
                 <td>
                     <div *ngFor="let authority of user.authorities">
                         <span class="tag tag-info">{{ authority }}</span>
                     </div>
                 </td>
                 <td>{{user.createdDate | date:'dd/MM/yy HH:mm'}}</td>
-                <td>{{user.lastModifiedBy}}</td>
                 <td>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">

@@ -10,11 +10,10 @@
 
 import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { PasswordResetFinish } from './password-reset-finish.service';
-import { LoginModalService } from '../../../shared';
 
 @Component({
     selector: 'jhi-password-reset-finish',
@@ -33,9 +32,10 @@ export class PasswordResetFinishComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private passwordResetFinish: PasswordResetFinish,
-        private loginModalService: LoginModalService,
         private route: ActivatedRoute,
-        private elementRef: ElementRef, private renderer: Renderer
+        private elementRef: ElementRef,
+        private renderer: Renderer,
+        private router: Router
     ) {
         this.jhiLanguageService.setLocations(['reset']);
     }
@@ -70,6 +70,6 @@ export class PasswordResetFinishComponent implements OnInit {
     }
 
     login() {
-        this.modalRef = this.loginModalService.open();
+        this.router.navigate(['/']);
     }
 }
