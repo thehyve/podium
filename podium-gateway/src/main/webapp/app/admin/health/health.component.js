@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5,8 +14,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var core_1 = require('@angular/core');
-var health_modal_component_1 = require('./health-modal.component');
+var core_1 = require("@angular/core");
+var health_modal_component_1 = require("./health-modal.component");
 var JhiHealthCheckComponent = (function () {
     function JhiHealthCheckComponent(jhiLanguageService, modalService, healthService) {
         this.jhiLanguageService = jhiLanguageService;
@@ -48,12 +57,12 @@ var JhiHealthCheckComponent = (function () {
     JhiHealthCheckComponent.prototype.subSystemName = function (name) {
         return this.healthService.getSubSystemName(name);
     };
-    JhiHealthCheckComponent = __decorate([
-        core_1.Component({
-            selector: 'jhi-health',
-            templateUrl: './health.component.html',
-        })
-    ], JhiHealthCheckComponent);
     return JhiHealthCheckComponent;
 }());
+JhiHealthCheckComponent = __decorate([
+    core_1.Component({
+        selector: 'jhi-health',
+        templateUrl: './health.component.html',
+    })
+], JhiHealthCheckComponent);
 exports.JhiHealthCheckComponent = JhiHealthCheckComponent;

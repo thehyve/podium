@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5,27 +14,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var core_1 = require('@angular/core');
-var JhiHealthService = (function () {
-    function JhiHealthService(http) {
+var core_1 = require("@angular/core");
+var PdmHealthService = (function () {
+    function PdmHealthService(http) {
         this.http = http;
         this.separator = '.';
     }
-    JhiHealthService.prototype.checkHealth = function () {
-        return this.http.get('management/health').map(function (res) { return res.json(); });
+    PdmHealthService.prototype.checkHealth = function () {
+        return this.http.get('podiumuaa/management/health').map(function (res) { return res.json(); });
     };
-    JhiHealthService.prototype.transformHealthData = function (data) {
+    PdmHealthService.prototype.transformHealthData = function (data) {
         var response = [];
         this.flattenHealthData(response, null, data);
         return response;
     };
-    JhiHealthService.prototype.getBaseName = function (name) {
+    PdmHealthService.prototype.getBaseName = function (name) {
         if (name) {
             var split = name.split('.');
             return split[0];
         }
     };
-    JhiHealthService.prototype.getSubSystemName = function (name) {
+    PdmHealthService.prototype.getSubSystemName = function (name) {
         if (name) {
             var split = name.split('.');
             split.splice(0, 1);
@@ -34,7 +43,7 @@ var JhiHealthService = (function () {
         }
     };
     /* private methods */
-    JhiHealthService.prototype.addHealthObject = function (result, isLeaf, healthObject, name) {
+    PdmHealthService.prototype.addHealthObject = function (result, isLeaf, healthObject, name) {
         var status;
         var error;
         var healthData = {
@@ -68,7 +77,7 @@ var JhiHealthService = (function () {
         }
         return healthData;
     };
-    JhiHealthService.prototype.flattenHealthData = function (result, path, data) {
+    PdmHealthService.prototype.flattenHealthData = function (result, path, data) {
         for (var key in data) {
             if (data.hasOwnProperty(key)) {
                 var value = data[key];
@@ -85,7 +94,7 @@ var JhiHealthService = (function () {
         }
         return result;
     };
-    JhiHealthService.prototype.getModuleName = function (path, name) {
+    PdmHealthService.prototype.getModuleName = function (path, name) {
         var result;
         if (path && name) {
             result = path + this.separator + name;
@@ -101,7 +110,7 @@ var JhiHealthService = (function () {
         }
         return result;
     };
-    JhiHealthService.prototype.hasSubSystem = function (healthObject) {
+    PdmHealthService.prototype.hasSubSystem = function (healthObject) {
         var result = false;
         for (var key in healthObject) {
             if (healthObject.hasOwnProperty(key)) {
@@ -113,7 +122,7 @@ var JhiHealthService = (function () {
         }
         return result;
     };
-    JhiHealthService.prototype.isHealthObject = function (healthObject) {
+    PdmHealthService.prototype.isHealthObject = function (healthObject) {
         var result = false;
         for (var key in healthObject) {
             if (healthObject.hasOwnProperty(key)) {
@@ -124,9 +133,9 @@ var JhiHealthService = (function () {
         }
         return result;
     };
-    JhiHealthService = __decorate([
-        core_1.Injectable()
-    ], JhiHealthService);
-    return JhiHealthService;
+    return PdmHealthService;
 }());
-exports.JhiHealthService = JhiHealthService;
+PdmHealthService = __decorate([
+    core_1.Injectable()
+], PdmHealthService);
+exports.PdmHealthService = PdmHealthService;
