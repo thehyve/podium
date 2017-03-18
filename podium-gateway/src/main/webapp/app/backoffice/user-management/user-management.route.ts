@@ -17,6 +17,7 @@ import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
 import { Principal } from '../../shared/auth/principal.service';
+import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
 
 
 @Injectable()
@@ -47,43 +48,49 @@ export class UserResolvePagingParams implements Resolve<any> {
 
 export const userMgmtRoute: Routes = [
   {
-    path: 'user-management',
+    path: 'backoffice/user-management',
     component: UserMgmtComponent,
     resolve: {
       'pagingParams': UserResolvePagingParams
     },
     data: {
       pageTitle: 'userManagement.home.title'
-    }
+    },
+    canActivate: [UserRouteAccessService]
   },
   {
-    path: 'user-management/:login',
+    path: 'backoffice/user-management/:login',
     component: UserMgmtDetailComponent,
     data: {
       pageTitle: 'userManagement.home.title'
-    }
+    },
+    canActivate: [UserRouteAccessService]
   }
 ];
 
 export const userDialogRoute: Routes = [
   {
-    path: 'user-management-new',
+    path: 'backoffice/user-management-new',
     component: UserDialogComponent,
+    canActivate: [UserRouteAccessService],
     outlet: 'popup'
   },
   {
-    path: 'user-management/:login/edit',
+    path: 'backoffice/user-management/:login/edit',
     component: UserDialogComponent,
+    canActivate: [UserRouteAccessService],
     outlet: 'popup'
   },
   {
-    path: 'user-management/:login/delete',
+    path: 'backoffice/user-management/:login/delete',
     component: UserDeleteDialogComponent,
+    canActivate: [UserRouteAccessService],
     outlet: 'popup'
   },
   {
-    path: 'user-management/:login/unlock',
+    path: 'backoffice/user-management/:login/unlock',
     component: UserUnlockDialogComponent,
+    canActivate: [UserRouteAccessService],
     outlet: 'popup'
   }
 ];

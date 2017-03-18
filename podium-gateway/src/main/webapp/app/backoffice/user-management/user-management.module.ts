@@ -25,7 +25,7 @@ import {
     UserModalService
 } from '../';
 
-let ENTITY_STATES = [
+let BACKOFFICE_STATES = [
         ...userMgmtRoute,
         ...userDialogRoute
 ];
@@ -34,7 +34,7 @@ let ENTITY_STATES = [
     imports: [
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
-        RouterModule.forRoot(ENTITY_STATES, { useHash: true })
+        RouterModule.forRoot(BACKOFFICE_STATES, { useHash: true })
     ],
     declarations: [
         UserMgmtComponent,

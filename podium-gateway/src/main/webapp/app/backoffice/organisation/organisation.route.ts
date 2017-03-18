@@ -39,7 +39,7 @@ export class OrganisationResolvePagingParams implements Resolve<any> {
 
 export const organisationRoute: Routes = [
   {
-    path: 'organisation',
+    path: 'backoffice/organisation',
     component: OrganisationComponent,
     resolve: {
       'pagingParams': OrganisationResolvePagingParams
@@ -47,43 +47,48 @@ export const organisationRoute: Routes = [
     data: {
         authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
-    }
+    },
+    canActivate: [UserRouteAccessService]
   }, {
-    path: 'organisation/:uuid',
+    path: 'backoffice/organisation/:uuid',
     component: OrganisationDetailComponent,
     data: {
         authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
-    }
+    },
+    canActivate: [UserRouteAccessService]
   }
 ];
 
 export const organisationPopupRoute: Routes = [
   {
-    path: 'organisation-new',
+    path: 'backoffice/organisation-new',
     component: OrganisationPopupComponent,
     data: {
         authorities: ['ROLE_PODIUM_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     },
-    outlet: 'popup'
+    outlet: 'popup',
+    canActivate: [UserRouteAccessService]
   },
   {
-    path: 'organisation/:uuid/edit',
+    path: 'backoffice/organisation/:uuid/edit',
     component: OrganisationPopupComponent,
     data: {
         authorities: ['ROLE_PODIUM_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     },
-    outlet: 'popup'
+    outlet: 'popup',
+    canActivate: [UserRouteAccessService]
   },
   {
-    path: 'organisation/:uuid/delete',
+    path: 'backoffice/organisation/:uuid/delete',
     component: OrganisationDeletePopupComponent,
     data: {
         authorities: ['ROLE_PODIUM_ADMIN'],
         pageTitle: 'podiumGatewayApp.organisation.home.title'
     },
-    outlet: 'popup'
+    outlet: 'popup',
+    canActivate: [UserRouteAccessService]
   }
 ];

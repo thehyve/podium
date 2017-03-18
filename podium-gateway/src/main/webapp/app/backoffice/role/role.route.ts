@@ -18,8 +18,6 @@ import { RoleComponent } from './role.component';
 import { RoleDetailComponent } from './role-detail.component';
 import { RolePopupComponent } from './role-dialog.component';
 
-import { Principal } from '../../shared';
-
 @Injectable()
 export class RoleResolvePagingParams implements Resolve<any> {
 
@@ -38,7 +36,7 @@ export class RoleResolvePagingParams implements Resolve<any> {
 
 export const roleRoute: Routes = [
   {
-    path: 'role',
+    path: 'backoffice/role',
     component: RoleComponent,
     resolve: {
       'pagingParams': RoleResolvePagingParams
@@ -46,25 +44,28 @@ export const roleRoute: Routes = [
     data: {
         authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
-    }
+    },
+    canActivate: [UserRouteAccessService]
   }, {
-    path: 'role/:id',
+    path: 'backoffice/role/:id',
     component: RoleDetailComponent,
     data: {
         authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
-    }
+    },
+    canActivate: [UserRouteAccessService]
   }
 ];
 
 export const rolePopupRoute: Routes = [
   {
-    path: 'role/:id/edit',
+    path: 'backoffice/role/:id/edit',
     component: RolePopupComponent,
     data: {
         authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         pageTitle: 'podiumGatewayApp.role.home.title'
     },
-    outlet: 'popup'
+    outlet: 'popup',
+    canActivate: [UserRouteAccessService]
   },
 ];
