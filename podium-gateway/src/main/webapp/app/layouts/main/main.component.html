@@ -11,6 +11,7 @@
 <jhi-page-ribbon></jhi-page-ribbon>
 <div>
     <router-outlet name="navbar"></router-outlet>
+    <breadcrumb *ngIf="isAuthenticated()" prefix="Podium"></breadcrumb>
 </div>
 <div class="container-fluid">
     <div class="card-wrapper">

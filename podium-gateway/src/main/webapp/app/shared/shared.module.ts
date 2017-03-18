@@ -11,7 +11,9 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
+import { Ng2BreadcrumbModule, BreadcrumbService } from 'ng2-breadcrumb/ng2-breadcrumb';
 import { CookieService } from 'angular2-cookie/services/cookies.service';
+
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
@@ -39,7 +41,8 @@ import { RequestService } from './request/request.service';
 @NgModule({
     imports: [
         PodiumGatewaySharedLibsModule,
-        PodiumGatewaySharedCommonModule
+        PodiumGatewaySharedCommonModule,
+        Ng2BreadcrumbModule
     ],
     declarations: [
         PodiumLoginComponent,
@@ -64,7 +67,8 @@ import { RequestService } from './request/request.service';
         UserService,
         AttachmentService,
         RequestService,
-        DatePipe
+        DatePipe,
+        BreadcrumbService
     ],
     entryComponents: [PodiumLoginComponent],
     exports: [
@@ -76,7 +80,8 @@ import { RequestService } from './request/request.service';
         WordLengthValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        Ng2BreadcrumbModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
