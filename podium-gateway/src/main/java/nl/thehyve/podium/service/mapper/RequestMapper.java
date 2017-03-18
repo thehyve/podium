@@ -11,7 +11,7 @@ import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.service.dto.RequestDTO;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 
 import org.mapstruct.*;
 import java.util.List;
@@ -27,15 +27,15 @@ public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
-    RequestDTO requestToRequestDTO(Request request);
+    RequestRepresentation requestToRequestDTO(Request request);
 
-    List<RequestDTO> requestsToRequestDTOs(List<Request> requests);
+    List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
-    Request requestDTOToRequest(RequestDTO requestDTO);
+    Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    List<Request> requestDTOsToRequests(List<RequestDTO> requestDTOs);
+    List<Request> requestDTOsToRequests(List<RequestRepresentation> requestDTOs);
 
     default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {
         return organisations.stream().map(OrganisationDTO::getUuid)
