@@ -19,6 +19,5 @@ export const homeRoute: Route = {
   data: {
     authorities: [],
     pageTitle: 'home.title'
-  },
-  canActivate: [UserRouteAccessService]
+  }
 };
