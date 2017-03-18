@@ -32,7 +32,6 @@ let ADMIN_ROUTES = [
     metricsRoute
 ];
 
-
 export const adminRoute: Routes = [{
     path: 'admin',
     data: {
@@ -40,5 +39,4 @@ export const adminRoute: Routes = [{
     },
     canActivate: [UserRouteAccessService],
     children: ADMIN_ROUTES
-},
-];
+}];

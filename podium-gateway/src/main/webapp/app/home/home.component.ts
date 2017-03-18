@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private principal: Principal,
-        private loginModalService: LoginModalService,
         private eventManager: EventManager
     ) {
         this.jhiLanguageService.setLocations(['home']);
@@ -54,7 +53,4 @@ export class HomeComponent implements OnInit {
         return this.principal.isAuthenticated();
     }
 
-    login() {
-        this.modalRef = this.loginModalService.open();
-    }
 }
