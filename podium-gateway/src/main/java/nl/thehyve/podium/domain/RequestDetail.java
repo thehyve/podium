@@ -49,45 +49,39 @@ public class RequestDetail implements Serializable {
     )
     private Long id;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 50)
-    @Column(name = "title", length = 50, nullable = false)
+    @Column(name = "title", length = 50)
     private String title;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 2000)
-    @Column(name = "background", length = 2000, nullable = false)
+    @Column(name = "background", length = 2000)
     private String background;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 300)
-    @Column(name = "research_question", length = 300, nullable = false)
+    @Column(name = "research_question", length = 300)
     private String researchQuestion;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 5000)
-    @Column(name = "hypothesis", length = 5000, nullable = false)
+    @Column(name = "hypothesis", length = 5000)
     private String hypothesis;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 10000)
-    @Column(name = "methods", length = 10000, nullable = false)
+    @Column(name = "methods", length = 10000)
     private String methods;
 
     @Size(max = 50)
     @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
-    @OneToOne(mappedBy = "requestDetail")
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(unique = true, name = "principal_investigator")
     @JsonIgnore
     private PrincipalInvestigator principalInvestigator;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @Size(min = 1, max = 500)
-    @Column(name = "search_query", length = 500, nullable = false)
+    @Column(name = "search_query", length = 500)
     private String searchQuery;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @ElementCollection(targetClass = RequestType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(

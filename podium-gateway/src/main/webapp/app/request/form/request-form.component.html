@@ -21,7 +21,7 @@
 
             <select class="custom-select" [(ngModel)]="selectedDraft">
                 <option selected>Please select a request draft</option>
-                <option *ngFor="let requestDraft of availableRequestDrafts">
+                <option *ngFor="let requestDraft of availableRequestDrafts" [ngValue]="requestDraft">
                     [ {{ requestDraft.id }} ] {{ requestDraft.detail?.title ? requestDraft.detail.title : 'Request ' + requestDraft.id }}
                 </option>
             </select>
@@ -46,7 +46,7 @@
                     <input type="text" class="form-control" name="title" id="title"
                            required minlength="1" maxlength="50" #title="ngModel"
                            autocomplete="off" placeholder="{{'request.form.title.placeholder' | translate}}"
-                           [(ngModel)]="request.title" />
+                           [(ngModel)]="requestDetail.title" />
 
                     <div *ngIf="title.dirty && title.invalid">
                         <small class="form-text text-danger" *ngIf="title.errors.required"
@@ -70,7 +70,7 @@
                     <textarea type="text" class="form-control" name="background" id="background" #background="ngModel"
                               autocomplete="off" placeholder="{{'request.form.background.placeholder' | translate}}"
                               required minlength="1" maxlength="2000" rows="5" [wordLengthValidator]="750"
-                              [(ngModel)]="request.background">
+                              [(ngModel)]="requestDetail.background">
                 </textarea>
 
                     <div *ngIf="background.dirty && background.invalid">
@@ -99,8 +99,8 @@
                            jhiTranslate="request.form.researchQuestion.label">Research Question</label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
-                              required [minlength]="1" [maxlength]="300" rows="5" #researchQuestion="ngModel"
-                              [wordLengthValidator]="30" [(ngModel)]="request.researchQuestion">
+                              required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
+                              [wordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
                     </textarea>
 
                     <div *ngIf="researchQuestion.dirty && researchQuestion.invalid">
@@ -130,7 +130,7 @@
                     <textarea type="text" class="form-control" name="hypothesis" id="hypothesis"
                               autocomplete="off" placeholder="{{'request.form.hypothesis.placeholder' | translate}}"
                               required minlength="1" maxlength="5000" rows="7" #hypothesis="ngModel"
-                              [(ngModel)]="request.hypothesis" [wordLengthValidator]="300">
+                              [(ngModel)]="requestDetail.hypothesis" [wordLengthValidator]="300">
                 </textarea>
 
                     <div *ngIf="hypothesis.dirty && hypothesis.invalid">
@@ -160,7 +160,7 @@
                     <textarea type="text" class="form-control" name="methods" id="methods"
                               autocomplete="off" placeholder="{{'request.form.methods.placeholder' | translate}}"
                               required minlength="1" maxlength="10000" rows="7" #methods="ngModel"
-                              [(ngModel)]="request.methods" [wordLengthValidator]="500">
+                              [(ngModel)]="requestDetail.methods" [wordLengthValidator]="500">
                 </textarea>
 
                     <div *ngIf="methods.dirty && methods.invalid">
@@ -190,7 +190,7 @@
                     <input type="text" class="form-control" name="relatedRequestNumber" id="relatedRequestNumber"
                            maxlength="50" autocomplete="off" #relatedRequestNumber="ngModel"
                            placeholder="{{'request.form.relatedRequestNumber.placeholder' | translate}}"
-                           [(ngModel)]="request.relatedRequestNumber" />
+                           [(ngModel)]="requestDetail.relatedRequestNumber" />
 
                     <div *ngIf="relatedRequestNumber.dirty && relatedRequestNumber.invalid">
                         <small class="form-text text-danger" *ngIf="relatedRequestNumber.errors.maxlength"
@@ -215,7 +215,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piName="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.name.placeholder' | translate}}"
-                                   [(ngModel)]="request.principalInvestigator.name" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.name" />
 
                             <div *ngIf="piName.dirty && piName.invalid">
                                 <small class="form-text text-danger" *ngIf="piName.errors.required"
@@ -246,7 +246,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off"  #piEmail="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.email.placeholder' | translate}}"
-                                   [(ngModel)]="request.principalInvestigator.email" emailValidator>
+                                   [(ngModel)]="requestDetail.principalInvestigator.email" emailValidator>
 
                             <div *ngIf="piEmail.dirty && piEmail.invalid">
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.required"
@@ -283,7 +283,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piFunction="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.function.placeholder' | translate}}"
-                                   [(ngModel)]="request.principalInvestigator.jobTitle" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.jobTitle" />
 
                             <div *ngIf="piFunction.dirty && piFunction.invalid">
                                 <small class="form-text text-danger" *ngIf="piFunction.errors.required"
@@ -314,7 +314,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piAffiliation="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.affiliation.placeholder' | translate}}"
-                                   [(ngModel)]="request.principalInvestigator.affiliation" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.affiliation" />
 
                             <div *ngIf="piAffiliation.dirty && piAffiliation.invalid">
                                 <small class="form-text text-danger" *ngIf="piAffiliation.errors.required"
@@ -343,7 +343,7 @@
                     <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
                               autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
                               required minlength="1" maxlength="500" rows="4" #searchQuery="ngModel"
-                              [(ngModel)]="request.searchQuery">
+                              [(ngModel)]="requestDetail.searchQuery">
                 </textarea>
 
                     <div *ngIf="searchQuery.dirty && searchQuery.invalid">
@@ -378,7 +378,7 @@
                     </div>
                 </div>
 
-                <!-- Combined request -->
+                <!-- Combined requestDetail -->
                 <div class="form-group">
                     <label for="requestTypes">Combined Request</label>
                     <div class="checkbox-group">
@@ -386,7 +386,7 @@
                             <input type="checkbox"
                                    name="combinedRequest"
                                    id="combinedRequest"
-                                   [(ngModel)]="request.combinedRequest"
+                                   [(ngModel)]="requestDetail.combinedRequest"
                                    value="true" />
                             Is a combined request
                         </label>
@@ -409,7 +409,7 @@
                 <div class="action-container">
                     <button type="button" class="btn btn-danger" (click)="reset()">Clear</button>
 
-                    <button type="button" class="btn btn-default" (click)="saveDraft()">Save draft</button>
+                    <button type="button" class="btn btn-default" (click)="saveRequestDraft()">Save draft</button>
                     <button type="submit" class="btn btn-primary" (click)="submit()">Submit</button>
                 </div>
             </fieldset>

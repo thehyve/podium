@@ -18,11 +18,10 @@
     -->
     <changeSet id="20170226012932-2" author="berndvdveen">
 
-        <addForeignKeyConstraint baseColumnNames="id"
+        <addForeignKeyConstraint baseColumnNames="principal_investigator"
                                  baseTableName="request_detail"
                                  constraintName="fk_request_detail_principal_investigator"
                                  referencedColumnNames="id"
                                  referencedTableName="principal_investigator"/>
-
     </changeSet>
 </databaseChangeLog>

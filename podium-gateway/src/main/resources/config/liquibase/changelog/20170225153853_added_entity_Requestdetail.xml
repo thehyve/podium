@@ -25,23 +25,23 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="title" type="varchar(50)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="background" type="varchar(2000)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="research_question" type="varchar(300)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="hypothesis" type="varchar(5000)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="methods" type="varchar(10000)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="related_request_number" type="varchar(50)">
@@ -49,11 +49,11 @@
             </column>
 
             <column name="search_query" type="varchar(500)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="request_type" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
 
             <column name="combined_request" type="boolean">
