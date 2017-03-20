@@ -5,13 +5,12 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.domain.enumeration;
+package nl.thehyve.podium.common.request;
 
-/**
- * The RequestStatus enumeration.
- */
-public enum RequestStatus {
-    Draft,
+public enum RequestReviewStatus {
+    Revision,
+    Validation,
     Review,
-    Delivery
+    Closed,
+    None
 }

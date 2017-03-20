@@ -1,0 +1,6 @@
+name_;value_;rev_
+schema.version;6.0.0.5;1
+schema.history;create(6.0.0.5);1
+cfg.execution-related-entities-count;false;1
+cfg.task-related-entities-count;false;1
+next.dbid;2501;2

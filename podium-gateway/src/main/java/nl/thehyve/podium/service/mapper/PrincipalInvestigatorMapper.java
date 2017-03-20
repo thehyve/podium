@@ -8,7 +8,7 @@
 package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.PrincipalInvestigator;
-import nl.thehyve.podium.service.dto.PrincipalInvestigatorDTO;
+import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
 
 import org.mapstruct.*;
 import java.util.List;
@@ -19,11 +19,11 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {})
 public interface PrincipalInvestigatorMapper {
 
-    PrincipalInvestigatorDTO principalInvestigatorToPrincipalInvestigatorDTO(PrincipalInvestigator principalInvestigator);
+    PrincipalInvestigatorRepresentation principalInvestigatorToPrincipalInvestigatorDTO(PrincipalInvestigator principalInvestigator);
 
-    List<PrincipalInvestigatorDTO> principalInvestigatorsToPrincipalInvestigatorDTOs(List<PrincipalInvestigator> principalInvestigators);
+    List<PrincipalInvestigatorRepresentation> principalInvestigatorsToPrincipalInvestigatorDTOs(List<PrincipalInvestigator> principalInvestigators);
 
-    PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorDTO principalInvestigatorDTO);
+    PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigatorDTO);
 
-    List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(List<PrincipalInvestigatorDTO> principalInvestigatorDTOs);
+    List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs);
 }

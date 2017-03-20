@@ -12,7 +12,7 @@ import nl.thehyve.podium.domain.enumeration.RequestStatus;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestMapper;
-import nl.thehyve.podium.service.dto.RequestDTO;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class RequestService {
      * @return
      */
     @Transactional
-    public RequestDTO saveDraft(Request request) {
+    public RequestRepresentation saveDraft(Request request) {
         Request result = save(request);
         return requestMapper.requestToRequestDTO(result);
     }
@@ -79,7 +79,7 @@ public class RequestService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<RequestDTO> findAll(Pageable pageable) {
+    public Page<RequestRepresentation> findAll(Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAll(pageable);
         return result.map(requestMapper::requestToRequestDTO);
@@ -92,8 +92,8 @@ public class RequestService {
      * @return the transformed DTO list of requests
      */
     @Transactional(readOnly = true)
-    public List<RequestDTO> findAllRequestDraftsByUserUuid(UUID uuid) {
-        List<Request> result = requestRepository.findAllByRequesterAndStatus(uuid, RequestStatus.DRAFT);
+    public List<RequestRepresentation> findAllRequestDraftsByUserUuid(UUID uuid) {
+        List<Request> result = requestRepository.findAllByRequesterAndStatus(uuid, RequestStatus.Draft);
         return requestMapper.requestsToRequestDTOs(result);
     }
 
@@ -104,16 +104,16 @@ public class RequestService {
      * @return requestDetail entity
      */
     @Transactional(readOnly = true)
-    public RequestDTO findOne(Long id) {
+    public RequestRepresentation findOne(Long id) {
         log.info("Request to get a requestDetail : {}", id);
         Request request = requestRepository.findOne(id);
         return requestMapper.requestToRequestDTO(request);
     }
 
     @Transactional
-    public RequestDTO initializeBaseRequest(UUID requester) {
+    public RequestRepresentation initializeBaseRequest(UUID requester) {
         Request request = new Request();
-        request.setStatus(RequestStatus.DRAFT);
+        request.setStatus(RequestStatus.Draft);
         request.setRequester(requester);
 
         save(request);
@@ -139,7 +139,7 @@ public class RequestService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<RequestDTO> search(String query, Pageable pageable) {
+    public Page<RequestRepresentation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Requests for query {}", query);
         Page<Request> result = requestSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(request -> requestMapper.requestToRequestDTO(request));

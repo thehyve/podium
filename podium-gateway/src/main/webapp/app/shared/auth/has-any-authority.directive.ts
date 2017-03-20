@@ -8,39 +8,40 @@
  *
  */
 
-import { Directive, ElementRef, Input, Renderer, OnInit } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Principal } from './principal.service';
 
 @Directive({
-    selector: '[jhiHasAnyAuthority]'
+    selector: '[pdmHasAnyAuthority]'
 })
-export class HasAnyAuthorityDirective implements OnInit {
+export class HasAnyAuthorityDirective {
 
-    @Input() jhiHasAnyAuthority: string;
-    authority: string[];
-
-    constructor(private principal: Principal, private el: ElementRef, private renderer: Renderer) {
-    }
-
-    ngOnInit() {
-        this.authority = this.jhiHasAnyAuthority.replace(/\s+/g, '').split(',');
+    @Input() set pdmHasAnyAuthority(value: string) {
+        this.authority = value.replace(/\s+/g, '').split(',');
 
         if (this.authority.length > 0) {
             this.setVisibilitySync();
         }
-        this.principal.getAuthenticationState().subscribe(identity => this.setVisibilitySync());
+    };
+
+    authority: string[];
+
+    constructor(
+        private principal: Principal,
+        private templateRef: TemplateRef<any>,
+        private viewContainer: ViewContainerRef
+    ) {
     }
 
     private setVisible () {
-        this.renderer.setElementClass(this.el.nativeElement, 'hidden', false);
+        this.viewContainer.createEmbeddedView(this.templateRef);
     }
 
     private setHidden () {
-        this.renderer.setElementClass(this.el.nativeElement, 'hidden', true);
+        this.viewContainer.clear();
     }
 
     private setVisibilitySync () {
-
         let result = this.principal.hasAnyAuthority(this.authority);
         if (result) {
             this.setVisible();
