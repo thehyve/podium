@@ -73,7 +73,7 @@ public class RequestService {
             updatedRequest = requestMapper.updateRequestDTOToRequest(requestRepresentation, request);
             save(updatedRequest);
         }
-         return requestMapper.requestToRequestDTO(updatedRequest);
+        return requestMapper.requestToRequestDTO(updatedRequest);
     }
 
     /**
