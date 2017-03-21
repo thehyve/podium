@@ -13,6 +13,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
 
 import { Account, LoginModalService, Principal } from '../shared';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'podium-home',
@@ -29,7 +30,8 @@ export class HomeComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private principal: Principal,
-        private eventManager: EventManager
+        private eventManager: EventManager,
+        private router: Router
     ) {
         this.jhiLanguageService.setLocations(['home']);
     }
@@ -39,6 +41,10 @@ export class HomeComponent implements OnInit {
             this.account = account;
         });
         this.registerAuthenticationSuccess();
+
+        if (this.isAuthenticated()) {
+            this.router.navigate(['/dashboard']);
+        }
     }
 
     registerAuthenticationSuccess() {
