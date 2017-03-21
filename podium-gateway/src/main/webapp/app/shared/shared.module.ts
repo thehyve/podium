@@ -27,7 +27,6 @@ import {
     LoginModalService,
     MessageService,
     Principal,
-    HasAuthorityDirective,
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
     PasswordValidatorDirective,
@@ -50,7 +49,6 @@ import { RequestService } from './request/request.service';
         EmailValidatorDirective,
         PasswordValidatorDirective,
         WordLengthValidatorDirective,
-        HasAuthorityDirective,
         HasAnyAuthorityDirective
     ],
     providers: [
@@ -78,7 +76,6 @@ import { RequestService } from './request/request.service';
         EmailValidatorDirective,
         PasswordValidatorDirective,
         WordLengthValidatorDirective,
-        HasAuthorityDirective,
         HasAnyAuthorityDirective,
         DatePipe,
         Ng2BreadcrumbModule
