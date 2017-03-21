@@ -8,6 +8,8 @@
 package nl.thehyve.podium.config;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.CustomUserAuthenticationConverter;
+import nl.thehyve.podium.security.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
@@ -19,9 +21,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -32,6 +36,7 @@ import java.util.Map;
 @Configuration
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableWebSecurity
 @Profile({"dev", "prod"})
 public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerAdapter {
 
@@ -44,6 +49,11 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
 
         this.podiumProperties = podiumProperties;
         this.discoveryClient = discoveryClient;
+    }
+
+    @Bean
+    public CustomAuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider();
     }
 
     @Override
@@ -71,11 +81,24 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
     }
 
     @Bean
+    public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
+        return new CustomUserAuthenticationConverter();
+    }
+
+    @Bean
+    public DefaultAccessTokenConverter defaultAccessTokenConverter() {
+        DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();
+        defaultAccessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter());
+        return defaultAccessTokenConverter;
+    }
+
+    @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(
             @Qualifier("loadBalancedRestTemplate") RestTemplate keyUriRestTemplate) {
 
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setVerifierKey(getKeyFromAuthorizationServer(keyUriRestTemplate));
+        converter.setAccessTokenConverter(defaultAccessTokenConverter());
         return converter;
     }
 

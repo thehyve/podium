@@ -38,9 +38,9 @@ import java.util.Optional;
  * too many failed login attempts and prevents login for unverified accounts.
  */
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class CustomServerAuthenticationProvider implements AuthenticationProvider {
 
-    private final Logger log = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
+    private final Logger log = LoggerFactory.getLogger(CustomServerAuthenticationProvider.class);
 
     @Autowired
     UaaProperties uaaProperties;
