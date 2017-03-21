@@ -8,6 +8,8 @@ package nl.thehyve.podium.service.representation;
 
 import nl.thehyve.podium.domain.enumeration.RequestType;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
@@ -21,20 +23,33 @@ public class RequestDetailRepresentation implements Serializable {
 
     private Long id;
 
+    @NotNull
+    @Size(min = 1, max = 50)
     private String title;
 
+    @NotNull
+    @Size(min = 1, max = 2000)
     private String background;
 
+    @NotNull
+    @Size(min = 1, max = 300)
     private String researchQuestion;
 
+    @NotNull
+    @Size(min = 1, max = 5000)
     private String hypothesis;
 
+    @NotNull
+    @Size(min = 1, max = 10000)
     private String methods;
 
+    @Size(max = 50)
     private String relatedRequestNumber;
 
     private PrincipalInvestigatorRepresentation principalInvestigator;
 
+    @NotNull
+    @Size(min = 1, max = 500)
     private String searchQuery;
 
     private Set<RequestType> requestType;
