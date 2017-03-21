@@ -16,6 +16,7 @@ import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
     RequestType,
+    PrincipalInvestigator,
     AttachmentService,
     RequestBase,
     RequestService,
@@ -32,8 +33,9 @@ import {
 })
 export class RequestFormComponent implements OnInit {
 
-    public requestFormDisabled: boolean;
     private currentUser: User;
+
+    public requestFormDisabled: boolean;
     public error: string;
     public success: string;
     public requestBase: RequestBase;
@@ -103,11 +105,6 @@ export class RequestFormComponent implements OnInit {
     }
 
     processAvailableDrafts(requestDrafts) {
-        if (!requestDrafts.length) {
-            this.selectDraft = false;
-            return this.initializeBaseRequest();
-        }
-
         this.selectDraft = true;
         this.availableRequestDrafts = requestDrafts;
         this.requestDraftsAvailable = true;
@@ -120,6 +117,7 @@ export class RequestFormComponent implements OnInit {
                 (requestBase) => {
                     this.requestBase = requestBase;
                     this.requestDetail = new RequestDetail();
+                    this.requestDetail.principalInvestigator = new PrincipalInvestigator();
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
@@ -130,10 +128,13 @@ export class RequestFormComponent implements OnInit {
         this.selectDraft = false;
         this.requestBase = requestBase;
         this.requestDetail = requestBase.requestDetail || new RequestDetail();
+        this.requestDetail.principalInvestigator = requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
     }
 
     saveRequestDraft() {
         this.requestBase.requestDetail = this.requestDetail;
+        this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        console.log(this.requestBase);
         this.requestService.saveRequestDraft(this.requestBase)
             .subscribe(
                 (requestBase) => this.postSaveUpdate(requestBase),

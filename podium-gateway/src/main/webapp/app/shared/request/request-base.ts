@@ -19,6 +19,7 @@ export class RequestBase implements Request {
     public dateLastModified?: Date;
 
     public uuid?: string;
+    public id?: string;
     public status?: RequestStatus;
     public requestDetail?: RequestDetail;
     public organisations?: Organisation[];
