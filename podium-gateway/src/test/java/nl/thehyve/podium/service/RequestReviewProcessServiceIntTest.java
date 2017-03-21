@@ -12,7 +12,7 @@ import nl.thehyve.podium.common.request.DecisionOutcome;
 import nl.thehyve.podium.common.request.RequestReviewStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.RequestReviewProcess;
-import nl.thehyve.podium.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
@@ -16,7 +17,6 @@ import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.exceptions.ResourceNotFoundException;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
@@ -75,7 +75,7 @@ public class RoleResource {
             if (user.isPresent()) {
                 result.add(user.get());
             } else {
-                throw new ResourceNotFoundException(String.format("Could not find user with uuid %s", userUuid));
+                throw new ResourceNotFound(String.format("Could not find user with uuid %s", userUuid));
             }
         }
         target.setUsers(result);
@@ -97,11 +97,11 @@ public class RoleResource {
     public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation role) throws URISyntaxException {
         log.debug("REST request to update Role : {}", role);
         if (role.getId() == null) {
-            throw new ResourceNotFoundException(String.format("Role not found with id: %s.", role.getId()));
+            throw new ResourceNotFound(String.format("Role not found with id: %s.", role.getId()));
         }
         Role result = roleService.findOne(role.getId());
         if (result == null) {
-            throw new ResourceNotFoundException(String.format("Role not found with id: %s.", role.getId()));
+            throw new ResourceNotFound(String.format("Role not found with id: %s.", role.getId()));
         }
         copyProperties(role, result);
         roleService.save(result);
@@ -163,7 +163,7 @@ public class RoleResource {
         log.debug("REST request to get Role : {}", id);
         Role role = roleService.findOne(id);
         if (role == null) {
-            throw new ResourceNotFoundException(String.format("Role not found with id: %s.", id));
+            throw new ResourceNotFound(String.format("Role not found with id: %s.", id));
         }
         return ResponseEntity.ok(new RoleRepresentation(role));
     }

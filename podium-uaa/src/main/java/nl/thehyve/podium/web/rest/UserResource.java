@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.web.rest;
 
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.exceptions.UserAccountException;
@@ -14,7 +15,6 @@ import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.exceptions.ResourceNotFoundException;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
@@ -156,7 +156,7 @@ public class UserResource {
         log.debug("REST request to unlock User : {}", uuid);
         Optional<User> userOptional = userService.getUserByUuid(uuid);
         if (!userOptional.isPresent()) {
-            throw new ResourceNotFoundException("User not found.");
+            throw new ResourceNotFound("User not found.");
         }
         User user = userService.unlockAccount(userOptional.get());
 
@@ -232,7 +232,7 @@ public class UserResource {
         log.debug("REST request to delete User: {}", login);
         Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
         if (!userOptional.isPresent()) {
-            throw new ResourceNotFoundException("User not found.");
+            throw new ResourceNotFound("User not found.");
         }
         userService.delete(userOptional.get());
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
