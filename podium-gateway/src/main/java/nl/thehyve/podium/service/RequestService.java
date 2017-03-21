@@ -7,7 +7,9 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
+import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.domain.enumeration.RequestStatus;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
@@ -18,13 +20,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Request.
@@ -44,11 +46,7 @@ public class RequestService {
     @Autowired
     private RequestSearchRepository requestSearchRepository;
 
-    @Autowired
-    private RequestDetailService requestDetailService;
-
-    public RequestService() {
-    }
+    public RequestService() {}
 
     /**
      * Save a request.
@@ -59,6 +57,23 @@ public class RequestService {
     @Transactional
     public Request save(Request request) {
         return requestRepository.save(request);
+    }
+
+    /**
+     * Save request draft
+     * @param requestRepresentation request representation
+     * @return saved request representation
+     */
+    @Transactional
+    public RequestRepresentation saveDraft(RequestRepresentation requestRepresentation) {
+        log.debug("Save request draft with request id : {}", requestRepresentation.getId());
+        Request request =  requestRepository.findOne(requestRepresentation.getId());
+        Request updatedRequest = null;
+        if (request != null) {
+            updatedRequest = requestMapper.updateRequestDTOToRequest(requestRepresentation, request);
+            save(updatedRequest);
+        }
+        return requestMapper.requestToRequestDTO(updatedRequest);
     }
 
     /**
@@ -86,12 +101,38 @@ public class RequestService {
         return requestMapper.requestsToRequestDTOs(result);
     }
 
+    /**
+     * Get one request by id
+     *
+     * @param id request id
+     * @return request representation
+     */
+    @Transactional(readOnly = true)
+    public RequestRepresentation findOne(Long id) {
+        log.debug("Request to get a requestDetail : {}", id);
+        Request request = requestRepository.findOne(id);
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    /**
+     * Initialize Request
+     * @param requester uuid of requester
+     * @return saved request representation
+     */
     @Transactional
     public RequestRepresentation initializeBaseRequest(UUID requester) {
+        log.debug("Initialize a request by uuid : {}", requester);
+        // create new request
         Request request = new Request();
         request.setStatus(RequestStatus.Draft);
         request.setRequester(requester);
 
+        RequestDetail requestDetail = new RequestDetail();
+        requestDetail.setPrincipalInvestigator(new PrincipalInvestigator());
+
+        request.setRequestDetail(requestDetail);
+
+        // save newly created request
         save(request);
         return requestMapper.requestToRequestDTO(request);
     }

@@ -23,8 +23,10 @@ public interface PrincipalInvestigatorMapper {
 
     List<PrincipalInvestigatorRepresentation> principalInvestigatorsToPrincipalInvestigatorDTOs(List<PrincipalInvestigator> principalInvestigators);
 
-    @Mapping(target = "requestDetail", ignore = true)
     PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigatorDTO);
 
     List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs);
+
+    PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation
+                                                                                    principalInvestigatorRepresentation, @MappingTarget PrincipalInvestigator principalInvestigator);
 }

@@ -4,100 +4,56 @@
  * you may not use this file except in compliance with the License.
  * See the file LICENSE in the root of this repository.
  */
+package nl.thehyve.podium.service.representation;
 
-package nl.thehyve.podium.domain;
+import nl.thehyve.podium.domain.enumeration.RequestType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.thehyve.podium.validation.groups.RequestDetailCreate;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Cache;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
-import nl.thehyve.podium.domain.enumeration.RequestType;
-
 /**
- * A RequestDetail.
+ * A RequestDetailRepresentation.
  */
-@Entity
-@Table(name = "request_detail")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "requestdetail")
-public class RequestDetail implements Serializable {
+public class RequestDetailRepresentation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_detail_seq_gen")
-    @GenericGenerator(
-        name = "request_detail_seq_gen",
-        strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-        parameters = {
-            @Parameter(name = "sequence_name", value = "request_detail_seq"),
-            @Parameter(name = "initial_value", value = "1000"),
-            @Parameter(name = "increment_size", value = "50")
-        }
-    )
     private Long id;
 
-    @NotNull(groups = { RequestDetailCreate.class })
+    @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "title", length = 50)
     private String title;
 
-    @NotNull(groups = { RequestDetailCreate.class })
+    @NotNull
     @Size(min = 1, max = 2000)
-    @Column(name = "background", length = 2000)
     private String background;
 
-    @NotNull(groups = { RequestDetailCreate.class })
+    @NotNull
     @Size(min = 1, max = 300)
-    @Column(name = "research_question", length = 300)
     private String researchQuestion;
 
-    @NotNull(groups = { RequestDetailCreate.class })
+    @NotNull
     @Size(min = 1, max = 5000)
-    @Column(name = "hypothesis", length = 5000)
     private String hypothesis;
 
-    @NotNull(groups = { RequestDetailCreate.class })
+    @NotNull
     @Size(min = 1, max = 10000)
-    @Column(name = "methods", length = 10000)
     private String methods;
 
     @Size(max = 50)
-    @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(unique = true, name = "principal_investigator")
-    @JsonIgnore
-    private PrincipalInvestigator principalInvestigator;
+    private PrincipalInvestigatorRepresentation principalInvestigator;
 
-    @NotNull(groups = { RequestDetailCreate.class })
+    @NotNull
     @Size(min = 1, max = 500)
-    @Column(name = "search_query", length = 500)
     private String searchQuery;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @ElementCollection(targetClass = RequestType.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(
-        name="request_detail_request_types",
-        joinColumns=@JoinColumn(name="request_detail_id")
-    )
     private Set<RequestType> requestType;
 
-    @Column(name = "combined_request")
     private Boolean combinedRequest;
 
     public Long getId() {
@@ -112,7 +68,7 @@ public class RequestDetail implements Serializable {
         return title;
     }
 
-    public RequestDetail title(String title) {
+    public RequestDetailRepresentation title(String title) {
         this.title = title;
         return this;
     }
@@ -125,7 +81,7 @@ public class RequestDetail implements Serializable {
         return background;
     }
 
-    public RequestDetail background(String background) {
+    public RequestDetailRepresentation background(String background) {
         this.background = background;
         return this;
     }
@@ -138,7 +94,7 @@ public class RequestDetail implements Serializable {
         return researchQuestion;
     }
 
-    public RequestDetail researchQuestion(String researchQuestion) {
+    public RequestDetailRepresentation researchQuestion(String researchQuestion) {
         this.researchQuestion = researchQuestion;
         return this;
     }
@@ -151,7 +107,7 @@ public class RequestDetail implements Serializable {
         return hypothesis;
     }
 
-    public RequestDetail hypothesis(String hypothesis) {
+    public RequestDetailRepresentation hypothesis(String hypothesis) {
         this.hypothesis = hypothesis;
         return this;
     }
@@ -164,7 +120,7 @@ public class RequestDetail implements Serializable {
         return methods;
     }
 
-    public RequestDetail methods(String methods) {
+    public RequestDetailRepresentation methods(String methods) {
         this.methods = methods;
         return this;
     }
@@ -177,7 +133,7 @@ public class RequestDetail implements Serializable {
         return relatedRequestNumber;
     }
 
-    public RequestDetail relatedRequestNumber(String relatedRequestNumber) {
+    public RequestDetailRepresentation relatedRequestNumber(String relatedRequestNumber) {
         this.relatedRequestNumber = relatedRequestNumber;
         return this;
     }
@@ -186,11 +142,11 @@ public class RequestDetail implements Serializable {
         this.relatedRequestNumber = relatedRequestNumber;
     }
 
-    public PrincipalInvestigator getPrincipalInvestigator() {
+    public PrincipalInvestigatorRepresentation getPrincipalInvestigator() {
         return principalInvestigator;
     }
 
-    public void setPrincipalInvestigator(PrincipalInvestigator principalInvestigator) {
+    public void setPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigator) {
         this.principalInvestigator = principalInvestigator;
     }
 
@@ -202,7 +158,7 @@ public class RequestDetail implements Serializable {
         return searchQuery;
     }
 
-    public RequestDetail searchQuery(String searchQuery) {
+    public RequestDetailRepresentation searchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
         return this;
     }
@@ -219,7 +175,7 @@ public class RequestDetail implements Serializable {
         return combinedRequest;
     }
 
-    public RequestDetail combinedRequest(Boolean combinedRequest) {
+    public RequestDetailRepresentation combinedRequest(Boolean combinedRequest) {
         this.combinedRequest = combinedRequest;
         return this;
     }
@@ -236,7 +192,7 @@ public class RequestDetail implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        RequestDetail requestDetail = (RequestDetail) o;
+        RequestDetailRepresentation requestDetail = (RequestDetailRepresentation) o;
         if (requestDetail.id == null || id == null) {
             return false;
         }
@@ -250,7 +206,7 @@ public class RequestDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "RequestDetail{" +
+        return "RequestDetailRepresentation{" +
             "id=" + id +
             ", title='" + title + "'" +
             ", background='" + background + "'" +

@@ -8,6 +8,7 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.service.RequestService;
@@ -71,6 +72,24 @@ public class RequestResource {
         RequestRepresentation result = requestService.initializeBaseRequest(UUID.fromString(uuid));
         return ResponseEntity.created(new URI("/api/requests/initialize/"+uuid))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * PUT  /requests : Updates an existing requestDetail.
+     *
+     * @param request request draft
+     * @return saved request draft
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     */
+    @PutMapping("/requests/draft")
+    @Timed
+    public ResponseEntity<RequestRepresentation> saveRequestDraft(@RequestBody RequestRepresentation request) throws
+        URISyntaxException {
+        log.debug("REST request to save draft of a request " + request.getId().toString());
+        RequestRepresentation result = requestService.saveDraft(request);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, request.getId().toString()))
             .body(result);
     }
 

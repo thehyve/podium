@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.Objects;
 
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.domain.enumeration.RequestStatus;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 
@@ -35,7 +34,7 @@ public class RequestRepresentation implements Serializable {
 
     private RequestRepresentation parentRequest;
 
-    private RequestDetail requestDetail;
+    private RequestDetailRepresentation requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();
 
@@ -70,11 +69,11 @@ public class RequestRepresentation implements Serializable {
         this.parentRequest = requestId;
     }
 
-    public RequestDetail getRequestDetail() {
+    public RequestDetailRepresentation getRequestDetail() {
         return requestDetail;
     }
 
-    public void setRequestDetail(RequestDetail requestDetail) {
+    public void setRequestDetail(RequestDetailRepresentation requestDetail) {
         this.requestDetail = requestDetail;
     }
 

@@ -32,23 +32,19 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(150)">
-                <constraints nullable="false" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="email" type="varchar(150)">
-                <constraints nullable="false" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="job_title" type="varchar(150)">
-                <constraints nullable="false" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="affiliation" type="varchar(150)">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="request_detail" type="bigint">
-                <constraints unique="true" nullable="true" />
+                <constraints nullable="true"/>
             </column>
         </createTable>
 

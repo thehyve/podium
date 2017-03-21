@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { })
+@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class })
 public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")
@@ -35,7 +35,11 @@ public interface RequestMapper {
     @Mapping(source = "requestDetail", target = "requestDetail")
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    List<Request> requestDTOsToRequests(List<RequestRepresentation> requestDTOs);
+    @Mapping(source = "parentRequest", target = "parentRequest")
+    @Mapping(source = "requestDetail", target = "requestDetail")
+    Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
+
+    List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {
         return organisations.stream().map(OrganisationDTO::getUuid)
