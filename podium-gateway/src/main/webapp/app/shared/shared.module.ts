@@ -8,11 +8,12 @@
  *
  */
 
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { Ng2BreadcrumbModule, BreadcrumbService } from 'ng2-breadcrumb/ng2-breadcrumb';
 import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { SessionStorageService } from 'ng2-webstorage';
 
 import {
     PodiumGatewaySharedLibsModule,
@@ -51,26 +52,11 @@ import { RequestService } from './request/request.service';
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective
     ],
-    providers: [
-        CookieService,
-        LoginService,
-        LoginModalService,
-        MessageService,
-        AccountService,
-        StateStorageService,
-        Principal,
-        CSRFService,
-        AuthServerProvider,
-        AuthService,
-        UserService,
-        AttachmentService,
-        RequestService,
-        DatePipe,
-        BreadcrumbService
-    ],
+    providers: [],
     entryComponents: [PodiumLoginComponent],
     exports: [
         PodiumGatewaySharedCommonModule,
+        PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
         SpecialismComponent,
         EmailValidatorDirective,
@@ -80,7 +66,31 @@ import { RequestService } from './request/request.service';
         DatePipe,
         Ng2BreadcrumbModule
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
 })
-export class PodiumGatewaySharedModule {}
+export class PodiumGatewaySharedModule {
+    static forRoot(): ModuleWithProviders {
+        return {
+            ngModule: PodiumGatewaySharedModule,
+            providers: [
+                CookieService,
+                LoginService,
+                LoginModalService,
+                MessageService,
+                AccountService,
+                SessionStorageService,
+                StateStorageService,
+                Principal,
+                CSRFService,
+                AuthServerProvider,
+                AuthService,
+                UserService,
+                AttachmentService,
+                RequestService,
+                DatePipe,
+                BreadcrumbService
+            ]
+        };
+    }
+}

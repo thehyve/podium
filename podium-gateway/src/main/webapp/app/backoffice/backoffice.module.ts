@@ -9,20 +9,20 @@
  */
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
-import { PodiumGatewayRoleModule } from './role/role.module';
-import { PodiumGatewayUserMgmtModule } from './user-management/user-management.module';
-import { PodiumGatewayOrganisationModule } from './organisation/organisation.module';
+import { PodiumGatewaySharedModule } from '../shared/shared.module';
+import { BackofficeRoutingModule } from './backoffice.routing';
 
 @NgModule({
     imports: [
-        PodiumGatewayRoleModule,
-        PodiumGatewayOrganisationModule,
-        PodiumGatewayUserMgmtModule,
+        PodiumGatewaySharedModule,
+        BackofficeRoutingModule
     ],
-    declarations: [],
-    entryComponents: [],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    exports: [
+        PodiumGatewaySharedModule,
+        RouterModule
+    ]
 })
 export class PodiumGatewayBackofficeModule {}

@@ -9,17 +9,21 @@
  */
 
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { AuthService } from '../';
+import { StateStorageService } from './state-storage.service';
 
 @Injectable()
 export class UserRouteAccessService implements CanActivate {
 
-    constructor(private router: Router, private auth: AuthService) {
+    constructor(
+        private router: Router,
+        private auth: AuthService,
+        private stateStorageService: StateStorageService) {}
+
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
     }
 
-    canActivate(route: ActivatedRouteSnapshot): boolean | Promise<boolean> {
-        return this.auth.authorize(false).then( canActivate => canActivate);
     }
 }

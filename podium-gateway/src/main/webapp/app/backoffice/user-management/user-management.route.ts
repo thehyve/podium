@@ -46,51 +46,56 @@ export class UserResolvePagingParams implements Resolve<any> {
   }
 }
 
-export const userMgmtRoute: Routes = [
-  {
-    path: 'backoffice/user-management',
-    component: UserMgmtComponent,
-    resolve: {
-      'pagingParams': UserResolvePagingParams
+export const userDialogRoute: Routes = [
+    {
+        path: 'user-management-new',
+        component: UserDialogComponent,
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    data: {
-      pageTitle: 'userManagement.home.title'
+    {
+        path: 'detail/:login/edit',
+        component: UserDialogComponent,
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    canActivate: [UserRouteAccessService]
-  },
-  {
-    path: 'backoffice/user-management/:login',
-    component: UserMgmtDetailComponent,
-    data: {
-      pageTitle: 'userManagement.home.title'
+    {
+        path: 'detail/:login/delete',
+        component: UserDeleteDialogComponent,
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
     },
-    canActivate: [UserRouteAccessService]
-  }
+    {
+        path: 'detail/:login/unlock',
+        component: UserUnlockDialogComponent,
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    }
 ];
 
-export const userDialogRoute: Routes = [
-  {
-    path: 'backoffice/user-management-new',
-    component: UserDialogComponent,
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'backoffice/user-management/:login/edit',
-    component: UserDialogComponent,
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'backoffice/user-management/:login/delete',
-    component: UserDeleteDialogComponent,
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  },
-  {
-    path: 'backoffice/user-management/:login/unlock',
-    component: UserUnlockDialogComponent,
-    canActivate: [UserRouteAccessService],
-    outlet: 'popup'
-  }
+export const userMgmtRoute: Routes = [
+    {
+        path: '',
+        component: UserMgmtComponent,
+        resolve: {
+            pagingParams: UserResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            pageTitle: 'userManagement.home.title'
+        },
+        canActivate: [UserRouteAccessService],
+    },
+    {
+        path: 'detail/:login',
+        component: UserMgmtDetailComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            pageTitle: 'userManagement.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    ...userDialogRoute
+
 ];
+

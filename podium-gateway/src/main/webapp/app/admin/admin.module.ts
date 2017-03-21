@@ -35,7 +35,7 @@ import {
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(adminRoute, { useHash: true })
+        RouterModule.forChild(adminRoute)
     ],
     declarations: [
         AuditsComponent,

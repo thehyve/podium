@@ -10,11 +10,10 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { organisationRoute, organisationPopupRoute } from './organisation.route';
+import { userMgmtRoute } from './user-management.route';
 
 let BACKOFFICE_ROUTES = [
-    ...organisationRoute,
-    ...organisationPopupRoute
+    ...userMgmtRoute,
 ];
 
 @NgModule({
@@ -24,4 +23,4 @@ let BACKOFFICE_ROUTES = [
     exports: [RouterModule]
 })
 
-export class OrganisationRoutingModule {}
+export class UserMgmtRoutingModule {}

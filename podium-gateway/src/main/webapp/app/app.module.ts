@@ -50,7 +50,7 @@ import {PodiumGatewayRequestModule} from './request/request.module';
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
-        PodiumGatewayBackofficeModule,
+        PodiumGatewayBackofficeModule
     ],
     declarations: [
         PdmMainComponent,

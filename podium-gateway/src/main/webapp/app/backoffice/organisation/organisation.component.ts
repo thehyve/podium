@@ -20,7 +20,7 @@ import { ITEMS_PER_PAGE, Principal } from '../../shared';
 import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
 
 @Component({
-    selector: 'jhi-organisation',
+    selector: 'pdm-organisation',
     templateUrl: './organisation.component.html'
 })
 export class OrganisationComponent implements OnInit, OnDestroy {
@@ -55,10 +55,10 @@ export class OrganisationComponent implements OnInit, OnDestroy {
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.page = data['pagingParams'].page;
-            this.previousPage = data['pagingParams'].page;
-            this.reverse = data['pagingParams'].ascending;
-            this.predicate = data['pagingParams'].predicate;
+             this.page = data['pagingParams'].page;
+             this.previousPage = data['pagingParams'].page;
+             this.reverse = data['pagingParams'].ascending;
+             this.predicate = data['pagingParams'].predicate;
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['organisation']);

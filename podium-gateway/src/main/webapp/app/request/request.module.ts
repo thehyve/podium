@@ -24,7 +24,7 @@ import { EnumKeysPipe } from '../shared/pipes/enumKeys';
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(requestRoute, { useHash: true })
+        RouterModule.forChild(requestRoute)
     ],
     declarations: [
         RequestFormComponent,

@@ -13,6 +13,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../shared/shared.module';
 import { PodiumGatewayAdminModule } from '../../admin/admin.module';
 import { RouterModule } from '@angular/router';
+
 import {
     UserMgmtComponent,
     UserDialogComponent,
@@ -24,17 +25,16 @@ import {
     UserMgmtDetailComponent,
     UserModalService
 } from '../';
-
-let BACKOFFICE_STATES = [
-        ...userMgmtRoute,
-        ...userDialogRoute
-];
+import { customHttpProvider } from '../../blocks/interceptor/http.provider';
+import { UserMgmtRoutingModule } from './user-management.routing';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
-        PodiumGatewaySharedModule,
+        NgbModule,
         PodiumGatewayAdminModule,
-        RouterModule.forRoot(BACKOFFICE_STATES, { useHash: true })
+        PodiumGatewaySharedModule,
+        UserMgmtRoutingModule,
     ],
     declarations: [
         UserMgmtComponent,
@@ -52,10 +52,15 @@ let BACKOFFICE_STATES = [
         UserMgmtUnlockDialogComponent,
     ],
     providers: [
+        customHttpProvider(),
         UserResolvePagingParams,
         UserResolve,
         UserModalService
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    exports: [
+        RouterModule,
+        NgbModule
+    ]
 })
 export class PodiumGatewayUserMgmtModule {}

@@ -9,7 +9,6 @@
  */
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../../shared';
 import {
     organisationRoute,
@@ -24,16 +23,15 @@ import {
     OrganisationService,
     OrganisationResolvePagingParams,
 } from '../';
-
-let ENTITY_STATES = [
-    ...organisationRoute,
-    ...organisationPopupRoute,
-];
+import { OrganisationRoutingModule } from './organisation.routing';
+import { customHttpProvider } from '../../blocks/interceptor/http.provider';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
+        NgbModule,
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(ENTITY_STATES, { useHash: true })
+        OrganisationRoutingModule
     ],
     declarations: [
         OrganisationComponent,
@@ -51,10 +49,12 @@ let ENTITY_STATES = [
         OrganisationDeletePopupComponent,
     ],
     providers: [
+        customHttpProvider(),
         OrganisationService,
         OrganisationPopupService,
         OrganisationResolvePagingParams,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    exports: [NgbModule]
 })
 export class PodiumGatewayOrganisationModule {}

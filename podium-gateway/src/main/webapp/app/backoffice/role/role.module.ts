@@ -37,8 +37,7 @@ let ENTITY_STATES = [
     imports: [
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
-        PodiumGatewayOrganisationModule,
-        RouterModule.forRoot(ENTITY_STATES, {useHash: true})
+        PodiumGatewayOrganisationModule
     ],
     declarations: [
         RoleComponent,
