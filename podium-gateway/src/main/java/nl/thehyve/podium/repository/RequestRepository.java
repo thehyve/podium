@@ -10,9 +10,12 @@ package nl.thehyve.podium.repository;
 import nl.thehyve.podium.domain.Request;
 
 import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -20,6 +23,11 @@ import java.util.UUID;
  */
 @SuppressWarnings("unused")
 public interface RequestRepository extends JpaRepository<Request,Long> {
-    List<Request> findAllByRequesterAndStatus(UUID requester, RequestStatus status);
+
+    Request findOneByUuid(UUID requestUuid);
+
+    Page<Request> findAllByRequesterAndStatus(UUID requesterUuid, RequestStatus status, Pageable pageable);
+
+    Page<Request> findAllByRequester(UUID requesterUuid, Pageable pageable);
 
 }

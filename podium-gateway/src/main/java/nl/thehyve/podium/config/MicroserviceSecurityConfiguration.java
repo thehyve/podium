@@ -37,7 +37,6 @@ import java.util.Map;
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
-@Profile({"dev", "prod"})
 public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerAdapter {
 
     private final PodiumProperties podiumProperties;
@@ -117,6 +116,6 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
         return (String) keyUriRestTemplate
             .exchange("http://podiumUaa/oauth/token_key", HttpMethod.GET, request, Map.class).getBody()
             .get("value");
-
     }
+
 }

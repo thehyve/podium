@@ -40,7 +40,7 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
         if (authentication instanceof IdentifiableUser) {
             response.put(UUID_KEY, ((IdentifiableUser) authentication).getUserUuid().toString());
         }
-        log.info("Authentication = {}", authentication);
+        log.debug("Authentication = {}", authentication);
         if (authentication instanceof AuthenticatedUser) {
             addOrganisationRoles(response, ((AuthenticatedUser) authentication).getOrganisationAuthorities());
         } else if (authentication instanceof UserAuthenticationToken) {
@@ -80,7 +80,6 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
     }
 
     private Map<UUID, Collection<String>> toOrganisationRolesMap(Map<?, ?> map) {
-        log.info("toOrganisationRolesMap");
         Map<UUID, Collection<String>> result = new HashMap<>();
         for(Map.Entry entry: map.entrySet()) {
             Object key = entry.getKey();
@@ -97,26 +96,25 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
                 result.put(organisationUuid, roles);
             }
         }
-        log.info("toOrganisationRolesMap: result = {}", result);
         return result;
     }
 
     private Map<UUID, Collection<String>> getOrganisationRoles(Map<String, ?> map) {
         if (!map.containsKey(ORGANISATION_ROLES_KEY)) {
-            log.info("No key {}", ORGANISATION_ROLES_KEY);
+            log.debug("No key {}", ORGANISATION_ROLES_KEY);
             return Collections.emptyMap();
         }
         Object organisationRoles = map.get(ORGANISATION_ROLES_KEY);
         if (organisationRoles instanceof String) {
             try {
-                log.info("Mapping roles from: {}", organisationRoles);
+                log.debug("Mapping roles from: {}", organisationRoles);
                 Map roles = mapper.readValue((String)organisationRoles, Map.class);
                 return toOrganisationRolesMap(roles);
             } catch (IOException e) {
                 log.error("Error deserialising organisation roles.", e);
             }
         } else if (organisationRoles instanceof Map) {
-            log.info("Mapping roles from map: {}", organisationRoles);
+            log.debug("Mapping roles from map: {}", organisationRoles);
             return toOrganisationRolesMap((Map)organisationRoles);
         }
         log.error("Organisation role of wrong type: {}", organisationRoles);

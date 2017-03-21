@@ -8,7 +8,6 @@
 package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.thehyve.podium.validation.groups.RequestDetailCreate;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -18,7 +17,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
@@ -49,45 +47,31 @@ public class RequestDetail implements Serializable {
     )
     private Long id;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @Size(min = 1, max = 50)
-    @Column(name = "title", length = 50, nullable = false)
+    @Column(name = "title", length = 50)
     private String title;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @Size(min = 1, max = 2000)
-    @Column(name = "background", length = 2000, nullable = false)
+    @Column(name = "background", length = 2000)
     private String background;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @Size(min = 1, max = 300)
-    @Column(name = "research_question", length = 300, nullable = false)
+    @Column(name = "research_question", length = 300)
     private String researchQuestion;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @Size(min = 1, max = 5000)
-    @Column(name = "hypothesis", length = 5000, nullable = false)
+    @Column(name = "hypothesis", length = 5000)
     private String hypothesis;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @Size(min = 1, max = 10000)
-    @Column(name = "methods", length = 10000, nullable = false)
+    @Column(name = "methods", length = 10000)
     private String methods;
 
-    @Size(max = 50)
     @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
-    @OneToOne(mappedBy = "requestDetail")
-    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "principal_investigator")
     private PrincipalInvestigator principalInvestigator;
 
-    @NotNull(groups = { RequestDetailCreate.class })
-    @Size(min = 1, max = 500)
-    @Column(name = "search_query", length = 500, nullable = false)
+    @Column(name = "search_query", length = 500)
     private String searchQuery;
 
-    @NotNull(groups = { RequestDetailCreate.class })
     @ElementCollection(targetClass = RequestType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
@@ -98,10 +82,6 @@ public class RequestDetail implements Serializable {
 
     @Column(name = "combined_request")
     private Boolean combinedRequest;
-
-    @OneToOne(mappedBy = "requestDetail")
-    @JsonIgnore
-    private Request request;
 
     public Long getId() {
         return id;
@@ -229,19 +209,6 @@ public class RequestDetail implements Serializable {
 
     public void setCombinedRequest(Boolean combinedRequest) {
         this.combinedRequest = combinedRequest;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public RequestDetail request(Request request) {
-        this.request = request;
-        return this;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
     }
 
     @Override

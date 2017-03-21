@@ -35,6 +35,10 @@ public interface RequestMapper {
     @Mapping(source = "requestDetail", target = "requestDetail")
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
+    @Mapping(source = "parentRequest", target = "parentRequest")
+    @Mapping(source = "requestDetail", target = "requestDetail")
+    Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
+
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestDTOs);
 
     default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {

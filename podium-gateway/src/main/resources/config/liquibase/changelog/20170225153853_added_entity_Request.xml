@@ -25,6 +25,10 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
+            <column name="uuid" type="uuid">
+                <constraints unique="true"/>
+            </column>
+
             <column name="parent_request_id" type="bigint">
                 <constraints nullable="true" />
             </column>
