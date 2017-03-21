@@ -61,8 +61,8 @@ public class RequestService {
 
     /**
      * Save request draft
-     * @param requestRepresentation
-     * @return
+     * @param requestRepresentation request representation
+     * @return saved request representation
      */
     @Transactional
     public RequestRepresentation saveDraft(RequestRepresentation requestRepresentation) {
@@ -102,10 +102,10 @@ public class RequestService {
     }
 
     /**
-     * Get one requestDetail by id
+     * Get one request by id
      *
-     * @param id requestDetail id
-     * @return requestDetail entity
+     * @param id request id
+     * @return request representation
      */
     @Transactional(readOnly = true)
     public RequestRepresentation findOne(Long id) {
@@ -116,8 +116,8 @@ public class RequestService {
 
     /**
      * Initialize Request
-     * @param requester
-     * @return
+     * @param requester uuid of requester
+     * @return saved request representation
      */
     @Transactional
     public RequestRepresentation initializeBaseRequest(UUID requester) {
