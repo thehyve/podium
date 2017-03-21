@@ -41,8 +41,6 @@ public class RequestDetailRepresentation implements Serializable {
 
     private Boolean combinedRequest;
 
-//    private Request request;
-
     public Long getId() {
         return id;
     }
@@ -170,19 +168,6 @@ public class RequestDetailRepresentation implements Serializable {
     public void setCombinedRequest(Boolean combinedRequest) {
         this.combinedRequest = combinedRequest;
     }
-
-//    public Request getRequest() {
-//        return request;
-//    }
-//
-//    public RequestDetailRepresentation request(Request request) {
-//        this.request = request;
-//        return this;
-//    }
-//
-//    public void setRequest(Request request) {
-//        this.request = request;
-//    }
 
     @Override
     public boolean equals(Object o) {
