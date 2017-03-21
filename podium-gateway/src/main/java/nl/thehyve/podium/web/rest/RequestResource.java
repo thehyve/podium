@@ -84,7 +84,8 @@ public class RequestResource {
      */
     @PutMapping("/requests/draft")
     @Timed
-    public ResponseEntity<RequestRepresentation> saveRequestDraft(@RequestBody Request request) throws URISyntaxException {
+    public ResponseEntity<RequestRepresentation> saveRequestDraft(@RequestBody RequestRepresentation request) throws
+        URISyntaxException {
         log.debug("REST request to save draft of a request " + request.getId().toString());
         RequestRepresentation result = requestService.saveDraft(request);
         return ResponseEntity.ok()
