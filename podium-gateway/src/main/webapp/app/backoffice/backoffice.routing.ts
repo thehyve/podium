@@ -16,16 +16,21 @@ import { PodiumGatewayRoleModule } from './role/role.module';
 
 let BACKOFFICE_ROUTES = [
     {
-        path: 'organisation',
-        loadChildren: () => PodiumGatewayOrganisationModule
-    },
-    {
-        path: 'user-management',
-        loadChildren: () => PodiumGatewayUserMgmtModule
-    },
-    {
-        path: 'role',
-        loadChildren: () => PodiumGatewayRoleModule
+        path: 'backoffice',
+        children: [
+            {
+                path: 'organisation',
+                loadChildren: () => PodiumGatewayOrganisationModule
+            },
+            {
+                path: 'user-management',
+                loadChildren: () => PodiumGatewayUserMgmtModule
+            },
+            {
+                path: 'role',
+                loadChildren: () => PodiumGatewayRoleModule
+            }
+        ]
     }
 ];
 
