@@ -74,8 +74,6 @@ export class RequestFormComponent implements OnInit {
         this.organisationService.findAvailable().map((availableOrganisations) => {
             // TODO display list available organisations
         });
-
-        console.log('this', this);
     }
 
     ngAfterContentInit() {
@@ -134,7 +132,6 @@ export class RequestFormComponent implements OnInit {
     saveRequestDraft() {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
-        console.log(this.requestBase);
         this.requestService.saveRequestDraft(this.requestBase)
             .subscribe(
                 (requestBase) => this.postSaveUpdate(requestBase),
