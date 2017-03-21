@@ -23,7 +23,28 @@ export class UserRouteAccessService implements CanActivate {
         private stateStorageService: StateStorageService) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
+        this.setStateStorage(route, state);
+        return this.auth.authorize(false).then( canActivate => {
+            return canActivate;
+        });
     }
 
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
+        return this.canActivate(route, state);
+    }
+
+    setStateStorage(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        let params = {};
+        let destinationData = {};
+        let destinationName = '';
+        let destinationEvent = route;
+        if (destinationEvent !== undefined) {
+            params = destinationEvent.params;
+            destinationData = destinationEvent.data;
+            destinationName = state.url;
+        }
+        let from = {name: this.router.url.slice(1)};
+        let destination = {name: destinationName, data: destinationData};
+        this.stateStorageService.storeDestinationState(destination, params, from);
     }
 }
