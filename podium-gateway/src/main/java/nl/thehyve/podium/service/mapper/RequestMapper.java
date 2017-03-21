@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class })
+@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class, PrincipalInvestigatorMapper.class })
 public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")

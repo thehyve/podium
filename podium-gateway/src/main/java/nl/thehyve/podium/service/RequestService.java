@@ -71,8 +71,9 @@ public class RequestService {
         Request updatedRequest = null;
         if (request != null) {
             updatedRequest = requestMapper.updateRequestDTOToRequest(requestRepresentation, request);
+            save(updatedRequest);
         }
-        return requestMapper.requestToRequestDTO(updatedRequest);
+         return requestMapper.requestToRequestDTO(updatedRequest);
     }
 
     /**
