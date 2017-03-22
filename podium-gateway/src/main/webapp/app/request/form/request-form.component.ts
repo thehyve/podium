@@ -113,9 +113,9 @@ export class RequestFormComponent implements OnInit {
         this.requestService.initRequestBase(uuid)
             .subscribe(
                 (requestBase) => {
+                    this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
-                    this.requestDetail = new RequestDetail();
-                    this.requestDetail.principalInvestigator = new PrincipalInvestigator();
+                    this.requestDetail = requestBase.requestDetail;
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
@@ -134,18 +134,21 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveRequestDraft(this.requestBase)
             .subscribe(
-                (requestBase) => this.postSaveUpdate(requestBase),
+                (requestBase) => this.onSuccess(requestBase),
                 (error) => this.onError(error)
             );
     }
 
-    private postSaveUpdate(requestBase: RequestBase) {
-        // TODO
+    private onSuccess(result) {
+        this.error =  null;
+        this.success = 'SUCCESS';
+        window.scrollTo(0, 0);
     }
 
     private onError(error) {
         this.error =  'ERROR';
-       // TODO
+        this.success = null;
+        window.scrollTo(0, 0);
     }
 
 }
