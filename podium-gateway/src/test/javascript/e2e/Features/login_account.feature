@@ -11,11 +11,11 @@ Feature: All users have to login. (BRPREQ-2, BRPREQ-4)
             | Simone   |
 #            | Brigitte |
 
-#    Scenario: failing to login locks the account
-#        Given <user> goes to the 'sign in' page
-#        When 'he' attempts to login incorrectly '5' times
-#        And 'he' attempts to login
-#        Then 'he' is locked out
+    Scenario: failing to login locks the account
+        Given Dave goes to the 'sign in' page
+        When he attempts to login incorrectly '5' times
+        And he attempts to login
+        Then he is locked out
 
     Scenario: users can edit their account profile
         Given Simone goes to the 'profile' page
@@ -32,17 +32,15 @@ Feature: All users have to login. (BRPREQ-2, BRPREQ-4)
         Given Simone goes to the 'profile' page
         Then the following fields are not editable:
         """
-            {
-               "institute":"The Hyve"
-            }
+            ["institute"]
         """
 
-#    Scenario: register a new user
-#        Given 'Simone' is on the 'registration' page
-#        When 'she' registersfor a new account
-#        Then an email is sent
-#
-#    Scenario: all fields are mandatory to register a new user
-#        Given 'Simone' is on the 'registration' page
-#        When 'she' forgets to fill a field in the registration form
-#        Then 'she' is not registered
+    Scenario: register a new user
+        Given Dave goes to the 'registration' page
+        When he registers for a new account
+        Then an account is created
+
+    Scenario: all fields are mandatory to register a new user
+        Given Linda goes to the 'registration' page
+        When she forgets to fill a field in the registration form
+        Then she is not registered

@@ -9,6 +9,8 @@
  */
 import {$} from "protractor";
 import {Interactable} from "../protractor-stories/director";
+import ProfileForm = require("./modules/ProfileForm")
+
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
@@ -21,18 +23,9 @@ class ProfilePage {
     constructor() {
         this.name = "profile";
         this.url = "#/settings";
-        this.elements = {
-            "firstName": {locator: $('input[name=firstName]')},
-            "lastName": {locator: $('input[name=lastName]')},
-            "email": {locator: $('input[name=email]')},
-            "telephone": {locator: $('input[name=telephone]')},
+        this.elements = {...ProfileForm(),
             "institute": {locator: $('.form-control-static')}, //not future-proof
-            "department": {locator: $('input[name=department]')},
-            "jobTitle": {locator: $('input[name=jobTitle]')},
-            "specialism": {locator: $('input[name=specialism]')},
-            "submitButton": {locator: $('button[type=submit]')},
             "SuccessMessage": {locator: $('.alert-success').$('strong')},
-            // "Other specialism": {locator: $('button[name=jobTitle]')},
         }
     }
 }

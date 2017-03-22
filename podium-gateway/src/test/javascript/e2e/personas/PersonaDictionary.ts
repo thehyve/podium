@@ -11,6 +11,8 @@ import {Persona} from "../protractor-stories/director";
 import AdminPersona = require("./AdminPersona")
 import Rob = require("./Rob")
 import Simone = require("./Simone")
+import Dave = require("./Dave")
+import Linda = require("./Linda")
 
 
 /*
@@ -21,7 +23,8 @@ let PersonaDictionary: {[key: string]: Persona} = Object.create(null);
 PersonaDictionary['AdminPersona'] = AdminPersona;
 PersonaDictionary['Rob'] = Rob;
 PersonaDictionary['Simone'] = Simone;
-
+PersonaDictionary['Dave'] = Dave;
+PersonaDictionary['Linda'] = Linda;
 
 
 export = PersonaDictionary;

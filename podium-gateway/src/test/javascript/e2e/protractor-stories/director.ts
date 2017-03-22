@@ -46,6 +46,9 @@ export class Director {
         this.searchDir = searchDir;
         this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
+        browser.get('/');
+        browser.executeScript('localStorage.clear();');
+        browser.executeScript('sessionStorage.clear();');
     }
 
     fatalError(message: string) {

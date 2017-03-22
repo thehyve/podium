@@ -8,8 +8,10 @@
  * See the file LICENSE in the root of this repository.
  */
 import {Director} from "../protractor-stories/director";
-import PageDictionary = require("../pages/PageDictionary")
+import {AdminConsole} from "../protractor-stories/AdminConsole";
+import initPages = require ("../pages/PageDictionary");
 import PersonaDictionary = require("../personas/PersonaDictionary")
+import {browser, $} from "protractor";
 
 /*
  *
@@ -19,10 +21,14 @@ import PersonaDictionary = require("../personas/PersonaDictionary")
  */
 class World {
     public director;
+    public adminConsole;
     public scenarioData;
 
     constructor() {
-        this.director = new Director(__dirname + '/..', PageDictionary, PersonaDictionary);
+        let Pages = initPages();
+
+        this.director = new Director(__dirname + '/..', Pages, PersonaDictionary);
+        this.adminConsole = new AdminConsole();
     }
 }
 
