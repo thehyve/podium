@@ -20,6 +20,7 @@ npm-debug.log.*
 data/
 podium-gateway/src/main/webapp/app/**/*.js
 podium-gateway/src/main/webapp/app/**/*.js.map
+yarn.lock
 
 ######################
 # SASS
