@@ -61,6 +61,8 @@
             },
 
             "messages": {
+                "success": "Changes are saved.",
+                "error": "Saving draft failed.",
                 "validate": {
                     "title": {
                         "required": "A title is required.",

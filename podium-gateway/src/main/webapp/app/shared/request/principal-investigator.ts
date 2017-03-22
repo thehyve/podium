@@ -9,6 +9,7 @@
  */
 
 export class PrincipalInvestigator {
+    id: string;
     name: string;
     email: string;
     jobTitle: string;

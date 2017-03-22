@@ -111,9 +111,9 @@ export class RequestFormComponent implements OnInit {
         this.requestService.createDraft()
             .subscribe(
                 (requestBase) => {
+                    this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
-                    this.requestDetail = new RequestDetail();
-                    this.requestDetail.principalInvestigator = new PrincipalInvestigator();
+                    this.requestDetail = requestBase.requestDetail;
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
@@ -132,7 +132,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveDraft(this.requestBase)
             .subscribe(
-                (requestBase) => this.postSaveUpdate(requestBase),
+                (requestBase) => this.onSuccess(requestBase),
                 (error) => this.onError(error)
             );
     }
@@ -147,8 +147,10 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
-    private postSaveUpdate(requestBase: RequestBase) {
-        // TODO
+    private onSuccess(result) {
+        this.error =  null;
+        this.success = 'SUCCESS';
+        window.scrollTo(0, 0);
     }
 
     private postSubmit(requests: RequestBase[]) {
@@ -157,7 +159,8 @@ export class RequestFormComponent implements OnInit {
 
     private onError(error) {
         this.error =  'ERROR';
-       // TODO
+        this.success = null;
+        window.scrollTo(0, 0);
     }
 
 }
