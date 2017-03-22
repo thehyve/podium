@@ -16,6 +16,7 @@ export class RequestDetail {
     principalInvestigator: PrincipalInvestigator;
     relatedRequest: string;
 
+    id?: string;
     title: string;
     background: string;
     researchQuestion: string;
@@ -31,6 +32,7 @@ export class RequestDetail {
     constructor(
         principalInvestigator?: PrincipalInvestigator,
         relatedRequest?: string,
+        id?: string,
         title?: string,
         background?: string,
         researchQuestion?: string,
@@ -44,6 +46,7 @@ export class RequestDetail {
           this.principalInvestigator
               = principalInvestigator ? principalInvestigator : new PrincipalInvestigator();
           this.relatedRequest = relatedRequest ? relatedRequest : null;
+          this.id = id ? id : null;
           this.title = title ? title : null;
           this.background = background ? background : null;
           this.researchQuestion = researchQuestion ? researchQuestion : null;

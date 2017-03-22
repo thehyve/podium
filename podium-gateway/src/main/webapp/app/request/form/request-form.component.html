@@ -22,7 +22,8 @@
             <select class="custom-select" [(ngModel)]="selectedDraft">
                 <option selected>Please select a request draft</option>
                 <option *ngFor="let requestDraft of availableRequestDrafts" [ngValue]="requestDraft">
-                    [ {{ requestDraft.id }} ] {{ requestDraft.detail?.title ? requestDraft.detail.title : 'Request ' + requestDraft.id }}
+                    [ {{ requestDraft.id }} ] {{ requestDraft.requestDetail?.title ? requestDraft.requestDetail.title :
+                    'Request ' + requestDraft.id }}
                 </option>
             </select>
 

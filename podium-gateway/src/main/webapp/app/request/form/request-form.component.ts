@@ -113,9 +113,9 @@ export class RequestFormComponent implements OnInit {
         this.requestService.initRequestBase(uuid)
             .subscribe(
                 (requestBase) => {
+                    this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
-                    this.requestDetail = new RequestDetail();
-                    this.requestDetail.principalInvestigator = new PrincipalInvestigator();
+                    this.requestDetail = requestBase.requestDetail;
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
