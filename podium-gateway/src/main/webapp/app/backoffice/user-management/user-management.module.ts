@@ -8,7 +8,7 @@
  *
  */
 
-import { userMgmtRoute, userDialogRoute, UserResolvePagingParams, UserResolve } from './user-management.route';
+import { UserResolvePagingParams, UserResolve } from './user-management.route';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../shared/shared.module';
 import { PodiumGatewayAdminModule } from '../../admin/admin.module';
@@ -31,10 +31,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
-        NgbModule,
         PodiumGatewayAdminModule,
         PodiumGatewaySharedModule,
         UserMgmtRoutingModule,
+        NgbModule
     ],
     declarations: [
         UserMgmtComponent,
@@ -59,8 +59,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
-        RouterModule,
-        NgbModule
+        RouterModule
     ]
 })
 export class PodiumGatewayUserMgmtModule {}

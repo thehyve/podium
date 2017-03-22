@@ -9,11 +9,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRouteSnapshot, NavigationEnd, RoutesRecognized } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 
-import { BreadcrumbService } from 'ng2-breadcrumb/ng2-breadcrumb';
-
-import { JhiLanguageHelper, StateStorageService } from '../../shared';
+import { JhiLanguageHelper } from '../../shared';
 import { Principal } from '../../shared/auth/principal.service';
 
 @Component({
@@ -25,7 +23,6 @@ export class PdmMainComponent implements OnInit {
     constructor(
         private jhiLanguageHelper: JhiLanguageHelper,
         private router: Router,
-        private breadcrumbService: BreadcrumbService,
         private principal: Principal
     ) { }
 
@@ -45,17 +42,6 @@ export class PdmMainComponent implements OnInit {
                 this.jhiLanguageHelper.updateTitle(this.getPageTitle(this.router.routerState.snapshot.root));
             }
         });
-
-        this.configureBreadcrumb();
-    }
-
-    /**
-     * Configure friendly names for routes
-     */
-    configureBreadcrumb () {
-        this.breadcrumbService.addFriendlyNameForRoute('/', 'Home');
-        this.breadcrumbService.addFriendlyNameForRoute('/dashboard', 'Dashboard');
-        this.breadcrumbService.addFriendlyNameForRoute('/organisation', 'Dashboard');
     }
 
     isAuthenticated() {

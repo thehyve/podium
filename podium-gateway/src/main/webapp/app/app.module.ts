@@ -40,13 +40,15 @@ import { OrganisationService } from './backoffice/organisation/organisation.serv
 import { RoleService } from './backoffice/role/role.service';
 
 import {PodiumGatewayRequestModule} from './request/request.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
+        NgbModule.forRoot(),
         BrowserModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
-        PodiumGatewaySharedModule,
+        PodiumGatewaySharedModule.forRoot(),
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
@@ -73,6 +75,7 @@ import {PodiumGatewayRequestModule} from './request/request.module';
         OrganisationService,
         RoleService
     ],
-    bootstrap: [ PdmMainComponent ]
+    bootstrap: [ PdmMainComponent ],
+    exports: [NgbModule]
 })
 export class PodiumGatewayAppModule {}

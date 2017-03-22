@@ -16,12 +16,10 @@ import { BackofficeRoutingModule } from './backoffice.routing';
 
 @NgModule({
     imports: [
-        PodiumGatewaySharedModule,
         BackofficeRoutingModule
     ],
     providers: [],
     exports: [
-        PodiumGatewaySharedModule,
         RouterModule
     ]
 })

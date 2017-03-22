@@ -121,7 +121,7 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
     }
 
     transition () {
-        this.router.navigate(['/user-management'], { queryParams:
+        this.router.navigate(['backoffice/user-management'], { queryParams:
                 {
                     page: this.page,
                     sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')

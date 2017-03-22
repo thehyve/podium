@@ -48,7 +48,7 @@ export class UserResolvePagingParams implements Resolve<any> {
 
 export const userDialogRoute: Routes = [
     {
-        path: 'user-management-new',
+        path: 'new',
         component: UserDialogComponent,
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

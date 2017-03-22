@@ -11,13 +11,12 @@
 <jhi-page-ribbon></jhi-page-ribbon>
 <div>
     <router-outlet name="navbar"></router-outlet>
-    <breadcrumb *ngIf="isAuthenticated()" prefix="Podium"></breadcrumb>
 </div>
 <div class="container-fluid">
+    <template ngbModalContainer></template>
     <div class="card-wrapper">
         <router-outlet></router-outlet>
         <router-outlet name="popup"></router-outlet>
     </div>
-    <template ngbModalContainer></template>
 </div>
 

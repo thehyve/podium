@@ -19,7 +19,6 @@ import { PodiumUploadModule } from './upload/upload.module';
 
 @NgModule({
     imports: [
-        NgbModule.forRoot(),
         NgJhipsterModule.forRoot({
             i18nEnabled: true,
             defaultI18nLang: 'en'
@@ -30,7 +29,6 @@ import { PodiumUploadModule } from './upload/upload.module';
         FormsModule,
         HttpModule,
         CommonModule,
-        NgbModule,
         NgJhipsterModule,
         PodiumUploadModule,
         InfiniteScrollModule

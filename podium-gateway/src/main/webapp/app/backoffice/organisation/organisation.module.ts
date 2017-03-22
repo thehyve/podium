@@ -25,11 +25,9 @@ import {
 } from '../';
 import { OrganisationRoutingModule } from './organisation.routing';
 import { customHttpProvider } from '../../blocks/interceptor/http.provider';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
-        NgbModule,
         PodiumGatewaySharedModule,
         OrganisationRoutingModule
     ],
@@ -55,6 +53,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         OrganisationResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    exports: [NgbModule]
+    exports: []
 })
 export class PodiumGatewayOrganisationModule {}
