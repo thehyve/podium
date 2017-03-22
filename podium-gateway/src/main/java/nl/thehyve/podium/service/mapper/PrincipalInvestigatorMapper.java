@@ -26,4 +26,7 @@ public interface PrincipalInvestigatorMapper {
     PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigatorDTO);
 
     List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs);
+
+    PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation
+                                                                                    principalInvestigatorRepresentation, @MappingTarget PrincipalInvestigator principalInvestigator);
 }

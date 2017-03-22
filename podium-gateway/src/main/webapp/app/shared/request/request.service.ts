@@ -37,7 +37,7 @@ export class RequestService {
 
     saveRequestDraft(requestBase: RequestBase): Observable<RequestBase> {
         let draftCopy: RequestBase = Object.assign({}, requestBase);
-        return this.http.post(`${this.resourceUrl}/draft`, draftCopy).map((res: Response) => {
+        return this.http.put(`${this.resourceUrl}/draft`, draftCopy).map((res: Response) => {
             return res.json();
         });
     }

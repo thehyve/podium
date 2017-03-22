@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Request.
@@ -55,8 +55,7 @@ public class RequestService {
     private RequestReviewProcessService requestReviewProcessService;
 
 
-    public RequestService() {
-    }
+    public RequestService() {}
 
     private static ActionNotAllowedInStatus actionNotAllowedInStatus(RequestStatus status) {
         return new ActionNotAllowedInStatus("Action not allowed in status: " + status.name());
@@ -71,6 +70,23 @@ public class RequestService {
     @Transactional
     public Request save(Request request) {
         return requestRepository.save(request);
+    }
+
+    /**
+     * Save request draft
+     * @param requestRepresentation request representation
+     * @return saved request representation
+     */
+    @Transactional
+    public RequestRepresentation saveDraft(RequestRepresentation requestRepresentation) {
+        log.debug("Save request draft with request id : {}", requestRepresentation.getId());
+        Request request =  requestRepository.findOne(requestRepresentation.getId());
+        Request updatedRequest = null;
+        if (request != null) {
+            updatedRequest = requestMapper.updateRequestDTOToRequest(requestRepresentation, request);
+            save(updatedRequest);
+        }
+        return requestMapper.requestToRequestDTO(updatedRequest);
     }
 
     /**
@@ -119,6 +135,24 @@ public class RequestService {
         return result.map(requestMapper::requestToRequestDTO);
     }
 
+    /**
+     * Get one request by id
+     *
+     * @param id request id
+     * @return request representation
+     */
+    @Transactional(readOnly = true)
+    public RequestRepresentation findOne(Long id) {
+        log.debug("Request to get a requestDetail : {}", id);
+        Request request = requestRepository.findOne(id);
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    /**
+     * Initialize Request
+     * @param requester uuid of requester
+     * @return saved request representation
+     */
     @Transactional
     public RequestRepresentation createDraft(IdentifiableUser user) {
         Request request = new Request();
@@ -130,7 +164,6 @@ public class RequestService {
         save(request);
         return requestMapper.requestToRequestDTO(request);
     }
-
 
     public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(body.getUuid());
