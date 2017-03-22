@@ -78,7 +78,9 @@ public class SecurityService {
                 return null;
             }
             User user = userOptional.get();
-            return new UserAuthenticationToken(user);
+            UserAuthenticationToken token = new UserAuthenticationToken(user);
+            token.setAuthenticated(true);
+            return token;
         }
         return null;
     }

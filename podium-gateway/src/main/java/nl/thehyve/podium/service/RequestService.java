@@ -92,6 +92,7 @@ public class RequestService {
     /**
      *  Get all the requests.
      *
+     *  @param requester the current user (the requester)
      *  @param pageable the pagination information
      *  @return the list of entities
      */
@@ -105,6 +106,7 @@ public class RequestService {
     /**
      *  Get the request for the requester
      *
+     *  @param requester the current user (the requester)
      *  @param requestUuid the uuid of the request
      *  @return the entity
      *  @throws AccessDenied iff the user is not the requester of the request.
@@ -126,6 +128,8 @@ public class RequestService {
      * Perform look up of request drafts by requester.
      *
      * @param requester The user to perform the lookup for
+     * @param status the request status to filter on.
+     * @param pageable the pagination object
      * @return the transformed DTO list of requests
      */
     @Transactional(readOnly = true)
@@ -136,7 +140,7 @@ public class RequestService {
     }
 
     /**
-     * Get one request by id
+     * Get one request by id.
      *
      * @param id request id
      * @return request representation
@@ -149,8 +153,9 @@ public class RequestService {
     }
 
     /**
-     * Initialize Request
-     * @param requester uuid of requester
+     * Create a new draft request.
+     *
+     * @param user the current user (the requester).
      * @return saved request representation
      */
     @Transactional
@@ -165,6 +170,15 @@ public class RequestService {
         return requestMapper.requestToRequestDTO(request);
     }
 
+    /**
+     * Updates the draft request with the properties in the body.
+     * The request to update is fetched based on the id in the body.
+     *
+     * @param user the current user
+     * @param body the updated properties.
+     * @return the updated draft request
+     * @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
+     */
     public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(body.getUuid());
         if (request.getStatus() != RequestStatus.Draft) {
@@ -186,7 +200,9 @@ public class RequestService {
     /**
      *  Delete the request by uuid.
      *
+     *  @param user the current user
      *  @param uuid the uuid of the request
+     *  @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
      */
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
@@ -222,6 +238,7 @@ public class RequestService {
      * @param user the current user, submitting the request
      * @param uuid the uuid of the draft request
      * @return the list of generated requests to organisations.
+     * @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
      */
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);

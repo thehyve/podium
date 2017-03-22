@@ -81,8 +81,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        let uuid = this.currentUser.uuid;
-        this.requestService.findAvailableRequestDrafts(uuid)
+        this.requestService.findDrafts()
             .subscribe(
                 (requestDrafts) => this.processAvailableDrafts(requestDrafts),
                 (error) => this.onError('Error loading available request drafts.')
@@ -109,8 +108,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeBaseRequest() {
-        let uuid = this.currentUser.uuid;
-        this.requestService.initRequestBase(uuid)
+        this.requestService.createDraft()
             .subscribe(
                 (requestBase) => {
                     this.requestBase = requestBase;
@@ -132,14 +130,28 @@ export class RequestFormComponent implements OnInit {
     saveRequestDraft() {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
-        this.requestService.saveRequestDraft(this.requestBase)
+        this.requestService.saveDraft(this.requestBase)
             .subscribe(
                 (requestBase) => this.postSaveUpdate(requestBase),
                 (error) => this.onError(error)
             );
     }
 
+    submit() {
+        this.requestBase.requestDetail = this.requestDetail;
+        this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        this.requestService.submitDraft(this.requestBase)
+            .subscribe(
+                (requests) => this.postSubmit(requests),
+                (error) => this.onError(error)
+            );
+    }
+
     private postSaveUpdate(requestBase: RequestBase) {
+        // TODO
+    }
+
+    private postSubmit(requests: RequestBase[]) {
         // TODO
     }
 
