@@ -117,7 +117,6 @@ export class RequestFormComponent implements OnInit {
                     this.requestBase = requestBase;
                     this.requestDetail = requestBase.requestDetail;
                     this.selectDraft = false;
-                    this.onSuccess(requestBase);
                 },
                 (error) => this.onError('Error initializing base request')
             );
