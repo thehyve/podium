@@ -13,8 +13,7 @@ import { RouterModule } from '@angular/router';
 import { organisationRoute, organisationPopupRoute } from './organisation.route';
 
 let BACKOFFICE_ROUTES = [
-    ...organisationRoute,
-    ...organisationPopupRoute
+    ...organisationRoute
 ];
 
 @NgModule({
