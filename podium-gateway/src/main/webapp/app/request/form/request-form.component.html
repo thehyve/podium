@@ -41,6 +41,14 @@
             <fieldset [disabled]="requestFormDisabled">
                 <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 
+                <div class="alert alert-success" *ngIf="success" jhiTranslate="request.form.messages.success">
+                    Changes are saved.
+                </div>
+
+                <div class="alert alert-danger" *ngIf="error" jhiTranslate="request.form.messages.error">
+                    Saving draft failed.
+                </div>
+
                 <!-- Title -->
                 <div class="form-group">
                     <label for="title" jhiTranslate="request.form.title.label">Title</label>
