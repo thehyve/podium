@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -21,7 +20,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
-import nl.thehyve.podium.domain.enumeration.RequestType;
+import nl.thehyve.podium.common.enumeration.RequestType;
 
 /**
  * A RequestDetail.

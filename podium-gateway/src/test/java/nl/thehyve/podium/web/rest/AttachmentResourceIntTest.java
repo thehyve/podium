@@ -9,7 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.domain.enumeration.AttachmentType;
+import nl.thehyve.podium.common.enumeration.AttachmentType;
 import nl.thehyve.podium.service.AttachmentService;
 import nl.thehyve.podium.PodiumGatewayApp;
 

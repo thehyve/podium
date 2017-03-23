@@ -8,12 +8,13 @@
 package nl.thehyve.podium.service.representation;
 
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.*;
 
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 
 /**
@@ -34,6 +35,7 @@ public class RequestRepresentation implements Serializable {
 
     private RequestRepresentation parentRequest;
 
+    @Valid
     private RequestDetailRepresentation requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();

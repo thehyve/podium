@@ -7,6 +7,8 @@
 
 package nl.thehyve.podium.common.exceptions;
 
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -19,4 +21,13 @@ public class ActionNotAllowedInStatus extends Exception {
     public ActionNotAllowedInStatus(String msg, Throwable t) {
         super(msg, t);
     }
+
+    public static ActionNotAllowedInStatus forStatus(RequestStatus status) {
+        return new ActionNotAllowedInStatus("Action not allowed in status: " + status.name());
+    }
+
+    public static ActionNotAllowedInStatus forStatus(RequestReviewStatus status) {
+        return new ActionNotAllowedInStatus("Action not allowed in status: " + status.name());
+    }
+
 }

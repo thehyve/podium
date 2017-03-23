@@ -39,6 +39,11 @@ public interface RequestMapper {
     @Mapping(source = "requestDetail", target = "requestDetail")
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    Request clone(Request request);
+
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {

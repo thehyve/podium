@@ -17,11 +17,13 @@ import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Request;
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 
+import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
+import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.junit.Assert;
 import org.junit.Before;
@@ -248,10 +250,27 @@ public class RequestResourceIntTest {
         return resultRequest[0];
     }
 
+    private void setRequestData(RequestRepresentation request) {
+        RequestDetailRepresentation details = request.getRequestDetail();
+        details.setTitle("Test title");
+        details.setBackground("Background of the request");
+        details.setResearchQuestion("Does it work?");
+        details.setHypothesis("H0");
+        details.setMethods("Testing");
+        details.setSearchQuery("q");
+        PrincipalInvestigatorRepresentation principalInvestigator = details.getPrincipalInvestigator();
+        principalInvestigator.setName("Test Person");
+        principalInvestigator.setEmail("pi@local");
+        principalInvestigator.setJobTitle("Tester");
+        principalInvestigator.setAffiliation("The Organisation");
+    }
+
     @Test
     @Transactional
     public void submitDraft() throws Exception {
         RequestRepresentation request = newDraft(requester);
+
+        setRequestData(request);
 
         List<OrganisationDTO> organisations = new ArrayList<>();
         OrganisationDTO organisation = new OrganisationDTO();
@@ -285,7 +304,7 @@ public class RequestResourceIntTest {
         })
         .andExpect(status().isOk());
 
-        // Fetch request with status 'Review'
+        // Fetch requests with status 'Review'
         mockMvc.perform(
             getRequest(HttpMethod.GET,
                 REQUESTS_ROUTE + "/status/Review",
@@ -304,6 +323,41 @@ public class RequestResourceIntTest {
             }
         })
         .andExpect(status().isOk());
+    }
+
+    @Test
+    @Transactional
+    public void submitInvalidDraftRejected() throws Exception {
+        RequestRepresentation request = newDraft(requester);
+
+        setRequestData(request);
+
+        List<OrganisationDTO> organisations = new ArrayList<>();
+        OrganisationDTO organisation = new OrganisationDTO();
+        UUID organisationUuid = UUID.randomUUID();
+        organisation.setUuid(organisationUuid);
+        organisations.add(organisation);
+        request.setOrganisations(organisations);
+
+        request.getRequestDetail().setTitle(""); // invalid, should be rejected.
+
+        request = updateDraft(requester, request);
+        Assert.assertEquals(1, request.getOrganisations().size());
+        Assert.assertEquals("", request.getRequestDetail().getTitle());
+
+        // Submit the draft. One request should have been generated (and is returned).
+        mockMvc.perform(
+            getRequest(HttpMethod.GET,
+                REQUESTS_ROUTE + "/drafts/" + request.getUuid().toString() + "/submit",
+                null,
+                Collections.emptyMap())
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andDo(result -> {
+            log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+        })
+        .andExpect(status().isBadRequest());
     }
 
 }

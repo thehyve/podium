@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
-import nl.thehyve.podium.domain.enumeration.AttachmentType;
+import nl.thehyve.podium.common.enumeration.AttachmentType;
 
 /**
  * A Attachment.

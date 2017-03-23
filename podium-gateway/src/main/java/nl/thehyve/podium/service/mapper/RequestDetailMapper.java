@@ -10,6 +10,7 @@ package nl.thehyve.podium.service.mapper;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
 public interface RequestDetailMapper {
@@ -17,4 +18,8 @@ public interface RequestDetailMapper {
     RequestDetailRepresentation requestDetailToRequestDetailRepresentation(RequestDetail requestDetail);
 
     RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+    RequestDetail clone(RequestDetail requestDetail);
 }

@@ -9,13 +9,13 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.*;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
@@ -56,10 +57,6 @@ public class RequestService {
 
 
     public RequestService() {}
-
-    private static ActionNotAllowedInStatus actionNotAllowedInStatus(RequestStatus status) {
-        return new ActionNotAllowedInStatus("Action not allowed in status: " + status.name());
-    }
 
     /**
      * Save a request.
@@ -182,7 +179,7 @@ public class RequestService {
     public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(body.getUuid());
         if (request.getStatus() != RequestStatus.Draft) {
-            throw actionNotAllowedInStatus(request.getStatus());
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
         }
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request " + request.getUuid().toString());
@@ -207,28 +204,13 @@ public class RequestService {
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
         if (request.getStatus() != RequestStatus.Draft) {
-            throw actionNotAllowedInStatus(request.getStatus());
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
         }
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request " + uuid.toString());
         }
         log.debug("Request to delete Request : {}", uuid);
         deleteRequest(request.getId());
-    }
-
-    /**
-     * FIXME: Do a deep clone of the request
-     */
-    private Request cloneRequest(Request source) {
-        RequestRepresentation requestData = requestMapper.requestToRequestDTO(source);
-        requestData.setUuid(null);
-        requestData.setId(null);
-        requestData.setRequestDetail(null);
-        Request clone = requestMapper.requestDTOToRequest(requestData);
-        RequestDetail details = new RequestDetail();
-        details.setPrincipalInvestigator(new PrincipalInvestigator());
-        clone.setRequestDetail(details);
-        return clone;
     }
 
     /**
@@ -243,11 +225,24 @@ public class RequestService {
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
         if (request.getStatus() != RequestStatus.Draft) {
-            throw actionNotAllowedInStatus(request.getStatus());
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
         }
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request.");
         }
+
+        RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
+        log.debug("Validating request data.");
+        {
+            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+            Validator validator = factory.getValidator();
+
+            Set<ConstraintViolation<RequestRepresentation>> requestConstraintViolations = validator.validate(requestData);
+            if (!requestConstraintViolations.isEmpty()) {
+                throw new InvalidRequest("Invalid request", requestConstraintViolations);
+            }
+        }
+
         log.debug("Submitting request : {}", uuid);
 
         List<Request> organisationRequests = new ArrayList<>();
@@ -256,7 +251,7 @@ public class RequestService {
             // OrganisationDTO organisation;
             // OR: leave this to the (asynchronous) mail service call
             // to notify the organisations.
-            Request organisationRequest = cloneRequest(request);
+            Request organisationRequest = requestMapper.clone(request);
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
             organisationRequest.setStatus(RequestStatus.Review);

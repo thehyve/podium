@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.Objects;
 import java.util.UUID;
 
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 
 /**
  * A Request.

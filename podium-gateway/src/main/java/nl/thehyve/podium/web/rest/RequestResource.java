@@ -12,7 +12,7 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.security.SecurityUtils;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -31,6 +31,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -116,6 +117,20 @@ public class RequestResource {
         RequestRepresentation result = requestService.updateDraft(user, request);
         log.debug("Result: {}", result.getUuid());
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * Validate the request draft
+     *
+     * @param request the request draft to validate
+     */
+    @PostMapping("/requests/drafts/validate")
+    @Timed
+    public ResponseEntity<Void> validateDraft(@RequestBody @Valid RequestRepresentation request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Empty request body.");
+        }
+        return ResponseEntity.ok().build();
     }
 
     /**
