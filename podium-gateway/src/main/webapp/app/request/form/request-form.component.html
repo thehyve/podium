@@ -380,7 +380,9 @@
                                 <input type="checkbox"
                                        name="requestTypes"
                                        id="requestTypes"
-                                       value="{{requestType.value}}" />
+                                       value="{{requestType.value}}"
+                                       [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
+                                       (change)="updateRequestType(requestType, $event)" />
                                 {{requestType.value | capitalize}}
                             </label>
                         </div>
