@@ -54,7 +54,7 @@ export class RequestDetail {
           this.methods = methods ? methods : null;
           this.searchQuery = searchQuery ? searchQuery : null;
           this.combinedRequest = combinedRequest ? combinedRequest : null;
-          this.requestType = requestType ? requestType : null;
+          this.requestType = requestType ? requestType : [];
           this.attachments = attachments ? attachments : null;
     }
 }

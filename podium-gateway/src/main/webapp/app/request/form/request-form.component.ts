@@ -116,6 +116,7 @@ export class RequestFormComponent implements OnInit {
                     this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
                     this.requestDetail = requestBase.requestDetail;
+                    this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
@@ -126,7 +127,18 @@ export class RequestFormComponent implements OnInit {
         this.selectDraft = false;
         this.requestBase = requestBase;
         this.requestDetail = requestBase.requestDetail || new RequestDetail();
-        this.requestDetail.principalInvestigator = requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
+        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+        this.requestDetail.principalInvestigator =
+            requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
+    }
+
+    updateRequestType(selectedRequestType, event) {
+        let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
+        if ( _idx < 0) {
+            this.requestDetail.requestType.push(selectedRequestType.value);
+        } else {
+            this.requestDetail.requestType.splice(_idx, 1);
+        }
     }
 
     saveRequestDraft() {
