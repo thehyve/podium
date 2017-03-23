@@ -142,7 +142,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.submitDraft(this.requestBase)
             .subscribe(
-                (requests) => this.postSubmit(requests),
+                (requests) => this.onSubmitSuccess(requests),
                 (error) => this.onError(error)
             );
     }
@@ -153,7 +153,7 @@ export class RequestFormComponent implements OnInit {
         window.scrollTo(0, 0);
     }
 
-    private postSubmit(requests: RequestBase[]) {
+    private onSubmitSuccess(requests: RequestBase[]) {
         // TODO
     }
 
