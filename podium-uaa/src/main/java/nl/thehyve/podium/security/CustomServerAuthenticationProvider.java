@@ -38,9 +38,9 @@ import java.util.Optional;
  * too many failed login attempts and prevents login for unverified accounts.
  */
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class CustomServerAuthenticationProvider implements AuthenticationProvider {
 
-    private final Logger log = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
+    private final Logger log = LoggerFactory.getLogger(CustomServerAuthenticationProvider.class);
 
     @Autowired
     UaaProperties uaaProperties;
@@ -102,7 +102,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Invalid credentials.");
         }
         String username = authentication.getName().toLowerCase(Locale.ENGLISH);
-        log.info("username: " + username);
+        log.debug("Username: " + username);
         Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(username);
         if (!userOptional.isPresent()) {
             throw new BadCredentialsException("Invalid credentials.");
@@ -111,37 +111,34 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (user.isAccountLocked()) {
             if (!uaaProperties.getSecurity().isTimeBasedUnlockingEnabled()) {
                 // account is locked, deny access.
-                log.info("Account still locked for user " + user.getLogin() + ". Access denied.");
+                log.warn("Account still locked for user {}. Access denied.", user.getLogin());
                 throw new UserAccountLockedException("The user account is locked.");
             } else {
                 long intervalSeconds = Duration.between(user.getAccountLockDate(), ZonedDateTime.now()).abs().getSeconds();
-                log.info("Account locked. interval = {} seconds (locking period is {} seconds)",
+                log.debug("Account locked. interval = {} seconds (locking period is {} seconds)",
                     intervalSeconds,
                     uaaProperties.getSecurity().getAccountLockingPeriodSeconds());
                 if (intervalSeconds > uaaProperties.getSecurity().getAccountLockingPeriodSeconds()) {
                     // unblock account
-                    log.info("Unlocking locked account for user " + user.getLogin());
+                    log.info("Unlocking locked account for user {}.", user.getLogin());
                     user.resetFailedLoginAttempts();
                     user.setAccountLocked(false);
                     user = userService.save(user);
                 } else {
                     // account is temporarily locked, deny access.
-                    log.info("Account still locked for user " + user.getLogin() + ". Access denied.");
+                    log.warn("Account still locked for user {}. Access denied.", user.getLogin());
                     throw new UserAccountLockedException("The user account is locked.");
                 }
             }
         }
         // if oauth2 authentication
         if (authentication instanceof OAuth2Authentication) {
-            log.info("Checking OAuth2 authentication.");
-            if (authentication.isAuthenticated()) {
-                return getToken(user);
-            }
-            throw new BadCredentialsException("Invalid credentials.");
+            log.debug("Authenticated with OAuth2. Returning user authentication token.");
+            return getToken(user);
         }
         // if username and password authentication
         if (passwordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())) {
-            log.info("Credentials correct.");
+            log.debug("Credentials correct.");
             if (user.getFailedLoginAttempts() > 0) {
                 user.resetFailedLoginAttempts();
                 user = userService.save(user);
@@ -150,7 +147,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
         // failed login attempt
         user.increaseFailedLoginAttempts();
-        log.info("Login failed for user " + user.getLogin() + ". Failed attempt number " + user.getFailedLoginAttempts() + ".");
+        log.warn("Login failed for user {}. Failed attempt number {}.", user.getLogin(), user.getFailedLoginAttempts());
         if (user.getFailedLoginAttempts() >= uaaProperties.getSecurity().getMaxFailedLoginAttempts()) {
             // block account
             user.setAccountLocked(true);

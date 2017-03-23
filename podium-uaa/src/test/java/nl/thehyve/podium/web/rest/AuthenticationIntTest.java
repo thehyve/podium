@@ -9,7 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.security.CustomAuthenticationProvider;
+import nl.thehyve.podium.security.CustomServerAuthenticationProvider;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for authentication.
  *
- * See {@link CustomAuthenticationProvider}
+ * See {@link CustomServerAuthenticationProvider}
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

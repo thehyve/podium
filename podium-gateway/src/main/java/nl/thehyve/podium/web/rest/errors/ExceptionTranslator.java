@@ -7,6 +7,9 @@
 
 package nl.thehyve.podium.web.rest.errors;
 
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +34,8 @@ import java.util.List;
  */
 @ControllerAdvice
 public class ExceptionTranslator {
+
+    private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
 
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -92,4 +99,17 @@ public class ExceptionTranslator {
         }
         return builder.body(errorVM);
     }
+
+    @ExceptionHandler(InvalidRequest.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorVM handleInvalidRequest(InvalidRequest e) {
+        log.error("Invalid request: " + e.getMessage());
+        ErrorVM dto = new ErrorVM(ErrorConstants.ERR_VALIDATION);
+        for (ConstraintViolation violation : e.getConstraintViolations()) {
+            dto.add("request", violation.getPropertyPath().toString(), violation.getMessage());
+        }
+        return dto;
+    }
+
 }

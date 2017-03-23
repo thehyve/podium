@@ -81,8 +81,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        let uuid = this.currentUser.uuid;
-        this.requestService.findAvailableRequestDrafts(uuid)
+        this.requestService.findDrafts()
             .subscribe(
                 (requestDrafts) => this.processAvailableDrafts(requestDrafts),
                 (error) => this.onError('Error loading available request drafts.')
@@ -109,8 +108,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeBaseRequest() {
-        let uuid = this.currentUser.uuid;
-        this.requestService.initRequestBase(uuid)
+        this.requestService.createDraft()
             .subscribe(
                 (requestBase) => {
                     this.selectedDraft = requestBase;
@@ -132,9 +130,19 @@ export class RequestFormComponent implements OnInit {
     saveRequestDraft() {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
-        this.requestService.saveRequestDraft(this.requestBase)
+        this.requestService.saveDraft(this.requestBase)
             .subscribe(
                 (requestBase) => this.onSuccess(requestBase),
+                (error) => this.onError(error)
+            );
+    }
+
+    submit() {
+        this.requestBase.requestDetail = this.requestDetail;
+        this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        this.requestService.submitDraft(this.requestBase)
+            .subscribe(
+                (requests) => this.onSubmitSuccess(requests),
                 (error) => this.onError(error)
             );
     }
@@ -143,6 +151,10 @@ export class RequestFormComponent implements OnInit {
         this.error =  null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
+    }
+
+    private onSubmitSuccess(requests: RequestBase[]) {
+        // TODO
     }
 
     private onError(error) {

@@ -8,7 +8,12 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.domain.Request;
+import nl.thehyve.podium.common.security.AuthenticatedUser;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.security.SecurityUtils;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.service.RequestService;
@@ -16,13 +21,17 @@ import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -39,58 +48,104 @@ public class RequestResource {
 
     private static final String ENTITY_NAME = "request";
 
-    private final RequestService requestService;
-
-    public RequestResource(RequestService requestService) {
-        this.requestService = requestService;
-    }
+    @Autowired
+    private RequestService requestService;
 
     /**
-     * Fetch drafts for user
+     * Fetch drafts for the current user
      *
-     * @param uuid The UUID to perform the lookup for
      * @return A transformed list of RequestDTOs
      */
-    @GetMapping("/requests/drafts/{uuid}")
+    @GetMapping("/requests/drafts")
     @Timed
-    public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@PathVariable String uuid) {
-        log.debug("Get all request drafts for uuid");
-        List<RequestRepresentation> requests = requestService.findAllRequestDraftsByUserUuid(UUID.fromString(uuid));
-        return new ResponseEntity<>(requests, HttpStatus.OK);
+    public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@ApiParam Pageable pageable) throws URISyntaxException {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        log.debug("Get all request drafts for current user : {}", user);
+        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, RequestStatus.Draft, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/drafts");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
-     * Setup an initial request
+     * Create a new request draft
      *
-     * @param uuid The UUID to create the request by
      * @return The requestDTO of the initialized request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
      */
-    @GetMapping("/requests/initialize/{uuid}")
+    @PostMapping("/requests/drafts")
+    @PreAuthorize("isAuthenticated()")
+    @Secured(AuthorityConstants.RESEARCHER)
     @Timed
-    public ResponseEntity<RequestRepresentation> initializeRequest(@PathVariable String uuid) throws URISyntaxException {
-        RequestRepresentation result = requestService.initializeBaseRequest(UUID.fromString(uuid));
-        return ResponseEntity.created(new URI("/api/requests/initialize/"+uuid))
+    public ResponseEntity<RequestRepresentation> createDraft() throws URISyntaxException {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        log.debug("POST /requests/drafts (user: {})", user);
+        RequestRepresentation result = requestService.createDraft(user);
+        log.debug("Result: {}", result.getUuid());
+        return ResponseEntity.created(new URI("/api/requests/drafts"))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /requests : Updates an existing requestDetail.
+     * Fetch the request draft
      *
-     * @param request request draft
-     * @return saved request draft
+     * @return The list of requestDTOs generated
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
      */
-    @PutMapping("/requests/draft")
+    @GetMapping("/requests/drafts/{uuid}")
     @Timed
-    public ResponseEntity<RequestRepresentation> saveRequestDraft(@RequestBody RequestRepresentation request) throws
-        URISyntaxException {
-        log.debug("REST request to save draft of a request " + request.getId().toString());
-        RequestRepresentation result = requestService.saveDraft(request);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, request.getId().toString()))
-            .body(result);
+    public ResponseEntity<RequestRepresentation> getDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        RequestRepresentation request = requestService.findRequestForRequester(authenticatedUser, uuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
+    }
+
+    /**CustomUserAuthenticationConverter
+     * Update a request draft
+     *
+     * @return The requestDTO of the initialized request
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     */
+    @PutMapping("/requests/drafts")
+    @PreAuthorize("isAuthenticated()")
+    @Secured(AuthorityConstants.RESEARCHER)
+    @Timed
+    public ResponseEntity<RequestRepresentation> updateDraft(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        log.debug("PUT /requests/drafts (user: {})", user);
+        RequestRepresentation result = requestService.updateDraft(user, request);
+        log.debug("Result: {}", result.getUuid());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * Validate the request draft
+     *
+     * @param request the request draft to validate
+     */
+    @PostMapping("/requests/drafts/validate")
+    @Timed
+    public ResponseEntity<Void> validateDraft(@RequestBody @Valid RequestRepresentation request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Empty request body.");
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Submit the request draft
+     *
+     * @return The list of requestDTOs generated
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     */
+    @GetMapping("/requests/drafts/{uuid}/submit")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> submitDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        List<RequestRepresentation> requests = requestService.submitDraft(authenticatedUser, uuid);
+        return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
     /**
@@ -104,24 +159,44 @@ public class RequestResource {
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getAllRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of Requests");
-        Page<RequestRepresentation> page = requestService.findAll(pageable);
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        log.debug("REST request to get a page of Requests for user {}", user.getName());
+        Page<RequestRepresentation> page = requestService.findAllForRequester(user, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
-     * DELETE  /requests/:id : delete the "id" request.
+     * GET  /requests/status/:status : get all the requests for a requester with the status.
      *
-     * @param id the id of the requestDTO to delete
+     * @param status the status to filter on
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/requests/status/{status}")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getAllRequestsByStatus(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to requests with status {}", status);
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/status/" + status.toString());
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * DELETE  /requests/drafts/:uuid : delete the "uuid" draft request.
+     *
+     * @param uuid the uuid of the draft request to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/requests/{id}")
+    @DeleteMapping("/requests/drafts/{uuid}")
     @Timed
-    public ResponseEntity<Void> deleteRequest(@PathVariable Long id) {
-        log.debug("REST request to delete Request : {}", id);
-        requestService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    public ResponseEntity<Void> deleteDraft(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        log.debug("REST request to delete Request : {}", uuid);
+        requestService.deleteDraft(user, uuid);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, uuid.toString())).build();
     }
 
     /**

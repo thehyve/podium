@@ -32,19 +32,15 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(150)">
-                <constraints nullable="true"/>
             </column>
 
             <column name="email" type="varchar(150)">
-                <constraints nullable="true"/>
             </column>
 
             <column name="job_title" type="varchar(150)">
-                <constraints nullable="true"/>
             </column>
 
             <column name="affiliation" type="varchar(150)">
-                <constraints nullable="true"/>
             </column>
         </createTable>
 

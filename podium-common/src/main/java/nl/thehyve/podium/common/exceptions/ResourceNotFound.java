@@ -5,18 +5,20 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.exceptions;
+package nl.thehyve.podium.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class ActionNotAllowedInStatus extends Exception {
-    public ActionNotAllowedInStatus(String msg) {
-        super(msg);
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class ResourceNotFound extends RuntimeException {
+
+    public ResourceNotFound(String s) {
+        super(s);
     }
 
-    public ActionNotAllowedInStatus(String msg, Throwable t) {
-        super(msg, t);
+    public ResourceNotFound(String s, Throwable throwable) {
+        super(s, throwable);
     }
+
 }

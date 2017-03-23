@@ -8,16 +8,13 @@
 package nl.thehyve.podium.service.representation;
 
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Objects;
+import java.util.*;
 
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 
 /**
@@ -27,6 +24,10 @@ public class RequestRepresentation implements Serializable {
 
     private Long id;
 
+    private UUID uuid;
+
+    private UUID requester;
+
     @NotNull
     private RequestStatus status;
 
@@ -34,6 +35,7 @@ public class RequestRepresentation implements Serializable {
 
     private RequestRepresentation parentRequest;
 
+    @Valid
     private RequestDetailRepresentation requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();
@@ -45,6 +47,23 @@ public class RequestRepresentation implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public UUID getRequester() {
+        return requester;
+    }
+
+    public void setRequester(UUID requester) {
+        this.requester = requester;
+    }
+
     public RequestStatus getStatus() {
         return status;
     }

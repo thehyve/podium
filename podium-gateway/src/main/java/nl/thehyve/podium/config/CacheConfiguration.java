@@ -64,6 +64,12 @@ public class CacheConfiguration {
     @Bean
     public HazelcastInstance hazelcastInstance(PodiumProperties podiumProperties) {
         log.debug("Configuring Hazelcast");
+        {
+            HazelcastInstance instance = Hazelcast.getHazelcastInstanceByName("podiumGateway");
+            if (instance != null) {
+                instance.shutdown();
+            }
+        }
         Config config = new Config();
         config.setInstanceName("podiumGateway");
         // The serviceId is by default the application's name, see Spring Boot's eureka.instance.appname property

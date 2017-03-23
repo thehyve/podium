@@ -14,6 +14,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -43,22 +46,17 @@ public class PrincipalInvestigator implements Serializable {
     )
     private Long id;
 
-    @Size(min = 1, max = 150)
     @Column(name = "name", length = 150)
     private String name;
 
-    @Size(min = 1, max = 150)
     @Column(name = "email", length = 150)
     private String email;
 
-    @Size(min = 1, max = 150)
     @Column(name = "job_title", length = 150)
     private String jobTitle;
 
-    @Size(min = 1, max = 150)
     @Column(name = "affiliation", length = 150)
     private String affiliation;
-
 
     public Long getId() {
         return id;

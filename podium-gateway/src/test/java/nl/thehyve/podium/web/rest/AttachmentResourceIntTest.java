@@ -7,8 +7,9 @@
 
 package nl.thehyve.podium.web.rest;
 
+import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.domain.enumeration.AttachmentType;
+import nl.thehyve.podium.common.enumeration.AttachmentType;
 import nl.thehyve.podium.service.AttachmentService;
 import nl.thehyve.podium.PodiumGatewayApp;
 
@@ -45,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see AttachmentResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PodiumGatewayApp.class)
+@SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class AttachmentResourceIntTest {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";

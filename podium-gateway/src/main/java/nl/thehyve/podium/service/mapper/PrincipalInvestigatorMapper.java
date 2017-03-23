@@ -29,4 +29,8 @@ public interface PrincipalInvestigatorMapper {
 
     PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation
                                                                                     principalInvestigatorRepresentation, @MappingTarget PrincipalInvestigator principalInvestigator);
+
+    @Mapping(target = "id", ignore = true)
+    PrincipalInvestigator clone(PrincipalInvestigator principalInvestigator);
+
 }

@@ -8,11 +8,12 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.request.DecisionOutcome;
-import nl.thehyve.podium.common.request.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
+import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.RequestReviewProcess;
-import nl.thehyve.podium.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.*;
  * Service tests for the {@link RequestReviewProcessService}.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PodiumGatewayApp.class)
+@SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 @Transactional
 public class RequestReviewProcessServiceIntTest {
 
