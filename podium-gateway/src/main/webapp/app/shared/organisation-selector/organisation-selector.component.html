@@ -1,0 +1,6 @@
+<div>
+    <select multiple name="organisations" class="form-control" [(ngModel)]="organisationOptions">
+        <option *ngFor="let organisation of organisationOptions" [value]="organisation">{{organisation
+            .name}}</option>
+    </select>
+</div>
