@@ -9,10 +9,8 @@
  */
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { PodiumGatewaySharedModule } from '../../shared';
+import { PodiumGatewaySharedModule } from '../../../shared';
 import {
-    organisationRoute,
-    organisationPopupRoute,
     OrganisationPopupService,
     OrganisationComponent,
     OrganisationDialogComponent,
@@ -21,19 +19,26 @@ import {
     OrganisationPopupComponent,
     OrganisationDeletePopupComponent,
     OrganisationService,
-    OrganisationResolvePagingParams,
-} from '../';
+    OrganisationResolvePagingParams
+} from './';
 import { OrganisationRoutingModule } from './organisation.routing';
-import { customHttpProvider } from '../../blocks/interceptor/http.provider';
+import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
+import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
+import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        OrganisationRoutingModule
+        PodiumGatewayAdminModule,
+        OrganisationRoutingModule,
+        NgbModule
     ],
     declarations: [
         OrganisationComponent,
         OrganisationDetailComponent,
+        OrganisationFormComponent,
         OrganisationDialogComponent,
         OrganisationDeleteDialogComponent,
         OrganisationPopupComponent,
@@ -41,6 +46,7 @@ import { customHttpProvider } from '../../blocks/interceptor/http.provider';
     ],
     entryComponents: [
         OrganisationComponent,
+        OrganisationFormComponent,
         OrganisationDialogComponent,
         OrganisationPopupComponent,
         OrganisationDeleteDialogComponent,
@@ -53,6 +59,8 @@ import { customHttpProvider } from '../../blocks/interceptor/http.provider';
         OrganisationResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    exports: []
+    exports: [
+        RouterModule
+    ]
 })
 export class PodiumGatewayOrganisationModule {}

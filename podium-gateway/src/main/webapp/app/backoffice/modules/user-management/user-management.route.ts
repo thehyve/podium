@@ -16,8 +16,8 @@ import { UserMgmtDetailComponent } from './user-management-detail.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
-import { Principal } from '../../shared/auth/principal.service';
-import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
+import { Principal } from '../../../shared/auth/principal.service';
+import { UserRouteAccessService } from '../../../shared/auth/user-route-access-service';
 
 
 @Injectable()
@@ -50,24 +50,36 @@ export const userDialogRoute: Routes = [
     {
         path: 'new',
         component: UserDialogComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+        },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
     {
         path: 'detail/:login/edit',
         component: UserDialogComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+        },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
     {
         path: 'detail/:login/delete',
         component: UserDeleteDialogComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+        },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
     {
         path: 'detail/:login/unlock',
         component: UserUnlockDialogComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+        },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     }

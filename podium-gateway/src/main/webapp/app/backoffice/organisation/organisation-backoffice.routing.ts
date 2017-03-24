@@ -10,16 +10,16 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PodiumGatewayOrganisationModule } from './organisation/organisation.module';
-import { PodiumGatewayUserMgmtModule } from './user-management/user-management.module';
-import { PodiumGatewayRoleModule } from './role/role.module';
+import { PodiumGatewayOrganisationModule } from '../modules/organisation/organisation.module';
+import { PodiumGatewayUserMgmtModule } from '../modules/user-management/user-management.module';
+import { PodiumGatewayRoleModule } from '../modules/role/role.module';
 
-let BACKOFFICE_ROUTES = [
+let BBMRI_ROUTES = [
     {
-        path: 'backoffice',
+        path: 'organisation',
         children: [
             {
-                path: 'organisation',
+                path: 'configuration',
                 loadChildren: () => PodiumGatewayOrganisationModule
             },
             {
@@ -36,9 +36,9 @@ let BACKOFFICE_ROUTES = [
 
 @NgModule({
     imports: [
-        RouterModule.forChild(BACKOFFICE_ROUTES)
+        RouterModule.forChild(BBMRI_ROUTES)
     ],
     exports: [RouterModule]
 })
 
-export class BackofficeRoutingModule {}
+export class OrganisationBackofficeRoutingModule {}

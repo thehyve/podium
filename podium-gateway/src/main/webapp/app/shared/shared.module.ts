@@ -40,7 +40,7 @@ import { RequestService } from './request/request.service';
 @NgModule({
     imports: [
         PodiumGatewaySharedLibsModule,
-        PodiumGatewaySharedCommonModule,
+        PodiumGatewaySharedCommonModule
     ],
     declarations: [
         PodiumLoginComponent,

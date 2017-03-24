@@ -14,10 +14,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
-import { PodiumGatewayBackofficeModule } from './backoffice/backoffice.module';
 
 import { LayoutRoutingModule } from './layouts';
 import { HomeComponent } from './home';
@@ -36,11 +37,15 @@ import {
     ErrorComponent,
     CompletedComponent
 } from './layouts';
-import { OrganisationService } from './backoffice/organisation/organisation.service';
-import { RoleService } from './backoffice/role/role.service';
 
-import {PodiumGatewayRequestModule} from './request/request.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { OrganisationService } from './backoffice/modules/organisation/organisation.service';
+import { RoleService } from './backoffice/modules/role/role.service';
+
+import { PodiumGatewayRequestModule } from './request/request.module';
+import {
+    PodiumGatewayBbmriBackofficeModule
+} from './backoffice/bbmri/bbmri-backoffice.module';
+import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
 
 @NgModule({
     imports: [
@@ -52,7 +57,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
-        PodiumGatewayBackofficeModule
+        PodiumGatewayBbmriBackofficeModule,
+        PodiumGatewayOrganisationBackofficeModule
+
     ],
     declarations: [
         PdmMainComponent,

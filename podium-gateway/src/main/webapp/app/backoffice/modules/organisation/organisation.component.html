@@ -11,7 +11,7 @@
 <div>
     <h2><span jhiTranslate="podiumGatewayApp.organisation.home.title">Organisations</span>
         <button class="btn btn-primary float-xs-right create-organisation"
-                [routerLink]="['/', { outlets: { popup: ['organisation-new'] } }]">
+                [routerLink]="['./new']" skipLocationChange>
             <span class="fa fa-plus"></span>
             <span class="hidden-sm-down" jhiTranslate="podiumGatewayApp.organisation.home.createLabel">
             Create new Organisation
@@ -57,18 +57,18 @@
             </thead>
             <tbody>
             <tr *ngFor="let organisation of organisations ;trackBy: trackUuid">
-                <td><a [routerLink]="['../organisation', organisation.uuid ]">{{organisation.shortName}}</a></td>
+                <td><a [routerLink]="['./detail', organisation.uuid ]">{{organisation.shortName}}</a></td>
                 <td>{{organisation.name}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../organisation', organisation.uuid ]"
+                                [routerLink]="['./detail', organisation.uuid ]"
                                 class="btn btn-info btn-sm">
                             <span class="fa fa-eye"></span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'organisation/'+ organisation.uuid + '/edit'} }]"
+                                [routerLink]="['./', { outlets: { popup: 'detail/'+ organisation.uuid + '/edit'} }]"
                                 replaceUrl="true"
                                 class="btn btn-primary btn-sm">
                             <span class="fa fa-pencil"></span>
@@ -87,7 +87,7 @@
                             </span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'organisation/'+ organisation.uuid + '/delete'} }]"
+                                [routerLink]="['./', { outlets: { popup: 'detail/'+ organisation.uuid + '/delete'} }]"
                                 replaceUrl="true"
                                 class="btn btn-danger btn-sm">
                             <span class="fa fa-remove"></span>

@@ -16,8 +16,8 @@ import { EventManager, ParseLinks, PaginationUtil, JhiLanguageService, AlertServ
 
 import { Organisation } from './organisation.model';
 import { OrganisationService } from './organisation.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
-import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
+import { ITEMS_PER_PAGE, Principal } from '../../../shared';
+import { PaginationConfig } from '../../../blocks/config/uib-pagination.config';
 
 @Component({
     selector: 'pdm-organisation',

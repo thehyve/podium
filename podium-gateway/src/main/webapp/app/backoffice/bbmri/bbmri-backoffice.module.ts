@@ -8,19 +8,18 @@
  *
  */
 
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { PodiumGatewaySharedModule } from '../shared/shared.module';
-import { BackofficeRoutingModule } from './backoffice.routing';
+import { BbmriBackofficeRoutingModule } from './bbmri-backoffice.routing';
 
 @NgModule({
     imports: [
-        BackofficeRoutingModule
+        BbmriBackofficeRoutingModule
     ],
     providers: [],
     exports: [
         RouterModule
     ]
 })
-export class PodiumGatewayBackofficeModule {}
+export class PodiumGatewayBbmriBackofficeModule {}

@@ -10,8 +10,8 @@
 
 import { UserResolvePagingParams, UserResolve } from './user-management.route';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { PodiumGatewaySharedModule } from '../../shared/shared.module';
-import { PodiumGatewayAdminModule } from '../../admin/admin.module';
+import { PodiumGatewaySharedModule } from '../../../shared/shared.module';
+import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { RouterModule } from '@angular/router';
 
 import {
@@ -24,8 +24,9 @@ import {
     UserMgmtUnlockDialogComponent,
     UserMgmtDetailComponent,
     UserModalService
-} from '../';
-import { customHttpProvider } from '../../blocks/interceptor/http.provider';
+} from './';
+
+import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
 import { UserMgmtRoutingModule } from './user-management.routing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 

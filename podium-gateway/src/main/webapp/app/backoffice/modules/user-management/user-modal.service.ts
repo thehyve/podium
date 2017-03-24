@@ -11,8 +11,7 @@
 import { Injectable, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { UserMgmtDialogComponent } from './user-management-dialog.component';
-import { User, UserService } from '../../shared';
+import { User, UserService } from '../../../shared';
 
 @Injectable()
 export class UserModalService {
@@ -23,6 +22,7 @@ export class UserModalService {
     ) {}
 
     open (component: Component, login?: string): NgbModalRef {
+        console.log('OPening ');
         if (this.isOpen) {
             return;
         }
