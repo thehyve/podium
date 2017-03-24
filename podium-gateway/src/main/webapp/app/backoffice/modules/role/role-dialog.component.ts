@@ -18,9 +18,9 @@ import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
 import { Role } from './role.model';
 import { RolePopupService } from './role-popup.service';
 import { RoleService } from './role.service';
-import { User, UserService } from '../../shared';
-import { Authority } from '../../shared/authority/authority';
-import { AUTHORITIES } from '../../shared/authority/authority.constants';
+import { User, UserService } from '../../../shared';
+import { Authority } from '../../../shared/authority/authority';
+import { AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { Organisation } from '../organisation/organisation.model';
 import { OrganisationService } from '../organisation/organisation.service';
 

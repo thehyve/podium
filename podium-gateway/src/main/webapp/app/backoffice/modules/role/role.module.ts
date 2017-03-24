@@ -9,10 +9,9 @@
  */
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RouterModule } from '@angular/router';
 
-import { PodiumGatewaySharedModule } from '../../shared';
-import { PodiumGatewayAdminModule } from '../../admin/admin.module';
+import { PodiumGatewaySharedModule } from '../../../shared';
+import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { PodiumGatewayOrganisationModule } from '../organisation/organisation.module';
 
 import {
@@ -25,7 +24,7 @@ import {
     RolePopupComponent,
     RoleService,
     RolePopupService
-} from '../';
+} from './';
 
 
 let ENTITY_STATES = [

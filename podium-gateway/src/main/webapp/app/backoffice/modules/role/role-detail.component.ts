@@ -14,11 +14,11 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Role } from './role.model';
 import { RoleService } from './role.service';
 import {Organisation} from '../organisation/organisation.model';
-import {User} from '../../shared/user/user.model';
+import {User} from '../../../shared/user/user.model';
 import {OrganisationService} from '../organisation/organisation.service';
-import {UserService} from '../../shared/user/user.service';
-import {Authority} from '../../shared/authority/authority';
-import {AUTHORITIES_MAP} from '../../shared/authority/authority.constants';
+import {UserService} from '../../../shared/user/user.service';
+import {Authority} from '../../../shared/authority/authority';
+import {AUTHORITIES_MAP} from '../../../shared/authority/authority.constants';
 
 @Component({
     selector: 'jhi-role-detail',

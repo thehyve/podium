@@ -18,12 +18,12 @@ import { Role } from './role.model';
 import { RoleService } from './role.service';
 import { Organisation } from '../organisation/organisation.model';
 import { OrganisationService } from '../organisation/organisation.service';
-import { User } from '../../shared/user/user.model';
-import { UserService } from '../../shared/user/user.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
-import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
-import { Authority } from '../../shared/authority/authority';
-import { AUTHORITIES_MAP } from '../../shared/authority/authority.constants';
+import { User } from '../../../shared/user/user.model';
+import { UserService } from '../../../shared/user/user.service';
+import { ITEMS_PER_PAGE, Principal } from '../../../shared';
+import { PaginationConfig } from '../../../blocks/config/uib-pagination.config';
+import { Authority } from '../../../shared/authority/authority';
+import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
 
 @Component({
     selector: 'jhi-role',
