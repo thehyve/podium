@@ -1,0 +1,66 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div>
+    <h3><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span></h3>
+    <jhi-alert></jhi-alert>
+
+    <div class="container-fluid">
+        <div class="row">
+            <form name="roleForm" role="form" novalidate #roleForm="ngForm">
+				<jhi-alert-error></jhi-alert-error>
+
+                <div class="table-responsive" *ngIf="roles">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Authority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let role of roles">
+                                <td>
+                                    <!-- User select -->
+
+                                </td>
+                                <td>
+                                    <!-- Authority select -->
+                                    <select class="form-control" id="field_authority" name="authority" [(ngModel)]="role.authority" >
+                                        <option [ngValue]="null"></option>
+                                        <option [ngValue]="authorityOption.token === role.authority ? role.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+				<div class="form-group">
+					<label jhiTranslate="podiumGatewayApp.role.authority" for="field_authority">Authority</label>
+
+				</div>
+
+				<div class="form-group">
+					<label jhiTranslate="podiumGatewayApp.role.users" for="field_users">Users</label>
+					<select class="form-control" id="field_users" multiple name="users" [(ngModel)]="role.users">
+						<option [ngValue]="userOption.uuid" *ngFor="let userOption of users; trackBy: trackByUuid">{{userOption.login}}</option>
+					</select>
+				</div>
+            </form>
+        </div>
+    </div>
+    <br/>
+
+    <div class="text-xs-center" *ngIf="roles && roles.length">
+        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+    </div>
+</div>
