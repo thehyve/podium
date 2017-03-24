@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import nl.thehyve.podium.common.IdentifiableUser;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -23,7 +24,7 @@ import java.util.Set;
 import java.util.Objects;
 import java.util.UUID;
 
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 
 /**
  * A Request.
@@ -32,7 +33,7 @@ import nl.thehyve.podium.domain.enumeration.RequestStatus;
 @Table(name = "request")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "request")
-public class Request extends AbstractAuditingEntity implements Serializable {
+public class Request extends AbstractAuditingEntity implements Serializable, IdentifiableUser {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,6 +49,9 @@ public class Request extends AbstractAuditingEntity implements Serializable {
         }
     )
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private UUID uuid;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -65,7 +69,7 @@ public class Request extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     private Request parentRequest;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
     private RequestDetail requestDetail;
 
@@ -89,6 +93,24 @@ public class Request extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Void.
+     */
+    public void setUuid(UUID uuid) {
+        // pass
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
     }
 
     public RequestStatus getStatus() {
@@ -153,6 +175,14 @@ public class Request extends AbstractAuditingEntity implements Serializable {
         this.requestDetail = requestDetail;
     }
 
+    public RequestReviewProcess getRequestReviewProcess() {
+        return requestReviewProcess;
+    }
+
+    public void setRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
+        this.requestReviewProcess = requestReviewProcess;
+    }
+
     public Set<Attachment> getAttachments() {
         return attachments;
     }
@@ -212,4 +242,8 @@ public class Request extends AbstractAuditingEntity implements Serializable {
             '}';
     }
 
+    @Override
+    public UUID getUserUuid() {
+        return requester;
+    }
 }

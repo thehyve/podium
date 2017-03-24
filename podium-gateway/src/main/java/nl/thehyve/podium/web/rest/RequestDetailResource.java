@@ -8,6 +8,8 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
+import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.RequestDetailService;

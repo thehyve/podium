@@ -80,7 +80,6 @@ public class OAuth2TokenMockUtil {
     public RequestPostProcessor oauth2Authentication(User user) {
         String uuid = String.valueOf(UUID.randomUUID());
 
-        Set<String> scopes = Sets.newSet("some-client");
         given(tokenServices.loadAuthentication(uuid))
             .willReturn(createAuthentication(user));
 

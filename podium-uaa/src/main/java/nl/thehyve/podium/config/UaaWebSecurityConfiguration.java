@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.config;
 
-import nl.thehyve.podium.security.CustomAuthenticationProvider;
+import nl.thehyve.podium.security.CustomServerAuthenticationProvider;
 import nl.thehyve.podium.security.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableWebSecurity
 public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final Logger log = LoggerFactory.getLogger(UaaWebSecurityConfiguration.class);
@@ -36,7 +38,7 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    public CustomAuthenticationProvider customAuthenticationProvider;
+    public CustomServerAuthenticationProvider customServerAuthenticationProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -46,7 +48,7 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Inject
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-            .authenticationProvider(customAuthenticationProvider)
+            .authenticationProvider(customServerAuthenticationProvider)
             .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
             ;

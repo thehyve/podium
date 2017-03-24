@@ -9,7 +9,7 @@
  */
 
 export enum RequestType {
-    DATA,
-    IMAGES,
-    MATERIAL
+    Data,
+    Images,
+    Material
 }

@@ -31,7 +31,7 @@
         <scriptTask id="init" name="Initialise the reviewing process" scriptFormat="groovy">
             <documentation>Initialise the reviewing process.</documentation>
             <script>
-                execution.setVariable("decision", nl.thehyve.podium.common.request.DecisionOutcome.None)
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.None)
                 execution.setVariable("initiator_id", "${initiator}")
                 execution.setVariable("date_created", new Date())
             </script>
@@ -45,7 +45,7 @@
         <scriptTask id="status_validation" name="Update status to Validation" scriptFormat="groovy">
             <documentation>Update status to Validation.</documentation>
             <script>
-                execution.setVariable("status", nl.thehyve.podium.common.request.RequestReviewStatus.Validation)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Validation)
             </script>
         </scriptTask>
 
@@ -88,7 +88,7 @@
         <scriptTask id="status_revision" name="Update status to Revision" scriptFormat="groovy">
             <documentation>Update status to Revision.</documentation>
             <script>
-                execution.setVariable("status", nl.thehyve.podium.common.request.RequestReviewStatus.Revision)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Revision)
             </script>
         </scriptTask>
 
@@ -106,7 +106,7 @@
         <scriptTask id="status_review" name="Update status to Review" scriptFormat="groovy">
             <documentation>Update status.</documentation>
             <script>
-                execution.setVariable("status", nl.thehyve.podium.common.request.RequestReviewStatus.Review)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Review)
             </script>
         </scriptTask>
 
@@ -149,8 +149,8 @@
         <scriptTask id="approve" name="Approve the request" scriptFormat="groovy">
             <documentation>Approve the request.</documentation>
             <script>
-                execution.setVariable("decision", nl.thehyve.podium.common.request.DecisionOutcome.Approved)
-                execution.setVariable("status", nl.thehyve.podium.common.request.RequestReviewStatus.Closed)
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.Approved)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Closed)
             </script>
         </scriptTask>
 
@@ -162,8 +162,8 @@
         <scriptTask id="reject" name="Reject the request" scriptFormat="groovy">
             <documentation>Reject the request.</documentation>
             <script>
-                execution.setVariable("decision", nl.thehyve.podium.common.request.DecisionOutcome.Rejected)
-                execution.setVariable("status", nl.thehyve.podium.common.request.RequestReviewStatus.Closed)
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.Rejected)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Closed)
             </script>
         </scriptTask>
 

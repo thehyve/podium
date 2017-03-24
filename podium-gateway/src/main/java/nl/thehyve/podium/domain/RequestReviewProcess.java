@@ -7,8 +7,8 @@
 
 package nl.thehyve.podium.domain;
 
-import nl.thehyve.podium.common.request.DecisionOutcome;
-import nl.thehyve.podium.common.request.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;

@@ -10,7 +10,7 @@ package nl.thehyve.podium.service;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Role;
-import nl.thehyve.podium.exceptions.ResourceNotFoundException;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.repository.AuthorityRepository;
@@ -87,7 +87,7 @@ public class OrganisationService {
 
         Organisation organisation = findOne(organisationDTO.getId());
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisationDTO.getId()));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisationDTO.getId()));
         }
 
         organisation = organisationMapper.updateOrganisationFromOrganisationDTO(organisationDTO, organisation);
@@ -196,7 +196,7 @@ public class OrganisationService {
         Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
 
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", id));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d", id));
         }
 
         organisation.setActivated(activated);
@@ -214,7 +214,7 @@ public class OrganisationService {
 
         Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisation.getId()));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisation.getId()));
         }
 
         organisation.setDeleted(true);

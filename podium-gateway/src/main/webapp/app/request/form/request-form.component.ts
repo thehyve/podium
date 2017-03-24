@@ -16,6 +16,7 @@ import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
     RequestType,
+    PrincipalInvestigator,
     AttachmentService,
     RequestBase,
     RequestService,
@@ -32,15 +33,14 @@ import {
 })
 export class RequestFormComponent implements OnInit {
 
-    public requestFormDisabled: boolean;
     private currentUser: User;
+
+    public requestFormDisabled: boolean;
     public error: string;
     public success: string;
-
     public requestBase: RequestBase;
-    public request?: RequestDetail;
+    public requestDetail?: RequestDetail;
     public requestTypes = RequestType;
-
     public availableOrganisations: Organisation[];
     public availableRequestDrafts: RequestBase[];
     public selectDraft: boolean;
@@ -64,7 +64,6 @@ export class RequestFormComponent implements OnInit {
 
     ngOnInit() {
         this.principal.identity().then((account) => {
-            console.log('Got user ', account);
             this.currentUser = account;
             this.initializeRequestForm();
         });
@@ -73,12 +72,8 @@ export class RequestFormComponent implements OnInit {
          * Organisation resolve
          */
         this.organisationService.findAvailable().map((availableOrganisations) => {
-
+            // TODO display list available organisations
         });
-
-        /**
-         * Resolve Tags
-         */
     }
 
     ngAfterContentInit() {
@@ -86,9 +81,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        // Resolve Draft Requests
-        let uuid = this.currentUser.uuid;
-        this.requestService.findAvailableRequestDrafts(uuid)
+        this.requestService.findDrafts()
             .subscribe(
                 (requestDrafts) => this.processAvailableDrafts(requestDrafts),
                 (error) => this.onError('Error loading available request drafts.')
@@ -109,23 +102,19 @@ export class RequestFormComponent implements OnInit {
     }
 
     processAvailableDrafts(requestDrafts) {
-        if (!requestDrafts.length) {
-            this.selectDraft = false;
-            return this.initializeBaseRequest();
-        }
-
         this.selectDraft = true;
         this.availableRequestDrafts = requestDrafts;
         this.requestDraftsAvailable = true;
     }
 
     initializeBaseRequest() {
-        let uuid = this.currentUser.uuid;
-        this.requestService.initRequestBase(uuid)
+        this.requestService.createDraft()
             .subscribe(
                 (requestBase) => {
+                    this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
-                    this.request = new RequestDetail();
+                    this.requestDetail = requestBase.requestDetail;
+                    this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
@@ -135,22 +124,55 @@ export class RequestFormComponent implements OnInit {
     selectRequestDraft(requestBase: RequestBase) {
         this.selectDraft = false;
         this.requestBase = requestBase;
-        this.request = requestBase.detail || new RequestDetail();
+        this.requestDetail = requestBase.requestDetail || new RequestDetail();
+        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+        this.requestDetail.principalInvestigator =
+            requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
+    }
+
+    updateRequestType(selectedRequestType, event) {
+        let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
+        if ( _idx < 0) {
+            this.requestDetail.requestType.push(selectedRequestType.value);
+        } else {
+            this.requestDetail.requestType.splice(_idx, 1);
+        }
     }
 
     saveRequestDraft() {
-        this.requestService.saveRequestDraft(this.requestBase)
+        this.requestBase.requestDetail = this.requestDetail;
+        this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        this.requestService.saveDraft(this.requestBase)
             .subscribe(
-                (requestBase) => this.postSaveUpdate(requestBase),
+                (requestBase) => this.onSuccess(requestBase),
                 (error) => this.onError(error)
             );
     }
 
-    private postSaveUpdate(requestBase: RequestBase) {
+    submit() {
+        this.requestBase.requestDetail = this.requestDetail;
+        this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        this.requestService.submitDraft(this.requestBase)
+            .subscribe(
+                (requests) => this.onSubmitSuccess(requests),
+                (error) => this.onError(error)
+            );
     }
 
-    onError(error) {
-        console.warn('An error occurred ', error);
+    private onSuccess(result) {
+        this.error =  null;
+        this.success = 'SUCCESS';
+        window.scrollTo(0, 0);
+    }
+
+    private onSubmitSuccess(requests: RequestBase[]) {
+        // TODO
+    }
+
+    private onError(error) {
+        this.error =  'ERROR';
+        this.success = null;
+        window.scrollTo(0, 0);
     }
 
 }

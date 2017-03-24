@@ -8,9 +8,10 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.exceptions.ResourceNotFoundException;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
@@ -101,10 +102,10 @@ public class OrganisationResource {
     @PutMapping("/organisations")
     @Timed
     public ResponseEntity<OrganisationDTO> updateOrganisation(@OrganisationParameter @Valid @RequestBody OrganisationDTO organisationDTO)
-        throws ResourceNotFoundException, URISyntaxException {
+        throws ResourceNotFound, URISyntaxException {
             log.debug("REST request to update Organisation : {}", organisationDTO);
             if (organisationDTO.getId() == null) {
-                throw new ResourceNotFoundException("ID not defined for organisation.");
+                throw new ResourceNotFound("ID not defined for organisation.");
             }
 
             OrganisationDTO updatedOrganisation = organisationService.update(organisationDTO);
@@ -146,7 +147,7 @@ public class OrganisationResource {
         log.debug("REST request to get Organisation : {}", id);
         OrganisationDTO organisationDTO = organisationService.findOneDTO(id);
         if (organisationDTO == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %s.", id));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %s.", id));
         }
         return ResponseEntity.ok(organisationDTO);
     }
@@ -165,7 +166,7 @@ public class OrganisationResource {
         log.debug("REST request to get Organisation : {}", uuid);
         OrganisationDTO organisationDTO = organisationService.findByUuid(uuid);
         if (organisationDTO == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with uuid: %s.", uuid));
+            throw new ResourceNotFound(String.format("Organisation not found with uuid: %s.", uuid));
         }
 
         return ResponseEntity.ok(organisationDTO);
@@ -205,8 +206,8 @@ public class OrganisationResource {
     @Timed
     public ResponseEntity<Void> deleteOrganisation(@PathVariable Long id) {
         log.debug("REST request to delete Organisation : {}", id);
-
         organisationService.delete(id);
+
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 

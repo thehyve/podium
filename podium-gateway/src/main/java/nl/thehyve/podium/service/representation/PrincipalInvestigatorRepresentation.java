@@ -8,6 +8,9 @@
 package nl.thehyve.podium.service.representation;
 
 
+import nl.thehyve.podium.common.validation.Required;
+import org.hibernate.validator.constraints.Email;
+
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -19,20 +22,21 @@ public class PrincipalInvestigatorRepresentation implements Serializable {
 
     private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Required
+    @Size(max = 150)
     private String name;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Email
+    @Required
+    @Size(max = 150)
     private String email;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Required
+    @Size(max = 150)
     private String jobTitle;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Required
+    @Size(max = 150)
     private String affiliation;
 
     public Long getId() {

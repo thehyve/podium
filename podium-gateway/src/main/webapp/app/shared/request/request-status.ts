@@ -9,8 +9,7 @@
  */
 
 export enum RequestStatus {
-    DRAFT,
-    FIRST_CHECK,
-    REVIEW,
-    DELIVERY
+    Draft,
+    Review,
+    Delivery
 }

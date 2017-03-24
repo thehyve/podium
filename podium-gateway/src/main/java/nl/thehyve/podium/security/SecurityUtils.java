@@ -8,10 +8,12 @@
 package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 /**
  * Utility class for Spring Security.
@@ -20,24 +22,46 @@ public final class SecurityUtils {
 
     private SecurityUtils() {}
 
+    private static UserAuthenticationToken getUser(Authentication authentication) {
+        if (authentication instanceof UserAuthenticationToken) {
+            return (UserAuthenticationToken) authentication;
+        } else if (authentication instanceof OAuth2Authentication) {
+            OAuth2Authentication token = (OAuth2Authentication) authentication;
+            return getUser(token.getUserAuthentication());
+        }
+        return null;
+    }
+
+    /**
+     * Get the login of the current user.
+     *
+     * @return the login of the current user
+     */
+    public static UserAuthenticationToken getCurrentUser() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null) {
+            return getUser(authentication);
+        }
+        return null;
+    }
+
     /**
      * Get the login of the current user.
      *
      * @return the login of the current user
      */
     public static String getCurrentUserLogin() {
+        UserAuthenticationToken user = getCurrentUser();
+        if (user != null) {
+            return user.getName();
+        }
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
-        String userName = null;
-        if (authentication != null) {
-            if (authentication.getPrincipal() instanceof UserDetails) {
-                UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-                userName = springSecurityUser.getUsername();
-            } else if (authentication.getPrincipal() instanceof String) {
-                userName = (String) authentication.getPrincipal();
-            }
+        if (authentication != null && authentication.getPrincipal() instanceof String) {
+            return (String) authentication.getPrincipal();
         }
-        return userName;
+        return null;
     }
 
     /**

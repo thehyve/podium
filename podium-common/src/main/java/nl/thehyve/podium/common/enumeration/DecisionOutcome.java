@@ -5,12 +5,10 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.common.request;
+package nl.thehyve.podium.common.enumeration;
 
-public enum RequestReviewStatus {
-    Revision,
-    Validation,
-    Review,
-    Closed,
+public enum DecisionOutcome {
+    Approved,
+    Rejected,
     None
 }

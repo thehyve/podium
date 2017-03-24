@@ -7,8 +7,8 @@
 
 package nl.thehyve.podium.service.representation;
 
-import nl.thehyve.podium.common.request.DecisionOutcome;
-import nl.thehyve.podium.common.request.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.domain.RequestReviewProcess;
 
 import java.io.Serializable;
