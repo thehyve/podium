@@ -8,8 +8,6 @@
  *
  */
 
-import { User } from '../../shared';
-
 export class Role {
     constructor(
         public id?: number,
