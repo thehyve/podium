@@ -13,6 +13,10 @@ import DashboardPage = require("./DashboardPage")
 import ProfilePage = require("./ProfilePage")
 import RegistrationPage = require("./RegistrationPage")
 import completedPage = require("./completedPage")
+import UserManagementPage = require("./UserManagementPage")
+import UserDetailsPage = require("./UserDetailsPage")
+
+
 
 
 /*
@@ -27,6 +31,9 @@ function initPages () {
     PageDictionary['profile'] = new ProfilePage;
     PageDictionary['registration'] = new RegistrationPage;
     PageDictionary['completed'] = new completedPage;
+    PageDictionary['user management'] = new UserManagementPage;
+    PageDictionary['user details'] = new UserDetailsPage;
+
 
     return PageDictionary;
 }

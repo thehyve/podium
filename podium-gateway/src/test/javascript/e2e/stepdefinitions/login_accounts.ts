@@ -7,9 +7,11 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director, Persona} from "../protractor-stories/director";
+import {Director} from "../protractor-stories/director";
 import {AdminConsole} from "../protractor-stories/AdminConsole";
 import {$} from "protractor";
+import {login} from "./Util";
+
 
 export = function () {
     this.setDefaultTimeout(30 * 1000); //max time before callback
@@ -136,7 +138,7 @@ export = function () {
 
         director.at("completed").then(function () {
             adminConsole.checkUser(director.getPersona("he"), checkNewUser, callback);
-        })
+        }, callback);
     });
 
     this.When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts, callback) {
@@ -149,7 +151,7 @@ export = function () {
             director.enterText('usernameInput', persona.properties['userName']),
             director.enterText('passwordInput', 'wongPassword')
         ]).then(function () {
-            for (let i = 0; i < attempts; i++){
+            for (let i = 0; i < attempts; i++) {
                 director.clickOn('submitButton').then(callback);
             }
         })
@@ -210,7 +212,7 @@ export = function () {
         let adminConsole = this.adminConsole as AdminConsole;
 
         director.at('registration').then(function () {
-            adminConsole.checkUser(director.getPersona(personaName), checkLocked, callback);
+            adminConsole.checkUser(director.getPersona(personaName), checkNonExistend, callback);
         }, callback)
     });
 
@@ -221,19 +223,12 @@ export = function () {
         }
     }
 
-    //TODO: hack for login, should be replaced with rest call if possible
-    function login(director: Director, persona: Persona) {
-        director.goToPage('sign in');
-        return Promise.all([
-            director.enterText('usernameInput', persona.properties['userName']),
-            director.enterText('passwordInput', persona.properties['password'])
-        ]).then(function () {
-            return director.clickOn('submitButton').then(function () {
-                return director.waitForPage('Dashboard');
-            });
-        })
-    }
+
 };
+
+function checkNonExistend(expected, realData) {
+    return realData == ''
+}
 
 function checkNewUser(expected, realData) {
     return expected.properties.userName == realData.login &&

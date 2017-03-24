@@ -41,11 +41,11 @@ export class AdminConsole {
                 method: 'GET',
                 url: 'http://localhost:8080/podiumuaa/api/users/' + persona.properties.userName,
                 headers: {
-                    'Authorization': 'Bearer ' + JSON.parse(body).access_token
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
             };
             request(options, function (error, response, body) {
-                let user = JSON.parse(body);
+                let user = parseJSON(body);
                 if (check(persona, user)) {
                     callback()
                 } else {
@@ -62,7 +62,7 @@ export class AdminConsole {
                 method: 'POST',
                 url: 'http://localhost:8080/podiumuaa/api/users/',
                 headers: {
-                    'Authorization': 'Bearer ' + JSON.parse(body).access_token
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
                 },
                 body: JSON.stringify(
                     {
@@ -109,7 +109,7 @@ export class AdminConsole {
                 method: 'DELETE',
                 url: 'http://localhost:8080/podiumuaa/api/users/' + persona.properties.userName,
                 headers: {
-                    'Authorization': 'Bearer ' + JSON.parse(body).access_token
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
             };
             request(options, function (error, response, body) {
@@ -120,9 +120,9 @@ export class AdminConsole {
     }
 
     public unlockUser(persona){
-        let token
+        let token;
         this.authenticate(function (error, response, body) {
-            token = JSON.parse(body).access_token
+            token = parseJSON(body).access_token;
             let options = {
                 method: 'GET',
                 url: 'http://localhost:8080/podiumuaa/api/users/' + persona.properties.userName,
@@ -131,7 +131,8 @@ export class AdminConsole {
                 }
             };
             request(options, function (error, response, body) {
-                let user = JSON.parse(body);
+
+                let user = parseJSON(body);
 
                 let options = {
                     method: 'PUT',
@@ -144,4 +145,11 @@ export class AdminConsole {
             })
         });
     }
+}
+
+function parseJSON(string: string){
+    if (string == '') {
+        return string
+    }
+    return JSON.parse(string);
 }

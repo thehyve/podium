@@ -82,14 +82,30 @@ export class Director {
         return this.currentPersona;
     }
 
-    public goToPage(pageName: string) {
+    public getListOfPersonas(personaNames: string[]) {
+        let that = this;
+        let result = new Array(personaNames.length);
+
+        personaNames.forEach(function (personaName, index) {
+            if (isUndefined(that.personaDictionary[personaName])){
+                that.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
+            }
+            result[index] = that.personaDictionary[personaName];
+        });
+
+        return result;
+    }
+
+    public goToPage(pageName: string, sufix?: string) {
         let page = this.setCurrentPageTo(pageName);
-        return browser.get(page.url);
+        let url = isUndefined(sufix) ? page.url : page.url + sufix;
+
+        return browser.get(url);
     }
 
     public at(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        browser.waitForAngular('make sure the page is loaded before doing a check');
+        // browser.waitForAngular('make sure the page is loaded before doing a check');
         return Promise.resolve(page.at()).then(function (v) {
             return new Promise(function (resolve, reject) {
                 if (v) {
@@ -105,7 +121,7 @@ export class Director {
     public getElement(elementName: string) {
         let element = this.getCurrentPage().elements[elementName];
         if (isUndefined(element)) {
-            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for '+ elementName +'.\n');
+            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + elementName + '.\n');
         }
         return element;
     }
@@ -124,7 +140,7 @@ export class Director {
 
     public enterText(fieldName: string, text: string) {
         if (isUndefined(this.getCurrentPage().elements[fieldName])) {
-            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for '+ fieldName +'.\n');
+            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + fieldName + '.\n');
         }
         return Promise.all([
             this.getCurrentPage().elements[fieldName].locator.clear(),
@@ -135,7 +151,7 @@ export class Director {
     public waitForPage(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
         return browser.wait(function () {
-                return page.at()
+            return page.at()
         }, 10 * 1000).then(function () {
         }, function (err) {
             throw 'Page: ' + pageName + ' did not appear fast enough.\n error: ' + err;

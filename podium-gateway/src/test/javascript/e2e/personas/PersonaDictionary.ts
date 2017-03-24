@@ -13,6 +13,9 @@ import Rob = require("./Rob")
 import Simone = require("./Simone")
 import Dave = require("./Dave")
 import Linda = require("./Linda")
+import System = require("./System")
+import Admin = require("./Admin")
+import BBMRI_Admin = require("./BBMRI_Admin")
 
 
 /*
@@ -25,6 +28,8 @@ PersonaDictionary['Rob'] = Rob;
 PersonaDictionary['Simone'] = Simone;
 PersonaDictionary['Dave'] = Dave;
 PersonaDictionary['Linda'] = Linda;
-
+PersonaDictionary['System'] = System;
+PersonaDictionary['Admin'] = Admin;
+PersonaDictionary['BBMRI_Admin'] = BBMRI_Admin;
 
 export = PersonaDictionary;
