@@ -27,6 +27,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
+import { EnumKeysPipe } from '../../../shared/pipes/enumKeys';
 
 @NgModule({
     imports: [
@@ -42,7 +43,7 @@ import { OrganisationFormComponent } from './organisation-form/organisation-form
         OrganisationDialogComponent,
         OrganisationDeleteDialogComponent,
         OrganisationPopupComponent,
-        OrganisationDeletePopupComponent,
+        OrganisationDeletePopupComponent
     ],
     entryComponents: [
         OrganisationComponent,

@@ -27,8 +27,7 @@ import { EnumKeysPipe } from '../shared/pipes/enumKeys';
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
-        RequestFormComponent,
-        EnumKeysPipe
+        RequestFormComponent
     ],
     providers: [
         RequestFormService

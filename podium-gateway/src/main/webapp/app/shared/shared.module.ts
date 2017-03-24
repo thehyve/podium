@@ -36,6 +36,7 @@ import {
 } from './';
 import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
+import { EnumKeysPipe } from './pipes/enumKeys';
 
 @NgModule({
     imports: [
@@ -48,7 +49,8 @@ import { RequestService } from './request/request.service';
         EmailValidatorDirective,
         PasswordValidatorDirective,
         WordLengthValidatorDirective,
-        HasAnyAuthorityDirective
+        HasAnyAuthorityDirective,
+        EnumKeysPipe
     ],
     providers: [],
     entryComponents: [PodiumLoginComponent],
@@ -61,7 +63,8 @@ import { RequestService } from './request/request.service';
         PasswordValidatorDirective,
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        EnumKeysPipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 

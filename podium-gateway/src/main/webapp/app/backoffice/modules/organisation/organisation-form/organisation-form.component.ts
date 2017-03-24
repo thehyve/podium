@@ -18,6 +18,7 @@ import { Principal } from '../../../../shared';
 import { User } from '../../../../shared/user/user.model';
 import { Response } from '@angular/http';
 import { ActivatedRoute } from '@angular/router';
+import { RequestType } from '../../../../shared/request/request-type';
 
 @Component({
     selector: 'pdm-organisation-form',
@@ -31,6 +32,7 @@ export class OrganisationFormComponent implements OnInit, OnDestroy {
     success: any;
     eventSubscriber: Subscription;
     isSaving: boolean;
+    requestTypes = RequestType;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -87,6 +89,15 @@ export class OrganisationFormComponent implements OnInit, OnDestroy {
         } else {
             this.organisationService.create(this.organisation)
                 .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
+        }
+    }
+
+    updateRequestType(selectedRequestType, event) {
+        let _idx = this.organisation.requestTypes.indexOf(selectedRequestType.value);
+        if ( _idx < 0) {
+            this.organisation.requestTypes.push(selectedRequestType.value);
+        } else {
+            this.organisation.requestTypes.splice(_idx, 1);
         }
     }
 }
