@@ -36,19 +36,19 @@
             </thead>
             <tbody *ngIf ="users">
             <tr *ngFor="let user of users; trackBy: trackIdentity">
-                <td><a [routerLink]="['../user-management', user.login]">{{user.id}}</a></td>
-                <td>{{user.login}}</td>
-                <td>{{user.email}}</td>
+                <td class="id"><a [routerLink]="['../user-management', user.login]">{{user.id}}</a></td>
+                <td class="login">{{user.login}}</td>
+                <td class="email">{{user.email}}</td>
                 <td>
-                    <span class="tag tag-success" *ngIf="user.emailVerified"
+                    <span class="tag tag-success emailVerified" *ngIf="user.emailVerified"
                           jhiTranslate="userManagement.emailVerified">Email verified</span>
-                    <span class="tag tag-danger" *ngIf="!user.emailVerified"
+                    <span class="tag tag-danger emailVerified" *ngIf="!user.emailVerified"
                           jhiTranslate="userManagement.emailUnverified">Email unverified</span>
                 </td>
                 <td>
-                    <span class="tag tag-success" *ngIf="user.adminVerified"
+                    <span class="tag tag-success adminVerified" *ngIf="user.adminVerified"
                           jhiTranslate="userManagement.adminVerified">Account verified</span>
-                    <span class="tag tag-danger" *ngIf="!user.adminVerified"
+                    <span class="tag tag-danger adminVerified" *ngIf="!user.adminVerified"
                           jhiTranslate="userManagement.adminUnverified">Account unverified</span>
                 </td>
                 <td>
@@ -56,7 +56,7 @@
                           jhiTranslate="userManagement.accountLocked">Locked</span>
                 </td>
                 <td>{{user.langKey}}</td>
-                <td>
+                <td class="authority">
                     <div *ngFor="let authority of user.authorities">
                         <span class="tag tag-info">{{ authority }}</span>
                     </div>
