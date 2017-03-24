@@ -75,7 +75,7 @@ export class RequestFormComponent implements OnInit {
          * Organisation resolve
          */
         this.organisationService.findAvailable().map((availableOrganisations) => {
-            // TODO display list available organisations
+            // TODO display list av ailable organisations
         });
     }
 
