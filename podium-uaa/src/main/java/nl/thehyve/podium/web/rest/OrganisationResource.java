@@ -10,7 +10,9 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
@@ -199,16 +201,16 @@ public class OrganisationResource {
     /**
      * DELETE  /organisations/:id : delete the "id" organisation.
      *
-     * @param id the id of the organisation to delete
+     * @param uuid the id of the organisation to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/organisations/{id}")
+    @DeleteMapping("/organisations/{uuid}")
     @Timed
-    public ResponseEntity<Void> deleteOrganisation(@PathVariable Long id) {
-        log.debug("REST request to delete Organisation : {}", id);
-        organisationService.delete(id);
+    public ResponseEntity<Void> deleteOrganisation(@PathVariable UUID uuid) {
+        log.debug("REST request to delete Organisation : {}", uuid);
+        organisationService.delete(uuid);
 
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, uuid.toString())).build();
     }
 
     /**

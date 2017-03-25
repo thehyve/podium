@@ -207,12 +207,12 @@ public class OrganisationService {
     /**
      *  Mark the organisation as deleted.
      *
-     *  @param id the organisation to mark deleted.
+     *  @param uuid the organisation to mark deleted.
      */
-    public void delete(Long id) {
-        log.debug("Request to delete Organisation : {}", id);
+    public void delete(UUID uuid) {
+        log.debug("Request to delete Organisation : {}", uuid);
 
-        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
+        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
         if (organisation == null) {
             throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisation.getId()));
         }
