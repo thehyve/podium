@@ -139,7 +139,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private ZonedDateTime accountLockDate = null;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "role_users",
         joinColumns = {@JoinColumn(name = "users_id", referencedColumnName = "id")},

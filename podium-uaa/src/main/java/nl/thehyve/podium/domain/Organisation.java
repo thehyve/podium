@@ -13,6 +13,7 @@ import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "organisation")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Document(indexName = "organisation")
 public class Organisation implements Serializable, IdentifiableOrganisation {
 
     private static final long serialVersionUID = 1L;

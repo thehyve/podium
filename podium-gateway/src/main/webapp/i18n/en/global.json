@@ -54,6 +54,7 @@
                 "metrics": "Metrics",
                 "health": "Health",
                 "configuration": "Configuration",
+                "elasticsearch": "Elasticsearch",
                 "logs": "Logs",
                 "audits": "Audits",
                 "apidocs": "API",

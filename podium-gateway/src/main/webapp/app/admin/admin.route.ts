@@ -21,6 +21,7 @@ import {
 } from './';
 
 import { UserRouteAccessService } from '../shared';
+import { elasticsearchRoute } from './elasticsearch/elasticsearch.route';
 
 let ADMIN_ROUTES = [
     auditsRoute,
@@ -29,7 +30,8 @@ let ADMIN_ROUTES = [
     healthRoute,
     logsRoute,
     gatewayRoute,
-    metricsRoute
+    metricsRoute,
+    elasticsearchRoute
 ];
 
 export const adminRoute: Routes = [{

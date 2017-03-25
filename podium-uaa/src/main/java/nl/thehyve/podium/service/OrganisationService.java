@@ -117,12 +117,7 @@ public class OrganisationService {
         }
 
         log.info("Saved organisation: {}", organisation);
-        SearchOrganisation searchOrganisation = organisationSearchRepository.findOne(organisation.getId());
-        if (searchOrganisation == null) {
-            searchOrganisation = new SearchOrganisation(organisation);
-        }
-        searchOrganisation.copyProperties(organisation);
-        organisationSearchRepository.save(searchOrganisation);
+        organisationSearchRepository.save(organisation);
         log.info("Saved to elastic search: {}", organisation);
         return organisation;
     }
@@ -229,9 +224,9 @@ public class OrganisationService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<SearchOrganisation> search(String query, Pageable pageable) {
+    public Page<Organisation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Organisations for query {}", query);
-        Page<SearchOrganisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
+        Page<Organisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 
