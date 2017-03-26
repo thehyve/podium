@@ -83,9 +83,8 @@ public class ElasticsearchIndexService {
         elasticsearchTemplate.putMapping(entityClass);
         if (jpaRepository.count() > 0) {
             try {
-                elasticsearchRepository.save(jpaRepository.findAll());
-                // Method m = jpaRepository.getClass().getMethod("findAllWithEagerRelationships");
-                // elasticsearchRepository.save((List<T>) m.invoke(jpaRepository));
+                Method m = jpaRepository.getClass().getMethod("findAllWithEagerRelationships");
+                elasticsearchRepository.save((List<T>) m.invoke(jpaRepository));
             } catch (Exception e) {
                 elasticsearchRepository.save(jpaRepository.findAll());
             }
