@@ -90,7 +90,8 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         }
     }
     transition() {
-        this.router.navigate(['/organisation'], {queryParams:
+        // Transition with queryParams
+        this.router.navigate([this.getNavUrlForRouter(this.router)], {queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -104,7 +105,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
     clear() {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate(['/organisation', {
+        this.router.navigate([this.getNavUrlForRouter(this.router), {
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
         }]);
@@ -116,7 +117,8 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         }
         this.page = 0;
         this.currentSearch = query;
-        this.router.navigate(['/organisation', {
+        // Transition with matrix params
+        this.router.navigate([this.getNavUrlForRouter(this.router), {
             search: this.currentSearch,
             page: this.page,
             sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -169,12 +171,16 @@ export class OrganisationComponent implements OnInit, OnDestroy {
 
     private onSuccess (data, headers) {
         this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
+        this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.organisations = data;
     }
 
     private onError (error) {
         this.alertService.error(error.message, null, null);
+    }
+
+    private getNavUrlForRouter(router: Router) {
+        return this.router.url.split(/;/)[0];
     }
 }
