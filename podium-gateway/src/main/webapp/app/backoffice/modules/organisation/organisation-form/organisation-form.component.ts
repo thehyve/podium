@@ -24,13 +24,13 @@ import { RequestType } from '../../../../shared/request/request-type';
     selector: 'pdm-organisation-form',
     templateUrl: './organisation-form.component.html'
 })
-export class OrganisationFormComponent implements OnInit, OnDestroy {
+export class OrganisationFormComponent implements OnInit {
 
     currentAccount: User;
     organisation: Organisation;
     error: any;
     success: any;
-    eventSubscriber: Subscription;
+    eventSubscriber: any;
     isSaving: boolean;
     requestTypes = RequestType;
 
@@ -53,31 +53,30 @@ export class OrganisationFormComponent implements OnInit, OnDestroy {
         this.route.params.subscribe(params => {
             let uuid = params['uuid'];
             if (uuid) {
-                this.organisationService.findByUuid(uuid).subscribe(organisation => {
-                    this.organisation = organisation;
-                });
+                this.organisationService.findByUuid(uuid).subscribe(
+                    (organisation) => { this.organisation = organisation; },
+                    (res) => this.onError(res)
+                );
             } else {
                 this.organisation = new Organisation();
+                this.organisation.requestTypes = [];
+                this.organisation.roles = [];
             }
         });
 
     }
 
-    ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    private onSaveSuccess (result) {
+    onSaveSuccess (result) {
         // this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK'});
         this.isSaving = false;
     }
 
-    private onSaveError (error) {
+    onSaveError (error) {
         this.isSaving = false;
         this.onError(error);
     }
 
-    private onError (error) {
+    onError (error) {
         this.alertService.error(error.message, null, null);
     }
 

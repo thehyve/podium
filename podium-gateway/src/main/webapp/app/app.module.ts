@@ -46,10 +46,12 @@ import {
     PodiumGatewayBbmriBackofficeModule
 } from './backoffice/bbmri/bbmri-backoffice.module';
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
+import { TypeaheadModule } from 'ng2-bootstrap';
 
 @NgModule({
     imports: [
         NgbModule.forRoot(),
+        TypeaheadModule.forRoot(),
         BrowserModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),

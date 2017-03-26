@@ -9,14 +9,14 @@
   -->
 
 <div class="row">
-    <h2>
-        <span jhiTranslate="podiumGatewayApp.organisation.detail.title">Organisation</span>
-    </h2>
+
     <jhi-alert></jhi-alert>
 
     <div class="container-fluid">
         <div class="col-md-6 offset-md-3 card-container">
-
+            <h2>
+                <span jhiTranslate="podiumGatewayApp.organisation.detail.title">Organisation</span>
+            </h2>
             <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
                 <jhi-alert-error></jhi-alert-error>
@@ -62,15 +62,18 @@
                                        id="requestTypes"
                                        value="{{requestType.value}}"
                                        [checked]="organisation.requestTypes.indexOf(requestType.value) !== -1"
-                                       (change)="updateRequestType(requestType, $event)" />
+                                       (change)="updateRequestType(requestType, $event)"
+                                       required />
                                 {{requestType.value | capitalize}}
                             </label>
                         </div>
                     </div>
                 </div>
 
+                <pdm-role-assign *ngIf="organisation" [organisation]="organisation"></pdm-role-assign>
+
                 <div class="row">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+                    <button type="button" class="btn btn-default" routerLink="../">
                         <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                     </button>
                     <button type="submit" [disabled]="editForm.form.invalid || isSaving" *ngIf="!organisation.uuid" class="btn btn-primary">

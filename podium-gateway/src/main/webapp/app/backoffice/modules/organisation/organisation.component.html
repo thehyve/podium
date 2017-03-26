@@ -11,7 +11,7 @@
 <div>
     <h2><span jhiTranslate="podiumGatewayApp.organisation.home.title">Organisations</span>
         <button class="btn btn-primary float-xs-right create-organisation"
-                [routerLink]="['./new']" skipLocationChange>
+                [routerLink]="['./new']">
             <span class="fa fa-plus"></span>
             <span class="hidden-sm-down" jhiTranslate="podiumGatewayApp.organisation.home.createLabel">
             Create new Organisation
@@ -23,7 +23,6 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right">
                         <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
                                name="currentSearch"
@@ -39,7 +38,6 @@
                             </button>
                         </span>
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -47,15 +45,22 @@
     <div class="table-responsive" *ngIf="organisations">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-                <th jhiSortBy="shortName"><span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
-                    <span class="fa fa-sort"></span></th>
-                <th jhiSortBy="name"><span jhiTranslate="podiumGatewayApp.organisation.name">Name</span> <span
-                    class="fa fa-sort"></span></th>
-                <th></th>
-            </tr>
+				<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+					<th jhiSortBy="shortName"><span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
+						<span class="fa fa-sort"></span></th>
+					<th jhiSortBy="name"><span jhiTranslate="podiumGatewayApp.organisation.name">Name</span> <span
+						class="fa fa-sort"></span></th>
+					<th></th>
+				</tr>
             </thead>
             <tbody>
+            <tr *ngIf="!organisations || !organisations.length">
+                <td colspan="3">
+                    <div class="alert alert-info text-center">
+                       <span><strong>No organisations found</strong></span>
+                    </div>
+                </td>
+            </tr>
             <tr *ngFor="let organisation of organisations ;trackBy: trackUuid">
                 <td><a [routerLink]="['./detail', organisation.uuid ]">{{organisation.shortName}}</a></td>
                 <td>{{organisation.name}}</td>
