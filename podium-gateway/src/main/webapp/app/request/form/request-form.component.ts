@@ -149,12 +149,16 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
-    submit() {
+    submitDraft() {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
-        this.requestService.submitDraft(this.requestBase)
+        this.requestService.saveDraft(this.requestBase)
             .subscribe(
-                (requests) => this.onSubmitSuccess(requests),
+                (request) => {
+                    this.router.navigate(
+                        ['requests', 'new', {outlets: {submit: ['uuid', request.uuid]}}],
+                        {replaceUrl: true});
+                },
                 (error) => this.onError(error)
             );
     }
@@ -163,10 +167,6 @@ export class RequestFormComponent implements OnInit {
         this.error =  null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
-    }
-
-    private onSubmitSuccess(requests: RequestBase[]) {
-        // TODO
     }
 
     private onError(error) {

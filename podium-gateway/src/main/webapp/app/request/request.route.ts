@@ -12,10 +12,10 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from '../shared';
 
-import { requestFormRoute } from './';
+import { requestFormRoute, requestFormSubmitRoute } from './';
 
 let REQUEST_ROUTES = [
-   requestFormRoute
+    requestFormRoute
 ];
 
 export const requestRoute: Routes = [{

@@ -9,6 +9,7 @@
   -->
 
 <div class="row">
+    <router-outlet name="submit"></router-outlet>
     <div class="col-md-6 offset-md-3">
         <h1 *ngIf="!requestBase?.id" jhiTranslate="request.form.header.new">New Request</h1>
         <h1 *ngIf="requestBase?.id" jhiTranslate="request.form.header.edit">Edit Request</h1>
@@ -37,7 +38,7 @@
             </div>
         </div>
 
-        <form class="form" role="form" (ngSubmit)="submit()" *ngIf="!selectDraft && requestBase">
+        <form #requestForm="ngForm" class="form" role="form" (ngSubmit)="submitDraft()" *ngIf="!selectDraft && requestBase">
             <fieldset [disabled]="requestFormDisabled">
                 <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 
@@ -419,9 +420,10 @@
                 <!-- Request actions -->
                 <div class="action-container">
                     <button type="button" class="btn btn-danger" (click)="reset()">Clear</button>
-
                     <button type="button" class="btn btn-default" (click)="saveRequestDraft()">Save draft</button>
-                    <button type="submit" class="btn btn-primary" (click)="submit()">Submit</button>
+                    <button type="submit" class="btn btn-primary"
+                            [disabled]="!requestForm.form.valid"
+                            (click)="submitDraft()">Submit</button>
                 </div>
             </fieldset>
 

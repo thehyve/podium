@@ -37,7 +37,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         private stateStorageService: StateStorageService,
         private elementRef: ElementRef,
         private renderer: Renderer,
-        //private activeModal: NgbActiveModal,
+        // private activeModal: NgbActiveModal,
         private router: Router
     ) {
         this.credentials = {};
@@ -100,7 +100,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             this.accountNotVerified = false;
             if (err && err._body) {
                 let response =  JSON.parse(err._body);
-                switch(response.error_description) {
+                switch (response.error_description) {
                     case 'The user account is locked.':
                         this.userAccountLocked = true;
                         break;
