@@ -8,59 +8,53 @@
   ~
   -->
 
-<div>
-    <h3><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span></h3>
-    <jhi-alert></jhi-alert>
+<h3><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span></h3>
+<jhi-alert></jhi-alert>
 
-    <div class="container-fluid">
-        <div class="row">
-            <form name="roleForm" role="form" novalidate #roleForm="ngForm">
-				<jhi-alert-error></jhi-alert-error>
+<div class="container-fluid" *ngIf="organisation">
+    <div class="row">
+        <form name="roleForm" role="form" novalidate #roleForm="ngForm">
+            <jhi-alert-error></jhi-alert-error>
 
-                <div class="table-responsive" *ngIf="roles">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Authority</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let role of roles">
-                                <td>
-                                    <!-- User select -->
+            <div class="table-responsive" *ngIf="organisation.roles">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th jhiTranslate="podiumGatewayApp.role.users">User</th>
+                            <th jhiTranslate="podiumGatewayApp.role.authority">Authority</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let role of organisation.roles">
+                            <td>
+                                <input [(ngModel)]="asyncSelected"
+                                       [ngModelOptions]="{standalone: true}"
+                                       [typeahead]="dataSource"
+                                       (typeaheadLoading)="changeTypeaheadLoading($event)"
+                                       (typeaheadNoResults)="changeTypeaheadNoResults($event)"
+                                       (typeaheadOnSelect)="typeaheadOnSelect($event)"
+                                       typeaheadOptionsLimit="7"
+                                       typeaheadOptionField="name"
+                                       placeholder="Locations loaded with timeout"
+                                       class="form-control">
+                                <!-- User select -->
+                                <!--<select class="form-control" id="field_users" multiple name="users" [(ngModel)]="role.users">
 
-                                </td>
-                                <td>
-                                    <!-- Authority select -->
-                                    <select class="form-control" id="field_authority" name="authority" [(ngModel)]="role.authority" >
-                                        <option [ngValue]="null"></option>
-                                        <option [ngValue]="authorityOption.token === role.authority ? role.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-				<div class="form-group">
-					<label jhiTranslate="podiumGatewayApp.role.authority" for="field_authority">Authority</label>
-
-				</div>
-
-				<div class="form-group">
-					<label jhiTranslate="podiumGatewayApp.role.users" for="field_users">Users</label>
-					<select class="form-control" id="field_users" multiple name="users" [(ngModel)]="role.users">
-						<option [ngValue]="userOption.uuid" *ngFor="let userOption of users; trackBy: trackByUuid">{{userOption.login}}</option>
-					</select>
-				</div>
-            </form>
-        </div>
-    </div>
-    <br/>
-
-    <div class="text-xs-center" *ngIf="roles && roles.length">
-        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+                                    <option [ngValue]="userOption.uuid" *ngFor="let userOption of users; trackBy: trackByUuid">{{userOption.login}}</option>
+                                </select>-->
+                            </td>
+                            <td>
+                                <!-- Authority select -->
+                                <select class="form-control" id="field_authority" name="authority" [(ngModel)]="role.authority" >
+                                    <option [ngValue]="undefined" disabled selected>Please select a role</option>
+                                    <option [ngValue]="authorityOption.token === role.authority ? role.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </form>
     </div>
 </div>
+

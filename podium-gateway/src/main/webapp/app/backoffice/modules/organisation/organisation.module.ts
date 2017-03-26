@@ -27,13 +27,17 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
-import { EnumKeysPipe } from '../../../shared/pipes/enumKeys';
+import { RoleAssignComponent } from '../../../shared/role/role-assign/role-assign.component';
+import { RoleService } from '../../../shared/role/role.service';
+import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
+
 
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
+        TypeaheadModule,
         NgbModule
     ],
     declarations: [
@@ -43,7 +47,8 @@ import { EnumKeysPipe } from '../../../shared/pipes/enumKeys';
         OrganisationDialogComponent,
         OrganisationDeleteDialogComponent,
         OrganisationPopupComponent,
-        OrganisationDeletePopupComponent
+        OrganisationDeletePopupComponent,
+        RoleAssignComponent
     ],
     entryComponents: [
         OrganisationComponent,
@@ -58,6 +63,7 @@ import { EnumKeysPipe } from '../../../shared/pipes/enumKeys';
         OrganisationService,
         OrganisationPopupService,
         OrganisationResolvePagingParams,
+        RoleService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [

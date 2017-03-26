@@ -8,9 +8,8 @@
  *
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
 import { EventManager, JhiLanguageService, AlertService } from 'ng-jhipster';
 
 import { Role } from '../role.model';
@@ -19,8 +18,12 @@ import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
 import { Principal } from '../../../shared';
 import { Authority } from '../../../shared/authority/authority';
-import { ORGANISATION_AUTHORITIES_MAP} from '../../../shared/authority/authority.constants';
+import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { Organisation, OrganisationService } from '../../../backoffice/modules/organisation';
+
+import { Observable } from 'rxjs';
+
+import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
 
 @Component({
     selector: 'pdm-role-assign',
@@ -29,14 +32,20 @@ import { Organisation, OrganisationService } from '../../../backoffice/modules/o
 export class RoleAssignComponent implements OnInit, OnDestroy {
 
     currentAccount: any;
-    roles: Role[];
-    organisations: { [uuid: string]: Organisation; };
     users: { [uuid: string]: User; };
+
     authoritiesMap: { [token: string]: Authority; };
+    authorityOptions: ReadonlyArray<Authority>;
 
     error: any;
     success: any;
-    eventSubscriber: Subscription;
+
+    public asyncSelected: string;
+    public typeaheadLoading: boolean;
+    public typeaheadNoResults: boolean;
+    public dataSource: Observable<any>;
+
+    @Input() organisation;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -45,13 +54,11 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         private userService: UserService,
         private alertService: AlertService,
         private principal: Principal,
-        private activatedRoute: ActivatedRoute,
-        private router: Router,
-        private eventManager: EventManager,
+
     ) {
-        this.jhiLanguageService.setLocations(['role']);
+        this.jhiLanguageService.setLocations(['organisation', 'role']);
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
-        this.organisations = {};
+        this.authorityOptions = ORGANISATION_AUTHORITIES;
         this.users = {};
     }
 
@@ -59,19 +66,50 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         this.principal.identity().then((account) => {
             this.currentAccount = account;
         });
+
+        // Fetch roles for existing organisation
+        if (this.organisation.uuid) {
+            this.organisation = this.organisation.roles;
+        } else {
+            let role = new Role;
+            role.organisation = '';
+            this.organisation.roles.push(role);
+            console.log('Pushed role ', this.organisation);
+        }
+
+        this.dataSource = Observable.create((observer: any) => {
+            // Runs on every search
+            // asyncSelected is a component variable bound to [(ngModel)]
+            // when user types into the input .next is called with the value from the input
+            console.log('Async ', this.asyncSelected);
+            observer.next({query: this.asyncSelected});
+        }).mergeMap((term: any) => this.userService.search(term));
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
+        // this.eventManager.destroy(this.eventSubscriber);
     }
 
     trackId (index: number, item: Role) {
         return item.id;
     }
 
-    private onSuccess (data, headers) {
+    public changeTypeaheadLoading(e: boolean): void {
+        this.typeaheadLoading = e;
+    }
+
+    public changeTypeaheadNoResults(e: boolean): void {
+        this.typeaheadNoResults = e;
+    }
+
+    public typeaheadOnSelect(e: TypeaheadMatch): void {
+        console.log('Selected value: ', e.value);
+    }
+
+
+    /*private onSuccess (data, headers) {
         console.log(`Success fetching roles...`);
-        // this.page = pagingParams.page;
+
         this.roles = data;
         for (let role of data) {
             let organisationUuid = role.organisation;
@@ -80,15 +118,19 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                     this.organisations[organisationUuid] = organisation;
                 });
             }
-            for (let userUuid of role.users) {
-                if (!(userUuid in this.users)) {
-                    this.userService.findByUuid(userUuid).subscribe(user => {
-                        this.users[userUuid] = user;
-                    });
+
+            if (role) {
+                for (let userUuid of role.users) {
+                    if (!(userUuid in this.users)) {
+                        this.userService.findByUuid(userUuid).subscribe(user => {
+                            this.users[userUuid] = user;
+                        });
+                    }
                 }
             }
+
         }
-    }
+    }*/
 
     private onError (error) {
         this.alertService.error(error.message, null, null);

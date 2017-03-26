@@ -17,6 +17,7 @@ import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.service.MailService;
+import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -246,11 +247,10 @@ public class UserResource {
      * @return the result of the search
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/_search/users/{query}")
+    @GetMapping("/_search/users")
     @Timed
-    public List<User> search(@PathVariable String query) {
-        return StreamSupport
-            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+    public List<UserRepresentation> search(@RequestParam String query) {
+        List<UserRepresentation> list = userService.search(query);
+        return list;
     }
 }

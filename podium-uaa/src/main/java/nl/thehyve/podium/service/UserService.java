@@ -18,6 +18,7 @@ import nl.thehyve.podium.exceptions.VerificationKeyExpired;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
@@ -33,6 +34,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service class for managing users.
@@ -60,6 +65,9 @@ public class UserService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * Activate a user by a given key.
@@ -358,5 +366,20 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
+    }
+
+    /**
+     * Search for the organisation corresponding to the query.
+     *
+     *  @param query the query of the search
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public List<UserRepresentation> search(String query) {
+        log.debug("Request to search users for query {}", query);
+        return StreamSupport
+            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .map(userMapper::userToUserDTO)
+            .collect(Collectors.toList());
     }
 }
