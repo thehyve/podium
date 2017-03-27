@@ -11,9 +11,12 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { RequestBase } from '../../shared/request/request-base';
 
 @Injectable()
 export class RequestFormService {
+
+    request: RequestBase;
 
     constructor(private http: Http) {
 
