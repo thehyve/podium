@@ -10,6 +10,7 @@
 
 export * from './form/request-form.component';
 export * from './form/request-form.route';
+export * from './form/request-form-edit.route';
 export * from './form/request-form.service';
 export * from './overview/request-overview.component';
 export * from './overview/request-overview.route';

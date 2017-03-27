@@ -14,9 +14,11 @@ import { UserRouteAccessService } from '../shared';
 
 import { requestFormRoute } from './';
 import { requestOverviewRoute } from './overview/request-overview.route';
+import { requestFormEditRoute } from './form/request-form-edit.route';
 
 let REQUEST_ROUTES = [
     requestFormRoute,
+    requestFormEditRoute,
     requestOverviewRoute
 ];
 
