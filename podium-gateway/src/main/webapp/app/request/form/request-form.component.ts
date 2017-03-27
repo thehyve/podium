@@ -67,13 +67,6 @@ export class RequestFormComponent implements OnInit {
             this.currentUser = account;
             this.initializeRequestForm();
         });
-
-        /**
-         * Organisation resolve
-         */
-        this.organisationService.findAvailable().map((availableOrganisations) => {
-            // TODO display list av ailable organisations
-        });
     }
 
     ngAfterContentInit() {
@@ -81,11 +74,11 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        this.requestService.findDrafts()
-            .subscribe(
-                (requestDrafts) => this.processAvailableDrafts(requestDrafts),
-                (error) => this.onError('Error loading available request drafts.')
-            );
+        if (this.requestFormService.request !== null) {
+            this.selectRequestDraft(this.requestFormService.request);
+        } else {
+            this.initializeBaseRequest();
+        }
     }
 
     registerChangeInFilesUploaded() {
