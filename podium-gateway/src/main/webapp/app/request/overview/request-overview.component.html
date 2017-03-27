@@ -1,12 +1,18 @@
 <h2><span>My Requests</span>
     <div class="btn-group flex-btn-group-container">
-        <button class="btn btn-success float-xs-right create-organisation">
+        <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()" >
+            <i class="material-icons">assignment_ind</i>
+            <span class="hidden-sm-down">
+            My requests
+            </span>
+        </button>
+        <button class="btn btn-success float-xs-right create-organisation" i18n:attributes=""(click)="displayDrafts()">
             <span class="fa fa-file"></span>
             <span class="hidden-sm-down">
             Show Drafts
             </span>
         </button>
-        <button class="btn btn-primary float-xs-right create-organisation">
+        <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
             <span class="fa fa-plus"></span>
             <span class="hidden-sm-down">
             Create new request
@@ -45,8 +51,8 @@
                         <!--?<span class="fa fa-eye"></span>-->
                         <!--?<span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>-->
                     <!--?</button>-->
-                    <button type="submit"
-                            class="btn btn-primary btn-sm">
+                    <button type="button"
+                            class="btn btn-primary btn-sm"  (click)="editRequest(request)">
                         <span class="fa fa-pencil"></span>
                         <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                     </button>

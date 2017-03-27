@@ -42,6 +42,12 @@ export class RequestService {
         });
     }
 
+    findSubmittedRequest(): Observable<RequestBase[]> {
+        return this.http.get(`${this.resourceUrl}/status/Review`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
     /**
      * Submits the draft request and generates a new request for each of the
      * selected organisations.
@@ -61,7 +67,7 @@ export class RequestService {
     }
 
     findDraftByUuid(uuid: string): Observable<RequestDetail> {
-        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
+        return this.http.get(`${this.resourceUrl}/drafts`).map((res: Response) => {
             return res.json();
         });
     }
