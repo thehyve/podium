@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        <form #requestForm="ngForm" class="form" role="form" (ngSubmit)="submitDraft()" *ngIf="!selectDraft && requestBase">
+        <form #requestForm="ngForm" class="form" role="form" *ngIf="!selectDraft && requestBase">
             <fieldset [disabled]="requestFormDisabled">
                 <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 

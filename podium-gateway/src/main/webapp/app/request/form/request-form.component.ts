@@ -25,6 +25,8 @@ import {
     Attachment,
     EmailValidatorDirective
 } from '../../shared';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
 
 @Component({
     selector: 'pdm-request-form',
@@ -58,7 +60,8 @@ export class RequestFormComponent implements OnInit {
                 private router: Router,
                 private principal: Principal,
                 private eventManager: EventManager,
-                private organisationService: OrganisationService) {
+                private organisationService: OrganisationService,
+                private modalService: NgbModal) {
         this.jhiLanguageService.setLocations(['request']);
     }
 
@@ -149,16 +152,22 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
+    confirmSubmitModal(request: RequestBase) {
+        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = request;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+        });
+    }
+
     submitDraft() {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveDraft(this.requestBase)
             .subscribe(
-                (request) => {
-                    this.router.navigate(
-                        ['requests', 'new', {outlets: {submit: ['uuid', request.uuid]}}],
-                        {replaceUrl: true});
-                },
+                (request) => this.confirmSubmitModal(request),
                 (error) => this.onError(error)
             );
     }

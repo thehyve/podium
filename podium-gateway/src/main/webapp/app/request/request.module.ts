@@ -16,9 +16,7 @@ import { PodiumGatewaySharedModule } from '../shared';
 import {
     requestRoute,
     RequestFormService,
-    RequestFormModalService,
     RequestFormComponent,
-    RequestFormSubmitPopupComponent,
     RequestFormSubmitDialogComponent,
 } from './';
 
@@ -31,7 +29,6 @@ import { EnumKeysPipe } from '../shared/pipes/enumKeys';
     ],
     declarations: [
         RequestFormComponent,
-        RequestFormSubmitPopupComponent,
         RequestFormSubmitDialogComponent,
         EnumKeysPipe
     ],
@@ -39,8 +36,7 @@ import { EnumKeysPipe } from '../shared/pipes/enumKeys';
         RequestFormSubmitDialogComponent
     ],
     providers: [
-        RequestFormService,
-        RequestFormModalService
+        RequestFormService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

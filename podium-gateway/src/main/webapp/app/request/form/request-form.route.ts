@@ -8,21 +8,14 @@
  *
  */
 
-import { Route, Routes } from '@angular/router';
+import { Route } from '@angular/router';
 
 import { UserRouteAccessService } from '../../shared';
 import { RequestFormComponent } from './request-form.component';
-import { RequestFormSubmitPopupComponent } from './request-form-submit-dialog.component';
-
-export const requestFormSubmitRoute: Route = {
-    path: 'uuid/:uuid',
-    component: RequestFormSubmitPopupComponent,
-    outlet: 'submit'
-};
 
 export const requestFormRoute: Route = {
   path: 'new',
-  children: [requestFormSubmitRoute],
+  children: [],
   component: RequestFormComponent,
   data: {
     authorities: ['ROLE_RESEARCHER'],

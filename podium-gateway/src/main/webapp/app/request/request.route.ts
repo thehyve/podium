@@ -12,7 +12,7 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from '../shared';
 
-import { requestFormRoute, requestFormSubmitRoute } from './';
+import { requestFormRoute } from './';
 
 let REQUEST_ROUTES = [
     requestFormRoute
