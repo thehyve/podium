@@ -11,7 +11,7 @@ import {Director} from "../protractor-stories/director";
 import {AdminConsole} from "../protractor-stories/AdminConsole";
 import initPages = require ("../pages/PageDictionary");
 import PersonaDictionary = require("../personas/PersonaDictionary")
-import {browser, $} from "protractor";
+import initDataDictionary = require("../data/DataDictionary")
 
 /*
  *
@@ -26,8 +26,9 @@ class World {
 
     constructor() {
         let Pages = initPages();
+        let DataDictionary = initDataDictionary();
 
-        this.director = new Director(__dirname + '/..', Pages, PersonaDictionary);
+        this.director = new Director(__dirname + '/..', Pages, PersonaDictionary, DataDictionary);
         this.adminConsole = new AdminConsole();
     }
 }

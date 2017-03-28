@@ -145,6 +145,31 @@ export class AdminConsole {
             })
         });
     }
+
+    public checkOrganization(expectedOrganization, check, callback) {
+
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'GET',
+                url: 'http://localhost:8080/podiumuaa/api/organisations/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            request(options, function (error, response, body) {
+                let organizations = parseJSON(body);
+                let organization = organizations.filter(function (value) {
+                    return value["shortName"] == expectedOrganization.properties["shortName"];
+                })[0];
+
+                if (check(expectedOrganization, organization)) {
+                    callback()
+                } else {
+                    callback(JSON.stringify(organization) + " did not match for " + JSON.stringify(expectedOrganization))
+                }
+            })
+        });
+    }
 }
 
 function parseJSON(string: string){

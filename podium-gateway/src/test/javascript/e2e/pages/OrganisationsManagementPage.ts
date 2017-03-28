@@ -17,7 +17,7 @@ import ProfileForm = require("./modules/ProfileForm")
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class UserDetails {
+class OrganisationsManagementPage {
     public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
@@ -30,22 +30,13 @@ class UserDetails {
     }
 
     constructor() {
-        this.name = "User Details";
-        this.url = "#/user-management/";
+        this.name = "organisation management";
+        this.url = "#/organisation";
         this.elements = {
-            "login": {locator: $('.test_login')},
-            "firstName": {locator: $('.test_firstName')},
-            "lastName": {locator: $('.test_lastName')},
-            "email": {locator: $('.test_email')},
-            "telephone": {locator: $('.test_telephone')},
-            "institute": {locator: $('.test_institute')},
-            "department": {locator: $('.test_department')},
-            "jobTitle": {locator: $('.test_jobTitle')},
-            "specialism": {locator: $('.test_specialism')},
-            "activated": {locator: $('.test_activated')},
-            "authority": {locator: $('.test_authority')},
+            "HeaderShortName": {locator: $('th[jhisortby=shortName]')},
+            "HeaderName": {locator: $('th[jhisortby=name]')},
         }
     }
 }
 
-export = UserDetails;
+export = OrganisationsManagementPage;

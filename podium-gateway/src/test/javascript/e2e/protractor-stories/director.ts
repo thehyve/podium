@@ -41,11 +41,14 @@ export class Director {
     private currentPersona: Persona;
     private pageDictionary: {[key: string]: Page};
     private personaDictionary: {[key: string]: Persona};
+    private dataDictionary = {};
 
-    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}) {
+
+    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}, dataDictionary?) {
         this.searchDir = searchDir;
         this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
+        this.dataDictionary = dataDictionary;
         browser.get('/');
         browser.executeScript('localStorage.clear();');
         browser.executeScript('sessionStorage.clear();');
@@ -91,6 +94,25 @@ export class Director {
                 that.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
             }
             result[index] = that.personaDictionary[personaName];
+        });
+
+        return result;
+    }
+
+    public getData(dataID: string){
+        let that = this;
+        if (isUndefined(that.dataDictionary[dataID])){
+            that.fatalError('The data: ' + dataID + ' does not exist.\n check your dataDictionary to see the available data');
+        }
+        return that.dataDictionary[dataID];
+    }
+
+    public getListOfData(dataIDs: string[]) {
+        let that = this;
+        let result = new Array(dataIDs.length);
+
+        dataIDs.forEach(function (dataID, index) {
+            result[index] = that.getData(dataID)
         });
 
         return result;

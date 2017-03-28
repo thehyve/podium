@@ -15,6 +15,9 @@ import RegistrationPage = require("./RegistrationPage")
 import completedPage = require("./completedPage")
 import UserManagementPage = require("./UserManagementPage")
 import UserDetailsPage = require("./UserDetailsPage")
+import OrganisationsManagementPage = require("./OrganisationsManagementPage")
+import OrganisationsDetailsPage = require("./OrganisationsDetailsPage")
+import CreateOrganisationPage = require("./CreateOrganisationPage")
 
 
 
@@ -33,7 +36,9 @@ function initPages () {
     PageDictionary['completed'] = new completedPage;
     PageDictionary['user management'] = new UserManagementPage;
     PageDictionary['user details'] = new UserDetailsPage;
-
+    PageDictionary['organization overview'] = new OrganisationsManagementPage();
+    PageDictionary['organization details'] = new OrganisationsDetailsPage();
+    PageDictionary['create organisation'] = new CreateOrganisationPage();
 
     return PageDictionary;
 }

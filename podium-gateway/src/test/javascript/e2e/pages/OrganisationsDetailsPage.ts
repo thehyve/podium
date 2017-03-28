@@ -30,20 +30,11 @@ class UserDetails {
     }
 
     constructor() {
-        this.name = "User Details";
-        this.url = "#/user-management/";
+        this.name = "organisation Details";
+        this.url = "#/organisation/";
         this.elements = {
-            "login": {locator: $('.test_login')},
-            "firstName": {locator: $('.test_firstName')},
-            "lastName": {locator: $('.test_lastName')},
-            "email": {locator: $('.test_email')},
-            "telephone": {locator: $('.test_telephone')},
-            "institute": {locator: $('.test_institute')},
-            "department": {locator: $('.test_department')},
-            "jobTitle": {locator: $('.test_jobTitle')},
-            "specialism": {locator: $('.test_specialism')},
-            "activated": {locator: $('.test_activated')},
-            "authority": {locator: $('.test_authority')},
+            "shortName": {locator: $('.test_shortName')},
+            "name": {locator: $('.test_name')},
         }
     }
 }

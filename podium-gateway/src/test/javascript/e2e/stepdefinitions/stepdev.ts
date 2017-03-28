@@ -14,18 +14,22 @@ import SigninPage = require("../pages/SigninPage")
 import PageDictionary = require("../pages/PageDictionary")
 import PersonaDictionary = require("../personas/PersonaDictionary")
 import {AdminConsole} from "../protractor-stories/AdminConsole";
+import {isUndefined} from "util";
 
 
 export = function () {
 
     this.Given(/^Test$/, function (callback) {
         let adminConsole = this.adminConsole;
-        let dave = this.director.getPersona('Dave');
+        let org = this.director.getData('NewOrg');
 
-        adminConsole.unlockUser(dave);
+        adminConsole.checkOrganization(org, check, callback);
     });
 }
 
 function check(expected, realData){
-    return expected.properties.userName == realData.login;
+    if (isUndefined(realData)){
+        return false
+    }
+    return realData.activated == expected.properties.activated;
 }

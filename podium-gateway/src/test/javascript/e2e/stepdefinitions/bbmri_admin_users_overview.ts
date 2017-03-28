@@ -58,14 +58,6 @@ export = function () {
         }
     }
 
-    function checkTextElement(element, expectedText, callback) {
-
-        return element.getText().then(function (text) {
-            if (text != expectedText) {
-                callback(text + " is not equal to " + expectedText);
-            }
-        })
-    }
 
     this.When(/^(.*) sorts by '(.*)'$/, function (personaName, sortingType, callback) {
         let director = this.director as Director;
@@ -88,7 +80,6 @@ export = function () {
         $$('.' + field).each(function (element, index) {
             return checkField(element, index, field, personas, callback);
         }).then(callback, callback)
-
     });
 
     this.Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName, callback) {
@@ -101,4 +92,29 @@ export = function () {
         }, callback);
     });
 
+    this.Then(/^the user details page contains '(.*)'s data$/, function (personaName, callback) {
+        let director = this.director as Director;
+        let persona = director.getPersona(personaName);
+        let page = director.getCurrentPage();
+
+        let promisses = [
+            checkTextElement(page.elements['login'].locator, persona.properties['userName'], callback),
+            checkTextElement(page.elements['firstName'].locator, persona.properties['firstName'], callback),
+            checkTextElement(page.elements['lastName'].locator, persona.properties['lastName'], callback),
+        ];
+
+        Promise.all(promisses).then(function () {
+            callback()
+        }, callback)
+    });
+
+}
+
+function checkTextElement(element, expectedText, callback) {
+
+    return element.getText().then(function (text) {
+        if (text != expectedText) {
+            callback(text + " is not equal to " + expectedText);
+        }
+    })
 }
