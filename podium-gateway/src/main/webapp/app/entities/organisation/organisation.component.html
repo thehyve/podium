@@ -57,8 +57,8 @@
             </thead>
             <tbody>
             <tr *ngFor="let organisation of organisations ;trackBy: trackUuid">
-                <td><a [routerLink]="['../organisation', organisation.uuid ]">{{organisation.shortName}}</a></td>
-                <td>{{organisation.name}}</td>
+                <td><a class="test_shortName" [routerLink]="['../organisation', organisation.uuid ]">{{organisation.shortName}}</a></td>
+                <td class="test_name ">{{organisation.name}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
