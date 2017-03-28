@@ -17,7 +17,6 @@ npm-debug.log.*
 #####################
 # Data generated
 #####################
-data/
 podium-gateway/src/main/webapp/app/**/*.js
 podium-gateway/src/main/webapp/app/**/*.js.map
 yarn.lock
