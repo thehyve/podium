@@ -29,7 +29,6 @@ let ADMIN_ROUTES = [
     healthRoute,
     logsRoute,
     gatewayRoute,
-    // ...userMgmtRoute,
     metricsRoute
 ];
 
@@ -42,5 +41,4 @@ export const adminRoute: Routes = [{
     canActivate: [UserRouteAccessService],
     children: ADMIN_ROUTES
 },
-    // ...userDialogRoute
 ];

@@ -57,7 +57,6 @@ public class UserRepresentation implements IdentifiableUser {
 
     private boolean accountLocked;
 
-
     @Size(min = 2, max = 5)
     private String langKey;
 

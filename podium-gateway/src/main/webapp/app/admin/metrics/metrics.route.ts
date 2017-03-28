@@ -10,12 +10,11 @@
 
 import { Route } from '@angular/router';
 
-import { UserRouteAccessService } from '../../shared';
-import { JhiMetricsMonitoringComponent } from './metrics.component';
+import { PdmMetricsMonitoringComponent } from './metrics.component';
 
 export const metricsRoute: Route = {
-  path: 'jhi-metrics',
-  component: JhiMetricsMonitoringComponent,
+  path: 'pdm-metrics',
+  component: PdmMetricsMonitoringComponent,
   data: {
     pageTitle: 'metrics.title'
   }

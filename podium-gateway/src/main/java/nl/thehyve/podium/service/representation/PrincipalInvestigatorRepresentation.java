@@ -5,8 +5,11 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.dto;
+package nl.thehyve.podium.service.representation;
 
+
+import nl.thehyve.podium.common.validation.Required;
+import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -15,24 +18,25 @@ import java.util.Objects;
 /**
  * A DTO for the PrincipalInvestigator entity.
  */
-public class PrincipalInvestigatorDTO implements Serializable {
+public class PrincipalInvestigatorRepresentation implements Serializable {
 
     private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Required
+    @Size(max = 150)
     private String name;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Email
+    @Required
+    @Size(max = 150)
     private String email;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Required
+    @Size(max = 150)
     private String jobTitle;
 
-    @NotNull
-    @Size(min = 1, max = 150)
+    @Required
+    @Size(max = 150)
     private String affiliation;
 
     public Long getId() {
@@ -79,7 +83,7 @@ public class PrincipalInvestigatorDTO implements Serializable {
             return false;
         }
 
-        PrincipalInvestigatorDTO principalInvestigatorDTO = (PrincipalInvestigatorDTO) o;
+        PrincipalInvestigatorRepresentation principalInvestigatorDTO = (PrincipalInvestigatorRepresentation) o;
 
         if ( ! Objects.equals(id, principalInvestigatorDTO.id)) { return false; }
 

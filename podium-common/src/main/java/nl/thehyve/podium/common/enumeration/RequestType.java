@@ -5,11 +5,13 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.domain.enumeration;
+package nl.thehyve.podium.common.enumeration;
 
 /**
  * The RequestType enumeration.
  */
 public enum RequestType {
-    DATA,IMAGES,MATERIAL
+    Data,
+    Images,
+    Material
 }

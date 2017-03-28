@@ -10,12 +10,11 @@
 
 import { Route } from '@angular/router';
 
-import { UserRouteAccessService } from '../../shared';
-import { JhiDocsComponent } from './docs.component';
+import { PdmDocsComponent } from './docs.component';
 
 export const docsRoute: Route = {
   path: 'docs',
-  component: JhiDocsComponent,
+  component: PdmDocsComponent,
   data: {
     pageTitle: 'global.menu.admin.apidocs'
   }

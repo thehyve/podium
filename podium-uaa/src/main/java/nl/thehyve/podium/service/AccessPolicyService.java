@@ -253,7 +253,7 @@ public class AccessPolicyService {
             return true;
         }
         if (AnyAuthorisedUser.class.isAssignableFrom(annotation.annotationType())) {
-            if (securityService.isAuthenticated()) {
+            if (SecurityService.isAuthenticated()) {
                 log.debug("Access granted for authenticated user on method {}", signature);
                 return true;
             } else {

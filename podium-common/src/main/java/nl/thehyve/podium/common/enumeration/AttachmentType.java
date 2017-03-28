@@ -5,11 +5,11 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.domain.enumeration;
+package nl.thehyve.podium.common.enumeration;
 
 /**
- * The RequestStatus enumeration.
+ * The AttachmentType enumeration.
  */
-public enum RequestStatus {
-    DRAFT,FIRST_CHECK,REVIEW,DATA_DELIVERY
+public enum AttachmentType {
+    MTA,DTA,RESEARCH_PROPOSAL,ORG_TERMS,METC_LETTER
 }

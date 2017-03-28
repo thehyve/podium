@@ -7,20 +7,16 @@
 
 package nl.thehyve.podium.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -50,30 +46,17 @@ public class PrincipalInvestigator implements Serializable {
     )
     private Long id;
 
-    @NotNull
-    @Size(min = 1, max = 150)
-    @Column(name = "name", length = 150, nullable = false)
+    @Column(name = "name", length = 150)
     private String name;
 
-    @NotNull
-    @Size(min = 1, max = 150)
-    @Column(name = "email", length = 150, nullable = false)
+    @Column(name = "email", length = 150)
     private String email;
 
-    @NotNull
-    @Size(min = 1, max = 150)
-    @Column(name = "job_title", length = 150, nullable = false)
+    @Column(name = "job_title", length = 150)
     private String jobTitle;
 
-    @NotNull
-    @Size(min = 1, max = 150)
-    @Column(name = "affiliation", length = 150, nullable = false)
+    @Column(name = "affiliation", length = 150)
     private String affiliation;
-
-    @OneToOne
-    @JoinColumn(name = "requestDetail")
-    @JsonIgnore
-    private RequestDetail requestDetail;
 
     public Long getId() {
         return id;
@@ -133,19 +116,6 @@ public class PrincipalInvestigator implements Serializable {
 
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
-    }
-
-    public RequestDetail getRequestDetail() {
-        return requestDetail;
-    }
-
-    public PrincipalInvestigator requestDetail(RequestDetail requestDetail) {
-        this.requestDetail = requestDetail;
-        return this;
-    }
-
-    public void setRequestDetail(RequestDetail requestDetail) {
-        this.requestDetail = requestDetail;
     }
 
     @Override

@@ -8,8 +8,8 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.exceptions.ResourceNotFoundException;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -102,7 +102,7 @@ public class OrganisationResource {
         }
         Organisation result = organisationService.findOne(organisation.getId());
         if (result == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisation.getId()));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisation.getId()));
         }
         copyProperties(organisation, result);
         organisationService.save(result);
@@ -142,7 +142,7 @@ public class OrganisationResource {
         log.debug("REST request to get Organisation : {}", id);
         Organisation organisation = organisationService.findOne(id);
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %s.", id));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %s.", id));
         }
         return ResponseEntity.ok(organisation);
     }
@@ -161,7 +161,7 @@ public class OrganisationResource {
         log.debug("REST request to get Organisation : {}", uuid);
         Organisation organisation = organisationService.findByUuid(uuid);
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with uuid: %s.", uuid));
+            throw new ResourceNotFound(String.format("Organisation not found with uuid: %s.", uuid));
         }
         return ResponseEntity.ok(organisation);
     }
@@ -184,7 +184,7 @@ public class OrganisationResource {
         log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
         Organisation organisation = organisationService.findOne(id);
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d",
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d",
                 organisation.getId()));
         }
         organisation.setActivated(activation);
@@ -206,7 +206,7 @@ public class OrganisationResource {
         log.debug("REST request to delete Organisation : {}", id);
         Organisation organisation = organisationService.findOne(id);
         if (organisation == null) {
-            throw new ResourceNotFoundException(String.format("Organisation not found with id: %d", organisation.getId()));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisation.getId()));
         }
         organisationService.delete(organisation);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

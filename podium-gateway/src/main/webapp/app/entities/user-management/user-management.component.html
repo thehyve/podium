@@ -26,43 +26,39 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th  jhiSortBy="langKey"> <span jhiTranslate="userManagement.langKey">Lang Key</span> <span class="fa fa-sort"></span></th>
                 <th><span jhiTranslate="userManagement.profiles">Profiles</span></th>
                 <th jhiSortBy="createdDate"><span jhiTranslate="userManagement.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
-                <th jhiSortBy="lastModifiedBy"><span jhiTranslate="userManagement.lastModifiedBy">Last Modified By</span> <span class="fa fa-sort"></span></th>
                 <th jhiSortBy="lastModifiedDate"><span jhiTranslate="userManagement.lastModifiedDate">Last Modified Date</span> <span class="fa fa-sort"></span></th>
                 <th></th>
             </tr>
             </thead>
             <tbody *ngIf ="users">
             <tr *ngFor="let user of users; trackBy: trackIdentity">
-                <td class="id"><a [routerLink]="['../user-management', user.login]">{{user.id}}</a></td>
-                <td class="login">{{user.login}}</td>
-                <td class="email">{{user.email}}</td>
+                <td><a [routerLink]="['../user-management', user.login]">{{user.id}}</a></td>
+                <td>{{user.login}}</td>
+                <td>{{user.email}}</td>
                 <td>
-                    <span class="tag tag-success emailVerified" *ngIf="user.emailVerified"
+                    <span class="tag tag-success" *ngIf="user.emailVerified"
                           jhiTranslate="userManagement.emailVerified">Email verified</span>
-                    <span class="tag tag-danger emailVerified" *ngIf="!user.emailVerified"
+                    <span class="tag tag-danger" *ngIf="!user.emailVerified"
                           jhiTranslate="userManagement.emailUnverified">Email unverified</span>
                 </td>
                 <td>
-                    <span class="tag tag-success adminVerified" *ngIf="user.adminVerified"
+                    <span class="tag tag-success" *ngIf="user.adminVerified"
                           jhiTranslate="userManagement.adminVerified">Account verified</span>
-                    <span class="tag tag-danger adminVerified" *ngIf="!user.adminVerified"
+                    <span class="tag tag-danger" *ngIf="!user.adminVerified"
                           jhiTranslate="userManagement.adminUnverified">Account unverified</span>
                 </td>
                 <td>
                     <span class="tag tag-danger" *ngIf="user.accountLocked"
                           jhiTranslate="userManagement.accountLocked">Locked</span>
                 </td>
-                <td>{{user.langKey}}</td>
-                <td class="authority">
+                <td>
                     <div *ngFor="let authority of user.authorities">
                         <span class="tag tag-info">{{ authority }}</span>
                     </div>
                 </td>
                 <td>{{user.createdDate | date:'dd/MM/yy HH:mm'}}</td>
-                <td>{{user.lastModifiedBy}}</td>
                 <td>{{user.lastModifiedDate | date:'dd/MM/yy HH:mm'}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">

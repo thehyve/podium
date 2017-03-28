@@ -11,7 +11,7 @@ import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.service.dto.RequestDTO;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 
 import org.mapstruct.*;
 import java.util.List;
@@ -22,20 +22,29 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { })
+@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class })
 public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
-    RequestDTO requestToRequestDTO(Request request);
+    RequestRepresentation requestToRequestDTO(Request request);
 
-    List<RequestDTO> requestsToRequestDTOs(List<Request> requests);
+    List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
-    Request requestDTOToRequest(RequestDTO requestDTO);
+    Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    List<Request> requestDTOsToRequests(List<RequestDTO> requestDTOs);
+    @Mapping(source = "parentRequest", target = "parentRequest")
+    @Mapping(source = "requestDetail", target = "requestDetail")
+    Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
+
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    Request clone(Request request);
+
+    List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {
         return organisations.stream().map(OrganisationDTO::getUuid)

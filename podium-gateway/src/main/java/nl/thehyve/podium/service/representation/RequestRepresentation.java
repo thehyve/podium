@@ -5,37 +5,38 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.dto;
+package nl.thehyve.podium.service.representation;
 
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Objects;
+import java.util.*;
 
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.domain.RequestDetail;
-import nl.thehyve.podium.domain.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 
 /**
  * A DTO for the Request entity.
  */
-public class RequestDTO implements Serializable {
+public class RequestRepresentation implements Serializable {
 
     private Long id;
+
+    private UUID uuid;
+
+    private UUID requester;
 
     @NotNull
     private RequestStatus status;
 
     private List<OrganisationDTO> organisations = new ArrayList<>();
 
-    private RequestDTO parentRequest;
+    private RequestRepresentation parentRequest;
 
-    private RequestDetail requestDetail;
+    @Valid
+    private RequestDetailRepresentation requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();
 
@@ -46,6 +47,23 @@ public class RequestDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public UUID getRequester() {
+        return requester;
+    }
+
+    public void setRequester(UUID requester) {
+        this.requester = requester;
+    }
+
     public RequestStatus getStatus() {
         return status;
     }
@@ -62,19 +80,19 @@ public class RequestDTO implements Serializable {
         this.organisations = organisations;
     }
 
-    public RequestDTO getParentRequest() {
+    public RequestRepresentation getParentRequest() {
         return parentRequest;
     }
 
-    public void setParentRequest(RequestDTO requestId) {
+    public void setParentRequest(RequestRepresentation requestId) {
         this.parentRequest = requestId;
     }
 
-    public RequestDetail getRequestDetail() {
+    public RequestDetailRepresentation getRequestDetail() {
         return requestDetail;
     }
 
-    public void setRequestDetail(RequestDetail requestDetail) {
+    public void setRequestDetail(RequestDetailRepresentation requestDetail) {
         this.requestDetail = requestDetail;
     }
 
@@ -95,7 +113,7 @@ public class RequestDTO implements Serializable {
             return false;
         }
 
-        RequestDTO requestDTO = (RequestDTO) o;
+        RequestRepresentation requestDTO = (RequestRepresentation) o;
 
         if ( ! Objects.equals(id, requestDTO.id)) { return false; }
 

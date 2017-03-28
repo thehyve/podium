@@ -10,6 +10,8 @@ package nl.thehyve.podium;
 import nl.thehyve.podium.config.DefaultProfileUtil;
 import nl.thehyve.podium.config.PodiumConstants;
 import nl.thehyve.podium.config.PodiumProperties;
+import org.flowable.spring.boot.RestApiAutoConfiguration;
+import org.flowable.spring.boot.SecurityAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -31,7 +33,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @ComponentScan
-@EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class, MetricsDropwizardAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {
+    MetricFilterAutoConfiguration.class,
+    MetricRepositoryAutoConfiguration.class,
+    MetricsDropwizardAutoConfiguration.class,
+    RestApiAutoConfiguration.class,
+    SecurityAutoConfiguration.class})
 @EnableConfigurationProperties({PodiumProperties.class, LiquibaseProperties.class})
 @EnableDiscoveryClient
 @EnableZuulProxy

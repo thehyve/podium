@@ -5,19 +5,19 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.exceptions;
+package nl.thehyve.podium.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFound extends RuntimeException {
 
-    public ResourceNotFoundException(String s) {
+    public ResourceNotFound(String s) {
         super(s);
     }
 
-    public ResourceNotFoundException(String s, Throwable throwable) {
+    public ResourceNotFound(String s, Throwable throwable) {
         super(s, throwable);
     }
 

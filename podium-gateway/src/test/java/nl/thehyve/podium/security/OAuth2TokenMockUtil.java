@@ -7,6 +7,8 @@
 
 package nl.thehyve.podium.security;
 
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,6 +72,27 @@ public class OAuth2TokenMockUtil {
 
     public RequestPostProcessor oauth2Authentication(String username) {
         return oauth2Authentication(username, Collections.emptySet());
+    }
+
+    private OAuth2Authentication createAuthentication(UserAuthenticationToken authentication) {
+        authentication.setAuthenticated(true);
+
+        Set<String> scopes = Sets.newSet("some-client");
+        // Create the authorization request and OAuth2Authentication object
+        OAuth2Request authRequest = new OAuth2Request(null, "testClient", null, true, scopes, null, null, null,
+            null);
+        return new OAuth2Authentication(authRequest, authentication);
+    }
+
+    public RequestPostProcessor oauth2Authentication(UserAuthenticationToken authentication) {
+        String uuid = String.valueOf(UUID.randomUUID());
+
+        given(tokenServices.loadAuthentication(uuid))
+            .willReturn(createAuthentication(authentication));
+
+        given(tokenServices.readAccessToken(uuid)).willReturn(new DefaultOAuth2AccessToken(uuid));
+
+        return new OAuth2PostProcessor(uuid);
     }
 
     public static class OAuth2PostProcessor implements RequestPostProcessor {

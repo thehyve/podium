@@ -46,7 +46,8 @@ export class RegisterComponent implements OnInit {
                 private elementRef: ElementRef,
                 private renderer: Renderer,
                 private translate: TranslateService,
-                private router: Router) {
+                private router: Router
+    ) {
         this.languageService.setLocations(['register']);
     }
 

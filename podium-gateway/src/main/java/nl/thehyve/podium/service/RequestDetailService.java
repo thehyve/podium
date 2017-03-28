@@ -7,17 +7,18 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.repository.RequestDetailRepository;
 import nl.thehyve.podium.repository.search.RequestdetailSearchRepository;
-import nl.thehyve.podium.domain.RequestDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing RequestDetail.
@@ -28,17 +29,13 @@ public class RequestDetailService {
 
     private final Logger log = LoggerFactory.getLogger(RequestDetailService.class);
 
-    private final RequestDetailRepository requestDetailRepository;
+    @Autowired
+    private  RequestDetailRepository requestDetailRepository;
 
-    private final RequestdetailSearchRepository requestdetailSearchRepository;
+    @Autowired
+    private  RequestdetailSearchRepository requestdetailSearchRepository;
 
-    public RequestDetailService(
-        RequestDetailRepository requestDetailRepository,
-        RequestdetailSearchRepository requestdetailSearchRepository
-    ) {
-            this.requestDetailRepository = requestDetailRepository;
-            this.requestdetailSearchRepository = requestdetailSearchRepository;
-    }
+    public RequestDetailService() {}
 
     /**
      * Save a requestDetail.

@@ -10,12 +10,11 @@
 
 import { Route } from '@angular/router';
 
-import { UserRouteAccessService } from '../../shared';
-import { JhiGatewayComponent } from './gateway.component';
+import { PdmGatewayComponent } from './gateway.component';
 
 export const gatewayRoute: Route = {
-  path: 'gateway',
-  component: JhiGatewayComponent,
+  path: 'pdm-gateway',
+  component: PdmGatewayComponent,
   data: {
     pageTitle: 'gateway.title'
   }
