@@ -8,6 +8,9 @@
  * See the file LICENSE in the root of this repository.
  */
 import request = require('request')
+import {isUndefined} from "util";
+import {browser} from "protractor";
+import {Persona} from "./director";
 
 export class AdminConsole {
     public token: string;
@@ -15,8 +18,19 @@ export class AdminConsole {
     constructor() {
     }
 
-    public authenticate(callback) {//store token first time
+    public authenticate(callback, persona?: Persona) {//store token first time
         let that = this;
+        let username;
+        let password;
+
+        if (!isUndefined(persona)){
+            username = persona.properties["userName"];
+            password = persona.properties["password"];
+        } else {
+            username = "admin";
+            password = "admin";
+        }
+
         let options = {
             method: 'POST',
             url: 'http://localhost:8080/podiumuaa/oauth/token',
@@ -25,11 +39,12 @@ export class AdminConsole {
             },
             formData: {
                 grant_type: "password",
-                username: "admin",
-                password: "admin"
+                username: username,
+                password: password
             }
         };
 
+        console.log(options);
         request(options, callback)
     }
 
@@ -169,6 +184,32 @@ export class AdminConsole {
                 }
             })
         });
+    }
+
+    public checkDraft(expectedDraft, check, callback, user) {
+
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'api/requests/drafts',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            request(options, function (error, response, body) {
+                let drafts = parseJSON(body);
+                console.log(body);
+                let draft = drafts.filter(function (value) {
+                    return value["requestDetail"]["title"] == expectedDraft.properties["title"];
+                })[0];
+
+                if (check(expectedDraft, draft)) {
+                    callback()
+                } else {
+                    callback(JSON.stringify(draft) + " did not match for " + JSON.stringify(expectedDraft))
+                }
+            })
+        }, user);
     }
 }
 
