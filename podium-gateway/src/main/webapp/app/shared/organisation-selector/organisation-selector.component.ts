@@ -12,6 +12,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { OrganisationService } from '../../entities/organisation/organisation.service';
 import { Response } from '@angular/http';
+import { Organisation } from '../../entities/organisation/organisation.model';
 
 @Component({
     selector: 'pdm-organisation-selector',
@@ -21,22 +22,38 @@ import { Response } from '@angular/http';
 
 export class OrganisationSelectorComponent implements OnInit {
 
-    organisationValue: string;
+    organisationValues: Organisation[];
     organisationOptions: any;
-    selectedOrganisation: string;
+    selectedOrganisations: Organisation[];
 
+    @Output() organisationChange = new EventEmitter();
+
+    @Input()
+    get organisations() {
+        return this.organisationValues;
+    }
+
+    set organisations(val) {
+        this.organisationValues = val;
+        this.organisationChange.emit(this.organisationValues);
+    }
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private organisationService: OrganisationService
-    ) {}
+    ){}
 
     onChange() {
+        console.log(this.selectedOrganisations);
+        this.organisations = this.selectedOrganisations;
+        this.organisationChange.emit(this.organisations);
     }
 
     ngAfterContentInit() {
+
     }
 
     ngOnInit() {
+        this.selectedOrganisations = this.organisations;
         this.loadOrganisations();
     }
 
@@ -50,7 +67,7 @@ export class OrganisationSelectorComponent implements OnInit {
     }
 
     private onError (error) {
-        console.error(error);
+
     }
 
 }

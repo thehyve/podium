@@ -16,6 +16,7 @@
     </div>
 
     <div class="col-md-6 offset-md-3 card-container">
+
         <!-- Request Drafts Selection -->
         <div *ngIf="selectDraft && !request">
 
@@ -404,11 +405,13 @@
                     </div>
                 </div>
 
+                <!-- Organisations -->
                 <h3 jhiTranslate="request.form.header.organisations">Organisations</h3>
                 <div class="form-group">
-                    <pdm-organisation-selector></pdm-organisation-selector>
+                    <pdm-organisation-selector [(organisations)]="myOrganisations" (change)="test()"
+                    ></pdm-organisation-selector>
+                    {{requestBase.organisations}}
                 </div>
-
 
                 <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>
 
