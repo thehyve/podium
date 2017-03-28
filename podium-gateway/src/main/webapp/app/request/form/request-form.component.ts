@@ -23,7 +23,8 @@ import {
     Principal,
     User,
     Attachment,
-    EmailValidatorDirective
+    EmailValidatorDirective,
+    OrganisationSelectorComponent
 } from '../../shared';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
@@ -33,6 +34,7 @@ import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.com
     templateUrl: './request-form.component.html',
     styleUrls: ['request-form.scss']
 })
+
 export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
@@ -49,6 +51,7 @@ export class RequestFormComponent implements OnInit {
     public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
     public selectedRequestDraft: RequestBase;
+    public myOrganisations: Organisation[];
 
     attachments: Attachment[];
 
@@ -109,6 +112,7 @@ export class RequestFormComponent implements OnInit {
                 (requestBase) => {
                     this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
+                    this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
                     this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     this.selectDraft = false;
@@ -117,9 +121,14 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
+    test(s:Organisation[]) {
+        console.log('requestBase s', this.myOrganisations)
+    }
+
     selectRequestDraft(requestBase: RequestBase) {
         this.selectDraft = false;
         this.requestBase = requestBase;
+        this.requestBase.organisations = requestBase.organisations || [];
         this.requestDetail = requestBase.requestDetail || new RequestDetail();
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
         this.requestDetail.principalInvestigator =
