@@ -9,7 +9,6 @@
   -->
 
 <div class="row">
-    <router-outlet name="submit"></router-outlet>
     <div class="col-md-6 offset-md-3">
         <h1 *ngIf="!requestBase?.id" jhiTranslate="request.form.header.new">New Request</h1>
         <h1 *ngIf="requestBase?.id" jhiTranslate="request.form.header.edit">Edit Request</h1>

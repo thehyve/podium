@@ -15,7 +15,6 @@ import { RequestFormComponent } from './request-form.component';
 
 export const requestFormRoute: Route = {
   path: 'new',
-  children: [],
   component: RequestFormComponent,
   data: {
     authorities: ['ROLE_RESEARCHER'],
