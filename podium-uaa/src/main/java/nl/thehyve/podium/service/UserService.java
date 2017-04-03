@@ -11,6 +11,7 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
+import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.security.SecurityService;
 import nl.thehyve.podium.config.UaaProperties;
 import nl.thehyve.podium.domain.User;
@@ -95,7 +96,10 @@ public class UserService {
             user.setEmailVerified(true);
             user.setActivationKey(null);
             user.setActivationKeyDate(null);
-            userSearchRepository.save(user);
+
+            SearchUser searchUser = userMapper.userToSearchUser(user);
+            userSearchRepository.save(searchUser);
+
             save(user);
             log.debug("Activated user: {}", user);
         }
@@ -135,7 +139,9 @@ public class UserService {
                     user.setEmailVerified(true);
                     user.setActivationKey(null);
                     user.setActivationKeyDate(null);
-                    userSearchRepository.save(user);
+
+                    SearchUser searchUser = userMapper.userToSearchUser(user);
+                    userSearchRepository.save(searchUser);
                     log.debug("Activated user: {}", user);
                 }
                 user.setPassword(passwordEncoder.encode(newPassword));
@@ -228,7 +234,10 @@ public class UserService {
         roles.add(role);
         newUser.setRoles(roles);
         save(newUser);
-        userSearchRepository.save(newUser);
+
+        SearchUser searchUser = userMapper.userToSearchUser(newUser);
+        userSearchRepository.save(searchUser);
+
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -256,7 +265,10 @@ public class UserService {
         user.setEmailVerified(false);
         user.setAdminVerified(true);
         save(user);
-        userSearchRepository.save(user);
+
+        SearchUser searchUser = userMapper.userToSearchUser(user);
+        userSearchRepository.save(searchUser);
+
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -264,7 +276,10 @@ public class UserService {
     public void updateUserAccount(UserRepresentation userData) {
         userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin()).ifPresent(user -> {
             copyProperties(userData, user);
-            userSearchRepository.save(user);
+
+            SearchUser searchUser = userMapper.userToSearchUser(user);
+            userSearchRepository.save(searchUser);
+
             log.debug("Changed Information for User: {}", user);
         });
     }
@@ -319,7 +334,10 @@ public class UserService {
     public void delete(User user) {
         user.setDeleted(true);
         save(user);
-        userSearchRepository.delete(user);
+
+        SearchUser searchUser = userMapper.userToSearchUser(user);
+        userSearchRepository.save(searchUser);
+
         log.debug("Deleted User: {}", user);
     }
 
@@ -375,11 +393,10 @@ public class UserService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<UserRepresentation> search(String query) {
+    public List<SearchUser> search(String query) {
         log.debug("Request to search users for query {}", query);
         return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(userMapper::userToUserDTO)
             .collect(Collectors.toList());
     }
 }
