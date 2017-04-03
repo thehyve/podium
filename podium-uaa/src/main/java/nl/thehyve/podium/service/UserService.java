@@ -23,11 +23,15 @@ import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import org.elasticsearch.action.suggest.SuggestResponse;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +73,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
 
     /**
      * Activate a user by a given key.
@@ -398,5 +405,22 @@ public class UserService {
         return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<SearchUser> suggestUsers(String query) {
+
+        CompletionSuggestionBuilder completionSuggestionBuilder
+            = new CompletionSuggestionBuilder("fullname-suggest")
+            .text(query)
+            .field("fullNameSuggest");
+
+        SuggestResponse suggestResponse = elasticsearchTemplate.suggest(completionSuggestionBuilder, SearchUser.class);
+        CompletionSuggestion completionSuggestion = suggestResponse.getSuggest().getSuggestion("fullname-suggest");
+        List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
+
+        List<SearchUser> suggestedUsers = userMapper.completionSuggestOptionsToSearchUsers(options);
+
+        return suggestedUsers;
     }
 }
