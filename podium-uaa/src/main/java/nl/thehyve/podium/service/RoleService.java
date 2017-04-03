@@ -60,10 +60,10 @@ public class RoleService {
     }
 
     /**
-     *  Get all the roles.
+     * Get all the roles.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<Role> findAll(Pageable pageable) {
@@ -72,10 +72,10 @@ public class RoleService {
     }
 
     /**
-     *  Get all the roles for an organisation.
+     * Get all the roles for an organisation.
      *
-     *  @param uuid the organisation UUID to fetch the roles for.
-     *  @return the list of entities
+     * @param uuid the organisation UUID to fetch the roles for.
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public List<Role> findAllByOrganisationUUID(UUID uuid) {
@@ -86,10 +86,10 @@ public class RoleService {
     }
 
     /**
-     *  Get one role by id.
+     * Get one role by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Role findOne(Long id) {
@@ -99,10 +99,12 @@ public class RoleService {
     }
 
     /**
-     *  Get the role for an authority.
-     *  Only for global roles, not for organisation roles.
+     * Get the role for an authority.
+     * Only for global roles, not for organisation roles.
+     * Returns null when authorityName is a organisation authority.
      *
-     *  @return the entity
+     * @param authorityName Authority name to fetch role for.
+     * @return the role entity
      */
     @Transactional(readOnly = true)
     public Role findRoleByAuthorityName(String authorityName) {
@@ -118,9 +120,11 @@ public class RoleService {
     }
 
     /**
-     *  Get the role for an authority within an organisation.
+     * Get the role for an authority within an organisation.
      *
-     *  @return the entity
+     * @param organisation The organisation to fetch the role for.
+     * @param authorityName Authority name to fetch role for.
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Role findRoleByOrganisationAndAuthorityName(Organisation organisation, String authorityName) {
@@ -137,9 +141,9 @@ public class RoleService {
     }
 
     /**
-     *  Delete the  role by id.
+     * Delete the  role by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete Role : {}", id);
@@ -150,8 +154,9 @@ public class RoleService {
     /**
      * Search for the role corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable Pagination object of the requested page
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<Role> search(String query, Pageable pageable) {

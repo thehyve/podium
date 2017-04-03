@@ -43,9 +43,7 @@ public class PodiumUaaApp {
 
     /**
      * Initializes podiumUaa.
-     * <p>
-     * Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile
-     * <p>
+     * <p>Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile<p>
      */
     @PostConstruct
     public void initApplication() {

@@ -190,6 +190,8 @@ public class OrganisationResource {
     public ResponseEntity<OrganisationDTO> setOrganisationActivation(
         @PathVariable Long id,  @RequestParam (value = "value",required = true) boolean activation) throws
         URISyntaxException {
+
+        // FIXME: Use UUID as unique id argument
             log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
             OrganisationDTO updatedOrganisationDTO = organisationService.activation(id, activation);
 

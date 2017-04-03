@@ -47,7 +47,10 @@ public class ElasticsearchIndexResource {
     public ElasticsearchIndexResource( ) {}
 
     /**
-     * POST  /elasticsearch/index -> Reindex all Elasticsearch documents
+     * Reindex all Elasticsearch documents
+     *
+     * @throws URISyntaxException Exception thrown when URI is malformed.
+     * @returns ResponseEntity without a body
      */
     @SecuredByAuthority({ AuthorityConstants.PODIUM_ADMIN })
     @GetMapping(value = "/elasticsearch/index",

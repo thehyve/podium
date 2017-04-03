@@ -31,7 +31,7 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
      * - numerical chars
      * - special chars (not numerical or alphabetical)
      *
-     * @param password
+     * @param password The password to validate
      * @return true if valid, false otherwise.
      */
     public static boolean validate(String password) {

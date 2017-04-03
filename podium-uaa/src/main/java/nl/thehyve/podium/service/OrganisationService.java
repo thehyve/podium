@@ -122,9 +122,9 @@ public class OrganisationService {
     }
 
     /**
-     *  Get the number of organisations.
+     * Get the number of organisations.
      *
-     *  @return the number of entities
+     * @return the number of entities
      */
     @Transactional(readOnly = true)
     public Long count() {
@@ -133,7 +133,7 @@ public class OrganisationService {
     }
 
     /**
-     *  Get all the organisations.
+     * Get all the organisations.
      *
      *  @param pageable the pagination information
      *  @return the list of entities
@@ -146,10 +146,10 @@ public class OrganisationService {
     }
 
     /**
-     *  Get one organisationDTO by id.
+     * Get one organisationDTO by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity DTO
+     * @param id the id of the entity
+     * @return the entity DTO
      */
     @Transactional(readOnly = true)
     public OrganisationDTO findOneDTO(Long id) {
@@ -161,8 +161,8 @@ public class OrganisationService {
     /**
      *  Get one organisation by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Organisation findOne(Long id) {
@@ -173,8 +173,8 @@ public class OrganisationService {
     /**
      *  Get one organisation by uuid.
      *
-     *  @param uuid the uuid of the entity
-     *  @return the entity
+     * @param uuid the uuid of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public OrganisationDTO findByUuid(UUID uuid) {
@@ -185,6 +185,11 @@ public class OrganisationService {
 
     /**
      * (De-)activate the organisation
+     *
+     *  @param id The id of the organisation to be activated.
+     *  @param activated Boolean indicating if the organisation is to be activated or not.
+     *
+     *  @return OrganisationDTO of the updated Organisation
      */
     public OrganisationDTO activation(Long id, boolean activated) {
         Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
@@ -199,9 +204,9 @@ public class OrganisationService {
     }
 
     /**
-     *  Mark the organisation as deleted.
+     * Mark the organisation as deleted.
      *
-     *  @param uuid the organisation to mark deleted.
+     * @param uuid the organisation to mark deleted.
      */
     public void delete(UUID uuid) {
         log.debug("Request to delete Organisation : {}", uuid);
@@ -219,8 +224,9 @@ public class OrganisationService {
     /**
      * Search for the organisation corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable Pagination object of the requested page
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<SearchOrganisation> search(String query, Pageable pageable) {

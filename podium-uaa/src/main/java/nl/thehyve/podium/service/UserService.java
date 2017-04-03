@@ -81,8 +81,8 @@ public class UserService {
      * Activate a user by a given key.
      * If the activation key has expired return null
      *
-     * @param key The activation key
-     * @throws VerificationKeyExpired
+     * @param key The activation key.
+     * @throws VerificationKeyExpired Thrown when the used verification key has expired.
      *
      * @return the user
      */
