@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service.representation;
 
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.validation.Required;
 import nl.thehyve.podium.config.Constants;
 
 import nl.thehyve.podium.domain.User;
@@ -26,29 +27,38 @@ import java.util.stream.Collectors;
 public class UserRepresentation implements IdentifiableUser {
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
+    @Size(max = 50)
+    @Required
     private String login;
 
     private UUID uuid;
 
     @Size(max = 50)
+    @Required
     private String firstName;
 
     @Size(max = 50)
+    @Required
     private String lastName;
 
     @Email
     @Size(max = 100)
+    @Required
     private String email;
 
+    @Required
     private String telephone;
 
+    @Required
     private String institute;
 
+    @Required
     private String department;
 
+    @Required
     private String jobTitle;
 
+    @Required
     private String specialism;
 
     private boolean emailVerified;
