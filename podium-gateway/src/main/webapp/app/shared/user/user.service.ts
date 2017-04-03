@@ -65,6 +65,7 @@ export class UserService {
         return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
     }
 
+        console.log('req ', options);
     delete(login: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${login}`);
     }

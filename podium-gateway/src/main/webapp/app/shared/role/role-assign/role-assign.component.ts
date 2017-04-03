@@ -83,7 +83,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
             // when user types into the input .next is called with the value from the input
             console.log('Async ', this.asyncSelected);
             observer.next({query: this.asyncSelected});
-        }).mergeMap((term: any) => this.userService.search(term));
+        }).mergeMap((term: any) => this.userService.suggest(term));
     }
 
     ngOnDestroy() {
