@@ -16,10 +16,9 @@ import { PodiumGatewaySharedModule } from '../shared';
 import {
     requestRoute,
     RequestFormService,
-    RequestFormComponent
+    RequestFormComponent,
+    RequestFormSubmitDialogComponent,
 } from './';
-
-import { EnumKeysPipe } from '../shared/pipes/enumKeys';
 
 @NgModule({
     imports: [
@@ -27,7 +26,11 @@ import { EnumKeysPipe } from '../shared/pipes/enumKeys';
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
-        RequestFormComponent
+        RequestFormComponent,
+        RequestFormSubmitDialogComponent
+    ],
+    entryComponents: [
+        RequestFormSubmitDialogComponent
     ],
     providers: [
         RequestFormService

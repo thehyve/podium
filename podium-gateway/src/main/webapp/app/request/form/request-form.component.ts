@@ -25,6 +25,8 @@ import {
     Attachment,
     EmailValidatorDirective
 } from '../../shared';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
 
 @Component({
     selector: 'pdm-request-form',
@@ -58,7 +60,8 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
                 private router: Router,
                 private principal: Principal,
                 private eventManager: EventManager,
-                private organisationService: OrganisationService) {
+                private organisationService: OrganisationService,
+                private modalService: NgbModal) {
         this.jhiLanguageService.setLocations(['request']);
     }
 
@@ -149,12 +152,22 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
             );
     }
 
-    submit() {
+    confirmSubmitModal(request: RequestBase) {
+        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = request;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+        });
+    }
+
+    submitDraft() {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
-        this.requestService.submitDraft(this.requestBase)
+        this.requestService.saveDraft(this.requestBase)
             .subscribe(
-                (requests) => this.onSubmitSuccess(requests),
+                (request) => this.confirmSubmitModal(request),
                 (error) => this.onError(error)
             );
     }
@@ -163,10 +176,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.error =  null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
-    }
-
-    private onSubmitSuccess(requests: RequestBase[]) {
-        // TODO
     }
 
     private onError(error) {

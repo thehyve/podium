@@ -9,6 +9,7 @@
  */
 
 export * from './form/request-form.component';
+export * from './form/request-form-submit-dialog.component';
 export * from './form/request-form.route';
 export * from './form/request-form.service';
 export * from './request.route';
