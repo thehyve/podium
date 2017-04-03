@@ -21,6 +21,9 @@ import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchOrganisation;
+import nl.thehyve.podium.search.SearchUser;
+import nl.thehyve.podium.service.mapper.OrganisationMapper;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import org.elasticsearch.indices.IndexAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class ElasticsearchIndexService {
@@ -45,10 +49,16 @@ public class ElasticsearchIndexService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private UserSearchRepository userSearchRepository;
 
     @Autowired
     private OrganisationRepository organisationRepository;
+
+    @Autowired
+    private OrganisationMapper organisationMapper;
 
     @Autowired
     private OrganisationSearchRepository organisationSearchRepository;
@@ -63,30 +73,56 @@ public class ElasticsearchIndexService {
     @Async
     @Timed
     public void reindexAll() {
-            reindexForClass(Organisation.class, organisationRepository, organisationSearchRepository);
 
-            reindexForClass(User.class, userRepository, userSearchRepository);
+        // Reindex Organisations to SearchOrganisations
+        reindexForClass(
+            Organisation.class, organisationRepository,
+            SearchOrganisation.class, organisationSearchRepository,
+            (List<Organisation> organisations) -> organisationMapper.organisationsToSearchOrganisations(organisations));
 
-            log.info("Elasticsearch: Successfully performed reindexing");
+        // Reindex Users -> SearchUsers
+        reindexForClass(
+            User.class, userRepository,
+            SearchUser.class, userSearchRepository,
+            (List<User> users) -> userMapper.usersToSearchUsers(users));
+
+        log.info("Elasticsearch: Successfully performed reindexing");
     }
 
+    /**
+     * Service for reindexing an entity in Elasticsearch.
+     *
+     * @param entityClass The java entity to that has to be indexed in elasticsearch
+     * @param jpaRepository Instance of a java entity jpa repository
+     * @param searchEntityClass The Elasticsearch document entity that will be used in the mapping of the java entity
+     * @param elasticsearchRepository Instane of the elasticsearchrepository for this document entity
+     * @param mapperFunction The mapper function to apply for the transformation of the entity to the searchentity
+     */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    private <T, ID extends Serializable> void reindexForClass(Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
-                                                              ElasticsearchRepository<T, ID> elasticsearchRepository) {
-        elasticsearchTemplate.deleteIndex(entityClass);
+    private <T, ID extends Serializable, S> void reindexForClass(
+        Class<T> entityClass, JpaRepository<T, ID> jpaRepository,
+        Class<S> searchEntityClass, ElasticsearchRepository<S, ID> elasticsearchRepository,
+        Function<List<T>, List<S>> mapperFunction
+    ) {
+        elasticsearchTemplate.deleteIndex(searchEntityClass);
         try {
-            elasticsearchTemplate.createIndex(entityClass);
+            elasticsearchTemplate.createIndex(searchEntityClass);
         } catch (IndexAlreadyExistsException e) {
             // Do nothing. Index was already concurrently recreated by some other service.
         }
-        elasticsearchTemplate.putMapping(entityClass);
+
+        elasticsearchTemplate.putMapping(searchEntityClass);
         if (jpaRepository.count() > 0) {
             try {
-                Method m = jpaRepository.getClass().getMethod("findAllWithEagerRelationships");
-                elasticsearchRepository.save((List<T>) m.invoke(jpaRepository));
+                // Fetch all entities using reflection
+                Method m = jpaRepository.getClass().getMethod("findAll");
+                List<T> entities = (List<T>) m.invoke(jpaRepository);
+
+                List<S> searchEntities = mapperFunction.apply(entities);
+                elasticsearchRepository.save(searchEntities);
             } catch (Exception e) {
-                elasticsearchRepository.save(jpaRepository.findAll());
+                log.error("ELasticsearchIndexer error: {}", e);
             }
         }
         log.info("Elasticsearch: Indexed all rows for " + entityClass.getSimpleName());
