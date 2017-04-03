@@ -116,9 +116,8 @@ public class OrganisationService {
             organisation.setRoles(roles);
         }
 
-        log.info("Saved organisation: {}", organisation);
-        organisationSearchRepository.save(organisation);
-        log.info("Saved to elastic search: {}", organisation);
+        SearchOrganisation searchOrganisation = organisationMapper.organisationToSearchOrganisation(organisation);
+        organisationSearchRepository.save(searchOrganisation);
         return organisation;
     }
 
@@ -224,9 +223,9 @@ public class OrganisationService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Organisation> search(String query, Pageable pageable) {
+    public Page<SearchOrganisation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Organisations for query {}", query);
-        Page<Organisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
+        Page<SearchOrganisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 
