@@ -18,6 +18,7 @@ import { User } from './user.model';
 export class UserService {
     private resourceUrl = 'podiumuaa/api/users';
     private resourceSearchUrl = 'podiumuaa/api/_search/users';
+    private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
 
     constructor(private http: Http) { }
 
@@ -65,7 +66,11 @@ export class UserService {
         return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
     }
 
-        console.log('req ', options);
+    suggest(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceSuggestUrl}`, options).map((res: Response) => res.json());
+    }
+
     delete(login: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${login}`);
     }
@@ -83,8 +88,6 @@ export class UserService {
 
             options.search = params;
         }
-
-        console.log('QUERYYYY ');
 
         return options;
     }
