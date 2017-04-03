@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
@@ -178,7 +179,7 @@ public class UserService {
      * @param userId the id of the user to be updated. Can be {@code null} for new accounts.
      * @throws UserAccountException if the e-mail address or login are already in use.
      */
-    private void checkForExistingLoginAndEmail(ManagedUserVM updatedUserData, Long userId) throws UserAccountException {
+    private void checkForExistingLoginAndEmail(UserRepresentation updatedUserData, Long userId) throws UserAccountException {
         {
             Optional<User> existingAccount = getUserWithAuthoritiesByLogin(updatedUserData.getLogin().toLowerCase());
             if (existingAccount.isPresent()) {
@@ -225,15 +226,15 @@ public class UserService {
         return newUser;
     }
 
-    public User createUser(ManagedUserVM managedUserVM) throws UserAccountException {
-        checkForExistingLoginAndEmail(managedUserVM, null);
+    public User createUser(UserRepresentation userData) throws UserAccountException {
+        checkForExistingLoginAndEmail(userData, null);
         User user = new User();
-        user.setLogin(managedUserVM.getLogin());
-        user.setEmail(managedUserVM.getEmail());
-        copyProperties(managedUserVM, user);
-        if (managedUserVM.getAuthorities() != null) {
+        user.setLogin(userData.getLogin());
+        user.setEmail(userData.getEmail());
+        copyProperties(userData, user);
+        if (userData.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
-            managedUserVM.getAuthorities().forEach( authority -> {
+            userData.getAuthorities().forEach( authority -> {
                 Role role = roleService.findRoleByAuthorityName(authority);
                 if (role != null) {
                     roles.add(role);
@@ -253,26 +254,33 @@ public class UserService {
         return user;
     }
 
-    public void updateUserAccount(UserRepresentation userData) {
-        userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin()).ifPresent(user -> {
-            copyProperties(userData, user);
-            userSearchRepository.save(user);
-            log.debug("Changed Information for User: {}", user);
-        });
+    public UserRepresentation updateUserAccount(UserRepresentation userData) throws UserAccountException {
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFound("Account does not exists");
+        }
+        User user = userOptional.get();
+        checkForExistingLoginAndEmail(userData, user.getId());
+        copyProperties(userData, user);
+        user = save(user);
+        userSearchRepository.save(user);
+        log.debug("Changed Information for User: {}", user);
+        return new UserRepresentation(user);
     }
 
-    public void updateUser(ManagedUserVM managedUserVM) throws UserAccountException {
-        User user = userRepository.findOne(managedUserVM.getId());
-        if (user == null) {
-           return;
+    public void updateUser(UserRepresentation userData) throws UserAccountException {
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndUuid(userData.getUuid());
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFound("User does not exists");
         }
-        checkForExistingLoginAndEmail(managedUserVM, user.getId());
-        user.setLogin(managedUserVM.getLogin());
-        user.setEmail(managedUserVM.getEmail());
-        user.setAdminVerified(managedUserVM.isAdminVerified());
+        User user = userOptional.get();
+        checkForExistingLoginAndEmail(userData, user.getId());
+        user.setLogin(userData.getLogin());
+        user.setEmail(userData.getEmail());
+        user.setAdminVerified(userData.isAdminVerified());
         Set<Role> managedRoles = user.getRoles();
         managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
-        managedUserVM.getAuthorities().forEach( authority -> {
+        userData.getAuthorities().forEach( authority -> {
             if (!AuthorityConstants.isOrganisationAuthority(authority)) {
                 log.info("Adding role: {}", authority);
                 Role role = roleService.findRoleByAuthorityName(authority);
@@ -284,7 +292,7 @@ public class UserService {
             }
         });
 
-        copyProperties(managedUserVM, user);
+        copyProperties(userData, user);
         save(user);
         log.debug("Changed Information for User: {}", user);
     }

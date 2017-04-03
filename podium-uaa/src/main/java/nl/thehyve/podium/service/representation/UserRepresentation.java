@@ -122,6 +122,26 @@ public class UserRepresentation implements IdentifiableUser {
         this.authorities = authorities;
     }
 
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public void setSpecialism(String specialism) {
+        this.specialism = specialism;
+    }
+
     public UUID getUuid() { return uuid; }
 
     public UUID getUserUuid() { return getUuid(); }
