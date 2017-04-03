@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { Organisation, OrganisationService } from '../../backoffice/modules/organisation';
@@ -31,7 +31,7 @@ import {
     templateUrl: './request-form.component.html',
     styleUrls: ['request-form.scss']
 })
-export class RequestFormComponent implements OnInit {
+export class RequestFormComponent implements OnInit, AfterContentInit {
 
     private currentUser: User;
 
