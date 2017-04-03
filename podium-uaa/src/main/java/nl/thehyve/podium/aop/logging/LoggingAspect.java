@@ -62,9 +62,9 @@ public class LoggingAspect {
 
     /**
      * Advice that logs when a method is entered and exited.
-     * @param joinPoint Candidate point in application executation where the aspect can be plugged in.
-     * @throws IllegalArgumentException that can be thrown.
      *
+     * @param joinPoint Candidate point in application executation where the aspect can be plugged in.
+     * @throws Throwable IllegalArgumentException that can be thrown.
      * @return Object
      */
     @Around("loggingPointcut()")
