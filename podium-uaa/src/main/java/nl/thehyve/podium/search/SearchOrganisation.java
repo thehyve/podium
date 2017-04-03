@@ -20,7 +20,7 @@ import java.util.Objects;
  * An Organisation.
  */
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "organisation")
+@Document(indexName = "searchorganisation")
 public class SearchOrganisation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -71,6 +71,16 @@ public class SearchOrganisation implements Serializable {
     public boolean isActivated() {
         return activated;
     }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setUuid(String uuid) { this.uuid = uuid; }
+
+    public void setName(String name) { this.name = name; }
+
+    public void setShortName(String shortName) { this.shortName = shortName; }
+
+    public void setActivated(boolean activated) { this.activated = activated; }
 
     @Override
     public boolean equals(Object o) {
