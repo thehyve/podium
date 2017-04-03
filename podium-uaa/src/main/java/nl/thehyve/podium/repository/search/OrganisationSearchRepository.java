@@ -14,5 +14,5 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 /**
  * Spring Data Elasticsearch repository for the Organisation entity.
  */
-public interface OrganisationSearchRepository extends ElasticsearchRepository<Organisation, Long> {
+public interface OrganisationSearchRepository extends ElasticsearchRepository<SearchOrganisation, Long> {
 }

@@ -8,10 +8,11 @@
 package nl.thehyve.podium.repository.search;
 
 import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.search.SearchUser;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
  * Spring Data ElasticSearch repository for the User entity.
  */
-public interface UserSearchRepository extends ElasticsearchRepository<User, Long> {
+public interface UserSearchRepository extends ElasticsearchRepository<SearchUser, Long> {
 }
