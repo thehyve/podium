@@ -24,6 +24,7 @@
     "jquery": "3.1.1",
     "material-design-icons": "^3.0.1",
     "ng-jhipster": "0.1.6",
+    "ng2-bootstrap": "^1.4.2",
     "ng2-file-upload": "^1.2.0",
     "ng2-webstorage": "1.5.0",
     "reflect-metadata": "0.1.9",
