@@ -15,7 +15,7 @@ import { UserRouteAccessService } from '../shared';
 import { requestFormRoute } from './';
 
 let REQUEST_ROUTES = [
-   requestFormRoute
+    requestFormRoute
 ];
 
 export const requestRoute: Routes = [{
