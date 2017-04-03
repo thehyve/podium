@@ -39,7 +39,6 @@ import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 @Entity
 @Table(name = "podium_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "user")
 public class User extends AbstractAuditingEntity implements AuthenticatedUser, UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
