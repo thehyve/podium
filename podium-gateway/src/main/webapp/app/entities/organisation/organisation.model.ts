@@ -14,6 +14,7 @@ export class Organisation {
     uuid?: string;
     name?: string;
     shortName?: string;
+    deleted?: boolean;
     activated?: boolean;
     organisationUuid?: string;
 
@@ -23,13 +24,29 @@ export class Organisation {
         name?: string,
         shortName?: string,
         activated?: boolean,
+        deleted?: boolean,
         organisationUuid?: string
     ) {
         this.id = id ? id : null;
         this.uuid = uuid ? uuid : null;
         this.name = name ? name : null;
         this.shortName = shortName ? shortName : null;
+        this.deleted = deleted ? deleted : null;
         this.activated = activated ? activated : null;
         this.organisationUuid = organisationUuid ? organisationUuid : null;
+    }
+
+    /**
+     * Copy object properties
+     * @param obj
+     * @returns {Organisation}
+     */
+    copyObject(obj) {
+        for (let prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                this[prop] = obj[prop];
+            }
+        }
+        return this;
     }
 }
