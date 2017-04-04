@@ -13,6 +13,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { OrganisationService } from '../../entities/organisation/organisation.service';
 import { Response } from '@angular/http';
 import { Organisation } from '../../entities/organisation/organisation.model';
+import { RequestType } from '../request/request-type';
 
 @Component({
     selector: 'pdm-organisation-selector',
@@ -22,34 +23,21 @@ import { Organisation } from '../../entities/organisation/organisation.model';
 
 export class OrganisationSelectorComponent implements OnInit {
 
-    organisationValues: Organisation[];
-    organisationOptions: any;
+    organisationOptions: Organisation[];
     selectedOrganisations: Organisation[];
 
-    @Output() organisationChange = new EventEmitter();
+    @Input() organisations: Organisation[];
+    @Input() requestType: RequestType[];
 
-    @Input()
-    get organisations() {
-        return this.organisationValues;
-    }
-
-    set organisations(val) {
-        this.organisationValues = val;
-        this.organisationChange.emit(this.organisationValues);
-    }
+    @Output() organisationChange = new EventEmitter<Organisation[]>();
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private organisationService: OrganisationService
-    ){}
+    ) {}
 
     onChange() {
-        console.log(this.selectedOrganisations);
         this.organisations = this.selectedOrganisations;
         this.organisationChange.emit(this.organisations);
-    }
-
-    ngAfterContentInit() {
-
     }
 
     ngOnInit() {
@@ -58,10 +46,16 @@ export class OrganisationSelectorComponent implements OnInit {
     }
 
     private loadOrganisations() {
-        this.organisationService.findAll().subscribe(
-            (res) => {
-                this.organisationOptions = res;
-            },
+        this.organisationService.findAll()
+            .subscribe(
+                (data: Response) => {
+                    if (Array.isArray(data)) {
+                        // convert ajax response to object
+                        this.organisationOptions = data.map(i => {
+                            return (new Organisation()).copyObject(i);
+                        });
+                    }
+                },
             (res: Response) => this.onError(res.json())
         );
     }
