@@ -42,14 +42,12 @@ export class RequestFormComponent implements OnInit {
     public success: string;
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
-    public requestTypes = RequestType;
-    public availableOrganisations: Organisation[];
+    public requestTypeOptions: any;
     public availableRequestDrafts: RequestBase[];
     public selectDraft: boolean;
     public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
     public selectedRequestDraft: RequestBase;
-    public myOrganisations: Organisation[];
 
     attachments: Attachment[];
 
@@ -68,6 +66,7 @@ export class RequestFormComponent implements OnInit {
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.currentUser = account;
+            this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
         });
     }
@@ -118,8 +117,8 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
-    test(s:Organisation[]) {
-        console.log('requestBase s', this.myOrganisations)
+    updateRequestOrganisations(event: Organisation[]) {
+        this.requestBase.organisations = event;
     }
 
     selectRequestDraft(requestBase: RequestBase) {
