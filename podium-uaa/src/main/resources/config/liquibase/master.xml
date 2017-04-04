@@ -25,5 +25,5 @@
     <include file="./changelog/20170209105123_added_user_fields.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170210162230_added_user_verification.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170227173401_added_sequences.xml" relativeToChangelogFile="true"/>
-    <include file="./changelog/20170403162001_added_request_type_constaints_Organisation.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170403162001_added_request_types_constaints_Organisation.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

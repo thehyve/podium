@@ -78,7 +78,7 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         name="organisation_request_types",
         joinColumns=@JoinColumn(name="organisation_id")
     )
-    private Set<RequestType> requestTypes;
+    private Set<RequestType> requestType;
 
     public Long getId() {
         return id;
@@ -161,9 +161,9 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         this.roles = roles;
     }
 
-    public Set<RequestType> getRequestTypes() { return requestTypes; }
+    public Set<RequestType> getRequestTypes() { return requestType; }
 
-    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestTypes = requestTypes; }
+    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestType = requestTypes; }
 
     @Override
     public boolean equals(Object o) {
