@@ -9,6 +9,7 @@ package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CascadeType;
@@ -70,6 +71,14 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
     @OneToMany(mappedBy = "organisation")
     @Cascade(CascadeType.ALL)
     private Set<Role> roles;
+
+    @ElementCollection(targetClass = RequestType.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+        name="organisation_request_types",
+        joinColumns=@JoinColumn(name="organisation_id")
+    )
+    private Set<RequestType> requestTypes;
 
     public Long getId() {
         return id;
@@ -151,6 +160,10 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public Set<RequestType> getRequestTypes() { return requestTypes; }
+
+    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestTypes = requestTypes; }
 
     @Override
     public boolean equals(Object o) {
