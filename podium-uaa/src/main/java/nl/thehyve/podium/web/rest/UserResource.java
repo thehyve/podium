@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -90,9 +89,10 @@ public class UserResource {
      * The user needs to be activated on creation.
      * </p>
      *
-     * @param userData the user to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new user, or with status 400 (Bad Request) if the login or email is already in use
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param userData the user to create.
+     * @return the ResponseEntity with status 201 (Created),
+     *      or with status 400 (Bad Request) if the login or email is already in use.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
