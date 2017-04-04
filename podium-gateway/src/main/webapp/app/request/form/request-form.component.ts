@@ -25,8 +25,8 @@ import {
     Attachment,
     EmailValidatorDirective
 } from '../../shared';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 
 @Component({
     selector: 'pdm-request-form',
