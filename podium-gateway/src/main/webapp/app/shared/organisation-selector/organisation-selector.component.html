@@ -1,7 +1,9 @@
 <div>
     <select multiple name="organisations" class="form-control" [(ngModel)]="selectedOrganisations" (change)="onChange
-    ($event)" required>
-        <option *ngFor="let organisationOption of organisationOptions" [value]="organisationOption">{{organisationOption
-            .name}}</option>
+    ()" required>
+        <option [ngValue]="null">Please choose...</option>
+        <option *ngFor="let organisationOption of organisationOptions" [ngValue]="organisationOption">
+            {{organisationOption.name}}
+        </option>
     </select>
 </div>
