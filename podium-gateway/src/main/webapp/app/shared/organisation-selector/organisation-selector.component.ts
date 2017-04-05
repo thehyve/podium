@@ -14,6 +14,7 @@ import { OrganisationService } from '../../entities/organisation/organisation.se
 import { Response } from '@angular/http';
 import { Organisation } from '../../entities/organisation/organisation.model';
 import { RequestType } from '../request/request-type';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'pdm-organisation-selector',
@@ -49,19 +50,16 @@ export class OrganisationSelectorComponent implements OnInit {
         this.organisationService.findAll()
             .subscribe(
                 (data: Response) => {
-                    if (Array.isArray(data)) {
-                        // convert ajax response to object
-                        this.organisationOptions = data.map(i => {
-                            return (new Organisation()).copyObject(i);
-                        });
-                    }
+                    if (Array.isArray(data)) this.organisationOptions = data;
                 },
-            (res: Response) => this.onError(res.json())
-        );
+                (res: Response) => {
+                    return OrganisationSelectorComponent.onError(res.json());
+                }
+            );
     }
 
-    private onError (error) {
-
+    private static onError (error) {
+        return Observable.throw(new Error(error.status));
     }
 
 }
