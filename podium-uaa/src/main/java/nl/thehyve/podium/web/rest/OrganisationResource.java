@@ -116,7 +116,6 @@ public class OrganisationResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @Public
-//    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations")
     @Timed
     public ResponseEntity<List<Organisation>> getAllOrganisations(@ApiParam Pageable pageable)
