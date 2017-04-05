@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <form class="form" role="form" (ngSubmit)="submit()" *ngIf="!selectDraft && requestBase">
+        <form #requestForm="ngForm" class="form" role="form" *ngIf="!selectDraft && requestBase">
             <fieldset [disabled]="requestFormDisabled">
                 <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 
@@ -415,13 +415,13 @@
                         replaceUrl="false" >Upload attachments
                 </button>
 
-
                 <!-- Request actions -->
                 <div class="action-container">
                     <button id="clear-draft" type="button" class="btn btn-danger" (click)="reset()">Clear</button>
-
                     <button id="save-draft" type="button" class="btn btn-default" (click)="saveRequestDraft()">Save draft</button>
-                    <button id="submit-request" type="submit" class="btn btn-primary" (click)="submit()">Submit</button>
+                    <button id="submit-request" type="submit" class="btn btn-primary"
+                            [disabled]="!requestForm.form.valid"
+                            (click)="submitDraft()">Submit</button>
                 </div>
             </fieldset>
 

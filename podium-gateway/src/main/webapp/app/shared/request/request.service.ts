@@ -46,22 +46,17 @@ export class RequestService {
      * Submits the draft request and generates a new request for each of the
      * selected organisations.
      *
-     * @param requestBase the draft to submit
+     * @param uuid the uuid of the draft to submit
      * @returns the list of generated requests.
      */
-    submitDraft(requestBase: RequestBase): Observable<RequestBase[]> {
-        let draftCopy: RequestBase = Object.assign({}, requestBase);
-        return this.http.put(`${this.resourceUrl}/drafts`, draftCopy).flatMap((res: Response) => {
-            let savedDraft: RequestBase = Object.assign({}, res.json());
-            let uuid = savedDraft.uuid;
-            return this.http.get(`${this.resourceUrl}/drafts/${uuid}/submit`, draftCopy).map((response: Response) => {
-                return response.json();
-            });
+    submitDraft(uuid: string): Observable<RequestBase[]> {
+        return this.http.get(`${this.resourceUrl}/drafts/${uuid}/submit`).map((response: Response) => {
+            return response.json();
         });
     }
 
     findDraftByUuid(uuid: string): Observable<RequestDetail> {
-        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
+        return this.http.get(`${this.resourceUrl}/drafts/${uuid}`).map((res: Response) => {
             return res.json();
         });
     }

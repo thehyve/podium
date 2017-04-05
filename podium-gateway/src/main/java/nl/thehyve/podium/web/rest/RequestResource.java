@@ -101,7 +101,7 @@ public class RequestResource {
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
-    /**CustomUserAuthenticationConverter
+    /**
      * Update a request draft
      *
      * @return The requestDTO of the initialized request
