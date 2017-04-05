@@ -23,7 +23,7 @@ export class AdminConsole {
         let username;
         let password;
 
-        if (!isUndefined(persona)){
+        if (!isUndefined(persona)) {
             username = persona.properties["userName"];
             password = persona.properties["password"];
         } else {
@@ -33,7 +33,7 @@ export class AdminConsole {
 
         let options = {
             method: 'POST',
-            url: 'http://localhost:8080/podiumuaa/oauth/token',
+            url: browser.baseUrl + 'podiumuaa/oauth/token',
             headers: {
                 'Authorization': 'Basic d2ViX2FwcDo='
             },
@@ -54,7 +54,7 @@ export class AdminConsole {
         this.authenticate(function (error, response, body) {
             let options = {
                 method: 'GET',
-                url: 'http://localhost:8080/podiumuaa/api/users/' + persona.properties.userName,
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties.userName,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -71,11 +71,11 @@ export class AdminConsole {
     }
 
     //currently there is no way to verify a new user
-    public registerUser(persona, callback){
+    public registerUser(persona, callback) {
         this.authenticate(function (error, response, body) {
             let options = {
                 method: 'POST',
-                url: 'http://localhost:8080/podiumuaa/api/users/',
+                url: browser.baseUrl + 'podiumuaa/api/users/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 },
@@ -114,15 +114,15 @@ export class AdminConsole {
         });
     }
 
-    public verifyUser(){
+    public verifyUser() {
 
     }
 
-    public deleteUser(persona, callback){
+    public deleteUser(persona, callback) {
         this.authenticate(function (error, response, body) {
             let options = {
                 method: 'DELETE',
-                url: 'http://localhost:8080/podiumuaa/api/users/' + persona.properties.userName,
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties.userName,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -134,13 +134,13 @@ export class AdminConsole {
         });
     }
 
-    public unlockUser(persona){
+    public unlockUser(persona) {
         let token;
         this.authenticate(function (error, response, body) {
             token = parseJSON(body).access_token;
             let options = {
                 method: 'GET',
-                url: 'http://localhost:8080/podiumuaa/api/users/' + persona.properties.userName,
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties.userName,
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -151,7 +151,7 @@ export class AdminConsole {
 
                 let options = {
                     method: 'PUT',
-                    url: 'http://localhost:8080/podiumuaa/api/users/uuid/'+ user.uuid +'/unlock',
+                    url: browser.baseUrl + 'podiumuaa/api/users/uuid/' + user.uuid + '/unlock',
                     headers: {
                         'Authorization': 'Bearer ' + token
                     }
@@ -166,7 +166,7 @@ export class AdminConsole {
         this.authenticate(function (error, response, body) {
             let options = {
                 method: 'GET',
-                url: 'http://localhost:8080/podiumuaa/api/organisations/',
+                url: browser.baseUrl + 'podiumuaa/api/organisations/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -211,9 +211,125 @@ export class AdminConsole {
             })
         }, user);
     }
+
+    public cleanUsers() {
+        console.log("cleaning users is not implemented yet");
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/users/clean',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+
+            request(options, console.log);
+        })
+    }
+
+    public createUser(persona: Persona) {
+        console.log("creating a user is not implemented yet");
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'podiumuaa/api/users/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                },
+                body: JSON.stringify(
+                    {
+                        "id": null,
+                        "uuid": null,
+                        "login": persona.properties['userName'],
+                        "firstName": persona.properties['firstName'],
+                        "lastName": persona.properties['lastName'],
+                        "email": persona.properties['email'],
+                        "telephone": persona.properties['telephone'],
+                        "institute": persona.properties['institute'],
+                        "department": persona.properties['department'],
+                        "jobTitle": persona.properties['jobTitle'],
+                        "specialism": persona.properties['specialism'],
+                        "emailVerified": false,
+                        "adminVerified": false,
+                        "accountLocked": false,
+                        "langKey": "en",
+                        "authorities": [
+                            "ROLE_RESEARCHER"
+                        ],
+                        "createdBy": null,
+                        "createdDate": null,
+                        "lastModifiedBy": null,
+                        "lastModifiedDate": null,
+                        "password": persona.properties['password']
+                    }
+                )
+            };
+            request(options, function (error, response, body) {
+                console.log(response);
+                // callback();
+            })
+        });
+    }
+
+    public cleanOrganizations() {
+        console.log("cleaning Organizations is not implemented yet")
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/organizations/clean',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+
+            request(options, console.log);
+        })
+    }
+
+    public createOrganization(Organization: any) {
+        console.log("creating a Organization is not implemented yet")
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'podiumuaa/api/users/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                },
+                body: JSON.stringify(
+                    {
+                        "name": Organization.properties['name'],
+                        "shortName": Organization.properties['shortName'],
+                    }
+                )
+            };
+            request(options, function (error, response, body) {
+                console.log(response);
+                // callback();
+            })
+        });
+    }
+
+    public cleanRequests() {
+        console.log("cleaning Requests is not implemented yet")
+        this.authenticate(function (error, response, body) {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/Requests/clean',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+
+            request(options, console.log);
+        })
+    }
+
+    public createRequest(Request: any) {
+        console.log("creating a Request is not implemented yet")
+    }
 }
 
-function parseJSON(string: string){
+function parseJSON(string: string) {
     if (string == '') {
         return string
     }
