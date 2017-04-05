@@ -26,16 +26,15 @@
 <div class="table-responsive" *ngIf="availableRequestDrafts">
     <table class="table table-striped">
         <thead>
-        <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="title"><span >Title</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="status"><span>Status</span> <span class="fa fa-sort"></span></th>
+        <tr>
+            <th><span jhiTranslate="global.field.id">ID</span></th>
+            <th><span >Title</span></th>
+            <th><span>Status</span></th>
             <th></th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let request of availableRequestDrafts ;trackBy: trackId">
-            <!--?<td><a [routerLink]="['../role', role.id ]">{{role.id}}</a></td>-->
             <td><a href="#">{{request.id}}</a></td>
             <td>
                 {{request.requestDetail.title}}
@@ -44,30 +43,17 @@
                 {{request.status}}
             </td>
             <td class="text-xs-right">
-                <div class="btn-group flex-btn-group-container">
-                    <!--?<button type="submit"-->
-                            <!--?[routerLink]="['../role', role.id ]"-->
-                            <!--?class="btn btn-info btn-sm">-->
-                        <!--?<span class="fa fa-eye"></span>-->
-                        <!--?<span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>-->
-                    <!--?</button>-->
+                <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
                     <button type="button"
                             class="btn btn-primary btn-sm"  (click)="editRequest(request)">
                         <span class="fa fa-pencil"></span>
                         <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                     </button>
                     <button type="submit"
-                            class="btn btn-danger btn-sm" *ngIf="request.status === 'Draft'">
+                            class="btn btn-danger btn-sm">
                         <span class="fa fa-pencil"></span>
                         <span class="hidden-md-down" jhiTranslate="entity.action.delete">Remove</span>
                     </button>
-                    <!--?<button type="submit"-->
-                            <!--?[routerLink]="['/', { outlets: { popup: 'role/'+ role.id + '/edit'} }]"-->
-                            <!--?replaceUrl="true"-->
-                            <!--?class="btn btn-primary btn-sm">-->
-                        <!--?<span class="fa fa-pencil"></span>-->
-                        <!--?<span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>-->
-                    <!--?</button>-->
                 </div>
             </td>
         </tr>

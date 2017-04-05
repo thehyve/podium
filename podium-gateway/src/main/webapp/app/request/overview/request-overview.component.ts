@@ -27,14 +27,6 @@ export class RequestOverviewComponent implements OnInit {
 
     private currentUser: User;
 
-    currentSearch: string;
-    routeData: any;
-    itemsPerPage: any;
-    page: any;
-    predicate: any;
-    previousPage: any;
-    reverse: any;
-
     availableRequestDrafts: RequestBase[];
     error: string;
     success: string;
@@ -45,11 +37,6 @@ export class RequestOverviewComponent implements OnInit {
                 private requestFormService: RequestFormService,
                 private activatedRoute: ActivatedRoute,
                 private principal: Principal) {
-        this.itemsPerPage = ITEMS_PER_PAGE;
-        this.routeData = this.activatedRoute.data.subscribe(data => {
-            // TODO Paging
-        });
-        this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['request']);
     }
 
@@ -66,8 +53,7 @@ export class RequestOverviewComponent implements OnInit {
     }
 
     displayDrafts() {
-        let uuid = this.currentUser.uuid;
-        this.requestService.findDraftByUuid(uuid)
+        this.requestService.findDrafts()
             .subscribe(
                 (requestDrafts) => this.processAvailableDrafts(requestDrafts),
                 (error) => this.onError('Error loading available request drafts.')
@@ -89,18 +75,9 @@ export class RequestOverviewComponent implements OnInit {
 
     processAvailableDrafts(requestDrafts) {
         this.availableRequestDrafts = requestDrafts;
-        console.log(this.availableRequestDrafts)
     }
 
     transition() {
-        this.router.navigate(['/overview'], {queryParams:
-            {
-                page: this.page,
-                size: this.itemsPerPage,
-                search: this.currentSearch,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-            }
-        });
         this.displaySubmittedRequests();
     }
 
