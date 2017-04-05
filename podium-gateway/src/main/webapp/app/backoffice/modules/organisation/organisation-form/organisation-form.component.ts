@@ -22,7 +22,8 @@ import { RequestType } from '../../../../shared/request/request-type';
 
 @Component({
     selector: 'pdm-organisation-form',
-    templateUrl: './organisation-form.component.html'
+    templateUrl: './organisation-form.component.html',
+    styleUrls: ['organisation-form.scss']
 })
 export class OrganisationFormComponent implements OnInit {
 
@@ -50,6 +51,8 @@ export class OrganisationFormComponent implements OnInit {
             this.currentAccount = account;
         });
 
+        console.log("ROUTE PARAMS ", this.route.params);
+
         this.route.params.subscribe(params => {
             let uuid = params['uuid'];
             if (uuid) {
@@ -63,11 +66,14 @@ export class OrganisationFormComponent implements OnInit {
                 this.organisation.roles = [];
             }
         });
-
     }
 
-    onSaveSuccess (result) {
-        // this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK'});
+    onSaveSuccess (result, isCreate: boolean) {
+        if (isCreate) {
+            this.organisation = result;
+        }
+
+        console.log('ORG ', result);
         this.isSaving = false;
     }
 
@@ -84,10 +90,10 @@ export class OrganisationFormComponent implements OnInit {
         this.isSaving = true;
         if (this.organisation.uuid !== undefined) {
             this.organisationService.update(this.organisation)
-                .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
+                .subscribe((res: Response) => this.onSaveSuccess(res, false), (res: Response) => this.onSaveError(res.json()));
         } else {
             this.organisationService.create(this.organisation)
-                .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
+                .subscribe((res: Response) => this.onSaveSuccess(res, true), (res: Response) => this.onSaveError(res.json()));
         }
     }
 

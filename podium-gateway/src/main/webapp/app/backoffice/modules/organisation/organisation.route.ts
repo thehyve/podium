@@ -38,25 +38,6 @@ export class OrganisationResolvePagingParams implements Resolve<any> {
 
 export const organisationPopupRoute: Routes = [
     {
-        path: 'new',
-        component: OrganisationFormComponent,
-        data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'detail/:uuid/edit',
-        component: OrganisationPopupComponent,
-        data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title'
-        },
-        outlet: 'popup',
-        canActivate: [UserRouteAccessService]
-    },
-    {
         path: 'detail/:uuid/delete',
         component: OrganisationDeletePopupComponent,
         data: {
@@ -82,6 +63,15 @@ export const organisationRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
+        path: 'new',
+        component: OrganisationFormComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            pageTitle: 'podiumGatewayApp.organisation.detail.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
         path: 'detail/:uuid',
         component: OrganisationDetailComponent,
         data: {
@@ -90,6 +80,16 @@ export const organisationRoute: Routes = [
         },
         canActivate: [UserRouteAccessService]
     },
+    {
+        path: 'edit/:uuid',
+        component: OrganisationFormComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            pageTitle: 'podiumGatewayApp.organisation.detail.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+
     ...organisationPopupRoute
 ];
 

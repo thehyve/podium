@@ -87,7 +87,7 @@ public class OrganisationResource {
 
         return ResponseEntity.created(new URI("/api/organisations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(organisationDTO);
+            .body(result);
     }
 
     /**

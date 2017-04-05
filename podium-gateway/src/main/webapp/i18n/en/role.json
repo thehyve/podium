@@ -15,8 +15,10 @@
             },
             "users": "Users",
             "user": "User",
+            "role": "Role",
             "organisation": "Organisation",
-            "authority": "Authority"
+            "authority": "Authority",
+            "options": "Options"
         }
     },
     "podiumuaaApp": {

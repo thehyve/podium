@@ -34,6 +34,12 @@ export class RoleService {
         });
     }
 
+    findAllRolesForOrganisation(uuid: string): Observable<Role[]> {
+        return this.http.get(`${this.resourceUrl}/organisation/${uuid}`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
     query(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceUrl, options)

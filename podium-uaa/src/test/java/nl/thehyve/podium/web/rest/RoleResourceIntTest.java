@@ -84,6 +84,9 @@ public class RoleResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private RoleResource roleResource;
+
     private MockMvc restRoleMockMvc;
 
     private Role role;
@@ -91,7 +94,6 @@ public class RoleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        RoleResource roleResource = new RoleResource(roleService, userService, organisationService);
         this.restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();

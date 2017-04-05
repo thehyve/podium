@@ -13,6 +13,7 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.service.representation.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -78,11 +80,15 @@ public class RoleService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Role> findAllByOrganisationUUID(UUID uuid) {
+    public List<RoleRepresentation> findAllByOrganisationUUID(UUID uuid) {
         log.debug("Request to get all Roles for Organisation UUID: {}", uuid);
         Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
 
-        return roleRepository.findAllByOrganisation(organisation);
+        List<RoleRepresentation> roles = organisation.getRoles().stream()
+            .map(RoleRepresentation::new)
+            .collect(Collectors.toList());
+
+        return roles;
     }
 
     /**

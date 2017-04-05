@@ -8,42 +8,68 @@
   ~
   -->
 
-<h3><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span></h3>
-<jhi-alert></jhi-alert>
+<h4><span jhiTranslate="podiumGatewayApp.role.home.title">Roles</span></h4>
 
-<div class="container-fluid" *ngIf="organisation">
+<div class="container-fluid" *ngIf="organisationRoles">
     <div class="row">
         <form name="roleForm" role="form" novalidate #roleForm="ngForm">
+            <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
 
-            <div class="table-responsive" *ngIf="organisation.roles">
-                <table class="table table-striped">
+            <div class="alert alert-warning">
+                <span>
+                    <i class="material-icons">warning</i>
+                    Changes in the roles will be saved immediately.
+                </span>
+            </div>
+
+            <div class="table-responsive">
+
+                <!-- for each organisation role create a table where users with authorities are added -->
+                <table class="table">
                     <thead>
                         <tr>
                             <th jhiTranslate="podiumGatewayApp.role.users">User</th>
-                            <th jhiTranslate="podiumGatewayApp.role.authority">Authority</th>
+                            <th jhiTranslate="podiumGatewayApp.role.role">Role</th>
+                            <th jhiTranslate="podiumGatewayApp.role.options">Options</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let role of organisation.roles">
+                        <tr *ngFor="let user of organisationUsers; trackBy: trackByUuid">
                             <td>
-                                <input [(ngModel)]="asyncSelected"
-                                       [ngModelOptions]="{standalone: true}"
-                                       [typeahead]="dataSource"
-                                       (typeaheadLoading)="changeTypeaheadLoading($event)"
+                                <input [(ngModel)]="user.searchTerm"
+                                       name="userTypeahead-{{ user.uuid }}"
+                                       [typeahead]="user.dataSource"
                                        (typeaheadNoResults)="changeTypeaheadNoResults($event)"
-                                       (typeaheadOnSelect)="typeaheadOnSelect($event)"
+                                       (typeaheadOnSelect)="typeaheadOnSelect($event, user)"
+                                       [typeaheadWaitMs]="300"
                                        typeaheadOptionsLimit="7"
                                        typeaheadOptionField="fullName"
-                                       placeholder="Locations loaded with timeout"
+                                       placeholder="Search for a user by fullname"
+                                       autocomplete="off"
                                        class="form-control">
+
+                                <div *ngIf="typeaheadNoResults === true">
+                                    <i class="material-icons">clear</i> No Results Found
+                                </div>
                             </td>
                             <td>
                                 <!-- Authority select -->
-                                <select class="form-control" id="field_authority" name="authority" [(ngModel)]="role.authority" >
+                                <select class="form-control" id="field_authority_user" name="authority-{{ user.uuid }}" [(ngModel)]="user.authority" [disabled]="">
                                     <option [ngValue]="undefined" disabled selected>Please select a role</option>
-                                    <option [ngValue]="authorityOption.token === role.authority ? role.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
+                                    <option [ngValue]="authorityOption.token === user.authority ? user.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
                                 </select>
+                            </td>
+                            <td class="role-actions">
+                                <span class="role-option default" tooltip="Update user role" *ngIf="user.uuid && user.isSaved">
+                                    <i class="material-icons">update</i>
+                                </span>
+                                <span class="role-option success" tooltip="Add user role" *ngIf="user.uuid && user.authority && !user.isSaved" (click)="save(user)">
+                                    <i class="material-icons">add</i>
+                                </span>
+                                <span class="role-option warn" tooltip="Remove user role" *ngIf="user.uuid">
+                                    <i class="material-icons">clear</i>
+                                </span>
                             </td>
                         </tr>
                     </tbody>

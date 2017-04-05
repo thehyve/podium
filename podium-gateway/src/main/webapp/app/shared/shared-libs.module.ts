@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { PodiumUploadModule } from './upload/upload.module';
+import { TooltipModule } from 'ng2-bootstrap/tooltip';
+import { TabsModule } from 'ng2-bootstrap/tabs';
 
 @NgModule({
     imports: [
@@ -22,7 +24,9 @@ import { PodiumUploadModule } from './upload/upload.module';
             i18nEnabled: true,
             defaultI18nLang: 'en'
         }),
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        TooltipModule.forRoot(),
+        TabsModule.forRoot()
     ],
     exports: [
         FormsModule,
@@ -30,7 +34,9 @@ import { PodiumUploadModule } from './upload/upload.module';
         CommonModule,
         NgJhipsterModule,
         PodiumUploadModule,
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        TooltipModule,
+        TabsModule
     ]
 })
 export class PodiumGatewaySharedLibsModule {}
