@@ -18,6 +18,19 @@
              targetNamespace="http://thehyve.nl/podium">
     <process id="podium_request_review_001" isExecutable="true" name="Podium request review">
         <documentation>Definition for the request review process.</documentation>
+        <documentation><![CDATA[
+                    Reject
+               +-----------------------------------------------+
+               |                                               |
+ Submit  +-----+------+        +------------+  Approve  +------v-----+
+---------> Validation +-------->   Review   +----------->   Closed   |
+         +-^--------+-+        +-----+------+  Reject   +------------+
+           |        | Revise         |
+  Resubmit |        |                | Revise
+         +-+--------v-+              |
+         |  Revision  <--------------+
+         +------------+
+        ]]></documentation>
 
 
 

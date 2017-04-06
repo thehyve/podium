@@ -30,7 +30,6 @@ import { Observable } from 'rxjs';
 export class RegisterComponent implements OnInit {
 
     confirmPassword: string;
-    doNotMatch: string;
     error: string;
     errorEmailExists: string;
     errorUserExists: string;
@@ -62,25 +61,19 @@ export class RegisterComponent implements OnInit {
     }
 
     register() {
-        if (this.registerAccount.password !== this.confirmPassword) {
-            this.doNotMatch = 'ERROR';
-            window.scrollTo(0, 0);
-        } else {
-            this.doNotMatch = null;
-            this.error = null;
-            this.errorUserExists = null;
-            this.errorEmailExists = null;
-            this.languageService.getCurrent().then(key => {
-                this.registerAccount.langKey = key;
-                this.registerService.save(this.registerAccount).subscribe(
-                    () => this.processSuccess(),
-                    (response) => {
-                        this.processError(response);
-                        window.scrollTo(0, 0);
-                    }
-                );
-            });
-        }
+        this.error = null;
+        this.errorUserExists = null;
+        this.errorEmailExists = null;
+        this.languageService.getCurrent().then(key => {
+            this.registerAccount.langKey = key;
+            this.registerService.save(this.registerAccount).subscribe(
+                () => this.processSuccess(),
+                (response) => {
+                    this.processError(response);
+                    window.scrollTo(0, 0);
+                }
+            );
+        });
     }
 
     openLogin() {

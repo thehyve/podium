@@ -21,7 +21,6 @@ import { PasswordResetFinish } from './password-reset-finish.service';
 })
 export class PasswordResetFinishComponent implements OnInit {
     confirmPassword: string;
-    doNotMatch: string;
     error: string;
     keyMissing: boolean;
     resetAccount: any;
@@ -55,18 +54,13 @@ export class PasswordResetFinishComponent implements OnInit {
     }
 
     finishReset() {
-        this.doNotMatch = null;
         this.error = null;
-        if (this.resetAccount.password !== this.confirmPassword) {
-            this.doNotMatch = 'ERROR';
-        } else {
-            this.passwordResetFinish.save({key: this.key, newPassword: this.resetAccount.password}).subscribe(() => {
-                this.success = 'OK';
-            }, () => {
-                this.success = null;
-                this.error = 'ERROR';
-            });
-        }
+        this.passwordResetFinish.save({key: this.key, newPassword: this.resetAccount.password}).subscribe(() => {
+            this.success = 'OK';
+        }, () => {
+            this.success = null;
+            this.error = 'ERROR';
+        });
     }
 
     login() {

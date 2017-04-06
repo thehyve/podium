@@ -19,6 +19,7 @@ import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -101,9 +102,6 @@ public class RoleResourceIntTest {
 
     /**
      * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
      */
     public Role createEntity() throws UserAccountException {
         Authority authority = authorityRepository.findOne(AuthorityConstants.REVIEWER);
@@ -117,11 +115,10 @@ public class RoleResourceIntTest {
         if (object.isPresent()) {
             user = object.get();
         } else {
-            ManagedUserVM userVM = new ManagedUserVM();
-            userVM.setLogin("test");
-            userVM.setEmail("test@localhost");
-            userVM.setPassword("Password123!");
-            user = userService.createUser(userVM);
+            UserRepresentation userData = new UserRepresentation();
+            userData.setLogin("test");
+            userData.setEmail("test@localhost");
+            user = userService.createUser(userData);
         }
         Set<User> users = new HashSet<>();
         users.add(user);

@@ -30,6 +30,7 @@ import {
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
     PasswordValidatorDirective,
+    PasswordMatchesDirective,
     WordLengthValidatorDirective,
     PodiumLoginComponent,
     SpecialismComponent
@@ -48,6 +49,7 @@ import { EnumKeysPipe } from './pipes/enumKeys';
         SpecialismComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
+        PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
         EnumKeysPipe
@@ -61,6 +63,7 @@ import { EnumKeysPipe } from './pipes/enumKeys';
         SpecialismComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
+        PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
         DatePipe,

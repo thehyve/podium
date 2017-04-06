@@ -10,6 +10,8 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
+import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.search.SearchUser;
@@ -35,7 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.net.URI;
+import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -90,7 +92,7 @@ public class UserResource {
      * The user needs to be activated on creation.
      * </p>
      *
-     * @param managedUserVM the user to create
+     * @param userData the user to create
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws UserAccountException when the login already exists.
      * @return the ResponseEntity with status
@@ -100,31 +102,26 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
     @Timed
-    public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException, UserAccountException {
-        log.debug("REST request to save User : {}", managedUserVM);
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRepresentation userData) throws URISyntaxException, UserAccountException {
+        log.debug("REST request to save User : {}", userData);
 
-        //Lowercase the user login before comparing with database
-        if (userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase()).isPresent()) {
-            return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use"))
-                .body(null);
-        } else if (userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest()
-                .headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "Email already in use"))
-                .body(null);
-        } else {
-            User newUser = userService.createUser(managedUserVM);
+        try {
+            User newUser = userService.createUser(userData);
             mailService.sendCreationEmail(newUser);
-            return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert( "userManagement.created", newUser.getLogin()))
-                .body(newUser);
+        } catch(EmailAddressAlreadyInUse e) {
+            Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(userData.getEmail());
+            userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
+        } catch (LoginAlreadyInUse e) {
+            log.error("Login already in use: {}", userData.getLogin());
+            throw e;
         }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
      * PUT  /users : Updates an existing User.
      *
-     * @param managedUserVM the user to update
+     * @param userData the user to update
      * @throws UserAccountException when the login already exists.
      * @return the ResponseEntity with status 200 (OK) and with body the updated user,
      * or with status 400 (Bad Request) if the login or email is already in use,
@@ -133,21 +130,13 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users")
     @Timed
-    public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) throws UserAccountException {
-        log.debug("REST request to update User : {}", managedUserVM);
-        Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "E-mail already in use")).body(null);
-        }
-        existingUser = userService.getUserWithAuthoritiesByLogin(managedUserVM.getLogin().toLowerCase());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use")).body(null);
-        }
-        userService.updateUser(managedUserVM);
-
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createAlert("userManagement.updated", managedUserVM.getLogin()))
-            .body(new ManagedUserVM(userService.getUserWithAuthorities(managedUserVM.getId())));
+    public ResponseEntity<ManagedUserVM> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
+        log.debug("REST request to update User : {}", userData);
+        userService.updateUser(userData);
+        return userService.getUserByUuid(userData.getUuid())
+            .map(ManagedUserVM::new)
+            .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**

@@ -110,9 +110,8 @@
                     "strength": "Password strength:"
                 },
                 "confirmpassword": {
-                    "required": "Your confirmation password is required.",
-                    "minlength": "Your confirmation password is required to be at least 8 characters.",
-                    "maxlength": "Your confirmation password cannot be longer than 1000 characters."
+                    "required": "Password confirmation is required.",
+                    "shouldMatch": "The passwords do not match."
                 },
                 "email": {
                     "required": "Your e-mail is required.",

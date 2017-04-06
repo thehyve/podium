@@ -18,6 +18,7 @@ export * from './request/request.service';
 export * from './request/request';
 export * from './request/principal-investigator';
 export * from './validators/password-validator.directive';
+export * from './validators/password-matches.directive';
 export * from './validators/email-validator.directive';
 export * from './validators/word-length-validator.directive';
 export * from './alert/alert.component';
