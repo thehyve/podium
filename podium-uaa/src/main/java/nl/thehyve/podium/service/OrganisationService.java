@@ -171,16 +171,28 @@ public class OrganisationService {
     }
 
     /**
+     *  Get an organisationDTO by uuid.
+     *
+     * @param uuid the uuid of the entity
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public OrganisationDTO findDTOByUuid(UUID uuid) {
+        log.debug("Request to get Organisation : {}", uuid);
+        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
+        return organisationMapper.organisationToOrganisationDTO(organisation);
+    }
+
+    /**
      *  Get one organisation by uuid.
      *
      * @param uuid the uuid of the entity
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public OrganisationDTO findByUuid(UUID uuid) {
+    public Organisation findByUuid(UUID uuid) {
         log.debug("Request to get Organisation : {}", uuid);
-        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
-        return organisationMapper.organisationToOrganisationDTO(organisation);
+        return organisationRepository.findByUuidAndDeletedFalse(uuid);
     }
 
     /**

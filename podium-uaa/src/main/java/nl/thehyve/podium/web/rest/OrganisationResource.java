@@ -166,7 +166,7 @@ public class OrganisationResource {
     @Timed
     public ResponseEntity<OrganisationDTO> getOrganisation(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get Organisation : {}", uuid);
-        OrganisationDTO organisationDTO = organisationService.findByUuid(uuid);
+        OrganisationDTO organisationDTO = organisationService.findDTOByUuid(uuid);
         if (organisationDTO == null) {
             throw new ResourceNotFound(String.format("Organisation not found with uuid: %s.", uuid));
         }
