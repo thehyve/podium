@@ -54,6 +54,8 @@ public class RequestResource {
     /**
      * Fetch drafts for the current user
      *
+     * @param pageable the pagination information
+     * @throws URISyntaxException if the Location URI syntax is incorrect
      * @return A transformed list of RequestDTOs
      */
     @GetMapping("/requests/drafts")
@@ -69,8 +71,8 @@ public class RequestResource {
     /**
      * Create a new request draft
      *
-     * @return The requestDTO of the initialized request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @return The requestRepresentation of the initialized request
      */
     @PostMapping("/requests/drafts")
     @PreAuthorize("isAuthenticated()")
@@ -89,8 +91,10 @@ public class RequestResource {
     /**
      * Fetch the request draft
      *
-     * @return The list of requestDTOs generated
+     * @param uuid of the request draft
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request
+     * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}")
     @Timed
@@ -104,8 +108,10 @@ public class RequestResource {
     /**
      * Update a request draft
      *
-     * @return The requestDTO of the initialized request
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @param request the request to be updated
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
+     * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests/drafts")
     @PreAuthorize("isAuthenticated()")
@@ -122,7 +128,8 @@ public class RequestResource {
     /**
      * Validate the request draft
      *
-     * @param request the request draft to validate
+     * @param request the request draft to validate.
+     * @return ResponseEntity OK response when the request has been validated.
      */
     @PostMapping("/requests/drafts/validate")
     @Timed
@@ -136,8 +143,10 @@ public class RequestResource {
     /**
      * Submit the request draft
      *
-     * @return The list of requestDTOs generated
+     * @param uuid of the request draft to be saved
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}/submit")
     @Timed
@@ -152,8 +161,8 @@ public class RequestResource {
      * GET  /requests : get all the requests.
      *
      * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
     @GetMapping("/requests")
     @Timed
@@ -170,6 +179,7 @@ public class RequestResource {
      * GET  /requests/status/:status : get all the requests for a requester with the status.
      *
      * @param status the status to filter on
+     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
@@ -189,6 +199,7 @@ public class RequestResource {
      *
      * @param uuid the uuid of the draft request to delete
      * @return the ResponseEntity with status 200 (OK)
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @DeleteMapping("/requests/drafts/{uuid}")
     @Timed

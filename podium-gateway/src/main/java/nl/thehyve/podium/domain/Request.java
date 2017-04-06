@@ -100,7 +100,11 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     }
 
     /**
-     * Void.
+     * Only the database can return the UUID from the stored entity
+     * Pre-persist will add a {@link UUID} to the entity
+     * This setter is only added to satisfy mapstruct e.g.
+     *
+     * @param uuid is ignored.
      */
     public void setUuid(UUID uuid) {
         // pass

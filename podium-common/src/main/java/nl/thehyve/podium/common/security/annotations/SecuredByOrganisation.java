@@ -31,6 +31,8 @@ public @interface SecuredByOrganisation {
      * Authority names (see {@link AuthorityConstants}.).
      *
      * Defaults to all organisation roles.
+     *
+     * @return String[] Array of the organisation authority constants
      */
     String[] authorities() default {
         AuthorityConstants.ORGANISATION_ADMIN,
