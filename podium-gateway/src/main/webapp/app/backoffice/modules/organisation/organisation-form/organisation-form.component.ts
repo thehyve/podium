@@ -51,8 +51,6 @@ export class OrganisationFormComponent implements OnInit {
             this.currentAccount = account;
         });
 
-        console.log("ROUTE PARAMS ", this.route.params);
-
         this.route.params.subscribe(params => {
             let uuid = params['uuid'];
             if (uuid) {
@@ -73,7 +71,6 @@ export class OrganisationFormComponent implements OnInit {
             this.organisation = result;
         }
 
-        console.log('ORG ', result);
         this.isSaving = false;
     }
 

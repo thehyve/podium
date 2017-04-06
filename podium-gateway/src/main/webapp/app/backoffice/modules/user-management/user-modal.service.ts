@@ -22,7 +22,6 @@ export class UserModalService {
     ) {}
 
     open (component: Component, login?: string): NgbModalRef {
-        console.log('OPening ');
         if (this.isOpen) {
             return;
         }

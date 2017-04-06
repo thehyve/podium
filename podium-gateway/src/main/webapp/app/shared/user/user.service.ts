@@ -62,7 +62,6 @@ export class UserService {
 
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
-        console.log('req ', options);
         return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
     }
 
