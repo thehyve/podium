@@ -136,6 +136,19 @@ public class OrganisationService {
     }
 
     /**
+     *  Get one organisation by short name.
+     *
+     *  @param shortName the short name of the entity
+     *  @return the entity
+     */
+    @Transactional(readOnly = true)
+    public Organisation findByShortName(String shortName) {
+        log.debug("Request to get Organisation : {}", shortName);
+        Organisation organisation = organisationRepository.findByShortNameAndDeletedFalse(shortName);
+        return organisation;
+    }
+
+    /**
      *  Mark the organisation as deleted.
      *
      *  @param organisation the organisation to mark deleted.

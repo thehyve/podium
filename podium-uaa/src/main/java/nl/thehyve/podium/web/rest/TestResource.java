@@ -18,6 +18,7 @@ import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.service.*;
 import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import nl.thehyve.podium.service.representation.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,7 +129,7 @@ public class TestResource {
      */
     @PostMapping("roles/assign")
     @Timed
-    public ResponseEntity<?> assignUsersToRole(@RequestBody RoleRepresentation roleData) {
+    public ResponseEntity<?> assignUsersToRole(@RequestBody TestRoleRepresentation roleData) {
         testService.assignUsersToRole(roleData);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

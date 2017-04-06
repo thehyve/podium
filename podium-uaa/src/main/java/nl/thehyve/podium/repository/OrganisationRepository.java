@@ -30,4 +30,7 @@ public interface OrganisationRepository extends JpaRepository<Organisation,Long>
     Organisation findByIdAndDeletedFalse(Long id);
 
     Organisation findByUuidAndDeletedFalse(UUID uuid);
+
+    Organisation findByShortNameAndDeletedFalse(String shortName);
+
 }
