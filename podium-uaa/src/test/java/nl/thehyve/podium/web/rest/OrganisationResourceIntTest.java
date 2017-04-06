@@ -348,7 +348,7 @@ public class OrganisationResourceIntTest {
         int databaseSizeBeforeDelete = organisationService.count().intValue();
 
         // Get the organisation
-        restOrganisationMockMvc.perform(delete("/api/organisations/{id}", organisation.getId())
+        restOrganisationMockMvc.perform(delete("/api/organisations/{uuid}", organisation.getUuid())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
@@ -372,8 +372,8 @@ public class OrganisationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
     }
 
     @Test

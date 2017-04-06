@@ -72,7 +72,8 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
     @Cascade(CascadeType.ALL)
     private Set<Role> roles;
 
-    @ElementCollection(targetClass = RequestType.class)
+    @Fetch(FetchMode.JOIN)
+    @ElementCollection(targetClass = RequestType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
         name="organisation_request_types",
@@ -189,9 +190,12 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
     public String toString() {
         return "Organisation{" +
             "id=" + id +
-            ", uuid='" + uuid + "'" +
-            ", name='" + name + "'" +
-            ", shortName='" + shortName + "'" +
+            ", uuid=" + uuid +
+            ", name='" + name + '\'' +
+            ", shortName='" + shortName + '\'' +
+            ", deleted=" + deleted +
+            ", activated=" + activated +
+            ", requestType=" + requestType +
             '}';
     }
 }
