@@ -53,7 +53,7 @@ public class OrganisationResource {
         this.organisationService = organisationService;
     }
 
-    private void copyProperties(Organisation source, Organisation target) {
+    protected static void copyProperties(Organisation source, Organisation target) {
         target.setName(source.getName());
         target.setShortName(source.getShortName());
         target.setActivated(source.isActivated());

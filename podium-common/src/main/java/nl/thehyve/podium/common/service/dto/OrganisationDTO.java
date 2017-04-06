@@ -28,10 +28,8 @@ public class OrganisationDTO implements Serializable {
     @Size(max = 50)
     private String shortName;
 
-    @NotNull
     private Boolean deleted;
 
-    @NotNull
     private Boolean activated;
 
     private UUID uuid;

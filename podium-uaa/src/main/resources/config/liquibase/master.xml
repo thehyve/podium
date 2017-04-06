@@ -25,4 +25,5 @@
     <include file="./changelog/20170209105123_added_user_fields.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170210162230_added_user_verification.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170227173401_added_sequences.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170404150743_remove_user_authorities.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

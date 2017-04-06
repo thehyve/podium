@@ -142,6 +142,18 @@ public class UserRepresentation implements IdentifiableUser {
         this.specialism = specialism;
     }
 
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public void setAdminVerified(boolean adminVerified) {
+        this.adminVerified = adminVerified;
+    }
+
+    public void setAccountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
     public UUID getUuid() { return uuid; }
 
     public UUID getUserUuid() { return getUuid(); }
