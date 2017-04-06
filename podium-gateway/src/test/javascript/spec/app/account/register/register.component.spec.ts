@@ -85,15 +85,6 @@ describe('Component Tests', () => {
             comp.ngOnInit();
         });
 
-        it('should ensure the two passwords entered match', function () {
-            comp.registerAccount.password = 'password';
-            comp.confirmPassword = 'non-matching';
-
-            comp.register();
-
-            expect(comp.doNotMatch).toEqual('ERROR');
-        });
-
         it('should update success to OK after creating an account',
             inject([Register, JhiLanguageService, MessageService, Router],
                 fakeAsync((service: Register, mockTranslate: MockLanguageService, messageService: MessageService) => {

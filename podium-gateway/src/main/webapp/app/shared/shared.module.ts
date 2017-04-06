@@ -29,6 +29,7 @@ import {
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
     PasswordValidatorDirective,
+    PasswordMatchesDirective,
     WordLengthValidatorDirective,
     PodiumLoginComponent,
     SpecialismComponent
@@ -46,6 +47,7 @@ import { RequestService } from './request/request.service';
         SpecialismComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
+        PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective
@@ -73,6 +75,7 @@ import { RequestService } from './request/request.service';
         SpecialismComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
+        PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAuthorityDirective,
         HasAnyAuthorityDirective,

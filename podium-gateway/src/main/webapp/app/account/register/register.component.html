@@ -28,10 +28,6 @@
             <div class="alert alert-danger" *ngIf="errorEmailExists" jhiTranslate="register.messages.error.emailexists">
                 <strong>E-mail is already in use!</strong> Please choose another one.
             </div>
-
-            <div class="alert alert-danger" *ngIf="doNotMatch" jhiTranslate="global.messages.error.dontmatch">
-                The password and its confirmation do not match!
-            </div>
         </div>
         <div class="col-md-8 offset-md-2">
             <form name="form" role="form" (ngSubmit)="register()" #registerForm="ngForm">
@@ -236,19 +232,15 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            #confirmPasswordInput="ngModel"
                            placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
-                            [(ngModel)]="confirmPassword" maxlength=1000 required passwordValidator>
+                            [(ngModel)]="confirmPassword" maxlength=1000 required [passwordMatches]="password">
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
                                jhiTranslate="global.messages.validate.confirmpassword.required">
-                            Your confirmation password is required.
+                            Password confirmation is required.
                         </small>
-                        <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.passwordValidator">
-                            Your password must be at least 8 characters length, containing alphanumeric and
-                            non-alphanumeric characters.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.maxlength"
-                               jhiTranslate="global.messages.validate.confirmpassword.maxlength">
-                            Your confirmation password cannot be longer than 1000 characters.
+                        <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.passwordMatches"
+                               jhiTranslate="global.messages.validate.confirmpassword.shouldMatch">
+                            The passwords do not match.
                         </small>
                     </div>
                 </div>

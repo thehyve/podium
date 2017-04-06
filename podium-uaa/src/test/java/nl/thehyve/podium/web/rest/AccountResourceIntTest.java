@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = PodiumUaaApp.class)
 public class AccountResourceIntTest {
 
-    private static final String VALID_PASSWORD = "johndoe2!";
+    static final String VALID_PASSWORD = "johndoe2!";
 
     @Inject
     private AuthorityRepository authorityRepository;
@@ -142,10 +142,23 @@ public class AccountResourceIntTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    /**
+     * Set all mandatory fields except first name, last name, username, email.
+     * @param user the object to set the fields on.
+     */
+    static void setMandatoryFields(UserRepresentation user) {
+        user.setJobTitle("Tester");
+        user.setInstitute("Software institute");
+        user.setDepartment("Testing");
+        user.setTelephone("123456789");
+        user.setSpecialism("Microservice architectures");
+    }
+
     @Test
     @Transactional
     public void testRegisterValid() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("joe");
         validUser.setPassword(VALID_PASSWORD);
@@ -169,6 +182,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterInvalidLogin() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM();
+        setMandatoryFields(invalidUser);
         invalidUser.setId(null);
         invalidUser.setLogin("funky-log!n"); // invalid
         invalidUser.setPassword(VALID_PASSWORD);
@@ -192,6 +206,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterInvalidEmail() throws Exception {
         ManagedUserVM invalidUser = new ManagedUserVM();
+        setMandatoryFields(invalidUser);
         invalidUser.setId(null);
         invalidUser.setLogin("bob");
         invalidUser.setPassword(VALID_PASSWORD);
@@ -230,6 +245,7 @@ public class AccountResourceIntTest {
         };
         for(String password: invalidPasswords) {
             ManagedUserVM invalidUser = new ManagedUserVM();
+            setMandatoryFields(invalidUser);
             invalidUser.setId(null);
             invalidUser.setLogin("bob");
             invalidUser.setPassword(password);
@@ -260,6 +276,11 @@ public class AccountResourceIntTest {
         duplicate.setEmail(original.getEmail());
         duplicate.setLangKey(original.getLangKey());
         duplicate.setAuthorities(original.getAuthorities());
+        duplicate.setJobTitle(original.getJobTitle());
+        duplicate.setInstitute(original.getInstitute());
+        duplicate.setDepartment(original.getDepartment());
+        duplicate.setTelephone(original.getTelephone());
+        duplicate.setSpecialism(original.getSpecialism());
         return duplicate;
     }
 
@@ -268,6 +289,7 @@ public class AccountResourceIntTest {
     public void testRegisterDuplicateLogin() throws Exception {
         // Good
         ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("alice");
         validUser.setPassword(VALID_PASSWORD);
@@ -304,6 +326,7 @@ public class AccountResourceIntTest {
     public void testRegisterDuplicateEmail() throws Exception {
         // Good
         ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("john");
         validUser.setPassword(VALID_PASSWORD);
@@ -343,6 +366,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterAdminIsIgnored() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");
         validUser.setPassword(VALID_PASSWORD);
@@ -368,6 +392,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testVerifyUserEmail() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");
         validUser.setPassword(VALID_PASSWORD);
@@ -402,6 +427,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testVerifyUserEmailInvalid() throws Exception {
         ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");
         validUser.setPassword(VALID_PASSWORD);
@@ -441,6 +467,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testSaveInvalidLogin() throws Exception {
         UserRepresentation invalidUser = new UserRepresentation();
+        setMandatoryFields(invalidUser);
         invalidUser.setLogin("funky-log!n");
         invalidUser.setFirstName("Funky");
         invalidUser.setLastName("One");
@@ -457,4 +484,29 @@ public class AccountResourceIntTest {
         Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
     }
+
+    @Test
+    @Transactional
+    public void testIncompleteRegistrationForm() throws Exception {
+        UserRepresentation invalidUser = new UserRepresentation();
+        setMandatoryFields(invalidUser);
+        invalidUser.setLogin("badguy");
+        invalidUser.setFirstName("Bad");
+        invalidUser.setLastName("Guy");
+        invalidUser.setEmail("badguy@example.com");
+        invalidUser.setLangKey("en");
+        invalidUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
+        invalidUser.setDepartment(""); // required field
+
+        restUserMockMvc.perform(
+            post("/api/account")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
+            .andExpect(status().isBadRequest());
+
+        Optional<User> user = userService.getUserWithAuthoritiesByEmail("badguy@example.com");
+        assertThat(user.isPresent()).isFalse();
+    }
+
+
 }

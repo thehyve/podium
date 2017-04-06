@@ -72,9 +72,7 @@ public class AccountResource {
             mailService.sendVerificationEmail(user);
         } catch(EmailAddressAlreadyInUse e) {
             Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
-            if (userOptional.isPresent()) {
-                mailService.sendAccountAlreadyExists(userOptional.get());
-            }
+            userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
         } catch (LoginAlreadyInUse e) {
             log.error("Login already in use: {}", managedUserVM.getLogin());
             throw e;
@@ -152,18 +150,8 @@ public class AccountResource {
     @AnyAuthorisedUser
     @PostMapping("/account")
     @Timed
-    public ResponseEntity<String> saveAccount(@Valid @RequestBody UserRepresentation userDTO) {
-        Optional<User> existingUser = userService.getUserWithAuthoritiesByEmail(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
-        }
-        return userService
-            .getUserWithAuthoritiesByLogin(SecurityService.getCurrentUserLogin())
-            .map(u -> {
-                userService.updateUserAccount(userDTO);
-                return new ResponseEntity<String>(HttpStatus.OK);
-            })
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+    public UserRepresentation saveAccount(@Valid @RequestBody UserRepresentation userDTO) throws UserAccountException {
+        return userService.updateUserAccount(userDTO);
     }
 
     /**

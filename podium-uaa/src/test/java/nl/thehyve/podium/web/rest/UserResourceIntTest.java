@@ -8,24 +8,37 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 
+import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -39,6 +52,9 @@ public class UserResourceIntTest {
 
     @Inject
     private UserService userService;
+
+    @Mock
+    private MailService mockMailService;
 
     private MockMvc restUserMockMvc;
 
@@ -63,8 +79,12 @@ public class UserResourceIntTest {
 
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
+        doNothing().when(mockMailService).sendVerificationEmail((User) anyObject());
+
         UserResource userResource = new UserResource();
         ReflectionTestUtils.setField(userResource, "userService", userService);
+        ReflectionTestUtils.setField(userResource, "mailService", mockMailService);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 
@@ -83,4 +103,52 @@ public class UserResourceIntTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @Transactional
+    public void testCreateUser() throws Exception {
+        ManagedUserVM userData = new ManagedUserVM();
+        AccountResourceIntTest.setMandatoryFields(userData);
+        userData.setId(null);
+        userData.setLogin("joe");
+        userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
+        userData.setFirstName("Joe");
+        userData.setLastName("Shmoe");
+        userData.setEmail("joe@example.com");
+        userData.setLangKey("en");
+        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
+
+        restUserMockMvc.perform(post("/api/users")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(userData)))
+            .andExpect(status().isCreated());
+
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        assertThat(user.isPresent()).isTrue();
+    }
+
+    @Test
+    @Transactional
+    public void testCreateInvalidUser() throws Exception {
+        ManagedUserVM userData = new ManagedUserVM();
+        AccountResourceIntTest.setMandatoryFields(userData);
+        userData.setId(null);
+        userData.setLogin("joe");
+        userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
+        userData.setFirstName("Joe");
+        userData.setLastName("Shmoe");
+        userData.setEmail("joe@example.com");
+        userData.setLangKey("en");
+        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
+        userData.setInstitute(""); // Required
+
+        restUserMockMvc.perform(post("/api/users")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(userData)))
+            .andExpect(status().isBadRequest());
+
+        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        assertThat(user.isPresent()).isFalse();
+    }
+
 }
