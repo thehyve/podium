@@ -19,6 +19,7 @@ import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.service.*;
 import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -164,11 +165,11 @@ public class TestResourceIntTest {
 
         createJoe();
         User joe = userService.getUserWithAuthoritiesByLogin("joe").get();
-        RoleRepresentation assignment = new RoleRepresentation();
+        TestRoleRepresentation assignment = new TestRoleRepresentation();
         assignment.setAuthority(AuthorityConstants.ORGANISATION_COORDINATOR);
-        assignment.setOrganisation(testOrganisation.getUuid());
-        Set<UUID> users = new HashSet<>();
-        users.add(joe.getUuid());
+        assignment.setOrganisation(testOrganisation.getShortName());
+        Set<String> users = new HashSet<>();
+        users.add(joe.getLogin());
         assignment.setUsers(users);
 
         // Update role
