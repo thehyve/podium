@@ -115,7 +115,7 @@ public class OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @Public
+    @AnyAuthorisedUser
     @GetMapping("/organisations")
     @Timed
     public ResponseEntity<List<Organisation>> getAllOrganisations(@ApiParam Pageable pageable)
