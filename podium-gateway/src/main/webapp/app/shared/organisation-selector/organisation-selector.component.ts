@@ -32,6 +32,10 @@ export class OrganisationSelectorComponent implements OnInit {
 
     @Output() organisationChange = new EventEmitter<Organisation[]>();
 
+    private static onError (error) {
+        return Observable.throw(new Error(error.status));
+    }
+
     constructor(private jhiLanguageService: JhiLanguageService,
                 private organisationService: OrganisationService
     ) {}
@@ -50,16 +54,14 @@ export class OrganisationSelectorComponent implements OnInit {
         this.organisationService.findAll()
             .subscribe(
                 (data: Response) => {
-                    if (Array.isArray(data)) this.organisationOptions = data;
+                    if (Array.isArray(data)) {
+                        this.organisationOptions = data;
+                    }
                 },
                 (res: Response) => {
                     return OrganisationSelectorComponent.onError(res.json());
                 }
             );
-    }
-
-    private static onError (error) {
-        return Observable.throw(new Error(error.status));
     }
 
 }

@@ -81,12 +81,19 @@ describe('Component Tests', () => {
         describe('OnInit', () => {
             it('Should call load all on init', () => {
             // GIVEN
+            let role = new Role();
+            role.id = 10;
+            role.organisation = 'uuidOrg';
+            role.authority = 'ROLE_ORGANISATION_ADMIN';
+            role.users = ['uuidUser_1', 'uuidUser_2'];
             spyOn(roleService, 'find')
-                .and.returnValue(
-                    Observable.of(new Role(10, 'uuidOrg', 'ROLE_ORGANISATION_ADMIN', ['uuidUser_1', 'uuidUser_2']))
-                );
-            spyOn(organisationService, 'findByUuid').and.returnValue(Observable.of(new Organisation(10)));
-            spyOn(userService, 'findByUuid').and.returnValue(Observable.of(new User(10)));
+                .and.returnValue(Observable.of(role));
+            let organisation = new Organisation();
+            organisation.id = 11;
+            let user = new User();
+            user.id = 12;
+            spyOn(organisationService, 'findByUuid').and.returnValue(Observable.of(organisation));
+            spyOn(userService, 'findByUuid').and.returnValue(Observable.of(user));
 
             // WHEN
             comp.ngOnInit();

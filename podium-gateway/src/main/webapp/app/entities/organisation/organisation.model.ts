@@ -18,19 +18,7 @@ export class Organisation {
     activated?: boolean;
     organisationUuid?: string;
 
-    constructor(id?: number,
-                uuid?: string,
-                name?: string,
-                shortName?: string,
-                activated?: boolean,
-                deleted?: boolean,
-                organisationUuid?: string) {
-        this.id = id ? id : null;
-        this.uuid = uuid ? uuid : null;
-        this.name = name ? name : null;
-        this.shortName = shortName ? shortName : null;
-        this.deleted = deleted ? deleted : null;
-        this.activated = activated ? activated : null;
-        this.organisationUuid = organisationUuid ? organisationUuid : null;
+    constructor() {
     }
+
 }

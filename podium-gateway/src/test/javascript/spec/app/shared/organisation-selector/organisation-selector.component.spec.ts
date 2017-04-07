@@ -71,14 +71,20 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
     it('should select organisation(s) based on input value on initialisation', () => {
         fixture.detectChanges();
-        comp.organisations = [new Organisation(1000, 'dummy')];
+        let dummyOrganisation = new Organisation();
+        dummyOrganisation.id = 1000;
+        dummyOrganisation.name = 'dummy';
+        comp.organisations = [dummyOrganisation];
         comp.ngOnInit();
         expect(comp.selectedOrganisations).toEqual(comp.organisations);
     });
 
     it('should update input value when selected organisations changed', () => {
         fixture.detectChanges();
-        comp.selectedOrganisations = [new Organisation(1000, 'dummy')];
+        let dummyOrganisation = new Organisation();
+        dummyOrganisation.id = 1000;
+        dummyOrganisation.name = 'dummy';
+        comp.selectedOrganisations = [dummyOrganisation];
         comp.onChange();
         expect(comp.organisations).toEqual(comp.selectedOrganisations);
     });
