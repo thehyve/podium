@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the OrganisationResource REST controller.
  *
- * @see OrganisationResource
+ * @see OrganisationServer
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
@@ -92,10 +92,8 @@ public class OrganisationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganisationResource organisationResource = new OrganisationResource();
-
+        OrganisationServer organisationResource = new OrganisationServer(organisationService);
         ReflectionTestUtils.setField(organisationResource, "organisationService", organisationService);
-
         this.restOrganisationMockMvc = MockMvcBuilders.standaloneSetup(organisationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();

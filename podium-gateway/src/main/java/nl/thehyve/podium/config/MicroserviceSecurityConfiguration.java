@@ -9,7 +9,11 @@ package nl.thehyve.podium.config;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.CustomUserAuthenticationConverter;
+import nl.thehyve.podium.security.CustomAccessTokenConverter;
 import nl.thehyve.podium.security.CustomAuthenticationProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
@@ -23,6 +27,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
@@ -31,6 +37,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.client.RestTemplate;
 
+import javax.enterprise.context.RequestScoped;
 import java.util.Map;
 
 @Configuration
@@ -38,6 +45,8 @@ import java.util.Map;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
 public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerAdapter {
+
+    private final Logger log = LoggerFactory.getLogger(MicroserviceSecurityConfiguration.class);
 
     private final PodiumProperties podiumProperties;
 
@@ -70,6 +79,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
             .authorizeRequests()
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/**").authenticated()
+            .antMatchers("/proxy/**").authenticated()
             .antMatchers("/management/**").hasAuthority(AuthorityConstants.PODIUM_ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll();
     }
@@ -79,17 +89,16 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
 
-    @Bean
-    public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
-        return new CustomUserAuthenticationConverter();
+    @RequestScoped
+    @Bean(name = "requestAuth2ClientContext")
+    public OAuth2ClientContext oAuth2ClientContext() {
+        OAuth2ClientContext context = new DefaultOAuth2ClientContext();
+        log.info("Creating new OAuth2ClientContext: {}", context);
+        return context;
     }
 
-    @Bean
-    public DefaultAccessTokenConverter defaultAccessTokenConverter() {
-        DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();
-        defaultAccessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter());
-        return defaultAccessTokenConverter;
-    }
+    @Autowired
+    CustomAccessTokenConverter customAccessTokenConverter;
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(
@@ -97,7 +106,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
 
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setVerifierKey(getKeyFromAuthorizationServer(keyUriRestTemplate));
-        converter.setAccessTokenConverter(defaultAccessTokenConverter());
+        converter.setAccessTokenConverter(customAccessTokenConverter);
         return converter;
     }
 
