@@ -23,7 +23,8 @@ import {
     Principal,
     User,
     Attachment,
-    EmailValidatorDirective
+    EmailValidatorDirective,
+    OrganisationSelectorComponent
 } from '../../shared';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
@@ -33,6 +34,7 @@ import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.com
     templateUrl: './request-form.component.html',
     styleUrls: ['request-form.scss']
 })
+
 export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
@@ -42,8 +44,7 @@ export class RequestFormComponent implements OnInit {
     public success: string;
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
-    public requestTypes = RequestType;
-    public availableOrganisations: Organisation[];
+    public requestTypeOptions: any;
     public availableRequestDrafts: RequestBase[];
     public selectDraft: boolean;
     public selectedDraft: any = null;
@@ -68,14 +69,8 @@ export class RequestFormComponent implements OnInit {
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.currentUser = account;
+            this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
-        });
-
-        /**
-         * Organisation resolve
-         */
-        this.organisationService.findAvailable().map((availableOrganisations) => {
-            // TODO display list available organisations
         });
     }
 
@@ -84,11 +79,11 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        this.requestService.findDrafts()
-            .subscribe(
-                (requestDrafts) => this.processAvailableDrafts(requestDrafts),
-                (error) => this.onError('Error loading available request drafts.')
-            );
+        if (this.requestFormService.request !== null) {
+            this.selectRequestDraft(this.requestFormService.request);
+        } else {
+            this.initializeBaseRequest();
+        }
     }
 
     registerChangeInFilesUploaded() {
@@ -116,6 +111,7 @@ export class RequestFormComponent implements OnInit {
                 (requestBase) => {
                     this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
+                    this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
                     this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     this.selectDraft = false;
@@ -124,9 +120,14 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
+    updateRequestOrganisations(event: Organisation[]) {
+        this.requestBase.organisations = event;
+    }
+
     selectRequestDraft(requestBase: RequestBase) {
         this.selectDraft = false;
         this.requestBase = requestBase;
+        this.requestBase.organisations = requestBase.organisations || [];
         this.requestDetail = requestBase.requestDetail || new RequestDetail();
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
         this.requestDetail.principalInvestigator =

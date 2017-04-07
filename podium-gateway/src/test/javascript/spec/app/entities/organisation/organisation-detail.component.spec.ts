@@ -71,7 +71,9 @@ describe('Component Tests', () => {
         describe('OnInit', () => {
             it('Should call load all on init', () => {
             // GIVEN
-            spyOn(service, 'findByUuid').and.returnValue(Observable.of(new Organisation(10)));
+            let organisation = new Organisation();
+            organisation.id = 10;
+            spyOn(service, 'findByUuid').and.returnValue(Observable.of(organisation));
 
             // WHEN
             comp.ngOnInit();

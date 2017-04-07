@@ -15,17 +15,17 @@ import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';
 
 export class RequestBase implements Request {
-    public dateCreated?: Date;
-    public dateLastModified?: Date;
 
-    public uuid?: string;
-    public id?: string;
-    public status?: RequestStatus;
-    public requestDetail?: RequestDetail;
-    public organisations?: Organisation[];
-    public requester?: User;
+    dateCreated?: Date = new Date();
+    dateLastModified?: Date = new Date();
+    uuid?: string;
+    id?: string;
+    status?: RequestStatus;
+    requestDetail?: RequestDetail = new RequestDetail();
+    organisations?: Organisation[] = [];
+    requester?: User;
 
     constructor() {
-
     }
+
 }

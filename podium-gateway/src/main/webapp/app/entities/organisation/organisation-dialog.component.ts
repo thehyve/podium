@@ -51,14 +51,18 @@ export class OrganisationDialogComponent implements OnInit {
         this.isSaving = true;
         if (this.organisation.uuid !== undefined) {
             this.organisationService.update(this.organisation)
-                .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
+                .subscribe(
+                    (res: Organisation) => this.onSaveSuccess(res),
+                    (res: Response) => this.onSaveError(res.json()));
         } else {
             this.organisationService.create(this.organisation)
-                .subscribe((res: Response) => this.onSaveSuccess(res), (res: Response) => this.onSaveError(res.json()));
+                .subscribe(
+                    (res: Organisation) => this.onSaveSuccess(res),
+                    (res: Response) => this.onSaveError(res.json()));
         }
     }
 
-    private onSaveSuccess (result) {
+    private onSaveSuccess (result: Organisation) {
         this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss(result);

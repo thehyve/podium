@@ -8,17 +8,6 @@
  *
  */
 
-export class Organisation {
-
-    id?: number;
-    uuid?: string;
-    name?: string;
-    shortName?: string;
-    deleted?: boolean;
-    activated?: boolean;
-    organisationUuid?: string;
-
-    constructor() {
-    }
-
-}
+export * from './request-overview.component';
+export * from './request-overview.route';
+export * from './request-overview.service';

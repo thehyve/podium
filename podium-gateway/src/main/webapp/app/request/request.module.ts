@@ -21,6 +21,8 @@ import {
 } from './';
 
 import { EnumKeysPipe } from '../shared/pipes/enumKeys';
+import { RequestOverviewComponent } from './overview/request-overview.component';
+import { RequestOverviewService } from './overview/request-overview.service';
 
 @NgModule({
     imports: [
@@ -30,13 +32,15 @@ import { EnumKeysPipe } from '../shared/pipes/enumKeys';
     declarations: [
         RequestFormComponent,
         RequestFormSubmitDialogComponent,
+        RequestOverviewComponent,
         EnumKeysPipe
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent
     ],
     providers: [
-        RequestFormService
+        RequestFormService,
+        RequestOverviewService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

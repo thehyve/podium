@@ -11,19 +11,21 @@
 import { User } from '../../shared';
 
 export class Role {
-    constructor(
-        public id?: number,
-        /**
-         * UUID of the organisation (only for organisation roles).
-         */
-        public organisation?: string,
-        /**
-         * Authority token, e.g., ROLE_ORGANISATION_ADMIN.
-         */
-        public authority?: string,
-        /**
-         * UUIDs of users for this role.
-         */
-        public users?: string[]
-    ) { }
+
+    id?: number;
+    /**
+     * UUID of the organisation (only for organisation roles).
+     */
+    organisation?: string;
+    /**
+     * Authority token, e.g., ROLE_ORGANISATION_ADMIN.
+     */
+    authority?: string;
+    /**
+     * UUIDs of users for this role.
+     */
+    users?: string[];
+
+    constructor() { }
+
 }

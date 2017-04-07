@@ -8,17 +8,16 @@
  *
  */
 
-export class Organisation {
+import { Injectable } from '@angular/core';
+import { Http, Response, URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 
-    id?: number;
-    uuid?: string;
-    name?: string;
-    shortName?: string;
-    deleted?: boolean;
-    activated?: boolean;
-    organisationUuid?: string;
+@Injectable()
+export class RequestOverviewService {
 
-    constructor() {
+    constructor(private http: Http) {
+
     }
-
 }
+
+

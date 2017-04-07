@@ -42,6 +42,7 @@ export * from './user/account.model';
 export * from './user/user.model';
 export * from './user/user.service';
 export * from './specialism/specialism.component';
+export * from './organisation-selector/organisation-selector.component';
 export * from './shared-libs.module';
 export * from './shared-common.module';
 export * from './shared.module';

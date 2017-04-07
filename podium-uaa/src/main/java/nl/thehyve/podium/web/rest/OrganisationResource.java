@@ -9,16 +9,13 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
-import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
-import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
-import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +115,7 @@ public class OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @AnyAuthorisedUser
     @GetMapping("/organisations")
     @Timed
     public ResponseEntity<List<Organisation>> getAllOrganisations(@ApiParam Pageable pageable)

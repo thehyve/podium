@@ -36,6 +36,7 @@ import {
 } from './';
 import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
+import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 
 @NgModule({
     imports: [
@@ -45,6 +46,7 @@ import { RequestService } from './request/request.service';
     declarations: [
         PodiumLoginComponent,
         SpecialismComponent,
+        OrganisationSelectorComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
@@ -73,6 +75,7 @@ import { RequestService } from './request/request.service';
         PodiumGatewaySharedCommonModule,
         PodiumLoginComponent,
         SpecialismComponent,
+        OrganisationSelectorComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
