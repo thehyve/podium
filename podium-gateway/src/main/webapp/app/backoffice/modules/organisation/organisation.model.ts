@@ -12,13 +12,18 @@ import { Role } from '../role/role.model';
 import { RequestType } from '../../../shared/request/request-type';
 
 export class Organisation {
-    constructor(
-        public id?: number,
-        public uuid?: string,
-        public name?: string,
-        public shortName?: string,
-        public roles?: Role[],
-        public requestTypes?: RequestType[]
-    ) { }
+
+    public id?: number;
+    uuid?: string;
+    name?: string;
+    shortName?: string;
+    deleted?: boolean;
+    activated?: boolean;
+    organisationUuid?: string;
+    public roles?: Role[];
+    public requestTypes?: RequestType[];
+
+    constructor() {
+    }
 
 }

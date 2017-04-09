@@ -9,17 +9,13 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { RequestBase } from '../../shared/request/request-base';
+import { Http, Response, URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 
 @Injectable()
-export class RequestFormService {
-
-    request: RequestBase;
+export class RequestOverviewService {
 
     constructor(private http: Http) {
 
     }
 }
-
-

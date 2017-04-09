@@ -375,7 +375,7 @@
                 <div class="form-group">
                     <label for="requestTypes">Request Type(s): </label>
                     <div class="checkbox-group">
-                        <div *ngFor="let requestType of requestTypes | enumKeys">
+                        <div *ngFor="let requestType of requestTypeOptions | enumKeys">
                             <label>
                                 <input type="checkbox"
                                        name="requestTypes"
@@ -404,7 +404,14 @@
                     </div>
                 </div>
 
+                <!-- Organisations -->
                 <h3 jhiTranslate="request.form.header.organisations">Organisations</h3>
+                <div class="form-group">
+                    <pdm-organisation-selector [(organisations)]="requestBase.organisations"
+                                               [(requestType)]="requestDetail.requestType"
+                                               (organisationChange)="updateRequestOrganisations($event)">
+                    </pdm-organisation-selector>
+                </div>
 
 
                 <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>

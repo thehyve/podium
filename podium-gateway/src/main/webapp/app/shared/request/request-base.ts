@@ -9,23 +9,23 @@
  */
 
 import { Request } from './request';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { RequestStatus } from './request-status';
 import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';
+import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 
 export class RequestBase implements Request {
-    public dateCreated?: Date;
-    public dateLastModified?: Date;
 
-    public uuid?: string;
-    public id?: string;
-    public status?: RequestStatus;
-    public requestDetail?: RequestDetail;
-    public organisations?: Organisation[];
-    public requester?: User;
+    dateCreated?: Date = new Date();
+    dateLastModified?: Date = new Date();
+    uuid?: string;
+    id?: string;
+    status?: RequestStatus;
+    requestDetail?: RequestDetail = new RequestDetail();
+    organisations?: Organisation[] = [];
+    requester?: User;
 
     constructor() {
-
     }
+
 }

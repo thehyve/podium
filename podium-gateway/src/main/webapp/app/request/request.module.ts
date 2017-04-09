@@ -19,6 +19,8 @@ import {
     RequestFormComponent,
     RequestFormSubmitDialogComponent,
 } from './';
+import { RequestOverviewComponent } from './overview/request-overview.component';
+import { RequestOverviewService } from './overview/request-overview.service';
 
 @NgModule({
     imports: [
@@ -27,13 +29,15 @@ import {
     ],
     declarations: [
         RequestFormComponent,
-        RequestFormSubmitDialogComponent
+        RequestFormSubmitDialogComponent,
+        RequestOverviewComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent
     ],
     providers: [
-        RequestFormService
+        RequestFormService,
+        RequestOverviewService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

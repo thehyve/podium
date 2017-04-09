@@ -16,6 +16,7 @@ export * from './request/request-status';
 export * from './request/request-type';
 export * from './request/request.service';
 export * from './request/request';
+export * from './organisation-selector/organisation-selector.component';
 export * from './request/principal-investigator';
 export * from './validators/password-validator.directive';
 export * from './validators/password-matches.directive';

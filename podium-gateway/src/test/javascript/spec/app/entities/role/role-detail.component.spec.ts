@@ -8,6 +8,7 @@
  *
  */
 
+
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
@@ -20,12 +21,12 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { MockActivatedRoute } from '../../../helpers/mock-route.service';
 import { RoleDetailComponent } from '../../../../../../main/webapp/app/backoffice/modules/role/role-detail.component';
-import { RoleService } from '../../../../../../main/webapp/app/backoffice/modules/role/role.service';
-import { Role } from '../../../../../../main/webapp/app/backoffice/modules/role/role.model';
-import { User, UserService} from '../../../../../../main/webapp/app/shared/';
+import { RoleService } from '../../../../../../main/webapp/app/shared/role/role.service';
 import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
+import { UserService } from '../../../../../../main/webapp/app/shared/user/user.service';
+import { Role } from '../../../../../../main/webapp/app/shared/role/role.model';
 import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
-
+import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
 
 describe('Component Tests', () => {
 
@@ -80,22 +81,29 @@ describe('Component Tests', () => {
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
-            // GIVEN
-            spyOn(roleService, 'find')
-                .and.returnValue(
-                    Observable.of(new Role(10, 'uuidOrg', 'ROLE_ORGANISATION_ADMIN', ['uuidUser_1', 'uuidUser_2']))
-                );
-            spyOn(organisationService, 'findByUuid').and.returnValue(Observable.of(new Organisation(10)));
-            spyOn(userService, 'findByUuid').and.returnValue(Observable.of(new User(10)));
+                // GIVEN
+                let role = new Role();
+                role.id = 10;
+                role.organisation = 'uuidOrg';
+                role.authority = 'ROLE_ORGANISATION_ADMIN';
+                role.users = ['uuidUser_1', 'uuidUser_2'];
+                spyOn(roleService, 'find')
+                    .and.returnValue(Observable.of(role));
+                let organisation = new Organisation();
+                organisation.id = 11;
+                let user = new User();
+                user.id = 12;
+                spyOn(organisationService, 'findByUuid').and.returnValue(Observable.of(organisation));
+                spyOn(userService, 'findByUuid').and.returnValue(Observable.of(user));
 
-            // WHEN
-            comp.ngOnInit();
+                // WHEN
+                comp.ngOnInit();
 
-            // THEN
-            expect(roleService.find).toHaveBeenCalledWith(123);
-            expect(organisationService.findByUuid).toHaveBeenCalledWith('uuidOrg');
-            expect(userService.findByUuid).toHaveBeenCalledWith('uuidUser_1');
-            expect(comp.role).toEqual(jasmine.objectContaining({id: 10}));
+                // THEN
+                expect(roleService.find).toHaveBeenCalledWith(123);
+                expect(organisationService.findByUuid).toHaveBeenCalledWith('uuidOrg');
+                expect(userService.findByUuid).toHaveBeenCalledWith('uuidUser_1');
+                expect(comp.role).toEqual(jasmine.objectContaining({id: 10}));
             });
         });
     });

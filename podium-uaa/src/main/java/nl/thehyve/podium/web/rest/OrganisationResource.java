@@ -16,7 +16,6 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
-import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -24,8 +23,8 @@ import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
+import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import io.swagger.annotations.ApiParam;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -124,7 +122,7 @@ public class OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @AnyAuthorisedUser
     @GetMapping("/organisations")
     @Timed
     public ResponseEntity<List<OrganisationDTO>> getAllOrganisations(@ApiParam Pageable pageable)

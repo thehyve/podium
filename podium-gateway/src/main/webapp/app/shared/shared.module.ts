@@ -38,6 +38,7 @@ import {
 import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
+import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 
 @NgModule({
     imports: [
@@ -52,6 +53,7 @@ import { EnumKeysPipe } from './pipes/enumKeys';
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
+        OrganisationSelectorComponent,
         EnumKeysPipe
     ],
     providers: [],
@@ -61,6 +63,7 @@ import { EnumKeysPipe } from './pipes/enumKeys';
         PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
         SpecialismComponent,
+        OrganisationSelectorComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
