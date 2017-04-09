@@ -14,29 +14,14 @@ export class OrganisationUser {
     public id: string;
     public uuid: string;
     public fullName: string;
+    public previousAuthority: string;
     public authority: string = undefined;
     public isSaved: boolean;
-    public isDirty: boolean;
+    public isDirty: boolean = false;
     public searchTerm: string;
     public dataSource: Observable<any>;
 
-    constructor(
-        id?: string,
-        uuid?: string,
-        fullName?: string,
-        authority?: string,
-        isSaved?: boolean,
-        isDirty?: boolean,
-        searchTerm?: string,
-        dataSource?: Observable<any>
-    ) {
-        this.id = id ? id : null;
-        this.uuid = uuid ? uuid : null;
-        this.fullName = fullName ? fullName : null;
-        this.authority = authority ? authority : undefined;
-        this.isSaved = isSaved ? isSaved : null;
-        this.isDirty = isDirty ? isDirty : null;
-        this.searchTerm = searchTerm ? searchTerm : null;
-        this.dataSource = dataSource ? dataSource : null;
+    constructor() {
     }
+
 }

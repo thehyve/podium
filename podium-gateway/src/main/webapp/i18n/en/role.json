@@ -19,6 +19,10 @@
             "organisation": "Organisation",
             "authority": "Authority",
             "options": "Options"
+        },
+        "roleAssign": {
+            "saved": "Successfully saved",
+            "deleted": "Successfully deleted"
         }
     },
     "podiumuaaApp": {

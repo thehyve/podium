@@ -35,40 +35,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let user of organisationUsers; trackBy: trackByUuid">
+                        <tr *ngFor="let user of organisationUsers; let i = index">
                             <td>
                                 <input [(ngModel)]="user.searchTerm"
-                                       name="userTypeahead-{{ user.uuid }}"
+                                       name="userTypeahead-{{ user.uuid }}-{{i}}"
                                        [typeahead]="user.dataSource"
                                        (typeaheadNoResults)="changeTypeaheadNoResults($event)"
                                        (typeaheadOnSelect)="typeaheadOnSelect($event, user)"
                                        [typeaheadWaitMs]="300"
                                        typeaheadOptionsLimit="7"
                                        typeaheadOptionField="fullName"
+                                       [disabled]="isDisabled(user, currentAccount)"
                                        placeholder="Search for a user by fullname"
                                        autocomplete="off"
-                                       class="form-control">
-
-                                <div *ngIf="typeaheadNoResults === true">
-                                    <i class="material-icons">clear</i> No Results Found
-                                </div>
+                                       class="form-control user-select-input">
                             </td>
                             <td>
                                 <!-- Authority select -->
-                                <select class="form-control" id="field_authority_user" name="authority-{{ user.uuid }}" [(ngModel)]="user.authority" [disabled]="">
+                                <select class="form-control" id="field_authority_user" name="authority-{{ user.uuid }}-{{i}}"
+                                        (change)="userAuthorityChange(user, $event)"
+                                        [(ngModel)]="user.authority"
+                                        [disabled]="isAdminOfOrganisation(user, currentAccount)">
                                     <option [ngValue]="undefined" disabled selected>Please select a role</option>
-                                    <option [ngValue]="authorityOption.token === user.authority ? user.authority : authorityOption.token" *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">{{authorityOption.name}}</option>
+                                    <option [ngValue]="authorityOption.token === user.authority ? user.authority : authorityOption.token"
+                                            *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">
+                                        {{authorityOption.name}}
+                                    </option>
                                 </select>
                             </td>
                             <td class="role-actions">
-                                <span class="role-option default" tooltip="Update user role" *ngIf="user.uuid && user.isSaved">
+                                <span class="role-option default" tooltip="Update user role" *ngIf="canUpdate(user, currentAccount)"
+                                    (click)="update(user)">
                                     <i class="material-icons">update</i>
                                 </span>
-                                <span class="role-option success" tooltip="Add user role" *ngIf="user.uuid && user.authority && !user.isSaved" (click)="save(user)">
+                                <span class="role-option success" tooltip="Add user role" *ngIf="canAdd(user, currentAccount)"
+                                    (click)="save(user)">
                                     <i class="material-icons">add</i>
                                 </span>
-                                <span class="role-option warn" tooltip="Remove user role" *ngIf="user.uuid">
+                                <span class="role-option warn" tooltip="Remove user role" *ngIf="canRemove(user, currentAccount)"
+                                    (click)="delete(user)">
                                     <i class="material-icons">clear</i>
+                                </span>
+                                <span class="role-option warn-static" tooltip="You cannot remove yourself from the admin role."
+                                      *ngIf="isAdminOfOrganisation(user, currentAccount)">
+                                    <i class="material-icons">info_outline</i>
                                 </span>
                             </td>
                         </tr>

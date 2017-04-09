@@ -9,8 +9,8 @@
  */
 
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { JhiLanguageService, AlertService } from 'ng-jhipster';
-import { Observable } from 'rxjs';
+import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
+import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
 
 import { Role } from '../role.model';
@@ -28,7 +28,7 @@ import { Response } from '@angular/http';
     templateUrl: './role-assign.component.html',
     styleUrls: ['role-assign.scss']
 })
-export class RoleAssignComponent implements OnInit {
+export class RoleAssignComponent implements OnInit, OnDestroy {
 
     currentAccount: any;
     users: { [uuid: string]: User; };
@@ -43,6 +43,8 @@ export class RoleAssignComponent implements OnInit {
     public typeaheadNoResults: boolean;
     public organisationRoles: Role[];
     public organisationUsers: any[] = [];
+    private eventSubscriber: Subscription;
+    public usersPromises: Promise<Response>[] = [];
 
     @Input() organisation;
 
@@ -52,7 +54,7 @@ export class RoleAssignComponent implements OnInit {
         private userService: UserService,
         private alertService: AlertService,
         private principal: Principal,
-
+        private eventManager: EventManager
     ) {
         this.jhiLanguageService.setLocations(['organisation', 'role']);
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
@@ -61,31 +63,29 @@ export class RoleAssignComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.principal.identity().then((account: User) => {
             this.currentAccount = account;
         });
 
-        if (this.organisation) {
-            this.roleService.findAllRolesForOrganisation(this.organisation.uuid).subscribe(roles => {
-                this.organisationRoles = roles;
-                for (let i = 0; i < roles.length; i++) {
-                    let role: Role = roles[i];
+        this.registerChangeInRoles();
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+    }
 
-                    for (let u = 0; u < role.users.length; u++) {
-                        let userUUID: string = role.users[u];
+    ngOnDestroy() {
+        this.eventManager.destroy(this.eventSubscriber);
+    }
 
-                        this.userService.findByUuid(userUUID).subscribe(userRes => {
-                            let organisationUser = this.generateOrganisationUser(userRes, role);
-                            this.organisationUsers.push(organisationUser);
-                        });
-                    }
-                }
+    registerChangeInRoles() {
+        this.eventSubscriber = this.eventManager.subscribe('userRolesModification', (response) => {
+            this.loadAllRolesForOrganisation().subscribe(() => {
+                console.log('Finished Loading all roles.');
+
+                Promise.all(this.usersPromises)
+                    .then(() => {
+                        this.addNewOrganisationUser();
+                    });
             });
-        }
-        // Add an empty user to the organisation user array
-        let organisationUser = this.generateOrganisationUser(null, null);
-        this.organisationUsers.push(organisationUser);
-        this.organisationUsers.reverse();
+        });
     }
 
     public generateOrganisationUser(user: User, role: Role) {
@@ -98,8 +98,9 @@ export class RoleAssignComponent implements OnInit {
         }
 
         if ( role ) {
+            orgUser.previousAuthority = role.authority;
             orgUser.authority = role.authority;
-            orgUser.isSaved = user.uuid != null ? true : false;
+            orgUser.isSaved = user.uuid != null;
         }
 
         orgUser.dataSource = this.getDatasourceForUser(orgUser);
@@ -119,56 +120,212 @@ export class RoleAssignComponent implements OnInit {
         }).mergeMap((term: any) => this.userService.suggest(term));
     }
 
-    private save(user: OrganisationUser) {
+    public save(user: OrganisationUser) {
         // Find and Update role by authority
-        let filteredRoles = this.organisationRoles.filter(r => r.authority === user.authority);
-        let role = filteredRoles[0];
+        let role = this.getRoleByAuthority(user.authority);
 
-        if (role) {
-            // Check if role already has user
-            if (role.users.indexOf(user.uuid) > -1) {
-                this.onError({message: 'Cannot add user ' + user.fullName + ' to the same role twice.'});
+        // Check if role already has user
+        this.updateRole(role, user, false).subscribe(
+            (res) => { this.onSaveSuccess(res, false); },
+            (err) => { this.onError(err); }
+        );
+    }
+
+    public update(user: OrganisationUser) {
+        // Remove previous role
+        let previousRole = this.getRoleByAuthority(user.previousAuthority);
+
+        this.updateRole(previousRole, user, true).subscribe(
+            (previousRes: Response) => {
+              // Add new role
+              let role = this.getRoleByAuthority(user.authority);
+              this.updateRole(role, user, false).subscribe(
+                  (res: Response) => { this.onSaveSuccess(res, false); },
+                  (err: Response) => { this.onError(err); },
+              );
+        },
+        (err: Response) => { this.onError(err); }
+        );
+    }
+
+    public delete(user: OrganisationUser) {
+        // Find and update role by authority
+        let role = this.getRoleByAuthority(user.authority);
+
+        this.updateRole(role, user, true).subscribe(
+            (res: Response) => { this.onSaveSuccess(res, true); },
+            (err: Response) => { this.onError(err); }
+        );
+    }
+
+    private loadAllRolesForOrganisation(): Observable<any> {
+        return Observable.create((observer: any) => {
+
+            this.organisationUsers = [];
+            if (this.organisation) {
+                this.roleService.findAllRolesForOrganisation(this.organisation.uuid).subscribe(roles => {
+                    this.organisationRoles = roles;
+                    for (let i = 0; i < roles.length; i++) {
+                        let role: Role = roles[i];
+
+                        for (let u = 0; u < role.users.length; u++) {
+                            let userUUID: string = role.users[u];
+
+                            let promise: Promise<Response> = this.userService.findByUuid(userUUID).toPromise();
+                                /*.subscribe(userRes => {
+                                let organisationUser = this.generateOrganisationUser(userRes, role);
+                                this.organisationUsers.push(organisationUser);
+                            })*/
+
+                            promise.then(userRes => {
+                                let organisationUser = this.generateOrganisationUser(userRes, role);
+                                this.organisationUsers.push(organisationUser);
+                            });
+
+                            this.usersPromises.push(promise);
+                        }
+                    }
+                    observer.next();
+                });
             } else {
-                // Add user to role
-                role.users.push(user.uuid);
+                observer.next();
+            }
+        });
+    }
+
+    private getRoleByAuthority(authority: string): Role {
+        // Find and Update role by authority
+        let filteredRoles = this.organisationRoles.filter(r => r.authority === authority);
+        return filteredRoles[0];
+    }
+
+    private updateRole(role: Role, user: OrganisationUser, remove: boolean) {
+        return Observable.create((observer) => {
+            if (role) {
+                let userIdx = role.users.indexOf(user.uuid);
+
+                // Add / remove user in role
+                if (remove) {
+                    role.users.splice(userIdx, 1);
+                } else {
+                    // Check if role already has user
+                    if (userIdx > -1) {
+                        this.onError({message: 'Cannot add user ' + user.fullName + ' to the same role twice.'});
+                    } else {
+                        role.users.push(user.uuid);
+                    }
+                }
+
+                // Perform update
                 this.roleService.update(role)
                     .subscribe(
-                        (res: Response) => this.onSaveSuccess(res),
-                        (res: Response) => this.onSaveError(res.json())
+                        (res: Response) => {
+                            observer.next(res);
+                        },
+                        (res: Response) => {
+                            return Observable.throw(res.json());
+                        }
                     );
-
+            } else {
+                this.onError({message: 'Cannot find role for authority ' + user.authority });
             }
-        } else {
-            this.onError({message: 'Cannot find role for authority ' + user.authority });
-        }
+        });
     }
 
-    public changeTypeaheadNoResults(e: boolean): void {
-        this.typeaheadNoResults = e;
-    }
-
-    public typeaheadOnSelect(e: TypeaheadMatch, user: OrganisationUser): void {
-        user.uuid = e.item.uuid;
-    }
-
-    trackAuthorityByToken(index: number, item: string) {
-        return item;
-    }
-
-    trackByUuid(index: number, item: any) {
-        return item.uuid;
-    }
-
-    private onSaveSuccess(res: Response) {
-        this.alertService.success('Successfully saved', res);
+    private onSaveSuccess(res: Response, isDelete: boolean) {
+        let notification = isDelete ? 'podiumGatewayApp.roleAssign.deleted' : 'podiumGatewayApp.roleAssign.saved';
+        this.alertService.success(notification);
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
     private onError (error) {
         this.alertService.error(error.message, null, null);
     }
 
-
     private onSaveError (error) {
         this.alertService.error(error.message, null, null);
+    }
+
+    private addNewOrganisationUser() {
+        // Add an empty user to the organisation user array
+        let organisationUser = this.generateOrganisationUser(null, null);
+        this.organisationUsers.push(organisationUser);
+    }
+
+    /**
+     * Template features
+     */
+    public userAuthorityChange(orgUser: OrganisationUser, event: any) {
+        orgUser.isDirty = false;
+        if ((orgUser.authority !== orgUser.previousAuthority) && orgUser.isSaved) {
+            orgUser.isDirty = true;
+        }
+    }
+
+    public canAdd(orgUser: OrganisationUser, currentUser: User): boolean {
+        if (orgUser.uuid && orgUser.previousAuthority !== orgUser.authority && !orgUser.isSaved) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public canRemove(orgUser: OrganisationUser, currentUser: User): boolean {
+        if (!orgUser || !orgUser.isSaved) {
+            return false;
+        }
+        if (orgUser.uuid === currentUser.uuid && orgUser.authority === 'ROLE_ORGANISATION_ADMIN' && orgUser.isSaved) {
+            return false;
+        }
+
+        return !!orgUser.uuid;
+    }
+
+    public canUpdate(orgUser: OrganisationUser, currentUser: User): boolean {
+        if (!orgUser) {
+            return false;
+        }
+
+        if (orgUser.uuid === currentUser.uuid && orgUser.authority === 'ROLE_ORGANISATION_ADMIN') {
+            return false;
+        }
+
+        if (orgUser.isDirty) {
+            return true;
+        }
+
+        return orgUser.uuid && orgUser.isSaved && orgUser.isDirty;
+    }
+
+    public isDisabled(orgUser: OrganisationUser, currentUser: User): boolean {
+        if (orgUser.isSaved) {
+            return true;
+        }
+
+        return currentUser.uuid === orgUser.uuid && orgUser.authority === 'ROLE_ORGANISATION_ADMIN';
+    }
+
+    public isAdminOfOrganisation(orgUser: OrganisationUser, currentUser: User): boolean {
+        if (currentUser.uuid === orgUser.uuid && orgUser.authority === 'ROLE_ORGANISATION_ADMIN') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public typeaheadOnSelect(e: TypeaheadMatch, user: OrganisationUser): void {
+        user.uuid = e.item.uuid;
+    }
+
+    public trackAuthorityByToken(index: number, item: string) {
+        return item;
+    }
+
+    public trackByUuid(index: number, item: any) {
+        return item.uuid;
+    }
+
+    public changeTypeaheadNoResults(e: boolean): void {
+        this.typeaheadNoResults = e;
     }
 }
