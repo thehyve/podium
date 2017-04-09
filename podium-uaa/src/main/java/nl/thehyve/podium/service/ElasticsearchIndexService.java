@@ -32,12 +32,14 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 @Service
@@ -72,7 +74,7 @@ public class ElasticsearchIndexService {
 
     @Async
     @Timed
-    public void reindexAll() {
+    public Future<String> reindexAll() {
 
         // Reindex Organisations to SearchOrganisations
         reindexForClass(
@@ -87,6 +89,7 @@ public class ElasticsearchIndexService {
             (List<User> users) -> userMapper.usersToSearchUsers(users));
 
         log.info("Elasticsearch: Successfully performed reindexing");
+        return new AsyncResult<String>("Indexing finished");
     }
 
     /**
