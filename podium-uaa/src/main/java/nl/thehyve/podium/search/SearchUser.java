@@ -26,7 +26,6 @@ import java.util.Objects;
  */
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "searchuser")
-@Setting(settingPath = "/elasticsearch/settings.yml")
 public class SearchUser implements Serializable {
 
     private static final long serialVersionUID = 1L;

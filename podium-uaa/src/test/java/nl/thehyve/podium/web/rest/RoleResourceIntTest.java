@@ -86,9 +86,6 @@ public class RoleResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    @Autowired
-    private RoleResource roleResource;
-
     private MockMvc restRoleMockMvc;
 
     private Role role;
