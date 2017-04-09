@@ -49,6 +49,7 @@ export class OrganisationFormComponent implements OnInit {
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.currentAccount = account;
+            console.log('ca', this.currentAccount);
         });
 
         this.route.params.subscribe(params => {
@@ -71,6 +72,9 @@ export class OrganisationFormComponent implements OnInit {
             this.organisation = result;
         }
 
+        let notification = isCreate ? 'podiumGatewayApp.organisation.saved' : 'podiumGatewayApp.organisation.updated';
+
+        this.alertService.success(notification);
         this.isSaving = false;
     }
 
@@ -101,5 +105,9 @@ export class OrganisationFormComponent implements OnInit {
         } else {
             this.organisation.requestTypes.splice(_idx, 1);
         }
+    }
+
+    isOrganisationAdmin () {
+        return this.currentAccount.authorities.indexOf('ROLE_ORGANISATION_ADMIN') > -1;
     }
 }
