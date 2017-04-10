@@ -7,6 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+
 class Linda {
     public name: string;
     public properties: {[key: string]: any};
@@ -14,7 +15,7 @@ class Linda {
     constructor() {
         this.name = "Linda";
         this.properties = {
-            "userName": "Linda",
+            "login": "linda",
             "password": "2piYJ4G{MokC",
             "firstName": "Linda",
             "lastName": "New bee",
@@ -24,7 +25,14 @@ class Linda {
             "department": "AB-120",
             "jobTitle": "chief Radiological officer",
             "specialism": "Other",
-            "Other specialism": "Other specialism"
+            "Other specialism": "Other specialism",
+            "authority": [{
+                orgShortName: "none",
+                role: "ROLE_RESEARCHER"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
         }
     }
 }

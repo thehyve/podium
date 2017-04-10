@@ -13,22 +13,29 @@ class BBMRI_Admin {
     public properties: {[key: string]: any};
 
     constructor() {
-        this.name = "Admin";
+        this.name = "bbmri_admin";
         this.properties = {
-            "userName": "bbmri_admin",
+            "login": "bbmri_admin",
             "password": "bbmri_admin",
             "firstName": "BBMRI administrator",
             "lastName": "BBMRI administrator",
             "email": "bbmri_admin@localhost",
-            "telephone": null,
-            "institute": null,
+            "telephone": "06123456789",
+            "institute": "BBMRI",
             "department": "bbmri_admin@localhost",
-            "jobTitle": null,
-            "specialism": null,
+            "jobTitle": "bbmri_admin",
+            "specialism": "other",
             "Other specialism": null,
-            "authority": ["ROLE_PODIUM_ADMIN", "ROLE_BBMRI_ADMIN"],
-            "emailVerified": "Email verified",
-            "adminVerified": "Account verified",
+            "authority": [{
+                orgShortName: "none",
+                role: "ROLE_BBMRI_ADMIN"
+            }, {
+                orgShortName: "none",
+                role: "ROLE_RESEARCHER"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
         }
     }
 }

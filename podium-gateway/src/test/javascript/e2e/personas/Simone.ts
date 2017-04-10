@@ -15,8 +15,24 @@ class Simone {
     constructor() {
         this.name = "Simone";
         this.properties = {
-            "userName": "Researcher",
-            "password": "researcher",
+            "login": "researcher",
+            "password": "2piYJ4G{MokC",
+            "firstName": "Simone",
+            "lastName": "hyve",
+            "email": "simone@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief researcher",
+            "specialism": "Other",
+            "Other specialism": "Other specialism",
+            "authority": [{
+                orgShortName: "none",
+                role: "ROLE_RESEARCHER"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
         }
     }
 }

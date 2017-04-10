@@ -47,10 +47,17 @@ export = function () {
 
         let field = "shortName";
 
+        $$('.test_' + field).count().then(function (count) {
+            if (count == organizations.length){
+                $$('.test_' + field).each(function (element, index) {
+                    return checkField(element, index, field, organizationsList, callback);
+                }).then(callback, callback)
+            } else {
+                callback("there are "+count+" elements for field: " + '.' + field + " expected: " + organizations.length)
+            }
+        });
 
-        $$('.test_' + field).each(function (element, index) {
-            return checkField(element, index, field, organizationsList, callback);
-        }).then(callback, callback)
+
     });
 
     this.Given(/^(.*) goes to the organization details page for '(.*)'$/, function (personaName, organizationName, callback) {

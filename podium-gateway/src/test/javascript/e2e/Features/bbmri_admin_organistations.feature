@@ -1,9 +1,11 @@
 Feature: bbmri admins can create and manage organizations in the system (BRPREQ-37, BRPREQ-30)
 
+    @default
     Scenario: BBMRI admins can see organizations in the system
         Given Rob goes to the 'organization overview' page
         Then the overview contains the organization's '["name", "shortName"]' for the organizations '["VarnameBank", "SomeBank", "XBank"]'
 
+    @default
     Scenario Outline: user overview page is sortable by <sortBy>
         Given Rob goes to the 'organization overview' page
         When he sorts by '<sortBy>'
@@ -17,6 +19,7 @@ Feature: bbmri admins can create and manage organizations in the system (BRPREQ-
 #            | adminNames       |                   |
 #            | coordinatorNames |                   |
 
+    @default
     Scenario: An organization has a details page
         Given Rob goes to the organization details page for 'VarnameBank'
         Then the organization details page contains 'VarnameBank's data
@@ -36,6 +39,7 @@ Feature: bbmri admins can create and manage organizations in the system (BRPREQ-
 #        When 'he' searches for 'organizationName'
 #        Then only 'organizationName' is shown in the list
 
+    @default
     Scenario: BBMRI admins can create new organizations
         Given Rob goes to the 'create organisation' page
         When he creates the organization 'NewOrg'

@@ -26,9 +26,13 @@ class Admin {
             "jobTitle": null,
             "specialism": null,
             "Other specialism": null,
-            "authority": ["ROLE_PODIUM_ADMIN"],
-            "emailVerified": "Email verified",
-            "adminVerified": "Account verified",
+            "authority": [{
+                orgShortName: "none",
+                role: "ROLE_PODIUM_ADMIN"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
         }
     }
 }

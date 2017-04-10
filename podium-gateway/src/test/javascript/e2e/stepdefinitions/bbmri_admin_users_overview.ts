@@ -10,6 +10,7 @@
 import {$$} from "protractor";
 import {Director} from "../protractor-stories/director";
 import {login} from "./Util";
+import {isUndefined} from "util";
 
 export = function () {
     this.setDefaultTimeout(30 * 1000); //max time before callback
@@ -24,19 +25,30 @@ export = function () {
             let personas = director.getListOfPersonas(users);
 
             fields.forEach(function (field) {
-                $$('.' + field).each(function (element, index) {
-                    return checkField(element, index, field, personas, callback);
-                }).then(function () {
-                    checksFinished++;
-                    if (checksFinished == fields.length) {
-                        callback()
+                $$('.' + field).count().then(function (count) {
+                    if (count == personas.length) {
+                        $$('.' + field).each(function (element, index) {
+                            return checkField(element, index, field, personas, callback);
+                        }).then(function () {
+                            checksFinished++;
+                            if (checksFinished == fields.length) {
+                                callback()
+                            }
+                        }, callback)
+                    } else {
+                        callback("there are " + count + " elements for fields: " + '.' + field + " expected: " + personas.length)
                     }
-                }, callback)
-            })
+                })
+            });
         }
     );
 
     function checkField(element, index, field, personas, callback) {
+        console.log("check field")
+        if (isUndefined(personas[index])) {
+            callback("there is no persona for the user at (null based) index " + index);
+        }
+
         if ('login' == field) { //TODO: unify the use of login and userName
             field = 'userName'
         }
@@ -46,12 +58,21 @@ export = function () {
         }
 
         if ('authority' == field) {
+            let userAutorities = [];
+
+            //TODO: untested, should work
+            personas[index].properties[field].forEach(function (Autority) {
+                userAutorities.push(Autority["role"]);
+            });
+
+            console.log(userAutorities);
             return element.$$('div').each(function (element) {
                 return element.$('span').getText().then(function (text) {
-                    if (personas[index].properties[field].indexOf(text) < 0) {
+                    if (userAutorities.indexOf(text) < 0) {
                         callback("'" + text + "' is not equal to [" + personas[index].properties[field] + "]");
                     }
                 })
+
             })
         } else {
             return checkTextElement(element, personas[index].properties[field], callback);
@@ -76,10 +97,16 @@ export = function () {
         let personas = director.getListOfPersonas(users);
         let field = "login";
 
+        $$('.' + field).count().then(function (count) {
+            if (count == personas.length) {
+                $$('.' + field).each(function (element, index) {
 
-        $$('.' + field).each(function (element, index) {
-            return checkField(element, index, field, personas, callback);
-        }).then(callback, callback)
+                    return checkField(element, index, field, personas, callback);
+                }).then(callback, callback);
+            } else {
+                callback("there are " + count + " elements for fields: " + '.' + field + " expected: " + personas.length)
+            }
+        })
     });
 
     this.Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName, callback) {
@@ -107,7 +134,6 @@ export = function () {
             callback()
         }, callback)
     });
-
 }
 
 function checkTextElement(element, expectedText, callback) {
@@ -116,5 +142,5 @@ function checkTextElement(element, expectedText, callback) {
         if (text != expectedText) {
             callback(text + " is not equal to " + expectedText);
         }
-    })
+    }, callback)
 }

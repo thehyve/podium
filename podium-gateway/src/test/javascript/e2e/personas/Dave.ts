@@ -7,6 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+
 class Dave {
     public name: string;
     public properties: {[key: string]: any};
@@ -14,17 +15,24 @@ class Dave {
     constructor() {
         this.name = "Dave";
         this.properties = {
-            "userName": "newdave",
+            "login": "dave",
             "password": "2piYJ4G{MokC",
             "firstName": "Dave",
             "lastName": "New bee",
-            "email": "dave@localhost",
+            "email": "qqq@localhost",
             "telephone": "0123456789",
             "institute": "Radio FM",
             "department": "AB-120",
             "jobTitle": "chief Radiological officer",
             "specialism": "Other",
-            "Other specialism": "Other specialism"
+            "Other specialism": "Other specialism",
+            "authority": [{
+                orgShortName: "none",
+                role: "ROLE_RESEARCHER"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
         }
     }
 }
