@@ -20,6 +20,18 @@ eureka:
         appname: podiumGateway
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
 
+ribbon:
+    eureka:
+        enabled: false
+
+feign:
+    hystrix:
+        enabled: false
+
+podiumuaa:
+    ribbon:
+        listOfServers: localhost:8089
+
 spring:
     application:
         name: podiumGateway

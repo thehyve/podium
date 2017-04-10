@@ -15,6 +15,7 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
@@ -22,6 +23,8 @@ import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 
+import nl.thehyve.podium.service.MailService;
+import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
 import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
@@ -37,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -52,6 +56,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
+import static org.hamcrest.Matchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -79,6 +87,12 @@ public class RequestResourceIntTest {
     @Autowired
     private OAuth2TokenMockUtil tokenUtil;
 
+    @MockBean
+    OrganisationService organisationService;
+
+    @MockBean
+    private MailService mailService;
+
     private ObjectMapper mapper = new ObjectMapper();
 
     private JsonParser parser = JsonParserFactory.getJsonParser();
@@ -95,9 +109,29 @@ public class RequestResourceIntTest {
     private static UUID mockRequesterUuid = UUID.randomUUID();
     private static Set<String> mockRequesterAuthorities =
         Sets.newSet(AuthorityConstants.RESEARCHER);
+    private static UUID organisationUuid = UUID.randomUUID();
+    private static UUID coordinatorUuid = UUID.randomUUID();
 
     public static final String REQUESTS_ROUTE = "/api/requests";
     public static final String REQUESTS_SEARCH_ROUTE = "/api/_search/requests";
+
+    private static OrganisationDTO createOrganisation() {
+        OrganisationDTO organisation = new OrganisationDTO();
+        organisation.setUuid(organisationUuid);
+        organisation.setName("Test organisation");
+        organisation.setShortName("Test");
+        organisation.setActivated(true);
+        return organisation;
+    }
+
+    private static UserRepresentation createCoordinator() {
+        UserRepresentation coordinator = new UserRepresentation();
+        coordinator.setUuid(coordinatorUuid);
+        coordinator.setFirstName("Co");
+        coordinator.setLastName("Ordinator");
+        coordinator.setEmail("coordinator@local");
+        return coordinator;
+    }
 
     @Before
     public void setup() {
@@ -114,6 +148,17 @@ public class RequestResourceIntTest {
             .webAppContextSetup(context)
             .apply(springSecurity())
             .build();
+    }
+
+    private void initMocks() {
+        OrganisationDTO organisation = createOrganisation();
+        given(this.organisationService.findOrganisationByUuid(any()))
+            .willReturn(organisation);
+        List<UserRepresentation> coordinators = new ArrayList<>();
+        coordinators.add(createCoordinator());
+        given(this.organisationService.findUsersByRole(any(), any()))
+            .willReturn(coordinators);
+        doNothing().when(this.mailService).notifyCoordinators(any(), any(), anyListOf(UserRepresentation.class));
     }
 
     private RequestPostProcessor token(UserAuthenticationToken user) {
@@ -265,9 +310,15 @@ public class RequestResourceIntTest {
         principalInvestigator.setAffiliation("The Organisation");
     }
 
+    private static List<UserRepresentation> nonEmptyUserRepresentationList() {
+        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+    }
+
     @Test
     @Transactional
     public void submitDraft() throws Exception {
+        initMocks();
+
         RequestRepresentation request = newDraft(requester);
 
         setRequestData(request);
@@ -304,6 +355,8 @@ public class RequestResourceIntTest {
         })
         .andExpect(status().isOk());
 
+        verify(this.mailService, times(1)).notifyCoordinators(any(), any(), nonEmptyUserRepresentationList());
+
         // Fetch requests with status 'Review'
         mockMvc.perform(
             getRequest(HttpMethod.GET,
@@ -334,7 +387,6 @@ public class RequestResourceIntTest {
 
         List<OrganisationDTO> organisations = new ArrayList<>();
         OrganisationDTO organisation = new OrganisationDTO();
-        UUID organisationUuid = UUID.randomUUID();
         organisation.setUuid(organisationUuid);
         organisations.add(organisation);
         request.setOrganisations(organisations);

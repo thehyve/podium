@@ -15,12 +15,12 @@ import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.config.Constants;
+import nl.thehyve.podium.common.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.service.MailService;
-import nl.thehyve.podium.service.representation.UserRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -129,7 +129,7 @@ public class UserResource {
         log.debug("REST request to update User : {}", userData);
         userService.updateUser(userData);
         return userService.getUserByUuid(userData.getUuid())
-            .map(ManagedUserVM::new)
+            .map(User::toManagedUserVM)
             .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -154,7 +154,7 @@ public class UserResource {
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createAlert("userManagement.unlocked", user.getLogin()))
-            .body(new ManagedUserVM(user));
+            .body(user.toManagedUserVM());
     }
 
     /**
@@ -171,7 +171,7 @@ public class UserResource {
         throws URISyntaxException {
         Page<User> page = userService.getUsers(pageable);
         List<ManagedUserVM> managedUserVMs = page.getContent().stream()
-            .map(ManagedUserVM::new)
+            .map(User::toManagedUserVM)
             .collect(Collectors.toList());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
         return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
@@ -189,7 +189,7 @@ public class UserResource {
     public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         return userService.getUserWithAuthoritiesByLogin(login)
-                .map(ManagedUserVM::new)
+                .map(User::toManagedUserVM)
                 .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -206,7 +206,7 @@ public class UserResource {
     public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
         log.debug("REST request to get User : {}", uuid);
         return userService.getUserByUuid(uuid)
-            .map(ManagedUserVM::new)
+            .map(User::toManagedUserVM)
             .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

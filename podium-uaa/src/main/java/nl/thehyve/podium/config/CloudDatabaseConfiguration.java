@@ -7,6 +7,8 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.Constants;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;

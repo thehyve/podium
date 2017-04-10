@@ -8,14 +8,15 @@
 package nl.thehyve.podium.service;
 
 import feign.FeignException;
+import nl.thehyve.podium.client.InternalRoleClient;
 import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
@@ -25,8 +26,11 @@ public class OrganisationService {
 
     private final Logger log = LoggerFactory.getLogger(OrganisationService.class);
 
-    @Inject
+    @Autowired
     OrganisationClient organisationClient;
+
+    @Autowired
+    InternalRoleClient internalRoleClient;
 
     public List<OrganisationDTO> findAllOrganisations() throws URISyntaxException, FeignException {
         return organisationClient.getAllOrganisations().getBody();
@@ -34,6 +38,10 @@ public class OrganisationService {
 
     public OrganisationDTO findOrganisationByUuid(UUID organisationUuid) throws FeignException {
         return organisationClient.getOrganisation(organisationUuid).getBody();
+    }
+
+    public List<UserRepresentation> findUsersByRole(UUID organisationUuid, String authority) {
+        return internalRoleClient.getOrganisationRoleUsers(organisationUuid, authority).getBody();
     }
 
 }

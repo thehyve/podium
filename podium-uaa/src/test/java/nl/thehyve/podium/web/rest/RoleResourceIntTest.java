@@ -18,9 +18,8 @@ import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.RoleRepresentation;
-import nl.thehyve.podium.service.representation.UserRepresentation;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
 
@@ -200,7 +199,7 @@ public class RoleResourceIntTest {
 
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(new RoleRepresentation(updatedRole))))
+            .content(TestUtil.convertObjectToJsonBytes(updatedRole.toRepresentation())))
             .andExpect(status().isOk());
 
         // Validate the Role in the database
@@ -221,7 +220,7 @@ public class RoleResourceIntTest {
         // If the entity doesn't have an ID, status not found is returned
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(new RoleRepresentation(role))))
+            .content(TestUtil.convertObjectToJsonBytes(role.toRepresentation())))
             .andExpect(status().isNotFound());
 
         // Validate the Role is not inserted in the database

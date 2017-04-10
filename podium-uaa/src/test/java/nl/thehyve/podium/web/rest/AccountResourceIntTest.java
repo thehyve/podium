@@ -15,7 +15,7 @@ import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.UserRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;

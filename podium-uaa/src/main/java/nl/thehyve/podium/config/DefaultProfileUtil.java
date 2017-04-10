@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.Constants;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.Environment;
 

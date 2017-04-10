@@ -18,7 +18,6 @@ import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.service.*;
-import nl.thehyve.podium.service.representation.RoleRepresentation;
 import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;

@@ -5,16 +5,13 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.representation;
+package nl.thehyve.podium.common.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
-import nl.thehyve.podium.domain.Role;
-import nl.thehyve.podium.domain.User;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class RoleRepresentation implements IdentifiableOrganisation {
 
@@ -64,13 +61,6 @@ public class RoleRepresentation implements IdentifiableOrganisation {
     }
 
     public RoleRepresentation() {
-    }
-
-    public RoleRepresentation(Role role) {
-        this.id = role.getId();
-        this.organisation = role.getOrganisation() != null ? role.getOrganisation().getUuid() : null;
-        this.authority = role.getAuthority().getName();
-        this.users = role.getUsers().stream().map(User::getUuid).collect(Collectors.toSet());
     }
 
 }

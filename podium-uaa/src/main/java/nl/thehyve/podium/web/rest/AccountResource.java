@@ -17,14 +17,12 @@ import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.exceptions.VerificationKeyExpired;
-import nl.thehyve.podium.security.SecurityService;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.UserRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.validation.PasswordValidator;
 import nl.thehyve.podium.web.rest.vm.KeyAndPasswordVM;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
-import nl.thehyve.podium.web.rest.util.HeaderUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +138,7 @@ public class AccountResource {
     @Timed
     public ResponseEntity<UserRepresentation> getAccount() {
         return Optional.ofNullable(userService.getUserWithAuthorities())
-            .map(user -> new ResponseEntity<>(new UserRepresentation(user), HttpStatus.OK))
+            .map(user -> new ResponseEntity<>(user.toRepresentation(), HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 

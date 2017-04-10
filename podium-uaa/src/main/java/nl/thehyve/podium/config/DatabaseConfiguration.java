@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.Constants;
 import nl.thehyve.podium.config.liquibase.AsyncSpringLiquibase;
 
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;

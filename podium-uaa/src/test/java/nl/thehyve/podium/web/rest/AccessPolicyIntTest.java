@@ -16,7 +16,7 @@ import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -297,7 +297,7 @@ public class AccessPolicyIntTest {
             .expect(HttpStatus.METHOD_NOT_ALLOWED));
         // PUT /roles (Role role).
         // Edit non-organisation specific role
-        RoleRepresentation editedResearcherRole = new RoleRepresentation(researcherRole);
+        RoleRepresentation editedResearcherRole = researcherRole.toRepresentation();
         editedResearcherRole.getUsers().add(bbmriAdmin.getUuid());
         actions.add(newAction()
             .setUrl(ROLE_ROUTE)
@@ -305,7 +305,7 @@ public class AccessPolicyIntTest {
             .body(editedResearcherRole)
             .allow(podiumAdmin, bbmriAdmin));
         // Edit organisation specific role
-        RoleRepresentation editedReviewerARole = new RoleRepresentation(reviewerARole);
+        RoleRepresentation editedReviewerARole = reviewerARole.toRepresentation();
         editedReviewerARole.getUsers().add(coordinatorOrganisationA.getUuid());
         actions.add(newAction()
             .setUrl(ROLE_ROUTE)

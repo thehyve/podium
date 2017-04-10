@@ -28,6 +28,8 @@ public final class Constants {
 
     public static final String SYSTEM_ACCOUNT = "system";
 
+    public static final String DEFAULT_LOCALE = "en";
+
     private Constants() {
     }
 }

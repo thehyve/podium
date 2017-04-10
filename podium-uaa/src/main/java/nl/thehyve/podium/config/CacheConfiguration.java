@@ -14,6 +14,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.config.EvictionPolicy;
 import com.hazelcast.config.MaxSizeConfig;
+import nl.thehyve.podium.common.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
