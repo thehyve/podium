@@ -8,25 +8,20 @@
  *
  */
 
-import { ComponentFixture, TestBed, async, inject, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { OrganisationSelectorComponent }
-    from '../../../../../../main/webapp/app/shared/organisation-selector/organisation-selector.component';
 import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
 import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translate';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { BaseRequestOptions, Http, Response, ResponseOptions } from '@angular/http';
+import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
-import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
 import { RoleAssignComponent } from '../../../../../../main/webapp/app/shared/role/role-assign/role-assign.component';
 import { RoleService } from '../../../../../../main/webapp/app/shared/role/role.service';
 import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
 import { Role } from '../../../../../../main/webapp/app/shared/role/role.model';
 import { UserService } from '../../../../../../main/webapp/app/shared/user/user.service';
-import { MockRoleService } from '../../../helpers/mock-role.service';
 import { MockAlertService } from '../../../helpers/mock-alert.service';
-import { PrincipalInvestigator } from '../../../../../../main/webapp/app/shared/request/principal-investigator';
 import { MockPrincipal } from '../../../helpers/mock-principal.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { MockEventManager } from '../../../helpers/mock-event-manager.service';
