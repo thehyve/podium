@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.activated">Active</label>
                                 <ui-switch [(ngModel)]="organisation.activated" name="organisation_active"
-                                           [disabled]="isOrganisationAdmin()"
+                                           [disabled]="isOrganisationAdmin(currentAccount)"
                                            ngDefaultControl size="small" class="float-xs-right"></ui-switch>
 
                                 <div *ngIf="isOrganisationAdmin() && !organisation.activated">

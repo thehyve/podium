@@ -8,8 +8,7 @@
  *
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs/Rx';
+import { Component, OnInit } from '@angular/core';
 import { EventManager, JhiLanguageService, AlertService } from 'ng-jhipster';
 
 import { Organisation } from '../organisation.model';
@@ -17,7 +16,7 @@ import { OrganisationService } from '../organisation.service';
 import { Principal } from '../../../../shared';
 import { User } from '../../../../shared/user/user.model';
 import { Response } from '@angular/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RequestType } from '../../../../shared/request/request-type';
 
 @Component({
@@ -31,9 +30,8 @@ export class OrganisationFormComponent implements OnInit {
     organisation: Organisation;
     error: any;
     success: any;
-    eventSubscriber: any;
     isSaving: boolean;
-    requestTypes = RequestType;
+    requestTypes: any = RequestType;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -41,7 +39,8 @@ export class OrganisationFormComponent implements OnInit {
         private alertService: AlertService,
         private principal: Principal,
         private eventManager: EventManager,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private router: Router
     ) {
         this.jhiLanguageService.setLocations(['organisation']);
     }
@@ -49,7 +48,6 @@ export class OrganisationFormComponent implements OnInit {
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.currentAccount = account;
-            console.log('ca', this.currentAccount);
         });
 
         this.route.params.subscribe(params => {
@@ -107,7 +105,9 @@ export class OrganisationFormComponent implements OnInit {
         }
     }
 
-    isOrganisationAdmin () {
-        return this.currentAccount.authorities.indexOf('ROLE_ORGANISATION_ADMIN') > -1;
+    isOrganisationAdmin (currentUser: User) {
+        if (currentUser) {
+            return currentUser.authorities.indexOf('ROLE_ORGANISATION_ADMIN') > -1;
+        }
     }
 }
