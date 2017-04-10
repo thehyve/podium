@@ -39,10 +39,9 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     error: any;
     success: any;
 
-    public typeaheadNoResults: boolean;
     public organisationRoles: Role[];
     public organisationUsers: any[] = [];
-    private eventSubscriber: Subscription;
+    public eventSubscriber: Subscription;
     public usersPromises: Promise<Response>[] = [];
 
     @Input() organisation;
@@ -83,7 +82,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                  */
                 Promise.all(this.usersPromises)
                     .then(() => {
-                        // Add new empty user
+                        // Add new empty
                         this.addNewOrganisationUser();
                     });
             });
@@ -102,9 +101,9 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         if ( role ) {
             orgUser.previousAuthority = role.authority;
             orgUser.authority = role.authority;
+            orgUser.isSaved = user.uuid != null;
         }
 
-        orgUser.isSaved = user.uuid != null;
         orgUser.dataSource = this.getDatasourceForUser(orgUser);
 
         return orgUser;
@@ -131,7 +130,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     public save(user: OrganisationUser) {
         // Find and Update role by authority
         let role = this.getRoleByAuthority(user.authority);
-
         this.updateRole(role, user, false).subscribe(
             (res) => { this.onSaveSuccess(res, false); },
             (err) => { this.onError(err); }
@@ -165,7 +163,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         );
     }
 
-    private loadAllRolesForOrganisation(): Observable<any> {
+    public loadAllRolesForOrganisation(): Observable<any> {
         return Observable.create((observer: any) => {
 
             this.organisationUsers = [];
@@ -196,13 +194,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
     }
 
-    private getRoleByAuthority(authority: string): Role {
+    public getRoleByAuthority(authority: string): Role {
         // Find role by authority
         let filteredRoles = this.organisationRoles.filter(r => r.authority === authority);
         return filteredRoles[0];
     }
 
-    private updateRole(role: Role, user: OrganisationUser, remove: boolean) {
+    public updateRole(role: Role, user: OrganisationUser, remove: boolean) {
         return Observable.create((observer) => {
             if (role) {
                 let userIdx = role.users.indexOf(user.uuid);
