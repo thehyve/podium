@@ -8,8 +8,8 @@
  *
  */
 
-import { Role } from '../role/role.model';
 import { RequestType } from '../../../shared/request/request-type';
+import { Role } from '../../../shared/role/role.model';
 
 export class Organisation {
 

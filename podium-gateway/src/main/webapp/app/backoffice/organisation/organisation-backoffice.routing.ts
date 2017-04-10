@@ -12,7 +12,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewayOrganisationModule } from '../modules/organisation/organisation.module';
 import { PodiumGatewayUserMgmtModule } from '../modules/user-management/user-management.module';
-import { PodiumGatewayRoleModule } from '../modules/role/role.module';
 
 let BBMRI_ROUTES = [
     {
@@ -25,10 +24,6 @@ let BBMRI_ROUTES = [
             {
                 path: 'user-management',
                 loadChildren: () => PodiumGatewayUserMgmtModule
-            },
-            {
-                path: 'role',
-                loadChildren: () => PodiumGatewayRoleModule
             }
         ]
     }

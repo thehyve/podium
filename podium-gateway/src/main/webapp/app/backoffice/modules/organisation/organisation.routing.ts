@@ -10,7 +10,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { organisationRoute, organisationPopupRoute } from './organisation.route';
+import { organisationRoute } from './organisation.route';
 
 let BACKOFFICE_ROUTES = [
     ...organisationRoute

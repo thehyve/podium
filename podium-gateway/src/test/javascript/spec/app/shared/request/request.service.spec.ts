@@ -18,7 +18,6 @@ describe('RequestService (Mocked)', () => {
         TestBed.configureTestingModule({
             providers: [
                 RequestService,
-
                 MockBackend,
                 BaseRequestOptions,
                 {
