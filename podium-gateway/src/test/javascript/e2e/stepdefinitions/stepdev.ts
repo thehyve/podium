@@ -13,26 +13,23 @@ import {Promise} from "es6-promise";
 import SigninPage = require("../pages/SigninPage")
 import PageDictionary = require("../pages/PageDictionary")
 import PersonaDictionary = require("../personas/PersonaDictionary")
+import {AdminConsole} from "../protractor-stories/AdminConsole";
+import {isUndefined} from "util";
 
-let director = new Director(__dirname + '/..', PageDictionary, PersonaDictionary);
 
 export = function () {
 
-    this.Given(/^I go to the (.*) page$/, function (pageName, callback) {
-        director.goToPage(pageName + 'Page').then(callback, callback);
-    });
+    this.Given(/^Test$/, function (callback) {
+        let adminConsole = this.adminConsole;
+        let org = this.director.getData('NewOrg');
 
-    this.Given(/^(.*) signs in$/, function (personaName, callback) {
-        let persona = director.getPersona(personaName + 'Persona');
-        Promise.all([
-            director.enterText('usernameInput', persona.properties['userName']),
-            director.enterText('passwordInput', persona.properties['password'])
-        ]).then(function () {
-            director.clickOn('submitButton')
-        }).then(callback, callback);
+        adminConsole.checkOrganization(org, check, callback);
     });
+}
 
-    this.Then(/^I am on the (.*) page$/, function (pageName, callback) {
-        director.at(pageName + 'Page').then(callback, callback);
-    });
+function check(expected, realData){
+    if (isUndefined(realData)){
+        return false
+    }
+    return realData.activated == expected.properties.activated;
 }

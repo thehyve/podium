@@ -8,21 +8,19 @@
  * See the file LICENSE in the root of this repository.
  */
 
-/*
- * Should adhere to the Persona interface.
- * A persona class must have a name and should hold any properties that make writing test scripts easier/maintainable.
- */
-class AdminPersona {
+class VarnameBank {
     public name: string;
     public properties: {[key: string]: any};
 
     constructor() {
-        this.name = "'THE' admin";
+        this.name = "VarnameBank";
         this.properties = {
-            "userName": "admin",
-            "password": "admin",
+            "shortName": "VarnameBank",
+            "name": "International variable name bank",
+            "uuid": "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
+            "activated": true
         }
     }
 }
 
-export = new AdminPersona();
+export = new VarnameBank();

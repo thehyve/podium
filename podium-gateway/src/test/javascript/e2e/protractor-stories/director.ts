@@ -17,6 +17,7 @@ export interface Persona {
 }
 
 export interface Page {
+    name: string;
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
@@ -38,13 +39,19 @@ export class Director {
     private searchDir: string;
     private currentPage: Page;
     private currentPersona: Persona;
-    private PageDictionary: {[key: string]: Page};
+    private pageDictionary: {[key: string]: Page};
     private personaDictionary: {[key: string]: Persona};
+    private dataDictionary = {};
 
-    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}) {
+
+    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}, dataDictionary?) {
         this.searchDir = searchDir;
-        this.PageDictionary = PageDictionary;
+        this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
+        this.dataDictionary = dataDictionary;
+        browser.get('/');
+        browser.executeScript('localStorage.clear();');
+        browser.executeScript('sessionStorage.clear();');
     }
 
     fatalError(message: string) {
@@ -52,11 +59,10 @@ export class Director {
     }
 
     private setCurrentPageTo(pageName: string) {
-        try {
-            this.currentPage = this.PageDictionary[pageName];
-        } catch (error) {
-            this.fatalError('The page: ' + pageName + ' does not exist.\n error: ' + error);
+        if (!(pageName in this.pageDictionary)) {
+            this.fatalError('The page: ' + pageName + ' does not exist.\n check your pageDictionary to see the available pages');
         }
+        this.currentPage = this.pageDictionary[pageName];
         browser.ignoreSynchronization = isUndefined(this.currentPage.ignoreSynchronization) ? false : this.currentPage.ignoreSynchronization;
         return this.currentPage
     }
@@ -66,26 +72,62 @@ export class Director {
     }
 
     private setCurrentPersonaTo(personaName: string) {
-        try {
-            return this.currentPersona = this.personaDictionary[personaName];
-        } catch (error) {
-            this.fatalError('The persona: ' + personaName + ' does not exist.\n error: ' + error);
+        if (!(personaName in this.personaDictionary)) {
+            this.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
         }
+        return this.currentPersona = this.personaDictionary[personaName];
     }
 
     public getPersona(personaName: string) {
-        this.setCurrentPersonaTo(personaName);
+        if (personaName != "he" && personaName != "she") {
+            this.setCurrentPersonaTo(personaName);
+        }
         return this.currentPersona;
     }
 
-    public goToPage(pageName: string) {
+    public getListOfPersonas(personaNames: string[]) {
+        let that = this;
+        let result = new Array(personaNames.length);
+
+        personaNames.forEach(function (personaName, index) {
+            if (isUndefined(that.personaDictionary[personaName])){
+                that.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
+            }
+            result[index] = that.personaDictionary[personaName];
+        });
+
+        return result;
+    }
+
+    public getData(dataID: string){
+        let that = this;
+        if (isUndefined(that.dataDictionary[dataID])){
+            that.fatalError('The data: ' + dataID + ' does not exist.\n check your dataDictionary to see the available data');
+        }
+        return that.dataDictionary[dataID];
+    }
+
+    public getListOfData(dataIDs: string[]) {
+        let that = this;
+        let result = new Array(dataIDs.length);
+
+        dataIDs.forEach(function (dataID, index) {
+            result[index] = that.getData(dataID)
+        });
+
+        return result;
+    }
+
+    public goToPage(pageName: string, sufix?: string) {
         let page = this.setCurrentPageTo(pageName);
-        return browser.get(page.url);
+        let url = isUndefined(sufix) ? page.url : page.url + sufix;
+
+        return browser.get(url);
     }
 
     public at(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        browser.waitForAngular('make sure the page is loaded before doing a check');
+        // browser.waitForAngular('make sure the page is loaded before doing a check');
         return Promise.resolve(page.at()).then(function (v) {
             return new Promise(function (resolve, reject) {
                 if (v) {
@@ -98,10 +140,10 @@ export class Director {
         });
     };
 
-    private getElement(elementName: string) {
+    public getElement(elementName: string) {
         let element = this.getCurrentPage().elements[elementName];
         if (isUndefined(element)) {
-            this.fatalError(elementName + ' is not defined as an element of the active page');
+            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + elementName + '.\n');
         }
         return element;
     }
@@ -109,9 +151,6 @@ export class Director {
     private handleDestination(element: Interactable) {
         if (!isUndefined(element.destination)) {
             this.setCurrentPageTo(element.destination);
-        }
-        if (element.strict) {
-            this.at(element.destination);
         }
     }
 
@@ -122,6 +161,9 @@ export class Director {
     }
 
     public enterText(fieldName: string, text: string) {
+        if (isUndefined(this.getCurrentPage().elements[fieldName])) {
+            this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + fieldName + '.\n');
+        }
         return Promise.all([
             this.getCurrentPage().elements[fieldName].locator.clear(),
             this.getCurrentPage().elements[fieldName].locator.sendKeys(text)
@@ -130,8 +172,9 @@ export class Director {
 
     public waitForPage(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        return browser.wait(page.at
-            , 10 * 1000).then(function () {
+        return browser.wait(function () {
+            return page.at()
+        }, 10 * 1000).then(function () {
         }, function (err) {
             throw 'Page: ' + pageName + ' did not appear fast enough.\n error: ' + err;
         })

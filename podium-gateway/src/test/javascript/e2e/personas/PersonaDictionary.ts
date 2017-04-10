@@ -8,13 +8,26 @@
  * See the file LICENSE in the root of this repository.
  */
 import {Persona} from "../protractor-stories/director";
-import AdminPersona = require("./AdminPersona")
+import Rob = require("./Rob")
+import Simone = require("./Simone")
+import Dave = require("./Dave")
+import Linda = require("./Linda")
+import System = require("./System")
+import Admin = require("./Admin")
+import BBMRI_Admin = require("./BBMRI_Admin")
+
+
 /*
  * pages must be added to this dictionary for the director class to find them.
  */
 let PersonaDictionary: {[key: string]: Persona} = Object.create(null);
 
-PersonaDictionary['AdminPersona'] = AdminPersona;
-
+PersonaDictionary['Rob'] = Rob;
+PersonaDictionary['Simone'] = Simone;
+PersonaDictionary['Dave'] = Dave;
+PersonaDictionary['Linda'] = Linda;
+PersonaDictionary['System'] = System;
+PersonaDictionary['Admin'] = Admin;
+PersonaDictionary['BBMRI_Admin'] = BBMRI_Admin;
 
 export = PersonaDictionary;

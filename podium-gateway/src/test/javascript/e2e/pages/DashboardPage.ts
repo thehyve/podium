@@ -11,17 +11,19 @@ import {browser, $} from "protractor";
 import {Interactable} from "../protractor-stories/director";
 
 class DashboardPage {
+    public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
 
     public at() {
-        let that = this
+        let that = this;
         return browser.getCurrentUrl().then(function (currentUrl) {
             return (browser.baseUrl + that.url) == currentUrl;
         })
     }
 
     constructor() {
+        this.name = "Dashboard";
         this.url = "#/dashboard";
         this.elements = {
             "submitButton": {locator: $('span[ng-reflect-inner-h-t-m-l]')},

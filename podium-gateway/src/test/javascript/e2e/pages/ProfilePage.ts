@@ -7,33 +7,27 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {browser, $} from "protractor";
+import {$} from "protractor";
 import {Interactable} from "../protractor-stories/director";
+import ProfileForm = require("./modules/ProfileForm")
+
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class SigninPage {
+class ProfilePage {
     public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
 
-    public at() {
-        let that = this;
-        return browser.getCurrentUrl().then(function (currentUrl) {
-            return (browser.baseUrl + that.url) == currentUrl;
-        })
-    }
-
     constructor() {
-        this.name = "sign in";
-        this.url = "#/";
-        this.elements = {
-            "usernameInput": {locator: $('#username')},
-            "passwordInput": {locator: $('#password')},
-            "submitButton": {locator: $('button[type=submit]')},
+        this.name = "profile";
+        this.url = "#/settings";
+        this.elements = {...ProfileForm(),
+            "institute": {locator: $('.form-control-static')}, //not future-proof
+            "SuccessMessage": {locator: $('.alert-success').$('strong')},
         }
     }
 }
 
-export = SigninPage;
+export = ProfilePage;

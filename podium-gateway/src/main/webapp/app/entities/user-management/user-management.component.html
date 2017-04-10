@@ -35,8 +35,8 @@
             <tbody *ngIf ="users">
             <tr *ngFor="let user of users; trackBy: trackIdentity">
                 <td><a [routerLink]="['../user-management', user.login]">{{user.id}}</a></td>
-                <td>{{user.login}}</td>
-                <td>{{user.email}}</td>
+                <td class="login">{{user.login}}</td>
+                <td class="email">{{user.email}}</td>
                 <td>
                     <span class="tag tag-success" *ngIf="user.emailVerified"
                           jhiTranslate="userManagement.emailVerified">Email verified</span>

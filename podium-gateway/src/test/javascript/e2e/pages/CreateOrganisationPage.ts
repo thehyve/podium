@@ -7,13 +7,14 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+
 import {browser, $} from "protractor";
 import {Interactable} from "../protractor-stories/director";
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class SigninPage {
+class CreateOrganisationPage {
     public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
@@ -26,14 +27,15 @@ class SigninPage {
     }
 
     constructor() {
-        this.name = "sign in";
-        this.url = "#/";
+        this.name = "create organisation";
+        this.url = "#/organisation(popup:organisation-new)";
         this.elements = {
-            "usernameInput": {locator: $('#username')},
-            "passwordInput": {locator: $('#password')},
-            "submitButton": {locator: $('button[type=submit]')},
+            "shortName": {locator: $('#field_shortName')},
+            "name": {locator: $('#field_name')},
+            "submitButton": {locator: $('#save')},
+            "cancelButton": {locator: $('#cancel')},
         }
     }
 }
 
-export = SigninPage;
+export = CreateOrganisationPage;

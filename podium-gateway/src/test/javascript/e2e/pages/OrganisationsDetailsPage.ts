@@ -7,13 +7,17 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {browser, $} from "protractor";
+
+import {browser, $, $$, by, element} from "protractor";
 import {Interactable} from "../protractor-stories/director";
+import ProfileForm = require("./modules/ProfileForm")
+
+
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class SigninPage {
+class UserDetails {
     public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
@@ -26,14 +30,13 @@ class SigninPage {
     }
 
     constructor() {
-        this.name = "sign in";
-        this.url = "#/";
+        this.name = "organisation Details";
+        this.url = "#/organisation/";
         this.elements = {
-            "usernameInput": {locator: $('#username')},
-            "passwordInput": {locator: $('#password')},
-            "submitButton": {locator: $('button[type=submit]')},
+            "shortName": {locator: $('.test_shortName')},
+            "name": {locator: $('.test_name')},
         }
     }
 }
 
-export = SigninPage;
+export = UserDetails;
