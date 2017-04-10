@@ -36,19 +36,6 @@ export class OrganisationResolvePagingParams implements Resolve<any> {
     }
 }
 
-export const organisationPopupRoute: Routes = [
-    {
-        path: 'detail/:uuid/delete',
-        component: OrganisationDeletePopupComponent,
-        data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title'
-        },
-        outlet: 'popup',
-        canActivate: [UserRouteAccessService]
-    }
-];
-
 export const organisationRoute: Routes = [
     {
         path: '',
@@ -72,6 +59,16 @@ export const organisationRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
+        path: 'detail/:uuid/delete',
+        component: OrganisationDeletePopupComponent,
+        data: {
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            pageTitle: 'podiumGatewayApp.organisation.home.title'
+        },
+        outlet: 'popup',
+        canActivate: [UserRouteAccessService]
+    },
+    {
         path: 'detail/:uuid',
         component: OrganisationDetailComponent,
         data: {
@@ -89,7 +86,11 @@ export const organisationRoute: Routes = [
         },
         canActivate: [UserRouteAccessService]
     },
+    {
+        path: '**',
+        redirectTo: '',
+        pathMatch: 'full'
+    }
 
-    ...organisationPopupRoute
 ];
 
