@@ -21,11 +21,10 @@ import {
     RequestService,
     Principal,
     User,
-    Attachment,
-    OrganisationSelectorComponent
+    Attachment
 } from '../../shared';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
 import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 

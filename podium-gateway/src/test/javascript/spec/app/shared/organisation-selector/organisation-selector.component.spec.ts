@@ -17,8 +17,8 @@ import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translat
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
 import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
 
 describe('OrganisationSelectorComponent (templateUrl)', () => {
 

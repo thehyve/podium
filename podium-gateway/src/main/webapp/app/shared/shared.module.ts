@@ -48,6 +48,7 @@ import { OrganisationSelectorComponent } from './organisation-selector/organisat
     declarations: [
         PodiumLoginComponent,
         SpecialismComponent,
+        OrganisationSelectorComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,

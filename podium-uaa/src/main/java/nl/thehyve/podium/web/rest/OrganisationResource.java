@@ -12,7 +12,6 @@ import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
-
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;

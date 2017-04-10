@@ -13,6 +13,7 @@ import { BaseRequestOptions, Http, HttpModule, Response, ResponseOptions } from 
 import { MockBackend } from '@angular/http/testing';
 import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
 
+
 describe('OrganisationService (Mocked)', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({

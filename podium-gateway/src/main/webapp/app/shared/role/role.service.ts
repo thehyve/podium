@@ -11,8 +11,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-
 import { Role } from './role.model';
+
 @Injectable()
 export class RoleService {
 

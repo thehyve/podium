@@ -16,6 +16,7 @@
     </div>
 
     <div class="col-md-6 offset-md-3 card-container">
+
         <!-- Request Drafts Selection -->
         <div *ngIf="selectDraft && !request">
 
@@ -412,7 +413,6 @@
                                                (organisationChange)="updateRequestOrganisations($event)">
                     </pdm-organisation-selector>
                 </div>
-
 
                 <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>
 
