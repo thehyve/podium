@@ -39,7 +39,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     error: any;
     success: any;
 
-    public typeaheadLoading: boolean;
     public typeaheadNoResults: boolean;
     public organisationRoles: Role[];
     public organisationUsers: any[] = [];
@@ -76,12 +75,15 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     registerChangeInRoles() {
-        this.eventSubscriber = this.eventManager.subscribe('userRolesModification', (response) => {
+        this.eventSubscriber = this.eventManager.subscribe('userRolesModification', () => {
             this.loadAllRolesForOrganisation().subscribe(() => {
-                console.log('Finished Loading all roles.');
 
+                /**
+                 * Resolve all promises
+                 */
                 Promise.all(this.usersPromises)
                     .then(() => {
+                        // Add new empty user
                         this.addNewOrganisationUser();
                     });
             });
@@ -100,14 +102,20 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         if ( role ) {
             orgUser.previousAuthority = role.authority;
             orgUser.authority = role.authority;
-            orgUser.isSaved = user.uuid != null;
         }
 
+        orgUser.isSaved = user.uuid != null;
         orgUser.dataSource = this.getDatasourceForUser(orgUser);
 
         return orgUser;
     }
 
+    /**
+     * Initialise a datasource for an organisation user.
+     * Used for the user lookup typeahead
+     * @param organisationUser
+     * @returns {Observable<R>}
+     */
     getDatasourceForUser(organisationUser?: OrganisationUser): Observable<any> {
         /**
          * User typeahead datasource observable
@@ -124,7 +132,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         // Find and Update role by authority
         let role = this.getRoleByAuthority(user.authority);
 
-        // Check if role already has user
         this.updateRole(role, user, false).subscribe(
             (res) => { this.onSaveSuccess(res, false); },
             (err) => { this.onError(err); }
@@ -137,14 +144,14 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
 
         this.updateRole(previousRole, user, true).subscribe(
             (previousRes: Response) => {
-              // Add new role
-              let role = this.getRoleByAuthority(user.authority);
-              this.updateRole(role, user, false).subscribe(
-                  (res: Response) => { this.onSaveSuccess(res, false); },
-                  (err: Response) => { this.onError(err); },
-              );
-        },
-        (err: Response) => { this.onError(err); }
+                // Add new role
+                let role = this.getRoleByAuthority(user.authority);
+                this.updateRole(role, user, false).subscribe(
+                    (res: Response) => { this.onSaveSuccess(res, false); },
+                    (err: Response) => { this.onError(err); },
+                );
+            },
+            (err: Response) => { this.onError(err); }
         );
     }
 
@@ -172,10 +179,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                             let userUUID: string = role.users[u];
 
                             let promise: Promise<Response> = this.userService.findByUuid(userUUID).toPromise();
-                                /*.subscribe(userRes => {
-                                let organisationUser = this.generateOrganisationUser(userRes, role);
-                                this.organisationUsers.push(organisationUser);
-                            })*/
 
                             promise.then(userRes => {
                                 let organisationUser = this.generateOrganisationUser(userRes, role);
@@ -194,7 +197,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     private getRoleByAuthority(authority: string): Role {
-        // Find and Update role by authority
+        // Find role by authority
         let filteredRoles = this.organisationRoles.filter(r => r.authority === authority);
         return filteredRoles[0];
     }
@@ -325,7 +328,4 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         return item.uuid;
     }
 
-    public changeTypeaheadNoResults(e: boolean): void {
-        this.typeaheadNoResults = e;
-    }
 }
