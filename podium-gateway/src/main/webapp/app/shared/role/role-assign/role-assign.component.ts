@@ -73,6 +73,12 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
+    /**
+     * Subscribe to changes in the user role list.
+     * All roles for the organisation and their users with be resolved and generated again
+     *
+     * Finally a new empty OrganisationUser will be added as an empty row to assign new users to roles.
+     */
     registerChangeInRoles() {
         this.eventSubscriber = this.eventManager.subscribe('userRolesModification', () => {
             this.loadAllRolesForOrganisation().subscribe(() => {
@@ -89,7 +95,15 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
     }
 
-    public generateOrganisationUser(user: User, role: Role) {
+    /**
+     * Generate an OrganisationUser used in the user <-> role assignments
+     * A datasource observable is set used in the typeahead component
+     *
+     * @param user User to create the OrganisationUser for
+     * @param role Role the user currently originated from
+     * @returns {OrganisationUser} Generated OrganisationUser
+     */
+    public generateOrganisationUser(user: User, role: Role): OrganisationUser {
         let orgUser: OrganisationUser = new OrganisationUser();
 
         if ( user ) {
@@ -127,6 +141,11 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         }).mergeMap((term: any) => this.userService.suggest(term));
     }
 
+    /**
+     * Assign a new role to a user.
+     *
+     * @param user OrganisationUser to assign the role for.
+     */
     public save(user: OrganisationUser) {
         // Find and Update role by authority
         let role = this.getRoleByAuthority(user.authority);
@@ -136,6 +155,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * Update the role of a user.
+     * The user.previousAuthority is removed from the respective role
+     * The user.authority is assigned
+     *
+     * @param user OrganisationUser to remove and assign the roles for
+     */
     public update(user: OrganisationUser) {
         // Remove previous role
         let previousRole = this.getRoleByAuthority(user.previousAuthority);
@@ -153,6 +179,10 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * Delete a user from a role
+     * @param user OrganisationUser to be removed
+     */
     public delete(user: OrganisationUser) {
         // Find and update role by authority
         let role = this.getRoleByAuthority(user.authority);
@@ -163,35 +193,65 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         );
     }
 
+    /**
+     * If an organisation is defiend, fetch all the roles for an organisation and generate promises
+     * for the users present in each roles. The user resolve promises will generate a OrganisationUser
+     * with the respective role.
+     *
+     * If no organisation exists the observable is completed
+     *
+     * @returns Observable
+     */
     public loadAllRolesForOrganisation(): Observable<any> {
         return Observable.create((observer: any) => {
 
             this.organisationUsers = [];
             if (this.organisation) {
                 this.roleService.findAllRolesForOrganisation(this.organisation.uuid).subscribe(roles => {
+
+                    // Remember the roles to be used for role look ups by authority
                     this.organisationRoles = roles;
-                    for (let i = 0; i < roles.length; i++) {
-                        let role: Role = roles[i];
 
-                        for (let u = 0; u < role.users.length; u++) {
-                            let userUUID: string = role.users[u];
+                    /**
+                     * For every user in each of the roles, get a promise which after they have been resolved
+                     * generates a OrganisationUser used in the user <-> role assignments
+                     */
+                    roles.map((role) => {
 
-                            let promise: Promise<Response> = this.userService.findByUuid(userUUID).toPromise();
+                        // Map all the users in the role
+                        role.users.map((user) => {
 
-                            promise.then(userRes => {
-                                let organisationUser = this.generateOrganisationUser(userRes, role);
-                                this.organisationUsers.push(organisationUser);
-                            });
-
+                            let promise = this.getPromiseForUserOfRole(user, role);
                             this.usersPromises.push(promise);
-                        }
-                    }
+                        });
+                    });
+
                     observer.next();
                 });
             } else {
                 observer.next();
             }
         });
+    }
+
+    /**
+     * Create a promise which resolves a user by UUID
+     * The callback generates the organisation user for the resolved
+     * object and the respective role it originated from.
+     *
+     * @param user The UUID of the user
+     * @param role The role the user originated from
+     * @returns {Promise<Response>}
+     */
+    public getPromiseForUserOfRole(user: string, role: Role): Promise<Response> {
+        let promise: Promise<Response> = this.userService.findByUuid(user).toPromise();
+
+        promise.then(userRes => {
+            let organisationUser = this.generateOrganisationUser(userRes, role);
+            this.organisationUsers.push(organisationUser);
+        });
+
+        return promise;
     }
 
     public getRoleByAuthority(authority: string): Role {
