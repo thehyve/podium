@@ -78,6 +78,7 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         name="organisation_request_types",
         joinColumns=@JoinColumn(name="organisation_id")
     )
+    @Column(name = "request_type")
     private Set<RequestType> requestTypes;
 
     public Long getId() {

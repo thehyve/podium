@@ -136,10 +136,8 @@ public class OrganisationServer implements OrganisationResource {
     public ResponseEntity<List<OrganisationDTO>> getOrganisations(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Organisations");
-        Page<Organisation> page = organisationService.findAll(pageable);
-        List<OrganisationDTO> result = page.getContent().stream()
-            .map(OrganisationServer::mapOrganisation)
-            .collect(Collectors.toList());
+        Page<OrganisationDTO> page = organisationService.findAll(pageable);
+        List<OrganisationDTO> result = page.getContent();
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
         return new ResponseEntity<>(result, headers, HttpStatus.OK);
     }
@@ -156,10 +154,8 @@ public class OrganisationServer implements OrganisationResource {
     public ResponseEntity<List<OrganisationDTO>> getAllOrganisations()
         throws URISyntaxException {
         log.debug("REST request to get all Organisations");
-        Page<Organisation> page = organisationService.findAll(null);
-        List<OrganisationDTO> result = page.getContent().stream()
-            .map(OrganisationServer::mapOrganisation)
-            .collect(Collectors.toList());
+        Page<OrganisationDTO> page = organisationService.findAll(null);
+        List<OrganisationDTO> result = page.getContent();
         return ResponseEntity.ok(result);
     }
 
