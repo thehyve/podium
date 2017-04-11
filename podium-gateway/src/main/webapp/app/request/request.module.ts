@@ -21,6 +21,7 @@ import {
 } from './';
 import { RequestOverviewComponent } from './overview/request-overview.component';
 import { RequestOverviewService } from './overview/request-overview.service';
+import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { RequestOverviewService } from './overview/request-overview.service';
     declarations: [
         RequestFormComponent,
         RequestFormSubmitDialogComponent,
-        RequestOverviewComponent
+        RequestOverviewComponent,
+        RequestMainDetailComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent

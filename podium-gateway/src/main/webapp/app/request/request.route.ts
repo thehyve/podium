@@ -15,18 +15,20 @@ import { UserRouteAccessService } from '../shared';
 import { requestFormRoute } from './';
 import { requestFormEditRoute } from './form/request-form-edit.route';
 import { requestOverviewRoute } from './overview/request-overview.route';
+import { requestMainDetailRoute } from './main-detail/request-main-detail.route';
 
 let REQUEST_ROUTES = [
     requestFormRoute,
     requestFormEditRoute,
-    requestOverviewRoute
+    requestOverviewRoute,
+    requestMainDetailRoute
 ];
 
 export const requestRoute: Routes = [{
     path: 'requests',
     children: REQUEST_ROUTES,
     data: {
-        authorities: ['ROLE_RESEARCHER']
+        authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER']
     },
     canActivate: [ UserRouteAccessService ]
 }];
