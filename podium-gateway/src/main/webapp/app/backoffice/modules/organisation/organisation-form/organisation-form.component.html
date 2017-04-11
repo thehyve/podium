@@ -22,30 +22,39 @@
                             <jhi-alert-error></jhi-alert-error>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name" for="field_name">Name</label>
+                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name"
+                                       for="field_name">
+                                    Name
+                                </label>
                                 <input type="text" class="form-control" name="name" id="field_name"
                                        [(ngModel)]="organisation.name"
                                        required />
                                 <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                                     <small class="form-text text-danger"
-                                           [hidden]="!editForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">
+                                           [hidden]="!editForm.controls.name?.errors?.required"
+                                           jhiTranslate="entity.validation.required">
                                         This field is required.
                                     </small>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.shortName" for="field_shortName">Short Name</label>
+                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.shortName"
+                                       for="field_shortName">
+                                    Short Name
+                                </label>
                                 <input type="text" class="form-control" name="shortName" id="field_shortName"
                                        [(ngModel)]="organisation.shortName"
                                        required maxlength="50" />
                                 <div [hidden]="!(editForm.controls.shortName?.dirty && editForm.controls.shortName?.invalid)">
                                     <small class="form-text text-danger"
-                                           [hidden]="!editForm.controls.shortName?.errors?.required" jhiTranslate="entity.validation.required">
+                                           [hidden]="!editForm.controls.shortName?.errors?.required"
+                                           jhiTranslate="entity.validation.required">
                                         This field is required.
                                     </small>
                                     <small class="form-text text-danger"
-                                           [hidden]="!editForm.controls.shortName?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
+                                           [hidden]="!editForm.controls.shortName?.errors?.maxlength"
+                                           jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
                                         This field cannot be longer than 50 characters.
                                     </small>
                                 </div>
@@ -71,7 +80,9 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.activated">Active</label>
+                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.activated">
+                                    Active
+                                </label>
                                 <ui-switch [(ngModel)]="organisation.activated" name="organisation_active"
                                            [disabled]="isOrganisationAdmin(currentAccount)"
                                            ngDefaultControl size="small" class="float-xs-right"></ui-switch>
@@ -79,28 +90,35 @@
                                 <div *ngIf="isOrganisationAdmin() && !organisation.activated">
                                     <small class="form-text text-danger"
                                            jhiTranslate="podiumGatewayApp.organisation.organisationAdminInactive">
-                                        Your organisation requires all fields to be filled in and has a user assigned for each of the roles.
-                                        Contact the BBMRI admin to validate your organisation.
+                                        Your organisation requires all fields to be filled in and has a user assigned
+                                        for each of the roles. Contact the BBMRI admin to validate your organisation.
                                     </small>
                                 </div>
                             </div>
 
                             <div class="action-footer-container">
                                 <button type="button" class="btn btn-default" routerLink="../">
-                                    <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                                    <span class="fa fa-ban"></span>&nbsp;
+                                    <span jhiTranslate="entity.action.cancel">Cancel</span>
                                 </button>
-                                <button type="submit" [disabled]="editForm.form.invalid || isSaving" *ngIf="!organisation.uuid" class="btn btn-primary float-xs-right">
-                                    <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.create">Create</span>
+                                <button type="submit" [disabled]="editForm.form.invalid || isSaving"
+                                        *ngIf="!organisation.uuid" class="btn btn-primary float-xs-right">
+                                    <span class="fa fa-save"></span>&nbsp;
+                                    <span jhiTranslate="entity.action.create">Create</span>
                                 </button>
-                                <button type="submit" [disabled]="editForm.form.invalid || isSaving" *ngIf="organisation.uuid" class="btn btn-primary float-xs-right">
-                                    <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                                <button type="submit" [disabled]="editForm.form.invalid || isSaving"
+                                        *ngIf="organisation.uuid" class="btn btn-primary float-xs-right">
+                                    <span class="fa fa-save"></span>&nbsp;
+                                    <span jhiTranslate="entity.action.save">Save</span>
                                 </button>
                             </div>
                         </form>
                  </tab>
 
                 <tab heading="Permissions" [disabled]="!organisation || !organisation.uuid">
-                    <pdm-role-assign *ngIf="organisation && organisation.uuid" [organisation]="organisation"></pdm-role-assign>
+                    <pdm-role-assign *ngIf="organisation && organisation.uuid"
+                                     [organisation]="organisation">
+                    </pdm-role-assign>
                 </tab>
             </tabset>
 

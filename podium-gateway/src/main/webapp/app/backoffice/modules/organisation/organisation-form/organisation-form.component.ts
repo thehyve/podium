@@ -89,10 +89,16 @@ export class OrganisationFormComponent implements OnInit {
         this.isSaving = true;
         if (this.organisation.uuid !== undefined) {
             this.organisationService.update(this.organisation)
-                .subscribe((res: Response) => this.onSaveSuccess(res, false), (res: Response) => this.onSaveError(res.json()));
+                .subscribe(
+                    (res: Response) => this.onSaveSuccess(res, false),
+                    (res: Response) => this.onSaveError(res.json())
+                );
         } else {
             this.organisationService.create(this.organisation)
-                .subscribe((res: Response) => this.onSaveSuccess(res, true), (res: Response) => this.onSaveError(res.json()));
+                .subscribe(
+                    (res: Response) => this.onSaveSuccess(res, true),
+                    (res: Response) => this.onSaveError(res.json())
+                );
         }
     }
 
