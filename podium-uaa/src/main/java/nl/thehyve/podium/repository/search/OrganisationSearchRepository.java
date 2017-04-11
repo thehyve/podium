@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.repository.search;
 
-import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
