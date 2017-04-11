@@ -8,17 +8,25 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
-import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
+import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
+import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
+import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -44,11 +52,8 @@ public class OrganisationResource {
 
     private static final String ENTITY_NAME = "organisation";
 
-    private final OrganisationService organisationService;
-
-    public OrganisationResource(OrganisationService organisationService) {
-        this.organisationService = organisationService;
-    }
+    @Autowired
+    private OrganisationService organisationService;
 
     protected static void copyProperties(Organisation source, Organisation target) {
         target.setName(source.getName());
@@ -59,20 +64,24 @@ public class OrganisationResource {
     /**
      * POST  /organisations : Create a new organisation.
      *
-     * @param organisation the organisation to create
+     * @param organisationDTO the organisation to create
      * @return the ResponseEntity with status 201 (Created) and with body the new organisation, or with status 400 (Bad Request) if the organisation has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/organisations")
     @Timed
-    public ResponseEntity<Organisation> createOrganisation(@Valid @RequestBody Organisation organisation) throws URISyntaxException {
-        log.debug("REST request to save Organisation : {}", organisation);
-        if (organisation.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new organisation cannot already have an ID")).body(null);
+    public ResponseEntity<OrganisationDTO> createOrganisation(@Valid @RequestBody OrganisationDTO organisationDTO) throws URISyntaxException {
+        log.debug("REST request to save Organisation : {}", organisationDTO);
+        if (organisationDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(
+                HeaderUtil.createFailureAlert(ENTITY_NAME,
+                    "idexists",
+                    "A new organisation cannot already have an ID")
+            ).body(null);
         }
-        Organisation result = new Organisation();
-        copyProperties(organisation, result);
-        organisationService.save(result);
+
+        OrganisationDTO result = organisationService.create(organisationDTO);
+
         return ResponseEntity.created(new URI("/api/organisations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -81,7 +90,7 @@ public class OrganisationResource {
     /**
      * PUT  /organisations : Updates an existing organisation.
      *
-     * @param organisation the organisation to update
+     * @param organisationDTO the organisation to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
      * or with status 400 (Bad Request) if the organisation is not valid,
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
@@ -91,21 +100,18 @@ public class OrganisationResource {
     @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_ADMIN)
     @PutMapping("/organisations")
     @Timed
-    public ResponseEntity<Organisation> updateOrganisation(@OrganisationParameter @Valid @RequestBody Organisation organisation)
-        throws URISyntaxException {
-        log.debug("REST request to update Organisation : {}", organisation);
-        if (organisation.getId() == null) {
-            return createOrganisation(organisation);
-        }
-        Organisation result = organisationService.findOne(organisation.getId());
-        if (result == null) {
-            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisation.getId()));
-        }
-        copyProperties(organisation, result);
-        organisationService.save(result);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, organisation.getId().toString()))
-            .body(result);
+    public ResponseEntity<OrganisationDTO> updateOrganisation(@OrganisationParameter @Valid @RequestBody OrganisationDTO organisationDTO)
+        throws ResourceNotFound, URISyntaxException {
+            log.debug("REST request to update Organisation : {}", organisationDTO);
+            if (organisationDTO.getId() == null) {
+                throw new ResourceNotFound("ID not defined for organisation.");
+            }
+
+            OrganisationDTO updatedOrganisation = organisationService.update(organisationDTO);
+
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedOrganisation.getId().toString()))
+                .body(organisationDTO);
     }
 
     /**
@@ -118,10 +124,10 @@ public class OrganisationResource {
     @AnyAuthorisedUser
     @GetMapping("/organisations")
     @Timed
-    public ResponseEntity<List<Organisation>> getAllOrganisations(@ApiParam Pageable pageable)
+    public ResponseEntity<List<OrganisationDTO>> getAllOrganisations(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Organisations");
-        Page<Organisation> page = organisationService.findAll(pageable);
+        Page<OrganisationDTO> page = organisationService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -135,13 +141,14 @@ public class OrganisationResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations/{id}")
     @Timed
-    public ResponseEntity<Organisation> getOrganisation(@PathVariable Long id) {
+    @Deprecated
+    public ResponseEntity<OrganisationDTO> getOrganisation(@PathVariable Long id) {
         log.debug("REST request to get Organisation : {}", id);
-        Organisation organisation = organisationService.findOne(id);
-        if (organisation == null) {
+        OrganisationDTO organisationDTO = organisationService.findOneDTO(id);
+        if (organisationDTO == null) {
             throw new ResourceNotFound(String.format("Organisation not found with id: %s.", id));
         }
-        return ResponseEntity.ok(organisation);
+        return ResponseEntity.ok(organisationDTO);
     }
 
     /**
@@ -154,13 +161,14 @@ public class OrganisationResource {
     @SecuredByOrganisation
     @GetMapping("/organisations/uuid/{uuid}")
     @Timed
-    public ResponseEntity<Organisation> getOrganisation(@OrganisationUuidParameter @PathVariable UUID uuid) {
+    public ResponseEntity<OrganisationDTO> getOrganisation(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get Organisation : {}", uuid);
-        Organisation organisation = organisationService.findByUuid(uuid);
-        if (organisation == null) {
+        OrganisationDTO organisationDTO = organisationService.findDTOByUuid(uuid);
+        if (organisationDTO == null) {
             throw new ResourceNotFound(String.format("Organisation not found with uuid: %s.", uuid));
         }
-        return ResponseEntity.ok(organisation);
+
+        return ResponseEntity.ok(organisationDTO);
     }
 
     /**
@@ -173,40 +181,35 @@ public class OrganisationResource {
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/organisations/{id}/activation")
     @Timed
-    public ResponseEntity<Organisation> setOrganisationActivation(
+    public ResponseEntity<OrganisationDTO> setOrganisationActivation(
         @PathVariable Long id,  @RequestParam (value = "value",required = true) boolean activation) throws
         URISyntaxException {
-        log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
-        Organisation organisation = organisationService.findOne(id);
-        if (organisation == null) {
-            throw new ResourceNotFound(String.format("Organisation not found with id: %d",
-                organisation.getId()));
-        }
-        organisation.setActivated(activation);
-        organisationService.save(organisation);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, organisation.getId().toString()))
-            .body(organisation);
+
+        // FIXME: Use UUID as unique id argument
+            log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
+            OrganisationDTO updatedOrganisationDTO = organisationService.activation(id, activation);
+
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedOrganisationDTO.getId().toString()))
+                .body(updatedOrganisationDTO);
     }
 
     /**
      * DELETE  /organisations/:id : delete the "id" organisation.
      *
-     * @param id the id of the organisation to delete
+     * @param uuid the id of the organisation to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/organisations/{id}")
+    @DeleteMapping("/organisations/{uuid}")
     @Timed
-    public ResponseEntity<Void> deleteOrganisation(@PathVariable Long id) {
-        log.debug("REST request to delete Organisation : {}", id);
-        Organisation organisation = organisationService.findOne(id);
-        if (organisation == null) {
-            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisation.getId()));
-        }
-        organisationService.delete(organisation);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    public ResponseEntity<Void> deleteOrganisation(@PathVariable UUID uuid) {
+        log.debug("REST request to delete Organisation : {}", uuid);
+        organisationService.delete(uuid);
+
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, uuid.toString())).build();
     }
 
     /**

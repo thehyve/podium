@@ -8,10 +8,13 @@
 package nl.thehyve.podium.common.service.dto;
 
 
+import nl.thehyve.podium.common.enumeration.RequestType;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -33,6 +36,8 @@ public class OrganisationDTO implements Serializable {
     private Boolean activated;
 
     private UUID uuid;
+
+    private Set<RequestType> requestTypes;
 
     public Long getId() {
         return id;
@@ -74,6 +79,12 @@ public class OrganisationDTO implements Serializable {
     }
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public Set<RequestType> getRequestTypes() { return requestTypes; }
+
+    public void setRequestTypes(Set<RequestType> requestTypes) {
+        this.requestTypes = requestTypes;
     }
 
     @Override

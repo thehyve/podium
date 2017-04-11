@@ -16,19 +16,23 @@ import java.lang.annotation.*;
  * that is associated with the object that is being requested.
  *
  * E.g., "updating a request is allowed for the owner of the request":
- * <code>
- *     @SecuredByCurrentUser
+ * <pre>
+ * {@code
+ *     {@literal @}SecuredByCurrentUser
  *     public RequestRepresentation updateRequest(@UserParameter RequestRepresentation request) {
  *         ...
  *     }
- * </code>
+ * }
+ * </pre>
  * Or, "fetching a user account is allowed for the owner of the account":
- * <code>
- *     @SecuredByCurrentUser
+ * <pre>
+ * {@code
+ *     {@literal @}SecuredByCurrentUser
  *     public UserRepresentation getAccountDetails(@UserUuidParameter UUID userUuid) {
  *         ...
  *     }
- * </code>
+ * }
+ * </pre>
  *
  * The user UUID parameter of the controller can be indicated with the
  * {@link UserUuidParameter} annotation. Or, alternatively, an

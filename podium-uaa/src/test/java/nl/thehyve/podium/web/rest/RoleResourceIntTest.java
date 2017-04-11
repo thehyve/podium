@@ -34,6 +34,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +93,10 @@ public class RoleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        RoleResource roleResource = new RoleResource(roleService, userService, organisationService);
+
+        RoleResource roleResource = new RoleResource();
+        ReflectionTestUtils.setField(roleResource, "roleService", roleService);
+
         this.restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -115,6 +119,8 @@ public class RoleResourceIntTest {
         } else {
             UserRepresentation userData = new UserRepresentation();
             userData.setLogin("test");
+            userData.setFirstName("test_first");
+            userData.setLastName("test_last");
             userData.setEmail("test@localhost");
             user = userService.createUser(userData);
         }

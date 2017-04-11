@@ -10,11 +10,11 @@
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-import { OrganisationService } from '../../entities/organisation/organisation.service';
 import { Response } from '@angular/http';
-import { Organisation } from '../../entities/organisation/organisation.model';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
+import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
+import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
 
 @Component({
     selector: 'pdm-organisation-selector',

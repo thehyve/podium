@@ -9,8 +9,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Http } from '@angular/http';
 import { RequestBase } from '../../shared/request/request-base';
 
 @Injectable()

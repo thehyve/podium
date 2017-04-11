@@ -133,8 +133,9 @@ public class SecurityService {
     /**
      * If the current user has a specific authority (security role).
      *
-     * @param authority the authority to check
-     * @return true if the current user has the authority, false otherwise
+     * @param organisationUuid The UUID of the organisation to check against.
+     * @param authority the authority to check.
+     * @return true if the current user has the authority, false otherwise.
      */
     public boolean isCurrentUserInOrganisationRole(UUID organisationUuid, String authority) {
         return isCurrentUserInAnyOrganisationRole(organisationUuid, authority);
@@ -143,6 +144,7 @@ public class SecurityService {
     /**
      * If the current user has any of the specified authorities (security roles).
      *
+     * @param organisationUuid The UUID of the organisation to check against.
      * @param authorities the authorities to check
      * @return true if the current user has any of the authorities, false otherwise
      */

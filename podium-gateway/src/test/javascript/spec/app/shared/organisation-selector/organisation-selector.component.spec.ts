@@ -10,14 +10,15 @@
 
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { OrganisationSelectorComponent } from '../../../../../../main/webapp/app/shared/organisation-selector/organisation-selector.component';
-import { Organisation } from '../../../../../../main/webapp/app/entities/organisation/organisation.model';
+import { OrganisationSelectorComponent }
+    from '../../../../../../main/webapp/app/shared/organisation-selector/organisation-selector.component';
 import { JhiLanguageService } from 'ng-jhipster';
 import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translate';
-import { OrganisationService } from '../../../../../../main/webapp/app/entities/organisation/organisation.service';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
+import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
 
 describe('OrganisationSelectorComponent (templateUrl)', () => {
 

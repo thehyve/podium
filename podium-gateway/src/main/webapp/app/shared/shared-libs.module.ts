@@ -12,28 +12,34 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { PodiumUploadModule } from './upload/upload.module';
+import { TooltipModule } from 'ng2-bootstrap/tooltip';
+import { TabsModule } from 'ng2-bootstrap/tabs';
+import { UiSwitchModule } from 'angular2-ui-switch';
 
 @NgModule({
     imports: [
-        NgbModule.forRoot(),
         NgJhipsterModule.forRoot({
             i18nEnabled: true,
             defaultI18nLang: 'en'
         }),
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        TooltipModule.forRoot(),
+        TabsModule.forRoot(),
+        UiSwitchModule
     ],
     exports: [
         FormsModule,
         HttpModule,
         CommonModule,
-        NgbModule,
         NgJhipsterModule,
         PodiumUploadModule,
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        TooltipModule,
+        TabsModule,
+        UiSwitchModule
     ]
 })
 export class PodiumGatewaySharedLibsModule {}

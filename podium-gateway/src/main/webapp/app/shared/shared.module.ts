@@ -8,10 +8,12 @@
  *
  */
 
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { SessionStorageService } from 'ng2-webstorage';
+
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
@@ -25,7 +27,6 @@ import {
     LoginModalService,
     MessageService,
     Principal,
-    HasAuthorityDirective,
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
     PasswordValidatorDirective,
@@ -36,6 +37,7 @@ import {
 } from './';
 import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
+import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 
 @NgModule({
@@ -51,28 +53,15 @@ import { OrganisationSelectorComponent } from './organisation-selector/organisat
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
-        HasAuthorityDirective,
-        HasAnyAuthorityDirective
+        HasAnyAuthorityDirective,
+        OrganisationSelectorComponent,
+        EnumKeysPipe
     ],
-    providers: [
-        CookieService,
-        LoginService,
-        LoginModalService,
-        MessageService,
-        AccountService,
-        StateStorageService,
-        Principal,
-        CSRFService,
-        AuthServerProvider,
-        AuthService,
-        UserService,
-        AttachmentService,
-        RequestService,
-        DatePipe
-    ],
+    providers: [],
     entryComponents: [PodiumLoginComponent],
     exports: [
         PodiumGatewaySharedCommonModule,
+        PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
@@ -80,11 +69,34 @@ import { OrganisationSelectorComponent } from './organisation-selector/organisat
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
-        HasAuthorityDirective,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        EnumKeysPipe
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
 })
-export class PodiumGatewaySharedModule {}
+export class PodiumGatewaySharedModule {
+    static forRoot(): ModuleWithProviders {
+        return {
+            ngModule: PodiumGatewaySharedModule,
+            providers: [
+                CookieService,
+                LoginService,
+                LoginModalService,
+                MessageService,
+                AccountService,
+                SessionStorageService,
+                StateStorageService,
+                Principal,
+                CSRFService,
+                AuthServerProvider,
+                AuthService,
+                UserService,
+                AttachmentService,
+                RequestService,
+                DatePipe
+            ]
+        };
+    }
+}

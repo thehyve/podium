@@ -9,12 +9,10 @@
                 "new": "New Request",
                 "overview": "My Requests"
             },
-            "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
-            "entities": {
-                "main": "Entities",
+            "backoffice": {
+                "main": "Backoffice",
                 "role": "Role",
-                "organisation": "Organisation",
-                "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+                "organisation": "Organisation"
             },
             "account": {
                 "main": "Account",
@@ -56,11 +54,11 @@
                 "metrics": "Metrics",
                 "health": "Health",
                 "configuration": "Configuration",
+                "elasticsearch": "Elasticsearch",
                 "logs": "Logs",
                 "audits": "Audits",
                 "apidocs": "API",
-                "database": "Database",
-                "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
+                "database": "Database"
             },
             "language": "Language"
         },
@@ -124,7 +122,8 @@
             }
         },
         "field": {
-            "id": "ID"
+            "id": "ID",
+            "uuid": "UUID"
         },
         "ribbon": {
             "dev":"Development"
@@ -140,6 +139,7 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
+            "create": "Create",
             "unlock": "Unlock",
             "view": "View"
         },

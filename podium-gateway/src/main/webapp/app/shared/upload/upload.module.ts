@@ -10,7 +10,6 @@
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 
 import {
@@ -30,9 +29,8 @@ let UPLOAD_STATES = [
 @NgModule({
     imports: [
         FormsModule,
-        BrowserModule,
         CommonModule,
-        RouterModule.forRoot(UPLOAD_STATES, { useHash: true })
+        RouterModule.forChild(UPLOAD_STATES)
     ],
     declarations: [
         UploadDialogComponent,

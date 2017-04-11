@@ -14,11 +14,11 @@ import { UserRouteAccessService } from '../../shared';
 import { RequestFormComponent } from './request-form.component';
 
 export const requestFormEditRoute: Route = {
-  path: 'edit',
-  component: RequestFormComponent,
-  data: {
-    authorities: ['ROLE_RESEARCHER'],
-    pageTitle: 'request.pageTitle'
-  },
-  canActivate: [UserRouteAccessService]
+    path: 'edit',
+    component: RequestFormComponent,
+    data: {
+        authorities: ['ROLE_RESEARCHER'],
+        pageTitle: 'request.pageTitle'
+    },
+    canActivate: [UserRouteAccessService]
 };

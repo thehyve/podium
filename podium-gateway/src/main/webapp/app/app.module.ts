@@ -14,10 +14,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 
-import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
-import { PodiumGatewayAdminModule } from './admin/admin.module';
-import { PodiumGatewayAccountModule } from './account/account.module';
-import { PodiumGatewayEntityModule } from './entities/entity.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LayoutRoutingModule } from './layouts';
 import { HomeComponent } from './home';
@@ -25,6 +22,7 @@ import { DashboardComponent } from './dashboard';
 
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
+import { TypeaheadModule } from 'ng2-bootstrap';
 
 import {
     PdmMainComponent,
@@ -36,21 +34,36 @@ import {
     ErrorComponent,
     CompletedComponent
 } from './layouts';
-import { OrganisationService } from './entities/organisation/organisation.service';
-import { RoleService } from './entities/role/role.service';
 
-import {PodiumGatewayRequestModule} from './request/request.module';
+import { OrganisationService } from './backoffice/modules/organisation/organisation.service';
+
+import { PodiumGatewayRequestModule } from './request/request.module';
+import {
+    PodiumGatewayBbmriBackofficeModule
+} from './backoffice/bbmri/bbmri-backoffice.module';
+import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
+import { PodiumGatewayPodiumBackofficeModule } from './backoffice/podium/podium-backoffice.module';
+import { RoleService } from './shared/role/role.service';
+
+
+import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
+import { PodiumGatewayAdminModule } from './admin/admin.module';
+import { PodiumGatewayAccountModule } from './account/account.module';
 
 @NgModule({
     imports: [
+        NgbModule.forRoot(),
+        TypeaheadModule.forRoot(),
         BrowserModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
-        PodiumGatewaySharedModule,
+        PodiumGatewaySharedModule.forRoot(),
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
-        PodiumGatewayEntityModule,
+        PodiumGatewayBbmriBackofficeModule,
+        PodiumGatewayOrganisationBackofficeModule,
+        PodiumGatewayPodiumBackofficeModule
     ],
     declarations: [
         PdmMainComponent,
@@ -73,6 +86,7 @@ import {PodiumGatewayRequestModule} from './request/request.module';
         OrganisationService,
         RoleService
     ],
-    bootstrap: [ PdmMainComponent ]
+    bootstrap: [ PdmMainComponent ],
+    exports: [NgbModule]
 })
 export class PodiumGatewayAppModule {}

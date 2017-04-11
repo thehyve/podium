@@ -43,4 +43,9 @@ public interface RoleRepository extends JpaRepository<Role,Long> {
         @Param("authorityName") String authorityName);
 
     List<Role> findAllByAuthority(Authority authority);
+
+    @Query("select count(role)>0 from Role role where role.organisation = :organisation")
+    boolean existsByOrganisation(
+        @Param("organisation") Organisation organisation
+    );
 }

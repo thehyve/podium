@@ -88,6 +88,8 @@ public class AuthenticationIntTest {
         testUser.setLogin(testUserName);
         testUser.setPassword(testPassword);
         testUser.setEmail(testEmail);
+        testUser.setFirstName("testFirstName");
+        testUser.setLastName("testLastName");
         User user = userService.registerUser(testUser);
         user.setEmailVerified(true);
         user.setAdminVerified(true);

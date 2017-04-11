@@ -7,19 +7,24 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.service.representation.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -32,14 +37,16 @@ public class RoleService {
 
     private final Logger log = LoggerFactory.getLogger(RoleService.class);
 
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    private final RoleSearchRepository roleSearchRepository;
+    @Autowired
+    private OrganisationRepository organisationRepository;
 
-    public RoleService(RoleRepository roleRepository, RoleSearchRepository roleSearchRepository) {
-        this.roleRepository = roleRepository;
-        this.roleSearchRepository = roleSearchRepository;
-    }
+    @Autowired
+    private RoleSearchRepository roleSearchRepository;
+
+    public RoleService() { }
 
     /**
      * Save a role.
@@ -55,10 +62,10 @@ public class RoleService {
     }
 
     /**
-     *  Get all the roles.
+     * Get all the roles.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<Role> findAll(Pageable pageable) {
@@ -67,22 +74,28 @@ public class RoleService {
     }
 
     /**
-     *  Get all the roles for an organisation.
+     * Get all the roles for an organisation.
      *
-     *  @param organisation the organisation to fetch the roles for.
-     *  @return the list of entities
+     * @param uuid the organisation UUID to fetch the roles for.
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<Role> findAllByOrganisation(Organisation organisation) {
-        log.debug("Request to get all Roles for Organisation: {}", organisation.getUuid());
-        return roleRepository.findAllByOrganisation(organisation);
+    public List<RoleRepresentation> findAllByOrganisationUUID(UUID uuid) {
+        log.debug("Request to get all Roles for Organisation UUID: {}", uuid);
+        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
+
+        List<RoleRepresentation> roles = organisation.getRoles().stream()
+            .map(RoleRepresentation::new)
+            .collect(Collectors.toList());
+
+        return roles;
     }
 
     /**
-     *  Get one role by id.
+     * Get one role by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Role findOne(Long id) {
@@ -92,10 +105,12 @@ public class RoleService {
     }
 
     /**
-     *  Get the role for an authority.
-     *  Only for global roles, not for organisation roles.
+     * Get the role for an authority.
+     * Only for global roles, not for organisation roles.
+     * Returns null when authorityName is a organisation authority.
      *
-     *  @return the entity
+     * @param authorityName Authority name to fetch role for.
+     * @return the role entity
      */
     @Transactional(readOnly = true)
     public Role findRoleByAuthorityName(String authorityName) {
@@ -111,9 +126,11 @@ public class RoleService {
     }
 
     /**
-     *  Get the role for an authority within an organisation.
+     * Get the role for an authority within an organisation.
      *
-     *  @return the entity
+     * @param organisation The organisation to fetch the role for.
+     * @param authorityName Authority name to fetch role for.
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Role findRoleByOrganisationAndAuthorityName(Organisation organisation, String authorityName) {
@@ -130,9 +147,9 @@ public class RoleService {
     }
 
     /**
-     *  Delete the  role by id.
+     * Delete the  role by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete Role : {}", id);
@@ -143,14 +160,20 @@ public class RoleService {
     /**
      * Search for the role corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable Pagination object of the requested page
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<Role> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Roles for query {}", query);
         Page<Role> result = roleSearchRepository.search(queryStringQuery(query), pageable);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean organisationHasAnyRole(Organisation organisation) {
+        return roleRepository.existsByOrganisation(organisation);
     }
 
 }

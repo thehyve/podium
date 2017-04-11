@@ -15,6 +15,7 @@ import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.OrganisationService;
@@ -27,6 +28,7 @@ import nl.thehyve.podium.domain.Organisation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -52,15 +54,16 @@ public class RoleResource {
 
     private static final String ENTITY_NAME = "role";
 
-    private final RoleService roleService;
-    private final UserService userService;
-    private final OrganisationService organisationService;
+    @Autowired
+    private RoleService roleService;
 
-    public RoleResource(RoleService roleService, UserService userService, OrganisationService organisationService) {
-        this.roleService = roleService;
-        this.userService = userService;
-        this.organisationService = organisationService;
-    }
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private OrganisationService organisationService;
+
+    public RoleResource() {}
 
     private void copyProperties(RoleRepresentation source, Role target) {
         Set<UUID> currentUsers = target.getUsers().stream().map(User::getUuid).collect(Collectors.toSet());
@@ -143,10 +146,7 @@ public class RoleResource {
     @Timed
     public ResponseEntity<List<RoleRepresentation>> getOrganisationRoles(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get all Roles of Organisation {}", uuid);
-        Organisation organisation = organisationService.findByUuid(uuid);
-        List<RoleRepresentation> roles = roleService.findAllByOrganisation(organisation).stream()
-            .map(RoleRepresentation::new)
-            .collect(Collectors.toList());
+        List<RoleRepresentation> roles = roleService.findAllByOrganisationUUID(uuid);
         return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
