@@ -1,9 +1,6 @@
-<div>
-    <select multiple name="organisations" class="form-control" [(ngModel)]="selectedOrganisations" (change)="onChange
-    ()" required>
-        <option [ngValue]="null">Please choose...</option>
-        <option *ngFor="let organisationOption of organisationOptions" [ngValue]="organisationOption">
-            {{organisationOption.name}}
-        </option>
-    </select>
-</div>
+<select id="organisations" name="organisations" class="form-control" [(ngModel)]="selectedOrganisations" (change)
+    ="onChange()" required multiple>
+    <option *ngFor="let organisationOption of organisationOptions" [value]="organisationOption.uuid">
+        {{organisationOption.name}}
+    </option>
+</select>

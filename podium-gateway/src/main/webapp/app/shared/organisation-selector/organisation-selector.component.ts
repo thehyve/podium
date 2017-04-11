@@ -9,7 +9,6 @@
  */
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { OrganisationService } from '../../entities/organisation/organisation.service';
 import { Response } from '@angular/http';
 import { Organisation } from '../../entities/organisation/organisation.model';
@@ -24,29 +23,46 @@ import { Observable } from 'rxjs';
 
 export class OrganisationSelectorComponent implements OnInit {
 
-    organisationOptions: Organisation[];
-    selectedOrganisations: Organisation[];
+    selectedOrganisationValues: any[];
+    organisationOptions: any;
+    selectedOrganisations: any[];
 
-    @Input() organisations: Organisation[];
+    @Output() organisationChange = new EventEmitter();
+
     @Input() requestType: RequestType[];
+    @Input()
+    get organisations() {
+        return this.selectedOrganisationValues;
+    }
+    set organisations(val) {
+        this.selectedOrganisationValues = val;
+        this.organisationChange.emit(this.selectedOrganisationValues);
+    }
 
-    @Output() organisationChange = new EventEmitter<Organisation[]>();
 
     private static onError (error) {
         return Observable.throw(new Error(error.status));
     }
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private organisationService: OrganisationService
-    ) {}
+    constructor(private organisationService: OrganisationService){}
 
     onChange() {
-        this.organisations = this.selectedOrganisations;
+        // get organisation instance of selected uuid
+        this.organisations = this.selectedOrganisations.map(
+            (selected) => {
+                return this.organisationOptions.find( (option) => {
+                    return option.uuid == selected;
+                })
+            }
+        );
         this.organisationChange.emit(this.organisations);
     }
 
     ngOnInit() {
         this.selectedOrganisations = this.organisations;
+        this.selectedOrganisations = this.selectedOrganisations.map( organisation => {
+            return organisation.uuid;
+        });
         this.loadOrganisations();
     }
 
@@ -55,7 +71,11 @@ export class OrganisationSelectorComponent implements OnInit {
             .subscribe(
                 (data: Response) => {
                     if (Array.isArray(data)) {
-                        this.organisationOptions = data;
+                        this.organisationOptions = data.map((item) => {
+                            return new Organisation (
+                                item.id, item.uuid, item.name, item.shortName,item.activated, item.organisationUuid
+                            );
+                        });
                     }
                 },
                 (res: Response) => {

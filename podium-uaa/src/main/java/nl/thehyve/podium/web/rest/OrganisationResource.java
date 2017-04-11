@@ -150,7 +150,7 @@ public class OrganisationResource {
      * @param uuid the uuid of the organisation to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @AnyAuthorisedUser
     @SecuredByOrganisation
     @GetMapping("/organisations/uuid/{uuid}")
     @Timed
