@@ -21,11 +21,11 @@
     -->
     <changeSet id="20170403162001-1" author="berndvdveen">
         <addColumn tableName="organisation">
-            <column name="request_type" type="varchar(255)"></column>
+            <column name="request_types" type="varchar(255)"></column>
         </addColumn>
 
         <createTable tableName="organisation_request_types">
-            <column name="request_type" type="varchar(255)">
+            <column name="request_types" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
 

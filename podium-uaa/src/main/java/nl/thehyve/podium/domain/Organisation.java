@@ -14,7 +14,6 @@ import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -79,7 +78,7 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         name="organisation_request_types",
         joinColumns=@JoinColumn(name="organisation_id")
     )
-    private Set<RequestType> requestType;
+    private Set<RequestType> requestTypes;
 
     public Long getId() {
         return id;
@@ -162,9 +161,9 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         this.roles = roles;
     }
 
-    public Set<RequestType> getRequestTypes() { return requestType; }
+    public Set<RequestType> getRequestTypes() { return requestTypes; }
 
-    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestType = requestTypes; }
+    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestTypes = requestTypes; }
 
     @Override
     public boolean equals(Object o) {
@@ -195,7 +194,7 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
             ", shortName='" + shortName + '\'' +
             ", deleted=" + deleted +
             ", activated=" + activated +
-            ", requestType=" + requestType +
+            ", requestTypes=" + requestTypes +
             '}';
     }
 }
