@@ -79,6 +79,14 @@ export class OrganisationService {
         });
     }
 
+    jsonArrayToOrganisations(arr: any) {
+        return arr.map((item) => {
+            return new Organisation (
+                item.id, item.uuid, item.name, item.shortName,item.activated, item.organisationUuid
+            );
+        });
+    }
+
     private createRequestOption(req?: any): BaseRequestOptions {
         let options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {

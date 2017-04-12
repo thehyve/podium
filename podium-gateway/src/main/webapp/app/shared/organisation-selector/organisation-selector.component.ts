@@ -11,7 +11,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { OrganisationService } from '../../entities/organisation/organisation.service';
 import { Response } from '@angular/http';
-import { Organisation } from '../../entities/organisation/organisation.model';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
 
@@ -59,29 +58,20 @@ export class OrganisationSelectorComponent implements OnInit {
     }
 
     ngOnInit() {
+        // set selected organisations
         this.selectedOrganisations = this.organisations;
         this.selectedOrganisations = this.selectedOrganisations.map( organisation => {
             return organisation.uuid;
         });
-        this.loadOrganisations();
-    }
-
-    private loadOrganisations() {
+        // load organisation options
         this.organisationService.findAll()
             .subscribe(
                 (data: Response) => {
-                    if (Array.isArray(data)) {
-                        this.organisationOptions = data.map((item) => {
-                            return new Organisation (
-                                item.id, item.uuid, item.name, item.shortName,item.activated, item.organisationUuid
-                            );
-                        });
-                    }
+                    this.organisationOptions = this.organisationService.jsonArrayToOrganisations(data);
                 },
                 (res: Response) => {
                     return OrganisationSelectorComponent.onError(res.json());
                 }
             );
     }
-
 }
