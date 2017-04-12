@@ -8,6 +8,7 @@
 package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.UserService;
@@ -30,7 +31,7 @@ import java.util.UUID;
 @Transactional
 public class SecurityService {
 
-    private final Logger log = LoggerFactory.getLogger(SecurityService.class);
+    private static final Logger log = LoggerFactory.getLogger(SecurityService.class);
 
     @Autowired
     private UserService userService;
@@ -58,6 +59,8 @@ public class SecurityService {
             if (authentication.getPrincipal() instanceof UserDetails) {
                 UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
                 userName = springSecurityUser.getUsername();
+            } else if (authentication.getPrincipal() instanceof SerialisedUser) {
+                userName = ((SerialisedUser) authentication.getPrincipal()).getName();
             } else if (authentication.getPrincipal() instanceof String) {
                 userName = (String) authentication.getPrincipal();
             }

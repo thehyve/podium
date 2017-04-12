@@ -387,13 +387,15 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
-        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
+        String login = SecurityService.getCurrentUserLogin();
+        log.debug("Fetching user with login {}", login);
+        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(login);
         User user = null;
         if (optionalUser.isPresent()) {
-          user = optionalUser.get();
+            user = optionalUser.get();
             user.getAuthorities().size(); // eagerly load the association
-         }
-         return user;
+        }
+        return user;
     }
 
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {
