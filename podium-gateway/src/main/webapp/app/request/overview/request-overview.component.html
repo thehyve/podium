@@ -37,7 +37,6 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span >Title</span></th>
             <th><span>Status</span></th>
             <th></th>
@@ -45,9 +44,8 @@
         </thead>
 			<tbody>
 			<tr *ngFor="let request of availableRequests; trackBy: trackId">
-				<td><a href="#">{{request.id}}</a></td>
 				<td>
-					{{request.requestDetail.title}}
+					{{request.requestDetail.title || '-'}}
 				</td>
 				<td>
 					{{request.status}}
@@ -66,14 +64,15 @@
 						</button>
 					</div>
                     <button type="button"
-                            class="btn btn-primary btn-sm"  (click)="navigateToRequestDetail(request)">
+                            class="btn btn-primary btn-sm"  (click)="navigateToRequestDetail(request)"
+                            *ngIf="request.status !== 'Draft'">
                         <span class="material-icons md-18">assignment_ind</span>
                         <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
                     </button>
 				</td>
 			</tr>
 			<tr *ngIf="availableRequests.length == 0">
-				<td colspan="4" class="no-results">
+				<td colspan="3" class="no-results">
 					<div class="alert alert-info">
 						No requests found
 					</div>
