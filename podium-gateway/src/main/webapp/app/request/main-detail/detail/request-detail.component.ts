@@ -8,7 +8,8 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { RequestDetail } from '../../../shared/request/request-detail';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -16,26 +17,15 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['request-detail.scss']
 })
 
-export class RequestDetailComponent implements OnInit {
+export class RequestDetailComponent {
 
-    error: any;
-    success: any;
+    public requestDetail: RequestDetail;
 
     constructor() {
 
     }
 
-    ngOnInit(): void {
+    setRequestDetail(requestDetail) {
+        this.requestDetail = requestDetail;
     }
-
-    private onSuccess(result) {
-        this.error =  null;
-        this.success = 'SUCCESS';
-    }
-
-    private onError(error) {
-        this.error =  'ERROR';
-        this.success = null;
-    }
-
 }

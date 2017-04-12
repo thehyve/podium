@@ -33,7 +33,7 @@
 
 
 <br/>
-<div class="table-responsive" *ngIf="availableRequestDrafts">
+<div class="table-responsive" *ngIf="availableRequests">
     <table class="table table-striped">
         <thead>
         <tr>
@@ -43,30 +43,42 @@
             <th></th>
         </tr>
         </thead>
-        <tbody>
-        <tr *ngFor="let request of availableRequestDrafts ;trackBy: trackId">
-            <td><a href="#">{{request.id}}</a></td>
-            <td>
-                {{request.requestDetail.title}}
-            </td>
-            <td>
-                {{request.status}}
-            </td>
-            <td class="text-xs-right">
-                <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
+			<tbody>
+			<tr *ngFor="let request of availableRequests; trackBy: trackId">
+				<td><a href="#">{{request.id}}</a></td>
+				<td>
+					{{request.requestDetail.title}}
+				</td>
+				<td>
+					{{request.status}}
+				</td>
+				<td class="text-xs-right">
+					<div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
+						<button type="button"
+								class="btn btn-primary btn-sm"  (click)="editRequest(request)">
+							<span class="fa fa-pencil"></span>
+							<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
+						</button>
+						<button type="submit"
+								class="btn btn-danger btn-sm">
+							<span class="fa fa-pencil"></span>
+							<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
+						</button>
+					</div>
                     <button type="button"
-                            class="btn btn-primary btn-sm"  (click)="editRequest(request)">
-                        <span class="fa fa-pencil"></span>
-                        <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                            class="btn btn-primary btn-sm"  (click)="navigateToRequestDetail(request)">
+                        <span class="material-icons md-18">assignment_ind</span>
+                        <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
                     </button>
-                    <button type="submit"
-                            class="btn btn-danger btn-sm">
-                        <span class="fa fa-pencil"></span>
-                        <span class="hidden-md-down" jhiTranslate="entity.action.delete">Remove</span>
-                    </button>
-                </div>
-            </td>
-        </tr>
+				</td>
+			</tr>
+			<tr *ngIf="availableRequests.length == 0">
+				<td colspan="4" class="no-results">
+					<div class="alert alert-info">
+						No requests found
+					</div>
+				</td>
+			</tr>
         </tbody>
     </table>
 </div>

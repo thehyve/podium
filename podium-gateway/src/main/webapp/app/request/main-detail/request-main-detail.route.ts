@@ -13,7 +13,7 @@ import { UserRouteAccessService } from '../../shared/auth/user-route-access-serv
 import { RequestMainDetailComponent } from './request-main-detail.component';
 
 export const requestMainDetailRoute: Route = {
-    path: 'detail',
+    path: 'detail/:uuid',
     component: RequestMainDetailComponent,
     data: {
         authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER'],

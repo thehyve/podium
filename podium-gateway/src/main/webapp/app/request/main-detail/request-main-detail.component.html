@@ -8,11 +8,11 @@
   ~
   -->
 
-<div class="row" *ngIf="request">
+<div class="row">
     <div class="container-fluid">
         <div class="col-md-6 offset-md-3 card-container">
             <h2>
-                <span jhiTranslate="request.detail.title">Request</span>
+                <span jhiTranslate="request.detail.pageTitle">Request</span>
             </h2>
 
             <jhi-alert></jhi-alert>
@@ -20,7 +20,16 @@
 
             <tabset>
                 <tab heading="Details">
-
+                    <pdm-request-detail></pdm-request-detail>
+                </tab>
+                <tab heading="Conversation" [disabled]="true">
+                    test
+                </tab>
+                <tab heading="History" [disabled]="true">
+                    test
+                </tab>
+                <tab heading="Files" [disabled]="true">
+                    test
                 </tab>
             </tabset>
         </div>

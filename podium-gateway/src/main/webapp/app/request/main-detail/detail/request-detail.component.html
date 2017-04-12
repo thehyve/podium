@@ -8,21 +8,57 @@
   ~
   -->
 
-<div class="row" *ngIf="request">
-    <div class="container-fluid">
-        <div class="col-md-6 offset-md-3 card-container">
-            <h2>
-                <span jhiTranslate="request.detail.title">Request</span>
-            </h2>
+<div *ngIf="requestDetail">
+    <dl>
+        <dt><span jhiTranslate="request.detail.title">Title</span></dt>
+        <dd>
+            <strong><span>{{requestDetail.title}}</span></strong>
+        </dd>
+        <dt><span jhiTranslate="request.detail.background">Background</span></dt>
+        <dd>
+            <span>{{requestDetail.background}}</span>
+        </dd>
+        <dt><span jhiTranslate="request.detail.researchQuestion">Research Question</span></dt>
+        <dd>
+            <span>{{requestDetail.researchQuestion}}</span>
+        </dd>
+        <dt><span jhiTranslate="request.detail.hypothesis">Hypothesis</span></dt>
+        <dd>
+            <span>{{requestDetail.hypothesis}}</span>
+        </dd>
+        <dt><span jhiTranslate="request.detail.methods">Methods</span></dt>
+        <dd>
+            <span>{{requestDetail.methods}}</span>
+        </dd>
+        <dt><span jhiTranslate="request.detail.relatedRequestNumber">Related Request Number</span></dt>
+        <dd>
+            <span>{{requestDetail.relatedRequestNumber || '-'}}</span>
+        </dd>
+        <dt><span jhiTranslate="request.detail.principalInvestigator">Principal Investigator</span></dt>
+        <dd>
+            <address>
+                <strong class="small">{{ requestDetail.principalInvestigator.name}}</strong><br />
+                <strong class="small">{{ requestDetail.principalInvestigator.email}}</strong><br />
+                <strong class="small">{{ requestDetail.principalInvestigator.jobTitle}}</strong><br />
+                <strong class="small">{{ requestDetail.principalInvestigator.affiliation}}</strong><br />
+            </address>
+        </dd>
+        <dt><span jhiTranslate="request.detail.searchQuery">Search Query</span></dt>
+        <dd>
+            <span>{{requestDetail.searchQuery}}</span>
+        </dd>
+        <dt><span jhiTranslate="request.detail.isCombined">Combined Request</span></dt>
+        <dd>
+            <strong><span>{{requestDetail.combinedRequest ? 'Yes' : 'No' }}</span></strong>
+        </dd>
+        <dt><span jhiTranslate="request.detail.requestTypes">Request Types</span></dt>
+        <dd>
+            <ul>
+                <li *ngFor="let requestType of requestDetail.requestType">
+                    {{ requestType | capitalize }}
+                </li>
+            </ul>
+        </dd>
+    </dl>
 
-            <jhi-alert></jhi-alert>
-            <jhi-alert-error></jhi-alert-error>
-
-            <tabset>
-                <tab heading="Details">
-
-                </tab>
-            </tabset>
-        </div>
-    </div>
 </div>
