@@ -10,4 +10,3 @@
 
 export * from './detail/request-detail.component';
 export * from './request-main-detail.route';
-export * from './detail/request-detail.service';
