@@ -93,7 +93,7 @@ export const userMgmtRoute: Routes = [
             pagingParams: UserResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'userManagement.home.title'
         },
         canActivate: [UserRouteAccessService],
@@ -102,7 +102,7 @@ export const userMgmtRoute: Routes = [
         path: 'detail/:login',
         component: UserMgmtDetailComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'userManagement.home.title'
         },
         canActivate: [UserRouteAccessService]
