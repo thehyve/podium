@@ -12,6 +12,7 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
+import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.security.SecurityService;
 import nl.thehyve.podium.config.UaaProperties;
 import nl.thehyve.podium.domain.User;
@@ -19,14 +20,19 @@ import nl.thehyve.podium.exceptions.VerificationKeyExpired;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import org.elasticsearch.action.suggest.SuggestResponse;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +40,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service class for managing users.
@@ -62,12 +72,18 @@ public class UserService {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private ElasticsearchTemplate elasticsearchTemplate;
+
     /**
      * Activate a user by a given key.
      * If the activation key has expired return null
      *
-     * @param key The activation key
-     * @throws VerificationKeyExpired
+     * @param key The activation key.
+     * @throws VerificationKeyExpired Thrown when the used verification key has expired.
      *
      * @return the user
      */
@@ -88,7 +104,10 @@ public class UserService {
             user.setEmailVerified(true);
             user.setActivationKey(null);
             user.setActivationKeyDate(null);
-            userSearchRepository.save(user);
+
+            SearchUser searchUser = userMapper.userToSearchUser(user);
+            userSearchRepository.save(searchUser);
+
             save(user);
             log.debug("Activated user: {}", user);
         }
@@ -128,7 +147,9 @@ public class UserService {
                     user.setEmailVerified(true);
                     user.setActivationKey(null);
                     user.setActivationKeyDate(null);
-                    userSearchRepository.save(user);
+
+                    SearchUser searchUser = userMapper.userToSearchUser(user);
+                    userSearchRepository.save(searchUser);
                     log.debug("Activated user: {}", user);
                 }
                 user.setPassword(passwordEncoder.encode(newPassword));
@@ -221,7 +242,10 @@ public class UserService {
         roles.add(role);
         newUser.setRoles(roles);
         save(newUser);
-        userSearchRepository.save(newUser);
+
+        SearchUser searchUser = userMapper.userToSearchUser(newUser);
+        userSearchRepository.save(searchUser);
+
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -249,11 +273,20 @@ public class UserService {
         user.setEmailVerified(false);
         user.setAdminVerified(true);
         save(user);
-        userSearchRepository.save(user);
+
+        SearchUser searchUser = userMapper.userToSearchUser(user);
+        userSearchRepository.save(searchUser);
+
         log.debug("Created Information for User: {}", user);
         return user;
     }
 
+    /**
+     *
+     * @param userData user data to update
+     * @return Updated user data as UserRepresentation
+     * @throws UserAccountException
+     */
     public UserRepresentation updateUserAccount(UserRepresentation userData) throws UserAccountException {
         Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
         if (!userOptional.isPresent()) {
@@ -263,8 +296,11 @@ public class UserService {
         checkForExistingLoginAndEmail(userData, user.getId());
         copyProperties(userData, user);
         user = save(user);
-        userSearchRepository.save(user);
+
+        SearchUser searchUser = userMapper.userToSearchUser(user);
+        userSearchRepository.save(searchUser);
         log.debug("Changed Information for User: {}", user);
+        // FIXME: Add mapstruct mapper for all entity representations
         return new UserRepresentation(user);
     }
 
@@ -319,7 +355,10 @@ public class UserService {
     public void delete(User user) {
         user.setDeleted(true);
         save(user);
-        userSearchRepository.delete(user);
+
+        SearchUser searchUser = userMapper.userToSearchUser(user);
+        userSearchRepository.save(searchUser);
+
         log.debug("Deleted User: {}", user);
     }
 
@@ -366,5 +405,36 @@ public class UserService {
 
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
+    }
+
+    /**
+     * Search for the organisation corresponding to the query.
+     *
+     *  @param query the query of the search
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public List<SearchUser> search(String query) {
+        log.debug("Request to search users for query {}", query);
+        return StreamSupport
+            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<SearchUser> suggestUsers(String query) {
+
+        CompletionSuggestionBuilder completionSuggestionBuilder
+            = new CompletionSuggestionBuilder("fullname-suggest")
+            .text(query)
+            .field("fullNameSuggest");
+
+        SuggestResponse suggestResponse = elasticsearchTemplate.suggest(completionSuggestionBuilder, SearchUser.class);
+        CompletionSuggestion completionSuggestion = suggestResponse.getSuggest().getSuggestion("fullname-suggest");
+        List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
+
+        List<SearchUser> suggestedUsers = userMapper.completionSuggestOptionsToSearchUsers(options);
+
+        return suggestedUsers;
     }
 }

@@ -13,6 +13,8 @@ import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
+import nl.thehyve.podium.search.SearchOrganisation;
+import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.config.Constants;
 import com.codahale.metrics.annotation.Timed;
@@ -24,6 +26,7 @@ import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -89,10 +92,12 @@ public class UserResource {
      * The user needs to be activated on creation.
      * </p>
      *
-     * @param userData the user to create.
-     * @return the ResponseEntity with status 201 (Created),
-     *      or with status 400 (Bad Request) if the login or email is already in use.
+     * @param userData the user to create
      * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws UserAccountException when the login already exists.
+     * @return the ResponseEntity with status
+     * 201 (Created) and with body the new user,
+     * 400 (Bad Request) if the login or email is already in use
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
@@ -117,6 +122,7 @@ public class UserResource {
      * PUT  /users : Updates an existing User.
      *
      * @param userData the user to update
+     * @throws UserAccountException when the login already exists.
      * @return the ResponseEntity with status 200 (OK) and with body the updated user,
      * or with status 400 (Bad Request) if the login or email is already in use,
      * or with status 500 (Internal Server Error) if the user couldn't be updated
@@ -237,11 +243,24 @@ public class UserResource {
      * @return the result of the search
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/_search/users/{query}")
+    @GetMapping("/_search/users")
     @Timed
-    public List<User> search(@PathVariable String query) {
-        return StreamSupport
-            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+    public ResponseEntity<List<SearchUser>> search(@RequestParam String query) {
+        List<SearchUser> list = userService.search(query);
+        return ResponseEntity.ok(list);
+    }
+
+    /**
+     * SUGGEST  /_suggest/users/:query : Get user suggestions for string
+     *
+     * @param query the query to search
+     * @return the result of the search
+     */
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @GetMapping("/_suggest/users")
+    @Timed
+    public ResponseEntity<List<SearchUser>> suggest(@RequestParam String query) {
+        List<SearchUser> list = userService.suggestUsers(query);
+        return ResponseEntity.ok(list);
     }
 }

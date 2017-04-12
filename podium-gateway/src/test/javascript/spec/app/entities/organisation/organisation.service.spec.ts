@@ -1,9 +1,18 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
 import { async, inject, TestBed } from '@angular/core/testing';
 import { BaseRequestOptions, Http, HttpModule, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { OrganisationService } from '../../../../../../main/webapp/app/entities/organisation/organisation.service';
-import { createLanguageService } from 'tslint';
-import { Organisation } from '../../../../../../main/webapp/app/entities/organisation/organisation.model';
+import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
 
 
 describe('OrganisationService (Mocked)', () => {
@@ -29,8 +38,8 @@ describe('OrganisationService (Mocked)', () => {
     it('should construct', async(
         inject([OrganisationService, MockBackend],
             (service, mockBackend) => {
-            expect(service).toBeDefined();
-        })
+                expect(service).toBeDefined();
+            })
     ));
 
     describe('findAll', () => {

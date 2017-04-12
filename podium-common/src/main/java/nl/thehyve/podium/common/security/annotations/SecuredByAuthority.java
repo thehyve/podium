@@ -20,6 +20,8 @@ public @interface SecuredByAuthority {
 
     /**
      * Authority names. See {@link nl.thehyve.podium.common.security.AuthorityConstants}.
+     *
+     * @return String[] Array of authority names.
      */
     String[] value() default {};
 

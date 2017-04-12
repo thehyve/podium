@@ -8,10 +8,9 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
-import { Organisation, OrganisationService } from '../../entities/';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
@@ -22,12 +21,12 @@ import {
     RequestService,
     Principal,
     User,
-    Attachment,
-    EmailValidatorDirective,
-    OrganisationSelectorComponent
+    Attachment
 } from '../../shared';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
+import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
+import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 
 @Component({
     selector: 'pdm-request-form',
@@ -35,7 +34,7 @@ import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.com
     styleUrls: ['request-form.scss']
 })
 
-export class RequestFormComponent implements OnInit {
+export class RequestFormComponent implements OnInit, AfterContentInit {
 
     private currentUser: User;
 

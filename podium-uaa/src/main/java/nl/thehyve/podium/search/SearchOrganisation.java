@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.search;
 
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.domain.Organisation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -15,12 +16,13 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * An Organisation.
  */
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "organisation")
+@Document(indexName = "searchorganisation")
 public class SearchOrganisation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,20 +38,10 @@ public class SearchOrganisation implements Serializable {
 
     private boolean activated;
 
-    public void copyProperties(Organisation organisation) {
-        this.name = organisation.getName();
-        this.shortName = organisation.getShortName();
-        this.activated = organisation.isActivated();
-    }
+    private Set<RequestType> requestTypes;
 
     public SearchOrganisation() {
 
-    }
-
-    public SearchOrganisation(Organisation organisation) {
-        this.id = organisation.getId();
-        this.uuid = organisation.getUuid().toString();
-        copyProperties(organisation);
     }
 
     public Long getId() {
@@ -71,6 +63,20 @@ public class SearchOrganisation implements Serializable {
     public boolean isActivated() {
         return activated;
     }
+
+    public void setId(Long id) { this.id = id; }
+
+    public void setUuid(String uuid) { this.uuid = uuid; }
+
+    public void setName(String name) { this.name = name; }
+
+    public void setShortName(String shortName) { this.shortName = shortName; }
+
+    public void setActivated(boolean activated) { this.activated = activated; }
+
+    public Set<RequestType> getRequestTypes() { return requestTypes; }
+
+    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestTypes = requestTypes; }
 
     @Override
     public boolean equals(Object o) {
@@ -99,6 +105,7 @@ public class SearchOrganisation implements Serializable {
             ", uuid='" + uuid + "'" +
             ", name='" + name + "'" +
             ", shortName='" + shortName + "'" +
+            ", requestTypes='" + requestTypes + "'" +
             '}';
     }
 
