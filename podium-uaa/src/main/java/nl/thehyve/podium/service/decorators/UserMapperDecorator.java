@@ -47,7 +47,10 @@ public abstract class UserMapperDecorator implements UserMapper {
             //
         }
 
-        fullNameCompletion.setOutput(searchUser.getFirstName() + " " + searchUser.getLastName());
+        String outputString
+            = searchUser.getFirstName() + " " + searchUser.getLastName() + " (" + searchUser.getEmail() + ")";
+
+        fullNameCompletion.setOutput(outputString);
 
         searchUser.setFullNameSuggest(fullNameCompletion);
         return searchUser;

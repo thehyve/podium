@@ -378,5 +378,12 @@ form {
     }
 }
 
+typeahead-container {
+    width: 300px !important;
 
-/* jhipster-needle-scss-add-main JHipster will add new css style */
+    ul.dropdown-menu {
+        padding: 10px!important;
+        font-size: 14px!important;
+    }
+}
+
