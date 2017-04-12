@@ -8,20 +8,60 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { JhiLanguageService } from 'ng-jhipster';
+import { RequestBase } from '../../shared/request/request-base';
+import { ActivatedRoute } from '@angular/router';
+import { RequestService } from '../../shared/request/request.service';
+import { RequestDetailComponent } from './detail/request-detail.component';
 
 @Component({
     selector: 'pdm-request-main-detail',
-    templateUrl: './request-main-detail.component.html'
+    templateUrl: './request-main-detail.component.html',
+    styleUrls: ['request-main-detail.scss']
 })
 
 export class RequestMainDetailComponent implements OnInit {
 
-    constructor() {
+    @ViewChild(RequestDetailComponent)
+    private requestDetail: RequestDetailComponent;
 
+    public request: RequestBase;
+    public error: any;
+    public success: any;
+
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private route: ActivatedRoute,
+        private requestService: RequestService
+    ) {
+        this.jhiLanguageService.setLocations(['request']);
     }
 
     ngOnInit() {
 
+        /**
+         * Resolve request
+         */
+        this.route.params.subscribe(params => {
+            let uuid = params['uuid'];
+            if (uuid) {
+                this.requestService.findByUuid(uuid).subscribe(
+                    (request) => this.onSuccess(request),
+                    (res) => this.onError(res)
+                );
+            }
+        });
     }
-}
+
+    private onSuccess(request: RequestBase) {
+        this.request = request;
+        this.requestDetail.setRequestDetail(request.requestDetail);
+        this.error =  null;
+        this.success = 'SUCCESS';
+    }
+
+    private onError(error) {
+        this.error =  'ERROR';
+        this.success = null;
+    }}

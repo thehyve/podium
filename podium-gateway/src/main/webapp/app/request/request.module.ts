@@ -22,9 +22,12 @@ import {
 import { RequestOverviewComponent } from './overview/request-overview.component';
 import { RequestOverviewService } from './overview/request-overview.service';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
+import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [
+        CommonModule,
         PodiumGatewaySharedModule,
         RouterModule.forChild(requestRoute)
     ],
@@ -32,7 +35,8 @@ import { RequestMainDetailComponent } from './main-detail/request-main-detail.co
         RequestFormComponent,
         RequestFormSubmitDialogComponent,
         RequestOverviewComponent,
-        RequestMainDetailComponent
+        RequestMainDetailComponent,
+        RequestDetailComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent

@@ -3,14 +3,28 @@
         "pageTitle": "Request",
         "action": {
             "submit": "Submit",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "details": "Details",
+            "edit": "Edit",
+            "delete": "Delete"
         },
         "submit": {
             "title": "Confirm request submission",
             "question": "Are you sure you want to submit this request?"
         },
         "detail": {
-            "title": "Request Details"
+            "pageTitle": "Request Details",
+            "title": "Title",
+            "background": "Background",
+            "researchQuestion": "Research Question",
+            "hypothesis": "Hypothesis",
+            "methods": "Methods",
+            "relatedRequestNumber": "Related Request Number",
+            "principalInvestigator": "Principal Investigator",
+            "searchQuery": "Search Query",
+            "isCombined": "Combined Request",
+            "requestTypes": "Request Types",
+            "organisations": "Organisations"
         },
         "form": {
             "header": {

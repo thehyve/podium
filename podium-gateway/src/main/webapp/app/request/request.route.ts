@@ -24,11 +24,18 @@ let REQUEST_ROUTES = [
     requestMainDetailRoute
 ];
 
-export const requestRoute: Routes = [{
-    path: 'requests',
-    children: REQUEST_ROUTES,
-    data: {
-        authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER']
+export const requestRoute: Routes = [
+    {
+        path: 'requests',
+        children: REQUEST_ROUTES,
+        data: {
+            authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER'],
+        },
+        canActivate: [ UserRouteAccessService ]
     },
-    canActivate: [ UserRouteAccessService ]
-}];
+    {
+        path: '**',
+        redirectTo: 'overview',
+        pathMatch: 'full'
+    }
+];
