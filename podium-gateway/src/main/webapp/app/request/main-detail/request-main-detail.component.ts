@@ -23,6 +23,10 @@ import { RequestDetailComponent } from './detail/request-detail.component';
 
 export class RequestMainDetailComponent implements OnInit {
 
+    /**
+     * Setup component as viewchild to access methods inside child.
+     * Used for review and method accessors in sibling components
+     */
     @ViewChild(RequestDetailComponent)
     private requestDetail: RequestDetailComponent;
 
@@ -57,8 +61,6 @@ export class RequestMainDetailComponent implements OnInit {
     private onSuccess(request: RequestBase) {
         this.request = request;
         this.requestDetail.setRequestDetail(request.requestDetail);
-        this.error =  null;
-        this.success = 'SUCCESS';
     }
 
     private onError(error) {
