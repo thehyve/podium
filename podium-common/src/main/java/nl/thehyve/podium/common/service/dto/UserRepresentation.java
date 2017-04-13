@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.common.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.validation.Required;
 import nl.thehyve.podium.common.config.Constants;
@@ -139,6 +140,8 @@ public class UserRepresentation implements IdentifiableUser {
 
     public UUID getUuid() { return uuid; }
 
+    @Override
+    @JsonIgnore
     public UUID getUserUuid() { return getUuid(); }
 
     public String getFirstName() {
