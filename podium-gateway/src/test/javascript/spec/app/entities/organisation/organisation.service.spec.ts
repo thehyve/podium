@@ -95,6 +95,7 @@ describe('OrganisationService (Mocked)', () => {
             uuid: "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
             name: "International variable name bank",
             shortName: "VarnameBank",
+            activated : true,
             organisationUuid: "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a"
         })];
 

@@ -110,7 +110,7 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
         it('should update input value when selected organisations changed', () => {
             comp.onChange();
-            expect(comp.organisations).toEqual([new Organisation({id:1000, uuid:'456', name: 'dummy'})]);
+            expect(comp.organisations).toEqual([new Organisation({id:1001, uuid:'456', name: 'dummy'})]);
         });
 
         it('should emit value when selection changed', () => {
