@@ -8,6 +8,7 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.search.SearchOrganisation;
@@ -15,6 +16,7 @@ import nl.thehyve.podium.service.OrganisationService;
 
 import nl.thehyve.podium.domain.Organisation;
 
+import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,35 +85,53 @@ public class OrganisationResourceIntTest {
 
     private Organisation organisation;
 
+    private OrganisationDTO organisationDTO;
+
     Logger log = LoggerFactory.getLogger(getClass());
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganisationResource organisationResource = new OrganisationResource(organisationService);
+        OrganisationResource organisationResource = new OrganisationResource();
+
+        ReflectionTestUtils.setField(organisationResource, "organisationService", organisationService);
+
         this.restOrganisationMockMvc = MockMvcBuilders.standaloneSetup(organisationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
+    public static Organisation createEntity(EntityManager em) {
+        Organisation organisation = new Organisation()
+            .name(DEFAULT_NAME)
+            .shortName(DEFAULT_SHORT_NAME);
+
+        organisation.setDeleted(DEFAULT_DELETED);
+        organisation.setActivated(DEFAULT_ACTIVATED);
+
+        return organisation;
+    }
+
     /**
-     * Create an entity for this test.
+     * Create an entityDTO for this test.
      *
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Organisation createEntity(EntityManager em) {
-        Organisation organisation = new Organisation()
-                .name(DEFAULT_NAME)
-                .shortName(DEFAULT_SHORT_NAME);
-        organisation.setDeleted(DEFAULT_DELETED);
-        organisation.setActivated(DEFAULT_ACTIVATED);
-        return organisation;
+    public static OrganisationDTO createEntityDTO() {
+        OrganisationDTO organisationDTO = new OrganisationDTO();
+        organisationDTO.setName(DEFAULT_NAME);
+        organisationDTO.setShortName(DEFAULT_SHORT_NAME);
+        organisationDTO.setDeleted(DEFAULT_DELETED);
+        organisationDTO.setActivated(DEFAULT_ACTIVATED);
+
+        return organisationDTO;
     }
 
     @Before
     public void initTest() {
         organisationSearchRepository.deleteAll();
+        organisationDTO = createEntityDTO();
         organisation = createEntity(em);
     }
 
@@ -120,11 +141,11 @@ public class OrganisationResourceIntTest {
         log.info("Create organisation");
         int databaseSizeBeforeCreate = organisationRepository.findAll().size();
         log.info("Database size: {}", databaseSizeBeforeCreate);
-        // Create the Organisation
 
+        // Create the Organisation
         restOrganisationMockMvc.perform(post("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisation)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Organisation in the database
@@ -162,7 +183,7 @@ public class OrganisationResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(existingOrganisation)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate length of entities in the database didnt change
         List<Organisation> organisationList = organisationRepository.findAll();
         assertThat(organisationList).hasSize(databaseSizeBeforeCreate);
     }
@@ -172,13 +193,13 @@ public class OrganisationResourceIntTest {
     public void checkNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = organisationRepository.findAll().size();
         // set the field null
-        organisation.setName(null);
+        organisationDTO.setName(null);
 
         // Create the Organisation, which fails.
 
         restOrganisationMockMvc.perform(post("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisation)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
             .andExpect(status().isBadRequest());
 
         List<Organisation> organisationList = organisationRepository.findAll();
@@ -190,13 +211,13 @@ public class OrganisationResourceIntTest {
     public void checkShortNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = organisationRepository.findAll().size();
         // set the field null
-        organisation.setShortName(null);
+        organisationDTO.setShortName(null);
 
         // Create the Organisation, which fails.
 
         restOrganisationMockMvc.perform(post("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisation)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
             .andExpect(status().isBadRequest());
 
         List<Organisation> organisationList = organisationRepository.findAll();
@@ -250,13 +271,13 @@ public class OrganisationResourceIntTest {
         int databaseSizeBeforeUpdate = organisationRepository.findAll().size();
 
         // Update the organisation
-        Organisation updatedOrganisation = organisationRepository.findOne(organisation.getId());
-        updatedOrganisation.name(UPDATED_NAME);
-        updatedOrganisation.shortName(UPDATED_SHORT_NAME);
+        organisationDTO.setId(organisation.getId());
+        organisationDTO.setName(UPDATED_NAME);
+        organisationDTO.setShortName(UPDATED_SHORT_NAME);
 
         restOrganisationMockMvc.perform(put("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedOrganisation)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
             .andExpect(status().isOk());
 
         // Validate the Organisation in the database
@@ -277,17 +298,15 @@ public class OrganisationResourceIntTest {
     public void updateNonExistingOrganisation() throws Exception {
         int databaseSizeBeforeUpdate = organisationRepository.findAll().size();
 
-        // Create the Organisation
-
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID a 404 NOT FOUND will be thrown
         restOrganisationMockMvc.perform(put("/api/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisation)))
-            .andExpect(status().isCreated());
+            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
+            .andExpect(status().isNotFound());
 
         // Validate the Organisation in the database
         List<Organisation> organisationList = organisationRepository.findAll();
-        assertThat(organisationList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(organisationList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -329,7 +348,7 @@ public class OrganisationResourceIntTest {
         int databaseSizeBeforeDelete = organisationService.count().intValue();
 
         // Get the organisation
-        restOrganisationMockMvc.perform(delete("/api/organisations/{id}", organisation.getId())
+        restOrganisationMockMvc.perform(delete("/api/organisations/{uuid}", organisation.getUuid())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
@@ -353,8 +372,8 @@ public class OrganisationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
     }
 
     @Test

@@ -115,6 +115,8 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
 
     /**
      * Apply the token converter (and enhancer) for token store.
+     *
+     *  @return A JWTTokenStore using the `jwtAccessTokenConverter`.
      */
     @Bean
     public JwtTokenStore tokenStore() {

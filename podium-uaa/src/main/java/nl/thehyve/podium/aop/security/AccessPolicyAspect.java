@@ -81,6 +81,8 @@ public class AccessPolicyAspect {
     /**
      * Before execution of the method, check if any security rule for the method is satisfied.
      * Throws an {@link AccessDeniedException} if not.
+     *
+     * @param joinPoint Candidate point in application executation where the aspect can be plugged in.
      */
     @Before("controllersPointcut()")
     public void checkAccess(JoinPoint joinPoint) {

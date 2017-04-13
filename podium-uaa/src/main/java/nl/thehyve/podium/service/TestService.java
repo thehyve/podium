@@ -19,10 +19,13 @@ import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchOrganisation;
+import nl.thehyve.podium.search.SearchUser;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.representation.RoleRepresentation;
 import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +70,9 @@ public class TestService {
     @Inject
     OrganisationService organisationService;
 
+    @Autowired
+    UserMapper userMapper;
+
     private static final Set<String> specialUsers = new HashSet<>(Arrays.asList("admin", "system"));
 
     /**
@@ -87,13 +93,15 @@ public class TestService {
         roleRepository.delete(roles);
 
         // Delete all users except "admin" and "system"
-        Set<User> users = new HashSet<>();
+        List<User> users = new ArrayList<>();
         for(User user: userRepository.findAll()) {
             if (!specialUsers.contains(user.getLogin())) {
                 users.add(user);
             }
         }
-        userSearchRepository.delete(users);
+
+        List<SearchUser> searchUsers = userMapper.usersToSearchUsers(users);
+        userSearchRepository.delete(searchUsers);
         userRepository.delete(users);
 
         // Delete all organisations

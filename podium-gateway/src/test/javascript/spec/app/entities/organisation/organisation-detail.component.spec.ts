@@ -19,9 +19,8 @@ import { DateUtils, DataUtils } from 'ng-jhipster';
 import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { MockActivatedRoute } from '../../../helpers/mock-route.service';
-import { OrganisationDetailComponent } from '../../../../../../main/webapp/app/entities/organisation/organisation-detail.component';
-import { OrganisationService } from '../../../../../../main/webapp/app/entities/organisation/organisation.service';
-import { Organisation } from '../../../../../../main/webapp/app/entities/organisation/organisation.model';
+import { Organisation, OrganisationService, OrganisationDetailComponent }
+    from '../../../../../../main/webapp/app/backoffice/modules/organisation';
 
 describe('Component Tests', () => {
 
@@ -61,24 +60,26 @@ describe('Component Tests', () => {
                     template: ''
                 }
             }).compileComponents()
-            .then(() => {
-                fixture = TestBed.createComponent(OrganisationDetailComponent);
-                comp = fixture.componentInstance;
-                service = fixture.debugElement.injector.get(OrganisationService);
-            });
+                .then(() => {
+                    fixture = TestBed.createComponent(OrganisationDetailComponent);
+                    comp = fixture.componentInstance;
+                    service = fixture.debugElement.injector.get(OrganisationService);
+                });
         }));
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
-            // GIVEN
-            spyOn(service, 'findByUuid').and.returnValue(Observable.of(new Organisation(10)));
+                // GIVEN
+                let organisation = new Organisation();
+                organisation.id = 10;
+                spyOn(service, 'findByUuid').and.returnValue(Observable.of(organisation));
 
-            // WHEN
-            comp.ngOnInit();
+                // WHEN
+                comp.ngOnInit();
 
-            // THEN
-            expect(service.findByUuid).toHaveBeenCalledWith('123');
-            expect(comp.organisation).toEqual(jasmine.objectContaining({id: 10}));
+                // THEN
+                expect(service.findByUuid).toHaveBeenCalledWith('123');
+                expect(comp.organisation).toEqual(jasmine.objectContaining({id: 10}));
             });
         });
     });

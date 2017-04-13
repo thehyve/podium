@@ -24,6 +24,7 @@ $link-color: #ccc;
     background-color: #353d47;
     padding: .2em 1em;
     border-radius: 0;
+
     .profile-image {
         margin: -10px 0px;
         height: 40px;
@@ -44,6 +45,10 @@ $link-color: #ccc;
 
         .nav-item > * {
             color: $link-color;
+        }
+
+        .nav-item .material-icons {
+            margin-right: 7px;
         }
     }
 

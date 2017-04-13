@@ -15,38 +15,28 @@ import { Principal } from './principal.service';
     selector: '[pdmHasAnyAuthority]'
 })
 export class HasAnyAuthorityDirective {
-
-    @Input() set pdmHasAnyAuthority(value: string) {
-        this.authority = value.replace(/\s+/g, '').split(',');
-
-        if (this.authority.length > 0) {
-            this.setVisibilitySync();
-        }
-    };
-
-    authority: string[];
+    private authorities: string[];
 
     constructor(
         private principal: Principal,
         private templateRef: TemplateRef<any>,
-        private viewContainer: ViewContainerRef
-    ) {
+        private viewContainerRef: ViewContainerRef
+    ) {}
+
+    @Input() set pdmHasAnyAuthority(value: string|string[]) {
+        this.authorities = typeof value === 'string' ? [ <string> value ] : <string[]> value;
+        this.updateView();
+        // Get notified each time authentication state changes.
+        this.principal.getAuthenticationState().subscribe(identity => this.updateView());
     }
 
-    private setVisible () {
-        this.viewContainer.createEmbeddedView(this.templateRef);
-    }
-
-    private setHidden () {
-        this.viewContainer.clear();
-    }
-
-    private setVisibilitySync () {
-        let result = this.principal.hasAnyAuthority(this.authority);
-        if (result) {
-            this.setVisible();
-        } else {
-            this.setHidden();
-        }
+    private updateView(): void {
+        this.principal.hasAnyAuthority(this.authorities).then(result => {
+            if (result) {
+                this.viewContainerRef.createEmbeddedView(this.templateRef);
+            } else {
+                this.viewContainerRef.clear();
+            }
+        });
     }
 }

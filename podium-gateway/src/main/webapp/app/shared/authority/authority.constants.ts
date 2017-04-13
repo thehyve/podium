@@ -19,6 +19,12 @@ const authorityNames: { [token: string]: string; } = {
     'ROLE_RESEARCHER':                  'Researcher'
 };
 
+const organisationAuthorities: { [token: string]: string; } = {
+    'ROLE_ORGANISATION_ADMIN':          'Organisation administrator',
+    'ROLE_ORGANISATION_COORDINATOR':    'Organisation coordinator',
+    'ROLE_REVIEWER':                    'Reviewer'
+};
+
 function convertNamesToAuthorities(names: { [token: string]: string; }): Array<Authority> {
     let result: Array<Authority> = [];
     for (const token in names) {
@@ -42,3 +48,7 @@ function convertToAuthorityMap(authorities: ReadonlyArray<Authority>): { [token:
 export const AUTHORITIES: ReadonlyArray<Authority> = convertNamesToAuthorities(authorityNames);
 
 export const AUTHORITIES_MAP: { [token: string]: Authority; } = convertToAuthorityMap(AUTHORITIES);
+
+export const ORGANISATION_AUTHORITIES: ReadonlyArray<Authority> = convertNamesToAuthorities(organisationAuthorities);
+
+export const ORGANISATION_AUTHORITIES_MAP: { [token: string]: Authority; } = convertToAuthorityMap(ORGANISATION_AUTHORITIES);

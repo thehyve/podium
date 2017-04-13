@@ -13,9 +13,13 @@ import { Routes } from '@angular/router';
 import { UserRouteAccessService } from '../shared';
 
 import { requestFormRoute } from './';
+import { requestFormEditRoute } from './form/request-form-edit.route';
+import { requestOverviewRoute } from './overview/request-overview.route';
 
 let REQUEST_ROUTES = [
-    requestFormRoute
+    requestFormRoute,
+    requestFormEditRoute,
+    requestOverviewRoute
 ];
 
 export const requestRoute: Routes = [{

@@ -36,6 +36,8 @@ public class UaaProperties {
          * Maximum number of failed login attempts before the user account is locked.
          *
          * Property: uaa.security.maxFailedLoginAttempts (default: 5)
+         *
+         *  @return The number of maximum failed login attempts allowed.
          */
         public long getMaxFailedLoginAttempts() {
             return maxFailedLoginAttempts;
@@ -50,6 +52,8 @@ public class UaaProperties {
          * otherwise, an admin action is required to unlock the account.
          *
          * Property: uaa.security.timeBasedUnlockingEnabled (default: false)
+         *
+         * @return boolean indicating whether time based account unlocking is enabled.
          */
         public boolean isTimeBasedUnlockingEnabled() {
             return timeBasedUnlockingEnabled;
@@ -64,6 +68,8 @@ public class UaaProperties {
          * Automatic unlocking is only active if {@link #timeBasedUnlockingEnabled}.
          *
          * Property: uaa.security.accountBlockingPeriodSeconds (default: 300 = 5 minutes)
+         *
+         *  @return Number of seconds indicating how long the account is locked after exceeding max login attempts.
          */
         public long getAccountLockingPeriodSeconds() {
             return accountLockingPeriodSeconds;
@@ -77,6 +83,8 @@ public class UaaProperties {
          * The number of seconds an activation key is valid.
          *
          * Property: uaa.security.activationKeyValiditySeconds { default: 604800 }
+         *
+         *  @return Number of seconds indicating how long an activation key is valid for.
          */
         public long getActivationKeyValiditySeconds() { return activationKeyValiditySeconds; }
 

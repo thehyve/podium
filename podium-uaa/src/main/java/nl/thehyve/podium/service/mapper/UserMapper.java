@@ -9,7 +9,11 @@ package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.search.SearchUser;
+import nl.thehyve.podium.service.decorators.UserMapperDecorator;
 import nl.thehyve.podium.service.representation.UserRepresentation;
+import nl.thehyve.podium.service.util.UuidMapper;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.mapstruct.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +25,8 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity User and its DTO UserDTO.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = { UuidMapper.class })
+@DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
 
     UserRepresentation userToUserDTO(User user);
@@ -41,6 +46,15 @@ public interface UserMapper {
 
     List<User> userDTOsToUsers(List<UserRepresentation> userDTOs);
 
+    // Decorated is used to generate the fullname for the searchuser
+    SearchUser userToSearchUser(User user);
+
+    List<SearchUser> usersToSearchUsers(List<User> users);
+
+    SearchUser completionSuggestOptionToSearchUser(CompletionSuggestion.Entry.Option option);
+
+    List<SearchUser> completionSuggestOptionsToSearchUsers(List<CompletionSuggestion.Entry.Option> options);
+
     default User userFromId(Long id) {
         if (id == null) {
             return null;
@@ -56,10 +70,7 @@ public interface UserMapper {
     }
 
     default Set<Authority> authoritiesFromStrings(Set<String> strings) {
-        return strings.stream().map(string -> {
-            Authority auth = new Authority(string);
-            return auth;
-        }).collect(Collectors.toSet());
+        return strings.stream().map(Authority::new).collect(Collectors.toSet());
     }
 
     default Set<String> stringsFromGrantedAuthorities (Set<GrantedAuthority> authorities) {

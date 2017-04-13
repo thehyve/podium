@@ -8,10 +8,9 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
-import { Organisation, OrganisationService } from '../../entities/';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
@@ -22,18 +21,20 @@ import {
     RequestService,
     Principal,
     User,
-    Attachment,
-    EmailValidatorDirective
+    Attachment
 } from '../../shared';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {RequestFormSubmitDialogComponent} from './request-form-submit-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
+import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
+import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 
 @Component({
     selector: 'pdm-request-form',
     templateUrl: './request-form.component.html',
     styleUrls: ['request-form.scss']
 })
-export class RequestFormComponent implements OnInit {
+
+export class RequestFormComponent implements OnInit, AfterContentInit {
 
     private currentUser: User;
 
@@ -42,8 +43,7 @@ export class RequestFormComponent implements OnInit {
     public success: string;
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
-    public requestTypes = RequestType;
-    public availableOrganisations: Organisation[];
+    public requestTypeOptions: any;
     public availableRequestDrafts: RequestBase[];
     public selectDraft: boolean;
     public selectedDraft: any = null;
@@ -68,14 +68,8 @@ export class RequestFormComponent implements OnInit {
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.currentUser = account;
+            this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
-        });
-
-        /**
-         * Organisation resolve
-         */
-        this.organisationService.findAvailable().map((availableOrganisations) => {
-            // TODO display list available organisations
         });
     }
 
@@ -84,11 +78,11 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        this.requestService.findDrafts()
-            .subscribe(
-                (requestDrafts) => this.processAvailableDrafts(requestDrafts),
-                (error) => this.onError('Error loading available request drafts.')
-            );
+        if (this.requestFormService.request !== null) {
+            this.selectRequestDraft(this.requestFormService.request);
+        } else {
+            this.initializeBaseRequest();
+        }
     }
 
     registerChangeInFilesUploaded() {
@@ -116,6 +110,7 @@ export class RequestFormComponent implements OnInit {
                 (requestBase) => {
                     this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
+                    this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
                     this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     this.selectDraft = false;
@@ -124,9 +119,14 @@ export class RequestFormComponent implements OnInit {
             );
     }
 
+    updateRequestOrganisations(event: Organisation[]) {
+        this.requestBase.organisations = event;
+    }
+
     selectRequestDraft(requestBase: RequestBase) {
         this.selectDraft = false;
         this.requestBase = requestBase;
+        this.requestBase.organisations = requestBase.organisations || [];
         this.requestDetail = requestBase.requestDetail || new RequestDetail();
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
         this.requestDetail.principalInvestigator =

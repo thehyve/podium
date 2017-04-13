@@ -31,7 +31,7 @@ import {
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(accountState, { useHash: true })
+        RouterModule.forChild(accountState)
     ],
     declarations: [
         VerifyComponent,

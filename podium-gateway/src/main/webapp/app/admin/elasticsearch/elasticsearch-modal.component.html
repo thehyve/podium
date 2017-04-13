@@ -1,0 +1,31 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<form name="reindexForm" ng-submit="confirmReindex()">
+    <div class="modal-header">
+        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" jhiTranslate="elasticsearch.reindex.dialog.title">Confirm reindex operation</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <p jhiTranslate="elasticsearch.reindex.dialog.question">
+        Are you sure you want to reindex Elasticsearch? This could take a while!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="activeModal.dismiss('cancelled')">
+            <i class="material-icons">cancel</i>
+            <span jhiTranslate="elasticsearch.reindex.dialog.cancel">Cancel</span>
+        </button>
+        <button type="submit" class="btn btn-danger" [disabled]="isReindexing" (click)="confirmReindex()">
+            <i class="material-icons">find_in_page</i>
+            <span jhiTranslate="elasticsearch.reindex.dialog.confirm">Reindex</span>
+        </button>
+    </div>
+</form>

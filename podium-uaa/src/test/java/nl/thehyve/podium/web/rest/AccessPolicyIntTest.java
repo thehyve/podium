@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.service.OrganisationService;
@@ -95,9 +96,13 @@ public class AccessPolicyIntTest {
     private Organisation organisationB;
 
     private Organisation createOrganisation(String organisationName) {
+        Set<RequestType> requestTypes = new HashSet<>();
+        requestTypes.add(RequestType.Data);
+
         Organisation organisation = new Organisation();
         organisation.setName(organisationName);
         organisation.setShortName(organisationName);
+        organisation.setRequestTypes(requestTypes);
         organisation = organisationService.save(organisation);
         entityManager.persist(organisation);
         for(Role role: organisation.getRoles()) {
@@ -133,6 +138,8 @@ public class AccessPolicyIntTest {
         ManagedUserVM userVM = new ManagedUserVM();
         userVM.setLogin("test_" + name);
         userVM.setEmail("test_" + name + "@localhost");
+        userVM.setFirstName("test_firstname_"+name);
+        userVM.setLastName("test_lastname_"+name);
         userVM.setPassword("Password123!");
         User user = userService.createUser(userVM);
         if (organisations.length > 0) {

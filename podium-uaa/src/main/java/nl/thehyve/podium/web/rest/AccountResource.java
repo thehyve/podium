@@ -58,6 +58,7 @@ public class AccountResource {
      * POST  /register : register the user.
      *
      * @param managedUserVM the managed user View Model
+     * @throws UserAccountException Exception thrown when a user login is already in use.
      * @return the ResponseEntity with status 201 (Created) if the user is registered or 400 (Bad Request) if the login or e-mail is already in use
      */
     @Public
@@ -84,8 +85,9 @@ public class AccountResource {
      * GET  /activate : activate the registered user.
      *
      * @param key the activation key
-     * @return  the ResponseEntity with status 200 (OK) and the activated user in body,
-     *          or status 500 (Internal Server Error) if the user couldn't be activated
+     * @return  the ResponseEntity with status
+     *          200 (OK) and the activated user in body,
+     *          500 (Internal Server Error) if the user couldn't be activated
      */
     @Public
     @GetMapping("/verify")
@@ -129,8 +131,9 @@ public class AccountResource {
     /**
      * GET  /account : get the current user.
      *
-     * @return the ResponseEntity with status 200 (OK) and the current user in body,
-     * or status 500 (Internal Server Error) if the user couldn't be returned
+     * @return  the ResponseEntity with status
+     *          200 (OK) and the current user in body,
+     *          500 (Internal Server Error) if the user couldn't be returned
      */
     @AnyAuthorisedUser
     @GetMapping("/account")

@@ -21,6 +21,7 @@ import {
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 export function alertServiceProvider(sanitizer: Sanitizer, translateService: TranslateService) {
@@ -31,7 +32,8 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
 
 @NgModule({
     imports: [
-        PodiumGatewaySharedLibsModule
+        PodiumGatewaySharedLibsModule,
+        NgbModule
     ],
     declarations: [
         FindLanguageFromKeyPipe,

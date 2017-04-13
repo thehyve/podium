@@ -177,7 +177,7 @@ public class AccessPolicyService {
      *
      * @param annotation the security rule.
      * @param joinPoint the current context.
-     * @return true iff the current user holds any of the authorities for the organisation specified by the rule.
+     * @return true if the current user holds any of the authorities for the organisation specified by the rule.
      */
     private boolean checkSecuredByOrganisation(SecuredByOrganisation annotation, JoinPoint joinPoint) {
         String signature = joinPoint.getSignature().toShortString();
