@@ -32,7 +32,7 @@ describe('RoleAssignComponent', () => {
     let comp: RoleAssignComponent;
     let fixture: ComponentFixture<RoleAssignComponent>;
     let roleService: RoleService;
-    let mockPrincipal: MockPrincipal;
+    let mockPrincipal: any;
 
     let dummyOrganisation: Organisation = {
         id: 6,
