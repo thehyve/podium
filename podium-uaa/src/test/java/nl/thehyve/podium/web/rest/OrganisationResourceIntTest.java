@@ -92,9 +92,9 @@ public class OrganisationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrganisationServer organisationResource = new OrganisationServer();
-        ReflectionTestUtils.setField(organisationResource, "organisationService", organisationService);
-        this.restOrganisationMockMvc = MockMvcBuilders.standaloneSetup(organisationResource)
+        OrganisationServer organisationServer = new OrganisationServer();
+        ReflectionTestUtils.setField(organisationServer, "organisationService", organisationService);
+        this.restOrganisationMockMvc = MockMvcBuilders.standaloneSetup(organisationServer)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
     }

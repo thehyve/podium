@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.*;
 
 /**
- * Service tests for the {@link OrganisationService}.
+ * Service tests for the {@link OrganisationClientService}.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -53,7 +53,7 @@ public class OrganisationServiceIntTest {
     private final Logger log = LoggerFactory.getLogger(OrganisationServiceIntTest.class);
 
     @Autowired
-    private OrganisationService organisationService;
+    private OrganisationClientService organisationService;
 
     @Autowired
     private RestTemplate restTemplate;

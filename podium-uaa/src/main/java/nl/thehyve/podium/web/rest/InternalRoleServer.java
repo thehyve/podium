@@ -17,6 +17,7 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class InternalRoleServer implements InternalRoleResource {
     @Autowired
     private OrganisationService organisationService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     @Timed
     public ResponseEntity<List<UserRepresentation>> getOrganisationRoleUsers(
@@ -51,6 +55,6 @@ public class InternalRoleServer implements InternalRoleResource {
         Organisation organisation = organisationService.findByUuid(uuid);
         Role role = roleService.findRoleByOrganisationAndAuthorityName(organisation, authority);
         List<User> users = new ArrayList<>(role.getUsers());
-        return ResponseEntity.ok(users.stream().map(User::toRepresentation).collect(Collectors.toList()));
+        return ResponseEntity.ok(userMapper.usersToUserDTOs(users));
     }
 }

@@ -300,8 +300,7 @@ public class UserService {
         SearchUser searchUser = userMapper.userToSearchUser(user);
         userSearchRepository.save(searchUser);
         log.debug("Changed Information for User: {}", user);
-        // FIXME: Add mapstruct mapper for all entity representations
-        return user.toRepresentation();
+        return userMapper.userToUserDTO(user);
     }
 
     public void updateUser(UserRepresentation userData) throws UserAccountException {

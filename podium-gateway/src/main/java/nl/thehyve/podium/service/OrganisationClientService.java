@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class OrganisationService {
+public class OrganisationClientService {
 
-    private final Logger log = LoggerFactory.getLogger(OrganisationService.class);
+    private final Logger log = LoggerFactory.getLogger(OrganisationClientService.class);
 
     @Autowired
     OrganisationClient organisationClient;

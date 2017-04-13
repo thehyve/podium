@@ -7,18 +7,15 @@
 
 package nl.thehyve.podium.domain;
 
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.Email;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -458,42 +455,4 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
             "}";
     }
 
-    private void mapProperties(UserRepresentation user) {
-        user.setLogin(this.getLogin());
-        user.setUuid(this.getUuid());
-        user.setFirstName(this.getFirstName());
-        user.setLastName(this.getLastName());
-        user.setEmail(this.getEmail());
-        user.setTelephone(this.getTelephone());
-        user.setInstitute(this.getInstitute());
-        user.setDepartment(this.getDepartment());
-        user.setJobTitle(this.getJobTitle());
-        user.setSpecialism(this.getSpecialism());
-        user.setEmailVerified(this.isEmailVerified());
-        user.setAdminVerified(this.isAdminVerified());
-        user.setAccountLocked(this.isAccountLocked());
-        user.setLangKey(this.getLangKey());
-        user.setAuthorities(this.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toSet()));
-    }
-
-    // FIXME: Replace with mapper
-    public UserRepresentation toRepresentation() {
-        UserRepresentation user = new UserRepresentation();
-        mapProperties(user);
-        return user;
-    }
-
-    // FIXME: Replace with mapper
-    public ManagedUserVM toManagedUserVM() {
-        ManagedUserVM user = new ManagedUserVM();
-        mapProperties(user);
-        user.setId(this.getId());
-        user.setCreatedBy(this.getCreatedBy());
-        user.setCreatedDate(this.getCreatedDate());
-        user.setLastModifiedBy(this.getLastModifiedBy());
-        user.setLastModifiedDate(this.getLastModifiedDate());
-        user.setPassword(null);
-        return user;
-    }
 }

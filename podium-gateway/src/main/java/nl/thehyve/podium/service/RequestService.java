@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import feign.FeignException;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.exceptions.*;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -57,7 +56,7 @@ public class RequestService {
     private RequestReviewProcessService requestReviewProcessService;
 
     @Autowired
-    private OrganisationService organisationService;
+    private OrganisationClientService organisationClientService;
 
     @Autowired
     private MailService mailService;
@@ -275,8 +274,8 @@ public class RequestService {
             OrganisationDTO organisation;
             List<UserRepresentation> coordinators;
             try {
-                organisation = organisationService.findOrganisationByUuid(organisationUuid);
-                coordinators = organisationService.findUsersByRole(organisationUuid,
+                organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
+                coordinators = organisationClientService.findUsersByRole(organisationUuid,
                     AuthorityConstants.ORGANISATION_COORDINATOR);
             } catch (Exception e) {
                 log.error("Error fetching organisation and coordinators", e);

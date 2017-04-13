@@ -24,7 +24,7 @@ import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 
 import nl.thehyve.podium.service.MailService;
-import nl.thehyve.podium.service.OrganisationService;
+import nl.thehyve.podium.service.OrganisationClientService;
 import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
 import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
@@ -88,7 +88,7 @@ public class RequestResourceIntTest {
     private OAuth2TokenMockUtil tokenUtil;
 
     @MockBean
-    OrganisationService organisationService;
+    OrganisationClientService organisationService;
 
     @MockBean
     private MailService mailService;

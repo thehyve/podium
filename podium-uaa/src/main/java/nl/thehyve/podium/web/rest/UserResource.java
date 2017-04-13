@@ -21,12 +21,14 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +36,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing users.
@@ -70,14 +70,17 @@ public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    @Inject
+    @Autowired
     private MailService mailService;
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
+    @Autowired
     private UserSearchRepository userSearchRepository;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * POST  /users  : Creates a new user.
@@ -128,10 +131,11 @@ public class UserResource {
     public ResponseEntity<ManagedUserVM> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to update User : {}", userData);
         userService.updateUser(userData);
-        return userService.getUserByUuid(userData.getUuid())
-            .map(User::toManagedUserVM)
-            .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<User> userOptional =  userService.getUserByUuid(userData.getUuid());
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
+        }
+        throw new ResourceNotFound("User not found.");
     }
 
     /**
@@ -154,7 +158,7 @@ public class UserResource {
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createAlert("userManagement.unlocked", user.getLogin()))
-            .body(user.toManagedUserVM());
+            .body(userMapper.userToManagedUserVM(userOptional.get()));
     }
 
     /**
@@ -170,9 +174,7 @@ public class UserResource {
     public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userService.getUsers(pageable);
-        List<ManagedUserVM> managedUserVMs = page.getContent().stream()
-            .map(User::toManagedUserVM)
-            .collect(Collectors.toList());
+        List<ManagedUserVM> managedUserVMs = userMapper.usersToManagedUserVMs(page.getContent());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
         return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
     }
@@ -188,10 +190,11 @@ public class UserResource {
     @Timed
     public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
-        return userService.getUserWithAuthoritiesByLogin(login)
-                .map(User::toManagedUserVM)
-                .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
+        }
+        throw new ResourceNotFound("User not found.");
     }
 
     /**
@@ -205,10 +208,11 @@ public class UserResource {
     @Timed
     public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
         log.debug("REST request to get User : {}", uuid);
-        return userService.getUserByUuid(uuid)
-            .map(User::toManagedUserVM)
-            .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<User> userOptional = userService.getUserByUuid(uuid);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
+        }
+        throw new ResourceNotFound("User not found.");
     }
 
     /**
