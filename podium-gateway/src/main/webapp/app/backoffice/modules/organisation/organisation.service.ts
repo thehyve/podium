@@ -81,9 +81,7 @@ export class OrganisationService {
 
     jsonArrayToOrganisations(arr: any) {
         return arr.map((item) => {
-            return new Organisation (
-                item.id, item.uuid, item.name, item.shortName,item.activated, item.organisationUuid
-            );
+            return new Organisation (item);
         });
     }
 

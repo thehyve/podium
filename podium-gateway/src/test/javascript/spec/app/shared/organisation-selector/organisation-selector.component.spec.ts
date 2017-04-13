@@ -89,7 +89,7 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
         }];
 
         it('should select organisation(s) based on input value on initialisation', () => {
-            comp.organisations = [new Organisation(1000, '123', 'dummy')];
+            comp.organisations = [new Organisation({id:1000, uuid:'123', name: 'dummy'})];
             comp.ngOnInit();
             expect(comp.selectedOrganisations).toEqual(['123']);
         });
@@ -99,8 +99,8 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
         beforeEach(() => {
             comp.organisationOptions = [
-                new Organisation(1000, '123', 'dummy'),
-                new Organisation(1001, '456', 'dummy')
+                new Organisation({id:1000, uuid:'123', name: 'dummy'}),
+                new Organisation({id:1001, uuid:'456', name: 'dummy'})
             ];
             comp.selectedOrganisations = ['456'];
             comp.organisationChange = new EventEmitter();
@@ -110,7 +110,7 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
         it('should update input value when selected organisations changed', () => {
             comp.onChange();
-            expect(comp.organisations).toEqual([new Organisation(1001, '456', 'dummy')]);
+            expect(comp.organisations).toEqual([new Organisation({id:1000, uuid:'456', name: 'dummy'})]);
         });
 
         it('should emit value when selection changed', () => {

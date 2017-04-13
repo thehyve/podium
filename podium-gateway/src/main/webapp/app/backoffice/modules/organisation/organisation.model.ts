@@ -22,20 +22,8 @@ export class Organisation {
     public roles?: Role[];
     public requestTypes?: RequestType[];
 
-    constructor(
-        id?: number,
-        uuid?: string,
-        name?: string,
-        shortName?: string,
-        activated?: boolean,
-        organisationUuid?: string
-    ) {
-        this.id = id ? id : null;
-        this.uuid = uuid ? uuid : null;
-        this.name = name ? name : null;
-        this.shortName = shortName ? shortName : null;
-        this.activated = activated ? activated : null;
-        this.organisationUuid = organisationUuid ? organisationUuid : null;
+    constructor(jsonResponse? : any) {
+        jsonResponse ? Object.assign(this, JSON.parse(jsonResponse)) : this;
     }
 
 }

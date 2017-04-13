@@ -90,9 +90,13 @@ describe('OrganisationService (Mocked)', () => {
 
     describe('jsonArrayToOrganisations', () => {
 
-        const _organisations = [new Organisation (
-            1,  "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a", "International variable name bank", "VarnameBank", true,
-            "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a")];
+        const _organisations = [new Organisation({
+            id: 1,
+            uuid: "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
+            name: "International variable name bank",
+            shortName: "VarnameBank",
+            organisationUuid: "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a"
+        })];
 
         it('should convert array of json object to organisations', async(inject([OrganisationService], (service) => {
             let _jsonArray = [{
