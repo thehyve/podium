@@ -8,7 +8,7 @@
                 "search": "Search for organisation"
             },
             "delete": {
-                "question": "Are you sure you want to delete organisation {{ uuid }}?"
+                "question": "Are you sure you want to delete organisation {{ name }}?"
             },
             "detail": {
                 "title": "Organisation"
