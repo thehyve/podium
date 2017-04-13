@@ -180,21 +180,17 @@ public class RequestResource {
     /**
      * Fetch the request
      *
-     * FIXME: Add new annotation that check whether an member (coordinator or reviewer) of an organisation has access
-     *        to a different resource such as a Request.
-     *
+     * FIXME: UNSECURED - Add new annotation that check whether an member (coordinator or reviewer) of an organisation
+     *        has access to a different resource such as a Request.
      * @param uuid of the request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
      */
-    @SecuredByCurrentUser
     @GetMapping("/requests/{uuid}")
     @Timed
     public ResponseEntity<RequestRepresentation> getRequest(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        AuthenticatedUser authenticatedUser = user.getUser();
-        RequestRepresentation request = requestService.findRequestForRequester(authenticatedUser, uuid);
+        RequestRepresentation request = requestService.findRequest(uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
