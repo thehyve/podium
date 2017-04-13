@@ -13,6 +13,8 @@ import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.security.annotations.SecuredByCurrentUser;
+import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.security.SecurityUtils;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -173,6 +175,23 @@ public class RequestResource {
         Page<RequestRepresentation> page = requestService.findAllForRequester(user, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * Fetch the request
+     *
+     * FIXME: UNSECURED - Add new annotation that check whether an member (coordinator or reviewer) of an organisation
+     *        has access to a different resource such as a Request.
+     * @param uuid of the request
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request
+     * @return The list of requestDTOs generated
+     */
+    @GetMapping("/requests/{uuid}")
+    @Timed
+    public ResponseEntity<RequestRepresentation> getRequest(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        RequestRepresentation request = requestService.findRequest(uuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
     /**

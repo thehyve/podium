@@ -27,7 +27,7 @@ export class RequestOverviewComponent implements OnInit {
 
     private currentUser: User;
 
-    availableRequestDrafts: RequestBase[];
+    availableRequests: RequestBase[];
     error: string;
     success: string;
 
@@ -55,15 +55,15 @@ export class RequestOverviewComponent implements OnInit {
     displayDrafts() {
         this.requestService.findDrafts()
             .subscribe(
-                (requestDrafts) => this.processAvailableDrafts(requestDrafts),
+                (requestDrafts) => this.processAvailableRequests(requestDrafts),
                 (error) => this.onError('Error loading available request drafts.')
             );
     }
 
     displaySubmittedRequests() {
-        this.requestService.findSubmittedRequest()
+        this.requestService.findSubmittedRequests()
             .subscribe(
-                (requestDrafts) => this.processAvailableDrafts(requestDrafts),
+                (requests) => this.processAvailableRequests(requests),
                 (error) => this.onError('Error loading available request drafts.')
             );
     }
@@ -73,8 +73,12 @@ export class RequestOverviewComponent implements OnInit {
         this.router.navigate(['./requests/edit']);
     }
 
-    processAvailableDrafts(requestDrafts) {
-        this.availableRequestDrafts = requestDrafts;
+    navigateToRequestDetail(request) {
+        this.router.navigate(['./requests/detail', request.uuid]);
+    }
+
+    processAvailableRequests(requests) {
+        this.availableRequests = requests;
     }
 
     transition() {

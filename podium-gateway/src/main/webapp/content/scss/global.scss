@@ -287,6 +287,18 @@ http://google.github.io/material-design-icons/
 
     /* Support for IE. */
     font-feature-settings: 'liga';
+
+    &.md-18 {
+        font-size: 18px;
+    }
+
+    &.md-36 {
+        font-size: 36px;
+    }
+
+    &.md-48 {
+        font-size: 48px;
+    }
 }
 
 /* ==========================================================================
@@ -385,5 +397,9 @@ typeahead-container {
         padding: 10px!important;
         font-size: 14px!important;
     }
+}
+
+.alert {
+    border-radius: 0 !important;
 }
 
