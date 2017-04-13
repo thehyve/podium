@@ -23,7 +23,7 @@ export class Organisation {
     public requestTypes?: RequestType[];
 
     constructor(jsonResponse? : any) {
-        jsonResponse ? Object.assign(this, JSON.parse(jsonResponse)) : this;
+        jsonResponse ? Object.assign(this, jsonResponse) : this;
     }
 
 }
