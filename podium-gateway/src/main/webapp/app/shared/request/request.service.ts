@@ -42,7 +42,7 @@ export class RequestService {
         });
     }
 
-    findSubmittedRequest(): Observable<RequestBase[]> {
+    findSubmittedRequests(): Observable<RequestBase[]> {
         return this.http.get(`${this.resourceUrl}/status/Review`).map((res: Response) => {
             return res.json();
         });
@@ -63,6 +63,12 @@ export class RequestService {
 
     findDraftByUuid(uuid: string): Observable<RequestDetail> {
         return this.http.get(`${this.resourceUrl}/drafts/${uuid}`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
+    findByUuid(uuid: string): Observable<RequestDetail> {
+        return this.http.get(`${this.resourceUrl}/${uuid}`).map((res: Response) => {
             return res.json();
         });
     }

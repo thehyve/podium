@@ -22,6 +22,7 @@ import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,14 +114,14 @@ public class TestService {
      * @param roleData representation containing organisation UUID, authority and a set of user UUIDs.
      */
     @Profile({"dev", "test"})
-    public void assignUsersToRole(RoleRepresentation roleData) {
+    public void assignUsersToRole(TestRoleRepresentation roleData) {
         log.info("Assign to role: ({}, {})", roleData.getAuthority(), roleData.getOrganisation());
         log.info("Assign users  : {}", roleData.getUsers() == null ? null : Arrays.toString(roleData.getUsers().toArray()));
         Role role;
         if (AuthorityConstants.isOrganisationAuthority(roleData.getAuthority())) {
-            Organisation organisation = organisationService.findByUuid(roleData.getOrganisationUuid());
+            Organisation organisation = organisationService.findByShortName(roleData.getOrganisation());
             if (organisation == null) {
-                throw new ResourceNotFound("Organisation not found with uuid " + roleData.getOrganisationUuid().toString());
+                throw new ResourceNotFound("Organisation not found with short name " + roleData.getOrganisation());
             }
             role = roleService.findRoleByOrganisationAndAuthorityName(organisation, roleData.getAuthority());
         } else {
@@ -128,13 +129,13 @@ public class TestService {
         }
         if (role == null) {
             String message = String.format("Role not found with authority %s and organisation %s",
-                roleData.getAuthority(), roleData.getOrganisationUuid());
+                roleData.getAuthority(), roleData.getOrganisation());
             throw new ResourceNotFound(message);
         }
         Set<User> users = new HashSet<>();
         if (roleData.getUsers() != null) {
-            for (UUID userUuid : roleData.getUsers()) {
-                userService.getUserByUuid(userUuid).ifPresent(users::add);
+            for (String userLogin : roleData.getUsers()) {
+                userService.getUserWithAuthoritiesByLogin(userLogin).ifPresent(users::add);
             }
         }
         role.setUsers(users);

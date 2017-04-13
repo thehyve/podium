@@ -1,0 +1,37 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="row">
+    <div class="container-fluid">
+        <div class="col-md-6 offset-md-3 card-container">
+            <h2>
+                <span jhiTranslate="request.detail.pageTitle">Request</span>
+            </h2>
+
+            <jhi-alert></jhi-alert>
+            <jhi-alert-error></jhi-alert-error>
+
+            <tabset>
+                <tab heading="Details">
+                    <pdm-request-detail></pdm-request-detail>
+                </tab>
+                <tab heading="Conversation" [disabled]="true">
+                    test
+                </tab>
+                <tab heading="History" [disabled]="true">
+                    test
+                </tab>
+                <tab heading="Files" [disabled]="true">
+                    test
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

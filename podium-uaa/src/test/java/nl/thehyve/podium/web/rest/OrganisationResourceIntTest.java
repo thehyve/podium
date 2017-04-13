@@ -122,7 +122,6 @@ public class OrganisationResourceIntTest {
         OrganisationDTO organisationDTO = new OrganisationDTO();
         organisationDTO.setName(DEFAULT_NAME);
         organisationDTO.setShortName(DEFAULT_SHORT_NAME);
-        organisationDTO.setDeleted(DEFAULT_DELETED);
         organisationDTO.setActivated(DEFAULT_ACTIVATED);
 
         return organisationDTO;

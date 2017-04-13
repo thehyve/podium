@@ -122,6 +122,23 @@ public class RequestService {
     }
 
     /**
+     *  Get the request
+     *
+     *  @param requestUuid the uuid of the request
+     *  @return the entity
+     *  @throws AccessDenied iff the user is not the requester of the request.
+     */
+    @Transactional(readOnly = true)
+    public RequestRepresentation findRequest(UUID requestUuid) {
+        log.debug("Request to get Request with uuid {}", requestUuid);
+        Request request = requestRepository.findOneByUuid(requestUuid);
+        if (request == null) {
+            throw new ResourceNotFound("Request not found.");
+        }
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    /**
      * Perform look up of request drafts by requester.
      *
      * @param requester The user to perform the lookup for
