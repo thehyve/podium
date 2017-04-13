@@ -17,13 +17,13 @@ export class Organisation {
     uuid?: string;
     name?: string;
     shortName?: string;
-    deleted?: boolean;
     activated?: boolean;
     organisationUuid?: string;
     public roles?: Role[];
     public requestTypes?: RequestType[];
 
-    constructor() {
+    constructor(jsonResponse? : any) {
+        jsonResponse ? Object.assign(this, jsonResponse) : this;
     }
 
 }

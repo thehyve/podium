@@ -9,7 +9,6 @@
  */
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
@@ -24,44 +23,56 @@ import { OrganisationService } from '../../backoffice/modules/organisation/organ
 
 export class OrganisationSelectorComponent implements OnInit {
 
-    organisationOptions: Organisation[];
-    selectedOrganisations: Organisation[];
+    selectedOrganisationValues: any[];
+    organisationOptions: any;
+    selectedOrganisations: any[];
 
-    @Input() organisations: Organisation[];
+    @Output() organisationChange = new EventEmitter();
+
     @Input() requestType: RequestType[];
+    @Input()
+    get organisations() {
+        return this.selectedOrganisationValues;
+    }
+    set organisations(val) {
+        this.selectedOrganisationValues = val;
+        this.organisationChange.emit(this.selectedOrganisationValues);
+    }
 
-    @Output() organisationChange = new EventEmitter<Organisation[]>();
 
     private static onError (error) {
         return Observable.throw(new Error(error.status));
     }
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private organisationService: OrganisationService
-    ) {}
+    constructor(private organisationService: OrganisationService){}
 
     onChange() {
-        this.organisations = this.selectedOrganisations;
+        // get organisation instance of selected uuid
+        this.organisations = this.selectedOrganisations.map(
+            (selected) => {
+                return this.organisationOptions.find( (option) => {
+                    return option.uuid == selected;
+                })
+            }
+        );
         this.organisationChange.emit(this.organisations);
     }
 
     ngOnInit() {
+        // set selected organisations
         this.selectedOrganisations = this.organisations;
-        this.loadOrganisations();
-    }
-
-    private loadOrganisations() {
+        this.selectedOrganisations = this.selectedOrganisations.map( organisation => {
+            return organisation.uuid;
+        });
+        // load organisation options
         this.organisationService.findAll()
             .subscribe(
                 (data: Response) => {
-                    if (Array.isArray(data)) {
-                        this.organisationOptions = data;
-                    }
+                    this.organisationOptions = this.organisationService.jsonArrayToOrganisations(data);
                 },
                 (res: Response) => {
                     return OrganisationSelectorComponent.onError(res.json());
                 }
             );
     }
-
 }
