@@ -8,7 +8,6 @@
 package nl.thehyve.podium.config;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.CustomUserAuthenticationConverter;
 import nl.thehyve.podium.security.CustomAccessTokenConverter;
 import nl.thehyve.podium.security.CustomAuthenticationProvider;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,17 +25,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.client.RestTemplate;
 
-import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import java.util.Map;
 
 @Configuration
@@ -52,6 +47,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
 
     private final DiscoveryClient discoveryClient;
 
+    @Inject
     public MicroserviceSecurityConfiguration(PodiumProperties podiumProperties,
             DiscoveryClient discoveryClient) {
 
@@ -79,7 +75,6 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
             .authorizeRequests()
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/**").authenticated()
-            .antMatchers("/proxy/**").authenticated()
             .antMatchers("/management/**").hasAuthority(AuthorityConstants.PODIUM_ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll();
     }
@@ -89,15 +84,8 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
 
-    @RequestScoped
-    @Bean(name = "requestAuth2ClientContext")
-    public OAuth2ClientContext oAuth2ClientContext() {
-        OAuth2ClientContext context = new DefaultOAuth2ClientContext();
-        log.info("Creating new OAuth2ClientContext: {}", context);
-        return context;
-    }
-
     @Autowired
+    @Qualifier("customAccessTokenConverter")
     CustomAccessTokenConverter customAccessTokenConverter;
 
     @Bean

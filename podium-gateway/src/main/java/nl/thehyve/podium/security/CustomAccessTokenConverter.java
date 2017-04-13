@@ -8,16 +8,14 @@
 package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.security.CustomUserAuthenticationConverter;
+import nl.thehyve.podium.config.RequestAuth2ClientContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @Component("customAccessTokenConverter")
@@ -26,14 +24,10 @@ public class CustomAccessTokenConverter extends DefaultAccessTokenConverter {
     private final Logger log = LoggerFactory.getLogger(CustomAccessTokenConverter.class);
 
     @Autowired
-    CustomUserAuthenticationConverter userAuthenticationConverter;
+    private RequestAuth2ClientContext requestAuth2ClientContext;
 
     @Autowired
-    @Qualifier("requestAuth2ClientContext")
-    OAuth2ClientContext requestAuth2ClientContext;
-
-    @PostConstruct
-    public void init() {
+    public void setUserAuthenticationConverter(CustomUserAuthenticationConverter userAuthenticationConverter) {
         this.setUserTokenConverter(userAuthenticationConverter);
         log.info("CustomAccessTokenConverter initialised.");
     }
