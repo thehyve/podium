@@ -13,7 +13,6 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.resource.OrganisationResource;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -38,7 +37,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Organisation.
@@ -53,22 +51,6 @@ public class OrganisationServer implements OrganisationResource {
 
     @Autowired
     private OrganisationService organisationService;
-
-    protected static void copyProperties(Organisation source, Organisation target) {
-        target.setName(source.getName());
-        target.setShortName(source.getShortName());
-        target.setActivated(source.isActivated());
-    }
-
-    protected static OrganisationDTO mapOrganisation(Organisation organisation) {
-        OrganisationDTO organisationData = new OrganisationDTO();
-        organisationData.setId(organisation.getId());
-        organisationData.setUuid(organisation.getUuid());
-        organisationData.setShortName(organisation.getShortName());
-        organisationData.setName(organisation.getName());
-        organisationData.setActivated(organisation.isActivated());
-        return organisationData;
-    }
 
     /**
      * POST  /organisations : Create a new organisation.

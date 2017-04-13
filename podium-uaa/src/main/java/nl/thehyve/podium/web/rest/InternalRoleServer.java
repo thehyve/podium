@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.web.rest;
 
+import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.resource.InternalRoleResource;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
@@ -16,7 +17,6 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
-import nl.thehyve.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +41,10 @@ public class InternalRoleServer implements InternalRoleResource {
     private RoleService roleService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private OrganisationService organisationService;
 
-
     @Override
+    @Timed
     public ResponseEntity<List<UserRepresentation>> getOrganisationRoleUsers(
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid,
         @PathVariable("authority") String authority) {
