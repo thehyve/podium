@@ -269,6 +269,7 @@ public class RequestService {
         log.debug("Submitting request : {}", uuid);
 
         List<Request> organisationRequests = new ArrayList<>();
+        // TODO: Aggregate mails for multiple organisations per user.
         for (UUID organisationUuid: request.getOrganisations()) {
             // Fetch organisation and organisation coordinators through Feign.
             OrganisationDTO organisation;
