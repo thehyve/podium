@@ -31,8 +31,6 @@ public class OrganisationDTO implements Serializable {
     @Size(max = 50)
     private String shortName;
 
-    private Boolean deleted;
-
     private Boolean activated;
 
     private UUID uuid;
@@ -58,13 +56,6 @@ public class OrganisationDTO implements Serializable {
     }
     public void setShortName(String shortName) {
         this.shortName = shortName;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
     }
 
     public Boolean getActivated() {
@@ -114,7 +105,6 @@ public class OrganisationDTO implements Serializable {
             "id=" + id +
             ", name='" + name + "'" +
             ", shortName='" + shortName + "'" +
-            ", deleted='" + deleted + "'" +
             ", activated='" + activated + "'" +
             ", uuid='" + uuid + "'" +
             '}';
