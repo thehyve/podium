@@ -68,7 +68,7 @@ describe('Component Tests', () => {
         }));
 
         describe('OnInit', () => {
-            fit('Should call load all on init', () => {
+            it('Should call load all on init', () => {
                 // GIVEN
                 let organisation = new Organisation();
                 organisation.id = 10;
