@@ -113,7 +113,7 @@
         <spring-security.version>4.2.1.RELEASE</spring-security.version>
         <spring-security-oauth2.version>2.0.12.RELEASE</spring-security-oauth2.version>
         <springfox.version>2.6.1</springfox.version>
-        <yarn.version>v0.19.1</yarn.version>
+        <yarn.version>v0.21.3</yarn.version>
     </properties>
 
     <dependencyManagement>
