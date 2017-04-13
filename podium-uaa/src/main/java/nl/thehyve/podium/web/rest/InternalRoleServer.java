@@ -8,6 +8,7 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.common.resource.InternalRoleResource;
+import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Organisation;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * REST controller for managing Role.
  */
 @RestController
+@AnyAuthorisedUser
 public class InternalRoleServer implements InternalRoleResource {
 
     private final Logger log = LoggerFactory.getLogger(InternalRoleServer.class);
