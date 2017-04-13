@@ -44,7 +44,7 @@ export const organisationRoute: Routes = [
             'pagingParams': OrganisationResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'podiumGatewayApp.organisation.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -81,7 +81,7 @@ export const organisationRoute: Routes = [
         path: 'edit/:uuid',
         component: OrganisationFormComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'podiumGatewayApp.organisation.detail.title'
         },
         canActivate: [UserRouteAccessService]
