@@ -42,7 +42,7 @@ export class OrganisationService {
         });
     }
 
-    findAvailable(): Observable<Organisation> {
+    findAllAvailable(): Observable<Organisation> {
         return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
             return res.json();
         });

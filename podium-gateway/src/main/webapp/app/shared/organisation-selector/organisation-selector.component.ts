@@ -64,7 +64,7 @@ export class OrganisationSelectorComponent implements OnInit {
             return organisation.uuid;
         });
         // load organisation options
-        this.organisationService.findAvailable()
+        this.organisationService.findAllAvailable()
             .subscribe(
                 (data: Response) => {
                     this.organisationOptions = this.organisationService.jsonArrayToOrganisations(data);
