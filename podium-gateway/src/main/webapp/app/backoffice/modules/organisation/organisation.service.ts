@@ -13,6 +13,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 
 import { Organisation } from './organisation.model';
+import { RequestType } from '../../../shared/request/request-type';
 @Injectable()
 export class OrganisationService {
 

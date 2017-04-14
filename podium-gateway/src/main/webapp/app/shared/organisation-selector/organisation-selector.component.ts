@@ -12,7 +12,6 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
 
 @Component({
@@ -65,7 +64,7 @@ export class OrganisationSelectorComponent implements OnInit {
             return organisation.uuid;
         });
         // load organisation options
-        this.organisationService.findAll()
+        this.organisationService.findAvailable()
             .subscribe(
                 (data: Response) => {
                     this.organisationOptions = this.organisationService.jsonArrayToOrganisations(data);
