@@ -13,6 +13,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 
 import { Organisation } from './organisation.model';
+
 @Injectable()
 export class OrganisationService {
 
@@ -41,7 +42,7 @@ export class OrganisationService {
         });
     }
 
-    findAvailable(): Observable<Organisation> {
+    findAllAvailable(): Observable<Organisation> {
         return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
             return res.json();
         });

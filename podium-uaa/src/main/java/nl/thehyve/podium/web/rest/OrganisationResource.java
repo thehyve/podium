@@ -8,22 +8,16 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-
+import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.*;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
-import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
-import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
-import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
-import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
-import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
-import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,6 +143,24 @@ public class OrganisationResource {
             throw new ResourceNotFound(String.format("Organisation not found with id: %s.", id));
         }
         return ResponseEntity.ok(organisationDTO);
+    }
+
+    /**
+     * GET  /organisations/available : get all the organisations.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @AnyAuthorisedUser
+    @GetMapping("/organisations/available")
+    @Timed
+    public ResponseEntity<List<OrganisationDTO>> getActiveOrganisations(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Organisations");
+        Page<OrganisationDTO> page = organisationService.findAllAvailable(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**

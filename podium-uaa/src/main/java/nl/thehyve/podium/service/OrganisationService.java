@@ -146,6 +146,19 @@ public class OrganisationService {
     }
 
     /**
+     * Get active organisations by request type
+     *
+     * @param pageable the pagination information
+     * @return list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<OrganisationDTO> findAllAvailable(Pageable pageable) {
+        log.debug("Request to get active organisations by request type(s)");
+        Page<Organisation> result  = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
+        return  result.map(organisationMapper::organisationToOrganisationDTO);
+    }
+
+    /**
      * Get one organisationDTO by id.
      *
      * @param id the id of the entity

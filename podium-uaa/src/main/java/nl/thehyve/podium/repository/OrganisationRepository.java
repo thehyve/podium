@@ -8,10 +8,9 @@
 package nl.thehyve.podium.repository;
 
 import nl.thehyve.podium.domain.Organisation;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
@@ -32,5 +31,7 @@ public interface OrganisationRepository extends JpaRepository<Organisation,Long>
     Organisation findByUuidAndDeletedFalse(UUID uuid);
 
     Organisation findByShortNameAndDeletedFalse(String shortName);
+
+    Page<Organisation> findAllByActivatedTrueAndDeletedFalse(Pageable pageable);
 
 }
