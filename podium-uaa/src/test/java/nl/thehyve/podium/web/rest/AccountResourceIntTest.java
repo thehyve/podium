@@ -16,12 +16,14 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -54,11 +56,14 @@ public class AccountResourceIntTest {
 
     static final String VALID_PASSWORD = "johndoe2!";
 
-    @Inject
+    @Autowired
     private AuthorityRepository authorityRepository;
 
-    @Inject
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Mock
     private UserService mockUserService;
@@ -77,10 +82,12 @@ public class AccountResourceIntTest {
 
         AccountResource accountResource = new AccountResource();
         ReflectionTestUtils.setField(accountResource, "userService", userService);
+        ReflectionTestUtils.setField(accountResource, "userMapper", userMapper);
         ReflectionTestUtils.setField(accountResource, "mailService", mockMailService);
 
         AccountResource accountUserMockResource = new AccountResource();
         ReflectionTestUtils.setField(accountUserMockResource, "userService", mockUserService);
+        ReflectionTestUtils.setField(accountUserMockResource, "userMapper", userMapper);
         ReflectionTestUtils.setField(accountUserMockResource, "mailService", mockMailService);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();

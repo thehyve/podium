@@ -13,6 +13,7 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
@@ -20,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,7 +30,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import java.util.Arrays;
@@ -50,8 +51,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = PodiumUaaApp.class)
 public class UserResourceIntTest {
 
-    @Inject
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Mock
     private MailService mockMailService;
@@ -85,6 +89,7 @@ public class UserResourceIntTest {
         UserResource userResource = new UserResource();
         ReflectionTestUtils.setField(userResource, "userService", userService);
         ReflectionTestUtils.setField(userResource, "mailService", mockMailService);
+        ReflectionTestUtils.setField(userResource, "userMapper", userMapper);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 
