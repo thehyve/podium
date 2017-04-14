@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -149,6 +150,26 @@ public class OrganisationResource {
             throw new ResourceNotFound(String.format("Organisation not found with id: %s.", id));
         }
         return ResponseEntity.ok(organisationDTO);
+    }
+
+
+
+    /**
+     * GET  /organisations/available : get all the organisations.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @AnyAuthorisedUser
+    @GetMapping("/organisations/available")
+    @Timed
+    public ResponseEntity<List<OrganisationDTO>> getActiveOrganisations(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of Organisations");
+        Page<OrganisationDTO> page = organisationService.findAllActive(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
