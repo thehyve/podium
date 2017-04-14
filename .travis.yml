@@ -19,7 +19,7 @@ env:
     - NODE_VERSION=7.5.0
     - PROFILE=dev
     - RUN_PODIUM=1
-    - PROTRACTOR=0
+    - PROTRACTOR=1
     - PODIUM_BASE=$TRAVIS_BUILD_DIR
     - PODIUM_TRAVIS=$TRAVIS_BUILD_DIR/travis
     - PODIUM_SCRIPTS=$PODIUM_TRAVIS/scripts
@@ -28,6 +28,11 @@ env:
     - SPRING_JPA_SHOW_SQL=false
     - MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
     - PODIUM_UAA_RUN_PORT=8999
+addons:
+  browserstack:
+    username: "barteldklasens1"
+    access_key:
+      secure: "Aq4LjV4kL1OLIs29lJELl7rdkT5uWhySgULgn8auKh8G3ioZb5IWYB4N0TroC8bJLGbXUyXTi5/af8s++AYJ7fbdbzkEluX+9azKc5gt0BSp/4b+JqKuczCAguGo7CRQZGKDgRgGN7PSYjSXwc9afI4nVLN27tn28dvjhjA0kiQ6bJWFWTORq4980ERSTB/+FHVE031lcTTadTWXxyu7YzwdsKFmd0O+/Y5dLxTlcdOp2QTz2keYdQ99Oko/veUqxMpZ7/59HEUQ/CFtiVMhKMsNUt/HuJv+MJOwibL1LRn3Dyk0rqq7rNymldqmqSKJ/JaO+phy4BWA9cMm7XrpEwYVSBQmITozzAtklX92Eaj7KAib88UobhWBiZ5eAVEf8XrU/zJm5j5ta3G5QlmXEq4KQTleAdLfvopVYbUBOxFGzsHye87GK8rocR0V1x/y++wxwKXTBErKLvz+T5f/5jYrzUbh3ah6cnRpSWSQkENoSkxkYNE7KvKwgAz30CovJsDQaf5odkzJo6SxyT2fszt16m+FAVCgo2t929FzBkTyaxyuiP8GFZJbbuFPgRob25aqTDU3aOIQmsZzFC9J0w+vp7GmWWgGBV3hDSafnxpW+jUK11iFSJpBF7R68zgg8LTt/6hZXznlJDT0JPsmOygws6V3B5qozikHwdlzj0Q="
 before_install:
   - nvm install $NODE_VERSION
   - node -v
