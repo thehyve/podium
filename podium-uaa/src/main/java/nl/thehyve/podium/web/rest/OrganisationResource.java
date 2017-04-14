@@ -158,7 +158,7 @@ public class OrganisationResource {
     public ResponseEntity<List<OrganisationDTO>> getActiveOrganisations(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Organisations");
-        Page<OrganisationDTO> page = organisationService.findAllActive(pageable);
+        Page<OrganisationDTO> page = organisationService.findAllAvailable(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
