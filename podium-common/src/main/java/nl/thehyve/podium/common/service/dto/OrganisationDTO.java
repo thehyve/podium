@@ -87,12 +87,6 @@ public class OrganisationDTO implements IdentifiableOrganisation, Serializable {
     }
 
     @Override
-    @JsonIgnore
-    public UUID getOrganisationUuid() {
-        return uuid;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
