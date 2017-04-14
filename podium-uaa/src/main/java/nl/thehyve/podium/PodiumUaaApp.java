@@ -8,7 +8,7 @@
 package nl.thehyve.podium;
 
 import nl.thehyve.podium.config.DefaultProfileUtil;
-import nl.thehyve.podium.config.Constants;
+import nl.thehyve.podium.common.config.Constants;
 import nl.thehyve.podium.config.PodiumProperties;
 
 import nl.thehyve.podium.config.UaaProperties;

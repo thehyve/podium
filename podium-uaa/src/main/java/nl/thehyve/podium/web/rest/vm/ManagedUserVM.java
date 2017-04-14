@@ -9,8 +9,7 @@ package nl.thehyve.podium.web.rest.vm;
 
 import java.time.ZonedDateTime;
 
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.service.representation.UserRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.validation.ValidPassword;
 
 /**
@@ -32,16 +31,6 @@ public class ManagedUserVM extends UserRepresentation {
     private String password;
 
     public ManagedUserVM() {
-    }
-
-    public ManagedUserVM(User user) {
-        super(user);
-        this.id = user.getId();
-        this.createdBy = user.getCreatedBy();
-        this.createdDate = user.getCreatedDate();
-        this.lastModifiedBy = user.getLastModifiedBy();
-        this.lastModifiedDate = user.getLastModifiedDate();
-        this.password = null;
     }
 
     public Long getId() {

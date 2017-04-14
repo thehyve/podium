@@ -16,7 +16,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.StopWatch;
 
-import nl.thehyve.podium.config.Constants;
+import nl.thehyve.podium.common.config.Constants;
 import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringLiquibase;
 

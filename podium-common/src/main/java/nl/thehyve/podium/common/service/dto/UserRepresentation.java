@@ -5,21 +5,20 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.representation;
+package nl.thehyve.podium.common.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.validation.Required;
-import nl.thehyve.podium.config.Constants;
-
-import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.common.config.Constants;
 
 import org.hibernate.validator.constraints.Email;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.*;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static nl.thehyve.podium.common.config.Constants.DEFAULT_LOCALE;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -75,31 +74,16 @@ public class UserRepresentation implements IdentifiableUser {
     public UserRepresentation() {
     }
 
-    public UserRepresentation(User user) {
-        this.login = user.getLogin();
-        this.uuid = user.getUuid();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
-        this.telephone = user.getTelephone();
-        this.institute = user.getInstitute();
-        this.department = user.getDepartment();
-        this.jobTitle = user.getJobTitle();
-        this.specialism = user.getSpecialism();
-        this.emailVerified = user.isEmailVerified();
-        this.adminVerified = user.isAdminVerified();
-        this.accountLocked = user.isAccountLocked();
-        this.langKey = user.getLangKey();
-        this.authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toSet());
-    }
-
     public String getLogin() {
         return login;
     }
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public void setFirstName(String firstName) {
@@ -156,6 +140,8 @@ public class UserRepresentation implements IdentifiableUser {
 
     public UUID getUuid() { return uuid; }
 
+    @Override
+    @JsonIgnore
     public UUID getUserUuid() { return getUuid(); }
 
     public String getFirstName() {
@@ -191,7 +177,7 @@ public class UserRepresentation implements IdentifiableUser {
     }
 
     public String getLangKey() {
-        return langKey;
+        return langKey == null ? DEFAULT_LOCALE : langKey;
     }
 
     public boolean isEmailVerified() {
@@ -217,8 +203,9 @@ public class UserRepresentation implements IdentifiableUser {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
-            ", langKey='" + langKey + '\'' +
+            ", langKey='" + getLangKey() + '\'' +
             ", authorities=" + authorities +
             "}";
     }
+
 }

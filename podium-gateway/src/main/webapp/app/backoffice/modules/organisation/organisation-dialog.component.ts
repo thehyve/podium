@@ -49,7 +49,7 @@ export class OrganisationDialogComponent implements OnInit {
 
     save () {
         this.isSaving = true;
-        if (this.organisation.uuid !== undefined) {
+        if (this.organisation.uuid) {
             this.organisationService.update(this.organisation)
                 .subscribe(
                     (res: Response) => this.onSaveSuccess(res),

@@ -8,15 +8,15 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.IdentifiableUser;
-import nl.thehyve.podium.common.exceptions.AccessDenied;
-import nl.thehyve.podium.common.exceptions.InvalidRequest;
-import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.exceptions.*;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -55,6 +55,11 @@ public class RequestService {
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
 
+    @Autowired
+    private OrganisationClientService organisationClientService;
+
+    @Autowired
+    private MailService mailService;
 
     public RequestService() {}
 
@@ -263,11 +268,22 @@ public class RequestService {
         log.debug("Submitting request : {}", uuid);
 
         List<Request> organisationRequests = new ArrayList<>();
+        // TODO: Aggregate mails for multiple organisations per user.
         for (UUID organisationUuid: request.getOrganisations()) {
-            // TODO: Fetch organisation DTO through Feign.
-            // OrganisationDTO organisation;
-            // OR: leave this to the (asynchronous) mail service call
-            // to notify the organisations.
+            // Fetch organisation and organisation coordinators through Feign.
+            OrganisationDTO organisation;
+            List<UserRepresentation> coordinators;
+            try {
+                organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
+                coordinators = organisationClientService.findUsersByRole(organisationUuid,
+                    AuthorityConstants.ORGANISATION_COORDINATOR);
+            } catch (Exception e) {
+                log.error("Error fetching organisation and coordinators", e);
+                throw new ServiceNotAvailable("Could not fetch fetching organisation and coordinators", e);
+            }
+
+            // TODO: validate request type of the request with the supported request types of the organisation.
+
             Request organisationRequest = requestMapper.clone(request);
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
@@ -275,6 +291,9 @@ public class RequestService {
             organisationRequest.setRequestReviewProcess(
                 requestReviewProcessService.start(user));
             organisationRequest = save(organisationRequest);
+
+            mailService.notifyCoordinators(organisationRequest, organisation, coordinators);
+
             organisationRequests.add(organisationRequest);
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
         }

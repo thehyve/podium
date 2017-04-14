@@ -10,14 +10,18 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.resource.OrganisationResource;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
+import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
+import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
+import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,21 +43,14 @@ import java.util.UUID;
  */
 @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
 @RestController
-@RequestMapping("/api")
-public class OrganisationResource {
+public class OrganisationServer implements OrganisationResource {
 
-    private final Logger log = LoggerFactory.getLogger(OrganisationResource.class);
+    private final Logger log = LoggerFactory.getLogger(OrganisationServer.class);
 
     private static final String ENTITY_NAME = "organisation";
 
     @Autowired
     private OrganisationService organisationService;
-
-    protected static void copyProperties(Organisation source, Organisation target) {
-        target.setName(source.getName());
-        target.setShortName(source.getShortName());
-        target.setActivated(source.isActivated());
-    }
 
     /**
      * POST  /organisations : Create a new organisation.
@@ -109,7 +106,7 @@ public class OrganisationResource {
     }
 
     /**
-     * GET  /organisations : get all the organisations.
+     * GET  /organisations : get paginated organisations.
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
@@ -118,12 +115,30 @@ public class OrganisationResource {
     @AnyAuthorisedUser
     @GetMapping("/organisations")
     @Timed
-    public ResponseEntity<List<OrganisationDTO>> getAllOrganisations(@ApiParam Pageable pageable)
+    public ResponseEntity<List<OrganisationDTO>> getOrganisations(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Organisations");
         Page<OrganisationDTO> page = organisationService.findAll(pageable);
+        List<OrganisationDTO> result = page.getContent();
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(result, headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /organisations/all : get all the organisations.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @Timed
+    @Override
+    public ResponseEntity<List<OrganisationDTO>> getAllOrganisations()
+        throws URISyntaxException {
+        log.debug("REST request to get all Organisations");
+        Page<OrganisationDTO> page = organisationService.findAll(null);
+        List<OrganisationDTO> result = page.getContent();
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -136,7 +151,7 @@ public class OrganisationResource {
     @GetMapping("/organisations/{id}")
     @Timed
     @Deprecated
-    public ResponseEntity<OrganisationDTO> getOrganisation(@PathVariable Long id) {
+    public ResponseEntity<OrganisationDTO> getOrganisationById(@PathVariable Long id) {
         log.debug("REST request to get Organisation : {}", id);
         OrganisationDTO organisationDTO = organisationService.findOneDTO(id);
         if (organisationDTO == null) {
@@ -170,16 +185,14 @@ public class OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
     @AnyAuthorisedUser
-    @SecuredByOrganisation
-    @GetMapping("/organisations/uuid/{uuid}")
     @Timed
-    public ResponseEntity<OrganisationDTO> getOrganisation(@OrganisationUuidParameter @PathVariable UUID uuid) {
+    @Override
+    public ResponseEntity<OrganisationDTO> getOrganisation(@OrganisationUuidParameter @PathVariable("uuid") UUID uuid) {
         log.debug("REST request to get Organisation : {}", uuid);
         OrganisationDTO organisationDTO = organisationService.findDTOByUuid(uuid);
         if (organisationDTO == null) {
             throw new ResourceNotFound(String.format("Organisation not found with uuid: %s.", uuid));
         }
-
         return ResponseEntity.ok(organisationDTO);
     }
 
@@ -243,5 +256,5 @@ public class OrganisationResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-
 }
+

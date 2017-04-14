@@ -11,9 +11,10 @@ import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.decorators.UserMapperDecorator;
-import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.service.util.UuidMapper;
+import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.mapstruct.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,6 +32,13 @@ public interface UserMapper {
 
     UserRepresentation userToUserDTO(User user);
 
+    @Mapping(target = "password", ignore = true)
+    ManagedUserVM userToManagedUserVM(User user);
+
+    @IterableMapping(elementTargetType = ManagedUserVM.class)
+    List<ManagedUserVM> usersToManagedUserVMs(List<User> user);
+
+    @IterableMapping(elementTargetType = UserRepresentation.class)
     List<UserRepresentation> usersToUserDTOs(List<User> users);
 
     @Mapping(target = "createdBy", ignore = true)

@@ -155,6 +155,7 @@ public class RequestResource {
     public ResponseEntity<List<RequestRepresentation>> submitDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
         UserAuthenticationToken user = SecurityUtils.getCurrentUser();
         AuthenticatedUser authenticatedUser = user.getUser();
+        log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
         List<RequestRepresentation> requests = requestService.submitDraft(authenticatedUser, uuid);
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }

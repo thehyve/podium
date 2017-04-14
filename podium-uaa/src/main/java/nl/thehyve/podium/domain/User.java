@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
-import nl.thehyve.podium.config.Constants;
+import nl.thehyve.podium.common.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -16,7 +16,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.Email;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -455,4 +454,5 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
             ", activationKey='" + activationKey + '\'' +
             "}";
     }
+
 }

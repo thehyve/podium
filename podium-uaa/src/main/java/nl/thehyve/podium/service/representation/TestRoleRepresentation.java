@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service.representation;
 
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 

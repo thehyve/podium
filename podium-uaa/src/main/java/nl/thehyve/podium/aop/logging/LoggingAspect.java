@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.aop.logging;
 
-import nl.thehyve.podium.config.Constants;
+import nl.thehyve.podium.common.config.Constants;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

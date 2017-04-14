@@ -8,6 +8,7 @@
 package nl.thehyve.podium;
 
 import nl.thehyve.podium.config.DefaultProfileUtil;
+import nl.thehyve.podium.client.OAuth2InterceptedFeignConfiguration;
 import nl.thehyve.podium.config.PodiumConstants;
 import nl.thehyve.podium.config.PodiumProperties;
 import org.flowable.spring.boot.RestApiAutoConfiguration;
@@ -22,8 +23,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
@@ -32,7 +35,8 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 
-@ComponentScan
+@ComponentScan(excludeFilters =
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class))
 @EnableAutoConfiguration(exclude = {
     MetricFilterAutoConfiguration.class,
     MetricRepositoryAutoConfiguration.class,
@@ -42,6 +46,7 @@ import java.util.Collection;
 @EnableConfigurationProperties({PodiumProperties.class, LiquibaseProperties.class})
 @EnableDiscoveryClient
 @EnableZuulProxy
+@EnableFeignClients
 public class PodiumGatewayApp {
 
     private static final Logger log = LoggerFactory.getLogger(PodiumGatewayApp.class);

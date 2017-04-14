@@ -17,15 +17,11 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the constraints for request type in Organisation entity.
+        Added request types in the Organisation entity.
     -->
     <changeSet id="20170403162001-1" author="berndvdveen">
-        <addColumn tableName="organisation">
-            <column name="request_types" type="varchar(255)"></column>
-        </addColumn>
-
         <createTable tableName="organisation_request_types">
-            <column name="request_types" type="varchar(255)">
+            <column name="request_type" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
 
@@ -33,5 +29,13 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addPrimaryKey columnNames="organisation_id, request_type" tableName="organisation_request_types"/>
+
+        <addForeignKeyConstraint baseColumnNames="organisation_id"
+                                 baseTableName="organisation_request_types"
+                                 constraintName="fk_organisation_request_types_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="organisation"/>
     </changeSet>
 </databaseChangeLog>
