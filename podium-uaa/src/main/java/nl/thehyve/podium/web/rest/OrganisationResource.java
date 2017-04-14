@@ -142,7 +142,7 @@ public class OrganisationResource {
     @GetMapping("/organisations/{id}")
     @Timed
     @Deprecated
-    public ResponseEntity<OrganisationDTO> getOrganisation(@PathVariable Long id) {
+    public ResponseEntity<OrganisationDTO> getOrganisationById(@PathVariable Long id) {
         log.debug("REST request to get Organisation : {}", id);
         OrganisationDTO organisationDTO = organisationService.findOneDTO(id);
         if (organisationDTO == null) {
@@ -158,7 +158,6 @@ public class OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
     @AnyAuthorisedUser
-    @SecuredByOrganisation
     @GetMapping("/organisations/uuid/{uuid}")
     @Timed
     public ResponseEntity<OrganisationDTO> getOrganisation(@OrganisationUuidParameter @PathVariable UUID uuid) {

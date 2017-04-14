@@ -8,6 +8,8 @@
 package nl.thehyve.podium.common.service.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.enumeration.RequestType;
 
 import javax.validation.constraints.NotNull;
@@ -20,7 +22,7 @@ import java.util.UUID;
 /**
  * A DTO for the Organisation entity.
  */
-public class OrganisationDTO implements Serializable {
+public class OrganisationDTO implements IdentifiableOrganisation, Serializable {
 
     private Long id;
 
@@ -76,6 +78,12 @@ public class OrganisationDTO implements Serializable {
 
     public void setRequestTypes(Set<RequestType> requestTypes) {
         this.requestTypes = requestTypes;
+    }
+
+    @Override
+    @JsonIgnore
+    public UUID getOrganisationUuid() {
+        return uuid;
     }
 
     @Override

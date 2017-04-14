@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
@@ -205,7 +206,7 @@ public class UserResource {
      * @param uuid the uuid of the user to find
      * @return the ResponseEntity with status 200 (OK) and with body the "uuid" user, or with status 404 (Not Found)
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users/uuid/{uuid}")
     @Timed
     public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
@@ -256,7 +257,7 @@ public class UserResource {
      * @param query the query to search
      * @return the result of the search
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/_suggest/users")
     @Timed
     public ResponseEntity<List<SearchUser>> suggest(@RequestParam String query) {
