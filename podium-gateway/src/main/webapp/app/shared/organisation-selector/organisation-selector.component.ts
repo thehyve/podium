@@ -13,6 +13,7 @@ import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
+import { organisationRoute } from '../../backoffice/modules/organisation/organisation.route';
 
 @Component({
     selector: 'pdm-organisation-selector',
@@ -22,22 +23,22 @@ import { OrganisationService } from '../../backoffice/modules/organisation/organ
 
 export class OrganisationSelectorComponent implements OnInit {
 
-    selectedOrganisationValues: any[];
-    organisationOptions: any;
+    allOrganisations: any[];
     selectedOrganisations: any[];
+    organisationOptions: any;
+    selectedOrganisationUuids: any[];
 
     @Output() organisationChange = new EventEmitter();
 
-    @Input() requestType: RequestType[];
+    @Input() requestTypes: RequestType[];
     @Input()
     get organisations() {
-        return this.selectedOrganisationValues;
+        return this.selectedOrganisations;
     }
     set organisations(val) {
-        this.selectedOrganisationValues = val;
-        this.organisationChange.emit(this.selectedOrganisationValues);
+        this.selectedOrganisations = val;
+        this.organisationChange.emit(this.selectedOrganisations);
     }
-
 
     private static onError (error) {
         return Observable.throw(new Error(error.status));
@@ -47,7 +48,7 @@ export class OrganisationSelectorComponent implements OnInit {
 
     onChange() {
         // get organisation instance of selected uuid
-        this.organisations = this.selectedOrganisations.map(
+        this.organisations = this.selectedOrganisationUuids.map(
             (selected) => {
                 return this.organisationOptions.find( (option) => {
                     return option.uuid == selected;
@@ -57,17 +58,28 @@ export class OrganisationSelectorComponent implements OnInit {
         this.organisationChange.emit(this.organisations);
     }
 
+    filterOptionsByRequestType() {
+        this.organisationOptions = [];
+        for (let organisation of this.allOrganisations) {
+            if (organisation.hasRequestTypes(this.requestTypes)) {
+                this.organisationOptions.push(organisation);
+            }
+        }
+    }
+
     ngOnInit() {
         // set selected organisations
-        this.selectedOrganisations = this.organisations;
-        this.selectedOrganisations = this.selectedOrganisations.map( organisation => {
+        this.selectedOrganisationUuids = this.organisations.map( organisation => {
             return organisation.uuid;
         });
         // load organisation options
         this.organisationService.findAllAvailable()
             .subscribe(
-                (data: Response) => {
-                    this.organisationOptions = this.organisationService.jsonArrayToOrganisations(data);
+                (data) => {
+                    this.allOrganisations = this.organisationService.jsonArrayToOrganisations(data);
+                    this.selectedOrganisations =
+                        this.organisationService.convertUuidsToOrganisations(this.organisations, this.allOrganisations);
+                    this.filterOptionsByRequestType();
                 },
                 (res: Response) => {
                     return OrganisationSelectorComponent.onError(res.json());
