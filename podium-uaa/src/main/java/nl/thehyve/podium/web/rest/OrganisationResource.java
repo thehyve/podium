@@ -145,8 +145,6 @@ public class OrganisationResource {
         return ResponseEntity.ok(organisationDTO);
     }
 
-
-
     /**
      * GET  /organisations/available : get all the organisations.
      *
