@@ -8,14 +8,16 @@
 package nl.thehyve.podium.config;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.CustomUserAuthenticationConverter;
+import nl.thehyve.podium.security.CustomAccessTokenConverter;
 import nl.thehyve.podium.security.CustomAuthenticationProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,12 +27,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.client.RestTemplate;
 
+import javax.inject.Inject;
 import java.util.Map;
 
 @Configuration
@@ -39,10 +41,13 @@ import java.util.Map;
 @EnableWebSecurity
 public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerAdapter {
 
+    private final Logger log = LoggerFactory.getLogger(MicroserviceSecurityConfiguration.class);
+
     private final PodiumProperties podiumProperties;
 
     private final DiscoveryClient discoveryClient;
 
+    @Inject
     public MicroserviceSecurityConfiguration(PodiumProperties podiumProperties,
             DiscoveryClient discoveryClient) {
 
@@ -79,17 +84,9 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
 
-    @Bean
-    public CustomUserAuthenticationConverter customUserAuthenticationConverter() {
-        return new CustomUserAuthenticationConverter();
-    }
-
-    @Bean
-    public DefaultAccessTokenConverter defaultAccessTokenConverter() {
-        DefaultAccessTokenConverter defaultAccessTokenConverter = new DefaultAccessTokenConverter();
-        defaultAccessTokenConverter.setUserTokenConverter(customUserAuthenticationConverter());
-        return defaultAccessTokenConverter;
-    }
+    @Autowired
+    @Qualifier("customAccessTokenConverter")
+    CustomAccessTokenConverter customAccessTokenConverter;
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(
@@ -97,7 +94,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
 
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setVerifierKey(getKeyFromAuthorizationServer(keyUriRestTemplate));
-        converter.setAccessTokenConverter(defaultAccessTokenConverter());
+        converter.setAccessTokenConverter(customAccessTokenConverter);
         return converter;
     }
 

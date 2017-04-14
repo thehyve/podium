@@ -74,16 +74,16 @@ public class OrganisationDTO implements IdentifiableOrganisation, Serializable {
         this.uuid = uuid;
     }
 
+    @JsonIgnore
+    @Override
+    public UUID getOrganisationUuid() {
+        return uuid;
+    }
+
     public Set<RequestType> getRequestTypes() { return requestTypes; }
 
     public void setRequestTypes(Set<RequestType> requestTypes) {
         this.requestTypes = requestTypes;
-    }
-
-    @Override
-    @JsonIgnore
-    public UUID getOrganisationUuid() {
-        return uuid;
     }
 
     @Override
@@ -117,4 +117,6 @@ public class OrganisationDTO implements IdentifiableOrganisation, Serializable {
             ", uuid='" + uuid + "'" +
             '}';
     }
+
 }
+

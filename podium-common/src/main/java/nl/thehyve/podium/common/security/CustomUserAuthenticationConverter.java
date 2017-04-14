@@ -15,12 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component("userAuthenticationConverter")
 public class CustomUserAuthenticationConverter implements UserAuthenticationConverter {
 
     private final Logger log = LoggerFactory.getLogger(CustomUserAuthenticationConverter.class);
@@ -74,7 +76,9 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
             Collection<String> authorities = getAuthorities(map);
             Map<UUID, Collection<String>> organisationAuthorities = getOrganisationRoles(map);
             AuthenticatedUser user = new SerialisedUser(uuid, username, authorities, organisationAuthorities);
-            return new UserAuthenticationToken(user);
+            UserAuthenticationToken authentication = new UserAuthenticationToken(user);
+            authentication.setAuthenticated(true);
+            return authentication;
         }
         return null;
     }

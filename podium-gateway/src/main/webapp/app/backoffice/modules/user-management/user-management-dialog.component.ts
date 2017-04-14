@@ -53,7 +53,7 @@ export class UserMgmtDialogComponent implements OnInit {
 
     save() {
         this.isSaving = true;
-        if (this.user.id !== null) {
+        if (this.user.id) {
             this.userService.update(this.user).subscribe(response => this.onSaveSuccess(response), () => this.onSaveError());
         } else {
             this.userService.create(this.user).subscribe(response => this.onSaveSuccess(response), () => this.onSaveError());

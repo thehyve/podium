@@ -17,24 +17,23 @@ import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.exceptions.VerificationKeyExpired;
-import nl.thehyve.podium.security.SecurityService;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.UserRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.validation.PasswordValidator;
 import nl.thehyve.podium.web.rest.vm.KeyAndPasswordVM;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
-import nl.thehyve.podium.web.rest.util.HeaderUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
@@ -48,11 +47,14 @@ public class AccountResource {
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
+    @Autowired
     private MailService mailService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * POST  /register : register the user.
@@ -139,9 +141,11 @@ public class AccountResource {
     @GetMapping("/account")
     @Timed
     public ResponseEntity<UserRepresentation> getAccount() {
-        return Optional.ofNullable(userService.getUserWithAuthorities())
-            .map(user -> new ResponseEntity<>(new UserRepresentation(user), HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        User user = userService.getUserWithAuthorities();
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok(userMapper.userToUserDTO(user));
     }
 
     /**

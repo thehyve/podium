@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.Constants;
 import nl.thehyve.podium.aop.security.AccessPolicyAspect;
 import nl.thehyve.podium.aop.logging.LoggingAspect;
 import org.slf4j.Logger;

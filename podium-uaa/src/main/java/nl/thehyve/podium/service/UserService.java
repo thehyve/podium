@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
@@ -21,7 +22,6 @@ import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import nl.thehyve.podium.service.representation.UserRepresentation;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.elasticsearch.action.suggest.SuggestResponse;
@@ -300,8 +300,7 @@ public class UserService {
         SearchUser searchUser = userMapper.userToSearchUser(user);
         userSearchRepository.save(searchUser);
         log.debug("Changed Information for User: {}", user);
-        // FIXME: Add mapstruct mapper for all entity representations
-        return new UserRepresentation(user);
+        return userMapper.userToUserDTO(user);
     }
 
     public void updateUser(UserRepresentation userData) throws UserAccountException {
@@ -387,13 +386,15 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
-        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
+        String login = SecurityService.getCurrentUserLogin();
+        log.debug("Fetching user with login {}", login);
+        Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(login);
         User user = null;
         if (optionalUser.isPresent()) {
-          user = optionalUser.get();
+            user = optionalUser.get();
             user.getAuthorities().size(); // eagerly load the association
-         }
-         return user;
+        }
+        return user;
     }
 
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {

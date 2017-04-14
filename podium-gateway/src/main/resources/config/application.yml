@@ -61,6 +61,12 @@ spring:
             enabled: false
     thymeleaf:
         mode: XHTML
+    security:
+        client-authorization:
+            access-token-uri: http://podiumuaa/oauth/token
+            token-service-id: podiumuaa
+            client-id: internal
+            client-secret: internal
 
 security:
     basic:

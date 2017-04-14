@@ -21,7 +21,7 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.domain.Organisation;
@@ -110,7 +110,7 @@ public class RoleResource {
         roleService.save(result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, role.getId().toString()))
-            .body(new RoleRepresentation(result));
+            .body(result.toRepresentation());
     }
 
     /**
@@ -128,7 +128,7 @@ public class RoleResource {
         log.debug("REST request to get a page of Roles");
         Page<Role> page = roleService.findAll(pageable);
         List<RoleRepresentation> roles = page.getContent().stream()
-            .map(RoleRepresentation::new)
+            .map(Role::toRepresentation)
             .collect(Collectors.toList());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/roles");
         return new ResponseEntity<>(roles, headers, HttpStatus.OK);
@@ -165,7 +165,7 @@ public class RoleResource {
         if (role == null) {
             throw new ResourceNotFound(String.format("Role not found with id: %s.", id));
         }
-        return ResponseEntity.ok(new RoleRepresentation(role));
+        return ResponseEntity.ok(role.toRepresentation());
     }
 
     /**

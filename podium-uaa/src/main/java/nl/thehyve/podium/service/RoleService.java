@@ -13,7 +13,7 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.service.representation.RoleRepresentation;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +85,7 @@ public class RoleService {
         Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
 
         List<RoleRepresentation> roles = organisation.getRoles().stream()
-            .map(RoleRepresentation::new)
+            .map(Role::toRepresentation)
             .collect(Collectors.toList());
 
         return roles;

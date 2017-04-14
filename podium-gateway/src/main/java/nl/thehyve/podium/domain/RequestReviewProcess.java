@@ -26,9 +26,9 @@ import javax.validation.constraints.NotNull;
 public class RequestReviewProcess extends AbstractAuditingEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_seq_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_review_gen")
     @GenericGenerator(
-        name = "request_seq_gen",
+        name = "request_review_gen",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = {
             @Parameter(name = "sequence_name", value = "request_review_seq"),
