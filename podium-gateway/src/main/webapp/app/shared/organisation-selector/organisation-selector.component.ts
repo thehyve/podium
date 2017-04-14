@@ -38,7 +38,6 @@ export class OrganisationSelectorComponent implements OnInit {
         this.organisationChange.emit(this.selectedOrganisationValues);
     }
 
-
     private static onError (error) {
         return Observable.throw(new Error(error.status));
     }

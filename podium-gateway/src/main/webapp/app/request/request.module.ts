@@ -24,6 +24,8 @@ import { RequestOverviewService } from './overview/request-overview.service';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
 import { CommonModule } from '@angular/common';
+import { RequestActionToolbarComponent }
+    from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
 
 @NgModule({
     imports: [
@@ -36,7 +38,8 @@ import { CommonModule } from '@angular/common';
         RequestFormSubmitDialogComponent,
         RequestOverviewComponent,
         RequestMainDetailComponent,
-        RequestDetailComponent
+        RequestDetailComponent,
+        RequestActionToolbarComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent
