@@ -10,7 +10,7 @@
 
 <h2><span>My Requests</span>
     <div class="btn-group flex-btn-group-container">
-        <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()" >
+        <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()">
             <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">
             My requests
@@ -37,47 +37,67 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th><span >Title</span></th>
+            <th><span>Created Date</span></th>
+            <th><span>Request Id</span></th>
             <th><span>Status</span></th>
+            <th><span>Request Type</span></th>
+            <th><span>Organisations</span></th>
+            <th><span>Title</span></th>
             <th></th>
         </tr>
         </thead>
-			<tbody>
-			<tr *ngFor="let request of availableRequests; trackBy: trackId">
-				<td>
-					{{request.requestDetail.title || '-'}}
-				</td>
-				<td>
-					{{request.status}}
-				</td>
-				<td class="text-xs-right">
-					<div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
-						<button type="button"
-								class="btn btn-primary btn-sm"  (click)="editRequest(request)">
-							<span class="fa fa-pencil"></span>
-							<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
-						</button>
-						<button type="submit"
-								class="btn btn-danger btn-sm">
-							<span class="fa fa-pencil"></span>
-							<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
-						</button>
-					</div>
+        <tbody>
+        <tr *ngFor="let request of availableRequests; trackBy: trackId">
+            <td>
+                {{request.dateCreated}}
+            </td>
+            <td>
+                {{request.id}}
+            </td>
+            <td>
+                {{request.status}}
+            </td>
+            <td>
+                <ul>
+                    <li *ngFor="let requestTypes of request.requestDetail.requestType">{{requestTypes}}</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li *ngFor="let organisation of request.organisations">{{organisation.uuid}}</li>
+                </ul>
+            </td>
+            <td>
+                {{request.requestDetail.title || '-'}}
+            </td>
+            <td class="text-xs-right">
+                <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
                     <button type="button"
-                            class="btn btn-primary btn-sm"  (click)="navigateToRequestDetail(request)"
-                            *ngIf="request.status !== 'Draft'">
-                        <span class="material-icons md-18">assignment_ind</span>
-                        <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
+                            class="btn btn-primary btn-sm" (click)="editRequest(request)">
+                        <span class="fa fa-pencil"></span>
+                        <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
                     </button>
-				</td>
-			</tr>
-			<tr *ngIf="availableRequests.length == 0">
-				<td colspan="3" class="no-results">
-					<div class="alert alert-info">
-						No requests found
-					</div>
-				</td>
-			</tr>
+                    <button type="submit"
+                            class="btn btn-danger btn-sm">
+                        <span class="fa fa-pencil"></span>
+                        <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
+                    </button>
+                </div>
+                <button type="button"
+                        class="btn btn-primary btn-sm" (click)="navigateToRequestDetail(request)"
+                        *ngIf="request.status !== 'Draft'">
+                    <span class="material-icons md-18">assignment_ind</span>
+                    <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="availableRequests.length == 0">
+            <td colspan="7" class="no-results">
+                <div class="alert alert-info">
+                    No requests found
+                </div>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>
