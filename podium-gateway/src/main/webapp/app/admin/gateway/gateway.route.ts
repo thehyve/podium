@@ -13,9 +13,10 @@ import { Route } from '@angular/router';
 import { PdmGatewayComponent } from './gateway.component';
 
 export const gatewayRoute: Route = {
-  path: 'pdm-gateway',
-  component: PdmGatewayComponent,
-  data: {
-    pageTitle: 'gateway.title'
-  }
+    path: 'pdm-gateway',
+    component: PdmGatewayComponent,
+    data: {
+        pageTitle: 'gateway.title',
+        breadcrumb: 'Gateway'
+    }
 };

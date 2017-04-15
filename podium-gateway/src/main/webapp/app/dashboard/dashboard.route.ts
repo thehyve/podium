@@ -14,11 +14,12 @@ import { UserRouteAccessService } from '../shared';
 import { DashboardComponent } from './';
 
 export const dashboardRoute: Route = {
-  path: 'dashboard',
-  component: DashboardComponent,
-  data: {
-    authorities: [],
-    pageTitle: 'dashboard.title'
-  },
-  canActivate: [UserRouteAccessService]
+    path: 'dashboard',
+    component: DashboardComponent,
+    data: {
+        authorities: [],
+        pageTitle: 'dashboard.title',
+        breadcrumb: 'dashboard'
+    },
+    canActivate: [UserRouteAccessService]
 };

@@ -30,12 +30,7 @@ export const requestRoute: Routes = [
         children: REQUEST_ROUTES,
         data: {
             authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER'],
+            breadcrumb: 'requests'
         },
         canActivate: [ UserRouteAccessService ]
-    },
-    {
-        path: '**',
-        redirectTo: 'overview',
-        pathMatch: 'full'
-    }
-];
+}];

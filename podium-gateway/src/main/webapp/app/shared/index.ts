@@ -51,3 +51,4 @@ export * from './upload/upload.module';
 export * from './attachment/attachment';
 export * from './attachment/attachment.service';
 export * from './attachment/attachment-type';
+export * from './breadcrumbs/breadcrumbs.module';

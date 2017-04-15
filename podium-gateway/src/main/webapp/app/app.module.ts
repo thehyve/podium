@@ -45,15 +45,16 @@ import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisa
 import { PodiumGatewayPodiumBackofficeModule } from './backoffice/podium/podium-backoffice.module';
 import { RoleService } from './shared/role/role.service';
 
-
 import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
+import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
 
 @NgModule({
     imports: [
         NgbModule.forRoot(),
         TypeaheadModule.forRoot(),
+        BreadcrumbsModule.forRoot(),
         BrowserModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),

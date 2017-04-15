@@ -18,7 +18,8 @@ export const requestFormEditRoute: Route = {
     component: RequestFormComponent,
     data: {
         authorities: ['ROLE_RESEARCHER'],
-        pageTitle: 'request.pageTitle'
+        pageTitle: 'request.pageTitle',
+        breadcrumb: 'edit'
     },
     canActivate: [UserRouteAccessService]
 };
