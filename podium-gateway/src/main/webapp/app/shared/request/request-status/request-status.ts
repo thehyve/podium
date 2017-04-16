@@ -8,6 +8,8 @@
  *
  */
 
-export * from './detail/request-detail.component';
-export * from './request-main-detail.route';
-export * from './progress-bar/request-progress-bar.component';
+export interface RequestStatus {
+    readonly status: string;
+    readonly name: string;
+    readonly order: number;
+}

@@ -9,10 +9,10 @@
  */
 
 import { Request } from './request';
-import { RequestStatus } from './request-status';
 import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';
 import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
+import { RequestStatusOptions } from './request-status/request-status.constants';
 
 export class RequestBase implements Request {
 
@@ -20,7 +20,7 @@ export class RequestBase implements Request {
     dateLastModified?: Date = new Date();
     uuid?: string;
     id?: string;
-    status?: RequestStatus;
+    status?: RequestStatusOptions;
     requestDetail?: RequestDetail = new RequestDetail();
     organisations?: Organisation[] = [];
     requester?: User;

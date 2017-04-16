@@ -8,10 +8,5 @@
  *
  */
 
-export enum RequestStatus {
-    Draft,
-    Validation,
-    Review,
-    Delivery,
-    Return
-}
+export * from './request-status';
+export * from './request-status.constants';

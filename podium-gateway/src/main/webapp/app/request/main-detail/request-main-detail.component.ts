@@ -66,4 +66,5 @@ export class RequestMainDetailComponent implements OnInit {
     private onError(error) {
         this.error =  'ERROR';
         this.success = null;
-    }}
+    }
+}
