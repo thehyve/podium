@@ -24,6 +24,7 @@ import { RequestOverviewService } from './overview/request-overview.service';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
 import { CommonModule } from '@angular/common';
+import { RequestProgressBarComponent } from './main-detail/progress-bar/request-progress-bar.component';
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { CommonModule } from '@angular/common';
         RequestFormSubmitDialogComponent,
         RequestOverviewComponent,
         RequestMainDetailComponent,
-        RequestDetailComponent
+        RequestDetailComponent,
+        RequestProgressBarComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent
