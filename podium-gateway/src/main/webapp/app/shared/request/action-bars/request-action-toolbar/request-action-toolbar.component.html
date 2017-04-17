@@ -12,10 +12,11 @@
     <!-- Draft / Submit -->
     <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
         <button type="button" class="btn btn-danger" (click)="resetForm()">Clear</button>
-        <button type="button" class="btn btn-default" (click)="saveDraft()">Save draft</button>
-        <button type="submit" class="btn btn-primary"
-                [disabled]="!form.form.valid"
-                (click)="submitDraft()">Submit</button>
+        <div class="float-xs-right">
+            <button type="button" class="btn btn-primary" (click)="saveDraft()">Save draft</button>
+            <button type="submit" class="btn btn-success" [disabled]="!form.form.valid"
+                    (click)="submitDraft()">Submit</button>
+        </div>
     </div>
 
     <!-- Validate in request details -->
@@ -29,5 +30,5 @@
     <!-- Review -->
 
 
-    <!-- Data delivery-->
+    <!-- Delivery-->
 </div>

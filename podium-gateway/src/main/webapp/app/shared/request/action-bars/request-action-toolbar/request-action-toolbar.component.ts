@@ -22,7 +22,7 @@ import { RequestStatus } from '../../request-status';
 
 export class RequestActionToolbarComponent implements OnInit {
 
-    private status: RequestStatus;
+    private status: string;
     public requestStatus = RequestStatus;
 
     @Input() form: Form;
@@ -40,11 +40,12 @@ export class RequestActionToolbarComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.status = this.request.status;
+        this.status = this.request.status.toString();
     }
 
     isStatus(status): boolean {
-        return this.status === status;
+        // Status value comes as enumuration index
+        return this.status === RequestStatus[status];
     }
 
     saveDraft() {
