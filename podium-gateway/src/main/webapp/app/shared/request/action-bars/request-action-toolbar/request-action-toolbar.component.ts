@@ -8,8 +8,11 @@
  *
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
+import { Form } from '@angular/forms';
+import { RequestBase } from '../../request-base';
+import { RequestStatus } from '../../request-status';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -19,24 +22,53 @@ import { JhiLanguageService } from 'ng-jhipster';
 
 export class RequestActionToolbarComponent implements OnInit {
 
+    private status: RequestStatus;
+    public requestStatus = RequestStatus;
+
+    @Input() form: Form;
+    @Input() request: RequestBase;
+
+    @Output() resetChange = new EventEmitter();
+    @Output() rejectChange = new EventEmitter();
+    @Output() saveDraftChange = new EventEmitter();
+    @Output() submitDraftChange = new EventEmitter();
+    @Output() validateRequestChange = new EventEmitter();
+    @Output() requireRevisionChange = new EventEmitter();
+
     constructor(private jhiLanguageService: JhiLanguageService) {
         this.jhiLanguageService.setLocations(['request']);
     }
 
     ngOnInit() {
-
+        this.status = this.request.status;
     }
 
-    isInitialRequest(): boolean {
-        return true;
+    isStatus(status): boolean {
+        return this.status === status;
     }
 
-    isValidation(): boolean {
-        return true;
+    saveDraft() {
+        this.saveDraftChange.emit(true);
     }
 
-    isReview(): boolean {
-        return true;
+    submitDraft() {
+        this.submitDraftChange.emit(true);
+    }
+
+    resetForm() {
+        this.resetChange.emit(true);
+    }
+
+    rejectRequest() {
+        this.rejectChange.emit(true);
+    }
+
+    validateRequest() {
+        this.validateRequestChange.emit(true);
+    }
+
+    requireRevision() {
+        this.requireRevisionChange.emit(true);
     }
 
 }

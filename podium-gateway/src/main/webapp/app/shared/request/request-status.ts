@@ -10,6 +10,8 @@
 
 export enum RequestStatus {
     Draft,
+    Validation,
     Review,
-    Delivery
+    Delivery,
+    Return
 }

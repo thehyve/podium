@@ -8,22 +8,22 @@
   ~
   -->
 
-<div class="row request-action-toolbar">
+<div class="request-action-toolbar">
     <!-- Draft / Submit -->
-    <div class="action-container" *ngIf="isInitialRequest()">
-        <button type="button" class="btn btn-danger" (click)="reset()">Clear</button>
-        <button type="button" class="btn btn-default" (click)="saveRequestDraft()">Save draft</button>
+    <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
+        <button type="button" class="btn btn-danger" (click)="resetForm()">Clear</button>
+        <button type="button" class="btn btn-default" (click)="saveDraft()">Save draft</button>
         <button type="submit" class="btn btn-primary"
                 [disabled]="!form.form.valid"
                 (click)="submitDraft()">Submit</button>
     </div>
 
     <!-- Validate in request details -->
-    <div class="action-container" *ngIf="isValidation()">
-        <button type="button" class="btn btn-danger" (click)="reset()">Reject</button>
-        <button type="button" class="btn btn-default" (click)="saveRequestDraft()">Request revision</button>
+    <div class="action-container"  *ngIf="isStatus(requestStatus.Validation)">
+        <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
+        <button type="button" class="btn btn-default" (click)="requireRevision()">Request revision</button>
         <button type="submit" class="btn btn-primary"
-                (click)="validate()">Validate</button>
+                (click)="validateRequest()">Validate</button>
     </div>
 
     <!-- Review -->
