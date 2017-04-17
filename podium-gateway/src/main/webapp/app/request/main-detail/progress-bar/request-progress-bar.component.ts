@@ -19,10 +19,10 @@ import { RequestStatus, REQUEST_STATUSES, REQUEST_STATUSES_MAP } from '../../../
     styleUrls: ['request-progress-bar.scss']
 })
 
-export class RequestProgressBarComponent implements OnInit {
+export class RequestProgressBarComponent {
     @Input() request: RequestBase;
     requestStatusOptions: ReadonlyArray<RequestStatus>;
-    requestStatusMap: { [token: string]: RequestStatus; };
+    requestStatusMap: { [token: string]: RequestStatus; }
 
     constructor(
         private jhiLanguageService: JhiLanguageService
@@ -30,11 +30,6 @@ export class RequestProgressBarComponent implements OnInit {
         jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
-    }
-
-    ngOnInit() {
-        console.log('Opts ', this.requestStatusOptions);
-        console.log('Opts ', this.requestStatusMap);
     }
 
     isActive(request: RequestBase, currentOrder: number): boolean {
