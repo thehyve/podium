@@ -46,6 +46,8 @@ hystrix:
 
 management:
     context-path: /management
+    security:
+        roles: ADMIN
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
