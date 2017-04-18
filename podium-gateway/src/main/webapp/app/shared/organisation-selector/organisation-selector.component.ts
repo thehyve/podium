@@ -38,20 +38,21 @@ export class OrganisationSelectorComponent implements OnInit {
         this.organisationChange.emit(this.selectedOrganisationValues);
     }
 
-
     private static onError (error) {
         return Observable.throw(new Error(error.status));
     }
 
-    constructor(private organisationService: OrganisationService){}
+    constructor(
+        private organisationService: OrganisationService
+    ) { }
 
     onChange() {
         // get organisation instance of selected uuid
         this.organisations = this.selectedOrganisations.map(
             (selected) => {
                 return this.organisationOptions.find( (option) => {
-                    return option.uuid == selected;
-                })
+                    return option.uuid === selected;
+                });
             }
         );
         this.organisationChange.emit(this.organisations);

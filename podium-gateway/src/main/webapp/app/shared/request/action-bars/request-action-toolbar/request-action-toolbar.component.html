@@ -1,0 +1,34 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="request-action-toolbar">
+    <!-- Draft / Submit -->
+    <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
+        <button type="button" class="btn btn-danger" (click)="resetForm()">Clear</button>
+        <div class="float-xs-right">
+            <button type="button" class="btn btn-primary" (click)="saveDraft()">Save draft</button>
+            <button type="submit" class="btn btn-success" [disabled]="!form.form.valid"
+                    (click)="submitDraft()">Submit</button>
+        </div>
+    </div>
+
+    <!-- Validate in request details -->
+    <div class="action-container"  *ngIf="isStatus(requestStatus.Validation)">
+        <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
+        <button type="button" class="btn btn-default" (click)="requireRevision()">Request revision</button>
+        <button type="submit" class="btn btn-primary"
+                (click)="validateRequest()">Validate</button>
+    </div>
+
+    <!-- Review -->
+
+
+    <!-- Delivery-->
+</div>
