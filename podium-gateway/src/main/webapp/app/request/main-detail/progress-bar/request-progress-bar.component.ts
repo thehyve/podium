@@ -22,7 +22,7 @@ import { RequestStatus, REQUEST_STATUSES, REQUEST_STATUSES_MAP } from '../../../
 export class RequestProgressBarComponent {
     @Input() request: RequestBase;
     requestStatusOptions: ReadonlyArray<RequestStatus>;
-    requestStatusMap: { [token: string]: RequestStatus; }
+    requestStatusMap: { [token: string]: RequestStatus; };
 
     constructor(
         private jhiLanguageService: JhiLanguageService

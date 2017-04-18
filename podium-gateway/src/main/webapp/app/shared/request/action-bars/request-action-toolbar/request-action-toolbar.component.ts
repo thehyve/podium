@@ -36,7 +36,7 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() requireRevisionChange = new EventEmitter();
 
     constructor(private jhiLanguageService: JhiLanguageService) {
-        this.jhiLanguageService.setLocations(['request']);
+        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
     }
 
     ngOnInit() {
