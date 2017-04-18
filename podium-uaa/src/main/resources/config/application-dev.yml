@@ -14,13 +14,8 @@ eureka:
     instance:
         prefer-ip-address: true
     client:
-        enabled: true
-        healthcheck:
-            enabled: true
-        registerWithEureka: true
-        fetchRegistry: true
-        serviceUrl:
-            defaultZone: http://admin:admin@localhost:8761/eureka/
+        service-url:
+            defaultZone: http://admin:${podium.registry.password}@localhost:8761/eureka/
 
 spring:
     profiles:
