@@ -13,9 +13,10 @@ import { Route } from '@angular/router';
 import { PdmDocsComponent } from './docs.component';
 
 export const docsRoute: Route = {
-  path: 'docs',
-  component: PdmDocsComponent,
-  data: {
-    pageTitle: 'global.menu.admin.apidocs'
-  }
+    path: 'docs',
+    component: PdmDocsComponent,
+    data: {
+        pageTitle: 'global.menu.admin.apidocs',
+        breadcrumb: 'Swagger'
+    }
 };

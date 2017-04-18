@@ -14,9 +14,10 @@ import { UserRouteAccessService } from '../../shared';
 import { PdmHealthCheckComponent } from './health.component';
 
 export const healthRoute: Route = {
-  path: 'pdm-health',
-  component: PdmHealthCheckComponent,
-  data: {
-    pageTitle: 'health.title'
-  }
+    path: 'pdm-health',
+    component: PdmHealthCheckComponent,
+    data: {
+        pageTitle: 'health.title',
+        breadcrumb: 'podium health'
+    }
 };

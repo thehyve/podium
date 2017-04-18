@@ -45,7 +45,8 @@ export const organisationRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title'
+            pageTitle: 'podiumGatewayApp.organisation.home.title',
+            breadcrumb: 'overview'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -54,7 +55,8 @@ export const organisationRoute: Routes = [
         component: OrganisationFormComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title'
+            pageTitle: 'podiumGatewayApp.organisation.detail.title',
+            breadcrumb: 'new organisation'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -73,7 +75,8 @@ export const organisationRoute: Routes = [
         component: OrganisationDetailComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title'
+            pageTitle: 'podiumGatewayApp.organisation.home.title',
+            breadcrumb: 'organisation details'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -82,15 +85,10 @@ export const organisationRoute: Routes = [
         component: OrganisationFormComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title'
+            pageTitle: 'podiumGatewayApp.organisation.detail.title',
+            breadcrumb: 'edit organisation'
         },
         canActivate: [UserRouteAccessService]
-    },
-    {
-        path: '**',
-        redirectTo: '',
-        pathMatch: 'full'
     }
-
 ];
 
