@@ -2,7 +2,7 @@
     "requestStatus" : {
         "Draft": "Draft",
         "Submit": "Submitted",
-        "Validate": "Validation",
+        "Validation": "Validation",
         "Review": "Review",
         "Delivery": "Delivery",
         "Return": "Return"

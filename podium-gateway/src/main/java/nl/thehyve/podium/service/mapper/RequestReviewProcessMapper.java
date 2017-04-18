@@ -13,11 +13,15 @@ package nl.thehyve.podium.service.mapper;
 import nl.thehyve.podium.domain.RequestReviewProcess;
 import nl.thehyve.podium.service.representation.RequestReviewRepresentation;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Created by bernd on 18/04/2017.
  */
 @Mapper(componentModel = "spring")
 public interface RequestReviewProcessMapper {
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "processInstanceId", ignore = true)
     RequestReviewRepresentation requestReviewProcessToRequestReviewProcessDTO(RequestReviewProcess requestReviewProcess);
 }

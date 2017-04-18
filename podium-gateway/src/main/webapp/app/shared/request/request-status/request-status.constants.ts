@@ -11,11 +11,11 @@
 import { RequestStatus } from './request-status';
 
 const requestStatusesOpts: { [status: string]: any; } = {
-    'Submit': {
+    'Draft': {
         name: 'Submitted',
         order: 1
     },
-    'Validate': {
+    'Validation': {
         name: 'Validation',
         order: 2
     },
@@ -30,6 +30,17 @@ const requestStatusesOpts: { [status: string]: any; } = {
     'Return' : {
         name: 'Return',
         order: 5
+    }
+};
+
+const requestReviewStatusesOpts: { [status: string]: any; } = {
+    'Validation': {
+        name: 'Validation',
+        order: 2
+    },
+    'Review': {
+        name: 'Review',
+        order: 3
     }
 };
 
@@ -55,11 +66,22 @@ function convertToRequestStatusMap(requestStatuses: ReadonlyArray<RequestStatus>
 
 export enum RequestStatusOptions {
     Draft,
-    Validate,
     Review,
     Delivery
 }
 
+export enum RequestReviewStatusOptions {
+    Revision,
+    Validation,
+    Review,
+    Closed,
+    None
+}
+
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
 
+export const REQUEST_REVIEW_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
+
 export const REQUEST_STATUSES_MAP: { [token: string]: RequestStatus; } = convertToRequestStatusMap(REQUEST_STATUSES);
+
+export const REQUEST_REVIEW_STATUSES_MAP: { [token: string]: RequestStatus; } = convertToRequestStatusMap(REQUEST_REVIEW_STATUSES);

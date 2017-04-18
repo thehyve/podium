@@ -20,11 +20,25 @@
     </div>
 
     <!-- Validate in request details -->
-    <div class="action-container"  *ngIf="isStatus(requestStatus.Validation)">
-        <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
-        <button type="button" class="btn btn-default" (click)="requireRevision()">Request revision</button>
-        <button type="submit" class="btn btn-primary"
-                (click)="validateRequest()">Validate</button>
+    <div class="action-container"  *ngIf="isStatus(requestStatus.Review)">
+
+        <div *ngIf="isReviewStatus(requestReviewStatus.Validation)">
+            <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
+            <div class="float-xs-right">
+                <button type="button" class="btn btn-default" (click)="requireRevision()">Request revision</button>
+                <button type="submit" class="btn btn-primary"
+                    (click)="validateRequest()">Validate</button>
+            </div>
+        </div>
+        <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
+            <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
+            <div class="float-xs-right">
+                <button type="button" class="btn btn-default" (click)="assignReview()">Assign review</button>
+                <button type="submit" class="btn btn-primary"
+                    (click)="validateRequest()">Validate</button>
+            </div>
+        </div>
+
     </div>
 
     <!-- Review -->
