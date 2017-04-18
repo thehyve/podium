@@ -85,7 +85,6 @@ public class TestResourceIntTest {
         TestResource testResource = new TestResource();
         ReflectionTestUtils.setField(testResource, "userService", userService);
         ReflectionTestUtils.setField(testResource, "organisationService", organisationService);
-        ReflectionTestUtils.setField(testResource, "roleService", roleService);
         ReflectionTestUtils.setField(testResource, "testService", testService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(testResource).build();
     }
