@@ -9,6 +9,8 @@
  */
 
 var webpack = require('webpack');
+const path = require('path');
+
 module.exports = {
     entry: {
         'vendor': [
@@ -52,13 +54,13 @@ module.exports = {
     },
     output: {
         filename: '[name].dll.js',
-        path: './target/www',
+        path: path.resolve('./target/www'),
         library: '[name]'
     },
     plugins: [
         new webpack.DllPlugin({
             name: '[name]',
-            path: './target/www/[name].json'
+            path: path.resolve('./target/www/[name].json')
         })
     ]
 };

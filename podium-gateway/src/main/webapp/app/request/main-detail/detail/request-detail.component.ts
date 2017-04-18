@@ -14,8 +14,7 @@ import { RequestBase } from '../../../shared/request/request-base';
 
 @Component({
     selector: 'pdm-request-detail',
-    templateUrl: './request-detail.component.html',
-    styleUrls: ['request-detail.scss']
+    templateUrl: './request-detail.component.html'
 })
 
 export class RequestDetailComponent {
