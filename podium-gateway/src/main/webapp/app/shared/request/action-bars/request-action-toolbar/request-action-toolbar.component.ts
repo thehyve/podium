@@ -12,7 +12,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Form } from '@angular/forms';
 import { RequestBase } from '../../request-base';
-import { RequestStatus } from '../../request-status';
+import { RequestStatusOptions } from '../../request-status/request-status.constants';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -23,7 +23,7 @@ import { RequestStatus } from '../../request-status';
 export class RequestActionToolbarComponent implements OnInit {
 
     private status: string;
-    public requestStatus = RequestStatus;
+    public requestStatus = RequestStatusOptions;
 
     @Input() form: Form;
     @Input() request: RequestBase;
@@ -36,7 +36,7 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() requireRevisionChange = new EventEmitter();
 
     constructor(private jhiLanguageService: JhiLanguageService) {
-        this.jhiLanguageService.setLocations(['request']);
+        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
     }
 
     ngOnInit() {
@@ -45,7 +45,7 @@ export class RequestActionToolbarComponent implements OnInit {
 
     isStatus(status): boolean {
         // Status value comes as enumuration index
-        return this.status === RequestStatus[status];
+        return this.status === RequestStatusOptions[status];
     }
 
     saveDraft() {
