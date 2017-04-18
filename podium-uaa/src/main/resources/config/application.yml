@@ -12,11 +12,23 @@
 # ===================================================================
 
 eureka:
+    client:
+        enabled: true
+        healthcheck:
+            enabled: true
+        register-with-eureka: true
+        fetch-registry: true
+        instance-info-replication-interval-seconds: 10
+        registry-fetch-interval-seconds: 10
     instance:
         appname: podiumUaa
         instanceId: podiumUaa:${spring.application.instance_id:${random.value}}
-        statusPageUrlPath: ${management.context-path}/info
-        healthCheckUrlPath: ${management.context-path}/health
+        status-page-url-path: ${management.context-path}/info
+        health-check-url-path: ${management.context-path}/health
+        metadata-map:
+            profile: ${spring.profiles.active}
+            version: ${info.project.version}
+
 ribbon:
     eureka:
         enabled: true
