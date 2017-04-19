@@ -8,10 +8,21 @@
  *
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../../shared/request/request-base';
-import { RequestStatus, REQUEST_STATUSES, REQUEST_STATUSES_MAP } from '../../../shared/request/request-status';
+import {
+    RequestStatus,
+    REQUEST_STATUSES,
+    REQUEST_STATUSES_MAP,
+    REQUEST_REVIEW_STATUSES,
+    REQUEST_REVIEW_STATUSES_MAP
+} from '../../../shared/request/request-status';
+import {
+    RequestStatusOptions,
+    RequestReviewStatusOptions
+} from '../../../shared/request/request-status/request-status.constants';
+import { RequestReview } from '../../../shared/request/request-review';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -23,6 +34,8 @@ export class RequestProgressBarComponent {
     @Input() request: RequestBase;
     requestStatusOptions: ReadonlyArray<RequestStatus>;
     requestStatusMap: { [token: string]: RequestStatus; };
+    requestReviewStatusOptions: ReadonlyArray<RequestStatus>;
+    requestReviewStatusMap: { [token: string]: RequestStatus; };
 
     constructor(
         private jhiLanguageService: JhiLanguageService
@@ -30,19 +43,52 @@ export class RequestProgressBarComponent {
         jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
+        this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
+        this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
     }
 
+    /**
+     * Check whether the current request status is active
+     *
+     * @param request the current request
+     * @param currentOrder order of the status being processed
+     * @returns {boolean} status is active or not
+     */
     isActive(request: RequestBase, currentOrder: number): boolean {
-        let reqStatus = request.status;
-        let reqStatusOrder = this.requestStatusMap[reqStatus].order;
-
-        return reqStatusOrder === currentOrder;
+        let requestOrder = this.getRequestStatusOrder(request);
+        return requestOrder === currentOrder;
     }
 
-    isCompleted(request: RequestBase, statusIndex: number): boolean {
-        let reqStatus = request.status;
-        let reqStatusOrder = this.requestStatusMap[reqStatus].order;
+    /**
+     * Check whether the request status being processed has been completed
+     *
+     * @param request the current request
+     * @param currentOrder order of the status being processed
+     * @returns {boolean} status has been completed or not
+     */
+    isCompleted(request: RequestBase, currentOrder: number): boolean {
+        let requestOrder = this.getRequestStatusOrder(request);
+        return requestOrder > currentOrder;
+    }
 
-        return reqStatusOrder > statusIndex;
+    /**
+     * Find the order of the current request
+     * When the request is in Review, return the status order of the review process.
+     * When the request has a different status, return that status order
+     *
+     * @param request the current request
+     * @returns {number} order of the current status
+     */
+    getRequestStatusOrder(request: RequestBase): number {
+        let reqStatus = request.status;
+        let reviewStatus = RequestStatusOptions.Review;
+        if (reqStatus.toString() === RequestStatusOptions[reviewStatus]) {
+            let reqReviewStatus: RequestReviewStatusOptions = request.requestReview.status;
+            // Return requestReviewStatusOrder
+            return this.requestReviewStatusMap[reqReviewStatus].order;
+        } else {
+            // Not Review status - return requestStatusOrder
+            return this.requestStatusMap[reqStatus].order;
+        }
     }
 }

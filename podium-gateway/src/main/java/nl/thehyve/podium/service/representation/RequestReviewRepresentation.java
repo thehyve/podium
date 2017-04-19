@@ -27,6 +27,10 @@ public class RequestReviewRepresentation implements Serializable {
 
     private DecisionOutcome decision = DecisionOutcome.None;
 
+    public RequestReviewRepresentation() {
+
+    }
+
     public RequestReviewRepresentation(RequestReviewProcess requestReview) {
         this.id = requestReview.getId();
         this.processInstanceId = requestReview.getProcessInstanceId();

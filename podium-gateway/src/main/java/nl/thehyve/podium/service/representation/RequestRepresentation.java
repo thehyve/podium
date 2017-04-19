@@ -35,6 +35,8 @@ public class RequestRepresentation implements Serializable {
 
     private RequestRepresentation parentRequest;
 
+    private RequestReviewRepresentation requestReview;
+
     @Valid
     private RequestDetailRepresentation requestDetail;
 
@@ -95,6 +97,10 @@ public class RequestRepresentation implements Serializable {
     public void setRequestDetail(RequestDetailRepresentation requestDetail) {
         this.requestDetail = requestDetail;
     }
+
+    public RequestReviewRepresentation getRequestReview() { return requestReview; }
+
+    public void setRequestReview(RequestReviewRepresentation requestReview) { this.requestReview = requestReview; }
 
     public Set<Attachment> getAttachments() {
         return attachments;
