@@ -126,7 +126,7 @@
         <springfox.version>2.6.1</springfox.version>
         <yarn.version>v0.19.1</yarn.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
-        <wiremock.version>2.5.1</wiremock.version>
+        <wiremock.version>2.6.0</wiremock.version>
     </properties>
 
     <dependencyManagement>
