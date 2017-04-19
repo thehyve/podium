@@ -71,7 +71,7 @@ fi
 if [ "$RUN_PODIUM" == 1 ]; then
     cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
-        --server.port=8999 \
+        --server.port="$PODIUM_UAA_RUN_PORT" \
         --spring.profiles.active="$PROFILE" \
         --logging.level.nl.thehyve.podium.sample=ERROR \
         --logging.level.nl.thehyve.podium.travis=ERROR &
