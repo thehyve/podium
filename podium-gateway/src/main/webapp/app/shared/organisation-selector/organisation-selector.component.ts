@@ -16,8 +16,7 @@ import { OrganisationService } from '../../backoffice/modules/organisation/organ
 
 @Component({
     selector: 'pdm-organisation-selector',
-    templateUrl: './organisation-selector.component.html',
-    styleUrls: ['./organisation-selector.scss']
+    templateUrl: './organisation-selector.component.html'
 })
 
 export class OrganisationSelectorComponent implements OnInit {

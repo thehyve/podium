@@ -4,7 +4,7 @@ services:
   - docker
 language: java
 node_js:
-  - "7.5.0"
+  - "7"
 jdk:
   - oraclejdk8
 sudo: true
@@ -14,7 +14,6 @@ cache:
     - node
     - node_modules
     - $HOME/.m2
-    - $HOME/.yarn-cache
 env:
   global:
     - NODE_VERSION=7.5.0
@@ -30,9 +29,7 @@ env:
     - MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
 before_install:
   - nvm install $NODE_VERSION
-  - npm install -g npm
   - node -v
-  - npm -v
   - yarn --version
   - java -version
   - export TZ=Europe/Amsterdam
@@ -44,7 +41,10 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 install:
   - mvn install -DskipTests -q
-  - pushd podium-gateway && yarn install && popd
+  - pushd podium-gateway
+  - yarn install
+  - yarn link
+  - popd
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
   - $PODIUM_SCRIPTS/02-tests.sh
