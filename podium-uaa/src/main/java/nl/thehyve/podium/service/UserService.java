@@ -30,6 +30,7 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -38,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -54,16 +54,16 @@ public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    @Inject
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
 
-    @Inject
+    @Autowired
     private UserSearchRepository userSearchRepository;
 
-    @Inject
+    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -330,6 +330,13 @@ public class UserService {
         copyProperties(userData, user);
         save(user);
         log.debug("Changed Information for User: {}", user);
+    }
+
+    @Profile({"dev", "test"})
+    public void changePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        log.debug("Changed password for User: {}", user);
+        save(user);
     }
 
     public void changePassword(String password) {
