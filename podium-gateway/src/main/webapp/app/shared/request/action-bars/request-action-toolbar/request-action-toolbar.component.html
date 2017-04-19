@@ -8,7 +8,7 @@
   ~
   -->
 
-<div class="request-action-toolbar">
+<div class="request-action-toolbar" *ngIf="request">
     <!-- Draft / Submit -->
     <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
         <button type="button" class="btn btn-danger" (click)="resetForm()">Clear</button>

@@ -23,7 +23,7 @@ import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-
 export class RequestActionToolbarComponent implements OnInit {
 
     private status: string;
-    private reviewStatus: string;
+    private reviewStatus?: string;
     public requestStatus = RequestStatusOptions;
     public requestReviewStatus = RequestReviewStatusOptions;
 
@@ -43,7 +43,9 @@ export class RequestActionToolbarComponent implements OnInit {
 
     ngOnInit() {
         this.status = this.request.status.toString();
-        this.reviewStatus = this.request.requestReview.status.toString();
+        if (this.request.requestReview) {
+            this.reviewStatus = this.request.requestReview.status.toString();
+        }
     }
 
     isStatus(status): boolean {
