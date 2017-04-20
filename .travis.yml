@@ -50,7 +50,8 @@ install:
   - popd
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
-  #- $PODIUM_SCRIPTS/02-tests.sh
+  - $PODIUM_SCRIPTS/02-tests.sh
+  - $PODIUM_SCRIPTS/01-docker-compose.sh
   - $PODIUM_SCRIPTS/03-run.sh
 notifications:
   webhooks:

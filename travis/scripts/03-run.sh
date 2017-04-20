@@ -45,10 +45,6 @@ launchCurlOrProtractor() {
     exit $result
 }
 
-echo "RESTARTING DOCKER REGISTRY"
-docker restart podium-registry
-sleep 40
-
 #-------------------------------------------------------------------------------
 # Package UAA
 #-------------------------------------------------------------------------------
