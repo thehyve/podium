@@ -52,7 +52,6 @@ cd "$PODIUM_BASE"/podium-uaa
 mvn -q "$MAVEN_OPTS" package -DskipTests -P"$PROFILE"
 mv target/*.war podium-uaa.war
 
-
 #-------------------------------------------------------------------------------
 # Package gateway
 #-------------------------------------------------------------------------------
