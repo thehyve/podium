@@ -223,6 +223,7 @@ public class RequestService {
      *  @param uuid the uuid of the request
      *  @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
      */
+    @Transactional
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
         if (request.getStatus() != RequestStatus.Draft) {
