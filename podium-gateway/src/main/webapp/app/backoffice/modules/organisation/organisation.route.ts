@@ -74,7 +74,7 @@ export const organisationRoute: Routes = [
         path: 'detail/:uuid',
         component: OrganisationDetailComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'podiumGatewayApp.organisation.home.title',
             breadcrumb: 'organisation details'
         },

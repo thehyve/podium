@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.Email;
 
@@ -138,7 +137,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private ZonedDateTime accountLockDate = null;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, cascade = javax.persistence.CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "role_users",
         joinColumns = {@JoinColumn(name = "users_id", referencedColumnName = "id")},
