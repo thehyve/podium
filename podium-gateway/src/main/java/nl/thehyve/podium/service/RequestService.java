@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.exceptions.*;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -198,6 +199,7 @@ public class RequestService {
      * @return the updated draft request
      * @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
      */
+    @Timed
     public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(body.getUuid());
         if (request.getStatus() != RequestStatus.Draft) {
@@ -223,6 +225,7 @@ public class RequestService {
      *  @param uuid the uuid of the request
      *  @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
      */
+    @Timed
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
         if (request.getStatus() != RequestStatus.Draft) {
@@ -244,6 +247,7 @@ public class RequestService {
      * @return the list of generated requests to organisations.
      * @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
      */
+    @Timed
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
         if (request.getStatus() != RequestStatus.Draft) {
