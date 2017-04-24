@@ -8,14 +8,19 @@
 package nl.thehyve.podium.service.representation;
 
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.*;
-
-import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.domain.Attachment;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * A DTO for the Request entity.

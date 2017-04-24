@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
-
 import { Role } from '../role.model';
 import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';

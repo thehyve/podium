@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
-
 import { Principal } from '../shared';
 import { User } from '../shared/user/user.model';
-import {JhiLanguageService} from 'ng-jhipster';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'dashboard',

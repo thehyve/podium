@@ -17,7 +17,10 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.UserRepository;
-import nl.thehyve.podium.service.*;
+import nl.thehyve.podium.service.OrganisationService;
+import nl.thehyve.podium.service.RoleService;
+import nl.thehyve.podium.service.TestService;
+import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
@@ -26,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,12 +38,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the TestResource REST controller.
@@ -53,25 +59,25 @@ public class TestResourceIntTest {
 
     private final Logger log = LoggerFactory.getLogger(TestResourceIntTest.class);
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
 
-    @Inject
+    @Autowired
     private OrganisationService organisationService;
 
-    @Inject
+    @Autowired
     private OrganisationRepository organisationRepository;
 
-    @Inject
+    @Autowired
     private RoleService roleService;
 
-    @Inject
+    @Autowired
     private RoleRepository roleRepository;
 
-    @Inject
+    @Autowired
     private TestService testService;
 
     private MockMvc mockMvc;

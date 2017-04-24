@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { SpyObject } from './spyobject';
 import { Principal } from '../../../../main/webapp/app/shared/auth/principal.service';
 import Spy = jasmine.Spy;

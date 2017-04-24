@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, Input } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../../shared/request/request-base';
@@ -22,7 +21,6 @@ import {
     RequestStatusOptions,
     RequestReviewStatusOptions
 } from '../../../shared/request/request-status/request-status.constants';
-import { RequestReview } from '../../../shared/request/request-review';
 
 @Component({
     selector: 'pdm-request-progress-bar',

@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director} from "../protractor-stories/director";
+import { Director } from '../protractor-stories/director';
 import PageDictionary = require("../pages/PageDictionary")
 import PersonaDictionary = require("../personas/PersonaDictionary")
 

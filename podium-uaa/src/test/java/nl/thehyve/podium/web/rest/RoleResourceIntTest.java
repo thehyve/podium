@@ -8,6 +8,8 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
@@ -18,11 +20,6 @@ import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
-
-import nl.thehyve.podium.common.security.AuthorityConstants;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

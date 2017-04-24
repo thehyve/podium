@@ -10,26 +10,24 @@ package nl.thehyve.podium.service;
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.DecisionOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.RequestReviewProcess;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-
-
 import java.util.UUID;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Service tests for the {@link RequestReviewProcessService}.
@@ -39,7 +37,7 @@ import static org.mockito.Mockito.*;
 @Transactional
 public class RequestReviewProcessServiceIntTest {
 
-    @Inject
+    @Autowired
     RequestReviewProcessService requestReviewProcessService;
 
     private UUID testUuid = UUID.randomUUID();

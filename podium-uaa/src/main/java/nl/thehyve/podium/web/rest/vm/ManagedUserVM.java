@@ -7,10 +7,10 @@
 
 package nl.thehyve.podium.web.rest.vm;
 
-import java.time.ZonedDateTime;
-
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.validation.ValidPassword;
+
+import java.time.ZonedDateTime;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.

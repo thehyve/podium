@@ -7,14 +7,13 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
 import { User } from '../../shared/user/user.model';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
+import { Principal } from '../../shared';
 import { RequestFormService } from '../form/request-form.service';
 
 @Component({

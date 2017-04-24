@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { PdmConfigurationService } from './configuration.service';
 
 @Component({

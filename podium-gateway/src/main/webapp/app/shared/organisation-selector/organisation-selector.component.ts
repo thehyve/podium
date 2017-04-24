@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';

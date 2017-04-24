@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Form } from '@angular/forms';

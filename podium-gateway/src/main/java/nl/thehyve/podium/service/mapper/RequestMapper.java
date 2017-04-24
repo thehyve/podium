@@ -7,13 +7,15 @@
 
 package nl.thehyve.podium.service.mapper;
 
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-import org.mapstruct.*;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

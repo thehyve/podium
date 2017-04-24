@@ -4,7 +4,6 @@
  * you may not use this file except in compliance with the License.
  * See the file LICENSE in the root of this repository.
  */
-
 import { FormControl } from '@angular/forms';
 import { PasswordMatchesDirective } from '../../../../../../main/webapp/app/shared/validators/password-matches.directive';
 

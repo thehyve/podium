@@ -4,10 +4,8 @@
  * you may not use this file except in compliance with the License.
  * See the file LICENSE in the root of this repository.
  */
-
-
-import {Directive, Input} from '@angular/core';
-import {NG_VALIDATORS, Validator, FormControl} from '@angular/forms';
+import { Directive, Input } from '@angular/core';
+import { NG_VALIDATORS, Validator, FormControl } from '@angular/forms';
 
 /**
  * Matching passwords directive. Validates that the control value matches the value of another control.

@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Authority } from './authority';
 
 const authorityNames: { [token: string]: string; } = {

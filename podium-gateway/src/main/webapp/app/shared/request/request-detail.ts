@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { PrincipalInvestigator } from './principal-investigator';
 import { RequestType } from './request-type';
 import { Attachment } from '../attachment/attachment';

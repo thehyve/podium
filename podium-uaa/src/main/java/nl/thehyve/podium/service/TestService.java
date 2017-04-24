@@ -28,8 +28,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Service class for managing users.
@@ -41,31 +44,31 @@ public class TestService {
 
     private final Logger log = LoggerFactory.getLogger(TestService.class);
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
 
-    @Inject
+    @Autowired
     private UserSearchRepository userSearchRepository;
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
+    @Autowired
     private RoleRepository roleRepository;
 
-    @Inject
+    @Autowired
     private RoleSearchRepository roleSearchRepository;
 
-    @Inject
+    @Autowired
     RoleService roleService;
 
-    @Inject
+    @Autowired
     private OrganisationRepository organisationRepository;
 
-    @Inject
+    @Autowired
     private OrganisationSearchRepository organisationSearchRepository;
 
-    @Inject
+    @Autowired
     OrganisationService organisationService;
 
     @Autowired

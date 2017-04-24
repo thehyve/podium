@@ -7,9 +7,9 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {browser, ElementFinder} from "protractor";
-import {Promise} from "es6-promise";
-import {isUndefined} from "util";
+import { browser, ElementFinder } from 'protractor';
+import { Promise } from 'es6-promise';
+import { isUndefined } from 'util';
 
 export interface Persona {
     name: string;

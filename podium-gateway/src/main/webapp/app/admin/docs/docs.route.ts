@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { PdmDocsComponent } from './docs.component';
 
 export const docsRoute: Route = {

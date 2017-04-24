@@ -9,14 +9,11 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
-
-import nl.thehyve.podium.domain.Organisation;
-
-import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -13,7 +13,11 @@ import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteReporter;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import com.codahale.metrics.jvm.*;
+import com.codahale.metrics.jvm.BufferPoolMetricSet;
+import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
+import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
 import com.zaxxer.hikari.HikariDataSource;
@@ -25,10 +29,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.lang.management.ManagementFactory;
@@ -50,7 +54,7 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
     private HealthCheckRegistry healthCheckRegistry = new HealthCheckRegistry();
 
-    @Inject
+    @Autowired
     private PodiumProperties podiumProperties;
 
     @Autowired(required = false)
@@ -103,10 +107,10 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
         private final Logger log = LoggerFactory.getLogger(GraphiteRegistry.class);
 
-        @Inject
+        @Autowired
         private MetricRegistry metricRegistry;
 
-        @Inject
+        @Autowired
         private PodiumProperties podiumProperties;
 
         @PostConstruct
@@ -133,10 +137,10 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
         private final Logger log = LoggerFactory.getLogger(PrometheusRegistry.class);
 
-        @Inject
+        @Autowired
         private MetricRegistry metricRegistry;
 
-        @Inject
+        @Autowired
         private PodiumProperties podiumProperties;
 
         @Override

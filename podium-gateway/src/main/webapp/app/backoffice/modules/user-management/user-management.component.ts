@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventManager, PaginationUtil, ParseLinks, AlertService, JhiLanguageService } from 'ng-jhipster';
-
 import { PaginationConfig } from '../../../blocks/config/uib-pagination.config';
 import { Principal } from '../../../shared/auth/principal.service';
 import { UserService } from '../../../shared/user/user.service';

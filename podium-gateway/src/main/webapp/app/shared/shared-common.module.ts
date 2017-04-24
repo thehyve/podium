@@ -7,13 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, Sanitizer } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-
 import { TranslateService } from 'ng2-translate';
 import { AlertService } from 'ng-jhipster';
-
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,

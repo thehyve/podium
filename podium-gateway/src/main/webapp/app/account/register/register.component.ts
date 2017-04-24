@@ -7,19 +7,12 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
 import { TranslateService } from 'ng2-translate';
-import {
-    LoginModalService,
-    MessageService,
-    EmailValidatorDirective,
-    SpecialismComponent,
-    PasswordValidatorDirective
-} from '../../shared';
+import { LoginModalService, MessageService } from '../../shared';
 import { Router } from '@angular/router';
 import { Message } from '../../shared/message/message.model';
 import { Observable } from 'rxjs';

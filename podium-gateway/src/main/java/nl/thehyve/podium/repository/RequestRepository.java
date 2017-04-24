@@ -7,12 +7,11 @@
 
 package nl.thehyve.podium.repository;
 
-import nl.thehyve.podium.domain.Request;
-
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.domain.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 

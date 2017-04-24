@@ -11,17 +11,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
+import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
+import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
+import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
-import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.security.OAuth2TokenMockUtil;
-import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,10 +46,18 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Integration test for the access policy on controller methods.

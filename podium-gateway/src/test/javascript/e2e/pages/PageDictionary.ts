@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Page} from "../protractor-stories/director";
+import { Page } from '../protractor-stories/director';
 import SigninPage = require("./SigninPage")
 import DashboardPage = require("./DashboardPage")
 /*

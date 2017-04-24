@@ -8,7 +8,6 @@
 package nl.thehyve.podium.search;
 
 import nl.thehyve.podium.common.enumeration.RequestType;
-import nl.thehyve.podium.domain.Organisation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.annotation.Id;
