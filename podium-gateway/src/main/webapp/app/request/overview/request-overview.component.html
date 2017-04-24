@@ -8,76 +8,86 @@
   ~
   -->
 
-<h2><span>My Requests</span>
-    <div class="btn-group flex-btn-group-container">
-        <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()" >
-            <i class="material-icons">assignment_ind</i>
-            <span class="hidden-sm-down">
+<!-- Request status sidebar -->
+<div>
+    <div class="status-sidebar-container">
+        <pdm-request-status-sidebar></pdm-request-status-sidebar>
+    </div>
+    <div class="request-overview-container content-wrapper">
+
+        <h2><span>My Requests</span>
+            <div class="btn-group flex-btn-group-container">
+                <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()" >
+                    <i class="material-icons">assignment_ind</i>
+                    <span class="hidden-sm-down">
             My requests
             </span>
-        </button>
-        <button class="btn btn-success float-xs-right create-organisation" (click)="displayDrafts()">
-            <span class="fa fa-file"></span>
-            <span class="hidden-sm-down">
+                </button>
+                <button class="btn btn-success float-xs-right create-organisation" (click)="displayDrafts()">
+                    <span class="fa fa-file"></span>
+                    <span class="hidden-sm-down">
             Show Drafts
             </span>
-        </button>
-        <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
-            <span class="fa fa-plus"></span>
-            <span class="hidden-sm-down">
+                </button>
+                <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
+                    <span class="fa fa-plus"></span>
+                    <span class="hidden-sm-down">
             Create new request
             </span>
-        </button>
+                </button>
+            </div>
+        </h2>
+
+
+        <br/>
+        <div class="table-responsive" *ngIf="availableRequests">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th><span >Title</span></th>
+                    <th><span>Status</span></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let request of availableRequests; trackBy: trackId">
+                    <td>
+                        {{request.requestDetail.title || '-'}}
+                    </td>
+                    <td>
+                        {{request.status}}
+                    </td>
+                    <td class="text-xs-right">
+                        <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
+                            <button type="button"
+                                    class="btn btn-primary btn-sm"  (click)="editRequest(request)">
+                                <span class="fa fa-pencil"></span>
+                                <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
+                            </button>
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm">
+                                <span class="fa fa-pencil"></span>
+                                <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
+                            </button>
+                        </div>
+                        <button type="button"
+                                class="btn btn-primary btn-sm"  (click)="navigateToRequestDetail(request)"
+                                *ngIf="request.status !== 'Draft'">
+                            <span class="material-icons md-18">assignment_ind</span>
+                            <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="availableRequests.length == 0">
+                    <td colspan="3" class="no-results">
+                        <div class="alert alert-info">
+                            No requests found
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</h2>
-
-
-<br/>
-<div class="table-responsive" *ngIf="availableRequests">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th><span >Title</span></th>
-            <th><span>Status</span></th>
-            <th></th>
-        </tr>
-        </thead>
-			<tbody>
-			<tr *ngFor="let request of availableRequests; trackBy: trackId">
-				<td>
-					{{request.requestDetail.title || '-'}}
-				</td>
-				<td>
-					{{request.status}}
-				</td>
-				<td class="text-xs-right">
-					<div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
-						<button type="button"
-								class="btn btn-primary btn-sm"  (click)="editRequest(request)">
-							<span class="fa fa-pencil"></span>
-							<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
-						</button>
-						<button type="submit"
-								class="btn btn-danger btn-sm">
-							<span class="fa fa-pencil"></span>
-							<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
-						</button>
-					</div>
-                    <button type="button"
-                            class="btn btn-primary btn-sm"  (click)="navigateToRequestDetail(request)"
-                            *ngIf="request.status !== 'Draft'">
-                        <span class="material-icons md-18">assignment_ind</span>
-                        <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
-                    </button>
-				</td>
-			</tr>
-			<tr *ngIf="availableRequests.length == 0">
-				<td colspan="3" class="no-results">
-					<div class="alert alert-info">
-						No requests found
-					</div>
-				</td>
-			</tr>
-        </tbody>
-    </table>
 </div>
+

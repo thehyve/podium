@@ -8,3 +8,27 @@ $background: #f5f5f5;
         font-weight: 500;
     }
 }
+
+.status-sidebar-container {
+    float: left;
+    position: fixed;
+    height: 100%;
+    opacity: 0;
+
+
+    -webkit-transition: opacity 0.2s ease;
+    -moz-transition: opacity 0.2s ease;
+    -o-transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease;
+}
+
+@media(min-width:992px) {
+    .request-overview-container {
+        margin-left: 250px;
+    }
+
+    .status-sidebar-container {
+        opacity: 1;
+    }
+}
+

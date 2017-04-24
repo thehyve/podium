@@ -27,6 +27,7 @@ import { RequestDetailComponent } from './main-detail/detail/request-detail.comp
 import { RequestActionToolbarComponent }
     from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
 import { RequestProgressBarComponent } from './main-detail/progress-bar/request-progress-bar.component';
+import { RequestStatusSidebarComponent } from '../shared/request/status-sidebar/status-sidebar.component';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { RequestProgressBarComponent } from './main-detail/progress-bar/request-
         RequestMainDetailComponent,
         RequestDetailComponent,
         RequestActionToolbarComponent,
-        RequestProgressBarComponent
+        RequestProgressBarComponent,
+        RequestStatusSidebarComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent

@@ -316,6 +316,7 @@ Breadcrumb bar
     box-shadow: rgba(255, 255, 255, 0.70) 0 1px 0 0;
     background-color: rgba(0, 0, 0, 0.020);
     text-shadow: rgba(255, 255, 255, 0.55) 0 1px 0;
+    margin-bottom: 0!important;
 }
 
 /* ==========================================================================
@@ -404,3 +405,12 @@ typeahead-container {
     border-radius: 0 !important;
 }
 
+.content-wrapper {
+    padding: 1.5%;
+    border: none;
+    background-color: transparent;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
