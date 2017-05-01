@@ -22,11 +22,12 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class })
+@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class, RequestReviewProcessMapper.class })
 public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(source = "requestReviewProcess", target = "requestReview")
     RequestRepresentation requestToRequestDTO(Request request);
 
     List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);

@@ -13,9 +13,10 @@ import { Route } from '@angular/router';
 import { PdmMetricsMonitoringComponent } from './metrics.component';
 
 export const metricsRoute: Route = {
-  path: 'pdm-metrics',
-  component: PdmMetricsMonitoringComponent,
-  data: {
-    pageTitle: 'metrics.title'
-  }
+    path: 'pdm-metrics',
+    component: PdmMetricsMonitoringComponent,
+    data: {
+        pageTitle: 'metrics.title',
+        breadcrumb: 'metrics'
+    }
 };

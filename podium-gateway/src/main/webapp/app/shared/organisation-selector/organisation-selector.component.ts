@@ -17,8 +17,7 @@ import { organisationRoute } from '../../backoffice/modules/organisation/organis
 
 @Component({
     selector: 'pdm-organisation-selector',
-    templateUrl: './organisation-selector.component.html',
-    styleUrls: ['./organisation-selector.scss']
+    templateUrl: './organisation-selector.component.html'
 })
 
 export class OrganisationSelectorComponent implements OnInit {
@@ -44,15 +43,17 @@ export class OrganisationSelectorComponent implements OnInit {
         return Observable.throw(new Error(error.status));
     }
 
-    constructor(private organisationService: OrganisationService){}
+    constructor(
+        private organisationService: OrganisationService
+    ) { }
 
     onChange() {
         // get organisation instance of selected uuid
         this.organisations = this.selectedOrganisationUuids.map(
             (selected) => {
                 return this.organisationOptions.find( (option) => {
-                    return option.uuid == selected;
-                })
+                    return option.uuid === selected;
+                });
             }
         );
         this.organisationChange.emit(this.organisations);

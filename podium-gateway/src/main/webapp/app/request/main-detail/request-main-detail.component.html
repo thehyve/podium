@@ -15,6 +15,8 @@
                 <span jhiTranslate="request.detail.pageTitle">Request</span>
             </h2>
 
+            <pdm-request-progress-bar *ngIf="request" [request]="request"></pdm-request-progress-bar>
+
             <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
 

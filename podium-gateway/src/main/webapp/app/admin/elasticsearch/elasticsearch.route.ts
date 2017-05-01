@@ -16,6 +16,7 @@ export const elasticsearchRoute: Route = {
     path: 'pdm-elasticsearch',
     component: PdmElasticsearchComponent,
     data: {
-        pageTitle: 'elasticsearch.title'
+        pageTitle: 'elasticsearch.title',
+        breadcrumb: 'elasticsearch indexer'
     }
 };

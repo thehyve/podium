@@ -8,8 +8,8 @@
  *
  */
 
-export enum RequestStatus {
-    Draft,
-    Review,
-    Delivery
+export enum RequestReviewDecision {
+    Approved,
+    Rejected,
+    None
 }

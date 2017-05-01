@@ -80,7 +80,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     }
 
     initializeRequestForm() {
-        if (this.requestFormService.request !== null) {
+        if (this.requestFormService.request) {
             this.selectRequestDraft(this.requestFormService.request);
         } else {
             this.initializeBaseRequest();
@@ -100,12 +100,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
             );
     }
 
-    processAvailableDrafts(requestDrafts) {
-        this.selectDraft = true;
-        this.availableRequestDrafts = requestDrafts;
-        this.requestDraftsAvailable = true;
-    }
-
     initializeBaseRequest() {
         this.requestService.createDraft()
             .subscribe(
@@ -115,7 +109,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
                     this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
                     this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
-                    this.selectDraft = false;
                 },
                 (error) => this.onError('Error initializing base request')
             );
@@ -126,7 +119,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     }
 
     selectRequestDraft(requestBase: RequestBase) {
-        this.selectDraft = false;
         this.requestBase = requestBase;
         this.requestBase.organisations = requestBase.organisations || [];
         this.requestDetail = requestBase.requestDetail || new RequestDetail();

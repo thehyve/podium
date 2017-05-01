@@ -49,15 +49,14 @@ launchCurlOrProtractor() {
 # Package UAA
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-uaa
-mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
+mvn -q "$MAVEN_OPTS" package -DskipTests -P"$PROFILE"
 mv target/*.war podium-uaa.war
-
 
 #-------------------------------------------------------------------------------
 # Package gateway
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-gateway
-mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
+mvn -q "$MAVEN_OPTS" package -DskipTests -P"$PROFILE"
 mv target/*.war podium-gateway.war
 
 if [ $? -ne 0 ]; then
@@ -71,6 +70,7 @@ fi
 if [ "$RUN_PODIUM" == 1 ]; then
     cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
+        --server.port="$PODIUM_UAA_RUN_PORT" \
         --spring.profiles.active="$PROFILE" \
         --logging.level.nl.thehyve.podium.sample=ERROR \
         --logging.level.nl.thehyve.podium.travis=ERROR &

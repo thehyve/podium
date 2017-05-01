@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2017. The Hyve and respective contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -8,6 +8,5 @@
  *
  */
 
-.selected-organisation {
-    padding-top: 20px;
-}
+export * from './request-status';
+export * from './request-status.constants';

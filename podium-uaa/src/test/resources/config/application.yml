@@ -64,6 +64,9 @@ liquibase:
 security:
     basic:
         enabled: false
+    oauth2:
+        resource:
+            filter-order: 3
 
 server:
     port: 10344

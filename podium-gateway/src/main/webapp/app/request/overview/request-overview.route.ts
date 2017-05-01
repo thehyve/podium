@@ -17,7 +17,8 @@ export const requestOverviewRoute: Route = {
     component: RequestOverviewComponent,
     data: {
         authorities: ['ROLE_RESEARCHER'],
-        pageTitle: 'request.pageTitle'
+        pageTitle: 'request.pageTitle',
+        breadcrumb: 'overview'
     },
     canActivate: [UserRouteAccessService]
 };

@@ -60,10 +60,11 @@ export class RequestMainDetailComponent implements OnInit {
 
     private onSuccess(request: RequestBase) {
         this.request = request;
-        this.requestDetail.setRequestDetail(request.requestDetail);
+        this.requestDetail.setRequest(request);
     }
 
     private onError(error) {
         this.error =  'ERROR';
         this.success = null;
-    }}
+    }
+}
