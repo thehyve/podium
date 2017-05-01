@@ -54,6 +54,18 @@ public interface UserMapper {
 
     List<User> userDTOsToUsers(List<UserRepresentation> userDTOs);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "login", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "emailVerified", ignore = true)
+    @Mapping(target = "adminVerified", ignore = true)
+    @Mapping(target = "accountLocked", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    // Copy user properties, except login, password, email, activated.
+    User safeUpdateUserWithUserDTO(UserRepresentation userDTO, @MappingTarget User user);
+
     // Decorated is used to generate the fullname for the searchuser
     SearchUser userToSearchUser(User user);
 
