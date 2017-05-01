@@ -39,6 +39,7 @@ import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
+import { RequestAccessService } from './request/request-access.service';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ export class PodiumGatewaySharedModule {
                 UserService,
                 AttachmentService,
                 RequestService,
+                RequestAccessService,
                 DatePipe
             ]
         };
