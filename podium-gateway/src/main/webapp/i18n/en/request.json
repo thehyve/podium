@@ -8,6 +8,24 @@
             "edit": "Edit",
             "delete": "Delete"
         },
+        "toolbar": {
+            "cancel": "Cancel",
+            "saveDraft": "Save draft",
+            "submit": "Submit",
+            "reset": "Reset",
+            "revision": "The request is currently in revision.",
+            "validation": "Your request is currently is waiting for validation.",
+            "review": "Your request has passed the first check and is currently under review.",
+            "sendForReview": "Send for review",
+            "saveAndSubmit": "Save and submit",
+            "save": "Save",
+            "requestRevision": "Request revision",
+            "reject": "Reject",
+            "approve": "Approve",
+            "checks": {
+                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified."
+            }
+        },
         "submit": {
             "title": "Confirm request submission",
             "question": "Are you sure you want to submit this request?"
