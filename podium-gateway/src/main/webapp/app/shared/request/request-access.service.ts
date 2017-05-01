@@ -18,6 +18,7 @@ import { OrganisationAuthorityOptions } from '../authority/authority.constants';
 export class RequestAccessService {
 
     private currentUser: User;
+
     constructor(
         private principal: Principal
     ) {
