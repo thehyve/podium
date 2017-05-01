@@ -25,6 +25,7 @@ export class User {
     public accountLocked?: Boolean;
     public langKey?: string;
     public authorities?: any[];
+    public organisationAuthorities?: { [uuid: string]: string[] };
     public createdBy?: string;
     public createdDate?: Date;
     public lastModifiedBy?: string;

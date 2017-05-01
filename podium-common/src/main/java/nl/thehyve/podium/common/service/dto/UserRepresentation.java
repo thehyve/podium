@@ -15,6 +15,8 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -65,6 +67,8 @@ public class UserRepresentation implements IdentifiableUser {
     private boolean adminVerified;
 
     private boolean accountLocked;
+
+    private Map<UUID, Collection<String>> organisationAuthorities;
 
     @Size(min = 2, max = 5)
     private String langKey;
@@ -138,11 +142,15 @@ public class UserRepresentation implements IdentifiableUser {
         this.accountLocked = accountLocked;
     }
 
-    public UUID getUuid() { return uuid; }
+    public UUID getUuid() {
+        return uuid;
+    }
 
     @Override
     @JsonIgnore
-    public UUID getUserUuid() { return getUuid(); }
+    public UUID getUserUuid() {
+        return getUuid();
+    }
 
     public String getFirstName() {
         return firstName;
@@ -196,6 +204,14 @@ public class UserRepresentation implements IdentifiableUser {
         return authorities;
     }
 
+    public Map<UUID, Collection<String>> getOrganisationAuthorities() {
+        return organisationAuthorities;
+    }
+
+    public void setOrganisationAuthorities(Map<UUID, Collection<String>> organisationAuthorities) {
+        this.organisationAuthorities = organisationAuthorities;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -207,5 +223,4 @@ public class UserRepresentation implements IdentifiableUser {
             ", authorities=" + authorities +
             "}";
     }
-
 }
