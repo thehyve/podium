@@ -25,7 +25,7 @@ export class RequestBase implements Request {
     requestDetail?: RequestDetail = new RequestDetail();
     requestReview?: RequestReview;
     organisations?: Organisation[] = [];
-    requester?: User;
+    requester?: string;
 
     constructor() {
     }

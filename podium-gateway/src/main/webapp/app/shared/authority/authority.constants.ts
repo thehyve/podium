@@ -45,6 +45,12 @@ function convertToAuthorityMap(authorities: ReadonlyArray<Authority>): { [token:
     return result;
 }
 
+export enum OrganisationAuthorityOptions {
+    ROLE_ORGANISATION_ADMIN,
+    ROLE_ORGANISATION_COORDINATOR,
+    ROLE_ORGANISATION_REVIEWER
+}
+
 export const AUTHORITIES: ReadonlyArray<Authority> = convertNamesToAuthorities(authorityNames);
 
 export const AUTHORITIES_MAP: { [token: string]: Authority; } = convertToAuthorityMap(AUTHORITIES);

@@ -13,6 +13,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Form } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-status/request-status.constants';
+import { RequestAccessService } from '../../request-access.service';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -26,6 +27,7 @@ export class RequestActionToolbarComponent implements OnInit {
     private reviewStatus?: string;
     public requestStatus = RequestStatusOptions;
     public requestReviewStatus = RequestReviewStatusOptions;
+    public checks: any = {};
 
     @Input() form: Form;
     @Input() request: RequestBase;
@@ -33,11 +35,17 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() resetChange = new EventEmitter();
     @Output() rejectChange = new EventEmitter();
     @Output() saveDraftChange = new EventEmitter();
+    @Output() saveRequestChange = new EventEmitter();
     @Output() submitDraftChange = new EventEmitter();
+    @Output() submitRequestChange = new EventEmitter();
+    @Output() submitReviewChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
 
-    constructor(private jhiLanguageService: JhiLanguageService) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestAccessService: RequestAccessService
+    ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
     }
 
@@ -58,8 +66,24 @@ export class RequestActionToolbarComponent implements OnInit {
         return this.reviewStatus === RequestReviewStatusOptions[status];
     }
 
+    isRequestCoordinator(): boolean {
+        return this.requestAccessService.isCoordinatorFor(this.request);
+    }
+
+    isRequestReviewer(): boolean {
+        return this.requestAccessService.isReviewerFor(this.request);
+    }
+
+    isRequestingResearcher(): boolean {
+        return this.requestAccessService.isRequesterOf(this.request);
+    }
+
     saveDraft() {
         this.saveDraftChange.emit(true);
+    }
+
+    saveRequest() {
+        this.saveRequestChange.emit(true);
     }
 
     submitDraft() {
@@ -82,4 +106,11 @@ export class RequestActionToolbarComponent implements OnInit {
         this.requireRevisionChange.emit(true);
     }
 
+    submitRequest() {
+        this.submitRequestChange.emit(true);
+    }
+
+    submitReview() {
+        this.submitReviewChange.emit(true);
+    }
 }
