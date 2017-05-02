@@ -21,6 +21,8 @@ eureka:
     instance:
         appname: podiumGateway
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
+        lease-renewal-interval-in-seconds: 5
+        lease-expiration-duration-in-seconds: 10
         status-page-url-path: ${management.context-path}/info
         health-check-url-path: ${management.context-path}/health
         metadata-map:
