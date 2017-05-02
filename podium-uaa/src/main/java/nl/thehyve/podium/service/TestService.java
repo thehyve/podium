@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -69,6 +70,9 @@ public class TestService {
     OrganisationService organisationService;
 
     @Autowired
+    EntityManager entityManager;
+
+    @Autowired
     UserMapper userMapper;
 
     private static final Set<String> specialUsers = new HashSet<>(Arrays.asList("admin", "system"));
@@ -95,6 +99,15 @@ public class TestService {
         for(User user: userRepository.findAll()) {
             if (!specialUsers.contains(user.getLogin())) {
                 users.add(user);
+                log.info("Scheduling user for deletion: {}", user.getLogin());
+                // delete user from associated (non-organisational) roles
+                if (user.getRoles() != null) {
+                    for(Role role: user.getRoles()) {
+                        log.info("Removing user {} from role {}", user.getLogin(), role.getAuthority());
+                        role.getUsers().remove(user);
+                        entityManager.persist(role);
+                    }
+                }
             }
         }
 
@@ -137,7 +150,13 @@ public class TestService {
             }
         }
         role.setUsers(users);
-        roleService.save(role);
+        entityManager.persist(role);
+        entityManager.flush();
+
+        // Refresh associated users (because of caching)
+        for(User user: role.getUsers()) {
+            entityManager.refresh(user);
+        }
     }
 
 }
