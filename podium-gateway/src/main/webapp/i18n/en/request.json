@@ -26,6 +26,14 @@
             "requestTypes": "Request Types",
             "organisations": "Organisations"
         },
+        "delete": {
+            "dialog": {
+                "title": "Confirm deletion of request draft",
+                "question": "Are you sure you would like to delete this request draft?",
+                "cancel": "Cancel",
+                "confirm": "Delete draft"
+            }
+        },
         "form": {
             "header": {
                 "new": "New Request",
