@@ -12,26 +12,18 @@ import { Injectable } from '@angular/core';
 import { Principal } from '../auth/principal.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
-import { Authority } from '../authority/authority';
-import { OrganisationAuthorityOptions, ORGANISATION_AUTHORITIES_MAP } from '../authority/authority.constants';
+import { OrganisationAuthorityOptions } from '../authority/authority.constants';
 
 @Injectable()
 export class RequestAccessService {
 
     private currentUser: User;
-    private organisationAuthoritiesMap: { [token: string]: Authority; };
-
     constructor(
         private principal: Principal
     ) {
         this.principal.identity().then((account: User) => {
             this.currentUser = account;
-            console.log('Account: ', account);
         });
-
-        this.organisationAuthoritiesMap = ORGANISATION_AUTHORITIES_MAP;
-        console.log('lalafds ', this.organisationAuthoritiesMap);
     }
 
     /**
