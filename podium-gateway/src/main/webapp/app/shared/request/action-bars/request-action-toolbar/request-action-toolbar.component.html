@@ -97,10 +97,9 @@
                                 [disabled]="!checks.validation">
                             <span jhiTranslate="request.toolbar.sendForReview"
                                   tooltip="Please validate the request by checking the box above."
-                                  tooltip-enable="!checks.validation">Send for review</span>
+                                  [isDisabled]="checks.validation">Send for review</span>
                         </button>
                     </div>
-
                 </div>
 
                 <!-- Coordinator during Review -->

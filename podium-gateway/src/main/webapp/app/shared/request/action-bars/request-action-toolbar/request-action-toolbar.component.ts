@@ -26,7 +26,9 @@ export class RequestActionToolbarComponent implements OnInit {
     private reviewStatus?: string;
     public requestStatus = RequestStatusOptions;
     public requestReviewStatus = RequestReviewStatusOptions;
-    public checks: any = {};
+    public checks: any = {
+        validation: false
+    };
 
     @Input() form: Form;
     @Input() request: RequestBase;
