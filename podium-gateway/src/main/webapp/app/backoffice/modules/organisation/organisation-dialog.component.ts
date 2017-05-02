@@ -52,20 +52,20 @@ export class OrganisationDialogComponent implements OnInit {
         if (this.organisation.uuid) {
             this.organisationService.update(this.organisation)
                 .subscribe(
-                    (res: Organisation) => this.onSaveSuccess(res),
+                    (res: Response) => this.onSaveSuccess(res),
                     (res: Response) => this.onSaveError(res.json()));
         } else {
             this.organisationService.create(this.organisation)
                 .subscribe(
-                    (res: Organisation) => this.onSaveSuccess(res),
+                    (res: Response) => this.onSaveSuccess(res),
                     (res: Response) => this.onSaveError(res.json()));
         }
     }
 
-    private onSaveSuccess (result: Organisation) {
+    private onSaveSuccess (result: Response) {
         this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK'});
         this.isSaving = false;
-        this.activeModal.dismiss(result);
+        this.activeModal.dismiss(new Organisation(result));
         this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 

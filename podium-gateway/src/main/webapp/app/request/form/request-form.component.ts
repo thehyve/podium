@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
@@ -27,6 +27,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
 import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
+import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 
 @Component({
     selector: 'pdm-request-form',
@@ -38,7 +39,9 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
 
     private currentUser: User;
 
-    public requestFormDisabled: boolean;
+    @ViewChild(OrganisationSelectorComponent)
+    private organisationSelectorComponent: OrganisationSelectorComponent;
+
     public error: string;
     public success: string;
     public requestBase: RequestBase;
@@ -48,7 +51,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     public selectDraft: boolean;
     public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
-    public selectedRequestDraft: RequestBase;
 
     attachments: Attachment[];
 
@@ -132,6 +134,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         } else {
             this.requestDetail.requestType.splice(_idx, 1);
         }
+        this.organisationSelectorComponent.filterOptionsByRequestType();
     }
 
     saveRequestDraft() {
