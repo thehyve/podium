@@ -10,13 +10,13 @@
 
 <h2><span>My Requests</span>
     <div class="btn-group flex-btn-group-container">
-        <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()" >
+        <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadSubmittedRequests()" >
             <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">
             My requests
             </span>
         </button>
-        <button class="btn btn-success float-xs-right create-organisation" (click)="displayDrafts()">
+        <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
             <span class="fa fa-file"></span>
             <span class="hidden-sm-down">
             Show Drafts
@@ -31,18 +31,19 @@
     </div>
 </h2>
 
+<jhi-alert></jhi-alert>
 
 <br/>
 <div class="table-responsive" *ngIf="availableRequests">
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th><span >Title</span></th>
-            <th><span>Status</span></th>
-            <th></th>
-        </tr>
+			<tr>
+				<th><span >Title</span></th>
+				<th><span>Status</span></th>
+				<th></th>
+			</tr>
         </thead>
-			<tbody>
+        <tbody>
 			<tr *ngFor="let request of availableRequests; trackBy: trackId">
 				<td>
 					{{request.requestDetail.title || '-'}}
@@ -58,7 +59,7 @@
 							<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
 						</button>
 						<button type="submit"
-								class="btn btn-danger btn-sm">
+								class="btn btn-danger btn-sm" (click)="deleteDraft(request)">
 							<span class="fa fa-pencil"></span>
 							<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
 						</button>
@@ -80,4 +81,8 @@
 			</tr>
         </tbody>
     </table>
+    <div class="text-xs-center" *ngIf="availableRequests && availableRequests.length">
+        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+    </div>
 </div>

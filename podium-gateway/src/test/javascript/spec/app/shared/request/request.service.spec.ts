@@ -46,6 +46,11 @@ describe('RequestService (Mocked)', () => {
             "status" : "Review",
         } ];
 
+        let args = {
+            page: 0,
+            size: 10,
+        };
+
         it('should parse response', async(inject(
             [RequestService, MockBackend], (service, mockBackend) => {
 
@@ -53,10 +58,10 @@ describe('RequestService (Mocked)', () => {
                     conn.mockRespond(new Response(new ResponseOptions({ body: JSON.stringify(mockResponse) })));
                 });
 
-                const result = service.findSubmittedRequests();
+                const result = service.findSubmittedRequests(args);
 
                 result.subscribe(res => {
-                    expect(res).toEqual([{
+                    expect(res.json()).toEqual([{
                         "id" : 999,
                         "uuid" : "xxx",
                         "requester" : "xxx",
