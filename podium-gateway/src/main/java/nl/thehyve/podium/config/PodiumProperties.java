@@ -31,6 +31,8 @@ public class PodiumProperties {
     private final Ribbon ribbon = new Ribbon();
     private final Logging logging = new Logging();
 
+    private final Registry registry = new Registry();
+
     public PodiumProperties() {
     }
 
@@ -49,6 +51,8 @@ public class PodiumProperties {
     public Mail getMail() {
         return this.mail;
     }
+
+    public Registry getRegistry() { return registry; }
 
     public Security getSecurity() {
         return this.security;
@@ -732,6 +736,19 @@ public class PodiumProperties {
 
         public void setQueueCapacity(int queueCapacity) {
             this.queueCapacity = queueCapacity;
+        }
+    }
+
+    private static class Registry {
+
+        private String password;
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 }

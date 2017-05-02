@@ -52,6 +52,7 @@ export const userDialogRoute: Routes = [
         component: UserDialogComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            breadcrumb: 'new user'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
@@ -94,16 +95,18 @@ export const userMgmtRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'userManagement.home.title'
+            pageTitle: 'userManagement.home.title',
+            breadcrumb: 'user management overview'
         },
-        canActivate: [UserRouteAccessService],
+        canActivate: [UserRouteAccessService]
     },
     {
         path: 'detail/:login',
         component: UserMgmtDetailComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'userManagement.home.title'
+            pageTitle: 'userManagement.home.title',
+            breadcrumb: 'user details'
         },
         canActivate: [UserRouteAccessService]
     },

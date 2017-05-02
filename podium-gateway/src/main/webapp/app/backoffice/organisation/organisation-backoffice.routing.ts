@@ -16,13 +16,27 @@ import { PodiumGatewayUserMgmtModule } from '../modules/user-management/user-man
 let BBMRI_ROUTES = [
     {
         path: 'organisation',
+        data: {
+            breadcrumb: 'organisation administration'
+        },
         children: [
             {
+                path: '',
+                redirectTo: '/',
+                pathMatch: 'full'
+            },
+            {
                 path: 'configuration',
+                data: {
+                    breadcrumb: 'organisation management'
+                },
                 loadChildren: () => PodiumGatewayOrganisationModule
             },
             {
                 path: 'user-management',
+                data: {
+                    breadcrumb: 'user management'
+                },
                 loadChildren: () => PodiumGatewayUserMgmtModule
             }
         ]

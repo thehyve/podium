@@ -25,7 +25,8 @@ export const settingsRoute: Route = {
         'ROLE_REVIEWER',
         'ROLE_RESEARCHER'
       ],
-      pageTitle: 'global.menu.account.settings'
+      pageTitle: 'global.menu.account.settings',
+      breadcrumb: 'profile settings'
   },
   canActivate: [UserRouteAccessService]
 };

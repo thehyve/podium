@@ -37,7 +37,8 @@ let ADMIN_ROUTES = [
 export const adminRoute: Routes = [{
     path: 'admin',
     data: {
-        authorities: ['ROLE_PODIUM_ADMIN']
+        authorities: ['ROLE_PODIUM_ADMIN'],
+        breadcrumb: 'admin'
     },
     canActivate: [UserRouteAccessService],
     children: ADMIN_ROUTES

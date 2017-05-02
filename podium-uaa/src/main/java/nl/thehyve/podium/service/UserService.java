@@ -30,6 +30,7 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -38,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -54,16 +54,16 @@ public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    @Inject
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
 
-    @Inject
+    @Autowired
     private UserSearchRepository userSearchRepository;
 
-    @Inject
+    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -170,28 +170,6 @@ public class UserService {
     }
 
     /**
-     * Copy user properties, except login, password, email, activated.
-     * @param source
-     * @param target
-     */
-    private void copyProperties(UserRepresentation source, User target) {
-        target.setFirstName(source.getFirstName());
-        target.setLastName(source.getLastName());
-        target.setLangKey(source.getLangKey());
-        // update language key if set in source, or set default if not set in target.
-        if (source.getLangKey() != null) {
-            target.setLangKey(source.getLangKey());
-        } else if (target.getLangKey() == null) {
-            target.setLangKey("en"); // default language
-        }
-        target.setTelephone(source.getTelephone());
-        target.setInstitute(source.getInstitute());
-        target.setDepartment(source.getDepartment());
-        target.setJobTitle(source.getJobTitle());
-        target.setSpecialism(source.getSpecialism());
-    }
-
-    /**
      * Check is the login and e-mail address that are being set are not already in use by another
      * user account.
      * Throws a {@link UserAccountException} if the e-mail address or login are already in use.
@@ -232,7 +210,7 @@ public class UserService {
         newUser.setEmail(managedUserVM.getEmail());
         String encryptedPassword = passwordEncoder.encode(managedUserVM.getPassword());
         newUser.setPassword(encryptedPassword);
-        copyProperties(managedUserVM, newUser);
+        newUser = userMapper.safeUpdateUserWithUserDTO(managedUserVM, newUser);
         // new user is not active
         newUser.setEmailVerified(false);
         newUser.setAdminVerified(false);
@@ -255,7 +233,7 @@ public class UserService {
         User user = new User();
         user.setLogin(userData.getLogin());
         user.setEmail(userData.getEmail());
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         if (userData.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
             userData.getAuthorities().forEach( authority -> {
@@ -294,7 +272,7 @@ public class UserService {
         }
         User user = userOptional.get();
         checkForExistingLoginAndEmail(userData, user.getId());
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         user = save(user);
 
         SearchUser searchUser = userMapper.userToSearchUser(user);
@@ -327,9 +305,16 @@ public class UserService {
             }
         });
 
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         save(user);
         log.debug("Changed Information for User: {}", user);
+    }
+
+    @Profile({"dev", "test"})
+    public void changePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        log.debug("Changed password for User: {}", user);
+        save(user);
     }
 
     public void changePassword(String password) {

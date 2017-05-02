@@ -1,0 +1,32 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<form name="deleteDraftForm" ng-submit="confirmDelete()">
+    <div class="modal-header">
+        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" jhiTranslate="request.delete.dialog.title">Confirm deletion of request draft</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <p jhiTranslate="request.delete.dialog.question">
+            Are you sure you would like to delete this request draft?
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default float-xs-left" data-dismiss="modal" (click)="activeModal.dismiss('cancelled')">
+            <i class="material-icons">keyboard_backspace</i>
+            <span jhiTranslate="request.delete.dialog.cancel">Cancel</span>
+        </button>
+        <button type="submit" class="btn btn-danger" (click)="confirmDelete()">
+            <i class="material-icons">remove_circle</i>
+            <span jhiTranslate="request.delete.dialog.confirm">Confirm</span>
+        </button>
+    </div>
+</form>

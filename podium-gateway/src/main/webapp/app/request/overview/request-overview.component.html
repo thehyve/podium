@@ -10,13 +10,13 @@
 
 <h2><span>My Requests</span>
     <div class="btn-group flex-btn-group-container">
-        <button class="btn btn-warning float-xs-right create-organisation active" (click)="displaySubmittedRequests()">
+        <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadSubmittedRequests()" >
             <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">
             My requests
             </span>
         </button>
-        <button class="btn btn-success float-xs-right create-organisation" (click)="displayDrafts()">
+        <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
             <span class="fa fa-file"></span>
             <span class="hidden-sm-down">
             Show Drafts
@@ -31,6 +31,7 @@
     </div>
 </h2>
 
+<jhi-alert></jhi-alert>
 
 <br/>
 <div class="table-responsive" *ngIf="availableRequests">
@@ -100,4 +101,8 @@
         </tr>
         </tbody>
     </table>
+    <div class="text-xs-center" *ngIf="availableRequests && availableRequests.length">
+        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+    </div>
 </div>

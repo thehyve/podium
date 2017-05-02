@@ -8,16 +8,38 @@
  *
  */
 
-import { Route } from '@angular/router';
+import { Route, ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
 import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
 import { RequestOverviewComponent } from './request-overview.component';
+import { PaginationUtil } from 'ng-jhipster';
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class RequestResolvePagingParams implements Resolve<any> {
+
+    constructor(private paginationUtil: PaginationUtil) {}
+
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
+        let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
+        return {
+            page: this.paginationUtil.parsePage(page),
+            predicate: this.paginationUtil.parsePredicate(sort),
+            ascending: this.paginationUtil.parseAscending(sort)
+        };
+    }
+}
 
 export const requestOverviewRoute: Route = {
     path: 'overview',
     component: RequestOverviewComponent,
+    resolve: {
+        'pagingParams': RequestResolvePagingParams
+    },
     data: {
-        authorities: ['ROLE_RESEARCHER'],
-        pageTitle: 'request.pageTitle'
+        authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR'],
+        pageTitle: 'request.pageTitle',
+        breadcrumb: 'overview'
     },
     canActivate: [UserRouteAccessService]
 };

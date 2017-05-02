@@ -27,3 +27,7 @@ mvn  -q "$MAVEN_OPTS" test \
 if [ -f "tsconfig.json" ]; then
     yarn run test
 fi
+
+echo "Stopping and removing docker containers"
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)

@@ -10,6 +10,7 @@
 
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { PodiumGatewaySharedModule } from '../shared';
 
@@ -19,31 +20,45 @@ import {
     RequestFormComponent,
     RequestFormSubmitDialogComponent,
 } from './';
-import { RequestOverviewComponent } from './overview/request-overview.component';
-import { RequestOverviewService } from './overview/request-overview.service';
+import { RequestOverviewService, RequestOverviewComponent } from './overview';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
-import { CommonModule } from '@angular/common';
+
+import { RequestActionToolbarComponent }
+    from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
+import { RequestProgressBarComponent } from './main-detail/progress-bar/request-progress-bar.component';
+import {
+    RequestDraftModalModalComponent
+} from './overview/delete-request-draft-modal.component';
+import { RequestResolvePagingParams } from './overview/request-overview.route';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
+        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
         RequestFormComponent,
         RequestFormSubmitDialogComponent,
+        RequestDraftModalModalComponent,
         RequestOverviewComponent,
         RequestMainDetailComponent,
-        RequestDetailComponent
+        RequestDetailComponent,
+        RequestActionToolbarComponent,
+        RequestProgressBarComponent
     ],
     entryComponents: [
-        RequestFormSubmitDialogComponent
+        RequestFormSubmitDialogComponent,
+        RequestDraftModalModalComponent
+
     ],
     providers: [
         RequestFormService,
-        RequestOverviewService
+        RequestOverviewService,
+        RequestResolvePagingParams
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

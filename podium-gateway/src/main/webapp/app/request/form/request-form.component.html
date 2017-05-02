@@ -8,37 +8,15 @@
   ~
   -->
 
-<div class="row">
+<div class="row" *ngIf="requestBase">
     <div class="col-md-6 offset-md-3">
-        <h1 *ngIf="!requestBase?.id" jhiTranslate="request.form.header.new">New Request</h1>
-        <h1 *ngIf="requestBase?.id" jhiTranslate="request.form.header.edit">Edit Request</h1>
-        <p *ngIf="selectDraft && !requestBase" jhiTranslate="request.form.header.selectDraft">Select Draft</p>
+        <h1 *ngIf="requestBase.status == 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
+        <h1 *ngIf="requestBase.status != 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
     </div>
 
     <div class="col-md-6 offset-md-3 card-container">
 
-        <!-- Request Drafts Selection -->
-        <div *ngIf="selectDraft && !request">
-
-            <select class="custom-select" [(ngModel)]="selectedDraft">
-                <option selected>Please select a request draft</option>
-                <option *ngFor="let requestDraft of availableRequestDrafts" [ngValue]="requestDraft">
-                    [ {{ requestDraft.id }} ] {{ requestDraft.requestDetail?.title ? requestDraft.requestDetail.title :
-                    'Request ' + requestDraft.id }}
-                </option>
-            </select>
-
-            <!-- Request drafts selection actions -->
-            <div class="action-container">
-                <button type="button" class="btn btn-default" (click)="initializeBaseRequest()">New request draft</button>
-                <button type="submit" class="btn btn-primary" [disabled]="!selectedDraft"
-                        (click)="selectRequestDraft(selectedDraft)">
-                    Select
-                </button>
-            </div>
-        </div>
-
-        <form #requestForm="ngForm" class="form" role="form" *ngIf="!selectDraft && requestBase">
+        <form #requestForm="ngForm" class="form" role="form">
             <fieldset [disabled]="requestFormDisabled">
                 <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 
@@ -422,15 +400,14 @@
                         replaceUrl="false" >Upload attachments
                 </button>
 
+                <pdm-request-action-toolbar
+                    [form]="requestForm"
+                    [request]="requestBase"
+                    (resetChange)="reset()"
+                    (saveDraftChange)="saveRequestDraft()"
+                    (submitDraftChange)="submitDraft()">
+                </pdm-request-action-toolbar>
 
-                <!-- Request actions -->
-                <div class="action-container">
-                    <button type="button" class="btn btn-danger" (click)="reset()">Clear</button>
-                    <button type="button" class="btn btn-default" (click)="saveRequestDraft()">Save draft</button>
-                    <button type="submit" class="btn btn-primary"
-                            [disabled]="!requestForm.form.valid"
-                            (click)="submitDraft()">Submit</button>
-                </div>
             </fieldset>
 
 

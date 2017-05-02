@@ -18,15 +18,15 @@ import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.service.*;
 import nl.thehyve.podium.service.representation.TestRoleRepresentation;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,16 +40,13 @@ public class TestResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
+    @Autowired
     private OrganisationService organisationService;
 
-    @Inject
-    private RoleService roleService;
-
-    @Inject
+    @Autowired
     private TestService testService;
 
     /**
@@ -66,7 +63,7 @@ public class TestResource {
      */
     @PostMapping("users")
     @Timed
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRepresentation userData) throws URISyntaxException, UserAccountException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody ManagedUserVM userData) throws URISyntaxException, UserAccountException {
         log.debug("REST request to save test User : {}", userData);
 
         try {
@@ -77,7 +74,8 @@ public class TestResource {
             if (user.isAccountLocked()) {
                 user.setAccountLockDate(ZonedDateTime.now());
             }
-            userService.save(user);
+            user = userService.save(user);
+            userService.changePassword(user, userData.getPassword());
         } catch(EmailAddressAlreadyInUse e) {
             log.error("Email already in use: {}", userData.getEmail());
             throw e;

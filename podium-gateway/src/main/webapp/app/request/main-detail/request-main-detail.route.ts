@@ -17,7 +17,8 @@ export const requestMainDetailRoute: Route = {
     component: RequestMainDetailComponent,
     data: {
         authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER'],
-        pageTitle: 'request.pageTitle'
+        pageTitle: 'request.pageTitle',
+        breadcrumb: 'details'
     },
     canActivate: [UserRouteAccessService]
 };

@@ -68,7 +68,7 @@ module.exports = webpackMerge(commonConfig({env: ENV}), {
         new webpack.NamedModulesPlugin(),
         new writeFilePlugin(),
         new webpack.WatchIgnorePlugin([
-            path.resolve('./src/test'),
+            path.resolve('./src/test')
         ])
     ]
 });

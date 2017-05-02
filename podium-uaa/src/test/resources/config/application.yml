@@ -22,6 +22,8 @@ spring:
         name: podiumUaa
     jackson:
         serialization.write_dates_as_timestamps: false
+    cache:
+        type: none
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaa
@@ -64,6 +66,9 @@ liquibase:
 security:
     basic:
         enabled: false
+    oauth2:
+        resource:
+            filter-order: 3
 
 server:
     port: 10344

@@ -61,4 +61,11 @@
         </dd>
     </dl>
 
+    <pdm-request-action-toolbar
+        [request]="request"
+        (rejectChange)="rejectRequest()"
+        (requireRevisionChange)="requireRequestRevision()"
+        (validateRequestChange)="validateRequest()">
+    </pdm-request-action-toolbar>
+
 </div>

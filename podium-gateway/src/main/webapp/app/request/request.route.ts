@@ -17,11 +17,18 @@ import { requestFormEditRoute } from './form/request-form-edit.route';
 import { requestOverviewRoute } from './overview/request-overview.route';
 import { requestMainDetailRoute } from './main-detail/request-main-detail.route';
 
+let defaultRoute = {
+    path: '',
+    redirectTo: 'overview',
+    pathMatch: 'full'
+};
+
 let REQUEST_ROUTES = [
     requestFormRoute,
     requestFormEditRoute,
     requestOverviewRoute,
-    requestMainDetailRoute
+    requestMainDetailRoute,
+    defaultRoute
 ];
 
 export const requestRoute: Routes = [
@@ -30,12 +37,7 @@ export const requestRoute: Routes = [
         children: REQUEST_ROUTES,
         data: {
             authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER'],
+            breadcrumb: 'requests'
         },
         canActivate: [ UserRouteAccessService ]
-    },
-    {
-        path: '**',
-        redirectTo: 'overview',
-        pathMatch: 'full'
-    }
-];
+}];

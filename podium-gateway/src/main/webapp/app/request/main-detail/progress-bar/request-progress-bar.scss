@@ -1,0 +1,75 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
+// Adapted from https://codepen.io/atakan/pen/gqblz
+.progressbar {
+    margin-bottom: 30px;
+    overflow: hidden;
+    counter-reset: step;
+
+    li {
+        margin-top: 10px;
+        list-style-type: none;
+        float: left;
+        position: relative;
+        width: 20%;
+        font-size: 12px;
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: 400;
+    }
+
+    li:before {
+        content: counter(step);
+        counter-increment: step;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 3px;
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        background-color: #ddd;
+        color: #333;
+        margin: 0 auto 5px auto;
+    }
+
+    li:after {
+        content: '';
+        width: 100%;
+        height: 2px;
+        background-color: #ddd;
+        position: absolute;
+        left: -50%;
+        top: 15px;
+        z-index: -1;
+    }
+
+    li:first-child:after {
+        /* connector not needed before the first step */
+        content: none;
+    }
+
+    li.completed:before {
+        font-family: 'Material Icons';
+        content: '\E5CA';
+        font-size: 18px;
+    }
+
+    li.completed:before, li.completed:after,
+        li.active:before, li.active:after {
+            background: #27AE60;
+            color: white;
+    }
+
+    li.active:before {
+        box-shadow: rgba(93, 191, 78, 0.7) 0 0 3px 2px
+    }
+}

@@ -10,22 +10,24 @@
 
 import { Component } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
+import { RequestBase } from '../../../shared/request/request-base';
 
 @Component({
     selector: 'pdm-request-detail',
-    templateUrl: './request-detail.component.html',
-    styleUrls: ['request-detail.scss']
+    templateUrl: './request-detail.component.html'
 })
 
 export class RequestDetailComponent {
 
+    public request: RequestBase;
     public requestDetail: RequestDetail;
 
     constructor() {
 
     }
 
-    setRequestDetail(requestDetail) {
-        this.requestDetail = requestDetail;
+    setRequest(request) {
+        this.request = request;
+        this.requestDetail = request.requestDetail;
     }
 }

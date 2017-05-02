@@ -16,13 +16,27 @@ import { PodiumGatewayUserMgmtModule } from '../modules/user-management/user-man
 let PODIUM_ROUTES = [
     {
         path: 'admin',
+        data: {
+            breadcrumb: 'administration',
+        },
         children: [
             {
+                path: '',
+                redirectTo: '/',
+                pathMatch: 'full'
+            },
+            {
                 path: 'configuration',
+                data: {
+                    breadcrumb: 'organisation management'
+                },
                 loadChildren: () => PodiumGatewayOrganisationModule
             },
             {
                 path: 'user-management',
+                data: {
+                    breadcrumb: 'user management'
+                },
                 loadChildren: () => PodiumGatewayUserMgmtModule
             }
         ]
