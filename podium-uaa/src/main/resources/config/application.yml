@@ -32,6 +32,8 @@ eureka:
 ribbon:
     eureka:
         enabled: true
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
+
 management:
     context-path: /management
     security:

@@ -30,6 +30,8 @@ eureka:
 ribbon:
     eureka:
         enabled: true
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
+
 zuul:
     host:
         connect-timeout-millis: 5000
