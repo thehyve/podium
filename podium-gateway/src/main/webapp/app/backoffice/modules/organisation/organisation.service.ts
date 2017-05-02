@@ -22,14 +22,14 @@ export class OrganisationService {
 
     constructor(private http: Http) { }
 
-    create(organisation: Organisation): Observable<Organisation> {
+    create(organisation: Organisation): Observable<Response> {
         let copy: Organisation = Object.assign({}, organisation);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
         });
     }
 
-    update(organisation: Organisation): Observable<Organisation> {
+    update(organisation: Organisation): Observable<Response> {
         let copy: Organisation = Object.assign({}, organisation);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             return res.json();
@@ -101,4 +101,18 @@ export class OrganisationService {
         }
         return options;
     }
+
+    convertUuidsToOrganisations(uuids: any[], allOrganisations: Organisation[]) {
+        let temp = [];
+        for (let selectedOrganisation of uuids) {
+            let found = allOrganisations.find((organisation) => {
+                return selectedOrganisation.uuid == organisation.uuid;
+            });
+            if (found) {
+                temp.push(found);
+            }
+        }
+        return temp;
+    }
+
 }
