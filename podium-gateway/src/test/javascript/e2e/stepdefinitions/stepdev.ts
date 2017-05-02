@@ -17,6 +17,7 @@ import PersonaDictionary = require("../personas/PersonaDictionary")
 let director = new Director(__dirname + '/..', PageDictionary, PersonaDictionary);
 
 export = function () {
+    this.setDefaultTimeout(30 * 1000); //max time before callback
 
     this.Given(/^I go to the (.*) page$/, function (pageName, callback) {
         director.goToPage(pageName + 'Page').then(callback, callback);
