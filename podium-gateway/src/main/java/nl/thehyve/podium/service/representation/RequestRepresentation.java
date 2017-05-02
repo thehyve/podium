@@ -11,6 +11,7 @@ package nl.thehyve.podium.service.representation;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import nl.thehyve.podium.domain.Attachment;
@@ -41,6 +42,10 @@ public class RequestRepresentation implements Serializable {
     private RequestDetailRepresentation requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();
+
+    private ZonedDateTime createdDate;
+
+    private ZonedDateTime lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -108,6 +113,22 @@ public class RequestRepresentation implements Serializable {
 
     public void setAttachments(Set<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     @Override
