@@ -5,12 +5,10 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.common.enumeration;
+package nl.thehyve.podium.client;
 
-public enum RequestReviewStatus implements Status {
-    Revision,
-    Validation,
-    Review,
-    Closed,
-    None
+import nl.thehyve.podium.common.resource.InternalAuditResource;
+
+@AuthorizedFeignClient(name = "podiumuaa")
+public interface InternalAuditClient extends InternalAuditResource {
 }

@@ -15,11 +15,13 @@ import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
+import nl.thehyve.podium.event.StatusUpdateEvent;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -27,6 +29,7 @@ import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -72,7 +75,21 @@ public class RequestService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     public RequestService() {}
+
+    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request) {
+        StatusUpdateEvent event = new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid());
+        publisher.publishEvent(event);
+    }
+
+    private void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request) {
+        StatusUpdateEvent event =
+            new StatusUpdateEvent(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid());
+        publisher.publishEvent(event);
+    }
 
     /**
      * Save a request.
@@ -268,6 +285,7 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
+
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
         log.debug("Validating request data.");
         {
@@ -305,6 +323,8 @@ public class RequestService {
             organisationRequest = save(organisationRequest);
 
             notificationService.submissionNotificationToCoordinators(organisation, organisationRequest);
+
+            publishStatusUpdate(user, RequestStatus.Draft, organisationRequest);
 
             organisationRequests.add(organisationRequest);
             log.debug("Created new submitted request for organisation {}.", organisationUuid);

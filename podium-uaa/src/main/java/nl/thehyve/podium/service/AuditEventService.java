@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.config.audit.AuditEventConverter;
+import nl.thehyve.podium.repository.CustomAuditEventRepository;
 import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
@@ -29,15 +30,19 @@ import java.util.Optional;
 @Transactional
 public class AuditEventService {
 
+    private CustomAuditEventRepository customAuditEventRepository;
+
     private PersistenceAuditEventRepository persistenceAuditEventRepository;
 
     private AuditEventConverter auditEventConverter;
 
     @Autowired
     public AuditEventService(
+        CustomAuditEventRepository customAuditEventRepository,
         PersistenceAuditEventRepository persistenceAuditEventRepository,
         AuditEventConverter auditEventConverter) {
 
+        this.customAuditEventRepository = customAuditEventRepository;
         this.persistenceAuditEventRepository = persistenceAuditEventRepository;
         this.auditEventConverter = auditEventConverter;
     }
@@ -55,5 +60,9 @@ public class AuditEventService {
     public Optional<AuditEvent> find(Long id) {
         return Optional.ofNullable(persistenceAuditEventRepository.findOne(id)).map
             (auditEventConverter::convertToAuditEvent);
+    }
+
+    public void add(AuditEvent event) {
+        customAuditEventRepository.add(event);
     }
 }

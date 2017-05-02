@@ -8,6 +8,7 @@
 package nl.thehyve.podium.domain;
 
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

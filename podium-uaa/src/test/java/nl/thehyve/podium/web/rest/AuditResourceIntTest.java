@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.config.audit.AuditEventConverter;
 import nl.thehyve.podium.domain.PersistentAuditEvent;
+import nl.thehyve.podium.repository.CustomAuditEventRepository;
 import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
 import nl.thehyve.podium.service.AuditEventService;
 import org.junit.Before;
@@ -49,6 +50,9 @@ public class AuditResourceIntTest {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
+    private CustomAuditEventRepository customAuditEventRepository;
+
+    @Autowired
     private PersistenceAuditEventRepository auditEventRepository;
 
     @Autowired
@@ -71,7 +75,7 @@ public class AuditResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         AuditEventService auditEventService =
-                new AuditEventService(auditEventRepository, auditEventConverter);
+                new AuditEventService(customAuditEventRepository, auditEventRepository, auditEventConverter);
         AuditResource auditResource = new AuditResource(auditEventService);
         this.restAuditMockMvc = MockMvcBuilders.standaloneSetup(auditResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
