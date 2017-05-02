@@ -8,6 +8,8 @@
 package nl.thehyve.podium.domain;
 
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
+
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -23,8 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 import java.util.UUID;
-
-import nl.thehyve.podium.common.enumeration.RequestStatus;
 
 /**
  * A Request.
@@ -65,9 +65,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     )
     @Column(name = "organisation_uuid")
     private Set<UUID> organisations = new HashSet<>();
-
-    @ManyToOne
-    private Request parentRequest;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
@@ -151,19 +148,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setOrganisations(Set<UUID> organisations) {
         this.organisations = organisations;
-    }
-
-    public Request getParentRequest() {
-        return parentRequest;
-    }
-
-    public Request parentRequest(Request request) {
-        this.parentRequest = request;
-        return this;
-    }
-
-    public void setParentRequest(Request request) {
-        this.parentRequest = request;
     }
 
     public RequestDetail getRequestDetail() {

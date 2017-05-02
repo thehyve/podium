@@ -25,18 +25,15 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = { RequestDetailMapper.class, RequestReviewProcessMapper.class })
 public interface RequestMapper {
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
     @Mapping(source = "requestReviewProcess", target = "requestReview")
     RequestRepresentation requestToRequestDTO(Request request);
 
     List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
