@@ -11,7 +11,7 @@ package nl.thehyve.podium.service.representation;
 import nl.thehyve.podium.common.validation.Required;
 import org.hibernate.validator.constraints.Email;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 

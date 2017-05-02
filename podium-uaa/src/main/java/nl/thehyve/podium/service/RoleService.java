@@ -7,10 +7,12 @@
 
 package nl.thehyve.podium.service;
 
-import nl.thehyve.podium.repository.OrganisationRepository;
-import nl.thehyve.podium.repository.RoleRepository;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
+import nl.thehyve.podium.repository.OrganisationRepository;
+import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
@@ -20,14 +22,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Role.

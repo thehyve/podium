@@ -13,10 +13,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import javax.servlet.http.*;
 
 /**
  * Angular cookie saved the locale with a double quote (%22en%22).

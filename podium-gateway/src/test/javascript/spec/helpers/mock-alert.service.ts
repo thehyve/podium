@@ -7,12 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { SpyObject } from './spyobject';
-import Spy = jasmine.Spy;
-import { Observable } from 'rxjs';
-import { RoleService } from '../../../../main/webapp/app/shared/role/role.service';
 import { AlertService } from 'ng-jhipster';
+import Spy = jasmine.Spy;
 
 export class MockAlertService extends SpyObject {
 

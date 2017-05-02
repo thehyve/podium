@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { AttachmentType } from './attachment-type';
 
 export class Attachment {

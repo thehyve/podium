@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { PdmGatewayComponent } from './gateway.component';
 
 export const gatewayRoute: Route = {

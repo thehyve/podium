@@ -7,8 +7,8 @@
 
 package nl.thehyve.podium;
 
-import nl.thehyve.podium.config.DefaultProfileUtil;
 import nl.thehyve.podium.client.OAuth2InterceptedFeignConfiguration;
+import nl.thehyve.podium.config.DefaultProfileUtil;
 import nl.thehyve.podium.config.PodiumConstants;
 import nl.thehyve.podium.config.PodiumProperties;
 import org.flowable.spring.boot.RestApiAutoConfiguration;

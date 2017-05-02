@@ -12,7 +12,6 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -31,7 +30,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
@@ -39,7 +37,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**

@@ -7,11 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-
 import { GatewayRoute } from './gateway-route.model';
 
 @Injectable()

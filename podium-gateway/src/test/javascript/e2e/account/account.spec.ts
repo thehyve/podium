@@ -7,8 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 
 describe('account', () => {
 

@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({name: 'enumKeys'})

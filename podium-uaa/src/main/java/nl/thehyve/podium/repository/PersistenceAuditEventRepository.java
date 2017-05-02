@@ -8,12 +8,11 @@
 package nl.thehyve.podium.repository;
 
 import nl.thehyve.podium.domain.PersistentAuditEvent;
-
-import java.time.LocalDateTime;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**

@@ -7,9 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Directive, Input } from '@angular/core';
-import {NG_VALIDATORS, AbstractControl, ValidatorFn, Validator, FormControl} from '@angular/forms';
+import { NG_VALIDATORS, ValidatorFn, Validator, FormControl } from '@angular/forms';
 
 @Directive({
     selector: '[wordLengthValidator][ngModel]',

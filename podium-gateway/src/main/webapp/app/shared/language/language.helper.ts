@@ -7,11 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
-import { Title }     from '@angular/platform-browser';
-import { TranslateService, TranslationChangeEvent, LangChangeEvent } from 'ng2-translate/ng2-translate';
-
+import { Title } from '@angular/platform-browser';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 import { LANGUAGES } from './language.constants';
 
 @Injectable()

@@ -7,15 +7,13 @@
 
 package nl.thehyve.podium.web.rest;
 
+import nl.thehyve.podium.PodiumGatewayApp;
+import nl.thehyve.podium.common.enumeration.AttachmentType;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Attachment;
-import nl.thehyve.podium.common.enumeration.AttachmentType;
-import nl.thehyve.podium.service.AttachmentService;
-import nl.thehyve.podium.PodiumGatewayApp;
-
 import nl.thehyve.podium.repository.AttachmentRepository;
 import nl.thehyve.podium.repository.search.AttachmentSearchRepository;
-
+import nl.thehyve.podium.service.AttachmentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +33,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**

@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestStatus } from './request-status';
 
 const requestStatusesOpts: { [status: string]: any; } = {

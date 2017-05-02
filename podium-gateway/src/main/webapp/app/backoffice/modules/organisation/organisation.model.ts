@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestType } from '../../../shared/request/request-type';
 import { Role } from '../../../shared/role/role.model';
 

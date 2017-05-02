@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';

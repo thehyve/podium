@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { ProfileService } from './profile.service';
 import { ProfileInfo } from './profile-info.model';

@@ -7,16 +7,15 @@
 
 package nl.thehyve.podium.repository;
 
-import nl.thehyve.podium.domain.PersistentAuditEvent;
 import nl.thehyve.podium.config.audit.AuditEventConverter;
-
+import nl.thehyve.podium.domain.PersistentAuditEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,10 +32,10 @@ public class CustomAuditEventRepository implements AuditEventRepository {
 
     private static final String ANONYMOUS_USER = "anonymoususer";
 
-    @Inject
+    @Autowired
     private PersistenceAuditEventRepository persistenceAuditEventRepository;
 
-    @Inject
+    @Autowired
     private AuditEventConverter auditEventConverter;
 
     @Override

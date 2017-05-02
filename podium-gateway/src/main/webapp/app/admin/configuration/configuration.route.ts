@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { PdmConfigurationComponent } from './configuration.component';
 
 export const configurationRoute: Route = {

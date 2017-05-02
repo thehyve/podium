@@ -7,12 +7,15 @@
 
 package nl.thehyve.podium.config;
 
-import nl.thehyve.podium.common.config.Constants;
-import nl.thehyve.podium.aop.security.AccessPolicyAspect;
 import nl.thehyve.podium.aop.logging.LoggingAspect;
+import nl.thehyve.podium.aop.security.AccessPolicyAspect;
+import nl.thehyve.podium.common.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 @EnableAspectJAutoProxy

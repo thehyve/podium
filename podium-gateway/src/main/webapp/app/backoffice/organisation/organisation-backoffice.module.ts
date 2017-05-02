@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { OrganisationBackofficeRoutingModule } from './organisation-backoffice.routing';
 
 @NgModule({

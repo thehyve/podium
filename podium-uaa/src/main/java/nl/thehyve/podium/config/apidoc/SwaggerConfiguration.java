@@ -9,10 +9,12 @@ package nl.thehyve.podium.config.apidoc;
 
 import nl.thehyve.podium.common.config.Constants;
 import nl.thehyve.podium.config.PodiumProperties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import springfox.documentation.service.ApiInfo;

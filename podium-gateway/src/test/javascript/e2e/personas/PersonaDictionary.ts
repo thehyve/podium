@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Persona} from "../protractor-stories/director";
+import { Persona } from '../protractor-stories/director';
 import AdminPersona = require("./AdminPersona")
 /*
  * pages must be added to this dictionary for the director class to find them.

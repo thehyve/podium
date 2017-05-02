@@ -7,18 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-import {
-    UploadPopupService,
-    UploadPopupComponent,
-    UploadDialogComponent,
-    uploadPopupRoute
-} from './';
-
+import { UploadPopupService, UploadPopupComponent, UploadDialogComponent, uploadPopupRoute } from './';
 import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
 import { FormsModule } from '@angular/forms';
 

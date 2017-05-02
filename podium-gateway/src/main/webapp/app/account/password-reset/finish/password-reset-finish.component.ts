@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { PasswordResetFinish } from './password-reset-finish.service';
 
 @Component({

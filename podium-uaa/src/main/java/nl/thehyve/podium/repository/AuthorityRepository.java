@@ -8,7 +8,6 @@
 package nl.thehyve.podium.repository;
 
 import nl.thehyve.podium.domain.Authority;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

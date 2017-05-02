@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { RequestBase } from '../../shared/request/request-base';

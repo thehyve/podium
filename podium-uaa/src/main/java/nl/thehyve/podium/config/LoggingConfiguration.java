@@ -16,11 +16,11 @@ import net.logstash.logback.appender.LogstashSocketAppender;
 import net.logstash.logback.stacktrace.ShortenedThrowableConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 @Configuration
 public class LoggingConfiguration {
@@ -38,7 +38,7 @@ public class LoggingConfiguration {
     @Value("${eureka.instance.instanceId}")
     private String instanceId;
 
-    @Inject
+    @Autowired
     private PodiumProperties podiumProperties;
 
     @PostConstruct

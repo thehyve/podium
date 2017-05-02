@@ -11,27 +11,17 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumUaaApp;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
-import nl.thehyve.podium.service.util.RandomUtil;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
-import org.elasticsearch.client.Client;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;

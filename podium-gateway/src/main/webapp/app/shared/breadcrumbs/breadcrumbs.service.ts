@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 // Adopted from https://github.com/emilol/angular2-crumbs/
 import { Injectable, EventEmitter } from '@angular/core';
 import { Router, RoutesRecognized, ActivatedRouteSnapshot } from '@angular/router';
