@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
 import { RequestStatusOptions } from '../../shared/request/request-status/request-status.constants';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftModalModalComponent } from './delete-request-draft-modal.component';
+import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
 
 @Component({
     selector: 'pdm-request-overview',
