@@ -35,10 +35,12 @@ export class RequestActionToolbarComponent implements OnInit {
     @Input() request: RequestBase;
 
     @Output() resetChange = new EventEmitter();
+    @Output() cancelChange = new EventEmitter();
     @Output() rejectChange = new EventEmitter();
     @Output() saveDraftChange = new EventEmitter();
     @Output() saveRequestChange = new EventEmitter();
     @Output() submitDraftChange = new EventEmitter();
+    @Output() approveRequestChange = new EventEmitter();
     @Output() submitRequestChange = new EventEmitter();
     @Output() submitReviewChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
@@ -92,6 +94,10 @@ export class RequestActionToolbarComponent implements OnInit {
         this.submitDraftChange.emit(true);
     }
 
+    cancel() {
+        this.cancelChange.emit(true);
+    }
+
     resetForm() {
         this.resetChange.emit(true);
     }
@@ -106,6 +112,10 @@ export class RequestActionToolbarComponent implements OnInit {
 
     requireRevision() {
         this.requireRevisionChange.emit(true);
+    }
+
+    approveRequest() {
+        this.approveRequestChange.emit(true);
     }
 
     submitRequest() {

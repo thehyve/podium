@@ -63,9 +63,14 @@
 
     <pdm-request-action-toolbar
         [request]="request"
+        (cancelChange)="cancel()"
         (rejectChange)="rejectRequest()"
+        (saveRequestChange)="saveRequest()"
+        (submitRequestChange)="submitRequest()"
+        (submitReviewChange)="submitReview()"
         (requireRevisionChange)="requireRequestRevision()"
-        (validateRequestChange)="validateRequest()">
+        (validateRequestChange)="validateRequest()"
+        (approveRequest)="approveRequest()">
     </pdm-request-action-toolbar>
 
 </div>
