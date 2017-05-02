@@ -36,8 +36,10 @@ ribbon:
 
 zuul:
     host:
-        connect-timeout-millis: 5000
-        socket-timeout-millis: 10000
+        max-total-connections: 1000
+        max-per-route-connections: 100
+    semaphore:
+        max-semaphores: 500
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
