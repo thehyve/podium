@@ -12,6 +12,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
+import { RequestReviewFeedback } from './request-review-feedback';
 
 @Injectable()
 export class RequestService {
@@ -41,13 +42,6 @@ export class RequestService {
         });
     }
 
-    findSubmittedRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
     /**
      * Submits the draft request and generates a new request for each of the
      * selected organisations.
@@ -58,6 +52,24 @@ export class RequestService {
     submitDraft(uuid: string): Observable<RequestBase[]> {
         return this.http.get(`${this.resourceUrl}/drafts/${uuid}/submit`).map((response: Response) => {
             return response.json();
+        });
+    }
+
+    saveRequest(requestBase: RequestBase): Observable<Response> {
+        let requestCopy: RequestBase = Object.assign({}, requestBase);
+        return this.http.put(`${this.resourceUrl}/requests`, requestCopy);
+    }
+
+    submitRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/requests/${uuid}/submit`).map((response: Response) => {
+            return response.json();
+        });
+    }
+
+    findSubmittedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+            return res;
         });
     }
 
@@ -75,6 +87,30 @@ export class RequestService {
 
     deleteDraft(uuid: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/drafts/${uuid}`);
+    }
+
+    /**
+     * Process functions
+     */
+    validateRequest(uuid: string) {
+        return this.http.get(`${this.resourceUrl}/validate/${uuid}`);
+    }
+
+    requireRevision(uuid: string) {
+        return this.http.get(`${this.resourceUrl}/revision/${uuid}`);
+    }
+
+    approveRequest(uuid: string) {
+        return this.http.get(`${this.resourceUrl}/approve/${uuid}`);
+    }
+
+    submitReview(uuid: string, reviewFeedback: RequestReviewFeedback) {
+        let feedbackCopy: RequestReviewFeedback = Object.assign({}, reviewFeedback);
+        return this.http.post(`${this.resourceUrl}/review/${uuid}`, feedbackCopy);
+    }
+
+    rejectRequest(uuid: string) {
+        return this.http.get(`${this.resourceUrl}/reject/${uuid}`);
     }
 
     search(req?: any): Observable<Response> {

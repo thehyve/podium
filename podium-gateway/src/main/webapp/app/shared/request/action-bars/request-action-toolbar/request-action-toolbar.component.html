@@ -13,15 +13,15 @@
     <form>
         <!-- Draft / Submit -->
         <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
-            <button type="button" class="btn btn-outline-danger" (click)="resetForm()">
+            <button type="button" class="btn btn-outline-danger" id="reset-form-btn" (click)="resetForm()">
                 <span jhiTranslate="request.toolbar.reset">Reset</span>
             </button>
             <div class="float-xs-right">
-                <button type="button" class="btn btn-outline-primary" (click)="saveDraft()">
+                <button type="button" class="btn btn-outline-primary" id="save-draft-btn" (click)="saveDraft()">
                     <span jhiTranslate="request.toolbar.saveDraft">Save draft</span>
                 </button>
-                <button type="submit" class="btn btn-outline-success" [disabled]="!form.form.valid"
-                        (click)="submitDraft()">
+                <button type="submit" class="btn btn-outline-success" id="submit-draft-btn"
+                        [disabled]="!form.form.valid" (click)="submitDraft()">
                     <span jhiTranslate="request.toolbar.submit">Submit</span>
                 </button>
             </div>
@@ -49,14 +49,15 @@
 
                 <!-- Revision -->
                 <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
-                    <button type="button" class="btn btn-outline-default" (click)="cancel()">
+                    <button type="button" class="btn btn-outline-default" id="cancel-btn" (click)="cancel()">
                         <span jhiTranslate="request.toolbar.cancel">Cancel</span>
                     </button>
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-outline-info" (click)="saveRequest()">
+                        <button type="button" class="btn btn-outline-info" id="save-request-btn"
+                                (click)="saveRequest()">
                             <span jhiTranslate="request.toolbar.save">Save</span>
                         </button>
-                        <button type="submit" class="btn btn-outline-primary"
+                        <button type="submit" class="btn btn-outline-primary" id="submit-request-btn"
                                 (click)="submitRequest()">
                             <span jhiTranslate="request.toolbar.saveAndSubmit">Save and submit</span>
                         </button>
@@ -84,15 +85,17 @@
                     </div>
 
                     <!-- State actions -->
-                    <button type="button" class="btn btn-outline-danger" (click)="rejectRequest()">
+                    <button type="button" class="btn btn-outline-danger test-reject-request-btn"
+                            (click)="rejectRequest()">
                         <span jhiTranslate="request.toolbar.reject">Reject</span>
                     </button>
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-outline-primary" (click)="requireRevision()">
+                        <button type="button" class="btn btn-outline-primary test-request-revision-btn"
+                                (click)="requireRevision()">
                             <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                         </button>
-                        <button type="submit" class="btn btn-outline-success" (click)="validateRequest()"
-                                [disabled]="!checks.validation">
+                        <button type="submit" class="btn btn-outline-success" id="validate-request-btn"
+                                (click)="validateRequest()" [disabled]="!checks.validation">
                             <span jhiTranslate="request.toolbar.sendForReview"
                                   tooltip="Please validate the request by checking the box above."
                                   [isDisabled]="checks.validation">Send for review</span>
@@ -102,14 +105,17 @@
 
                 <!-- Coordinator during Review -->
                 <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
-                    <button type="button" class="btn btn-outline-danger" (click)="rejectRequest()">
+                    <button type="button" class="btn btn-outline-danger test-reject-request-btn"
+                            (click)="rejectRequest()">
                         <span jhiTranslate="request.toolbar.reject">Reject</span>
                     </button>
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-outline-default" (click)="requireRevision()">
+                        <button type="button" class="btn btn-outline-default test-request-revision-btn"
+                                (click)="requireRevision()">
                             <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                         </button>
-                        <button type="button" class="btn btn-outline-primary" (click)="approveRequest()">
+                        <button type="button" class="btn btn-outline-primary" id="approve-request-btn"
+                                (click)="approveRequest()">
                             <span jhiTranslate="request.toolbar.approve">Approve</span>
                         </button>
                     </div>
