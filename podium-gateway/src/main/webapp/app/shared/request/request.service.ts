@@ -27,9 +27,10 @@ export class RequestService {
         });
     }
 
-    findDrafts(): Observable<RequestBase[]> {
-        return this.http.get(`${this.resourceUrl}/drafts`).map((res: Response) => {
-            return res.json();
+    findDrafts(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
+            return res;
         });
     }
 
@@ -40,9 +41,10 @@ export class RequestService {
         });
     }
 
-    findSubmittedRequests(): Observable<RequestBase[]> {
-        return this.http.get(`${this.resourceUrl}/status/Review`).map((res: Response) => {
-            return res.json();
+    findSubmittedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+            return res;
         });
     }
 
@@ -71,8 +73,8 @@ export class RequestService {
         });
     }
 
-    delete(uuid: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${uuid}`);
+    deleteDraft(uuid: string): Observable<Response> {
+        return this.http.delete(`${this.resourceUrl}/drafts/${uuid}`);
     }
 
     search(req?: any): Observable<Response> {

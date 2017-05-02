@@ -17,16 +17,23 @@ import { RequestMainDetailComponent } from './main-detail/request-main-detail.co
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
 import { RequestActionToolbarComponent } from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
 import { RequestProgressBarComponent } from './main-detail/progress-bar/request-progress-bar.component';
+import {
+    RequestDraftModalModalComponent
+} from './overview/delete-request-draft-modal.component';
+import { RequestResolvePagingParams } from './overview/request-overview.route';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
+        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
         RequestFormComponent,
         RequestFormSubmitDialogComponent,
+        RequestDraftModalModalComponent,
         RequestOverviewComponent,
         RequestMainDetailComponent,
         RequestDetailComponent,
@@ -34,11 +41,14 @@ import { RequestProgressBarComponent } from './main-detail/progress-bar/request-
         RequestProgressBarComponent
     ],
     entryComponents: [
-        RequestFormSubmitDialogComponent
+        RequestFormSubmitDialogComponent,
+        RequestDraftModalModalComponent
+
     ],
     providers: [
         RequestFormService,
-        RequestOverviewService
+        RequestOverviewService,
+        RequestResolvePagingParams
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

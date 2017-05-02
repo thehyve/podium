@@ -33,11 +33,11 @@ describe('RoleAssignComponent', () => {
     let roleService: RoleService;
     let mockPrincipal: any;
 
-    let dummyOrganisation: Organisation = {
-        id: 6,
+    let dummyOrganisation = new Organisation({
+        id: 90,
         name: 'dummy',
         uuid: 'dummy-orgnisation-uuid'
-    };
+    });
 
     let dummyBbmriAdmin: User = {
         id: 1,

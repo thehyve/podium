@@ -63,33 +63,16 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
     });
 
     it('should not have organisation options and selected organisations', () => {
-        expect(comp.selectedOrganisationValues).toBe(undefined);
         expect(comp.selectedOrganisations).toBe(undefined);
+        expect(comp.selectedOrganisationUuids).toBe(undefined);
         expect(comp.organisationOptions).toBe(undefined);
     });
 
     describe('ngOnInit', () => {
-
-        const mockResponse = [ {
-            "id" : 1,
-            "uuid" : "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
-            "name" : "International variable name bank",
-            "shortName" : "VarnameBank",
-            "activated" : true,
-            "organisationUuid" : "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a"
-        }, {
-            "id" : 1000,
-            "uuid" : "549d67f8-7720-423a-ada9-bea83760e06a",
-            "name" : "International VarnameBank2",
-            "shortName" : "VarnameBank2",
-            "activated" : false,
-            "organisationUuid" : "549d67f8-7720-423a-ada9-bea83760e06a"
-        }];
-
         it('should select organisation(s) based on input value on initialisation', () => {
             comp.organisations = [new Organisation({id:1000, uuid:'123', name: 'dummy'})];
             comp.ngOnInit();
-            expect(comp.selectedOrganisations).toEqual(['123']);
+            expect(comp.selectedOrganisationUuids).toEqual(['123']);
         });
     });
 
@@ -100,7 +83,7 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
                 new Organisation({id:1000, uuid:'123', name: 'dummy'}),
                 new Organisation({id:1001, uuid:'456', name: 'dummy'})
             ];
-            comp.selectedOrganisations = ['456'];
+            comp.selectedOrganisationUuids = ['456'];
             comp.organisationChange = new EventEmitter();
 
             spyOn(comp.organisationChange,  'emit');

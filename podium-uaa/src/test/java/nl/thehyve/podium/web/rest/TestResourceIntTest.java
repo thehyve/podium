@@ -115,6 +115,26 @@ public class TestResourceIntTest {
             .andExpect(status().isCreated());
     }
 
+    private void createBbmriAdmin() throws Exception {
+        ManagedUserVM userData = new ManagedUserVM();
+        AccountResourceIntTest.setMandatoryFields(userData);
+        userData.setId(null);
+        userData.setLogin("bbmri_admin");
+        userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
+        userData.setFirstName("Bernard");
+        userData.setLastName("Admin");
+        userData.setEmail("bbmri_admin@example.com");
+        userData.setLangKey("en");
+        userData.setAdminVerified(true);
+        userData.setEmailVerified(true);
+        //userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.BBMRI_ADMIN)));
+
+        mockMvc.perform(post("/api/test/users")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(userData)))
+            .andExpect(status().isCreated());
+    }
+
     @Test
     @Transactional
     public void testCreateValidatedUser() throws Exception {
@@ -200,6 +220,46 @@ public class TestResourceIntTest {
         assertThat(userCount).isGreaterThan(2);
         assertThat(roleCount).isGreaterThan(3);
 
+        testService.clearDatabase();
+
+        organisationCount = organisationRepository.count();
+        userCount = userRepository.count();
+        roleCount = roleRepository.count();
+
+        assertThat(organisationCount).isEqualTo(0);
+        assertThat(userCount).isEqualTo(2);
+        assertThat(roleCount).isEqualTo(3);
+    }
+
+    @Test
+    @Transactional
+    public void testClearDatabaseAfterRoleAssignment() throws Exception {
+        long organisationCount = organisationRepository.count();
+        long userCount = userRepository.count();
+        long roleCount = roleRepository.count();
+
+        assertThat(organisationCount).isGreaterThan(0);
+        assertThat(userCount).isGreaterThan(2);
+        assertThat(roleCount).isGreaterThan(3);
+
+        testService.clearDatabase();
+
+        // Create bbmri_admin user
+        createBbmriAdmin();
+
+        // Assign bbmri_admin user to bbrmi_admin role
+        User bbmriAdmin = userService.getUserWithAuthoritiesByLogin("bbmri_admin").get();
+        TestRoleRepresentation assignment = new TestRoleRepresentation();
+        assignment.setAuthority(AuthorityConstants.BBMRI_ADMIN);
+        Set<String> users = new HashSet<>();
+        users.add(bbmriAdmin.getLogin());
+        assignment.setUsers(users);
+        mockMvc.perform(post("/api/test/roles/assign")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(assignment)))
+            .andExpect(status().isCreated());
+
+        // Test database cleanup
         testService.clearDatabase();
 
         organisationCount = organisationRepository.count();
