@@ -27,6 +27,8 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class MailService {
@@ -78,14 +80,14 @@ public class MailService {
     }
 
     /**
-     * Notify the coordinators of an organisation that a request has been
+     * Send a notification email to the coordinators of an organisation that a request has been
      * submitted to their organisation.
      * @param organisationRequest the request that has been submitted.
      * @param coordinators the list of organisation coordinators.
      */
     @Async
-    public void notifyCoordinators(Request organisationRequest, OrganisationDTO organisation,
-                                   List<UserRepresentation> coordinators) {
+    public void sendSubmissionNotificationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
+                                                         List<UserRepresentation> coordinators) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             organisationRequest, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -97,9 +99,33 @@ public class MailService {
             context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
             context.setVariable("request", organisationRequest);
             context.setVariable("organisation", organisation);
-            String content = templateEngine.process("requestSubmitted", context);
-            String subject = messageSource.getMessage("email.requestSubmitted.title", null, locale);
+            String content = templateEngine.process("organisationRequestSubmitted", context);
+            String subject = messageSource.getMessage("email.organisationRequestSubmitted.title", null, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
+    }
+
+    /**
+     * Send a notification email to the requester that their request has been
+     * submitted.
+     * @param requester the requester details
+     * @param organisationRequests the list of generated requests
+     */
+    @Async
+    public void sendSubmissionNotificationToRequester(UserRepresentation requester, List<Request> organisationRequests,
+                                                      Map<UUID, OrganisationDTO> organisations) {
+        log.info("Notifying requester: requester = {}, #requests = {}",
+            requester, organisationRequests == null ? null : organisationRequests.size());
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request submitted e-mail to '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("requests", organisationRequests);
+        context.setVariable("organisations", organisations);
+        String content = templateEngine.process("requesterRequestSubmitted", context);
+        String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
     }
 }

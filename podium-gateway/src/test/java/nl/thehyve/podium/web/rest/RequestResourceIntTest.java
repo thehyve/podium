@@ -24,6 +24,7 @@ import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.OrganisationClientService;
+import nl.thehyve.podium.service.UserClientService;
 import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
 import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
@@ -62,6 +63,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.net.URISyntaxException;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
@@ -100,6 +102,9 @@ public class RequestResourceIntTest {
     OrganisationClientService organisationService;
 
     @MockBean
+    UserClientService userClientService;
+
+    @MockBean
     private MailService mailService;
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -136,10 +141,21 @@ public class RequestResourceIntTest {
     private static UserRepresentation createCoordinator() {
         UserRepresentation coordinator = new UserRepresentation();
         coordinator.setUuid(coordinatorUuid);
+        coordinator.setLogin("coordinator");
         coordinator.setFirstName("Co");
         coordinator.setLastName("Ordinator");
         coordinator.setEmail("coordinator@local");
         return coordinator;
+    }
+
+    private static UserRepresentation createRequester() {
+        UserRepresentation requesterRepresentation = new UserRepresentation();
+        requesterRepresentation.setUuid(mockRequesterUuid);
+        requesterRepresentation.setLogin(mockRequesterUsername);
+        requesterRepresentation.setFirstName("Re");
+        requesterRepresentation.setLastName("Quester");
+        requesterRepresentation.setEmail("requester@local");
+        return requesterRepresentation;
     }
 
     @Before
@@ -159,7 +175,7 @@ public class RequestResourceIntTest {
             .build();
     }
 
-    private void initMocks() {
+    private void initMocks() throws URISyntaxException {
         OrganisationDTO organisation = createOrganisation();
         given(this.organisationService.findOrganisationByUuid(any()))
             .willReturn(organisation);
@@ -167,7 +183,11 @@ public class RequestResourceIntTest {
         coordinators.add(createCoordinator());
         given(this.organisationService.findUsersByRole(any(), any()))
             .willReturn(coordinators);
-        doNothing().when(this.mailService).notifyCoordinators(any(), any(), anyListOf(UserRepresentation.class));
+        doNothing().when(this.mailService).sendSubmissionNotificationToCoordinators(any(), any(), anyListOf(UserRepresentation.class));
+
+        UserRepresentation requesterRepresentation = createRequester();
+        given(this.userClientService.findUserByUuid(any()))
+            .willReturn(requesterRepresentation);
     }
 
     private RequestPostProcessor token(UserAuthenticationToken user) {
@@ -323,6 +343,14 @@ public class RequestResourceIntTest {
         return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
+    private static List<Request> nonEmptyRequestList() {
+        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+    }
+
+    private static Map<UUID, OrganisationDTO> mapContainsKey(Object key) {
+        return argThat(allOf(org.hamcrest.Matchers.isA(Map.class), hasKey(key)));
+    }
+
     @Test
     @Transactional
     public void submitDraft() throws Exception {
@@ -364,7 +392,8 @@ public class RequestResourceIntTest {
         })
         .andExpect(status().isOk());
 
-        verify(this.mailService, times(1)).notifyCoordinators(any(), any(), nonEmptyUserRepresentationList());
+        verify(this.mailService, times(1)).sendSubmissionNotificationToCoordinators(any(), any(), nonEmptyUserRepresentationList());
+        verify(this.mailService, times(1)).sendSubmissionNotificationToRequester(any(), nonEmptyRequestList(), mapContainsKey(organisationUuid));
 
         // Fetch requests with status 'Review'
         mockMvc.perform(
