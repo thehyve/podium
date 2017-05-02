@@ -60,7 +60,6 @@ public class RequestDetailService {
     @Transactional(readOnly = true)
     public Page<RequestDetail> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Requestdetails for query {}", query);
-        Page<RequestDetail> result = requestdetailSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
+        return requestdetailSearchRepository.search(queryStringQuery(query), pageable);
     }
 }

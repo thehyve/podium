@@ -175,16 +175,9 @@ public class Role implements Serializable, IdentifiableOrganisation {
     public String toString() {
         return "Role{" +
             "id=" + id +
+            ", users=" + users +
+            ", organisation=" + organisation +
+            ", authority=" + authority +
             '}';
-    }
-
-    // FIXME: Replace with mapper
-    public RoleRepresentation toRepresentation() {
-        RoleRepresentation role = new RoleRepresentation();
-        role.setId(this.getId());
-        role.setOrganisation(this.getOrganisation() != null ? this.getOrganisation().getUuid() : null);
-        role.setAuthority(this.getAuthority().getName());
-        role.setUsers(this.getUsers().stream().map(User::getUuid).collect(Collectors.toSet()));
-        return role;
     }
 }

@@ -174,28 +174,6 @@ public class UserService {
     }
 
     /**
-     * Copy user properties, except login, password, email, activated.
-     * @param source
-     * @param target
-     */
-    private void copyProperties(UserRepresentation source, User target) {
-        target.setFirstName(source.getFirstName());
-        target.setLastName(source.getLastName());
-        target.setLangKey(source.getLangKey());
-        // update language key if set in source, or set default if not set in target.
-        if (source.getLangKey() != null) {
-            target.setLangKey(source.getLangKey());
-        } else if (target.getLangKey() == null) {
-            target.setLangKey("en"); // default language
-        }
-        target.setTelephone(source.getTelephone());
-        target.setInstitute(source.getInstitute());
-        target.setDepartment(source.getDepartment());
-        target.setJobTitle(source.getJobTitle());
-        target.setSpecialism(source.getSpecialism());
-    }
-
-    /**
      * Check is the login and e-mail address that are being set are not already in use by another
      * user account.
      * Throws a {@link UserAccountException} if the e-mail address or login are already in use.
@@ -236,7 +214,7 @@ public class UserService {
         newUser.setEmail(managedUserVM.getEmail());
         String encryptedPassword = passwordEncoder.encode(managedUserVM.getPassword());
         newUser.setPassword(encryptedPassword);
-        copyProperties(managedUserVM, newUser);
+        newUser = userMapper.safeUpdateUserWithUserDTO(managedUserVM, newUser);
         // new user is not active
         newUser.setEmailVerified(false);
         newUser.setAdminVerified(false);
@@ -259,7 +237,7 @@ public class UserService {
         User user = new User();
         user.setLogin(userData.getLogin());
         user.setEmail(userData.getEmail());
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         if (userData.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
             userData.getAuthorities().forEach( authority -> {
@@ -298,7 +276,7 @@ public class UserService {
         }
         User user = userOptional.get();
         checkForExistingLoginAndEmail(userData, user.getId());
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         user = save(user);
 
         SearchUser searchUser = userMapper.userToSearchUser(user);
@@ -331,7 +309,7 @@ public class UserService {
             }
         });
 
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         save(user);
         log.debug("Changed Information for User: {}", user);
     }

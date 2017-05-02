@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.DecisionOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
@@ -100,12 +101,11 @@ public class RequestReviewProcessService {
      * @return the current request if it exists; null otherwise.
      */
     private HistoricProcessInstance findProcessInstance(String processInstanceId) {
-        HistoricProcessInstance instance = historyService
+        return historyService
             .createHistoricProcessInstanceQuery()
             .includeProcessVariables()
             .processInstanceId(processInstanceId)
             .singleResult();
-        return instance;
     }
 
     /**
@@ -114,16 +114,16 @@ public class RequestReviewProcessService {
      * @return the current task if it exists, null otherwise.
      */
     private Task findTaskByRequestId(String requestId, String taskId) {
-        Task task = taskService.createTaskQuery().processInstanceId(requestId)
+        return taskService.createTaskQuery().processInstanceId(requestId)
             .active()
             .taskDefinitionKey(taskId)
             .singleResult();
-        return task;
     }
 
     /**
      * Copy properties from the process variables to the request review entity.
      */
+    @Timed
     private RequestReviewProcess updateRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
         // Update the request review object with the process variables.
         HistoricProcessInstance instance = findProcessInstance(requestReviewProcess.getProcessInstanceId());
@@ -136,6 +136,7 @@ public class RequestReviewProcessService {
         return requestReviewProcess;
     }
 
+    @Timed
     private RequestReviewProcess completeCurrentTask(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) {
         RequestReviewStatus status = requestReviewProcess.getStatus();
         if (status == RequestReviewStatus.None) {
@@ -216,6 +217,7 @@ public class RequestReviewProcessService {
         throw actionNotAllowedInStatus(requestReviewProcess.getStatus());
     }
 
+    @Timed
     public RequestReviewProcess start(AuthenticatedUser user) {
         log.info("Creating request review process instance for user {}", user.getName());
 

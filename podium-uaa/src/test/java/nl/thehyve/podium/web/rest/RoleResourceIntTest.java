@@ -20,6 +20,10 @@ import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.service.mapper.RoleMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +75,9 @@ public class RoleResourceIntTest {
     private RoleService roleService;
 
     @Autowired
+    private RoleMapper roleMapper;
+
+    @Autowired
     private RoleSearchRepository roleSearchRepository;
 
     @Autowired
@@ -92,6 +99,7 @@ public class RoleResourceIntTest {
 
         RoleResource roleResource = new RoleResource();
         ReflectionTestUtils.setField(roleResource, "roleService", roleService);
+        ReflectionTestUtils.setField(roleResource, "roleMapper", roleMapper);
 
         this.restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -196,7 +204,7 @@ public class RoleResourceIntTest {
 
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedRole.toRepresentation())))
+            .content(TestUtil.convertObjectToJsonBytes(roleMapper.roleToRoleDTO(updatedRole))))
             .andExpect(status().isOk());
 
         // Validate the Role in the database
@@ -217,7 +225,7 @@ public class RoleResourceIntTest {
         // If the entity doesn't have an ID, status not found is returned
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(role.toRepresentation())))
+            .content(TestUtil.convertObjectToJsonBytes(roleMapper.roleToRoleDTO(role))))
             .andExpect(status().isNotFound());
 
         // Validate the Role is not inserted in the database

@@ -22,6 +22,13 @@ import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
+import nl.thehyve.podium.common.service.dto.RoleRepresentation;
+import nl.thehyve.podium.domain.Organisation;
+import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.security.OAuth2TokenMockUtil;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.service.mapper.RoleMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +84,9 @@ public class AccessPolicyIntTest {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
     @Autowired
     private WebApplicationContext context;
@@ -305,7 +315,7 @@ public class AccessPolicyIntTest {
             .expect(HttpStatus.METHOD_NOT_ALLOWED));
         // PUT /roles (Role role).
         // Edit non-organisation specific role
-        RoleRepresentation editedResearcherRole = researcherRole.toRepresentation();
+        RoleRepresentation editedResearcherRole = roleMapper.roleToRoleDTO(researcherRole);
         editedResearcherRole.getUsers().add(bbmriAdmin.getUuid());
         actions.add(newAction()
             .setUrl(ROLE_ROUTE)
@@ -313,7 +323,7 @@ public class AccessPolicyIntTest {
             .body(editedResearcherRole)
             .allow(podiumAdmin, bbmriAdmin));
         // Edit organisation specific role
-        RoleRepresentation editedReviewerARole = reviewerARole.toRepresentation();
+        RoleRepresentation editedReviewerARole = roleMapper.roleToRoleDTO(reviewerARole);
         editedReviewerARole.getUsers().add(coordinatorOrganisationA.getUuid());
         actions.add(newAction()
             .setUrl(ROLE_ROUTE)

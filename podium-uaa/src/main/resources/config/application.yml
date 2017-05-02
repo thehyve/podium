@@ -71,6 +71,11 @@ server:
         cookie:
             http-only: true
 
+hazelcast:
+    phone:
+        home:
+            enabled: false
+
 # ===================================================================
 # Podium specific properties
 # ===================================================================
