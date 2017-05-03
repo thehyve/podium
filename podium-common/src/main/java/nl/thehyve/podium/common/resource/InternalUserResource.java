@@ -7,6 +7,8 @@
 
 package nl.thehyve.podium.common.resource;
 
+import nl.thehyve.podium.common.security.AuthenticatedUser;
+import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.annotations.UserUuidParameter;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.springframework.http.ResponseEntity;
@@ -29,5 +31,16 @@ public interface InternalUserResource {
     @RequestMapping(value = "/users/uuid/{uuid}", method = RequestMethod.GET)
     ResponseEntity<UserRepresentation> getUser(
         @UserUuidParameter @PathVariable("uuid") UUID uuid);
+
+    /**
+     * GET  /users/login/:login
+     * Fetches the authenticated user for the user with the given login.
+     *
+     * @param login the login of the user
+     * @return the ResponseEntity with status 200 (OK) and with body the user, or with status 404 (Not Found)
+     */
+    @RequestMapping(value = "/users/login/{login}", method = RequestMethod.GET)
+    ResponseEntity<SerialisedUser> getAuthenticatedUserByLogin(
+        @PathVariable("login") String login);
 
 }

@@ -9,6 +9,7 @@ package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.User;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

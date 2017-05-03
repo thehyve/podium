@@ -8,6 +8,7 @@
 package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.common.service.SecurityService;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
