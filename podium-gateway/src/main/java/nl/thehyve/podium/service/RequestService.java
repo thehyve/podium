@@ -239,6 +239,48 @@ public class RequestService {
         deleteRequest(request.getId());
     }
 
+    @Transactional
+    @Timed
+    public RequestRepresentation rejectRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        // Fetch the coordinators of the request through Feign
+        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
+
+        // Check whether the authenticated user is a coordinator of one of the associated organisations
+        // If no coordinator is found, throw AccessDenied Exception
+        coordinators.stream()
+            .filter(u -> u.getUuid().equals(user.getUuid()))
+            .findAny()
+            .orElseThrow(() -> new AccessDenied("Access denied to request."));
+
+        requestReviewProcessService.reject(user, request.getRequestReviewProcess());
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    @Transactional
+    @Timed
+    public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        // Fetch the coordinators of the request through Feign
+        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
+
+        // Check whether the authenticated user is a coordinator of one of the associated organisations
+        // If no coordinator is found, throw AccessDenied Exception
+        coordinators.stream()
+            .filter(u -> u.getUuid().equals(user.getUuid()))
+            .findAny()
+            .orElseThrow(() -> new AccessDenied("Access denied to request."));
+
+        log.debug("Approving request {}", uuid);
+        requestReviewProcessService.approve(user, request.getRequestReviewProcess());
+        return requestMapper.requestToRequestDTO(request);
+    }
+
     /**
      * Submit the draft request by uuid.
      * Generates requests for the organisations specified in the draft.
@@ -274,21 +316,22 @@ public class RequestService {
 
         List<Request> organisationRequests = new ArrayList<>();
         // TODO: Aggregate mails for multiple organisations per user.
+
+        // Fetch organisation coordinators through Feign.
+        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
+
         for (UUID organisationUuid: request.getOrganisations()) {
-            // Fetch organisation and organisation coordinators through Feign.
+            // Fetch organisation through Feign.
             OrganisationDTO organisation;
-            List<UserRepresentation> coordinators;
+
             try {
                 organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
-                coordinators = organisationClientService.findUsersByRole(organisationUuid,
-                    AuthorityConstants.ORGANISATION_COORDINATOR);
             } catch (Exception e) {
-                log.error("Error fetching organisation and coordinators", e);
-                throw new ServiceNotAvailable("Could not fetch fetching organisation and coordinators", e);
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation through feign", e);
             }
 
             // TODO: validate request type of the request with the supported request types of the organisation.
-
             Request organisationRequest = requestMapper.clone(request);
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
@@ -321,4 +364,19 @@ public class RequestService {
         return result.map(request -> requestMapper.requestToRequestDTO(request));
     }
 
+    public List<UserRepresentation> getCoordinatorsForRequest(Request request) {
+        List<UserRepresentation> coordinators = new ArrayList<>();
+        for (UUID organisationUuid: request.getOrganisations()) {
+            // Fetch organisation coordinators through Feign.
+            try {
+                coordinators = organisationClientService.findUsersByRole(organisationUuid,
+                    AuthorityConstants.ORGANISATION_COORDINATOR);
+            } catch (Exception e) {
+                log.error("Error fetching organisation coordinators", e);
+                throw new ServiceNotAvailable("Could not fetch organisation coordinators through feign", e);
+            }
+
+        }
+        return coordinators;
+    }
 }

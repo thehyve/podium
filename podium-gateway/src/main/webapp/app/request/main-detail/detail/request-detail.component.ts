@@ -39,14 +39,6 @@ export class RequestDetailComponent {
 
     }
 
-    rejectRequest() {
-        this.requestService.rejectRequest(this.request.uuid)
-            .subscribe(
-                (res) => this.onSuccess(res),
-                (err) => this.onError(err)
-            );
-    }
-
     saveRequest() {
         this.requestService.saveRequest(this.request)
             .subscribe(
@@ -92,6 +84,14 @@ export class RequestDetailComponent {
 
     approveRequest() {
         this.requestService.approveRequest(this.request.uuid)
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onError(err)
+            );
+    }
+
+    rejectRequest() {
+        this.requestService.rejectRequest(this.request.uuid)
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
