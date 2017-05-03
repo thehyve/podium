@@ -237,6 +237,42 @@ public class RequestResource {
     }
 
     /**
+     * GET /requests/reject/:uuid : Reject a request with uuid.
+     *
+     * @param uuid the uuid of the request to reject
+     * @return the ResponseEntity with the rejected request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/reject/{uuid}")
+    @Timed
+    public ResponseEntity<RequestRepresentation> rejectRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to reject request process for : {} ", uuid);
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        RequestRepresentation requestRepresentation = requestService.rejectRequest(authenticatedUser, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/approve/:uuid : Approve a request with uuid.
+     *
+     * @param uuid the uuid of the request to approve
+     * @return the ResponseEntity with the approved request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/approve/{uuid}")
+    @Timed
+    public ResponseEntity<RequestRepresentation> approveRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to approve request process for : {} ", uuid);
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        RequestRepresentation requestRepresentation = requestService.approveRequest(authenticatedUser, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
      * SEARCH  /_search/requests?query=:query : search for the request corresponding
      * to the query.
      *
