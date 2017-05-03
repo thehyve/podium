@@ -17,13 +17,13 @@
             </span>
         </button>
         <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
-            <span class="fa fa-file"></span>
+            <span class="material-icons">draft</span>
             <span class="hidden-sm-down">
-            Show Drafts
+                Show Drafts
             </span>
         </button>
         <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
-            <span class="fa fa-plus"></span>
+            <span class="material-icons">add_circle_outline</span>
             <span class="hidden-sm-down">
             Create new request
             </span>
@@ -55,12 +55,12 @@
 					<div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
 						<button type="button"
 								class="btn btn-primary btn-sm"  (click)="editRequest(request)">
-							<span class="fa fa-pencil"></span>
+                            <span class="material-icons">edit</span>
 							<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
 						</button>
 						<button type="submit"
 								class="btn btn-danger btn-sm" (click)="deleteDraft(request)">
-							<span class="fa fa-pencil"></span>
+                            <span class="material-icons">remove_circle_outline</span>
 							<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
 						</button>
 					</div>
