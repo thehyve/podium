@@ -49,7 +49,6 @@
         </tr>
         </thead>
         <tbody>
-<!--?<<<<<<< HEAD-->
         <tr *ngFor="let request of availableRequests; trackBy: trackId">
             <td>
                 {{request.id}}
@@ -78,28 +77,6 @@
             </td>
             <td class="text-xs-right">
                 <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
-<!--?=======-->
-			<!--?<tr *ngFor="let request of availableRequests; trackBy: trackId">-->
-				<!--?<td>-->
-					<!--?{{request.requestDetail.title || '-'}}-->
-				<!--?</td>-->
-				<!--?<td>-->
-					<!--?{{request.status}}-->
-				<!--?</td>-->
-				<!--?<td class="text-xs-right">-->
-					<!--?<div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">-->
-						<!--?<button type="button"-->
-								<!--?class="btn btn-primary btn-sm"  (click)="editRequest(request)">-->
-                            <!--?<span class="material-icons">edit</span>-->
-							<!--?<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>-->
-						<!--?</button>-->
-						<!--?<button type="submit"-->
-								<!--?class="btn btn-danger btn-sm" (click)="deleteDraft(request)">-->
-                            <!--?<span class="material-icons">remove_circle_outline</span>-->
-							<!--?<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>-->
-						<!--?</button>-->
-					<!--?</div>-->
-<!--?>>>>>>> dev-->
                     <button type="button" class="btn btn-primary btn-sm"  (click)="editRequest(request)">
                         <span class="material-icons">edit</span>
                         <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
