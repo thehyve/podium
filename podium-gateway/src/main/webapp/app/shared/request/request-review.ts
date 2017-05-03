@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestReviewStatusOptions } from './request-status/request-status.constants';
 import { RequestReviewDecision } from './request-review-decision';
 

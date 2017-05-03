@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component } from '@angular/core';
 
 @Component({

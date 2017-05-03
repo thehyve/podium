@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Principal } from './principal.service';
 

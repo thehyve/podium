@@ -7,10 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Route } from '@angular/router';
-
+import { Route } from '@angular/router';
 import { NavbarComponent } from './layouts';
 /* import { AuthService } from './shared';
 

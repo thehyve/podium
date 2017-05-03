@@ -7,13 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
-
-import {
-    BreadcrumbComponent,
-    BreadcrumbService
-} from './';
+import { BreadcrumbComponent, BreadcrumbService } from './';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

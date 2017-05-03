@@ -7,15 +7,16 @@
 
 package nl.thehyve.podium;
 
-import nl.thehyve.podium.config.DefaultProfileUtil;
 import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.config.DefaultProfileUtil;
 import nl.thehyve.podium.config.PodiumProperties;
-
 import nl.thehyve.podium.config.UaaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.*;
+import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -24,7 +25,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class PodiumUaaApp {
 
     private static final Logger log = LoggerFactory.getLogger(PodiumUaaApp.class);
 
-    @Inject
+    @Autowired
     private Environment env;
 
     /**

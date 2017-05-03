@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, AfterContentInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';

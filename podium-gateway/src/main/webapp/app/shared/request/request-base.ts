@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Request } from './request';
 import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';

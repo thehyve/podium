@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { LoginModalService } from '../login/login-modal.service';
 import { Principal } from './principal.service';
 import { StateStorageService } from './state-storage.service';

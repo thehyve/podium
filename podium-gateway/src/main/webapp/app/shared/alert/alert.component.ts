@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertService } from 'ng-jhipster';
 

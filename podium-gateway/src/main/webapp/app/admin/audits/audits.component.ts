@@ -7,11 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { ParseLinks, JhiLanguageService} from 'ng-jhipster';
-
+import { ParseLinks, JhiLanguageService } from 'ng-jhipster';
 import { Audit } from './audit.model';
 import { AuditsService } from './audits.service';
 import { ITEMS_PER_PAGE } from '../../shared';

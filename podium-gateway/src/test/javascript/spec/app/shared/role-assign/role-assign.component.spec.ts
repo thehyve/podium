@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';

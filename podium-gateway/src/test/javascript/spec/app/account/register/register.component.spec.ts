@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { ComponentFixture, TestBed, async, inject, tick, fakeAsync } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
@@ -21,7 +20,6 @@ import { Register } from '../../../../../../main/webapp/app/account/register/reg
 import { RegisterComponent } from '../../../../../../main/webapp/app/account/register/register.component';
 import { MessageService } from '../../../../../../main/webapp/app/shared/message/message.service';
 import { Router } from '@angular/router';
-import { Message } from '../../../../../../main/webapp/app/shared/message/message.model';
 
 
 describe('Component Tests', () => {

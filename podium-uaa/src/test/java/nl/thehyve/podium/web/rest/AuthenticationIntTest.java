@@ -8,12 +8,12 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.security.CustomServerAuthenticationProvider;
-import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.security.OAuth2TokenMockUtil;
+import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,13 +37,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
-
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for authentication.

@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { SpyObject } from './spyobject';
 import { JhiLanguageService } from 'ng-jhipster';
 import Spy = jasmine.Spy;

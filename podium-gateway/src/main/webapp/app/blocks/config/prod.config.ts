@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { enableProdMode } from '@angular/core';
 import { DEBUG_INFO_ENABLED } from '../../app.constants';
 

@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes, Resolve } from '@angular/router';
-
+import { RouterModule } from '@angular/router';
 import { homeRoute } from '../home';
 import { navbarRoute } from '../app.route';
 import { errorRoute } from './';

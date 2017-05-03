@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
-
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { UserModalService } from './user-modal.service';

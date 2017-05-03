@@ -9,10 +9,10 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.config.PodiumProperties;
 import nl.thehyve.podium.domain.User;
-
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
-import javax.inject.Inject;
 import javax.mail.internet.MimeMessage;
 import java.util.Locale;
 
@@ -40,16 +39,16 @@ public class MailService {
 
     private static final String BASE_URL = "baseUrl";
 
-    @Inject
+    @Autowired
     private PodiumProperties podiumProperties;
 
-    @Inject
+    @Autowired
     private JavaMailSenderImpl javaMailSender;
 
-    @Inject
+    @Autowired
     private MessageSource messageSource;
 
-    @Inject
+    @Autowired
     private SpringTemplateEngine templateEngine;
 
     @Async

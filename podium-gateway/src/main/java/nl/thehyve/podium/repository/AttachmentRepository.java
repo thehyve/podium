@@ -8,8 +8,7 @@
 package nl.thehyve.podium.repository;
 
 import nl.thehyve.podium.domain.Attachment;
-
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Spring Data JPA repository for the Attachment entity.

@@ -8,12 +8,20 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.aop.security.AccessPolicyAspect;
-import nl.thehyve.podium.common.security.annotations.*;
+import nl.thehyve.podium.common.IdentifiableOrganisation;
+import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
+import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
+import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
+import nl.thehyve.podium.common.security.annotations.Public;
+import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.security.annotations.SecuredByCurrentUser;
+import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
+import nl.thehyve.podium.common.security.annotations.UserParameter;
+import nl.thehyve.podium.common.security.annotations.UserUuidParameter;
 import nl.thehyve.podium.security.SecurityService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
-import nl.thehyve.podium.common.IdentifiableOrganisation;
-import nl.thehyve.podium.common.IdentifiableUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

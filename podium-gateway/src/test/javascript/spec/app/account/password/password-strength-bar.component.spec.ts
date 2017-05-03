@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-
 import { PasswordStrengthBarComponent } from '../../../../../../main/webapp/app/account/password/password-strength-bar.component';
 
 describe('Component Tests', () => {

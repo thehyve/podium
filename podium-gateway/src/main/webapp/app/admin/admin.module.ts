@@ -7,12 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { PodiumGatewaySharedModule } from '../shared';
-
 import {
     adminRoute,
     AuditsComponent,
@@ -29,7 +26,7 @@ import {
     PdmMetricsService,
     GatewayRoutesService,
     PdmGatewayComponent,
-    LogsService,
+    LogsService
 } from './';
 import { PdmElasticsearchComponent } from './elasticsearch/elasticsearch.component';
 import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-modal.component';

@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { PdmElasticsearchService } from './elasticsearch.service';
 
 @Component({

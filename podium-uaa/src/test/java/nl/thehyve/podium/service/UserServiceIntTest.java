@@ -11,20 +11,19 @@ import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.UserRepository;
-import java.time.ZonedDateTime;
 import nl.thehyve.podium.service.util.RandomUtil;
-
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for the UserResource REST controller.
@@ -38,10 +37,10 @@ public class UserServiceIntTest {
 
     private static final String VALID_PASSWORD = "johndoe2!";
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
 
-    @Inject
+    @Autowired
     private UserService userService;
 
     @Test

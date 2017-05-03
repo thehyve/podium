@@ -7,17 +7,16 @@
 
 package nl.thehyve.podium.service;
 
-import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
 import nl.thehyve.podium.config.audit.AuditEventConverter;
-
-import java.time.LocalDateTime;
+import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -34,7 +33,7 @@ public class AuditEventService {
 
     private AuditEventConverter auditEventConverter;
 
-    @Inject
+    @Autowired
     public AuditEventService(
         PersistenceAuditEventRepository persistenceAuditEventRepository,
         AuditEventConverter auditEventConverter) {

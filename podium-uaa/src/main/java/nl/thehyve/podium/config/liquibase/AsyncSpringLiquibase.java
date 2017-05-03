@@ -7,18 +7,16 @@
 
 package nl.thehyve.podium.config.liquibase;
 
-import javax.inject.Inject;
-
+import liquibase.exception.LiquibaseException;
+import liquibase.integration.spring.SpringLiquibase;
+import nl.thehyve.podium.common.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.util.StopWatch;
-
-import nl.thehyve.podium.common.config.Constants;
-import liquibase.exception.LiquibaseException;
-import liquibase.integration.spring.SpringLiquibase;
 
 /**
  * Specific liquibase.integration.spring.SpringLiquibase that will update the database asynchronously.
@@ -40,11 +38,11 @@ public class AsyncSpringLiquibase extends SpringLiquibase {
     // named "logger" because there is already a field called "log" in "SpringLiquibase"
     private final Logger logger = LoggerFactory.getLogger(AsyncSpringLiquibase.class);
 
-    @Inject
+    @Autowired
     @Qualifier("taskExecutor")
     private TaskExecutor taskExecutor;
 
-    @Inject
+    @Autowired
     private Environment env;
 
     @Override

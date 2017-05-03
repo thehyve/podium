@@ -7,13 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
-
 import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { SessionStorageService } from 'ng2-webstorage';
-
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,

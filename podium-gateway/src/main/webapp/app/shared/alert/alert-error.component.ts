@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from 'ng2-translate';
 import { EventManager, AlertService } from 'ng-jhipster';

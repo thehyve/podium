@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { CookieService } from 'angular2-cookie/core';
 

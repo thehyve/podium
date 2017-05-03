@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { AuditData } from './audit-data.model';
 
 export class Audit {

@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { SpyObject } from './spyobject';
+import { Subscriber } from 'rxjs';
+import { EventManager } from 'ng-jhipster';
 import Spy = jasmine.Spy;
-import { Observable, Subscriber } from 'rxjs';
-import { RoleService } from '../../../../main/webapp/app/shared/role/role.service';
-import { AlertService, EventManager } from 'ng-jhipster';
 
 export class MockEventManager extends SpyObject {
 

@@ -7,16 +7,13 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
-import {
-    PdmHealthCheckComponent
-} from '../../../../../../main/webapp/app/admin/health/health.component';
+import { PdmHealthCheckComponent } from '../../../../../../main/webapp/app/admin/health/health.component';
 import { PdmHealthService } from '../../../../../../main/webapp/app/admin/health/health.service';
 
 

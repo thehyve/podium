@@ -8,14 +8,12 @@
 package nl.thehyve.podium.common.resource;
 
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 

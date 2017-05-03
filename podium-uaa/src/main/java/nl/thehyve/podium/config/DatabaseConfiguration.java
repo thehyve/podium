@@ -7,13 +7,13 @@
 
 package nl.thehyve.podium.config;
 
-import nl.thehyve.podium.common.config.Constants;
-import nl.thehyve.podium.config.liquibase.AsyncSpringLiquibase;
-
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import liquibase.integration.spring.SpringLiquibase;
+import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.config.liquibase.AsyncSpringLiquibase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.inject.Inject;
 import javax.sql.DataSource;
 
 @Configuration
@@ -35,7 +34,7 @@ public class DatabaseConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
-    @Inject
+    @Autowired
     private Environment env;
 
     @Bean

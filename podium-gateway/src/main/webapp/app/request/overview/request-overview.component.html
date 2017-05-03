@@ -17,13 +17,13 @@
             </span>
         </button>
         <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
-            <span class="fa fa-file"></span>
+            <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">
-            Show Drafts
+                Show Drafts
             </span>
         </button>
         <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
-            <span class="fa fa-plus"></span>
+            <span class="material-icons">add_circle_outline</span>
             <span class="hidden-sm-down">
             Create new request
             </span>
@@ -49,6 +49,7 @@
         </tr>
         </thead>
         <tbody>
+<!--?<<<<<<< HEAD-->
         <tr *ngFor="let request of availableRequests; trackBy: trackId">
             <td>
                 {{request.id}}
@@ -77,14 +78,34 @@
             </td>
             <td class="text-xs-right">
                 <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
-                    <button type="button"
-                            class="btn btn-primary btn-sm" (click)="editRequest(request)">
-                        <span class="fa fa-pencil"></span>
+<!--?=======-->
+			<!--?<tr *ngFor="let request of availableRequests; trackBy: trackId">-->
+				<!--?<td>-->
+					<!--?{{request.requestDetail.title || '-'}}-->
+				<!--?</td>-->
+				<!--?<td>-->
+					<!--?{{request.status}}-->
+				<!--?</td>-->
+				<!--?<td class="text-xs-right">-->
+					<!--?<div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">-->
+						<!--?<button type="button"-->
+								<!--?class="btn btn-primary btn-sm"  (click)="editRequest(request)">-->
+                            <!--?<span class="material-icons">edit</span>-->
+							<!--?<span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>-->
+						<!--?</button>-->
+						<!--?<button type="submit"-->
+								<!--?class="btn btn-danger btn-sm" (click)="deleteDraft(request)">-->
+                            <!--?<span class="material-icons">remove_circle_outline</span>-->
+							<!--?<span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>-->
+						<!--?</button>-->
+					<!--?</div>-->
+<!--?>>>>>>> dev-->
+                    <button type="button" class="btn btn-primary btn-sm"  (click)="editRequest(request)">
+                        <span class="material-icons">edit</span>
                         <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
                     </button>
-                    <button type="submit"
-                            class="btn btn-danger btn-sm">
-                        <span class="fa fa-pencil"></span>
+                    <button type="submit" class="btn btn-danger btn-sm" (click)="deleteDraft(request)">
+                        <span class="material-icons">remove_circle_outline</span>
                         <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
                     </button>
                 </div>

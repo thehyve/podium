@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {browser, $} from "protractor";
-import {Director} from "../protractor-stories/director";
-import {Promise} from "es6-promise";
+import { Director } from '../protractor-stories/director';
+import { Promise } from 'es6-promise';
 import SigninPage = require("../pages/SigninPage")
 import PageDictionary = require("../pages/PageDictionary")
 import PersonaDictionary = require("../personas/PersonaDictionary")
