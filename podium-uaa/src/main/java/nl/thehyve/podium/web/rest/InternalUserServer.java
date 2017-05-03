@@ -8,15 +8,13 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.common.resource.InternalRoleResource;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.resource.InternalUserResource;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.service.OrganisationService;
-import nl.thehyve.podium.service.RoleService;
+import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,36 +23,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
- * REST controller for serving role information.
+ * REST controller for serving user information.
  */
 @RestController
 @AnyAuthorisedUser
-public class InternalRoleServer implements InternalRoleResource {
+public class InternalUserServer implements InternalUserResource {
 
-    private final Logger log = LoggerFactory.getLogger(InternalRoleServer.class);
-
-    @Autowired
-    private RoleService roleService;
+    private final Logger log = LoggerFactory.getLogger(InternalUserServer.class);
 
     @Autowired
-    private OrganisationService organisationService;
+    private UserService userService;
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
     @Timed
-    public ResponseEntity<List<UserRepresentation>> getOrganisationRoleUsers(
-        @OrganisationUuidParameter @PathVariable("uuid") UUID uuid,
-        @PathVariable("authority") String authority) {
-        Organisation organisation = organisationService.findByUuid(uuid);
-        Role role = roleService.findRoleByOrganisationAndAuthorityName(organisation, authority);
-        List<User> users = new ArrayList<>(role.getUsers());
-        return ResponseEntity.ok(userMapper.usersToUserDTOs(users));
+    public ResponseEntity<UserRepresentation> getUser(
+        @OrganisationUuidParameter @PathVariable("uuid") UUID uuid) {
+        Optional<User> userOptional = userService.getUserByUuid(uuid);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFound("User not found with uuid " + uuid.toString());
+        }
+        return ResponseEntity.ok(userMapper.userToUserDTO(userOptional.get()));
     }
+
 }

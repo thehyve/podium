@@ -11,58 +11,51 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.request.new.title}">Your Podium Request</title>
+        <title th:text="#{email.requesterRequestSubmitted.title}">BBMRI Podium Request Portal &ndash; request has been submitted</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
         <p th:text="#{email.greeting(${user.firstName}, ${user.lastName})}">
             Dear
         </p>
-        <p th:text="#{email.request.new.intro}">
+        <p th:text="#{email.requesterRequestSubmitted.intro}">
             You have submitted a new request through the BBMRI Request Portal to the following organization(s):
         </p>
 
-        <!-- List of organisations -->
+        <!-- List of requests -->
         <ul>
-            <li th:each="organisation : ${request.organisations}">
-                ${organisation.name}
+            <li th:each="request : ${requests}">
+                <span th:each="organisationUuid: ${request.organisations}">
+                    <span th:text="${organisations.get(organisationUuid)}"></span>
+                </span>
+                (<span th:each="requestType : ${request.getRequestDetail().getRequestType()}">
+                    <span th:text="${requestType}"></span>
+                </span>)
             </li>
         </ul>
 
         <p>
             <strong>
-                <span th:text="#{email.request.new.overview.header}">This is an overview of your request:</span>
+                <span th:text="#{email.requesterRequestSubmitted.overview.header}">This is an overview of your request:</span>
             </strong>
         </p>
 
         <dl>
-            <dt>Title</dt>
-            <dd>${request.title}</dd>
-
-            <dt>Description</dt>
-            <dd>${request.description}</dd>
-
-            <dt>Date requested</dt>
-            <dd>${request.dateRequested}</dd>
-
-            <dt></dt>
-            <dd>${request.title}</dd>
-
-            <dt>Title</dt>
-            <dd>${request.title}</dd>
+            <dt th:text="#{email.requesterRequestSubmitted.overview.title}">Title</dt>
+            <dd th:text="${requests.get(0).getRequestDetail().getTitle()}">"</dd>
         </dl>
 
         <br />
 
         <p>
-            <span th:text="#{email.request.new.processing_info}">
+            <span th:text="#{email.requesterRequestSubmitted.processing_info}">
                 Your request is now processed by the organization(s) you will receive emails with status updates on your request.
             </span>
-            <span th:text="#{email.request.new.status_link}">
+            <span th:text="#{email.requesterRequestSubmitted.status_link}">
                 You can always check the actual status of your request in the BBMRI Request Portal using the following link:
             </span>
             <a th:href="@{|${baseUrl}/#/request/${request.id}|}">
-                <span th:text="@{|${baseUrl}/#/request/${request.id}|}"></span>
+                <span th:text="@{|${baseUrl}/#/request/${request.uuid}|}"></span>
             </a>
         </p>
 
