@@ -16,9 +16,7 @@ import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
@@ -72,7 +70,7 @@ public class RequestService {
     private OrganisationClientService organisationClientService;
 
     @Autowired
-    private MailService mailService;
+    private NotificationService notificationService;
 
     public RequestService() {}
 
@@ -115,7 +113,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
@@ -168,7 +166,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllRequestsForRequesterByStatus(IdentifiableUser requester, RequestStatus status, Pageable pageable) {
         Page<Request> result = requestRepository.findAllByRequesterAndStatus(
             requester.getUserUuid(), status, pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
@@ -289,14 +287,11 @@ public class RequestService {
         for (UUID organisationUuid: request.getOrganisations()) {
             // Fetch organisation and organisation coordinators through Feign.
             OrganisationDTO organisation;
-            List<UserRepresentation> coordinators;
             try {
                 organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
-                coordinators = organisationClientService.findUsersByRole(organisationUuid,
-                    AuthorityConstants.ORGANISATION_COORDINATOR);
             } catch (Exception e) {
                 log.error("Error fetching organisation and coordinators", e);
-                throw new ServiceNotAvailable("Could not fetch fetching organisation and coordinators", e);
+                throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
             }
 
             // TODO: validate request type of the request with the supported request types of the organisation.
@@ -309,11 +304,14 @@ public class RequestService {
                 requestReviewProcessService.start(user));
             organisationRequest = save(organisationRequest);
 
-            mailService.notifyCoordinators(organisationRequest, organisation, coordinators);
+            notificationService.submissionNotificationToCoordinators(organisation, organisationRequest);
 
             organisationRequests.add(organisationRequest);
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
         }
+
+        notificationService.submissionNotificationToRequester(user, organisationRequests);
+
         log.debug("Deleting draft request.");
         deleteRequest(request.getId());
         return requestMapper.requestsToRequestDTOs(organisationRequests);
