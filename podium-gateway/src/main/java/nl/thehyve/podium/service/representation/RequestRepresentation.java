@@ -38,8 +38,6 @@ public class RequestRepresentation implements Serializable {
 
     private List<OrganisationDTO> organisations = new ArrayList<>();
 
-    private RequestRepresentation parentRequest;
-
     private RequestReviewRepresentation requestReview;
 
     @Valid
@@ -85,14 +83,6 @@ public class RequestRepresentation implements Serializable {
 
     public void setOrganisations(List<OrganisationDTO> organisations) {
         this.organisations = organisations;
-    }
-
-    public RequestRepresentation getParentRequest() {
-        return parentRequest;
-    }
-
-    public void setParentRequest(RequestRepresentation requestId) {
-        this.parentRequest = requestId;
     }
 
     public RequestDetailRepresentation getRequestDetail() {
@@ -142,7 +132,6 @@ public class RequestRepresentation implements Serializable {
             "id=" + id +
             ", status=" + status +
             ", organisations=" + organisations +
-            ", parentRequest=" + parentRequest +
             ", requestDetail=" + requestDetail +
             ", attachments=" + attachments +
             '}';
