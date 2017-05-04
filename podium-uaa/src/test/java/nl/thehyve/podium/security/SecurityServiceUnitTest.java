@@ -24,11 +24,11 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
-* Test class for the SecurityUtils utility class.
+* Test class for the SecurityService utility class.
 *
 * @see SecurityService
 */
-public class SecurityUtilsUnitTest {
+public class SecurityServiceUnitTest {
 
     @Test
     public void testgetCurrentUserLogin() {
