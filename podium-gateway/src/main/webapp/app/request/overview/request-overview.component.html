@@ -85,10 +85,10 @@
                 </ul>
             </td>
             <td>
-                {{request.createdDate | date:'medium' }}
+                {{request.createdDate | date:'short' }}
             </td>
             <td>
-                {{request.lastModifiedDate | date:'medium' }}
+                {{request.lastModifiedDate | date:'short' }}
             </td>
             <td class="text-xs-right">
                 <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
