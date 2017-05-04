@@ -273,6 +273,24 @@ public class RequestResource {
     }
 
     /**
+     * GET /requests/revision/:uuid : Request a revision for request with uuid.
+     *
+     * @param uuid the uuid of the request to request revision for
+     * @return the ResponseEntity with the updated request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/revision/{uuid}")
+    @Timed
+    public ResponseEntity<RequestRepresentation> revisionRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to apply revision to request details for : {} ", uuid);
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        RequestRepresentation requestRepresentation = requestService.approveRequest(authenticatedUser, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
      * SEARCH  /_search/requests?query=:query : search for the request corresponding
      * to the query.
      *

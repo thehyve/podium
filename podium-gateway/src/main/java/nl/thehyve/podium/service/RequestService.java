@@ -253,18 +253,11 @@ public class RequestService {
     @Timed
     public RequestRepresentation rejectRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
         // TODO: Add NotificationEvent
-
         Request request = requestRepository.findOneByUuid(uuid);
 
-        // Fetch the coordinators of the request through Feign
-        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
-
-        // Check whether the authenticated user is a coordinator of one of the associated organisations
-        // If no coordinator is found, throw AccessDenied Exception
-        coordinators.stream()
-            .filter(u -> u.getUuid().equals(user.getUuid()))
-            .findAny()
-            .orElseThrow(() -> new AccessDenied("Access denied to request."));
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
 
         requestReviewProcessService.reject(user, request.getRequestReviewProcess());
         return requestMapper.requestToRequestDTO(request);
@@ -276,18 +269,27 @@ public class RequestService {
         // TODO: Add NotificationEvent
         Request request = requestRepository.findOneByUuid(uuid);
 
-        // Fetch the coordinators of the request through Feign
-        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
-
-        // Check whether the authenticated user is a coordinator of one of the associated organisations
-        // If no coordinator is found, throw AccessDenied Exception
-        coordinators.stream()
-            .filter(u -> u.getUuid().equals(user.getUuid()))
-            .findAny()
-            .orElseThrow(() -> new AccessDenied("Access denied to request."));
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
 
         log.debug("Approving request {}", uuid);
         requestReviewProcessService.approve(user, request.getRequestReviewProcess());
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    @Transactional
+    @Timed
+    public RequestRepresentation reviseRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        log.debug("Revising request {}", uuid);
+        requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
         return requestMapper.requestToRequestDTO(request);
     }
 
@@ -391,5 +393,18 @@ public class RequestService {
 
         }
         return coordinators;
+    }
+
+    public boolean hasAccessToRequestAsCoordinator(Request request, AuthenticatedUser user) {
+        // Fetch the coordinators of the request through Feign
+        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
+
+        // Check whether the authenticated user is a coordinator of one of the associated organisations
+        // If no coordinator is found, throw AccessDenied Exception
+        Optional<UserRepresentation> coordinator = coordinators.stream()
+            .filter(u -> u.getUuid().equals(user.getUuid()))
+            .findAny();
+
+        return coordinator.isPresent();
     }
 }
