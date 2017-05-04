@@ -37,14 +37,29 @@
 <div class="table-responsive" *ngIf="availableRequests">
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th><span>Request Id</span></th>
-            <th><span>Title</span></th>
-            <th><span>Status</span></th>
+        <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id">
+                <span>Request Id</span>
+                <span class="fa fa-sort"></span>
+            </th>
+            <th jhiSortBy="requestDetail.title">
+                <span>Title</span>
+                <span class="fa fa-sort"></span>
+            </th>
+            <th jhiSortBy="status">
+                <span>Status</span>
+                <span class="fa fa-sort"></span>
+            </th>
             <th><span>Request Type</span></th>
             <th><span>Organisations</span></th>
-            <th><span>Created Date</span></th>
-            <th><span>Last Modified</span></th>
+            <th jhiSortBy="createdDate">
+                <span>Created Date</span>
+                <span class="fa fa-sort"></span>
+            </th>
+            <th jhiSortBy="lastModifiedDate">
+                <span>Last Modified</span>
+                <span class="fa fa-sort"></span>
+            </th>
             <th></th>
         </tr>
         </thead>
