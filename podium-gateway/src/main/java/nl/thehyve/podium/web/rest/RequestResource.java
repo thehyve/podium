@@ -237,6 +237,24 @@ public class RequestResource {
     }
 
     /**
+     * GET /requests/validate/:uuid : Validate a request with uuid.
+     *
+     * @param uuid the uuid of the request to validate
+     * @return the ResponseEntity with the validated request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/validate/{uuid}")
+    @Timed
+    public ResponseEntity<RequestRepresentation> validateRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to validate request process for : {} ", uuid);
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        RequestRepresentation requestRepresentation = requestService.validateRequest(authenticatedUser, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
      * GET /requests/reject/:uuid : Reject a request with uuid.
      *
      * @param uuid the uuid of the request to reject
@@ -286,7 +304,7 @@ public class RequestResource {
         log.debug("REST request to apply revision to request details for : {} ", uuid);
         UserAuthenticationToken user = SecurityUtils.getCurrentUser();
         AuthenticatedUser authenticatedUser = user.getUser();
-        RequestRepresentation requestRepresentation = requestService.approveRequest(authenticatedUser, uuid);
+        RequestRepresentation requestRepresentation = requestService.reviseRequest(authenticatedUser, uuid);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 

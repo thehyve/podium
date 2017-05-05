@@ -9,6 +9,7 @@ package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
@@ -16,7 +17,9 @@ import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -202,7 +206,7 @@ public class RequestService {
 
     /**
      * Updates the draft request with the properties in the body.
-     * The request to update is fetched based on the id in the body.
+     * The request to update is fetched based on the uuid in the body.
      *
      * @param user the current user
      * @param body the updated properties.
@@ -251,6 +255,20 @@ public class RequestService {
 
     @Transactional
     @Timed
+    public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    @Transactional
+    @Timed
     public RequestRepresentation rejectRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
         // TODO: Add NotificationEvent
         Request request = requestRepository.findOneByUuid(uuid);
@@ -273,7 +291,6 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
-        log.debug("Approving request {}", uuid);
         requestReviewProcessService.approve(user, request.getRequestReviewProcess());
         return requestMapper.requestToRequestDTO(request);
     }
@@ -288,7 +305,6 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
-        log.debug("Revising request {}", uuid);
         requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
         return requestMapper.requestToRequestDTO(request);
     }
@@ -328,9 +344,6 @@ public class RequestService {
 
         List<Request> organisationRequests = new ArrayList<>();
         // TODO: Aggregate mails for multiple organisations per user.
-
-        // Fetch organisation coordinators through Feign.
-        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
 
         for (UUID organisationUuid: request.getOrganisations()) {
             // Fetch organisation through Feign.
@@ -376,7 +389,7 @@ public class RequestService {
     public Page<RequestRepresentation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Requests for query {}", query);
         Page<Request> result = requestSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(request -> requestMapper.requestToRequestDTO(request));
+        return result.map(requestMapper::requestToRequestDTO);
     }
 
     public List<UserRepresentation> getCoordinatorsForRequest(Request request) {

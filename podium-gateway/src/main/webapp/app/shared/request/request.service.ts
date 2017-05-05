@@ -57,11 +57,11 @@ export class RequestService {
 
     saveRequest(requestBase: RequestBase): Observable<Response> {
         let requestCopy: RequestBase = Object.assign({}, requestBase);
-        return this.http.put(`${this.resourceUrl}/requests`, requestCopy);
+        return this.http.put(`${this.resourceUrl}`, requestCopy);
     }
 
     submitRequest(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/requests/${uuid}/submit`).map((response: Response) => {
+        return this.http.get(`${this.resourceUrl}/${uuid}/submit`).map((response: Response) => {
             return response.json();
         });
     }
