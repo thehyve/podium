@@ -10,6 +10,8 @@ package nl.thehyve.podium.web.rest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -224,6 +226,10 @@ public class RequestResourceIntTest {
 
     private RequestRepresentation newDraft(UserAuthenticationToken user) throws Exception {
         final RequestRepresentation[] request = new RequestRepresentation[1];
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
         mockMvc.perform(
             getRequest(HttpMethod.POST,
                 REQUESTS_ROUTE + "/drafts",
