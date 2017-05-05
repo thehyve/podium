@@ -227,6 +227,35 @@ public class RequestService {
         return requestMapper.requestToRequestDTO(request);
     }
 
+    /**
+     * Updates the request with the properties in the body.
+     * The request to update is fetched based on the uuid in the body.
+     * Only allowed when a request has the review status Revision.
+     *
+     * @param user the current user
+     * @param body the updated properties.
+     * @return the updated request
+     * @throws ActionNotAllowedInStatus if the request is not in review status 'Revision'.
+     */
+    @Timed
+    public RequestRepresentation updateRequest(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
+        Request request = requestRepository.findOneByUuid(body.getUuid());
+        RequestReviewStatus requestReviewStatus = request.getRequestReviewProcess().getStatus();
+
+        if (request.getStatus() != RequestStatus.Review && requestReviewStatus != RequestReviewStatus.Revision) {
+            log.debug("Not allowed to update request as it holds the wrong statuses {} - {}", request.getStatus(), requestReviewStatus);
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+        }
+
+        // FIXME: [AOP] Only requester should be able to perform an update to the request.
+        if (!request.getRequester().equals(user.getUserUuid())) {
+            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
+        }
+        request = requestMapper.updateRequestDTOToRequest(body, request);
+        save(request);
+        return requestMapper.requestToRequestDTO(request);
+    }
+
     private void deleteRequest(Long id) {
         requestRepository.delete(id);
         requestSearchRepository.delete(id);
