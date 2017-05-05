@@ -13,13 +13,16 @@ import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.service.util.DefaultOrganisation;
 import nl.thehyve.podium.service.util.DefaultRequest;
+import nl.thehyve.podium.service.util.DefaultRequestDetail;
 import nl.thehyve.podium.service.util.ExtendedOrganisation;
 import nl.thehyve.podium.service.util.ExtendedRequest;
 import nl.thehyve.podium.service.util.OrganisationMapperHelper;
+import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -34,18 +37,20 @@ import java.util.List;
 public interface RequestMapper {
 
     @DefaultRequest
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "requestReviewProcess", target = "requestReview")
     @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
     RequestRepresentation requestToRequestDTO(Request request);
 
+    @DefaultRequest
     @IterableMapping(qualifiedBy = DefaultRequest.class)
     List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @DefaultRequest
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
@@ -53,10 +58,12 @@ public interface RequestMapper {
     @Mapping(target = "uuid", ignore = true)
     Request clone(Request request);
 
+    @DefaultRequest
+    @IterableMapping(qualifiedBy = DefaultRequest.class)
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     @ExtendedRequest
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "requestReviewProcess", target = "requestReview")
     @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class)
     RequestRepresentation extendedRequestToRequestDTO(Request request);
@@ -64,30 +71,10 @@ public interface RequestMapper {
     @IterableMapping(qualifiedBy = ExtendedRequest.class)
     List<RequestRepresentation> requestsToExtendedRequestDTOs(List<Request> requests);
 
-    default Request requestFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Request request = new Request();
-        request.setId(id);
-        return request;
-    }
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = SafeRequestDetail.class)
+    Request safeUpdateRequestRepresentationToRequest(
+        RequestRepresentation requestRepresentation,
+        @MappingTarget Request request
+    );
 
-    default RequestDetail requestDetailFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        RequestDetail requestDetail = new RequestDetail();
-        requestDetail.setId(id);
-        return requestDetail;
-    }
-
-    default Attachment attachmentFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Attachment attachment = new Attachment();
-        attachment.setId(id);
-        return attachment;
-    }
 }

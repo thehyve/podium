@@ -202,6 +202,26 @@ public class RequestResource {
     }
 
     /**
+     * Update a request
+     *
+     * @param request the request to be updated
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
+     * @return RequestRepresentation The updated request draft.
+     */
+    @PutMapping("/requests")
+    @PreAuthorize("isAuthenticated()")
+    @Secured(AuthorityConstants.RESEARCHER)
+    @Timed
+    public ResponseEntity<RequestRepresentation> updateRequest(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        log.debug("PUT /requests (user: {})", user);
+        RequestRepresentation result = requestService.updateRequest(user, request);
+        log.debug("Result: {}", result.getUuid());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
      * GET  /requests/status/:status : get all the requests for a requester with the status.
      *
      * @param status the status to filter on

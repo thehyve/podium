@@ -9,17 +9,29 @@ package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
+import nl.thehyve.podium.service.util.DefaultRequestDetail;
+import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
 public interface RequestDetailMapper {
 
+    @DefaultRequestDetail
     RequestDetailRepresentation requestDetailToRequestDetailRepresentation(RequestDetail requestDetail);
 
+    @DefaultRequestDetail
     RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 
+    @DefaultRequestDetail
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
     RequestDetail clone(RequestDetail requestDetail);
+
+    /**
+     * Safely transform requestDetail representation without the requestTypes to a requestDetail entity
+     */
+    @SafeRequestDetail
+    @Mapping(target = "requestType", ignore = true)
+    RequestDetail processingRequestDetailDtoToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 }

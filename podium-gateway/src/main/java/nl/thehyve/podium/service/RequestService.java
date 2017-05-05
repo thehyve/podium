@@ -251,7 +251,7 @@ public class RequestService {
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request " + request.getUuid().toString());
         }
-        request = requestMapper.updateRequestDTOToRequest(body, request);
+        request = requestMapper.safeUpdateRequestRepresentationToRequest(body, request);
         save(request);
         return requestMapper.requestToRequestDTO(request);
     }
