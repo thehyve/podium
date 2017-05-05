@@ -12,6 +12,7 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
+import { Res } from 'awesome-typescript-loader/dist/checker/protocol';
 
 @Injectable()
 export class RequestService {
@@ -42,6 +43,14 @@ export class RequestService {
     }
 
     findSubmittedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findMyOrganisationsRequests(req?: any): Observable<Response> {
+        // TODO: Get submitted requets of my organisations
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
             return res;
