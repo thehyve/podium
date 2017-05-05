@@ -34,6 +34,7 @@ export class RequestProgressBarComponent {
     requestStatusMap: { [token: string]: RequestStatus; };
     requestReviewStatusOptions: ReadonlyArray<RequestStatus>;
     requestReviewStatusMap: { [token: string]: RequestStatus; };
+    public requestReviewStatus = RequestReviewStatusOptions;
 
     constructor(
         private jhiLanguageService: JhiLanguageService
@@ -67,6 +68,23 @@ export class RequestProgressBarComponent {
     isCompleted(request: RequestBase, currentOrder: number): boolean {
         let requestOrder = this.getRequestStatusOrder(request);
         return requestOrder > currentOrder;
+    }
+
+    /**
+     * Check whether the request is closed
+     * All closed states return an order of -1
+     *
+     * @param request the current request
+     * @returns {boolean} true if the request status is closed
+     */
+    isClosed(request: RequestBase): boolean {
+        return this.getRequestStatusOrder(request) === -1;
+    }
+
+    isRevisionStatus(requestReviewStatus): boolean {
+        // Status value comes as enumeration index
+        let revisionStatus = RequestReviewStatusOptions.Revision;
+        return requestReviewStatus === RequestReviewStatusOptions[revisionStatus];
     }
 
     /**

@@ -23,7 +23,7 @@
             </span>
         </button>
         <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
-            <span class="material-icons">add_circle_outline</span>
+            <i class="material-icons">add_circle_outline</i>
             <span class="hidden-sm-down">
             Create new request
             </span>
@@ -93,18 +93,18 @@
             <td class="text-xs-right">
                 <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
                     <button type="button" class="btn btn-primary btn-sm"  (click)="editRequest(request)">
-                        <span class="material-icons">edit</span>
+                        <i class="material-icons">edit</i>
                         <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
                     </button>
                     <button type="submit" class="btn btn-danger btn-sm" (click)="deleteDraft(request)">
-                        <span class="material-icons">remove_circle_outline</span>
+                        <i class="material-icons">remove_circle_outline</i>
                         <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
                     </button>
                 </div>
                 <button type="button"
                         class="btn btn-primary btn-sm" (click)="navigateToRequestDetail(request)"
                         *ngIf="request.status !== 'Draft'">
-                    <span class="material-icons md-18">assignment_ind</span>
+                    <i class="material-icons md-18">assignment_ind</i>
                     <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
                 </button>
             </td>

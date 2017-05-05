@@ -12,10 +12,14 @@
     <ul class="progressbar">
         <li [ngClass]="{
                 'completed': isCompleted(request, requestStatus.order),
-                'active': isActive(request, requestStatus.order)
+                'active': isActive(request, requestStatus.order),
+                'closed': isClosed(request)
             }"
             *ngFor="let requestStatus of requestStatusOptions">
-            <span jhiTranslate="requestStatus.{{requestStatus.status}}">{{ requestStatus.name }}</span>
+            <span [ngSwitch]="isRevisionStatus(request.requestReview.status) && requestStatus.name == 'Validation'">
+                <span *ngSwitchCase="true" jhiTranslate="requestStatus.Revision">{{ requestStatus.name }}</span>
+                <span *ngSwitchCase="false" jhiTranslate="requestStatus.{{requestStatus.status}}">{{ requestStatus.name }}</span>
+            </span>
         </li>
     </ul>
 </div>

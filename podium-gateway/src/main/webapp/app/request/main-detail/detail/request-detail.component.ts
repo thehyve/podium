@@ -60,7 +60,7 @@ export class RequestDetailComponent {
     submitReview(requestReviewFeedback: RequestReviewFeedback) {
         this.requestService.submitReview(this.request.uuid, requestReviewFeedback)
             .subscribe(
-                (res) => this.onSuccess(res),
+                (res) => this.onSuccess(res.json()),
                 (err) => this.onError(err)
             );
     }
