@@ -7,9 +7,7 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.domain.Request;
-import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.service.util.DefaultOrganisation;
 import nl.thehyve.podium.service.util.DefaultRequest;
@@ -22,7 +20,6 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 import java.util.List;
 
