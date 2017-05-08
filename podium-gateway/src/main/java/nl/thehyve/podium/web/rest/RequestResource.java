@@ -257,7 +257,6 @@ public class RequestResource {
     }
 
     /**
-<<<<<<< HEAD
      * GET /requests/validate/:uuid : Validate a request with uuid.
      *
      * @param uuid the uuid of the request to validate
@@ -276,8 +275,6 @@ public class RequestResource {
     }
 
     /**
-=======
->>>>>>> origin/first_check_to_review
      * GET /requests/reject/:uuid : Reject a request with uuid.
      *
      * @param uuid the uuid of the request to reject
@@ -314,7 +311,6 @@ public class RequestResource {
     }
 
     /**
-<<<<<<< HEAD
      * GET /requests/revision/:uuid : Request a revision for request with uuid.
      *
      * @param uuid the uuid of the request to request revision for
@@ -333,8 +329,6 @@ public class RequestResource {
     }
 
     /**
-=======
->>>>>>> origin/first_check_to_review
      * SEARCH  /_search/requests?query=:query : search for the request corresponding
      * to the query.
      *
@@ -352,6 +346,4 @@ public class RequestResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-
 }
