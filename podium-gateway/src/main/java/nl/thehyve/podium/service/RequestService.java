@@ -62,9 +62,12 @@ public class RequestService {
     private RequestRepository requestRepository;
 
     @Autowired
+    @Autowired
     private RequestMapper requestMapper;
 
     @Autowired
+    private RequestDetailMapper requestDetailMapper;
+
     private RequestSearchRepository requestSearchRepository;
 
     @Autowired
@@ -155,7 +158,7 @@ public class RequestService {
         if (request == null) {
             throw new ResourceNotFound("Request not found.");
         }
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     /**
@@ -387,6 +390,11 @@ public class RequestService {
 
             // TODO: validate request type of the request with the supported request types of the organisation.
             Request organisationRequest = requestMapper.clone(request);
+
+            // Create organisation revision details
+            RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());
+            organisationRequest.setRevisionDetail(revisionDetail);
+
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
             organisationRequest.setStatus(RequestStatus.Review);
@@ -404,7 +412,7 @@ public class RequestService {
 
         log.debug("Deleting draft request.");
         deleteRequest(request.getId());
-        return requestMapper.requestsToRequestDTOs(organisationRequests);
+        return requestMapper.extendedRequestsToRequestDTOs(organisationRequests);
     }
 
     /**

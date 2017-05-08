@@ -14,7 +14,7 @@
             "submit": "Submit",
             "reset": "Reset",
             "revision": "The request is currently in revision.",
-            "validation": "Your request is currently is waiting for validation.",
+            "validation": "Your request is currently waiting for validation by the organisation coordinator.",
             "review": "Your request has passed the first check and is currently under review.",
             "sendForReview": "Send for review",
             "saveAndSubmit": "Save and submit",
@@ -113,7 +113,7 @@
 
             "messages": {
                 "success": "Changes are saved.",
-                "error": "Saving draft failed.",
+                "error": "Saving failed.",
                 "validate": {
                     "title": {
                         "required": "A title is required.",

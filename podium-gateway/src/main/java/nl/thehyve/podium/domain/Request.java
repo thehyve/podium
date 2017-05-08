@@ -79,6 +79,10 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private Set<UUID> organisations = new HashSet<>();
 
     @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(unique = true, name = "revision_detail")
+    private RequestDetail revisionDetail;
+
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
     private RequestDetail requestDetail;
 
@@ -160,6 +164,15 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setOrganisations(Set<UUID> organisations) {
         this.organisations = organisations;
+    }
+
+    public RequestDetail getRevisionDetail() { return revisionDetail; }
+
+    public void setRevisionDetail(RequestDetail revisionDetail) { this.revisionDetail = revisionDetail; }
+
+    public Request revisionDetail(RequestDetail revisionDetail) {
+        this.revisionDetail = revisionDetail;
+        return this;
     }
 
     public RequestDetail getRequestDetail() {
