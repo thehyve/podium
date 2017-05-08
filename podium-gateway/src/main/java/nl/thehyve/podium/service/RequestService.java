@@ -10,18 +10,19 @@ package nl.thehyve.podium.service;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
-import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
-import nl.thehyve.podium.event.StatusUpdateEvent;
+import nl.thehyve.podium.common.event.StatusUpdateEvent;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -35,16 +36,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
@@ -78,16 +75,32 @@ public class RequestService {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private EntityManager entityManager;
+
     public RequestService() {}
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request) {
-        StatusUpdateEvent event = new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid());
-        publisher.publishEvent(event);
+    private PodiumEvent convert(StatusUpdateEvent event) {
+        PodiumEvent podiumEvent = new PodiumEvent();
+        podiumEvent.setPrincipal(event.getUsername());
+        podiumEvent.setEventType(EventType.Status_Change);
+        podiumEvent.setEventDate(event.getEventDate());
+        Map<String,String> data = new HashMap<>();
+        data.put("requestUuid", event.getRequestUuid().toString());
+        data.put("sourceStatus", event.getSourceStatus().toString());
+        data.put("targetStatus", event.getTargetStatus().toString());
+        data.put("message", event.getMessage());
+        podiumEvent.setData(data);
+        return podiumEvent;
     }
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request) {
+    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, String message) {
         StatusUpdateEvent event =
-            new StatusUpdateEvent(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid());
+            new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid(), message);
+        PodiumEvent historicEvent = convert(event);
+        entityManager.persist(historicEvent);
+        request.addHistoricEvent(historicEvent);
+        entityManager.persist(request);
         publisher.publishEvent(event);
     }
 
@@ -324,7 +337,7 @@ public class RequestService {
 
             notificationService.submissionNotificationToCoordinators(organisation, organisationRequest);
 
-            publishStatusUpdate(user, RequestStatus.Draft, organisationRequest);
+            publishStatusUpdate(user, RequestStatus.Draft, organisationRequest, null);
 
             organisationRequests.add(organisationRequest);
             log.debug("Created new submitted request for organisation {}.", organisationUuid);

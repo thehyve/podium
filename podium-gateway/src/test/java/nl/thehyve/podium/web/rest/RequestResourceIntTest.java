@@ -22,6 +22,7 @@ import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.OAuth2TokenMockUtil;
+import nl.thehyve.podium.service.AuditService;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.OrganisationClientService;
 import nl.thehyve.podium.service.UserClientService;
@@ -99,13 +100,16 @@ public class RequestResourceIntTest {
     private OAuth2TokenMockUtil tokenUtil;
 
     @MockBean
-    OrganisationClientService organisationService;
+    private OrganisationClientService organisationService;
 
     @MockBean
-    UserClientService userClientService;
+    private UserClientService userClientService;
 
     @MockBean
     private MailService mailService;
+
+    @MockBean
+    private AuditService auditService;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -188,6 +192,8 @@ public class RequestResourceIntTest {
         UserRepresentation requesterRepresentation = createRequester();
         given(this.userClientService.findUserByUuid(any()))
             .willReturn(requesterRepresentation);
+
+        doNothing().when(this.auditService).publishEvent(any());
     }
 
     private RequestPostProcessor token(UserAuthenticationToken user) {
@@ -392,8 +398,11 @@ public class RequestResourceIntTest {
         })
         .andExpect(status().isOk());
 
+        Thread.sleep(1);
+
         verify(this.mailService, times(1)).sendSubmissionNotificationToCoordinators(any(), any(), nonEmptyUserRepresentationList());
         verify(this.mailService, times(1)).sendSubmissionNotificationToRequester(any(), nonEmptyRequestList(), mapContainsKey(organisationUuid));
+        verify(this.auditService, times(1)).publishEvent(any());
 
         // Fetch requests with status 'Review'
         mockMvc.perform(
@@ -411,6 +420,8 @@ public class RequestResourceIntTest {
             Assert.assertEquals(1, requests.size());
             for(RequestRepresentation req: requests) {
                 Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Request reqObj = requestRepository.findOneByUuid(req.getUuid());
+                Assert.assertEquals(1, reqObj.getHistoricEvents().size());
             }
         })
         .andExpect(status().isOk());

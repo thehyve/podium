@@ -13,8 +13,7 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.security.SecurityUtils;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -59,6 +58,9 @@ public class RequestResource {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private SecurityService securityService;
+
     /**
      * Fetch drafts for the current user
      *
@@ -69,7 +71,7 @@ public class RequestResource {
     @GetMapping("/requests/drafts")
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@ApiParam Pageable pageable) throws URISyntaxException {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("Get all request drafts for current user : {}", user);
         Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, RequestStatus.Draft, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/drafts");
@@ -87,7 +89,7 @@ public class RequestResource {
     @Secured(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<RequestRepresentation> createDraft() throws URISyntaxException {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("POST /requests/drafts (user: {})", user);
         RequestRepresentation result = requestService.createDraft(user);
         log.debug("Result: {}", result.getUuid());
@@ -107,9 +109,8 @@ public class RequestResource {
     @GetMapping("/requests/drafts/{uuid}")
     @Timed
     public ResponseEntity<RequestRepresentation> getDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        AuthenticatedUser authenticatedUser = user.getUser();
-        RequestRepresentation request = requestService.findRequestForRequester(authenticatedUser, uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation request = requestService.findRequestForRequester(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
@@ -126,7 +127,7 @@ public class RequestResource {
     @Secured(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = requestService.updateDraft(user, request);
         log.debug("Result: {}", result.getUuid());
@@ -159,10 +160,9 @@ public class RequestResource {
     @GetMapping("/requests/drafts/{uuid}/submit")
     @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        AuthenticatedUser authenticatedUser = user.getUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
-        List<RequestRepresentation> requests = requestService.submitDraft(authenticatedUser, uuid);
+        List<RequestRepresentation> requests = requestService.submitDraft(user, uuid);
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
@@ -177,7 +177,7 @@ public class RequestResource {
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getAllRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to get a page of Requests for user {}", user.getName());
         Page<RequestRepresentation> page = requestService.findAllForRequester(user, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
@@ -214,7 +214,7 @@ public class RequestResource {
     public ResponseEntity<List<RequestRepresentation>> getAllRequestsByStatus(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to requests with status {}", status);
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/status/" + status.toString());
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -230,7 +230,7 @@ public class RequestResource {
     @DeleteMapping("/requests/drafts/{uuid}")
     @Timed
     public ResponseEntity<Void> deleteDraft(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to delete Request : {}", uuid);
         requestService.deleteDraft(user, uuid);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, uuid.toString())).build();

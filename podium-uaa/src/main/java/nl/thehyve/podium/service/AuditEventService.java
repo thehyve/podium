@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.config.audit.AuditEventConverter;
 import nl.thehyve.podium.repository.CustomAuditEventRepository;
 import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
@@ -17,7 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,14 +54,18 @@ public class AuditEventService {
             .map(auditEventConverter::convertToAuditEvent);
     }
 
-    public Page<AuditEvent> findByDates(LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
-        return persistenceAuditEventRepository.findAllByAuditEventDateBetween(fromDate, toDate, pageable)
+    public Page<AuditEvent> findByDates(Date fromDate, Date toDate, Pageable pageable) {
+        return persistenceAuditEventRepository.findAllByEventDateBetween(fromDate, toDate, pageable)
             .map(auditEventConverter::convertToAuditEvent);
     }
 
     public Optional<AuditEvent> find(Long id) {
         return Optional.ofNullable(persistenceAuditEventRepository.findOne(id)).map
             (auditEventConverter::convertToAuditEvent);
+    }
+
+    public List<AuditEvent> find(String principal, Date after, EventType type) {
+        return customAuditEventRepository.findByEventType(principal, after, type);
     }
 
     public void add(AuditEvent event) {

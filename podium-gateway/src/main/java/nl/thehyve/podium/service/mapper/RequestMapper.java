@@ -36,15 +36,18 @@ public interface RequestMapper {
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(target = "historicEvents", ignore = true)
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
     @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(target = "historicEvents", ignore = true)
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "historicEvents", ignore = true)
     Request clone(Request request);
 
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);

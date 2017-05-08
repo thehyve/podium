@@ -8,6 +8,7 @@
 package nl.thehyve.podium.common.service;
 
 import nl.thehyve.podium.common.resource.InternalUserResource;
+import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
@@ -87,26 +88,34 @@ public class SecurityService {
         return null;
     }
 
+    public AuthenticatedUser getCurrentUser() {
+        // First check if the user object is available in the security context
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null) {
+            if (authentication.getPrincipal() instanceof SerialisedUser) {
+                return ((SerialisedUser) authentication.getPrincipal());
+            }
+        }
+        // Otherwise extract it from the authentication token
+        UserAuthenticationToken token = getUserAuthenticationToken();
+        if (token == null) {
+            return null;
+        }
+        return token.getUser();
+    }
+
     /**
      * Get the uuid of the current user.
      *
      * @return the uuid of the current user
      */
     public UUID getCurrentUserUuid() {
-        // First check if the uuid is available in the security context
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        if (authentication != null) {
-            if (authentication.getPrincipal() instanceof SerialisedUser) {
-                return ((SerialisedUser) authentication.getPrincipal()).getUuid();
-            }
-        }
-        // Otherwise, fetch the UUID from the database
-        UserAuthenticationToken token = getUserAuthenticationToken();
-        if (token == null) {
+        AuthenticatedUser user = getCurrentUser();
+        if (user == null) {
             return null;
         }
-        return token.getUuid();
+        return user.getUuid();
     }
 
     /**
