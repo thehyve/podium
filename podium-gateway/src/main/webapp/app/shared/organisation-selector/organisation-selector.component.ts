@@ -59,6 +59,14 @@ export class OrganisationSelectorComponent implements OnInit {
     }
 
     filterOptionsByRequestType() {
+        // Reset values
+        this.organisations = [];
+        this.selectedOrganisationUuids = [];
+        // Show only organisations which are associated with selected request type
+        this.loadOrganisationsByRequestTypes();
+    }
+
+    loadOrganisationsByRequestTypes() {
         this.organisationOptions = [];
         for (let organisation of this.allOrganisations) {
             if (organisation.hasRequestTypes(this.requestTypes)) {
@@ -79,7 +87,7 @@ export class OrganisationSelectorComponent implements OnInit {
                     this.allOrganisations = this.organisationService.jsonArrayToOrganisations(data);
                     this.selectedOrganisations =
                         this.organisationService.convertUuidsToOrganisations(this.organisations, this.allOrganisations);
-                    this.filterOptionsByRequestType();
+                    this.loadOrganisationsByRequestTypes();
                 },
                 (res: Response) => {
                     return OrganisationSelectorComponent.onError(res.json());

@@ -119,11 +119,11 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
 
     selectRequestDraft(requestBase: RequestBase) {
         this.requestBase = requestBase;
-        this.requestBase.organisations = requestBase.organisations || [];
         this.requestDetail = requestBase.requestDetail || new RequestDetail();
-        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
         this.requestDetail.principalInvestigator =
             requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
+        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+        this.requestBase.organisations = requestBase.organisations || [];
     }
 
     updateRequestType(selectedRequestType, event) {

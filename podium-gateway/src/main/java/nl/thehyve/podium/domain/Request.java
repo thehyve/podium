@@ -63,9 +63,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Column(name = "organisation_uuid")
     private Set<UUID> organisations = new HashSet<>();
 
-    @ManyToOne
-    private Request parentRequest;
-
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
     private RequestDetail requestDetail;
@@ -160,19 +157,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setOrganisations(Set<UUID> organisations) {
         this.organisations = organisations;
-    }
-
-    public Request getParentRequest() {
-        return parentRequest;
-    }
-
-    public Request parentRequest(Request request) {
-        this.parentRequest = request;
-        return this;
-    }
-
-    public void setParentRequest(Request request) {
-        this.parentRequest = request;
     }
 
     public RequestDetail getRequestDetail() {

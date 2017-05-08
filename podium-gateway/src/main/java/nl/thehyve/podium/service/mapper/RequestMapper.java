@@ -7,39 +7,45 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
+import nl.thehyve.podium.service.util.DefaultOrganisation;
+import nl.thehyve.podium.service.util.DefaultRequest;
+import nl.thehyve.podium.service.util.ExtendedOrganisation;
+import nl.thehyve.podium.service.util.ExtendedRequest;
+import nl.thehyve.podium.service.util.OrganisationMapperHelper;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class, RequestReviewProcessMapper.class })
+@Mapper(componentModel = "spring", uses = {
+    RequestDetailMapper.class,
+    RequestReviewProcessMapper.class,
+    OrganisationMapperHelper.class
+})
 public interface RequestMapper {
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
+    @DefaultRequest
     @Mapping(source = "requestDetail", target = "requestDetail")
     @Mapping(source = "requestReviewProcess", target = "requestReview")
+    @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
     RequestRepresentation requestToRequestDTO(Request request);
 
+    @IterableMapping(qualifiedBy = DefaultRequest.class)
     List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
     @Mapping(target = "historicEvents", ignore = true)
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
     @Mapping(source = "requestDetail", target = "requestDetail")
     @Mapping(target = "historicEvents", ignore = true)
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
@@ -52,19 +58,14 @@ public interface RequestMapper {
 
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
-    default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {
-        return organisations.stream().map(OrganisationDTO::getUuid)
-            .collect(Collectors.toSet());
-    }
+    @ExtendedRequest
+    @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(source = "requestReviewProcess", target = "requestReview")
+    @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class)
+    RequestRepresentation extendedRequestToRequestDTO(Request request);
 
-    default OrganisationDTO organisationFromUUID(UUID uuid) {
-        if (uuid == null) {
-            return null;
-        }
-        OrganisationDTO organisation = new OrganisationDTO();
-        organisation.setUuid(uuid);
-        return organisation;
-    }
+    @IterableMapping(qualifiedBy = ExtendedRequest.class)
+    List<RequestRepresentation> requestsToExtendedRequestDTOs(List<Request> requests);
 
     default Request requestFromId(Long id) {
         if (id == null) {

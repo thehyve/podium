@@ -143,7 +143,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
@@ -196,7 +196,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllRequestsForRequesterByStatus(IdentifiableUser requester, RequestStatus status, Pageable pageable) {
         Page<Request> result = requestRepository.findAllByRequesterAndStatus(
             requester.getUserUuid(), status, pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
