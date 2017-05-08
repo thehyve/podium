@@ -54,7 +54,7 @@ export const organisationRequestOverviewRoute: Route = {
         authorities: ['ROLE_ORGANISATION_COORDINATOR'],
         pageTitle: 'request.pageTitle',
         pageHeader: 'request.overview.pageHeaderOverview',
-        breadcrumb: 'organisation-overview',
+        breadcrumb: 'organisation overview',
         isOrganisationOverview: true,
     },
     canActivate: [UserRouteAccessService]
