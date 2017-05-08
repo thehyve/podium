@@ -16,7 +16,7 @@
                 'closed': isClosed(request)
             }"
             *ngFor="let requestStatus of requestStatusOptions">
-            <span [ngSwitch]="isRevisionStatus(request.requestReview.status) && requestStatus.name == 'Validation'">
+            <span [ngSwitch]="isRevisionStatus(request) && requestStatus.name == 'Validation'">
                 <span *ngSwitchCase="true" jhiTranslate="requestStatus.Revision">{{ requestStatus.name }}</span>
                 <span *ngSwitchCase="false" jhiTranslate="requestStatus.{{requestStatus.status}}">{{ requestStatus.name }}</span>
             </span>

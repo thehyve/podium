@@ -55,6 +55,12 @@ export class RequestService {
         });
     }
 
+    /**
+     * Save the revision details during a revision phase
+     *
+     * @param requestBase the request to save
+     * @returns {Observable<Response>}
+     */
     saveRequest(requestBase: RequestBase): Observable<Response> {
         let requestCopy: RequestBase = Object.assign({}, requestBase);
         return this.http.put(`${this.resourceUrl}`, requestCopy);
@@ -92,15 +98,15 @@ export class RequestService {
     /**
      * Process functions
      */
-    validateRequest(uuid: string) {
+    validateRequest(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/validate/${uuid}`);
     }
 
-    requireRevision(uuid: string) {
+    requireRevision(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/revision/${uuid}`);
     }
 
-    approveRequest(uuid: string) {
+    approveRequest(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/approve/${uuid}`);
     }
 
@@ -109,7 +115,7 @@ export class RequestService {
         return this.http.post(`${this.resourceUrl}/review/${uuid}`, feedbackCopy);
     }
 
-    rejectRequest(uuid: string) {
+    rejectRequest(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/reject/${uuid}`);
     }
 

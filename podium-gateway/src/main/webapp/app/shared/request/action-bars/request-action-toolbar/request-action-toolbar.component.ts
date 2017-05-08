@@ -32,6 +32,7 @@ export class RequestActionToolbarComponent implements OnInit {
 
     @Input() form: Form;
     @Input() request: RequestBase;
+    @Input() isUpdating: false;
 
     @Output() resetChange = new EventEmitter();
     @Output() cancelChange = new EventEmitter();

@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
@@ -27,6 +27,8 @@ import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.c
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
 import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
+import { RequestAccessService } from '../../shared/request/request-access.service';
+import { RequestReviewStatusOptions } from '../../shared/request/request-status/request-status.constants';
 
 @Component({
     selector: 'pdm-request-form',
@@ -41,6 +43,8 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     @ViewChild(OrganisationSelectorComponent)
     private organisationSelectorComponent: OrganisationSelectorComponent;
 
+    @Input() isInRevision: boolean;
+
     public error: string;
     public success: string;
     public requestBase: RequestBase;
@@ -50,19 +54,23 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     public selectDraft: boolean;
     public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
+    private revisionId: string;
+    public isUpdating = false;
 
     attachments: Attachment[];
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestFormService: RequestFormService,
-                private requestService: RequestService,
-                private attachmentService: AttachmentService,
-                private route: ActivatedRoute,
-                private router: Router,
-                private principal: Principal,
-                private eventManager: EventManager,
-                private organisationService: OrganisationService,
-                private modalService: NgbModal) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestFormService: RequestFormService,
+        private requestAccessService: RequestAccessService,
+        private requestService: RequestService,
+        private attachmentService: AttachmentService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private principal: Principal,
+        private eventManager: EventManager,
+        private organisationService: OrganisationService,
+        private modalService: NgbModal) {
         this.jhiLanguageService.setLocations(['request']);
     }
 
@@ -80,8 +88,8 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
 
     initializeRequestForm() {
         if (this.requestFormService.request) {
-            this.selectRequestDraft(this.requestFormService.request);
-        } else {
+            this.selectRequest(this.requestFormService.request);
+        } else if (!this.isInRevision) {
             this.initializeBaseRequest();
         }
     }
@@ -117,10 +125,19 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.requestBase.organisations = event;
     }
 
-    selectRequestDraft(requestBase: RequestBase) {
+    selectRequest(requestBase: RequestBase) {
         this.requestBase = requestBase;
         this.requestBase.organisations = requestBase.organisations || [];
-        this.requestDetail = requestBase.requestDetail || new RequestDetail();
+
+        // If the request is in revision use the revisionDetail
+        if (this.requestAccessService.isRequestReviewStatus(requestBase, RequestReviewStatusOptions.Revision)) {
+            // Remember the revision ID
+            this.revisionId = requestBase.revisionDetail.id;
+            this.requestDetail = requestBase.revisionDetail;
+        } else {
+            this.requestDetail = requestBase.requestDetail || new RequestDetail();
+        }
+
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
         this.requestDetail.principalInvestigator =
             requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
@@ -137,6 +154,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     }
 
     saveRequestDraft() {
+        this.isUpdating = true;
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveDraft(this.requestBase)
@@ -151,12 +169,15 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         modalRef.componentInstance.request = request;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
+            this.isUpdating = false;
         }, (reason) => {
             console.log(`Dismissed ${reason}`);
+            this.isUpdating = false;
         });
     }
 
     submitDraft() {
+        this.isUpdating = true;
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveDraft(this.requestBase)
@@ -166,13 +187,67 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
             );
     }
 
+    /**
+     * Save a temporary version of a request
+     */
+    saveRequest() {
+        this.isUpdating = true;
+        this.requestBase.revisionDetail = this.requestDetail;
+        this.requestBase.revisionDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        this.requestBase.revisionDetail.id = this.revisionId;
+
+        this.requestService.saveRequest(this.requestBase)
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onError(err)
+            );
+    }
+
+    submitRequest() {
+        this.isUpdating = true;
+        this.requestBase.requestDetail = this.requestDetail;
+        this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+        this.requestService.saveRequest(this.requestBase)
+            // Submit the request
+            .flatMap(() => this.requestService.submitRequest(this.requestBase.uuid))
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onError(err)
+            );
+    }
+
+    /**
+     * Return to the request overview
+     */
+    cancel() {
+        return this.router.navigate(['/requests/overview']);
+    }
+
+    /**
+     * Reset the requestDetails and principal investigator details.
+     * The entity id's are remembered and restored.
+     */
+    reset() {
+        // Remember the id's
+        let requestDetailId = this.requestDetail.id;
+        let principalInvestigatorId = this.requestDetail.principalInvestigator.id;
+        this.requestDetail = new RequestDetail();
+        this.requestDetail.principalInvestigator = new PrincipalInvestigator();
+
+        // Restore the id's
+        this.requestDetail.id = requestDetailId;
+        this.requestDetail.principalInvestigator.id = principalInvestigatorId;
+    }
+
     private onSuccess(result) {
+        this.isUpdating = false;
         this.error =  null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
     }
 
     private onError(error) {
+        this.isUpdating = false;
         this.error =  'ERROR';
         this.success = null;
         window.scrollTo(0, 0);

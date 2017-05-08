@@ -13,6 +13,7 @@ import { Principal } from '../auth/principal.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';
+import { RequestStatusOptions, RequestReviewStatusOptions } from './request-status/request-status.constants';
 
 @Injectable()
 export class RequestAccessService {
@@ -72,6 +73,18 @@ export class RequestAccessService {
         return this.currentUser.uuid === request.requester;
     }
 
+    public isRequestStatus(request: RequestBase, status: RequestStatusOptions): boolean {
+        let requiredStatus = RequestStatusOptions[status];
+        let requestStatus = request.status.toString();
+        return requestStatus === requiredStatus;
+    }
+
+    public isRequestReviewStatus(request: RequestBase, reviewStatus: RequestReviewStatusOptions): boolean {
+        let requiredStatus = RequestReviewStatusOptions[reviewStatus];
+        let requestReviewStatus = request.requestReview.status.toString();
+        return requestReviewStatus === requiredStatus;
+    }
+
     private hasPermissionInAnyOrganisation(request: RequestBase, requiredPermission: string): boolean {
         let organisations = request.organisations;
         // Filter involved organisations in the request for required permission.
@@ -83,6 +96,4 @@ export class RequestAccessService {
 
         return permittedOrganisations.length > 0;
     }
-
-
 }

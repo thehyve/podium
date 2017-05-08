@@ -21,6 +21,7 @@ import {
     RequestStatusOptions,
     RequestReviewStatusOptions
 } from '../../../shared/request/request-status/request-status.constants';
+import { RequestAccessService } from '../../../shared/request/request-access.service';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -34,10 +35,10 @@ export class RequestProgressBarComponent {
     requestStatusMap: { [token: string]: RequestStatus; };
     requestReviewStatusOptions: ReadonlyArray<RequestStatus>;
     requestReviewStatusMap: { [token: string]: RequestStatus; };
-    public requestReviewStatus = RequestReviewStatusOptions;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService
+        private jhiLanguageService: JhiLanguageService,
+        private requestAccessService: RequestAccessService
     ) {
         jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
@@ -81,10 +82,8 @@ export class RequestProgressBarComponent {
         return this.getRequestStatusOrder(request) === -1;
     }
 
-    isRevisionStatus(requestReviewStatus): boolean {
-        // Status value comes as enumeration index
-        let revisionStatus = RequestReviewStatusOptions.Revision;
-        return requestReviewStatus === RequestReviewStatusOptions[revisionStatus];
+    isRevisionStatus(request: RequestBase): boolean {
+        return this.requestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
     }
 
     /**

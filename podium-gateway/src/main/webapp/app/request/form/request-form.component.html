@@ -9,12 +9,16 @@
   -->
 
 <div class="row" *ngIf="requestBase">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
         <h1 *ngIf="requestBase.status == 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
         <h1 *ngIf="requestBase.status != 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
     </div>
 
-    <div class="col-md-6 offset-md-3 card-container">
+    <div class="card-container"
+        [ngClass]="{
+            'col-md-6 offset-md-3': !isInRevision,
+            'col-md-12 nested-request-form': isInRevision
+        }">
 
         <form #requestForm="ngForm" class="form" role="form">
             <fieldset [disabled]="requestFormDisabled">
@@ -360,6 +364,7 @@
                                        name="requestTypes"
                                        id="requestTypes"
                                        value="{{requestType.value}}"
+                                       [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
                                        (change)="updateRequestType(requestType, $event)" />
                                 {{requestType.value | capitalize}}
@@ -376,6 +381,7 @@
                             <input type="checkbox"
                                    name="combinedRequest"
                                    id="combinedRequest"
+                                   [disabled]="isInRevision"
                                    [(ngModel)]="requestDetail.combinedRequest"
                                    value="true" />
                             Is a combined request
@@ -383,13 +389,15 @@
                     </div>
                 </div>
 
-                <!-- Organisations -->
-                <h3 jhiTranslate="request.form.header.organisations">Organisations</h3>
-                <div class="form-group">
-                    <pdm-organisation-selector [(organisations)]="requestBase.organisations"
-                                               [(requestTypes)]="requestDetail.requestType"
-                                               (organisationChange)="updateRequestOrganisations($event)">
-                    </pdm-organisation-selector>
+                <div *ngIf="!isInRevision">
+                    <!-- Organisations -->
+                    <h3 jhiTranslate="request.form.header.organisations">Organisations</h3>
+                    <div class="form-group">
+                        <pdm-organisation-selector [(organisations)]="requestBase.organisations"
+                                                   [(requestTypes)]="requestDetail.requestType"
+                                                   (organisationChange)="updateRequestOrganisations($event)">
+                        </pdm-organisation-selector>
+                    </div>
                 </div>
 
                 <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>
@@ -403,8 +411,12 @@
                 <pdm-request-action-toolbar
                     [form]="requestForm"
                     [request]="requestBase"
+                    [isUpdating]="isUpdating"
                     (resetChange)="reset()"
+                    (cancelChange)="cancel()"
                     (saveDraftChange)="saveRequestDraft()"
+                    (saveRequestChange)="saveRequest()"
+                    (submitRequestChange)="submitRequest()"
                     (submitDraftChange)="submitDraft()">
                 </pdm-request-action-toolbar>
 
