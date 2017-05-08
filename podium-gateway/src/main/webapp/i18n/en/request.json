@@ -49,6 +49,13 @@
                 "label": "Title",
                 "placeholder": "Request title"
             },
+            "requestType": {
+                "label": "Request Type(s)"
+            },
+            "isLinked": {
+                "label": "Linked Request",
+                "placeHolder": "Is a linked request"
+            },
             "background": {
                 "label": "Background",
                 "placeholder": "Your research background description"

@@ -18,7 +18,6 @@
 
         <form #requestForm="ngForm" class="form" role="form">
             <fieldset [disabled]="requestFormDisabled">
-                <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 
                 <div class="alert alert-success" *ngIf="success" jhiTranslate="request.form.messages.success">
                     Changes are saved.
@@ -51,6 +50,78 @@
                         </small>
                     </div>
                 </div>
+
+                <h3 jhiTranslate="request.form.header.requestDetails">Request Details</h3>
+
+                <!-- Request type -->
+                <div class="form-group">
+                    <label for="requestTypes"  jhiTranslate="request.form.requestType.label">Request Type(s)</label>
+                    <div class="checkbox-group">
+                        <div *ngFor="let requestType of requestTypeOptions | enumKeys">
+                            <label>
+                                <input type="checkbox"
+                                       name="requestTypes"
+                                       id="requestTypes"
+                                       value="{{requestType.value}}"
+                                       [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
+                                       (change)="updateRequestType(requestType, $event)" />
+                                {{requestType.value | capitalize}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linked Request-->
+                <div class="form-group">
+                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
+                    <div class="checkbox-group">
+                        <label for="combinedRequest">
+                            <input type="checkbox"
+                                   name="combinedRequest"
+                                   id="combinedRequest"
+                                   [(ngModel)]="requestDetail.combinedRequest"
+                                   value="true" disabled />
+                            <span jhiTranslate="request.form.isLinked.placeHolder">Is a linked request</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Organisations -->
+                <div class="form-group">
+                    <label for="requestTypes">Organisations</label>
+                    <pdm-organisation-selector [(organisations)]="requestBase.organisations"
+                                               [(requestTypes)]="requestDetail.requestType"
+                                               (organisationChange)="updateRequestOrganisations($event)">
+                    </pdm-organisation-selector>
+                </div>
+
+                <!-- Search Query -->
+                <div class="form-group">
+                    <label for="methods"
+                           jhiTranslate="request.form.searchQuery.label">Search Query</label>
+                    <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
+                              autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
+                              required minlength="1" maxlength="500" rows="4" #searchQuery="ngModel"
+                              [(ngModel)]="requestDetail.searchQuery">
+                </textarea>
+
+                    <div *ngIf="searchQuery.dirty && searchQuery.invalid">
+                        <small class="form-text text-danger" *ngIf="searchQuery.errors.required"
+                               jhiTranslate="request.form.messages.validate.searchQuery.required">
+                            Search query is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="searchQuery.errors.minlength"
+                               jhiTranslate="request.form.messages.validate.searchQuery.minlength">
+                            Search query has to be at least 1 character long.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="searchQuery.errors.maxlength"
+                               jhiTranslate="request.form.messages.validate.searchQuery.maxlength">
+                            Search query cannot be longer than 500 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
 
                 <!-- Background -->
                 <div class="form-group">
@@ -188,6 +259,32 @@
                     </div>
                 </div>
 
+                <!-- Search Query -->
+                <div class="form-group">
+                    <label for="methods"
+                           jhiTranslate="request.form.searchQuery.label">Search Query</label>
+                    <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
+                              autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
+                              required minlength="1" maxlength="500" rows="4" #searchQuery="ngModel"
+                              [(ngModel)]="requestDetail.searchQuery">
+                </textarea>
+
+                    <div *ngIf="searchQuery.dirty && searchQuery.invalid">
+                        <small class="form-text text-danger" *ngIf="searchQuery.errors.required"
+                               jhiTranslate="request.form.messages.validate.searchQuery.required">
+                            Search query is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="searchQuery.errors.minlength"
+                               jhiTranslate="request.form.messages.validate.searchQuery.minlength">
+                            Search query has to be at least 1 character long.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="searchQuery.errors.maxlength"
+                               jhiTranslate="request.form.messages.validate.searchQuery.maxlength">
+                            Search query cannot be longer than 500 characters.
+                        </small>
+                    </div>
+                </div>
+
                 <h3 jhiTranslate="request.form.header.principalInvestigator">Principal Investigator Details</h3>
 
                 <div class="row">
@@ -320,76 +417,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <h3 jhiTranslate="request.form.header.requestDetails">Request Details</h3>
-
-                <!-- Search Query -->
-                <div class="form-group">
-                    <label for="methods"
-                           jhiTranslate="request.form.searchQuery.label">Search Query</label>
-                    <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
-                              autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
-                              required minlength="1" maxlength="500" rows="4" #searchQuery="ngModel"
-                              [(ngModel)]="requestDetail.searchQuery">
-                </textarea>
-
-                    <div *ngIf="searchQuery.dirty && searchQuery.invalid">
-                        <small class="form-text text-danger" *ngIf="searchQuery.errors.required"
-                               jhiTranslate="request.form.messages.validate.searchQuery.required">
-                            Search query is required.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="searchQuery.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.searchQuery.minlength">
-                            Search query has to be at least 1 character long.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="searchQuery.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.searchQuery.maxlength">
-                            Search query cannot be longer than 500 characters.
-                        </small>
-                    </div>
-                </div>
-
-                <!-- Request type -->
-                <div class="form-group">
-                    <label for="requestTypes">Request Type(s): </label>
-                    <div class="checkbox-group">
-                        <div *ngFor="let requestType of requestTypeOptions | enumKeys">
-                            <label>
-                                <input type="checkbox"
-                                       name="requestTypes"
-                                       id="requestTypes"
-                                       value="{{requestType.value}}"
-                                       [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
-                                       (change)="updateRequestType(requestType, $event)" />
-                                {{requestType.value | capitalize}}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Combined requestDetail -->
-                <div class="form-group">
-                    <label for="requestTypes">Combined Request</label>
-                    <div class="checkbox-group">
-                        <label for="combinedRequest">
-                            <input type="checkbox"
-                                   name="combinedRequest"
-                                   id="combinedRequest"
-                                   [(ngModel)]="requestDetail.combinedRequest"
-                                   value="true" />
-                            Is a combined request
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Organisations -->
-                <h3 jhiTranslate="request.form.header.organisations">Organisations</h3>
-                <div class="form-group">
-                    <pdm-organisation-selector [(organisations)]="requestBase.organisations"
-                                               [(requestTypes)]="requestDetail.requestType"
-                                               (organisationChange)="updateRequestOrganisations($event)">
-                    </pdm-organisation-selector>
                 </div>
 
                 <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>
