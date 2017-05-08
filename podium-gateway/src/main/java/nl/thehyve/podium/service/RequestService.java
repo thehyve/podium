@@ -16,6 +16,7 @@ import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
@@ -36,12 +37,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
@@ -114,6 +111,51 @@ public class RequestService {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
         return result.map(requestMapper::extendedRequestToRequestDTO);
+    }
+
+    /**
+     *  Get all the requests to organisations for which the current user is a coordinator.
+     *
+     *  @param user the current user (the coordinator)
+     *  @param status the status to filter on
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<RequestRepresentation> findAllCoordinatorRequestsInStatus(AuthenticatedUser user,
+                                                             RequestStatus status,
+                                                             Pageable pageable) {
+        log.debug("Request to get all organisation requests for a coordinator");
+        Set<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
+            .filter(entry -> entry.getValue().contains(AuthorityConstants.ORGANISATION_COORDINATOR))
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
+        Page<Request> result = requestRepository.findAllByStatusAndOrganisations(status, organisationUuids, pageable);
+        return result.map(requestMapper::requestToRequestDTO);
+    }
+
+    /**
+     *  Get all the requests to the organisation for which the current user is a coordinator.
+     *
+     *  @param user the current user (the coordinator)
+     *  @param status the status to filter on
+     *  @param organisationUuid the uuid of the organisation for which to fetch the requests
+     *  @param pageable the pagination information
+     *  @return the list of entities
+     *  @throws AccessDenied iff the user is not a coordinator for the organisation with uuid organisationUuid.
+     */
+    @Transactional(readOnly = true)
+    public Page<RequestRepresentation> findCoordinatorRequestsForOrganisationInStatus(AuthenticatedUser user,
+                                                                       RequestStatus status,
+                                                                       UUID organisationUuid,
+                                                                       Pageable pageable) {
+        log.debug("Request to get all organisation requests for an organisation for a coordinator");
+        if (!user.getOrganisationAuthorities().containsKey(organisationUuid) ||
+            !user.getOrganisationAuthorities().get(organisationUuid).contains(AuthorityConstants.ORGANISATION_COORDINATOR)) {
+            throw new AccessDenied("Access denied to requests of organisation " + organisationUuid.toString());
+        }
+        Page<Request> result = requestRepository.findAllByStatusAndOrganisations(status, Collections.singleton(organisationUuid), pageable);
+        return result.map(requestMapper::requestToRequestDTO);
     }
 
     /**

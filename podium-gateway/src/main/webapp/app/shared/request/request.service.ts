@@ -41,9 +41,16 @@ export class RequestService {
         });
     }
 
-    findSubmittedRequests(req?: any): Observable<Response> {
+    findMySubmittedRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+        return this.http.get(`${this.resourceUrl}/status/Review/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findOrganisationRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review/organisation`, options).map((res: Response) => {
             return res;
         });
     }

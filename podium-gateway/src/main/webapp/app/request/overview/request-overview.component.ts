@@ -136,7 +136,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.currentRequestStatus = RequestStatusOptions.Review;
 
         if (this.currentSearch) {
-            this.requestService.findSubmittedRequests({
+            this.requestService.findMySubmittedRequests({
                 query: this.currentSearch,
                 size: this.itemsPerPage,
                 sort: this.sort()}
@@ -147,7 +147,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.requestService.findSubmittedRequests({
+        this.requestService.findMySubmittedRequests({
             page: this.page - 1,
             size: this.itemsPerPage,
             sort: this.sort()

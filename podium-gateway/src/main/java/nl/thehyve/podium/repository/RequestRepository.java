@@ -38,7 +38,7 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
         @Param("organisations") Set<UUID> organisations,
         Pageable pageable);
 
-    @Query("select from Request r" +
+    @Query("select distinct r from Request r" +
         " join r.organisations o" +
         " where r.requestReviewProcess.status = :requestReviewStatus" +
         " and o in :organisations")
