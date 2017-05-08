@@ -13,6 +13,7 @@ import nl.thehyve.podium.service.util.DefaultRequestDetail;
 import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
 public interface RequestDetailMapper {
@@ -29,9 +30,10 @@ public interface RequestDetailMapper {
     RequestDetail clone(RequestDetail requestDetail);
 
     /**
-     * Safely transform requestDetail representation without the requestTypes to a requestDetail entity
+     * Safely transform requestDetail representation to a requestDetail entity
      */
     @SafeRequestDetail
     @Mapping(target = "requestType", ignore = true)
+    @Mapping(target = "combinedRequest", ignore = true)
     RequestDetail processingRequestDetailDtoToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 }
