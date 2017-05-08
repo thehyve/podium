@@ -141,6 +141,8 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
         this.requestDetail.principalInvestigator =
             requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
+        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+        this.requestBase.organisations = requestBase.organisations || [];
     }
 
     updateRequestType(selectedRequestType, event) {

@@ -18,6 +18,7 @@ import { MockBackend } from '@angular/http/testing';
 import { EventEmitter } from '@angular/core';
 import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
 import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
+import { RequestType } from '../../../../../../main/webapp/app/shared/request/request-type';
 
 describe('OrganisationSelectorComponent (templateUrl)', () => {
 
@@ -101,5 +102,47 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
     });
 
+    describe('filterOptionsByRequestType', () => {
+        beforeEach(() => {
+            comp.requestTypes =[
+                RequestType.Data,
+                RequestType.Material,
+                RequestType.Images
+            ];
+            comp.allOrganisations = [
+                new Organisation({id:1000, uuid:'123', name: 'dummy', requestTypes: [RequestType.Data]}),
+                new Organisation({id:1001, uuid:'456', name: 'dummy', requestTypes: [RequestType.Data, RequestType.Images]})
+            ];
+            comp.organisations = [new Organisation({id:1001, uuid:'456', name: 'dummy'})];
+            comp.selectedOrganisationUuids = ['456'];
 
+            spyOn(comp, 'loadOrganisationsByRequestTypes');
+        });
+
+        it('should empty selected values and load organisations by request type', () => {
+            comp.filterOptionsByRequestType();
+            expect(comp.organisations.length).toBe(0);
+            expect(comp.selectedOrganisations.length).toBe(0);
+            expect(comp.loadOrganisationsByRequestTypes).toHaveBeenCalled();
+        })
+    });
+
+    describe('loadOrganisationsByRequestTypes', () => {
+
+        beforeEach(() => {
+            comp.requestTypes =[RequestType.Images];
+            comp.allOrganisations = [
+                new Organisation({id:1000, uuid:'123', name: 'dummy', requestTypes: [RequestType.Data]}),
+                new Organisation({id:1001, uuid:'456', name: 'dummy', requestTypes: [RequestType.Data, RequestType.Images]})
+            ];
+            comp.organisations = [new Organisation({id:1001, uuid:'456', name: 'dummy'})];
+            comp.selectedOrganisationUuids = ['456'];
+
+        });
+
+        it('should load organisation options by selected request types', () => {
+            comp.loadOrganisationsByRequestTypes();
+            expect(comp.organisationOptions.length).toBe(1);
+        });
+    });
 });
