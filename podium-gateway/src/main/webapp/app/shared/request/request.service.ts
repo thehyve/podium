@@ -12,7 +12,6 @@ import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/ht
 import { Observable } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
-import { Res } from 'awesome-typescript-loader/dist/checker/protocol';
 
 @Injectable()
 export class RequestService {
