@@ -50,7 +50,8 @@
                 "placeholder": "Request title"
             },
             "requestType": {
-                "label": "Request Type(s)"
+                "label": "Request Type(s)*",
+                "footnote": "* Changing this value will clear organisation selection."
             },
             "isLinked": {
                 "label": "Linked Request",
