@@ -76,6 +76,10 @@ spring:
             token-service-id: podiumuaa
             client-id: internal
             client-secret: internal
+    data:
+        elasticsearch:
+            properties:
+                cluster.routing.allocation.disk.watermark.high: 99%
 
 security:
     basic:

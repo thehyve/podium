@@ -58,6 +58,10 @@ spring:
             enabled: false
     thymeleaf:
         mode: XHTML
+    data:
+        elasticsearch:
+            properties:
+                cluster.routing.allocation.disk.watermark.high: 99%
 
 security:
     basic:
