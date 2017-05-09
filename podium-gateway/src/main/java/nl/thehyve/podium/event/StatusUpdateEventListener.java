@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class StatusUpdateEventListener {
@@ -23,7 +22,7 @@ public class StatusUpdateEventListener {
         auditService.publishEvent(event);
     }
 
-    @TransactionalEventListener
+    @EventListener
     public void notifyUsersOfStatusUpdateEvent(StatusUpdateEvent event) {
 
     }
