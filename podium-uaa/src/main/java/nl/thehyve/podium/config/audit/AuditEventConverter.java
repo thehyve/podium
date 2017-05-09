@@ -48,9 +48,11 @@ public class AuditEventConverter {
      * @return the converted list.
      */
     public AuditEvent convertToAuditEvent(PersistentAuditEvent persistentAuditEvent) {
-        Instant instant = persistentAuditEvent.getAuditEventDate().atZone(ZoneId.systemDefault()).toInstant();
-        return new AuditEvent(Date.from(instant), persistentAuditEvent.getPrincipal(),
-            persistentAuditEvent.getAuditEventType(), convertDataToObjects(persistentAuditEvent.getData()));
+        return new AuditEvent(
+            persistentAuditEvent.getEventDate(),
+            persistentAuditEvent.getPrincipal(),
+            persistentAuditEvent.getEventType().toString(),
+            convertDataToObjects(persistentAuditEvent.getData()));
     }
 
     /**

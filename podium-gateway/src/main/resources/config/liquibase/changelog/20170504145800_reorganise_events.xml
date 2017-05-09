@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  The Hyve and respective contributors.
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ See the file LICENSE in the root of this repository.
+  -->
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+
+    <changeSet id="20170504145800-1" author="gijs@thehyve.nl">
+        <dropTable tableName="podium_persistent_audit_evt_data"/>
+        <dropTable tableName="podium_persistent_audit_event"/>
+        <dropSequence sequenceName="audit_event_seq"/>
+
+        <createSequence sequenceName="podium_event_seq" startValue="1000" incrementBy="50"/>
+
+        <createTable tableName="podium_event">
+            <column name="event_id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="principal" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="event_date" type="timestamp"/>
+            <column name="event_type" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="podium_event_data">
+            <column name="event_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text"/>
+        </createTable>
+        <addPrimaryKey columnNames="event_id, name" tableName="podium_event_data"/>
+
+        <createIndex indexName="idx_podium_event"
+                     tableName="podium_event"
+                     unique="false">
+            <column name="principal" type="varchar(50)"/>
+            <column name="event_date" type="timestamp"/>
+        </createIndex>
+
+        <createIndex indexName="idx_podium_event_data"
+                     tableName="podium_event_data"
+                     unique="false">
+            <column name="event_id" type="bigint"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="event_id"
+                                 baseTableName="podium_event_data"
+                                 constraintName="fk_podium_event_data_event_id"
+                                 referencedColumnNames="event_id"
+                                 referencedTableName="podium_event"/>
+
+        <createTable tableName="request_historic_events">
+            <column name="request_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="request_id, event_order" tableName="request_historic_events"/>
+
+        <addForeignKeyConstraint baseColumnNames="request_id"
+                                 baseTableName="request_historic_events"
+                                 constraintName="fk_request_historic_events_request_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="request"/>
+
+        <addForeignKeyConstraint baseColumnNames="event_id"
+                                 baseTableName="request_historic_events"
+                                 constraintName="fk_request_historic_events_event_id"
+                                 referencedColumnNames="event_id"
+                                 referencedTableName="podium_event"/>
+
+    </changeSet>
+
+</databaseChangeLog>

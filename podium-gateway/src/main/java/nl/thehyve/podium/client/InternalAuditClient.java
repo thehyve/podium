@@ -5,7 +5,10 @@
  * See the file LICENSE in the root of this repository.
  */
 
-/**
- * Audit specific code.
- */
-package nl.thehyve.podium.config.audit;
+package nl.thehyve.podium.client;
+
+import nl.thehyve.podium.common.resource.InternalAuditResource;
+
+@AuthorizedFeignClient(name = "podiumuaa")
+public interface InternalAuditClient extends InternalAuditResource {
+}

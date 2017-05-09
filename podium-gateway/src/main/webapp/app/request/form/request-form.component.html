@@ -275,32 +275,6 @@
                     </div>
                 </div>
 
-                <!-- Search Query -->
-                <div class="form-group">
-                    <label for="methods"
-                           jhiTranslate="request.form.searchQuery.label">Search Query</label>
-                    <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
-                              autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
-                              required minlength="1" maxlength="500" rows="4" #searchQuery="ngModel"
-                              [(ngModel)]="requestDetail.searchQuery">
-                </textarea>
-
-                    <div *ngIf="searchQuery.dirty && searchQuery.invalid">
-                        <small class="form-text text-danger" *ngIf="searchQuery.errors.required"
-                               jhiTranslate="request.form.messages.validate.searchQuery.required">
-                            Search query is required.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="searchQuery.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.searchQuery.minlength">
-                            Search query has to be at least 1 character long.
-                        </small>
-                        <small class="form-text text-danger" *ngIf="searchQuery.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.searchQuery.maxlength">
-                            Search query cannot be longer than 500 characters.
-                        </small>
-                    </div>
-                </div>
-
                 <h3 jhiTranslate="request.form.header.principalInvestigator">Principal Investigator Details</h3>
 
                 <div class="row">

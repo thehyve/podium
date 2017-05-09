@@ -47,16 +47,19 @@ public interface RequestMapper {
     @DefaultRequest
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(target = "historicEvents", ignore = true)
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(target = "historicEvents", ignore = true)
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
     @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "historicEvents", ignore = true)
     Request clone(Request request);
 
     @DefaultRequest

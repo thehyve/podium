@@ -44,6 +44,28 @@ export class RequestService {
         });
     }
 
+    findMySubmittedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findOrganisationRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review/organisation`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findMyOrganisationsRequests(req?: any): Observable<Response> {
+        // TODO: Get submitted requets of my organisations
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
     /**
      * Submits the draft request and generates a new request for each of the
      * selected organisations.

@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.common.enumeration;
 
-public enum RequestReviewStatus {
+public enum RequestReviewStatus implements Status {
     Revision,
     Validation,
     Review,

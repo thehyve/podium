@@ -42,10 +42,12 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     queryCount: any;
     itemsPerPage: any;
     page: any;
+    pageHeader: string;
     predicate: any;
     previousPage: any;
     reverse: any;
     links: any;
+    isOrganisationOverview: boolean;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -60,6 +62,8 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
+            this.isOrganisationOverview = !!data['isOrganisationOverview'];
+            this.pageHeader = data['pageHeader'];
             this.page = data['pagingParams'].page;
             this.previousPage = data['pagingParams'].page;
             this.reverse = data['pagingParams'].ascending;
@@ -121,7 +125,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             (res) => this.processAvailableRequests(res.json(), res.headers),
             (error) => this.onError('Error loading available request drafts.')
         );
-
     }
 
     sort () {
@@ -136,7 +139,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.currentRequestStatus = RequestStatusOptions.Review;
 
         if (this.currentSearch) {
-            this.requestService.findSubmittedRequests({
+            this.requestService.findMySubmittedRequests({
                 query: this.currentSearch,
                 size: this.itemsPerPage,
                 sort: this.sort()}
@@ -147,7 +150,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.requestService.findSubmittedRequests({
+        this.requestService.findMySubmittedRequests({
             page: this.page - 1,
             size: this.itemsPerPage,
             sort: this.sort()
@@ -190,6 +193,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             this.transition();
         }
     }
+
     transition() {
         // Transition with queryParams
         this.router.navigate([this.getNavUrlForRouter(this.router)], {queryParams:

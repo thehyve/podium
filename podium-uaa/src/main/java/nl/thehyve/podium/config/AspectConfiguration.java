@@ -8,7 +8,7 @@
 package nl.thehyve.podium.config;
 
 import nl.thehyve.podium.aop.logging.LoggingAspect;
-import nl.thehyve.podium.aop.security.AccessPolicyAspect;
+import nl.thehyve.podium.common.aop.security.AccessPolicyAspect;
 import nl.thehyve.podium.common.config.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

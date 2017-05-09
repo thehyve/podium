@@ -8,18 +8,19 @@
   ~
   -->
 
-<h2><span>My Requests</span>
-    <div class="btn-group flex-btn-group-container">
+<h2><span jhiTranslate="{{pageHeader}}">My requests</span>
+
+    <div class="btn-group flex-btn-group-container" *ngIf="!isOrganisationOverview">
         <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadSubmittedRequests()" >
             <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">
-            My requests
+                Submitted
             </span>
         </button>
         <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
             <i class="material-icons">drafts</i>
             <span class="hidden-sm-down">
-                Show Drafts
+                Drafts
             </span>
         </button>
         <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
