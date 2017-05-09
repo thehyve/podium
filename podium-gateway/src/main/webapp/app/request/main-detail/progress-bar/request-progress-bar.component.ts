@@ -22,6 +22,7 @@ import {
     RequestReviewStatusOptions
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
+import { RequestService } from '../../../shared/request/request.service';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -38,13 +39,18 @@ export class RequestProgressBarComponent {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private requestAccessService: RequestAccessService
+        private requestAccessService: RequestAccessService,
+        private requestService: RequestService
     ) {
         jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
         this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
         this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
+
+        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.request = request;
+        });
     }
 
     /**

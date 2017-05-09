@@ -33,7 +33,11 @@ public interface RequestDetailMapper {
      * Safely transform requestDetail representation to a requestDetail entity
      */
     @SafeRequestDetail
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "requestType", ignore = true)
     @Mapping(target = "combinedRequest", ignore = true)
-    RequestDetail processingRequestDetailDtoToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
+    @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+    RequestDetail processingRequestDetailDtoToRequestDetail(
+        RequestDetailRepresentation requestDetailRepresentation, @MappingTarget RequestDetail requestDetail
+    );
 }

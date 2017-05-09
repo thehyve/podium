@@ -14,14 +14,14 @@
         <fieldset [disabled]="isUpdating">
             <!-- Draft / Submit -->
             <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
-                <button type="button" class="btn btn-outline-danger" id="reset-form-btn" (click)="resetForm()">
+                <button type="button" class="btn btn-danger" id="reset-form-btn" (click)="resetForm()">
                     <span jhiTranslate="request.toolbar.reset">Reset</span>
                 </button>
                 <div class="float-xs-right">
-                    <button type="button" class="btn btn-outline-primary" id="save-draft-btn" (click)="saveDraft()">
+                    <button type="button" class="btn btn-primary" id="save-draft-btn" (click)="saveDraft()">
                         <span jhiTranslate="request.toolbar.saveDraft">Save draft</span>
                     </button>
-                    <button type="submit" class="btn btn-outline-success" id="submit-draft-btn"
+                    <button type="submit" class="btn btn-success" id="submit-draft-btn"
                             [disabled]="!form.form.valid" (click)="submitDraft()">
                         <span jhiTranslate="request.toolbar.submit">Submit</span>
                     </button>
@@ -86,16 +86,16 @@
                         </div>
 
                         <!-- State actions -->
-                        <button type="button" class="btn btn-outline-danger test-reject-request-btn"
+                        <button type="button" class="btn btn-danger test-reject-request-btn"
                                 (click)="rejectRequest()">
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
                         <div class="float-xs-right">
-                            <button type="button" class="btn btn-outline-primary test-request-revision-btn"
+                            <button type="button" class="btn btn-default test-request-revision-btn"
                                     (click)="requireRevision()">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
-                            <button type="submit" class="btn btn-outline-success" id="validate-request-btn"
+                            <button type="submit" class="btn btn-success" id="validate-request-btn"
                                     (click)="validateRequest()" [disabled]="!checks.validation">
                             <span jhiTranslate="request.toolbar.sendForReview"
                                   tooltip="Please validate the request by checking the box above."
@@ -106,16 +106,16 @@
 
                     <!-- Coordinator during Review -->
                     <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
-                        <button type="button" class="btn btn-outline-danger test-reject-request-btn"
+                        <button type="button" class="btn btn-danger test-reject-request-btn"
                                 (click)="rejectRequest()">
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
                         <div class="float-xs-right">
-                            <button type="button" class="btn btn-outline-default test-request-revision-btn"
+                            <button type="button" class="btn btn-default test-request-revision-btn"
                                     (click)="requireRevision()">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
-                            <button type="button" class="btn btn-outline-primary" id="approve-request-btn"
+                            <button type="button" class="btn btn-success" id="approve-request-btn"
                                     (click)="approveRequest()">
                                 <span jhiTranslate="request.toolbar.approve">Approve</span>
                             </button>

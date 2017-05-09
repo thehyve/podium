@@ -67,6 +67,7 @@
                                        name="requestTypes"
                                        id="requestTypes"
                                        value="{{requestType.value}}"
+                                       [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
                                        (change)="updateRequestType(requestType, $event)" />
                                 {{requestType.value | capitalize}}
@@ -94,12 +95,20 @@
                 </div>
 
                 <!-- Organisations -->
-                <div class="form-group">
-                    <label for="requestTypes">Organisations</label>
-                    <pdm-organisation-selector [(organisations)]="requestBase.organisations"
-                                               [(requestTypes)]="requestDetail.requestType"
-                                               (organisationChange)="updateRequestOrganisations($event)">
+                <div class="form-group" *ngIf="!isInRevision">
+                    <label>Organisations</label>
+                    <pdm-organisation-selector
+                        [(organisations)]="requestBase.organisations"
+                        [(requestTypes)]="requestDetail.requestType"
+                        (organisationChange)="updateRequestOrganisations($event)">
                     </pdm-organisation-selector>
+                </div>
+                <div class="form-group" *ngIf="isInRevision">
+                    <label>Organisations</label>
+                    <ul>
+                        <li *ngFor="let organisation of requestBase.organisations">{{organisation.name}}</li>
+                    </ul>
+
                 </div>
 
                 <!-- Search Query -->

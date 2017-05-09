@@ -25,6 +25,7 @@ import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
+import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
@@ -62,12 +63,12 @@ public class RequestService {
     private RequestRepository requestRepository;
 
     @Autowired
-    @Autowired
     private RequestMapper requestMapper;
 
     @Autowired
     private RequestDetailMapper requestDetailMapper;
 
+    @Autowired
     private RequestSearchRepository requestSearchRepository;
 
     @Autowired
@@ -149,7 +150,7 @@ public class RequestService {
      *
      *  @param requestUuid the uuid of the request
      *  @return the entity
-     *  @throws AccessDenied iff the user is not the requester of the request.
+     *  @throws ResourceNotFound when the requested request could not be found.
      */
     @Transactional(readOnly = true)
     public RequestRepresentation findRequest(UUID requestUuid) {
@@ -240,13 +241,13 @@ public class RequestService {
      * @return the updated request
      * @throws ActionNotAllowedInStatus if the request is not in review status 'Revision'.
      */
+    @Transactional
     @Timed
     public RequestRepresentation updateRequest(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(body.getUuid());
         RequestReviewStatus requestReviewStatus = request.getRequestReviewProcess().getStatus();
 
-        if (request.getStatus() != RequestStatus.Review && requestReviewStatus != RequestReviewStatus.Revision) {
-            log.debug("Not allowed to update request as it holds the wrong statuses {} - {}", request.getStatus(), requestReviewStatus);
+        if (!this.isInRevision(request)) {
             throw ActionNotAllowedInStatus.forStatus(request.getStatus());
         }
 
@@ -254,9 +255,45 @@ public class RequestService {
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request " + request.getUuid().toString());
         }
-        request = requestMapper.safeUpdateRequestRepresentationToRequest(body, request);
+
+        requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
+
+        request = save(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
+    }
+
+    /**
+     * Submit the request by uuid.
+     *
+     * @param user the current user, submitting the request
+     * @param uuid the uuid of the request
+     * @return the updated request
+     * @throws ActionNotAllowedInStatus if the request is not in status 'Revision'.
+     */
+    @Timed
+    public RequestRepresentation submitRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        // Is the request currently in Revision
+        if (!this.isInRevision(request)) {
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+        }
+
+        // Is the current user the owner of the request
+        if (!request.getRequester().equals(user.getUserUuid())) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        // Update the request details with the updated revision details
+        request.setRequestDetail(request.getRevisionDetail());
         save(request);
-        return requestMapper.requestToRequestDTO(request);
+
+        // Submit the request for validation by the organisation coordinator
+        requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+        // TODO ADD EMAIL
+        return requestRepresentation;
     }
 
     private void deleteRequest(Long id) {
@@ -462,4 +499,15 @@ public class RequestService {
 
         return coordinator.isPresent();
     }
+
+    private boolean isInRevision(Request request) {
+        RequestReviewStatus requestReviewStatus = request.getRequestReviewProcess().getStatus();
+
+        if (request.getStatus() != RequestStatus.Review && requestReviewStatus != RequestReviewStatus.Revision) {
+            log.debug("Not allowed to update request as it holds the wrong statuses {} - {}", request.getStatus(), requestReviewStatus);
+            return false;
+        }
+        return true;
+    }
+
 }

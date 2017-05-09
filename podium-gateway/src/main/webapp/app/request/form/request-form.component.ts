@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
@@ -70,8 +70,13 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         private principal: Principal,
         private eventManager: EventManager,
         private organisationService: OrganisationService,
-        private modalService: NgbModal) {
+        private modalService: NgbModal
+    ) {
         this.jhiLanguageService.setLocations(['request']);
+
+        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.selectRequest(request);
+        });
     }
 
     ngOnInit() {
@@ -139,10 +144,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         }
 
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
-        this.requestDetail.principalInvestigator =
-            requestBase.requestDetail.principalInvestigator || new PrincipalInvestigator();
-        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
-        this.requestBase.organisations = requestBase.organisations || [];
     }
 
     updateRequestType(selectedRequestType, event) {
@@ -182,6 +183,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.isUpdating = true;
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
+
         this.requestService.saveDraft(this.requestBase)
             .subscribe(
                 (request) => this.confirmSubmitModal(request),
@@ -246,6 +248,8 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.error =  null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
+
+        this.requestService.requestUpdateEvent(result);
     }
 
     private onError(error) {

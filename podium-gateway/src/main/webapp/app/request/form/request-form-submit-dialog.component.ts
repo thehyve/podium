@@ -36,7 +36,7 @@ export class RequestFormSubmitDialogComponent {
     }
 
     setSubmitSuccessMessage(requests: RequestBase[]) {
-        let submittedTitle = `The request` + (requests.length > 1) ? 's have' : 'has' + ` been successfully submitted.`;
+        let submittedTitle = `The request has been successfully submitted.`;
         let submittedMessage = `<ul>`;
         for (let req of requests) {
             for (let organisation of req.organisations) {

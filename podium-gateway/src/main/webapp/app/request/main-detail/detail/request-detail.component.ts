@@ -8,7 +8,7 @@
  *
  */
 
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
@@ -17,6 +17,9 @@ import { RequestAccessService } from '../../../shared/request/request-access.ser
 import { RequestReviewStatusOptions } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
+import { Router } from '@angular/router';
+import { RequestActionToolbarComponent } from '../../../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
+import { RequestProgressBarComponent } from '../progress-bar/request-progress-bar.component';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -26,26 +29,33 @@ import { Response } from '@angular/http';
 export class RequestDetailComponent {
 
     public request: RequestBase;
-    public requestDetail: RequestDetail;
+    public requestDetails: RequestDetail;
     public isInRevision = false;
     public isUpdating = false;
 
     constructor(
+        private router: Router,
         private requestService: RequestService,
         private requestAccessService: RequestAccessService,
         private requestFormService: RequestFormService
     ) {
+        // Forcefully reload logged in user
+        this.requestAccessService.loadCurrentUser(true);
 
+        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.setRequest(request);
+        });
     }
 
     setRequest(request) {
         this.request = request;
-        this.requestDetail = request.requestDetail;
-        console.log("RERERE ", this.request);
+        this.requestDetails = request.requestDetail;
+        this.isInRevision = false;
+
         if (this.isRevisionStatusForRequester(request)) {
             this.isInRevision = true;
+            this.requestFormService.request = request;
         }
-        this.requestFormService.request = request;
     }
 
     submitReview(requestReviewFeedback: RequestReviewFeedback) {
@@ -109,8 +119,9 @@ export class RequestDetailComponent {
     onSuccess(response: Response) {
         console.log('success ', response);
         this.request = response.json();
-        this.requestFormService.request = this.request;
         this.isUpdating = false;
+
+        this.requestService.requestUpdateEvent(this.request);
     }
 
     onError(err) {

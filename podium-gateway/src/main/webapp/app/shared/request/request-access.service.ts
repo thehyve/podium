@@ -23,7 +23,11 @@ export class RequestAccessService {
     constructor(
         private principal: Principal
     ) {
-        this.principal.identity().then((account: User) => {
+        this.loadCurrentUser(false);
+    }
+
+    public loadCurrentUser(force: boolean) {
+        this.principal.identity(force).then((account: User) => {
             this.currentUser = account;
         });
     }

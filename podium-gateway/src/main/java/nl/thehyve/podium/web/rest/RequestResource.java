@@ -222,6 +222,23 @@ public class RequestResource {
     }
 
     /**
+     * Submit the request
+     *
+     * @param uuid of the request to be saved
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/submit")
+    @Timed
+    public ResponseEntity<RequestRepresentation> submitRequest(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser authenticatedUser = user.getUser();
+        log.debug("GET /requests/{}/submit (user: {})", uuid, user);
+        RequestRepresentation request = requestService.submitRequest(authenticatedUser, uuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
+    }
+
+    /**
      * GET  /requests/status/:status : get all the requests for a requester with the status.
      *
      * @param status the status to filter on

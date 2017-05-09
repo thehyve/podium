@@ -13,6 +13,7 @@ import { Form } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-status/request-status.constants';
 import { RequestAccessService } from '../../request-access.service';
+import { RequestService } from '../../request.service';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -48,12 +49,22 @@ export class RequestActionToolbarComponent implements OnInit {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private requestAccessService: RequestAccessService
+        private requestAccessService: RequestAccessService,
+        private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
+
+        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.request = request;
+            this.initializeStatuses();
+        });
     }
 
     ngOnInit() {
+        this.initializeStatuses();
+    }
+
+    initializeStatuses() {
         this.status = this.request.status.toString();
         if (this.request.requestReview) {
             this.reviewStatus = this.request.requestReview.status.toString();

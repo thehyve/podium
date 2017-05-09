@@ -74,7 +74,7 @@ public class RequestDetail implements Serializable {
     @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "principal_investigator")
     private PrincipalInvestigator principalInvestigator;
 
