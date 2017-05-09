@@ -84,16 +84,16 @@ public class MailService {
      * Send a notification email to the coordinators of an organisation that a request has been
      * submitted to their organisation.
      *
-     * @param organisationRequest the request that has been submitted.
+     * @param request the request that has been submitted.
      * @param organisation the organisation that is was submitted to
      * @param coordinators the list of organisation coordinators.
      */
     @Async
     public void sendSubmissionNotificationToCoordinators(
-        Request organisationRequest, OrganisationDTO organisation, List<UserRepresentation> coordinators
+        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
-            organisationRequest, organisation, coordinators == null ? null : coordinators.size());
+            request, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
         for (UserRepresentation user: coordinators) {
             log.debug("Sending request submitted e-mail to '{}'", user.getEmail());
@@ -101,7 +101,7 @@ public class MailService {
             Context context = new Context(locale);
             context.setVariable(USER, user);
             context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
-            context.setVariable("request", organisationRequest);
+            context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestSubmitted", context);
             String subject = messageSource.getMessage("email.organisationRequestSubmitted.title", null, locale);
@@ -162,16 +162,16 @@ public class MailService {
     /**
      * Send a notification email to the organisation informing them about a submitted request revision
      *
-     * @param organisationRequest the request that has been submitted.
+     * @param request the request that has been submitted.
      * @param organisation the organisation that is was submitted to
      * @param coordinators the list of organisation coordinators.
      */
     @Async
     public void sendRequestRevisionSubmissionNotificationToCoordinators(
-        Request organisationRequest, OrganisationDTO organisation, List<UserRepresentation> coordinators
+        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
-            organisationRequest, organisation, coordinators == null ? null : coordinators.size());
+            request, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
         for (UserRepresentation user: coordinators) {
             log.debug("Sending request revision e-mail to '{}'", user.getEmail());
@@ -179,7 +179,7 @@ public class MailService {
             Context context = new Context(locale);
             context.setVariable(USER, user);
             context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
-            context.setVariable("request", organisationRequest);
+            context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestRevisionSubmitted", context);
             String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", null, locale);
@@ -189,10 +189,10 @@ public class MailService {
 
     @Async
     public void sendRequestReviewNotificationToReviewers(
-        Request reviewRequest, OrganisationDTO organisation, List<UserRepresentation> reviewers
+        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> reviewers
     ) {
         log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
-            reviewRequest, organisation, reviewers == null ? null : reviewers.size());
+            request, organisation, reviewers == null ? null : reviewers.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
         for (UserRepresentation user : reviewers) {
             log.debug("Sending review request e-mail to '{}'", user.getEmail());
@@ -200,7 +200,7 @@ public class MailService {
             Context context = new Context(locale);
             context.setVariable(USER, user);
             context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
-            context.setVariable("request", reviewRequest);
+            context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestReview", context);
             String subject = messageSource.getMessage("email.organisationRequestReview.title", null, locale);
