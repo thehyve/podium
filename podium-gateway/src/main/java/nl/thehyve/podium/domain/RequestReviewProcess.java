@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.DecisionOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import org.hibernate.annotations.Cache;

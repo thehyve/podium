@@ -9,6 +9,7 @@ package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.User;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,11 +24,11 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
-* Test class for the SecurityUtils utility class.
+* Test class for the SecurityService utility class.
 *
 * @see SecurityService
 */
-public class SecurityUtilsUnitTest {
+public class SecurityServiceUnitTest {
 
     @Test
     public void testgetCurrentUserLogin() {

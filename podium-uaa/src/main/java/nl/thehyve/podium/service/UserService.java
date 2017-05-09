@@ -20,7 +20,7 @@ import nl.thehyve.podium.exceptions.VerificationKeyExpired;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.security.SecurityService;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;

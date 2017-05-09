@@ -83,7 +83,7 @@ public class UserResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendVerificationEmail((User) anyObject());
+        doNothing().when(mockMailService).sendVerificationEmail(anyObject());
 
         UserResource userResource = new UserResource();
         ReflectionTestUtils.setField(userResource, "userService", userService);

@@ -7,12 +7,13 @@
 
 package nl.thehyve.podium.repository;
 
+import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.domain.PersistentAuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,11 +23,11 @@ public interface PersistenceAuditEventRepository extends JpaRepository<Persisten
 
     List<PersistentAuditEvent> findByPrincipal(String principal);
 
-    List<PersistentAuditEvent> findByAuditEventDateAfter(LocalDateTime after);
+    List<PersistentAuditEvent> findByEventDateAfter(Date after);
 
-    List<PersistentAuditEvent> findByPrincipalAndAuditEventDateAfter(String principal, LocalDateTime after);
+    List<PersistentAuditEvent> findByPrincipalAndEventDateAfter(String principal, Date after);
 
-    List<PersistentAuditEvent> findByPrincipalAndAuditEventDateAfterAndAuditEventType(String principle, LocalDateTime after, String type);
+    List<PersistentAuditEvent> findByPrincipalAndEventDateAfterAndEventType(String principle, Date after, EventType type);
 
-    Page<PersistentAuditEvent> findAllByAuditEventDateBetween(LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable);
+    Page<PersistentAuditEvent> findAllByEventDateBetween(Date fromDate, Date toDate, Pageable pageable);
 }
