@@ -366,7 +366,25 @@ public class RequestService {
         requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
 
         RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
-        // TODO ADD EMAIL
+
+        // Send emails to all coordinators belonging to this organisation
+        log.debug("Sending revision submission notification emails to all coordinators of {}",
+            requestRepresentation.getOrganisations().get(0).getName());
+
+        for (UUID organisationUuid: request.getOrganisations()) {
+            // Fetch organisation through Feign.
+            OrganisationDTO organisation;
+
+            try {
+                organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation through feign", e);
+            }
+
+            notificationService.revisionNotificationToCoordinators(organisation, request);
+        }
+
         return requestRepresentation;
     }
 

@@ -150,4 +150,29 @@ public class MailService {
         String subject = messageSource.getMessage("email.requesterRequestRejected.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
+
+    /**
+     * Send a notification email to the organisation informing them about a submitted request revision
+     */
+    @Async
+    public void sendRequestRevisionNotficationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
+        List<UserRepresentation> coordinators
+    ) {
+        log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
+            organisationRequest, organisation, coordinators == null ? null : coordinators.size());
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        for (UserRepresentation user: coordinators) {
+            log.debug("Sending request submitted e-mail to '{}'", user.getEmail());
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            context.setVariable("request", organisationRequest);
+            context.setVariable("organisation", organisation);
+            String content = templateEngine.process("organisationRequestRevisionSubmitted", context);
+            String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
+
+    }
 }

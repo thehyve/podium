@@ -80,11 +80,35 @@ public class NotificationService {
         mailService.sendSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
+    /**
+     * Notify requester about the rejection of their request.
+     * @param user the authenticated user
+     * @param requestRepresentation the request object
+     */
     public void rejectionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
         // Fetch requester data through Feign.
         UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
 
         mailService.sendRejectionNotificationToRequester(requester, requestRepresentation);
+    }
+
+    /**
+     * Notify organisation coordinators about the submission of a revised request.
+     * @param organisation the organisation DTO object
+     * @param organisationRequest the submitted request object
+     */
+    @Async
+    public void revisionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
+        // Fetch organisation coordinators through Feign.
+        List<UserRepresentation> coordinators;
+        try {
+            coordinators = organisationClientService.findUsersByRole(organisation.getUuid(),
+                AuthorityConstants.ORGANISATION_COORDINATOR);
+        } catch (Exception e) {
+            log.error("Error fetching organisation and coordinators", e);
+            throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
+        }
+        mailService.sendRequestRevisionNotficationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
     private UserRepresentation fetchUserThroughFeign(UUID userUuid) {
