@@ -34,6 +34,10 @@
                 "confirm": "Delete draft"
             }
         },
+        "overview": {
+            "pageHeader": "My Requests",
+            "pageHeaderOverview": "Organisation Requests"
+        },
         "form": {
             "header": {
                 "new": "New Request",
@@ -171,11 +175,11 @@
                     },
                     "requestType": {
                         "required": "Request type is required",
-                        "minlength": "Select atleast 1 request type"
+                        "minlength": "Select at least 1 request type"
                     },
                     "organisation": {
                         "required": "Organisation is required",
-                        "minlength": "Select atleast 1 organisation"
+                        "minlength": "Select at least 1 organisation"
                     }
                 }
             }

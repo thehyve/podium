@@ -36,9 +36,26 @@ export const requestOverviewRoute: Route = {
         'pagingParams': RequestResolvePagingParams
     },
     data: {
-        authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR'],
+        authorities: ['ROLE_RESEARCHER'],
         pageTitle: 'request.pageTitle',
+        pageHeader: 'request.overview.pageHeader',
         breadcrumb: 'overview'
+    },
+    canActivate: [UserRouteAccessService]
+};
+
+export const organisationRequestOverviewRoute: Route = {
+    path: 'organisation-overview',
+    component: RequestOverviewComponent,
+    resolve: {
+        'pagingParams': RequestResolvePagingParams
+    },
+    data: {
+        authorities: ['ROLE_ORGANISATION_COORDINATOR'],
+        pageTitle: 'request.pageTitle',
+        pageHeader: 'request.overview.pageHeaderOverview',
+        breadcrumb: 'organisation overview',
+        isOrganisationOverview: true,
     },
     canActivate: [UserRouteAccessService]
 };

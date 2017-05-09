@@ -167,20 +167,86 @@ public class RequestResource {
     }
 
     /**
-     * GET  /requests : get all the requests.
+     * GET  /requests/requester : get all the requests for which the current user is the requester.
      *
      * @param pageable the pagination information
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
-    @GetMapping("/requests")
+    @GetMapping("/requests/requester")
     @Timed
-    public ResponseEntity<List<RequestRepresentation>> getAllRequests(@ApiParam Pageable pageable)
+    public ResponseEntity<List<RequestRepresentation>> getRequesterRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
-        log.debug("REST request to get a page of Requests for user {}", user.getName());
+        log.debug("REST request to get a page of Requests for requester {}", user.getName());
         Page<RequestRepresentation> page = requestService.findAllForRequester(user, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/requester");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/status/:status/requester : get all the requests for a requester with the status.
+     *
+     * @param status the status to filter on
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/requests/status/{status}/requester")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getAllRequestsByStatus(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to requests with status {}", status);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
+            "/api/requests/status/" + status.toString() + "/requester");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/status/:status/organisation : get all the organisation requests for the organisations where the current
+     * user is a coordinator.
+     *
+     * @param status the status to filter on
+     * @param pageable the pagination information
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     */
+    @GetMapping("/requests/status/{status}/organisation")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getAllOrganisationRequests(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("REST request to get a page of organisation requests with status {} for user {}", status, user.getName());
+        Page<RequestRepresentation> page = requestService.findAllCoordinatorRequestsInStatus(user, status, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
+            "/api/requests/status/" + status.toString() + "/organisation");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/status/:status/organisation/:uuid : get all the organisation requests for the organisation if the current
+     * user is a coordinator.
+     *
+     * @param status the status to filter on
+     * @param uuid the uuid of the organisation for which to fetch the requests
+     * @param pageable the pagination information
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     */
+    @GetMapping("/requests/status/{status}/organisation/{uuid}")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getOrganisationRequestsForOrganisation(
+        @PathVariable RequestStatus status, @PathVariable UUID uuid, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("REST request to get a page of organisation requests with status {} for organisation {}, user {}",
+            status, uuid, user.getName());
+        Page<RequestRepresentation> page = requestService.findCoordinatorRequestsForOrganisationInStatus(
+            user, status, uuid, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
+            "/api/requests/status/" + status.toString() + "/organisation/" + uuid.toString());
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -199,25 +265,6 @@ public class RequestResource {
     public ResponseEntity<RequestRepresentation> getRequest(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
         RequestRepresentation request = requestService.findRequest(uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
-    }
-
-    /**
-     * GET  /requests/status/:status : get all the requests for a requester with the status.
-     *
-     * @param status the status to filter on
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/requests/status/{status}")
-    @Timed
-    public ResponseEntity<List<RequestRepresentation>> getAllRequestsByStatus(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to requests with status {}", status);
-        AuthenticatedUser user = securityService.getCurrentUser();
-        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/status/" + status.toString());
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
