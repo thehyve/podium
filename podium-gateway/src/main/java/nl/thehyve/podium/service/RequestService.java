@@ -310,7 +310,12 @@ public class RequestService {
         }
 
         requestReviewProcessService.reject(user, request.getRequestReviewProcess());
-        return requestMapper.requestToRequestDTO(request);
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send rejection email
+        notificationService.rejectionNotificationToRequester(user, requestRepresentation);
+        return requestRepresentation;
     }
 
     @Transactional

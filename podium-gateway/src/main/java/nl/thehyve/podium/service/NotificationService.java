@@ -6,6 +6,7 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Request;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +43,8 @@ public class NotificationService {
     @Async
     public void submissionNotificationToRequester(AuthenticatedUser user, List<Request> organisationRequests) {
         // Fetch requester data through Feign.
-        UserRepresentation requester;
-        try {
-            requester = userClientService.findUserByUuid(user.getUuid());
-        } catch (Exception e) {
-            log.error("Error fetching requester details", e);
-            throw new ServiceNotAvailable("Could not fetch requester details", e);
-        }
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
         Map<UUID, OrganisationDTO> organisations = new HashMap<>();
         try {
             for (Request request: organisationRequests) {
@@ -82,6 +78,22 @@ public class NotificationService {
             throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
         }
         mailService.sendSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
+    }
+
+    public void rejectionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
+        mailService.sendRejectionNotificationToRequester(requester, requestRepresentation);
+    }
+
+    private UserRepresentation fetchUserThroughFeign(UUID userUuid) {
+        try {
+            return userClientService.findUserByUuid(userUuid);
+        } catch (Exception e) {
+            log.error("Error fetching requester details", e);
+            throw new ServiceNotAvailable("Could not fetch requester details", e);
+        }
     }
 
 

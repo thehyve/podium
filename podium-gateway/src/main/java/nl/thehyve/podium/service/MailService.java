@@ -11,6 +11,7 @@ import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.PodiumProperties;
 import nl.thehyve.podium.domain.Request;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,27 @@ public class MailService {
         context.setVariable("organisations", organisations);
         String content = templateEngine.process("requesterRequestSubmitted", context);
         String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
+
+    /**
+     * Send a notification email to the requester informing that their request has been rejected.
+     *
+     * @param requester the requester details
+     * @param requestRepresentation the request regarding this notification
+     */
+    @Async
+    public void sendRejectionNotificationToRequester(UserRepresentation requester, RequestRepresentation requestRepresentation) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, requestRepresentation);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request rejection e-mail to requester '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", requestRepresentation);
+        String content = templateEngine.process("requesterRequestRejected", context);
+        String subject = messageSource.getMessage("email.requesterRequestRejected.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 }
