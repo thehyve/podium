@@ -10,6 +10,7 @@ package nl.thehyve.podium.service;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
@@ -18,9 +19,11 @@ import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
+import nl.thehyve.podium.common.event.StatusUpdateEvent;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -28,11 +31,13 @@ import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -69,7 +74,37 @@ public class RequestService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    @Autowired
+    private EntityManager entityManager;
+
     public RequestService() {}
+
+    private PodiumEvent convert(StatusUpdateEvent event) {
+        PodiumEvent podiumEvent = new PodiumEvent();
+        podiumEvent.setPrincipal(event.getUsername());
+        podiumEvent.setEventType(EventType.Status_Change);
+        podiumEvent.setEventDate(event.getEventDate());
+        Map<String,String> data = new HashMap<>();
+        data.put("requestUuid", event.getRequestUuid().toString());
+        data.put("sourceStatus", event.getSourceStatus().toString());
+        data.put("targetStatus", event.getTargetStatus().toString());
+        data.put("message", event.getMessage());
+        podiumEvent.setData(data);
+        return podiumEvent;
+    }
+
+    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, String message) {
+        StatusUpdateEvent event =
+            new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid(), message);
+        PodiumEvent historicEvent = convert(event);
+        entityManager.persist(historicEvent);
+        request.addHistoricEvent(historicEvent);
+        entityManager.persist(request);
+        publisher.publishEvent(event);
+    }
 
     /**
      * Save a request.
@@ -310,6 +345,7 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
+
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
         log.debug("Validating request data.");
         {
@@ -347,6 +383,8 @@ public class RequestService {
             organisationRequest = save(organisationRequest);
 
             notificationService.submissionNotificationToCoordinators(organisation, organisationRequest);
+
+            publishStatusUpdate(user, RequestStatus.Draft, organisationRequest, null);
 
             organisationRequests.add(organisationRequest);
             log.debug("Created new submitted request for organisation {}.", organisationUuid);

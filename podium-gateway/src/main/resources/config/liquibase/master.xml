@@ -24,4 +24,5 @@
     <include file="./changelog/20170301063637_added_entity_PrincipalInvestigator.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170314124429_add_request_review_process.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170314143552_added_flowable.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170504145800_reorganise_events.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

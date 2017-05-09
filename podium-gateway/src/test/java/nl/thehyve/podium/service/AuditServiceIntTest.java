@@ -8,10 +8,11 @@
 package nl.thehyve.podium.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.event.StatusUpdateEvent;
+import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,27 +32,25 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- * Service tests for the {@link OrganisationClientService}.
+ * Service tests for the {@link AuditService}.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(
     classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
-public class OrganisationServiceIntTest {
+public class AuditServiceIntTest {
 
-    private final Logger log = LoggerFactory.getLogger(OrganisationServiceIntTest.class);
+    private final Logger log = LoggerFactory.getLogger(AuditServiceIntTest.class);
 
     @Autowired
-    private OrganisationClientService organisationService;
+    private AuditService auditService;
 
     @Autowired
     private LoadBalancerClient loadBalancer;
@@ -67,8 +66,6 @@ public class OrganisationServiceIntTest {
 
     private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     @Before
     public void setup() {
         requestAuth2ClientContext.setAccessToken(accessToken);
@@ -81,24 +78,25 @@ public class OrganisationServiceIntTest {
     }
 
     @Test
-    public void testFetchAllOrganisations() throws URISyntaxException, JsonProcessingException {
+    public void testPublishEvent() throws URISyntaxException, JsonProcessingException, InterruptedException {
         log.info("Testing with mock port {}.", wireMockRule.port());
 
-        List<OrganisationDTO> mockOrganisations = new ArrayList<>();
-        OrganisationDTO mockOrganisation = new OrganisationDTO();
-        mockOrganisation.setName("Test organisation");
-        mockOrganisations.add(mockOrganisation);
+        UUID requestUuid = UUID.randomUUID();
 
-        stubFor(get(urlEqualTo("/api/organisations/all"))
+        UUID userUuid = UUID.randomUUID();
+        SerialisedUser mockUser = new SerialisedUser(userUuid, "mock", Arrays.asList("ROLE_RESEARCHER"), new HashMap<>());
+
+        StatusUpdateEvent mockEvent = new StatusUpdateEvent(mockUser, RequestReviewStatus.Review, RequestReviewStatus.Revision, requestUuid);
+
+        stubFor(post(urlEqualTo("/internal/audit/events"))
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(mockOrganisations))));
+                        .withStatus(HttpStatus.CREATED.value())));
 
-        List<OrganisationDTO> organisations = organisationService.findAllOrganisations();
-        assertThat(organisations).isNotEmpty();
+        auditService.publishEvent(mockEvent);
 
-        verify(1, getRequestedFor(urlEqualTo("/api/organisations/all")));
+        Thread.sleep(1000);
+
+        verify(1, postRequestedFor(urlEqualTo("/internal/audit/events")));
     }
 
 }

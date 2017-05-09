@@ -12,10 +12,13 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.service.AuditEventService;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -69,11 +73,10 @@ public class AuditResource {
      */
     @GetMapping(params = {"fromDate", "toDate"})
     public ResponseEntity<List<AuditEvent>> getByDates(
-        @RequestParam(value = "fromDate") LocalDate fromDate,
-        @RequestParam(value = "toDate") LocalDate toDate,
+        @RequestParam(value = "fromDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
+        @RequestParam(value = "toDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate,
         @ApiParam Pageable pageable) throws URISyntaxException {
-
-        Page<AuditEvent> page = auditEventService.findByDates(fromDate.atTime(0, 0), toDate.atTime(23, 59), pageable);
+        Page<AuditEvent> page = auditEventService.findByDates(fromDate, toDate, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/management/audits");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

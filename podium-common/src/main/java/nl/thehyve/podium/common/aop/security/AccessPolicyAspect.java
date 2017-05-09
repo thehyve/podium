@@ -5,14 +5,14 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.aop.security;
+package nl.thehyve.podium.common.aop.security;
 
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.Public;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.security.annotations.SecuredByCurrentUser;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
-import nl.thehyve.podium.service.AccessPolicyService;
+import nl.thehyve.podium.common.service.AccessPolicyService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;

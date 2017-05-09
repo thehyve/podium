@@ -7,15 +7,16 @@
 
 package nl.thehyve.podium.domain;
 
+
 import nl.thehyve.podium.common.domain.AbstractPodiumEvent;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
- * Audit events to be stored in the database.
+ * Application events to be stored in the database. E.g., status updates.
  */
 @Entity
 @Table(name = "podium_event")
-public class PersistentAuditEvent extends AbstractPodiumEvent {
+public class PodiumEvent extends AbstractPodiumEvent {
 
 }
