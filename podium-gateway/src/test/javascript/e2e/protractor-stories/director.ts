@@ -140,7 +140,7 @@ export class Director {
         });
     };
 
-    public getElement(elementName: string) {
+    public getElement(elementName: string): Interactable {
         let element = this.getCurrentPage().elements[elementName];
         if (isUndefined(element)) {
             this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + elementName + '.\n');
@@ -178,5 +178,12 @@ export class Director {
         }, function (err) {
             throw 'Page: ' + pageName + ' did not appear fast enough.\n error: ' + err;
         })
+    }
+
+    public uploadFile(elementName: string, fileName: string, uploadTimer?: number) {
+        let element = this.getElement(elementName);
+        let file = this.getData(fileName);
+
+        return element.locator.sendKeys(file.path).then(() => browser.sleep((uploadTimer || 1000)))
     }
 }

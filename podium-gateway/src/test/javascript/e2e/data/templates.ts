@@ -26,3 +26,7 @@ export class Request {
         this.properties = properties;
     }
 }
+
+export class File {
+    constructor(public name: string, public path: string){}
+}
