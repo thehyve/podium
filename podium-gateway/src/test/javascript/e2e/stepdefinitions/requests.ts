@@ -47,7 +47,7 @@ export = function () {
 
         let persona = director.getPersona('he');
 
-        adminConsole.checkDraft(this.scenarioData, checkDraft, callback, persona);
+        adminConsole.checkDraft(this.scenarioData, checkDraft, persona).then(callback, callback);
 
     });
 }

@@ -7,7 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import request = require('request')
+import request = require('request-promise-native')
+
 import {isUndefined} from "util";
 import {browser} from "protractor";
 import {Persona} from "./director";
@@ -18,8 +19,7 @@ export class AdminConsole {
     constructor() {
     }
 
-    public authenticate(callback, persona?: Persona) {//store token first time
-        let that = this;
+    public authenticate(persona?: Persona) {//store token first time
         let login;
         let password;
 
@@ -43,78 +43,72 @@ export class AdminConsole {
                 password: password
             }
         };
-
-        request(options, callback)
+        return request(options)
     }
 
-
     public checkUser(persona, check) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties['login'],
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
 
-            that.authenticate(function (error, response, body) {
-                let options = {
-                    method: 'GET',
-                    url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties['login'],
-                    headers: {
-                        'Authorization': 'Bearer ' + parseJSON(body).access_token
-                    }
-                };
-                request(options, function (error, response, body) {
+            return request(options).then((body) => {
                     let user = parseJSON(body);
 
-                    if (check(persona, user)) {
-                        resolve()
-                    } else {
-                        console.log("http checkUser " + persona.properties['login'] + " " + response["statusCode"], body);
-                        reject("checkUser failed")
+                    if (!check(persona, user)) {
+                        console.log("http checkUser " + persona.properties['login']);
+                        return "checkUser failed";
                     }
-                })
-            });
+                }, (reason) => {
+                    let user = parseJSON(reason['error']);
+
+                    if (!check(persona, user)) {
+                        console.log("http checkUser " + persona.properties['login'] + " " + reason["statusCode"]);
+                        return "checkUser failed";
+                    }
+                }
+            )
         });
     }
 
     public unlockUser(persona) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
+        let token;
 
-            let token;
-            that.authenticate(function (error, response, body) {
-                token = parseJSON(body).access_token;
+        this.authenticate().then((body) => {
+            token = parseJSON(body).access_token;
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties['login'],
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            };
+            return request(options).then((body) => {
+
+                let user = parseJSON(body);
+
                 let options = {
-                    method: 'GET',
-                    url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties['login'],
+                    method: 'PUT',
+                    url: browser.baseUrl + 'podiumuaa/api/users/uuid/' + user.uuid + '/unlock',
                     headers: {
                         'Authorization': 'Bearer ' + token
                     }
                 };
-                request(options, function (error, response, body) {
-
-                    let user = parseJSON(body);
-
-                    let options = {
-                        method: 'PUT',
-                        url: browser.baseUrl + 'podiumuaa/api/users/uuid/' + user.uuid + '/unlock',
-                        headers: {
-                            'Authorization': 'Bearer ' + token
-                        }
-                    };
-                    request(options, function (error, response, body) {
-                        if (response["statusCode"] == 200) {
-                            resolve()
-                        } else {
-                            console.log("http unlockUser " + persona.properties['login'] + " " + response["statusCode"], body);
-                            reject("unlockUser failed")
-                        }
-                    })
+                return request(options).then((body), (reason) => {
+                    console.log("http unlockUser " + persona.properties['login'] + " " + reason["statusCode"], body);
+                    return "unlockUser failed"
                 })
-            });
-        });
+            })
+        })
     }
 
-    public checkOrganization(expectedOrganization, check, callback) {
+    public checkOrganization(expectedOrganization, check) {
 
-        this.authenticate(function (error, response, body) {
+        return this.authenticate().then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'podiumuaa/api/organisations/',
@@ -122,24 +116,23 @@ export class AdminConsole {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
             };
-            request(options, function (error, response, body) {
+            return request(options).then((body) => {
                 let organizations = parseJSON(body);
                 let organization = organizations.filter(function (value) {
                     return value["shortName"] == expectedOrganization.properties["shortName"];
                 })[0];
 
-                if (check(expectedOrganization, organization)) {
-                    callback()
-                } else {
-                    callback(JSON.stringify(organization) + " did not match for " + JSON.stringify(expectedOrganization))
+                if (!check(expectedOrganization, organization)) {
+                    return JSON.stringify(organization) + " did not match for " + JSON.stringify(expectedOrganization)
                 }
+
             })
         });
     }
 
-    public checkDraft(expectedDraft, check, callback, user) {
+    public checkDraft(expectedDraft, check, user) {
 
-        this.authenticate(function (error, response, body) {
+        return this.authenticate(user).then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'api/requests/drafts',
@@ -147,98 +140,83 @@ export class AdminConsole {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
             };
-            request(options, function (error, response, body) {
+            return request(options).then((body) => {
                 let drafts = parseJSON(body);
 
                 let draft = drafts.filter(function (value) {
                     return value["requestDetail"]["title"] == expectedDraft.properties["title"];
                 })[0];
 
-                if (check(expectedDraft, draft)) {
-                    callback()
-                } else {
-                    callback(JSON.stringify(draft) + " did not match for " + JSON.stringify(expectedDraft))
+                if (!check(expectedDraft, draft)) {
+                    return JSON.stringify(draft) + " did not match for " + JSON.stringify(expectedDraft)
                 }
             })
-        }, user);
+        })
     }
 
     public createUser(persona: Persona) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
-            that.authenticate(function (error, response, body) {
-                let options = {
-                    method: 'POST',
-                    url: browser.baseUrl + 'podiumuaa/api/test/users',
-                    headers: {
-                        'Authorization': 'Bearer ' + parseJSON(body).access_token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(
-                        {
-                            "id": null,
-                            "login": persona.properties['login'],
-                            "firstName": persona.properties['firstName'],
-                            "lastName": persona.properties['lastName'],
-                            "email": persona.properties['email'],
-                            "telephone": persona.properties['telephone'],
-                            "institute": persona.properties['institute'],
-                            "department": persona.properties['department'],
-                            "jobTitle": persona.properties['jobTitle'],
-                            "specialism": persona.properties['specialism'],
-                            "emailVerified": persona.properties['emailVerified'],
-                            "adminVerified": persona.properties['adminVerified'],
-                            "accountLocked": persona.properties['accountLocked'],
-                            "langKey": "en",
-                            "createdBy": null,
-                            "createdDate": null,
-                            "lastModifiedBy": null,
-                            "lastModifiedDate": null,
-                            "password": persona.properties['password']
-                        }
-                    )
-                };
-
-                request(options, function (error, response, body) {
-                    if (response["statusCode"] == 201) {
-                        resolve()
-                    } else {
-                        console.log("http createUser " + persona.properties['login'] + " " + response["statusCode"], body);
-                        reject("createUser failed")
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'podiumuaa/api/test/users',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "id": null,
+                        "login": persona.properties['login'],
+                        "firstName": persona.properties['firstName'],
+                        "lastName": persona.properties['lastName'],
+                        "email": persona.properties['email'],
+                        "telephone": persona.properties['telephone'],
+                        "institute": persona.properties['institute'],
+                        "department": persona.properties['department'],
+                        "jobTitle": persona.properties['jobTitle'],
+                        "specialism": persona.properties['specialism'],
+                        "emailVerified": persona.properties['emailVerified'],
+                        "adminVerified": persona.properties['adminVerified'],
+                        "accountLocked": persona.properties['accountLocked'],
+                        "langKey": "en",
+                        "createdBy": null,
+                        "createdDate": null,
+                        "lastModifiedBy": null,
+                        "lastModifiedDate": null,
+                        "password": persona.properties['password']
                     }
-                })
+                )
+            };
+
+            return request(options).catch((reason) => {
+                console.log("http createUser " + persona.properties['login'], reason["statusCode"]);
+                return "createUser failed"
             });
-        });//promise scope
+        });
     }
 
     public createOrganization(Organization: any) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
-            that.authenticate(function (error, response, body) {
-                let options = {
-                    method: 'POST',
-                    url: browser.baseUrl + 'podiumuaa/api/organisations/',
-                    headers: {
-                        'Authorization': 'Bearer ' + parseJSON(body).access_token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(
-                        {
-                            "name": Organization.properties['name'],
-                            "shortName": Organization.properties['shortName'],
-                            "activated": true
-                        }
-                    )
-                };
-                request(options, function (error, response, body) {
-                    if (response["statusCode"] == 201) {
-                        resolve()
-                    } else {
-                        console.log("http createOrganization " + Organization.properties['shortName'] + " " + response["statusCode"]);
-                        reject("createOrganization failed")
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "name": Organization.properties['name'],
+                        "shortName": Organization.properties['shortName'],
+                        "activated": true
                     }
-                })
-            });
+                )
+            };
+            return request(options).catch((reason) => {
+                    console.log("http createOrganization " + Organization.properties['shortName'] + " " + reason["statusCode"]);
+                    return "createOrganization failed"
+                }
+            )
         });
     }
 
@@ -255,87 +233,66 @@ export class AdminConsole {
     }
 
     public cleanDB() {
-        let that = this;
-        return new Promise(function (resolve, reject) {
-
-            that.authenticate(function (error, response, body) {
-                let options = {
-                    method: 'GET',
-                    url: browser.baseUrl + 'podiumuaa/api/test/clearDatabase',
-                    headers: {
-                        'Authorization': 'Bearer ' + parseJSON(body).access_token
-                    },
-                };
-                request(options, function (error, response, body) {
-                    if (response["statusCode"] == 200) {
-                        resolve()
-                    } else {
-                        console.log("cleanDB returned: " + response["statusCode"], body);
-                        reject("cleanDB failed")
-                    }
-                })
-            });
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/test/clearDatabase',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                },
+            };
+            return request(options).catch((reason) => {
+                console.log("cleanDB returned: " + reason["statusCode"], body);
+                return "cleanDB failed";
+            })
         });
     }
 
     assignRole(orgShortName: string, role: string, users: [string]) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
-
-            that.authenticate(function (error, response, body) {
-                let options = {
-                    method: 'POST',
-                    url: browser.baseUrl + 'podiumuaa/api/test/roles/assign',
-                    headers: {
-                        'Authorization': 'Bearer ' + parseJSON(body).access_token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(
-                        {
-                            "organisation": orgShortName,
-                            "authority": role,
-                            "users": users
-                        }
-                    )
-                };
-                request(options, function (error, response, body) {
-                    if (response["statusCode"] == 201) {
-                        resolve();
-                    } else {
-                        console.log("http assignRole organisation", orgShortName, role, users, response["statusCode"], body);
-                        reject("assignRole failed");
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'podiumuaa/api/test/roles/assign',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "organisation": orgShortName,
+                        "authority": role,
+                        "users": users
                     }
-                })
-            });
+                )
+            };
+            return request(options).catch((reason) => {
+                    console.log("http assignRole organisation", orgShortName, role, users, reason["statusCode"], body);
+                    return "assignRole failed";
+                }
+            )
         });
-
     }
 
     getOrgUUID(orgShortName: string) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
-            that.authenticate(function (error, response, body) {
-                let options = {
-                    method: 'GET',
-                    url: browser.baseUrl + 'podiumuaa/api/organisations/',
-                    headers: {
-                        'Authorization': 'Bearer ' + parseJSON(body).access_token
-                    }
-                };
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
 
-                request(options, function (error, response, body) {
-                    if (response["statusCode"] == 200) {
-                        let organizations = parseJSON(body);
-                        let organization = organizations.filter(function (value) {
-                            return value["shortName"] == orgShortName;
-                        })[0];
-                        resolve(organization["uuid"] as string);
-                    } else {
-                        console.log("http getOrgUUID", orgShortName, response["statusCode"], body);
-                        reject("getOrgUUID failed");
-                    }
-                })
-            });
+            return request(options).then((body) => {
+                let organizations = parseJSON(body);
+                let organization = organizations.filter(function (value) {
+                    return value["shortName"] == orgShortName;
+                })[0];
+                return organization["uuid"] as string;
+            }).catch((reason) => {
+                console.log("http getOrgUUID", orgShortName, reason["statusCode"], body);
+                return "getOrgUUID failed";
+            })
         });
     }
 }

@@ -108,7 +108,7 @@ export = function () {
 
         let organization = director.getData(organizationShortName);
 
-        adminConsole.checkOrganization(organization, checkOrg, callback)
+        adminConsole.checkOrganization(organization, checkOrg).then(callback,callback);
     });
 }
 
