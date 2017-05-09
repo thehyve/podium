@@ -52,6 +52,7 @@ spring:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+                cluster.routing.allocation.disk.watermark.high: 99%
     mail:
         host: localhost
     mvc:
