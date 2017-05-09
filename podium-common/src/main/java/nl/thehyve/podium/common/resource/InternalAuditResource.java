@@ -7,13 +7,9 @@
 
 package nl.thehyve.podium.common.resource;
 
-import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.service.dto.AuditEventRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.List;
 
 @RequestMapping("/internal")
 public interface InternalAuditResource {
@@ -26,18 +22,5 @@ public interface InternalAuditResource {
      */
     @RequestMapping(value = "/audit/events", method = RequestMethod.POST)
     ResponseEntity add(@RequestBody AuditEventRepresentation event);
-
-    /**
-     *
-     * @param principal
-     * @param after
-     * @param type
-     * @return
-     */
-    @RequestMapping(value = "/audit/events/{principal}", method = RequestMethod.GET)
-    ResponseEntity<List<AuditEventRepresentation>> find(
-        @PathVariable("principal") String principal,
-        @RequestParam("after") Date after,
-        @RequestParam("type") EventType type);
 
 }
