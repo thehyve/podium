@@ -20,6 +20,7 @@ import { RequestStatusOptions } from '../../shared/request/request-status/reques
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftModalModalComponent } from './delete-request-draft-modal.component';
 import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
+import { requestOverviewPaths } from './request-overview.constants';
 
 @Component({
     selector: 'pdm-request-overview',
@@ -47,7 +48,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     links: any;
-    isOrganisationOverview: boolean;
+    isResearcherRoute: boolean;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -62,7 +63,8 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.isOrganisationOverview = !!data['isOrganisationOverview'];
+            this.isResearcherRoute = this.activatedRoute.snapshot.url[0].path
+                == requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
             this.pageHeader = data['pageHeader'];
             this.page = data['pagingParams'].page;
             this.previousPage = data['pagingParams'].page;
@@ -78,7 +80,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             this.currentUser = account;
             this.loadSubmittedRequests();
         });
-
         this.registerChangeInRequests();
     }
 

@@ -10,7 +10,7 @@
 
 <h2><span jhiTranslate="{{pageHeader}}">My requests</span>
 
-    <div class="btn-group flex-btn-group-container" *ngIf="!isOrganisationOverview">
+    <div class="btn-group flex-btn-group-container" *ngIf="isResearcherRoute">
         <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadSubmittedRequests()" >
             <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">

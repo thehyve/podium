@@ -40,7 +40,7 @@
 
             <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
                 *pdmHasAnyAuthority="'ROLE_REVIEWER'">
-                <a class="nav-link" routerLink="/reviews">
+                <a class="nav-link" routerLink="/requests/reviews">
                     <i class="material-icons">rate_review</i>
                     <span class="hidden-sm-down"
                           jhiTranslate="global.menu.organisation.org_reviewer.reviews">
@@ -99,7 +99,7 @@
                     </li>
                     <li class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item" routerLink="requests/organisation-overview" routerLinkActive="active"
+                        <a class="dropdown-item" routerLink="requests/organisation-coordinator-overview" routerLinkActive="active"
                            (click)
                             ="collapseNavbar()">
                             <i class="material-icons">archive</i>

@@ -53,8 +53,9 @@
             }
         },
         "overview": {
-            "pageHeader": "My Requests",
-            "pageHeaderOverview": "Organisation Requests"
+            "pageHeaderResearcher": "My Requests",
+            "pageHeaderCoordinator": "Organisation Requests",
+            "pageHeaderReviewer": "Reviews"
         },
         "form": {
             "header": {

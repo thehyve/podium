@@ -12,6 +12,7 @@ import { UserRouteAccessService } from '../../shared/auth/user-route-access-serv
 import { RequestOverviewComponent } from './request-overview.component';
 import { PaginationUtil } from 'ng-jhipster';
 import { Injectable } from '@angular/core';
+import { requestOverviewPaths } from './request-overview.constants';
 
 @Injectable()
 export class RequestResolvePagingParams implements Resolve<any> {
@@ -30,7 +31,7 @@ export class RequestResolvePagingParams implements Resolve<any> {
 }
 
 export const requestOverviewRoute: Route = {
-    path: 'overview',
+    path: requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER,
     component: RequestOverviewComponent,
     resolve: {
         'pagingParams': RequestResolvePagingParams
@@ -38,14 +39,14 @@ export const requestOverviewRoute: Route = {
     data: {
         authorities: ['ROLE_RESEARCHER'],
         pageTitle: 'request.pageTitle',
-        pageHeader: 'request.overview.pageHeader',
+        pageHeader: 'request.overview.pageHeaderResearcher',
         breadcrumb: 'overview'
     },
     canActivate: [UserRouteAccessService]
 };
 
 export const organisationRequestOverviewRoute: Route = {
-    path: 'organisation-overview',
+    path: requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR,
     component: RequestOverviewComponent,
     resolve: {
         'pagingParams': RequestResolvePagingParams
@@ -53,9 +54,23 @@ export const organisationRequestOverviewRoute: Route = {
     data: {
         authorities: ['ROLE_ORGANISATION_COORDINATOR'],
         pageTitle: 'request.pageTitle',
-        pageHeader: 'request.overview.pageHeaderOverview',
+        pageHeader: 'request.overview.pageHeaderCoordinator',
         breadcrumb: 'organisation overview',
-        isOrganisationOverview: true,
+    },
+    canActivate: [UserRouteAccessService]
+};
+
+export const reviewerRequestOverviewRoute: Route = {
+    path: requestOverviewPaths.REQUEST_OVERVIEW_REVIEWER,
+    component: RequestOverviewComponent,
+    resolve: {
+        'pagingParams': RequestResolvePagingParams
+    },
+    data: {
+        authorities: ['ROLE_REVIEWER'],
+        pageTitle: 'request.pageTitle',
+        pageHeader: 'request.overview.pageHeaderReviewer',
+        breadcrumb: 'reviews overview',
     },
     canActivate: [UserRouteAccessService]
 };
