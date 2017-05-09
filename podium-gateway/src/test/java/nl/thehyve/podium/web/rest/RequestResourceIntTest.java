@@ -119,13 +119,8 @@ public class RequestResourceIntTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private JsonParser parser = JsonParserFactory.getJsonParser();
-
     private TypeReference<List<RequestRepresentation>> listTypeReference =
         new TypeReference<List<RequestRepresentation>>(){};
-
-    private TypeReference<RequestRepresentation> typeReference =
-        new TypeReference<RequestRepresentation>(){};
 
     private MockMvc mockMvc;
 
