@@ -73,7 +73,8 @@
                 {{request.requestDetail.title || '-'}}
             </td>
             <td>
-                {{request.status}} ({{ request.requestReview.status != 'None' ? request.requestReview.status : '' }})
+                <!--TODO: Uncomment after requestReview no longer null value-->
+                <!--{{request.status}} ({{ request.requestReview.status != 'None' ? request.requestReview.status : '' }})-->
             </td>
             <td>
                 <ul>
