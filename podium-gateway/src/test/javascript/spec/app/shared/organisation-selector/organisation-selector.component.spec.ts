@@ -71,7 +71,7 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
     describe('ngOnInit', () => {
         it('should select organisation(s) based on input value on initialisation', () => {
-            comp.organisations = [new Organisation({id:1000, uuid:'123', name: 'dummy'})];
+            comp.organisations = [new Organisation({id: 1000, uuid: '123', name: 'dummy'})];
             comp.ngOnInit();
             expect(comp.selectedOrganisationUuids).toEqual(['123']);
         });
@@ -81,18 +81,18 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
         beforeEach(() => {
             comp.organisationOptions = [
-                new Organisation({id:1000, uuid:'123', name: 'dummy'}),
-                new Organisation({id:1001, uuid:'456', name: 'dummy'})
+                new Organisation({id: 1000, uuid: '123', name: 'dummy'}),
+                new Organisation({id: 1001, uuid: '456', name: 'dummy'})
             ];
             comp.selectedOrganisationUuids = ['456'];
             comp.organisationChange = new EventEmitter();
 
-            spyOn(comp.organisationChange,  'emit');
+            spyOn(comp.organisationChange, 'emit');
         });
 
         it('should update input value when selected organisations changed', () => {
             comp.onChange();
-            expect(comp.organisations).toEqual([new Organisation({id:1001, uuid:'456', name: 'dummy'})]);
+            expect(comp.organisations).toEqual([new Organisation({id: 1001, uuid: '456', name: 'dummy'})]);
         });
 
         it('should emit value when selection changed', () => {
@@ -104,16 +104,21 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
 
     describe('filterOptionsByRequestType', () => {
         beforeEach(() => {
-            comp.requestTypes =[
+            comp.requestTypes = [
                 RequestType.Data,
                 RequestType.Material,
                 RequestType.Images
             ];
             comp.allOrganisations = [
-                new Organisation({id:1000, uuid:'123', name: 'dummy', requestTypes: [RequestType.Data]}),
-                new Organisation({id:1001, uuid:'456', name: 'dummy', requestTypes: [RequestType.Data, RequestType.Images]})
+                new Organisation({id: 1000, uuid: '123', name: 'dummy', requestTypes: [RequestType.Data]}),
+                new Organisation({
+                    id: 1001,
+                    uuid: '456',
+                    name: 'dummy',
+                    requestTypes: [RequestType.Data, RequestType.Images]
+                })
             ];
-            comp.organisations = [new Organisation({id:1001, uuid:'456', name: 'dummy'})];
+            comp.organisations = [new Organisation({id: 1001, uuid: '456', name: 'dummy'})];
             comp.selectedOrganisationUuids = ['456'];
 
             spyOn(comp, 'loadOrganisationsByRequestTypes');
@@ -124,18 +129,23 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
             expect(comp.organisations.length).toBe(0);
             expect(comp.selectedOrganisations.length).toBe(0);
             expect(comp.loadOrganisationsByRequestTypes).toHaveBeenCalled();
-        })
+        });
     });
 
     describe('loadOrganisationsByRequestTypes', () => {
 
         beforeEach(() => {
-            comp.requestTypes =[RequestType.Images];
+            comp.requestTypes = [RequestType.Images];
             comp.allOrganisations = [
-                new Organisation({id:1000, uuid:'123', name: 'dummy', requestTypes: [RequestType.Data]}),
-                new Organisation({id:1001, uuid:'456', name: 'dummy', requestTypes: [RequestType.Data, RequestType.Images]})
+                new Organisation({id: 1000, uuid: '123', name: 'dummy', requestTypes: [RequestType.Data]}),
+                new Organisation({
+                    id: 1001,
+                    uuid: '456',
+                    name: 'dummy',
+                    requestTypes: [RequestType.Data, RequestType.Images]
+                })
             ];
-            comp.organisations = [new Organisation({id:1001, uuid:'456', name: 'dummy'})];
+            comp.organisations = [new Organisation({id: 1001, uuid: '456', name: 'dummy'})];
             comp.selectedOrganisationUuids = ['456'];
 
         });
