@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.PodiumGatewayApp;
+import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
@@ -31,7 +33,6 @@ import nl.thehyve.podium.service.UserClientService;
 import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
 import nl.thehyve.podium.service.representation.RequestDetailRepresentation;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
-import org.assertj.core.util.Maps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +52,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -58,7 +60,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
 import java.net.URISyntaxException;
 
 import static org.hamcrest.Matchers.*;
@@ -108,8 +119,6 @@ public class RequestResourceIntTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private JsonParser parser = JsonParserFactory.getJsonParser();
-
     private TypeReference<List<RequestRepresentation>> listTypeReference =
         new TypeReference<List<RequestRepresentation>>(){};
 
@@ -119,15 +128,30 @@ public class RequestResourceIntTest {
     private UserAuthenticationToken coordinator1;
     private UserAuthenticationToken coordinator2;
 
+    private static UUID organisationUuid1 = UUID.randomUUID();
+    private static UUID organisationUuid2 = UUID.randomUUID();
+    private static UUID coordinatorUuid1 = UUID.randomUUID();
+    private static UUID coordinatorUuid2 = UUID.randomUUID();
+
+    private static final String VALIDATE_REQUEST = "validate";
+    private static final String APPROVE_REQUEST = "approve";
+    private static final String REVISE_REQUEST = "revision";
+    private static final String REJECT_REQUEST = "reject";
+
     private static final String mockRequesterUsername = "test";
     private static final String mockRequesterPassword = "Password1!";
     private static UUID mockRequesterUuid = UUID.randomUUID();
     private static Set<String> mockRequesterAuthorities =
         Sets.newSet(AuthorityConstants.RESEARCHER);
-    private static UUID organisationUuid1 = UUID.randomUUID();
-    private static UUID organisationUuid2 = UUID.randomUUID();
-    private static UUID coordinatorUuid1 = UUID.randomUUID();
-    private static UUID coordinatorUuid2 = UUID.randomUUID();
+
+    private static final String mockCoordinatorUsername = "coordinator";
+    private static Set<String> mockCoordinatorAuthorities =
+        Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR);
+
+    private static final Map<UUID, Collection<String>> mockOrganisationAuthorities = new HashMap(1);
+    static {
+        mockOrganisationAuthorities.put(organisationUuid1, mockCoordinatorAuthorities);
+    };
 
     public static final String REQUESTS_ROUTE = "/api/requests";
     public static final String REQUESTS_SEARCH_ROUTE = "/api/_search/requests";
@@ -165,6 +189,9 @@ public class RequestResourceIntTest {
     public void setup() {
         requestSearchRepository.deleteAll();
 
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
         MockitoAnnotations.initMocks(this);
 
         // Mock authentication for the requester
@@ -175,8 +202,7 @@ public class RequestResourceIntTest {
 
         // Coordinator 1 is coordinator of mock organisation 1
         SerialisedUser mockCoordinator1 = new SerialisedUser(
-            coordinatorUuid1, "coordinator1", mockRequesterAuthorities,
-            Maps.newHashMap(organisationUuid1, Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR)));
+            coordinatorUuid1, "coordinator1", mockRequesterAuthorities, mockOrganisationAuthorities);
         coordinator1 = new UserAuthenticationToken(mockCoordinator1);
         coordinator1.setAuthenticated(true);
 
@@ -184,6 +210,7 @@ public class RequestResourceIntTest {
         Map<UUID, Collection<String>> coordinator2Roles = new HashMap<>();
         coordinator2Roles.put(organisationUuid1, Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR));
         coordinator2Roles.put(organisationUuid2, Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR));
+
         SerialisedUser mockCoordinator2 = new SerialisedUser(
             coordinatorUuid2, "coordinator2", mockRequesterAuthorities, coordinator2Roles);
         coordinator2 = new UserAuthenticationToken(mockCoordinator2);
@@ -257,9 +284,6 @@ public class RequestResourceIntTest {
     private RequestRepresentation newDraft(UserAuthenticationToken user) throws Exception {
         final RequestRepresentation[] request = new RequestRepresentation[1];
 
-        mapper.registerModule(new JavaTimeModule());
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
         mockMvc.perform(
             getRequest(HttpMethod.POST,
                 REQUESTS_ROUTE + "/drafts",
@@ -273,6 +297,9 @@ public class RequestResourceIntTest {
             log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
             request[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
         });
+
+        Thread.sleep(1);
+
         return request[0];
     }
 
@@ -390,44 +417,8 @@ public class RequestResourceIntTest {
     @Test
     @Transactional
     public void submitDraft() throws Exception {
-        initMocks();
-
-        RequestRepresentation request = newDraft(requester);
-
-        setRequestData(request);
-
-        List<OrganisationDTO> organisations = new ArrayList<>();
-        OrganisationDTO organisation = new OrganisationDTO();
-        organisation.setUuid(organisationUuid1);
-        organisations.add(organisation);
-        request.setOrganisations(organisations);
-
-        request = updateDraft(requester, request);
-        Assert.assertEquals(1, request.getOrganisations().size());
-
-        // Submit the draft. One request should have been generated (and is returned).
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/drafts/" + request.getUuid().toString() + "/submit",
-                null,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for (RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                Assert.assertEquals(1, req.getOrganisations().size());
-                Assert.assertEquals(organisationUuid1, req.getOrganisations().get(0).getUuid());
-            }
-        });
-
-        Thread.sleep(1);
+        // Setup a submitted draft
+        RequestRepresentation requestRepresentation = getSubmittedDraft();
 
         verify(this.mailService, times(1)).sendSubmissionNotificationToCoordinators(any(), any(), nonEmptyUserRepresentationList());
         verify(this.mailService, times(1)).sendSubmissionNotificationToRequester(any(), nonEmptyRequestList(), mapContainsKey(organisationUuid1));
@@ -485,9 +476,17 @@ public class RequestResourceIntTest {
     private void initFetchTests() throws Exception {
         initMocks();
 
-        createAndSubmitDraft(Sets.newSet(organisationUuid1, organisationUuid2));
+        // Initialize draft with two organisations
+        RequestRepresentation requestTwoOrganisation = newDraft(requester);
+        setRequestData(requestTwoOrganisation);
 
-        createAndSubmitDraft(Sets.newSet(organisationUuid2));
+        setupSubmittedDraftWith(requestTwoOrganisation, Arrays.asList(organisationUuid1, organisationUuid2));
+
+        // Initialize draft with one organisation
+        RequestRepresentation requestOneOrganisation = newDraft(requester);
+        setRequestData(requestOneOrganisation);
+
+        setupSubmittedDraftWith(requestOneOrganisation, Arrays.asList(organisationUuid2));
     }
 
     @Test
@@ -615,6 +614,195 @@ public class RequestResourceIntTest {
         .andDo(result -> {
             log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
         });
+    }
+
+    private RequestRepresentation setupSubmittedDraftWith(RequestRepresentation request, List<UUID> organisations) throws Exception {
+        final RequestRepresentation[] requestRepresentation = new RequestRepresentation[1];
+
+        initMocks();
+
+        for (UUID uuid : organisations) {
+            int idx = organisations.indexOf(uuid);
+
+            OrganisationDTO organisation = createOrganisation(idx, uuid);
+            request.getOrganisations().add(organisation);
+        }
+
+        request = updateDraft(requester, request);
+        Assert.assertEquals(organisations.size(), request.getOrganisations().size());
+
+        // Submit the draft. One request should have been generated (and is returned).
+        mockMvc.perform(
+            getRequest(HttpMethod.GET,
+                REQUESTS_ROUTE + "/drafts/" + request.getUuid().toString() + "/submit",
+                null,
+                Collections.emptyMap())
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON)
+        )
+        .andDo(result -> {
+            log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+            List<RequestRepresentation> requests =
+                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+
+            // Number of requests should equal the number of organisations it was submitted to
+            Assert.assertEquals(organisations.size(), requests.size());
+            for (RequestRepresentation req: requests) {
+                Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
+                requestRepresentation[0] = req;
+            }
+        })
+        .andExpect(status().isOk());
+
+        return requestRepresentation[0];
+    }
+
+    @Test
+    @Transactional
+    public void rejectRequestFromValidation() throws Exception {
+        // Setup a submitted draft
+        RequestRepresentation requestRepresentation = getSubmittedDraft();
+
+        // Reject the request.
+        ResultActions rejectedRequest
+            = performProcessAction(coordinator1, REJECT_REQUEST, requestRepresentation.getUuid().toString());
+
+        rejectedRequest
+            .andDo(result -> {
+                log.info("Result rejected request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+
+                Assert.assertEquals(DecisionOutcome.Rejected, requestResult.getRequestReview().getDecision());
+            })
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @Transactional
+    public void rejectRequestFromReview() throws Exception {
+        // Setup a submitted draft
+        RequestRepresentation requestRepresentation = getSubmittedDraft();
+
+        // Send for review
+        ResultActions validatedRequest
+            = performProcessAction(coordinator1, VALIDATE_REQUEST, requestRepresentation.getUuid().toString());
+
+        validatedRequest
+            .andDo(result -> {
+                log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+            })
+            .andExpect(status().isOk());
+
+        // Reject the request.
+        ResultActions rejectedRequest
+            = performProcessAction(coordinator1, REJECT_REQUEST, requestRepresentation.getUuid().toString());
+
+        rejectedRequest
+            .andDo(result -> {
+                log.info("Result rejected request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+
+                Assert.assertEquals(DecisionOutcome.Rejected, requestResult.getRequestReview().getDecision());
+            })
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @Transactional
+    public void validateRequest() throws Exception {
+        // Setup a submitted draft
+        RequestRepresentation requestRepresentation = getSubmittedDraft();
+
+        // Send for review
+        ResultActions validatedRequest
+            = performProcessAction(coordinator1, VALIDATE_REQUEST, requestRepresentation.getUuid().toString());
+
+        validatedRequest
+            .andDo(result -> {
+                log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+            })
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @Transactional
+    public void approveReviewRequest() throws Exception {
+        RequestRepresentation requestRepresentation = getSubmittedDraft();
+
+        // Send for review
+        ResultActions validatedRequest
+            = performProcessAction(coordinator1, VALIDATE_REQUEST, requestRepresentation.getUuid().toString());
+
+        validatedRequest
+            .andDo(result -> {
+                log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+            })
+            .andExpect(status().isOk());
+
+        // Approve the request.
+        ResultActions approvedRequest
+            = performProcessAction(coordinator1, APPROVE_REQUEST, requestRepresentation.getUuid().toString());
+
+        approvedRequest
+            .andDo(result -> {
+                log.info("Result approved request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(DecisionOutcome.Approved, requestResult.getRequestReview().getDecision());
+            })
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @Transactional
+    public void sendRequestForRevisionFromValidation() throws Exception {
+        // Setup a submitted draft
+        RequestRepresentation requestRepresentation = getSubmittedDraft();
+
+        // Send for revision
+        ResultActions revisedRequest
+            = performProcessAction(coordinator1, REVISE_REQUEST, requestRepresentation.getUuid().toString());
+
+        revisedRequest
+            .andDo(result -> {
+                log.info("Result revised request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestReviewStatus.Revision, requestResult.getRequestReview().getStatus());
+            })
+            .andExpect(status().isOk());
+    }
+
+    private ResultActions performProcessAction(UserAuthenticationToken user, String action, String uuid) throws Exception {
+        return mockMvc.perform(
+            getRequest(HttpMethod.GET,
+                REQUESTS_ROUTE + "/" + uuid + "/" + action,
+                null,
+                Collections.emptyMap())
+                .with(token(user))
+                .accept(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    private RequestRepresentation getSubmittedDraft() throws Exception {
+        // Initialize draft
+        RequestRepresentation request = newDraft(requester);
+        setRequestData(request);
+
+        // Setup submitted draft
+        return setupSubmittedDraftWith(request, Arrays.asList(organisationUuid1));
     }
 
 }

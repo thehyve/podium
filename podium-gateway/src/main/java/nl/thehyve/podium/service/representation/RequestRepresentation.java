@@ -41,6 +41,8 @@ public class RequestRepresentation implements Serializable {
 
     private RequestReviewRepresentation requestReview;
 
+    private RequestDetailRepresentation revisionDetail;
+
     @Valid
     private RequestDetailRepresentation requestDetail;
 
@@ -89,6 +91,10 @@ public class RequestRepresentation implements Serializable {
     public void setOrganisations(List<OrganisationDTO> organisations) {
         this.organisations = organisations;
     }
+
+    public RequestDetailRepresentation getRevisionDetail() { return revisionDetail; }
+
+    public void setRevisionDetail(RequestDetailRepresentation revisionDetail) { this.revisionDetail = revisionDetail; }
 
     public RequestDetailRepresentation getRequestDetail() {
         return requestDetail;

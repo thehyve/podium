@@ -39,7 +39,9 @@ export class RequestFormSubmitDialogComponent {
         let submittedTitle = `The request has been successfully submitted.`;
         let submittedMessage = `<ul>`;
         for (let req of requests) {
-            submittedMessage += `<li>Request ${req.requestDetail.title} for organisation ${req.organisations}.</li>`;
+            for (let organisation of req.organisations) {
+                submittedMessage += `<li>Request for organisation ${organisation.name}.</li>`;
+            }
         }
         submittedMessage += `</ul>`;
         this.messageService.store(new Message(submittedTitle, submittedMessage));

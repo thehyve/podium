@@ -21,10 +21,11 @@ export class RequestBase implements Request {
     uuid?: string;
     id?: string;
     status?: RequestStatusOptions;
+    revisionDetail?: RequestDetail = new RequestDetail();
     requestDetail?: RequestDetail = new RequestDetail();
     requestReview?: RequestReview;
     organisations?: Organisation[] = [];
-    requester?: User;
+    requester?: string;
 
     constructor() {
     }

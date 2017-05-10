@@ -6,6 +6,7 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Request;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +43,8 @@ public class NotificationService {
     @Async
     public void submissionNotificationToRequester(AuthenticatedUser user, List<Request> organisationRequests) {
         // Fetch requester data through Feign.
-        UserRepresentation requester;
-        try {
-            requester = userClientService.findUserByUuid(user.getUuid());
-        } catch (Exception e) {
-            log.error("Error fetching requester details", e);
-            throw new ServiceNotAvailable("Could not fetch requester details", e);
-        }
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
         Map<UUID, OrganisationDTO> organisations = new HashMap<>();
         try {
             for (Request request: organisationRequests) {
@@ -73,16 +69,114 @@ public class NotificationService {
     @Async
     public void submissionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
         // Fetch organisation and organisation coordinators through Feign.
-        List<UserRepresentation> coordinators;
-        try {
-            coordinators = organisationClientService.findUsersByRole(organisation.getUuid(),
-                AuthorityConstants.ORGANISATION_COORDINATOR);
-        } catch (Exception e) {
-            log.error("Error fetching organisation and coordinators", e);
-            throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
-        }
+        List<UserRepresentation> coordinators
+            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
         mailService.sendSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
+    /**
+     * Notify requester about the rejection of their request.
+     * @param user the authenticated user
+     * @param requestRepresentation the request object
+     */
+    public void rejectionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
+        mailService.sendRejectionNotificationToRequester(requester, requestRepresentation);
+    }
+
+    /**
+     * Notify organisation coordinators about the submission of a revised request.
+     * @param organisation the organisation DTO object
+     * @param organisationRequest the submitted request object
+     */
+    @Async
+    public void revisionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
+        // Fetch organisation coordinators through Feign.
+        List<UserRepresentation> coordinators
+            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
+        mailService.sendRequestRevisionSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
+    }
+
+    /**
+     * Notify organisation reviewers about an available request to review.
+     *
+     * @param organisation The organisation representation
+     * @param reviewRequest The request to be reviewed
+     */
+    @Async
+    public void reviewNotificationToReviewers(OrganisationDTO organisation, Request reviewRequest) {
+        // Fetch organisation reviewers through Feign.
+        List<UserRepresentation> reviewers
+            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.REVIEWER);
+
+        mailService.sendRequestReviewNotificationToReviewers(reviewRequest, organisation, reviewers);
+    }
+
+    /**
+     * Notify the requester about the approval of a their request.
+     * @param user the requester
+     * @param requestRepresentation The request that is approved.
+     */
+    @Async
+    public void approvalNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
+        mailService.sendRequestApprovalNotificationToRequester(requester, requestRepresentation);
+    }
+
+    /**
+     * Notify the requester that their request requires one or more revisions.
+     * @param user the requester
+     * @param requestRepresentation The request that requires revision.
+     */
+    @Async
+    public void revisionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
+        mailService.sendRequestRevisionNotificationToRequester(requester, requestRepresentation);
+    }
+
+
+    /**
+     * Fetch a user representation by UUID through feign.
+     *
+     * @param userUuid the UUID of the user
+     * @return UserRepresentation the representation object of the user
+     */
+    private UserRepresentation fetchUserThroughFeign(UUID userUuid) {
+        try {
+            return userClientService.findUserByUuid(userUuid);
+        } catch (Exception e) {
+            log.error("Error fetching requester details", e);
+            throw new ServiceNotAvailable("Could not fetch requester details", e);
+        }
+    }
+
+    /**
+     * Fetch all users from an organisation with a specific role
+     *
+     * @param uuid The UUID of the organisation
+     * @param authority The authority that the users are required to have
+     * @return List of user representations
+     */
+    private List<UserRepresentation> fetchOrganisationUsersByRoleThroughFeign(UUID uuid, String authority) {
+        // Fetch organisation users by role through Feign.
+        List<UserRepresentation> users;
+        try {
+            users = organisationClientService.findUsersByRole(uuid,
+                authority);
+        } catch (Exception e) {
+            log.error("Error fetching organisation users", e);
+            throw new ServiceNotAvailable("Could not fetch organisation users", e);
+        }
+
+        return users;
+    }
 
 }

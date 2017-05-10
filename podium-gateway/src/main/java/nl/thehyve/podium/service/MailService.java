@@ -11,6 +11,7 @@ import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.PodiumProperties;
 import nl.thehyve.podium.domain.Request;
+import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,12 +83,15 @@ public class MailService {
     /**
      * Send a notification email to the coordinators of an organisation that a request has been
      * submitted to their organisation.
+     *
      * @param organisationRequest the request that has been submitted.
+     * @param organisation the organisation that is was submitted to
      * @param coordinators the list of organisation coordinators.
      */
     @Async
-    public void sendSubmissionNotificationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
-                                                         List<UserRepresentation> coordinators) {
+    public void sendSubmissionNotificationToCoordinators(
+        Request organisationRequest, OrganisationDTO organisation, List<UserRepresentation> coordinators
+    ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             organisationRequest, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -108,12 +112,15 @@ public class MailService {
     /**
      * Send a notification email to the requester that their request has been
      * submitted.
+     *
      * @param requester the requester details
      * @param organisationRequests the list of generated requests
+     * @param organisations map of organisation uuids to organisation representation
      */
     @Async
-    public void sendSubmissionNotificationToRequester(UserRepresentation requester, List<Request> organisationRequests,
-                                                      Map<UUID, OrganisationDTO> organisations) {
+    public void sendSubmissionNotificationToRequester(
+        UserRepresentation requester, List<Request> organisationRequests, Map<UUID, OrganisationDTO> organisations
+    ) {
         log.info("Notifying requester: requester = {}, #requests = {}",
             requester, organisationRequests == null ? null : organisationRequests.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -126,6 +133,126 @@ public class MailService {
         context.setVariable("organisations", organisations);
         String content = templateEngine.process("requesterRequestSubmitted", context);
         String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
+
+    /**
+     * Send a notification email to the requester informing that their request has been rejected.
+     *
+     * @param requester the requester details
+     * @param requestRepresentation the request regarding this notification
+     */
+    @Async
+    public void sendRejectionNotificationToRequester(
+        UserRepresentation requester, RequestRepresentation requestRepresentation
+    ) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, requestRepresentation);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request rejection e-mail to requester '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", requestRepresentation);
+        String content = templateEngine.process("requesterRequestRejected", context);
+        String subject = messageSource.getMessage("email.requesterRequestRejected.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
+
+    /**
+     * Send a notification email to the organisation informing them about a submitted request revision
+     *
+     * @param organisationRequest the request that has been submitted.
+     * @param organisation the organisation that is was submitted to
+     * @param coordinators the list of organisation coordinators.
+     */
+    @Async
+    public void sendRequestRevisionSubmissionNotificationToCoordinators(
+        Request organisationRequest, OrganisationDTO organisation, List<UserRepresentation> coordinators
+    ) {
+        log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
+            organisationRequest, organisation, coordinators == null ? null : coordinators.size());
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        for (UserRepresentation user: coordinators) {
+            log.debug("Sending request revision e-mail to '{}'", user.getEmail());
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            context.setVariable("request", organisationRequest);
+            context.setVariable("organisation", organisation);
+            String content = templateEngine.process("organisationRequestRevisionSubmitted", context);
+            String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
+    }
+
+    @Async
+    public void sendRequestReviewNotificationToReviewers(
+        Request reviewRequest, OrganisationDTO organisation, List<UserRepresentation> reviewers
+    ) {
+        log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
+            reviewRequest, organisation, reviewers == null ? null : reviewers.size());
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        for (UserRepresentation user : reviewers) {
+            log.debug("Sending review request e-mail to '{}'", user.getEmail());
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            context.setVariable("request", reviewRequest);
+            context.setVariable("organisation", organisation);
+            String content = templateEngine.process("organisationRequestReview", context);
+            String subject = messageSource.getMessage("email.organisationRequestReview.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
+    }
+
+    /**
+     * Send a notification email to the requester that their request has been
+     * approved.
+     *
+     * @param requester the requester details
+     * @param request the request
+     */
+    @Async
+    public void sendRequestApprovalNotificationToRequester(
+        UserRepresentation requester, RequestRepresentation request
+    ) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request approved e-mail to '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        String content = templateEngine.process("requesterRequestApproved", context);
+        String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
+
+    /**
+     * Send a notification email to the requester that their request requires one or more
+     * revisions.
+     *
+     * @param requester the requester details
+     * @param request the request
+     */
+    @Async
+    public void sendRequestRevisionNotificationToRequester(
+        UserRepresentation requester, RequestRepresentation request
+    ) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request revision e-mail to '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        String content = templateEngine.process("requesterRequestRevision", context);
+        String subject = messageSource.getMessage("email.requesterRequestRevision.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 }

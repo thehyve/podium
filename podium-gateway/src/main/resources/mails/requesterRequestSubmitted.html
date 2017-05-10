@@ -53,8 +53,18 @@
 
         <p>
             <span th:text="#{email.requesterRequestSubmitted.processing_info}">
-                Your request is now processed by the organization(s) you will receive emails with status updates on your request.
+                Your request is now processed by the organization(s) and you will receive emails with status updates on your request.
             </span>
+        </p>
+
+        <p>
+            <span th:text="#{email.requesterRequestSubmitted.status_link}">
+                You can always check the actual status of your request in the BBMRI Request Portal using the following link:
+            </span>
+            <br />
+            <a th:href="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}">
+                <span th:text="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}"></span>
+            </a>
         </p>
 
         <br />

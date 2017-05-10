@@ -9,6 +9,7 @@ package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
@@ -19,6 +20,7 @@ import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
@@ -26,6 +28,7 @@ import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
+import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.slf4j.Logger;
@@ -61,6 +64,9 @@ public class RequestService {
 
     @Autowired
     private RequestMapper requestMapper;
+
+    @Autowired
+    private RequestDetailMapper requestDetailMapper;
 
     @Autowired
     private RequestSearchRepository requestSearchRepository;
@@ -219,7 +225,7 @@ public class RequestService {
      *
      *  @param requestUuid the uuid of the request
      *  @return the entity
-     *  @throws AccessDenied iff the user is not the requester of the request.
+     *  @throws ResourceNotFound when the requested request could not be found.
      */
     @Transactional(readOnly = true)
     public RequestRepresentation findRequest(UUID requestUuid) {
@@ -228,7 +234,7 @@ public class RequestService {
         if (request == null) {
             throw new ResourceNotFound("Request not found.");
         }
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     /**
@@ -279,7 +285,7 @@ public class RequestService {
 
     /**
      * Updates the draft request with the properties in the body.
-     * The request to update is fetched based on the id in the body.
+     * The request to update is fetched based on the uuid in the body.
      *
      * @param user the current user
      * @param body the updated properties.
@@ -298,6 +304,89 @@ public class RequestService {
         request = requestMapper.updateRequestDTOToRequest(body, request);
         save(request);
         return requestMapper.requestToRequestDTO(request);
+    }
+
+    /**
+     * Updates the request with the properties in the body.
+     * The request to update is fetched based on the uuid in the body.
+     * Only allowed when a request has the review status Revision.
+     *
+     * @param user the current user
+     * @param body the updated properties.
+     * @return the updated request
+     * @throws ActionNotAllowedInStatus if the request is not in review status 'Revision'.
+     */
+    @Transactional
+    @Timed
+    public RequestRepresentation updateRequest(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
+        Request request = requestRepository.findOneByUuid(body.getUuid());
+
+        if (!this.isInRevision(request)) {
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+        }
+
+        // FIXME: [AOP] Only requester should be able to perform an update to the request.
+        if (!request.getRequester().equals(user.getUserUuid())) {
+            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
+        }
+
+        requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
+
+        request = save(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
+    }
+
+    /**
+     * Submit the request by uuid.
+     *
+     * @param user the current user, submitting the request
+     * @param uuid the uuid of the request
+     * @return the updated request
+     * @throws ActionNotAllowedInStatus if the request is not in status 'Revision'.
+     */
+    @Timed
+    public RequestRepresentation submitRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        // Is the request currently in Revision
+        if (!this.isInRevision(request)) {
+            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+        }
+
+        // Is the current user the owner of the request
+        if (!request.getRequester().equals(user.getUserUuid())) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        // Update the request details with the updated revision details
+        request.setRequestDetail(request.getRevisionDetail());
+        save(request);
+
+        // Submit the request for validation by the organisation coordinator
+        requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send emails to all coordinators belonging to this organisation
+        log.debug("Sending revision submission notification emails to all coordinators of {}",
+            requestRepresentation.getOrganisations().get(0).getName());
+
+        // Send notification to all coordinators
+        for (UUID organisationUuid: request.getOrganisations()) {
+            // Fetch organisation through Feign.
+            OrganisationDTO organisation;
+
+            try {
+                organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation through feign", e);
+            }
+
+            notificationService.revisionNotificationToCoordinators(organisation, request);
+        }
+
+        return requestRepresentation;
     }
 
     private void deleteRequest(Long id) {
@@ -326,6 +415,98 @@ public class RequestService {
         deleteRequest(request.getId());
     }
 
+    @Transactional
+    @Timed
+    public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        // Move the request to Review by organisation reviewers
+        requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
+
+        // Send notification to all reviewers of organisation
+        for (UUID organisationUuid: request.getOrganisations()) {
+            // Fetch organisation through Feign.
+            OrganisationDTO organisation;
+
+            // FIXME: Possibly do this using a mapstruct mapper
+            try {
+                organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation through feign", e);
+            }
+
+            notificationService.reviewNotificationToReviewers(organisation, request);
+        }
+
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    @Transactional
+    @Timed
+    public RequestRepresentation rejectRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        // Reject the request
+        requestReviewProcessService.reject(user, request.getRequestReviewProcess());
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send rejection email
+        notificationService.rejectionNotificationToRequester(user, requestRepresentation);
+        return requestRepresentation;
+    }
+
+    @Transactional
+    @Timed
+    public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        // Approve the request
+        requestReviewProcessService.approve(user, request.getRequestReviewProcess());
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send approval email
+        notificationService.approvalNotificationToRequester(user, requestRepresentation);
+        return requestRepresentation;
+    }
+
+    @Transactional
+    @Timed
+    public RequestRepresentation reviseRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+        // TODO: Add NotificationEvent
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        if(!hasAccessToRequestAsCoordinator(request, user)) {
+            throw new AccessDenied("Access denied to request.");
+        }
+
+        // Send the request to revision
+        requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send revision email
+        notificationService.revisionNotificationToRequester(user, requestRepresentation);
+        return requestRepresentation;
+    }
+
     /**
      * Submit the draft request by uuid.
      * Generates requests for the organisations specified in the draft.
@@ -345,7 +526,6 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
-
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
         log.debug("Validating request data.");
         {
@@ -362,19 +542,25 @@ public class RequestService {
 
         List<Request> organisationRequests = new ArrayList<>();
         // TODO: Aggregate mails for multiple organisations per user.
+
         for (UUID organisationUuid: request.getOrganisations()) {
-            // Fetch organisation and organisation coordinators through Feign.
+            // Fetch organisation through Feign.
             OrganisationDTO organisation;
+
             try {
                 organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
             } catch (Exception e) {
-                log.error("Error fetching organisation and coordinators", e);
-                throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation through feign", e);
             }
 
             // TODO: validate request type of the request with the supported request types of the organisation.
-
             Request organisationRequest = requestMapper.clone(request);
+
+            // Create organisation revision details
+            RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());
+            organisationRequest.setRevisionDetail(revisionDetail);
+
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
             organisationRequest.setStatus(RequestStatus.Review);
@@ -394,7 +580,7 @@ public class RequestService {
 
         log.debug("Deleting draft request.");
         deleteRequest(request.getId());
-        return requestMapper.requestsToRequestDTOs(organisationRequests);
+        return requestMapper.extendedRequestsToRequestDTOs(organisationRequests);
     }
 
     /**
@@ -408,7 +594,46 @@ public class RequestService {
     public Page<RequestRepresentation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Requests for query {}", query);
         Page<Request> result = requestSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(request -> requestMapper.requestToRequestDTO(request));
+        return result.map(requestMapper::requestToRequestDTO);
+    }
+
+    public List<UserRepresentation> getCoordinatorsForRequest(Request request) {
+        List<UserRepresentation> coordinators = new ArrayList<>();
+        for (UUID organisationUuid: request.getOrganisations()) {
+            // Fetch organisation coordinators through Feign.
+            try {
+                coordinators = organisationClientService.findUsersByRole(organisationUuid,
+                    AuthorityConstants.ORGANISATION_COORDINATOR);
+            } catch (Exception e) {
+                log.error("Error fetching organisation coordinators", e);
+                throw new ServiceNotAvailable("Could not fetch organisation coordinators through feign", e);
+            }
+
+        }
+        return coordinators;
+    }
+
+    public boolean hasAccessToRequestAsCoordinator(Request request, AuthenticatedUser user) {
+        // Fetch the coordinators of the request through Feign
+        List<UserRepresentation> coordinators = getCoordinatorsForRequest(request);
+
+        // Check whether the authenticated user is a coordinator of one of the associated organisations
+        // If no coordinator is found, throw AccessDenied Exception
+        Optional<UserRepresentation> coordinator = coordinators.stream()
+            .filter(u -> u.getUuid().equals(user.getUuid()))
+            .findAny();
+
+        return coordinator.isPresent();
+    }
+
+    private boolean isInRevision(Request request) {
+        RequestReviewStatus requestReviewStatus = request.getRequestReviewProcess().getStatus();
+
+        if (request.getStatus() != RequestStatus.Review && requestReviewStatus != RequestReviewStatus.Revision) {
+            log.debug("Not allowed to update request as it holds the wrong statuses {} - {}", request.getStatus(), requestReviewStatus);
+            return false;
+        }
+        return true;
     }
 
 }
