@@ -98,7 +98,7 @@ public class NotificationService {
         List<UserRepresentation> coordinators
             = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
-        mailService.sendRequestRevisionNotificationToCoordinators(organisationRequest, organisation, coordinators);
+        mailService.sendRequestRevisionSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
     /**
@@ -119,7 +119,7 @@ public class NotificationService {
     /**
      * Notify the requester about the approval of a their request.
      * @param user the requester
-     * @param organisationRequests the list of organisation requests generated at request submission.
+     * @param requestRepresentation The request that is approved.
      */
     @Async
     public void approvalNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
@@ -129,7 +129,26 @@ public class NotificationService {
         mailService.sendRequestApprovalNotificationToRequester(requester, requestRepresentation);
     }
 
+    /**
+     * Notify the requester that their request requires one or more revisions.
+     * @param user the requester
+     * @param requestRepresentation The request that requires revision.
+     */
+    @Async
+    public void revisionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
 
+        mailService.sendRequestRevisionNotificationToRequester(requester, requestRepresentation);
+    }
+
+
+    /**
+     * Fetch a user representation by UUID through feign.
+     *
+     * @param userUuid the UUID of the user
+     * @return UserRepresentation the representation object of the user
+     */
     private UserRepresentation fetchUserThroughFeign(UUID userUuid) {
         try {
             return userClientService.findUserByUuid(userUuid);
@@ -139,6 +158,13 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Fetch all users from an organisation with a specific role
+     *
+     * @param uuid The UUID of the organisation
+     * @param authority The authority that the users are required to have
+     * @return List of user representations
+     */
     private List<UserRepresentation> fetchOrganisationUsersByRoleThroughFeign(UUID uuid, String authority) {
         // Fetch organisation users by role through Feign.
         List<UserRepresentation> users;

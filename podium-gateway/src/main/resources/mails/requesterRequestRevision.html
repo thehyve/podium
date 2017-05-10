@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.requesterRequestRejected.title}">BBMRI Podium Request Portal &ndash; request has been rejected</title>
+        <title th:text="#{email.requesterRequestRevision.title}">BBMRI Podium Request Portal &ndash; request revision is required</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -19,13 +19,13 @@
             Dear
         </p>
         <p>
-            <span th:text="#{email.requesterRequestRejected.intro(${request.organisations.get(0).getName()})}">
-                Your request has been rejected by: [organisation name]. Login to the BBMRI request portal to see the rejection reason.
+            <span th:text="#{email.requesterRequestRevision.intro(${request.getId()}, ${request.organisations.get(0).getName()})}">
+                In order to process your request [request number] at [organisation name], one or more revisions are needed. Login to the BBMRI request portal to see the revision notes.
             </span>
         </p>
 
         <p>
-            <span th:text="#{email.requesterRequestRejected.text1}">
+            <span th:text="#{email.requesterRequestRevision.text1}">
                 To view the request, please use the link below.
             </span>
             <br />

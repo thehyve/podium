@@ -457,6 +457,7 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
+        // Reject the request
         requestReviewProcessService.reject(user, request.getRequestReviewProcess());
 
         RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
@@ -476,6 +477,7 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
+        // Approve the request
         requestReviewProcessService.approve(user, request.getRequestReviewProcess());
 
         RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
@@ -495,8 +497,14 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
+        // Send the request to revision
         requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
-        return requestMapper.requestToRequestDTO(request);
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send revision email
+        notificationService.revisionNotificationToRequester(user, requestRepresentation);
+        return requestRepresentation;
     }
 
     /**
@@ -517,7 +525,6 @@ public class RequestService {
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request.");
         }
-
 
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
         log.debug("Validating request data.");

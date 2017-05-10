@@ -89,8 +89,9 @@ public class MailService {
      * @param coordinators the list of organisation coordinators.
      */
     @Async
-    public void sendSubmissionNotificationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
-                                                         List<UserRepresentation> coordinators) {
+    public void sendSubmissionNotificationToCoordinators(
+        Request organisationRequest, OrganisationDTO organisation, List<UserRepresentation> coordinators
+    ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             organisationRequest, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -117,8 +118,9 @@ public class MailService {
      * @param organisations map of organisation uuids to organisation representation
      */
     @Async
-    public void sendSubmissionNotificationToRequester(UserRepresentation requester, List<Request> organisationRequests,
-                                                      Map<UUID, OrganisationDTO> organisations) {
+    public void sendSubmissionNotificationToRequester(
+        UserRepresentation requester, List<Request> organisationRequests, Map<UUID, OrganisationDTO> organisations
+    ) {
         log.info("Notifying requester: requester = {}, #requests = {}",
             requester, organisationRequests == null ? null : organisationRequests.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -141,7 +143,9 @@ public class MailService {
      * @param requestRepresentation the request regarding this notification
      */
     @Async
-    public void sendRejectionNotificationToRequester(UserRepresentation requester, RequestRepresentation requestRepresentation) {
+    public void sendRejectionNotificationToRequester(
+        UserRepresentation requester, RequestRepresentation requestRepresentation
+    ) {
         log.info("Notifying requester: requester = {}, request = {}", requester, requestRepresentation);
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
         log.debug("Sending request rejection e-mail to requester '{}'", requester.getEmail());
@@ -163,8 +167,8 @@ public class MailService {
      * @param coordinators the list of organisation coordinators.
      */
     @Async
-    public void sendRequestRevisionNotificationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
-        List<UserRepresentation> coordinators
+    public void sendRequestRevisionSubmissionNotificationToCoordinators(
+        Request organisationRequest, OrganisationDTO organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             organisationRequest, organisation, coordinators == null ? null : coordinators.size());
@@ -184,8 +188,9 @@ public class MailService {
     }
 
     @Async
-    public void sendRequestReviewNotificationToReviewers(Request reviewRequest, OrganisationDTO organisation,
-                                                         List<UserRepresentation> reviewers) {
+    public void sendRequestReviewNotificationToReviewers(
+        Request reviewRequest, OrganisationDTO organisation, List<UserRepresentation> reviewers
+    ) {
         log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
             reviewRequest, organisation, reviewers == null ? null : reviewers.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -209,11 +214,11 @@ public class MailService {
      *
      * @param requester the requester details
      * @param request the request
-     * @param organisation the organisation representation
      */
     @Async
-    public void sendRequestApprovalNotificationToRequester(UserRepresentation requester,
-                                                           RequestRepresentation request) {
+    public void sendRequestApprovalNotificationToRequester(
+        UserRepresentation requester, RequestRepresentation request
+    ) {
         log.info("Notifying requester: requester = {}, request = {}", requester, request);
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
         log.debug("Sending request approved e-mail to '{}'", requester.getEmail());
@@ -224,6 +229,30 @@ public class MailService {
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestApproved", context);
         String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
+
+    /**
+     * Send a notification email to the requester that their request requires one or more
+     * revisions.
+     *
+     * @param requester the requester details
+     * @param request the request
+     */
+    @Async
+    public void sendRequestRevisionNotificationToRequester(
+        UserRepresentation requester, RequestRepresentation request
+    ) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request revision e-mail to '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        String content = templateEngine.process("requesterRequestRevision", context);
+        String subject = messageSource.getMessage("email.requesterRequestRevision.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 }
