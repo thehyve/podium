@@ -63,6 +63,7 @@ describe('Component Tests', () => {
                                 'pagingParams': {},
                             }]),
                             snapshot: {
+                                url: [{path: '/foo'}],
                                 params: {},
                             }
                         },
@@ -87,7 +88,7 @@ describe('Component Tests', () => {
             beforeEach(() => {
                 spyOn(comp, 'registerChangeInRequests');
             });
-            it('should load submitted requests and register change in requests', () => {
+            fit('should load submitted requests and register change in requests', () => {
                 comp.ngOnInit();
                 expect(comp.registerChangeInRequests).toHaveBeenCalled();
             });
