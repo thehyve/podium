@@ -322,14 +322,14 @@ public class RequestResource {
     }
 
     /**
-     * GET /requests/validate/:uuid : Validate a request with uuid.
+     * GET /requests/:uuid/validate : Validate a request with uuid.
      *
      * @param uuid the uuid of the request to validate
      * @return the ResponseEntity with the validated request representation
      *
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
-    @GetMapping("/requests/validate/{uuid}")
+    @GetMapping("/requests/{uuid}/validate")
     @Timed
     public ResponseEntity<RequestRepresentation> validateRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to validate request process for : {} ", uuid);
@@ -339,14 +339,14 @@ public class RequestResource {
     }
 
     /**
-     * GET /requests/reject/:uuid : Reject a request with uuid.
+     * GET /requests/:uuid/reject : Reject a request with uuid.
      *
      * @param uuid the uuid of the request to reject
      * @return the ResponseEntity with the rejected request representation
      *
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
-    @GetMapping("/requests/reject/{uuid}")
+    @GetMapping("/requests/{uuid}/reject")
     @Timed
     public ResponseEntity<RequestRepresentation> rejectRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to reject request process for : {} ", uuid);
@@ -356,14 +356,14 @@ public class RequestResource {
     }
 
     /**
-     * GET /requests/approve/:uuid : Approve a request with uuid.
+     * GET /requests/:uuid/approve : Approve a request with uuid.
      *
      * @param uuid the uuid of the request to approve
      * @return the ResponseEntity with the approved request representation
      *
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
-    @GetMapping("/requests/approve/{uuid}")
+    @GetMapping("/requests/{uuid}/approve")
     @Timed
     public ResponseEntity<RequestRepresentation> approveRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to approve request process for : {} ", uuid);
@@ -373,14 +373,14 @@ public class RequestResource {
     }
 
     /**
-     * GET /requests/revision/:uuid : Request a revision for request with uuid.
+     * GET /requests/:uuid/revision : Request a revision for request with uuid.
      *
      * @param uuid the uuid of the request to request revision for
      * @return the ResponseEntity with the updated request representation
      *
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
-    @GetMapping("/requests/revision/{uuid}")
+    @GetMapping("/requests/{uuid}/revision")
     @Timed
     public ResponseEntity<RequestRepresentation> revisionRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to apply revision to request details for : {} ", uuid);

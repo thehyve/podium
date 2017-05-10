@@ -125,24 +125,24 @@ export class RequestService {
      * Process functions
      */
     validateRequest(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/validate/${uuid}`);
+        return this.http.get(`${this.resourceUrl}/${uuid}/validate`);
     }
 
     requireRevision(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/revision/${uuid}`);
+        return this.http.get(`${this.resourceUrl}/${uuid}/revision`);
     }
 
     approveRequest(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/approve/${uuid}`);
+        return this.http.get(`${this.resourceUrl}/${uuid}/approve`);
     }
 
     submitReview(uuid: string, reviewFeedback: RequestReviewFeedback) {
         let feedbackCopy: RequestReviewFeedback = Object.assign({}, reviewFeedback);
-        return this.http.post(`${this.resourceUrl}/review/${uuid}`, feedbackCopy);
+        return this.http.post(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
     }
 
     rejectRequest(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/reject/${uuid}`);
+        return this.http.get(`${this.resourceUrl}/${uuid}/reject`);
     }
 
     search(req?: any): Observable<Response> {

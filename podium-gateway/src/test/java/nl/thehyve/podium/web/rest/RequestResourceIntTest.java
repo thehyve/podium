@@ -788,7 +788,7 @@ public class RequestResourceIntTest {
     private ResultActions performProcessAction(UserAuthenticationToken user, String action, String uuid) throws Exception {
         return mockMvc.perform(
             getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/" + action + "/" + uuid,
+                REQUESTS_ROUTE + "/" + uuid + "/" + action,
                 null,
                 Collections.emptyMap())
                 .with(token(user))
