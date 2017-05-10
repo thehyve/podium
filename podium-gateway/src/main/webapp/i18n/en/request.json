@@ -54,8 +54,8 @@
         },
         "overview": {
             "pageHeaderResearcher": "My Requests",
-            "pageHeaderCoordinator": "Organisation Requests",
-            "pageHeaderReviewer": "Reviews"
+            "pageHeaderCoordinator": "My Organisations",
+            "pageHeaderReviewer": "My Reviews"
         },
         "form": {
             "header": {

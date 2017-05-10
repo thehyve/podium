@@ -9,7 +9,7 @@
  */
 
 export const requestOverviewPaths: { [token: string]: string; } = {
-    'REQUEST_OVERVIEW_RESEARCHER': 'overview',
-    'REQUEST_OVERVIEW_COORDINATOR': 'organisation-coordinator-overview',
-    'REQUEST_OVERVIEW_REVIEWER': 'reviews'
+    'REQUEST_OVERVIEW_RESEARCHER': 'my-requests',
+    'REQUEST_OVERVIEW_COORDINATOR': 'my-organisations',
+    'REQUEST_OVERVIEW_REVIEWER': 'my-reviews'
 };
