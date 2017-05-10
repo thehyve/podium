@@ -23,14 +23,22 @@ public interface PrincipalInvestigatorMapper {
 
     PrincipalInvestigatorRepresentation principalInvestigatorToPrincipalInvestigatorDTO(PrincipalInvestigator principalInvestigator);
 
-    List<PrincipalInvestigatorRepresentation> principalInvestigatorsToPrincipalInvestigatorDTOs(List<PrincipalInvestigator> principalInvestigators);
+    List<PrincipalInvestigatorRepresentation> principalInvestigatorsToPrincipalInvestigatorDTOs(
+        List<PrincipalInvestigator> principalInvestigators
+    );
 
-    PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigatorDTO);
+    PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(
+        PrincipalInvestigatorRepresentation principalInvestigatorDTO
+    );
 
-    List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs);
+    List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(
+        List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs
+    );
 
-    PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation
-                                                                                    principalInvestigatorRepresentation, @MappingTarget PrincipalInvestigator principalInvestigator);
+    PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(
+        PrincipalInvestigatorRepresentation principalInvestigatorRepresentation,
+        @MappingTarget PrincipalInvestigator principalInvestigator
+    );
 
     @Mapping(target = "id", ignore = true)
     PrincipalInvestigator clone(PrincipalInvestigator principalInvestigator);

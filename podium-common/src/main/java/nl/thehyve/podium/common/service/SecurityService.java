@@ -141,11 +141,11 @@ public class SecurityService {
         Authentication authentication = securityContext.getAuthentication();
         if (authentication != null) {
             return authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> {
-                    return Arrays.stream(authorities).anyMatch(authority -> {
-                        return grantedAuthority.getAuthority().equals(authority);
-                    });
-                });
+                .anyMatch(grantedAuthority ->
+                    Arrays.stream(authorities).anyMatch(authority ->
+                        grantedAuthority.getAuthority().equals(authority)
+                    )
+                );
         }
         return false;
     }

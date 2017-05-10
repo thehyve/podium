@@ -8,15 +8,12 @@
  * See the file LICENSE in the root of this repository.
  */
 
-var HtmlScreenshotReporter = require("protractor-jasmine2-screenshot-reporter");
-var JasmineReporters = require('jasmine-reporters');
-
 exports.config = {
-
+    ignoreUncaughtExceptions: true,
     allScriptsTimeout: 20000,
 
     specs: [
-        './e2e/features/*.feature',
+        './e2e/features/*.feature'
     ],
 
     capabilities: {

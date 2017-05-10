@@ -40,7 +40,16 @@ const requestReviewStatusesOpts: { [status: string]: any; } = {
     'Review': {
         name: 'Review',
         order: 3
-    }
+    },
+    // Highlight item 2 in progress bar when in revision
+    'Revision': {
+        name: 'Revision',
+        order: 2
+    },
+    'Closed': {
+        name: 'Closed',
+        order: -1
+    },
 };
 
 function convertNamesToRequestStatuses(names: { [status: string]: any; }): Array<RequestStatus> {
@@ -66,7 +75,9 @@ function convertToRequestStatusMap(requestStatuses: ReadonlyArray<RequestStatus>
 export enum RequestStatusOptions {
     Draft,
     Review,
-    Delivery
+    Delivery,
+    Closed,
+    None
 }
 
 export enum RequestReviewStatusOptions {
@@ -79,7 +90,7 @@ export enum RequestReviewStatusOptions {
 
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
 
-export const REQUEST_REVIEW_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
+export const REQUEST_REVIEW_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestReviewStatusesOpts);
 
 export const REQUEST_STATUSES_MAP: { [token: string]: RequestStatus; } = convertToRequestStatusMap(REQUEST_STATUSES);
 

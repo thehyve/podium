@@ -13,6 +13,7 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
@@ -205,6 +206,43 @@ public class RequestResource {
     }
 
     /**
+     * Update a request
+     *
+     * @param request the request to be updated
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
+     * @return RequestRepresentation The updated request draft.
+     */
+    @PutMapping("/requests")
+    @PreAuthorize("isAuthenticated()")
+    @Secured(AuthorityConstants.RESEARCHER)
+    @Timed
+    public ResponseEntity<RequestRepresentation> updateRequest(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("PUT /requests (user: {})", user);
+        RequestRepresentation result = requestService.updateRequest(user, request);
+        log.debug("Result: {}", result.getUuid());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * Submit the request
+     *
+     * @param uuid of the request to be saved
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/submit")
+    @PreAuthorize("isAuthenticated()")
+    @Timed
+    public ResponseEntity<RequestRepresentation> submitRequest(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("GET /requests/{}/submit (user: {})", uuid, user);
+        RequestRepresentation request = requestService.submitRequest(user, uuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
+    }
+
+    /**
      * GET  /requests/status/:status/organisation : get all the organisation requests for the organisations where the current
      * user is a coordinator.
      *
@@ -284,6 +322,74 @@ public class RequestResource {
     }
 
     /**
+     * GET /requests/:uuid/validate : Validate a request with uuid.
+     *
+     * @param uuid the uuid of the request to validate
+     * @return the ResponseEntity with the validated request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/validate")
+    @Timed
+    public ResponseEntity<RequestRepresentation> validateRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to validate request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.validateRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/:uuid/reject : Reject a request with uuid.
+     *
+     * @param uuid the uuid of the request to reject
+     * @return the ResponseEntity with the rejected request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/reject")
+    @Timed
+    public ResponseEntity<RequestRepresentation> rejectRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to reject request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/:uuid/approve : Approve a request with uuid.
+     *
+     * @param uuid the uuid of the request to approve
+     * @return the ResponseEntity with the approved request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/approve")
+    @Timed
+    public ResponseEntity<RequestRepresentation> approveRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to approve request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.approveRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/:uuid/revision : Request a revision for request with uuid.
+     *
+     * @param uuid the uuid of the request to request revision for
+     * @return the ResponseEntity with the updated request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/revision")
+    @Timed
+    public ResponseEntity<RequestRepresentation> revisionRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to apply revision to request details for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.reviseRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
      * SEARCH  /_search/requests?query=:query : search for the request corresponding
      * to the query.
      *
@@ -301,6 +407,4 @@ public class RequestResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-
 }

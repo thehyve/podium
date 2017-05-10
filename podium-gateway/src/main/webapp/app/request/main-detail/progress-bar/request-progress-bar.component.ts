@@ -21,6 +21,8 @@ import {
     RequestStatusOptions,
     RequestReviewStatusOptions
 } from '../../../shared/request/request-status/request-status.constants';
+import { RequestAccessService } from '../../../shared/request/request-access.service';
+import { RequestService } from '../../../shared/request/request.service';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -36,13 +38,19 @@ export class RequestProgressBarComponent {
     requestReviewStatusMap: { [token: string]: RequestStatus; };
 
     constructor(
-        private jhiLanguageService: JhiLanguageService
+        private jhiLanguageService: JhiLanguageService,
+        private requestAccessService: RequestAccessService,
+        private requestService: RequestService
     ) {
         jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
         this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
         this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
+
+        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.request = request;
+        });
     }
 
     /**
@@ -67,6 +75,21 @@ export class RequestProgressBarComponent {
     isCompleted(request: RequestBase, currentOrder: number): boolean {
         let requestOrder = this.getRequestStatusOrder(request);
         return requestOrder > currentOrder;
+    }
+
+    /**
+     * Check whether the request is closed
+     * All closed states return an order of -1
+     *
+     * @param request the current request
+     * @returns {boolean} true if the request status is closed
+     */
+    isClosed(request: RequestBase): boolean {
+        return this.getRequestStatusOrder(request) === -1;
+    }
+
+    isRevisionStatus(request: RequestBase): boolean {
+        return this.requestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
     }
 
     /**

@@ -7,18 +7,20 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions, ResponseOptions } from '@angular/http';
+import { Injectable, EventEmitter } from '@angular/core';
+import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
-import { Res } from 'awesome-typescript-loader/dist/checker/protocol';
+import { RequestReviewFeedback } from './request-review-feedback';
 
 @Injectable()
 export class RequestService {
 
     private resourceUrl = 'api/requests';
     private resourceSearchUrl = 'api/_search/requests';
+
+    public onRequestUpdate: EventEmitter<RequestBase> = new EventEmitter<RequestBase>(false);
 
     constructor(private http: Http) { }
 
@@ -77,6 +79,32 @@ export class RequestService {
         });
     }
 
+    /**
+     * Save the revision details during a revision phase
+     *
+     * @param requestBase the request to save
+     * @returns {Observable<Response>}
+     */
+    saveRequest(requestBase: RequestBase): Observable<Response> {
+        let requestCopy: RequestBase = Object.assign({}, requestBase);
+        return this.http.put(`${this.resourceUrl}`, requestCopy).map((response: Response) => {
+            return response.json();
+        });
+    }
+
+    submitRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/submit`).map((response: Response) => {
+            return response.json();
+        });
+    }
+
+    findSubmittedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
     findDraftByUuid(uuid: string): Observable<RequestDetail> {
         return this.http.get(`${this.resourceUrl}/drafts/${uuid}`).map((res: Response) => {
             return res.json();
@@ -93,9 +121,37 @@ export class RequestService {
         return this.http.delete(`${this.resourceUrl}/drafts/${uuid}`);
     }
 
+    /**
+     * Process functions
+     */
+    validateRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/validate`);
+    }
+
+    requireRevision(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/revision`);
+    }
+
+    approveRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/approve`);
+    }
+
+    submitReview(uuid: string, reviewFeedback: RequestReviewFeedback) {
+        let feedbackCopy: RequestReviewFeedback = Object.assign({}, reviewFeedback);
+        return this.http.post(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
+    }
+
+    rejectRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/reject`);
+    }
+
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);
+    }
+
+    public requestUpdateEvent(requestBase: RequestBase) {
+        this.onRequestUpdate.emit(requestBase);
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {

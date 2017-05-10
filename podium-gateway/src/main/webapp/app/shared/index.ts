@@ -14,6 +14,7 @@ export * from './request/request-base';
 export * from './request/request-detail';
 export * from './request/request-type';
 export * from './request/request.service';
+export * from './request/request-review-feedback';
 export * from './request/request';
 export * from './request/request-status/request-status.constants';
 export * from './request/request-status/request-status';

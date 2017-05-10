@@ -9,22 +9,26 @@
   -->
 
 <div class="row" *ngIf="requestBase">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
         <h1 *ngIf="requestBase.status == 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
         <h1 *ngIf="requestBase.status != 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
     </div>
 
-    <div class="col-md-6 offset-md-3 card-container">
+    <div class="card-container"
+        [ngClass]="{
+            'col-md-6 offset-md-3': !isInRevision,
+            'col-md-12 nested-request-form': isInRevision
+        }">
 
         <form #requestForm="ngForm" class="form" role="form">
-            <fieldset [disabled]="requestFormDisabled">
+            <fieldset [disabled]="isUpdating">
 
                 <div class="alert alert-success" *ngIf="success" jhiTranslate="request.form.messages.success">
                     Changes are saved.
                 </div>
 
                 <div class="alert alert-danger" *ngIf="error" jhiTranslate="request.form.messages.error">
-                    Saving draft failed.
+                    Saving failed.
                 </div>
 
                 <!-- Title -->
@@ -63,6 +67,7 @@
                                        name="requestTypes"
                                        id="requestTypes"
                                        value="{{requestType.value}}"
+                                       [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
                                        (change)="updateRequestType(requestType, $event)" />
                                 {{requestType.value | capitalize}}
@@ -81,6 +86,7 @@
                             <input type="checkbox"
                                    name="combinedRequest"
                                    id="combinedRequest"
+                                   [disabled]="isInRevision"
                                    [(ngModel)]="requestDetail.combinedRequest"
                                    value="true" disabled />
                             <span jhiTranslate="request.form.isLinked.placeHolder">Is a linked request</span>
@@ -89,12 +95,20 @@
                 </div>
 
                 <!-- Organisations -->
-                <div class="form-group">
-                    <label for="requestTypes">Organisations</label>
-                    <pdm-organisation-selector [(organisations)]="requestBase.organisations"
-                                               [(requestTypes)]="requestDetail.requestType"
-                                               (organisationChange)="updateRequestOrganisations($event)">
+                <div class="form-group" *ngIf="!isInRevision">
+                    <label>Organisations</label>
+                    <pdm-organisation-selector
+                        [(organisations)]="requestBase.organisations"
+                        [(requestTypes)]="requestDetail.requestType"
+                        (organisationChange)="updateRequestOrganisations($event)">
                     </pdm-organisation-selector>
+                </div>
+                <div class="form-group" *ngIf="isInRevision">
+                    <label>Organisations</label>
+                    <ul>
+                        <li *ngFor="let organisation of requestBase.organisations">{{organisation.name}}</li>
+                    </ul>
+
                 </div>
 
                 <!-- Search Query -->
@@ -406,8 +420,12 @@
                 <pdm-request-action-toolbar
                     [form]="requestForm"
                     [request]="requestBase"
+                    [isUpdating]="isUpdating"
                     (resetChange)="reset()"
+                    (cancelChange)="cancel()"
                     (saveDraftChange)="saveRequestDraft()"
+                    (saveRequestChange)="saveRequest()"
+                    (submitRequestChange)="submitRequest()"
                     (submitDraftChange)="submitDraft()">
                 </pdm-request-action-toolbar>
 
