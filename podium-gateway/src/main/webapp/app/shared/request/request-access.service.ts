@@ -85,7 +85,13 @@ export class RequestAccessService {
 
     public isRequestReviewStatus(request: RequestBase, reviewStatus: RequestReviewStatusOptions): boolean {
         let requiredStatus = RequestReviewStatusOptions[reviewStatus];
-        let requestReviewStatus = request.requestReview.status.toString();
+        let requestReview = request.requestReview;
+
+        if (!requestReview) {
+            return false;
+        }
+
+        let requestReviewStatus = requestReview.status.toString();
         return requestReviewStatus === requiredStatus;
     }
 
