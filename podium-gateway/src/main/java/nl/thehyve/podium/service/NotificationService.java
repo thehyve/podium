@@ -69,14 +69,9 @@ public class NotificationService {
     @Async
     public void submissionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
         // Fetch organisation and organisation coordinators through Feign.
-        List<UserRepresentation> coordinators;
-        try {
-            coordinators = organisationClientService.findUsersByRole(organisation.getUuid(),
-                AuthorityConstants.ORGANISATION_COORDINATOR);
-        } catch (Exception e) {
-            log.error("Error fetching organisation and coordinators", e);
-            throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
-        }
+        List<UserRepresentation> coordinators
+            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
         mailService.sendSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
@@ -100,15 +95,19 @@ public class NotificationService {
     @Async
     public void revisionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
         // Fetch organisation coordinators through Feign.
-        List<UserRepresentation> coordinators;
-        try {
-            coordinators = organisationClientService.findUsersByRole(organisation.getUuid(),
-                AuthorityConstants.ORGANISATION_COORDINATOR);
-        } catch (Exception e) {
-            log.error("Error fetching organisation and coordinators", e);
-            throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
-        }
+        List<UserRepresentation> coordinators
+            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
         mailService.sendRequestRevisionNotificationToCoordinators(organisationRequest, organisation, coordinators);
+    }
+
+    @Async
+    public void reviewNotificationToReviewers(OrganisationDTO organisation, Request reviewRequest) {
+        // Fetch organisation reviewers through Feign.
+        List<UserRepresentation> reviewers
+            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.REVIEWER);
+
+        mailService.sendRequestReviewNotificationToReviewers(reviewRequest, organisation, reviewers);
     }
 
     private UserRepresentation fetchUserThroughFeign(UUID userUuid) {
@@ -120,5 +119,18 @@ public class NotificationService {
         }
     }
 
+    private List<UserRepresentation> fetchOrganisationUsersByRoleThroughFeign(UUID uuid, String authority) {
+        // Fetch organisation users by role through Feign.
+        List<UserRepresentation> users;
+        try {
+            users = organisationClientService.findUsersByRole(uuid,
+                authority);
+        } catch (Exception e) {
+            log.error("Error fetching organisation users", e);
+            throw new ServiceNotAvailable("Could not fetch organisation users", e);
+        }
+
+        return users;
+    }
 
 }

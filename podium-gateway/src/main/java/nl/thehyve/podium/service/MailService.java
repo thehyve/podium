@@ -83,7 +83,7 @@ public class MailService {
     /**
      * Send a notification email to the coordinators of an organisation that a request has been
      * submitted to their organisation.
-     * 
+     *
      * @param organisationRequest the request that has been submitted.
      * @param organisation the organisation that is was submitted to
      * @param coordinators the list of organisation coordinators.
@@ -181,6 +181,26 @@ public class MailService {
             String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", null, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
+    }
 
+    @Async
+    public void sendRequestReviewNotificationToReviewers(Request reviewRequest, OrganisationDTO organisation,
+                                                         List<UserRepresentation> reviewers) {
+        log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
+            reviewRequest, organisation, reviewers == null ? null : reviewers.size());
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        for (UserRepresentation user : reviewers) {
+            log.debug("Sending review request e-mail to '{}'", user.getEmail());
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            context.setVariable("request", reviewRequest);
+            context.setVariable("organisation", organisation);
+            String content = templateEngine.process("organisationRequestReview", context);
+            String subject = messageSource.getMessage("email.organisationRequestReview.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+
+        }
     }
 }

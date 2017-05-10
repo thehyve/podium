@@ -371,6 +371,7 @@ public class RequestService {
         log.debug("Sending revision submission notification emails to all coordinators of {}",
             requestRepresentation.getOrganisations().get(0).getName());
 
+        // Send notification to all coordinators
         for (UUID organisationUuid: request.getOrganisations()) {
             // Fetch organisation through Feign.
             OrganisationDTO organisation;
@@ -424,7 +425,25 @@ public class RequestService {
             throw new AccessDenied("Access denied to request.");
         }
 
+        // Move the request to Review by organisation reviewers
         requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
+
+        // Send notification to all reviewers of organisation
+        for (UUID organisationUuid: request.getOrganisations()) {
+            // Fetch organisation through Feign.
+            OrganisationDTO organisation;
+
+            // FIXME: Possibly do this using a mapstruct mapper
+            try {
+                organisation = organisationClientService.findOrganisationByUuid(organisationUuid);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation through feign", e);
+            }
+
+            notificationService.reviewNotificationToReviewers(organisation, request);
+        }
+
         return requestMapper.requestToRequestDTO(request);
     }
 

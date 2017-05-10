@@ -70,6 +70,7 @@
     <logger name="org.flowable.engine.impl" level="WARN"/>
     <logger name="org.flowable.engine.impl.db" level="WARN"/>
     <logger name="org.flowable.engine.impl.interceptor" level="WARN"/>
+    <logger name="org.flowable.spring.SpringTransactionInterceptor" level="WARN" />
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
