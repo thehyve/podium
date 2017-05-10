@@ -108,7 +108,7 @@ public class NotificationService {
             log.error("Error fetching organisation and coordinators", e);
             throw new ServiceNotAvailable("Could not fetch organisation and coordinators", e);
         }
-        mailService.sendRequestRevisionNotficationToCoordinators(organisationRequest, organisation, coordinators);
+        mailService.sendRequestRevisionNotificationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
     private UserRepresentation fetchUserThroughFeign(UUID userUuid) {

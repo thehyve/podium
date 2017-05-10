@@ -155,14 +155,14 @@ public class MailService {
      * Send a notification email to the organisation informing them about a submitted request revision
      */
     @Async
-    public void sendRequestRevisionNotficationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
+    public void sendRequestRevisionNotificationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
         List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             organisationRequest, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
         for (UserRepresentation user: coordinators) {
-            log.debug("Sending request submitted e-mail to '{}'", user.getEmail());
+            log.debug("Sending request revision e-mail to '{}'", user.getEmail());
             Locale locale = Locale.forLanguageTag(user.getLangKey());
             Context context = new Context(locale);
             context.setVariable(USER, user);
