@@ -57,7 +57,7 @@ describe('RequestService (Mocked)', () => {
                     conn.mockRespond(new Response(new ResponseOptions({ body: JSON.stringify(mockResponse) })));
                 });
 
-                const result = service.findMySubmittedRequests(args);
+                const result = service.findMyReviewRequests(args);
 
                 result.subscribe(res => {
                     expect(res.json()).toEqual([{
