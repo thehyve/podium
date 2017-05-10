@@ -83,7 +83,9 @@ public class MailService {
     /**
      * Send a notification email to the coordinators of an organisation that a request has been
      * submitted to their organisation.
+     * 
      * @param organisationRequest the request that has been submitted.
+     * @param organisation the organisation that is was submitted to
      * @param coordinators the list of organisation coordinators.
      */
     @Async
@@ -109,8 +111,10 @@ public class MailService {
     /**
      * Send a notification email to the requester that their request has been
      * submitted.
+     *
      * @param requester the requester details
      * @param organisationRequests the list of generated requests
+     * @param organisations map of organisation uuids to organisation representation
      */
     @Async
     public void sendSubmissionNotificationToRequester(UserRepresentation requester, List<Request> organisationRequests,
@@ -153,6 +157,10 @@ public class MailService {
 
     /**
      * Send a notification email to the organisation informing them about a submitted request revision
+     *
+     * @param organisationRequest the request that has been submitted.
+     * @param organisation the organisation that is was submitted to
+     * @param coordinators the list of organisation coordinators.
      */
     @Async
     public void sendRequestRevisionNotificationToCoordinators(Request organisationRequest, OrganisationDTO organisation,
