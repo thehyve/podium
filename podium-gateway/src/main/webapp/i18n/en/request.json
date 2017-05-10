@@ -8,6 +8,24 @@
             "edit": "Edit",
             "delete": "Delete"
         },
+        "toolbar": {
+            "cancel": "Cancel",
+            "saveDraft": "Save draft",
+            "submit": "Submit",
+            "reset": "Reset",
+            "revision": "The request is currently in revision.",
+            "validation": "Your request is currently waiting for validation by the organisation coordinator.",
+            "review": "Your request has passed the first check and is currently under review.",
+            "sendForReview": "Send for review",
+            "saveAndSubmit": "Save and submit",
+            "save": "Save",
+            "requestRevision": "Request revision",
+            "reject": "Reject",
+            "approve": "Approve",
+            "checks": {
+                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified."
+            }
+        },
         "submit": {
             "title": "Confirm request submission",
             "question": "Are you sure you want to submit this request?"
@@ -34,6 +52,10 @@
                 "confirm": "Delete draft"
             }
         },
+        "overview": {
+            "pageHeader": "My Requests",
+            "pageHeaderOverview": "Organisation Requests"
+        },
         "form": {
             "header": {
                 "new": "New Request",
@@ -48,6 +70,14 @@
             "title": {
                 "label": "Title",
                 "placeholder": "Request title"
+            },
+            "requestType": {
+                "label": "Request Type(s)*",
+                "footnote": "* Changing this value will clear organisation selection."
+            },
+            "isLinked": {
+                "label": "Linked Request",
+                "placeHolder": "Is a linked request"
             },
             "background": {
                 "label": "Background",
@@ -95,7 +125,7 @@
 
             "messages": {
                 "success": "Changes are saved.",
-                "error": "Saving draft failed.",
+                "error": "Saving failed.",
                 "validate": {
                     "title": {
                         "required": "A title is required.",
@@ -163,11 +193,11 @@
                     },
                     "requestType": {
                         "required": "Request type is required",
-                        "minlength": "Select atleast 1 request type"
+                        "minlength": "Select at least 1 request type"
                     },
                     "organisation": {
                         "required": "Organisation is required",
-                        "minlength": "Select atleast 1 organisation"
+                        "minlength": "Select at least 1 organisation"
                     }
                 }
             }

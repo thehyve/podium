@@ -14,7 +14,7 @@ import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.security.SecurityUtils;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -59,6 +59,9 @@ public class RequestResource {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private SecurityService securityService;
+
     /**
      * Fetch drafts for the current user
      *
@@ -69,7 +72,7 @@ public class RequestResource {
     @GetMapping("/requests/drafts")
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@ApiParam Pageable pageable) throws URISyntaxException {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("Get all request drafts for current user : {}", user);
         Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, RequestStatus.Draft, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/drafts");
@@ -87,7 +90,7 @@ public class RequestResource {
     @Secured(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<RequestRepresentation> createDraft() throws URISyntaxException {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("POST /requests/drafts (user: {})", user);
         RequestRepresentation result = requestService.createDraft(user);
         log.debug("Result: {}", result.getUuid());
@@ -107,9 +110,8 @@ public class RequestResource {
     @GetMapping("/requests/drafts/{uuid}")
     @Timed
     public ResponseEntity<RequestRepresentation> getDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        AuthenticatedUser authenticatedUser = user.getUser();
-        RequestRepresentation request = requestService.findRequestForRequester(authenticatedUser, uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation request = requestService.findRequestForRequester(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
@@ -126,7 +128,7 @@ public class RequestResource {
     @Secured(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = requestService.updateDraft(user, request);
         log.debug("Result: {}", result.getUuid());
@@ -159,28 +161,130 @@ public class RequestResource {
     @GetMapping("/requests/drafts/{uuid}/submit")
     @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        AuthenticatedUser authenticatedUser = user.getUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
-        List<RequestRepresentation> requests = requestService.submitDraft(authenticatedUser, uuid);
+        List<RequestRepresentation> requests = requestService.submitDraft(user, uuid);
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
     /**
-     * GET  /requests : get all the requests.
+     * GET  /requests/requester : get all the requests for which the current user is the requester.
      *
      * @param pageable the pagination information
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
-    @GetMapping("/requests")
+    @GetMapping("/requests/requester")
     @Timed
-    public ResponseEntity<List<RequestRepresentation>> getAllRequests(@ApiParam Pageable pageable)
+    public ResponseEntity<List<RequestRepresentation>> getRequesterRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        log.debug("REST request to get a page of Requests for user {}", user.getName());
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("REST request to get a page of Requests for requester {}", user.getName());
         Page<RequestRepresentation> page = requestService.findAllForRequester(user, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/requester");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/status/:status/requester : get all the requests for a requester with the status.
+     *
+     * @param status the status to filter on
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     */
+    @GetMapping("/requests/status/{status}/requester")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getAllRequestsByStatus(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to requests with status {}", status);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
+            "/api/requests/status/" + status.toString() + "/requester");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * Update a request
+     *
+     * @param request the request to be updated
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
+     * @return RequestRepresentation The updated request draft.
+     */
+    @PutMapping("/requests")
+    @PreAuthorize("isAuthenticated()")
+    @Secured(AuthorityConstants.RESEARCHER)
+    @Timed
+    public ResponseEntity<RequestRepresentation> updateRequest(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("PUT /requests (user: {})", user);
+        RequestRepresentation result = requestService.updateRequest(user, request);
+        log.debug("Result: {}", result.getUuid());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * Submit the request
+     *
+     * @param uuid of the request to be saved
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/submit")
+    @PreAuthorize("isAuthenticated()")
+    @Timed
+    public ResponseEntity<RequestRepresentation> submitRequest(@PathVariable UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("GET /requests/{}/submit (user: {})", uuid, user);
+        RequestRepresentation request = requestService.submitRequest(user, uuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/status/:status/organisation : get all the organisation requests for the organisations where the current
+     * user is a coordinator.
+     *
+     * @param status the status to filter on
+     * @param pageable the pagination information
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     */
+    @GetMapping("/requests/status/{status}/organisation")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getAllOrganisationRequests(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("REST request to get a page of organisation requests with status {} for user {}", status, user.getName());
+        Page<RequestRepresentation> page = requestService.findAllCoordinatorRequestsInStatus(user, status, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
+            "/api/requests/status/" + status.toString() + "/organisation");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/status/:status/organisation/:uuid : get all the organisation requests for the organisation if the current
+     * user is a coordinator.
+     *
+     * @param status the status to filter on
+     * @param uuid the uuid of the organisation for which to fetch the requests
+     * @param pageable the pagination information
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     */
+    @GetMapping("/requests/status/{status}/organisation/{uuid}")
+    @Timed
+    public ResponseEntity<List<RequestRepresentation>> getOrganisationRequestsForOrganisation(
+        @PathVariable RequestStatus status, @PathVariable UUID uuid, @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        AuthenticatedUser user = securityService.getCurrentUser();
+        log.debug("REST request to get a page of organisation requests with status {} for organisation {}, user {}",
+            status, uuid, user.getName());
+        Page<RequestRepresentation> page = requestService.findCoordinatorRequestsForOrganisationInStatus(
+            user, status, uuid, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
+            "/api/requests/status/" + status.toString() + "/organisation/" + uuid.toString());
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -202,25 +306,6 @@ public class RequestResource {
     }
 
     /**
-     * GET  /requests/status/:status : get all the requests for a requester with the status.
-     *
-     * @param status the status to filter on
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of requests in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/requests/status/{status}")
-    @Timed
-    public ResponseEntity<List<RequestRepresentation>> getAllRequestsByStatus(@PathVariable RequestStatus status, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to requests with status {}", status);
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
-        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/status/" + status.toString());
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-    /**
      * DELETE  /requests/drafts/:uuid : delete the "uuid" draft request.
      *
      * @param uuid the uuid of the draft request to delete
@@ -230,10 +315,78 @@ public class RequestResource {
     @DeleteMapping("/requests/drafts/{uuid}")
     @Timed
     public ResponseEntity<Void> deleteDraft(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
-        UserAuthenticationToken user = SecurityUtils.getCurrentUser();
+        AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to delete Request : {}", uuid);
         requestService.deleteDraft(user, uuid);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, uuid.toString())).build();
+    }
+
+    /**
+     * GET /requests/:uuid/validate : Validate a request with uuid.
+     *
+     * @param uuid the uuid of the request to validate
+     * @return the ResponseEntity with the validated request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/validate")
+    @Timed
+    public ResponseEntity<RequestRepresentation> validateRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to validate request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.validateRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/:uuid/reject : Reject a request with uuid.
+     *
+     * @param uuid the uuid of the request to reject
+     * @return the ResponseEntity with the rejected request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/reject")
+    @Timed
+    public ResponseEntity<RequestRepresentation> rejectRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to reject request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/:uuid/approve : Approve a request with uuid.
+     *
+     * @param uuid the uuid of the request to approve
+     * @return the ResponseEntity with the approved request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/approve")
+    @Timed
+    public ResponseEntity<RequestRepresentation> approveRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to approve request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.approveRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * GET /requests/:uuid/revision : Request a revision for request with uuid.
+     *
+     * @param uuid the uuid of the request to request revision for
+     * @return the ResponseEntity with the updated request representation
+     *
+     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     */
+    @GetMapping("/requests/{uuid}/revision")
+    @Timed
+    public ResponseEntity<RequestRepresentation> revisionRequest(@PathVariable UUID uuid) throws ActionNotAllowedInStatus {
+        log.debug("REST request to apply revision to request details for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.reviseRequest(user, uuid);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
     /**
@@ -254,6 +407,4 @@ public class RequestResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
-
 }

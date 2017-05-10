@@ -8,36 +8,20 @@
 package nl.thehyve.podium.domain;
 
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import javax.persistence.*;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A Request.
@@ -79,8 +63,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Column(name = "organisation_uuid")
     private Set<UUID> organisations = new HashSet<>();
 
-    @ManyToOne
-    private Request parentRequest;
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(unique = true, name = "revision_detail")
+    private RequestDetail revisionDetail;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
@@ -94,11 +79,23 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private UUID requester;
 
     @ManyToMany
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "request_attachments",
                joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
                inverseJoinColumns = @JoinColumn(name="attachment_id", referencedColumnName="id"))
     private Set<Attachment> attachments = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OrderColumn(name="event_order")
+    @JoinTable(name = "request_historic_events",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
+    private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -166,17 +163,13 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         this.organisations = organisations;
     }
 
-    public Request getParentRequest() {
-        return parentRequest;
-    }
+    public RequestDetail getRevisionDetail() { return revisionDetail; }
 
-    public Request parentRequest(Request request) {
-        this.parentRequest = request;
+    public void setRevisionDetail(RequestDetail revisionDetail) { this.revisionDetail = revisionDetail; }
+
+    public Request revisionDetail(RequestDetail revisionDetail) {
+        this.revisionDetail = revisionDetail;
         return this;
-    }
-
-    public void setParentRequest(Request request) {
-        this.parentRequest = request;
     }
 
     public RequestDetail getRequestDetail() {
@@ -229,6 +222,15 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setRequester(UUID requester) {
         this.requester = requester;
+    }
+
+    public List<PodiumEvent> getHistoricEvents() {
+        return historicEvents;
+    }
+
+    public Request addHistoricEvent(PodiumEvent event) {
+        this.historicEvents.add(event);
+        return this;
     }
 
     @Override

@@ -5,9 +5,9 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service;
+package nl.thehyve.podium.common.service;
 
-import nl.thehyve.podium.aop.security.AccessPolicyAspect;
+import nl.thehyve.podium.common.aop.security.AccessPolicyAspect;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
@@ -19,7 +19,6 @@ import nl.thehyve.podium.common.security.annotations.SecuredByCurrentUser;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.security.annotations.UserParameter;
 import nl.thehyve.podium.common.security.annotations.UserUuidParameter;
-import nl.thehyve.podium.security.SecurityService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.slf4j.Logger;

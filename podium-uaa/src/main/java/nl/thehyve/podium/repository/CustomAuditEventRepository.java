@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.repository;
 
+import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.config.audit.AuditEventConverter;
 import nl.thehyve.podium.domain.PersistentAuditEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class CustomAuditEventRepository implements AuditEventRepository {
     @Override
     public List<AuditEvent> find(Date after) {
         Iterable<PersistentAuditEvent> persistentAuditEvents =
-            persistenceAuditEventRepository.findByAuditEventDateAfter(LocalDateTime.from(after.toInstant()));
+            persistenceAuditEventRepository.findByEventDateAfter(after);
         return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
     }
 
@@ -54,15 +55,20 @@ public class CustomAuditEventRepository implements AuditEventRepository {
             persistentAuditEvents = persistenceAuditEventRepository.findByPrincipal(principal);
         } else {
             persistentAuditEvents =
-                persistenceAuditEventRepository.findByPrincipalAndAuditEventDateAfter(principal, LocalDateTime.from(after.toInstant()));
+                persistenceAuditEventRepository.findByPrincipalAndEventDateAfter(principal, after);
         }
         return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
     }
 
     @Override
     public List<AuditEvent> find(String principal, Date after, String type) {
+        EventType eventType = type == null ? null : EventType.fromName(type);
+        return findByEventType(principal, after, eventType);
+    }
+
+    public List<AuditEvent> findByEventType(String principal, Date after, EventType type) {
         Iterable<PersistentAuditEvent> persistentAuditEvents =
-            persistenceAuditEventRepository.findByPrincipalAndAuditEventDateAfterAndAuditEventType(principal, LocalDateTime.from(after.toInstant()), type);
+            persistenceAuditEventRepository.findByPrincipalAndEventDateAfterAndEventType(principal, after, type);
         return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
     }
 
@@ -74,9 +80,8 @@ public class CustomAuditEventRepository implements AuditEventRepository {
 
             PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent();
             persistentAuditEvent.setPrincipal(event.getPrincipal());
-            persistentAuditEvent.setAuditEventType(event.getType());
-            Instant instant = Instant.ofEpochMilli(event.getTimestamp().getTime());
-            persistentAuditEvent.setAuditEventDate(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()));
+            persistentAuditEvent.setEventType(EventType.fromName(event.getType()));
+            persistentAuditEvent.setEventDate(event.getTimestamp());
             persistentAuditEvent.setData(auditEventConverter.convertDataToStrings(event.getData()));
             persistenceAuditEventRepository.save(persistentAuditEvent);
         }

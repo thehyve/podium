@@ -15,6 +15,7 @@ import nl.thehyve.podium.domain.Attachment;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,14 +39,18 @@ public class RequestRepresentation implements Serializable {
 
     private List<OrganisationDTO> organisations = new ArrayList<>();
 
-    private RequestRepresentation parentRequest;
-
     private RequestReviewRepresentation requestReview;
+
+    private RequestDetailRepresentation revisionDetail;
 
     @Valid
     private RequestDetailRepresentation requestDetail;
 
     private Set<Attachment> attachments = new HashSet<>();
+
+    private ZonedDateTime createdDate;
+
+    private ZonedDateTime lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -87,13 +92,9 @@ public class RequestRepresentation implements Serializable {
         this.organisations = organisations;
     }
 
-    public RequestRepresentation getParentRequest() {
-        return parentRequest;
-    }
+    public RequestDetailRepresentation getRevisionDetail() { return revisionDetail; }
 
-    public void setParentRequest(RequestRepresentation requestId) {
-        this.parentRequest = requestId;
-    }
+    public void setRevisionDetail(RequestDetailRepresentation revisionDetail) { this.revisionDetail = revisionDetail; }
 
     public RequestDetailRepresentation getRequestDetail() {
         return requestDetail;
@@ -113,6 +114,22 @@ public class RequestRepresentation implements Serializable {
 
     public void setAttachments(Set<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     @Override
@@ -142,7 +159,6 @@ public class RequestRepresentation implements Serializable {
             "id=" + id +
             ", status=" + status +
             ", organisations=" + organisations +
-            ", parentRequest=" + parentRequest +
             ", requestDetail=" + requestDetail +
             ", attachments=" + attachments +
             '}';

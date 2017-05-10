@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.resource.InternalUserResource;
+import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
@@ -50,6 +51,20 @@ public class InternalUserServer implements InternalUserResource {
             throw new ResourceNotFound("User not found with uuid " + uuid.toString());
         }
         return ResponseEntity.ok(userMapper.userToUserDTO(userOptional.get()));
+    }
+
+    @Override
+    @Timed
+    public ResponseEntity<SerialisedUser> getAuthenticatedUserByLogin(@PathVariable("login") String login) {
+        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFound("User not found with login " + login);
+        }
+        User user = userOptional.get();
+        return ResponseEntity.ok(
+            new SerialisedUser(
+                user.getUuid(), user.getLogin(), user.getAuthorityNames(), user.getOrganisationAuthorities())
+        );
     }
 
 }

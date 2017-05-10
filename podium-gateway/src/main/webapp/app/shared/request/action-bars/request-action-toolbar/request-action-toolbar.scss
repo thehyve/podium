@@ -12,4 +12,14 @@
     margin-top: 35px;
     padding: 15px 10px 0 10px;
     border-top: 1px solid rgba(0, 0, 0, 0.098);
+
+    .btn {
+        font-weight: 600;
+        border-width: 2px!important;
+    }
+
+    .check-helper-text {
+        font-size: 14px;
+        font-weight: 500;
+    }
 }

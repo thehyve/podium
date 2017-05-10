@@ -72,4 +72,9 @@
     li.active:before {
         box-shadow: rgba(93, 191, 78, 0.7) 0 0 3px 2px
     }
+
+    li.closed:before, li.closed:after {
+        background: #d22a00;
+        color: white;
+    }
 }

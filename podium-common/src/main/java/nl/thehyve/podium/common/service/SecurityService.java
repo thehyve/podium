@@ -5,16 +5,18 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.security;
+package nl.thehyve.podium.common.service;
 
+import nl.thehyve.podium.common.resource.InternalUserResource;
+import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -34,7 +35,7 @@ public class SecurityService {
     private static final Logger log = LoggerFactory.getLogger(SecurityService.class);
 
     @Autowired
-    private UserService userService;
+    private InternalUserResource internalUserResource;
 
     /**
      * Check if a user is authenticated.
@@ -75,17 +76,33 @@ public class SecurityService {
         }
         String login = getCurrentUserLogin();
         if (login != null) {
-            Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
-            if (!userOptional.isPresent()) {
+            ResponseEntity<SerialisedUser> response = internalUserResource.getAuthenticatedUserByLogin(login);
+            if (response.getStatusCode() != HttpStatus.OK) {
                 log.warn("User not found with login: {}.", login);
                 return null;
             }
-            User user = userOptional.get();
-            UserAuthenticationToken token = new UserAuthenticationToken(user);
+            UserAuthenticationToken token = new UserAuthenticationToken(response.getBody());
             token.setAuthenticated(true);
             return token;
         }
         return null;
+    }
+
+    public AuthenticatedUser getCurrentUser() {
+        // First check if the user object is available in the security context
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null) {
+            if (authentication.getPrincipal() instanceof SerialisedUser) {
+                return ((SerialisedUser) authentication.getPrincipal());
+            }
+        }
+        // Otherwise extract it from the authentication token
+        UserAuthenticationToken token = getUserAuthenticationToken();
+        if (token == null) {
+            return null;
+        }
+        return token.getUser();
     }
 
     /**
@@ -94,11 +111,11 @@ public class SecurityService {
      * @return the uuid of the current user
      */
     public UUID getCurrentUserUuid() {
-        UserAuthenticationToken token = getUserAuthenticationToken();
-        if (token == null) {
+        AuthenticatedUser user = getCurrentUser();
+        if (user == null) {
             return null;
         }
-        return token.getUuid();
+        return user.getUuid();
     }
 
     /**
@@ -124,11 +141,11 @@ public class SecurityService {
         Authentication authentication = securityContext.getAuthentication();
         if (authentication != null) {
             return authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> {
-                    return Arrays.stream(authorities).anyMatch(authority -> {
-                        return grantedAuthority.getAuthority().equals(authority);
-                    });
-                });
+                .anyMatch(grantedAuthority ->
+                    Arrays.stream(authorities).anyMatch(authority ->
+                        grantedAuthority.getAuthority().equals(authority)
+                    )
+                );
         }
         return false;
     }

@@ -29,7 +29,6 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -53,9 +52,6 @@ public class OrganisationServiceIntTest {
 
     @Autowired
     private OrganisationClientService organisationService;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private LoadBalancerClient loadBalancer;
@@ -101,6 +97,8 @@ public class OrganisationServiceIntTest {
 
         List<OrganisationDTO> organisations = organisationService.findAllOrganisations();
         assertThat(organisations).isNotEmpty();
+
+        verify(1, getRequestedFor(urlEqualTo("/api/organisations/all")));
     }
 
 }

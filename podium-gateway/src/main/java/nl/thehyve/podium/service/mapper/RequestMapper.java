@@ -7,86 +7,86 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.domain.Attachment;
 import nl.thehyve.podium.domain.Request;
-import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.representation.RequestRepresentation;
+import nl.thehyve.podium.service.util.DefaultOrganisation;
+import nl.thehyve.podium.service.util.DefaultRequest;
+import nl.thehyve.podium.service.util.DefaultRequestDetail;
+import nl.thehyve.podium.service.util.ExtendedOrganisation;
+import nl.thehyve.podium.service.util.ExtendedRequest;
+import nl.thehyve.podium.service.util.OrganisationMapperHelper;
+import nl.thehyve.podium.service.util.SafeRequestDetail;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
  */
-@Mapper(componentModel = "spring", uses = { RequestDetailMapper.class, RequestReviewProcessMapper.class })
+@Mapper(componentModel = "spring", uses = {
+    RequestDetailMapper.class,
+    RequestReviewProcessMapper.class,
+    OrganisationMapperHelper.class
+})
 public interface RequestMapper {
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @DefaultRequest
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "requestReviewProcess", target = "requestReview")
+    @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
     RequestRepresentation requestToRequestDTO(Request request);
 
+    @DefaultRequest
+    @IterableMapping(qualifiedBy = DefaultRequest.class)
     List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @DefaultRequest
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(target = "historicEvents", ignore = true)
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    @Mapping(source = "parentRequest", target = "parentRequest")
-    @Mapping(source = "requestDetail", target = "requestDetail")
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(target = "historicEvents", ignore = true)
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
+    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "historicEvents", ignore = true)
     Request clone(Request request);
 
+    @DefaultRequest
+    @IterableMapping(qualifiedBy = DefaultRequest.class)
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
-    default Set<UUID> uuidsFromOrganisations (List<OrganisationDTO> organisations) {
-        return organisations.stream().map(OrganisationDTO::getUuid)
-            .collect(Collectors.toSet());
-    }
+    @ExtendedRequest
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
+    @Mapping(source = "requestReviewProcess", target = "requestReview")
+    @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class)
+    RequestRepresentation extendedRequestToRequestDTO(Request request);
 
-    default OrganisationDTO organisationFromUUID(UUID uuid) {
-        if (uuid == null) {
-            return null;
-        }
-        OrganisationDTO organisation = new OrganisationDTO();
-        organisation.setUuid(uuid);
-        return organisation;
-    }
+    @ExtendedRequest
+    @IterableMapping(qualifiedBy = ExtendedRequest.class)
+    List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
 
-    default Request requestFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Request request = new Request();
-        request.setId(id);
-        return request;
-    }
+    @IterableMapping(qualifiedBy = ExtendedRequest.class)
+    List<RequestRepresentation> requestsToExtendedRequestDTOs(List<Request> requests);
 
-    default RequestDetail requestDetailFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        RequestDetail requestDetail = new RequestDetail();
-        requestDetail.setId(id);
-        return requestDetail;
-    }
+    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = SafeRequestDetail.class)
+    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = SafeRequestDetail.class)
+    @Mapping(target = "organisations", ignore = true)
+    @Mapping(target = "requestReviewProcess", ignore = true)
+    Request safeUpdateRequestRepresentationToRequest(
+        RequestRepresentation requestRepresentation,
+        @MappingTarget Request request
+    );
 
-    default Attachment attachmentFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Attachment attachment = new Attachment();
-        attachment.setId(id);
-        return attachment;
-    }
 }
