@@ -101,6 +101,12 @@ public class NotificationService {
         mailService.sendRequestRevisionNotificationToCoordinators(organisationRequest, organisation, coordinators);
     }
 
+    /**
+     * Notify organisation reviewers about an available request to review.
+     *
+     * @param organisation The organisation representation
+     * @param reviewRequest The request to be reviewed
+     */
     @Async
     public void reviewNotificationToReviewers(OrganisationDTO organisation, Request reviewRequest) {
         // Fetch organisation reviewers through Feign.
@@ -109,6 +115,20 @@ public class NotificationService {
 
         mailService.sendRequestReviewNotificationToReviewers(reviewRequest, organisation, reviewers);
     }
+
+    /**
+     * Notify the requester about the approval of a their request.
+     * @param user the requester
+     * @param organisationRequests the list of organisation requests generated at request submission.
+     */
+    @Async
+    public void approvalNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+
+        mailService.sendRequestApprovalNotificationToRequester(requester, requestRepresentation);
+    }
+
 
     private UserRepresentation fetchUserThroughFeign(UUID userUuid) {
         try {

@@ -200,7 +200,30 @@ public class MailService {
             String content = templateEngine.process("organisationRequestReview", context);
             String subject = messageSource.getMessage("email.organisationRequestReview.title", null, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
-
         }
+    }
+
+    /**
+     * Send a notification email to the requester that their request has been
+     * approved.
+     *
+     * @param requester the requester details
+     * @param request the request
+     * @param organisation the organisation representation
+     */
+    @Async
+    public void sendRequestApprovalNotificationToRequester(UserRepresentation requester,
+                                                           RequestRepresentation request) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending request approved e-mail to '{}'", requester.getEmail());
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        String content = templateEngine.process("requesterRequestApproved", context);
+        String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
     }
 }

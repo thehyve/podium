@@ -477,7 +477,12 @@ public class RequestService {
         }
 
         requestReviewProcessService.approve(user, request.getRequestReviewProcess());
-        return requestMapper.requestToRequestDTO(request);
+
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        // Send approval email
+        notificationService.approvalNotificationToRequester(user, requestRepresentation);
+        return requestRepresentation;
     }
 
     @Transactional
