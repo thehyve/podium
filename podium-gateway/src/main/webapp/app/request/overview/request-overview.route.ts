@@ -40,7 +40,7 @@ export const requestOverviewRoute: Route = {
         authorities: ['ROLE_RESEARCHER'],
         pageTitle: 'request.pageTitle',
         pageHeader: 'request.overview.pageHeaderResearcher',
-        breadcrumb: 'overview'
+        breadcrumb: 'my requests'
     },
     canActivate: [UserRouteAccessService]
 };
@@ -55,7 +55,7 @@ export const organisationRequestOverviewRoute: Route = {
         authorities: ['ROLE_ORGANISATION_COORDINATOR'],
         pageTitle: 'request.pageTitle',
         pageHeader: 'request.overview.pageHeaderCoordinator',
-        breadcrumb: 'organisation overview',
+        breadcrumb: 'my organisations',
     },
     canActivate: [UserRouteAccessService]
 };
@@ -70,7 +70,7 @@ export const reviewerRequestOverviewRoute: Route = {
         authorities: ['ROLE_REVIEWER'],
         pageTitle: 'request.pageTitle',
         pageHeader: 'request.overview.pageHeaderReviewer',
-        breadcrumb: 'reviews overview',
+        breadcrumb: 'my reviews',
     },
     canActivate: [UserRouteAccessService]
 };

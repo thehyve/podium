@@ -48,7 +48,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     links: any;
-    isResearcherRoute: boolean;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -63,8 +62,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.isResearcherRoute = this.activatedRoute.snapshot.url[0].path
-                == requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
             this.pageHeader = data['pageHeader'];
             this.page = data['pagingParams'].page;
             this.previousPage = data['pagingParams'].page;
@@ -73,6 +70,10 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['request']);
+    }
+
+    isResearcherRoute(): boolean {
+        return this.activatedRoute.snapshot.url[0].path === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
     }
 
     ngOnInit(): void {
