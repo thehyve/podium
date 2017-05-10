@@ -7,22 +7,31 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { $ } from 'protractor';
-import { Interactable } from '../protractor-stories/director';
+import {browser, $} from "protractor";
+import {Interactable} from "../protractor-stories/director";
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
 class SigninPage {
+    public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
 
+    public at() {
+        let that = this;
+        return browser.getCurrentUrl().then(function (currentUrl) {
+            return (browser.baseUrl + that.url) == currentUrl;
+        })
+    }
+
     constructor() {
-        this.url = "";
+        this.name = "sign in";
+        this.url = "#/";
         this.elements = {
             "usernameInput": {locator: $('#username')},
             "passwordInput": {locator: $('#password')},
-            "submitButton": {locator: $('button[type=submit]'), destination: 'DashboardPage', strict: true},
+            "submitButton": {locator: $('button[type=submit]')},
         }
     }
 }

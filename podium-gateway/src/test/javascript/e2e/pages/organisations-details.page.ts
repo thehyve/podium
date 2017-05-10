@@ -7,26 +7,36 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
-import { Interactable } from '../protractor-stories/director';
 
-class DashboardPage {
+import {browser, $, $$, by, element} from "protractor";
+import {Interactable} from "../protractor-stories/director";
+import ProfileForm = require("./modules/profile-form")
+
+
+/*
+ * Must follow the Page interface
+ * pages hold all stateless information on a page.
+ */
+class UserDetails {
+    public name: string;
     public url: string;
     public elements: {[name: string]: Interactable};
 
     public at() {
-        let that = this
+        let that = this;
         return browser.getCurrentUrl().then(function (currentUrl) {
             return (browser.baseUrl + that.url) == currentUrl;
         })
     }
 
     constructor() {
-        this.url = "#/dashboard";
+        this.name = "organisation Details";
+        this.url = "#/bbmri/organisation/detail/";
         this.elements = {
-            "submitButton": {locator: $('span[ng-reflect-inner-h-t-m-l]')},
+            "shortName": {locator: $('.test-shortName')},
+            "name": {locator: $('.test-name')},
         }
     }
 }
 
-export = DashboardPage;
+export = UserDetails;

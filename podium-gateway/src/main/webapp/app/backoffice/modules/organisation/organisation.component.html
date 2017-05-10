@@ -67,8 +67,8 @@
                 </td>
             </tr>
             <tr *ngFor="let organisation of organisations; trackBy: trackUuid">
-                <td>{{organisation.shortName}}</td>
-                <td>{{organisation.name}}</td>
+                <td class="test-shortName">{{organisation.shortName}}</td>
+                <td class="test-name">{{organisation.name}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

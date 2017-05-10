@@ -71,16 +71,12 @@ if [ "$RUN_PODIUM" == 1 ]; then
     cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
         --server.port="$PODIUM_UAA_RUN_PORT" \
-        --spring.profiles.active="$PROFILE" \
-        --logging.level.nl.thehyve.podium.sample=ERROR \
-        --logging.level.nl.thehyve.podium.travis=ERROR &
+        --spring.profiles.active="$PROFILE",test &
     sleep 80
 
     cd "$PODIUM_BASE"/podium-gateway
     java -jar podium-gateway.war \
-        --spring.profiles.active="$PROFILE" \
-        --logging.level.nl.thehyve.podium.sample=ERROR \
-        --logging.level.nl.thehyve.podium.travis=ERROR &
+        --spring.profiles.active="$PROFILE",test &
     sleep 40
 
     #-------------------------------------------------------------------------------
