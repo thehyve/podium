@@ -73,7 +73,7 @@
                 {{request.requestDetail.title || '-'}}
             </td>
             <td>
-                {{request.status}} ({{ request.requestReview.status != 'None' ? request.requestReview.status : '' }})
+                {{request.status}} {{ request.status == 'Review' ? '(' +request?.requestReview.status + ')': '' }}
             </td>
             <td>
                 <ul>
