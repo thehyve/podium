@@ -69,7 +69,7 @@
     <springProfile name="dev">
         <property name="default_level" value="DEBUG" />
     </springProfile>
-    <springProfile name="test,dev">
+    <springProfile name="test">
         <property name="default_level" value="WARN" />
     </springProfile>
     <springProfile name="!dev">
