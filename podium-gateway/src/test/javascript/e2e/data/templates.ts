@@ -8,23 +8,11 @@
  * See the file LICENSE in the root of this repository.
  */
 export class Organisation {
-    public name: string;
-    public properties: {[key: string]: any};
-
-    constructor(name: string, properties: {[key: string]: any}) {
-        this.name = name;
-        this.properties = properties;
-    }
+    constructor(public name: string, public properties: {[key: string]: any}) {}
 }
 
 export class Request {
-    public name: string;
-    public properties: {[key: string]: any};
-
-    constructor(name: string, properties: {[key: string]: any}) {
-        this.name = name;
-        this.properties = properties;
-    }
+    constructor( public name: string, public properties: {[key: string]: any}) {}
 }
 
 export class File {
