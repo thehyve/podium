@@ -27,7 +27,7 @@ public class RequestSecurityService {
 
     private static final Logger log = LoggerFactory.getLogger(RequestSecurityService.class);
 
-    @Autowired
+    @Autowired(required = false)
     private InternalRequestResource internalRequestResource;
 
     @Autowired
