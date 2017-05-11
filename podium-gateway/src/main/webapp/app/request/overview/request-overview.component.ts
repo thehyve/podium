@@ -49,7 +49,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     links: any;
-    requestParams: any;
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private requestService: RequestService,
@@ -68,15 +67,23 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
         });
-        this.requestParams = {
-            query: this.currentSearch ? this.currentSearch : this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()
-        };
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['request']);
         this.routePath = this.activatedRoute.snapshot.url[0].path;
     }
+
+    getPageParams(): any {
+        let params:any = {
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
+        if (this.currentSearch) {
+            params.query = this.currentSearch;
+        } else {
+            params.page = this.page - 1;
+        }
+        return params;
+    };
 
     isResearcherRoute(): boolean {
         return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
@@ -120,7 +127,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     loadAllReviewerRequests() {
         this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findAllReviewerRequests(this.requestParams)
+        this.requestService.findAllReviewerRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available request drafts.')
@@ -129,7 +136,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     loadCoordinatorReviewRequests() {
         this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findCoordinatorReviewRequests(this.requestParams)
+        this.requestService.findCoordinatorReviewRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available request drafts.')
@@ -138,7 +145,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     loadDrafts() {
         this.currentRequestStatus = RequestStatusOptions.Draft;
-        this.requestService.findDrafts(this.requestParams)
+        this.requestService.findDrafts(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available request drafts.')
@@ -147,7 +154,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     loadMyReviewRequests(): void {
         this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findMyReviewRequests(this.requestParams)
+        this.requestService.findMyReviewRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available submitted requests.')
