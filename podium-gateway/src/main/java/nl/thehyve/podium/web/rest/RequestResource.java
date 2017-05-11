@@ -226,6 +226,7 @@ public class RequestResource {
      * Submit the request
      *
      * @param uuid of the request to be saved
+     * @return the updated request representation
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
@@ -338,7 +339,6 @@ public class RequestResource {
      *
      * @param uuid of the request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
      */
     @RequestMapping(value = "/request/uuid/{uuid}", method = RequestMethod.GET)

@@ -31,6 +31,9 @@ public interface RequestDetailMapper {
 
     /**
      * Safely transform requestDetail representation to a requestDetail entity
+     * @param requestDetailRepresentation data to be mapped
+     * @param requestDetail entity to map to
+     * @return the mapping target
      */
     @SafeRequestDetail
     @Mapping(target = "id", ignore = true)

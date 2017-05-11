@@ -41,6 +41,7 @@ public class NotificationService {
 
     /**
      * RequestService is injected by the service post construct.
+     * @param requestService the request service.
      * @see RequestService
      */
     public void setRequestService(RequestService requestService) {
