@@ -104,11 +104,11 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             this.loadDrafts();
         } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
             if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR) {
-                this.loadOrganisationCoordinatorRequests();
+                this.loadCoordinatorReviewRequests();
             } else if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_REVIEWER) {
-                this.loadReviewerRequests();
+                this.loadAllReviewerRequests();
             } else {
-                this.loadSubmittedRequests();
+                this.loadMyReviewRequests();
             }
         }
     }
@@ -118,18 +118,18 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.router.navigate(['./requests/new']);
     }
 
-    loadReviewerRequests() {
+    loadAllReviewerRequests() {
         this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findReviewerRequests(this.requestParams)
+        this.requestService.findAllReviewerRequests(this.requestParams)
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available request drafts.')
             );
     }
 
-    loadOrganisationCoordinatorRequests() {
+    loadCoordinatorReviewRequests() {
         this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findOrganisationRequests(this.requestParams)
+        this.requestService.findCoordinatorReviewRequests(this.requestParams)
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available request drafts.')
@@ -145,9 +145,9 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             );
     }
 
-    loadSubmittedRequests(): void {
+    loadMyReviewRequests(): void {
         this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findMySubmittedRequests(this.requestParams)
+        this.requestService.findMyReviewRequests(this.requestParams)
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available submitted requests.')

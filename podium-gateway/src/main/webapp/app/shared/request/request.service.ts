@@ -44,24 +44,23 @@ export class RequestService {
         });
     }
 
-    findMySubmittedRequests(req?: any): Observable<Response> {
+    findMyReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/requester`, options).map((res: Response) => {
             return res;
         });
     }
 
-    findOrganisationRequests(req?: any): Observable<Response> {
+    findCoordinatorReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review/organisation`, options).map((res: Response) => {
+        return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
 
-    // TODO : Implement backend
-    findReviewerRequests(req?: any): Observable<Response> {
+    findAllReviewerRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review/reviews`, options).map((res: Response) => {
+        return this.http.get(`${this.resourceUrl}/reviewer`, options).map((res: Response) => {
             return res;
         });
     }
@@ -128,8 +127,8 @@ export class RequestService {
         return this.http.get(`${this.resourceUrl}/${uuid}/validate`);
     }
 
-    requireRevision(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/${uuid}/revision`);
+    requestRevision(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/requestRevision`);
     }
 
     approveRequest(uuid: string): Observable<Response> {

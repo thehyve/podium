@@ -40,7 +40,8 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     @Query("select distinct r from Request r" +
         " join r.organisations o" +
-        " where r.requestReviewProcess.status = :requestReviewStatus" +
+        " where r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Review" +
+        " and r.requestReviewProcess.status = :requestReviewStatus" +
         " and o in :organisations")
     Page<Request> findAllByRequestReviewStatusAndOrganisations(
         @Param("requestReviewStatus") RequestReviewStatus requestReviewStatus,

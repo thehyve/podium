@@ -49,4 +49,10 @@ public class StatusUpdateEvent extends AbstractEvent {
         return message;
     }
 
+    @Override
+    public String toString() {
+        return "Status of request " + requestUuid.toString() + " has been updated: " +
+            sourceStatus.toString() + " --> " + targetStatus.toString();
+    }
+
 }
