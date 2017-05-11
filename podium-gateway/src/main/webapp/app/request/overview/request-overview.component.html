@@ -53,6 +53,10 @@
             </th>
             <th><span>Request Type</span></th>
             <th><span>Organisations</span></th>
+            <th jhiSortBy="requestDetail.principalInvestigator.name" *ngIf="!isResearcherRoute()">
+                <span>Principal Investigator</span>
+                <span class="fa fa-sort"></span>
+            </th>
             <th jhiSortBy="createdDate">
                 <span>Created Date</span>
                 <span class="fa fa-sort"></span>
@@ -85,6 +89,9 @@
                     <li *ngFor="let organisation of request.organisations">{{organisation.name}}</li>
                 </ul>
             </td>
+            <td *ngIf="!isResearcherRoute()">
+                {{request.requestDetail.principalInvestigator.name || '-'}}
+            </td>
             <td>
                 {{request.createdDate | date:'short' }}
             </td>
@@ -111,7 +118,7 @@
             </td>
         </tr>
         <tr *ngIf="availableRequests.length == 0">
-            <td colspan="7" class="no-results">
+            <td colspan="10" class="no-results">
                 <div class="alert alert-info">
                     No requests found
                 </div>
