@@ -11,7 +11,7 @@
 <h2><span jhiTranslate="{{pageHeader}}">My requests</span>
 
     <div class="btn-group flex-btn-group-container" *ngIf="isResearcherRoute()">
-        <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadSubmittedRequests()" >
+        <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadMyReviewRequests()" >
             <i class="material-icons">assignment_ind</i>
             <span class="hidden-sm-down">
                 Submitted
@@ -73,8 +73,7 @@
                 {{request.requestDetail.title || '-'}}
             </td>
             <td>
-                <!--TODO: Uncomment after requestReview no longer null value-->
-                <!--{{request.status}} ({{ request.requestReview.status != 'None' ? request.requestReview.status : '' }})-->
+                {{request.status}} {{ request.status == 'Review' ? '(' + request.requestReview.status + ')' : '' }}
             </td>
             <td>
                 <ul>

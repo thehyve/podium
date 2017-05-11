@@ -88,7 +88,7 @@ describe('Component Tests', () => {
             beforeEach(() => {
                 spyOn(comp, 'registerChangeInRequests');
             });
-            fit('should load submitted requests and register change in requests', () => {
+            it('should load submitted requests and register change in requests', () => {
                 comp.ngOnInit();
                 expect(comp.registerChangeInRequests).toHaveBeenCalled();
             });
