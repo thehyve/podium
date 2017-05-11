@@ -6,7 +6,6 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.domain.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,14 +53,15 @@ public class NotificationService {
      * @param organisationRequests the list of organisation requests generated at request submission.
      */
     @Async
-    public void submissionNotificationToRequester(AuthenticatedUser user, List<Request> organisationRequests) {
+    public void submissionNotificationToRequester(AuthenticatedUser user, List<RequestRepresentation> organisationRequests) {
         // Fetch requester data through Feign.
         UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
 
         Map<UUID, OrganisationDTO> organisations = new HashMap<>();
         try {
-            for (Request request: organisationRequests) {
-                for (UUID organisationUuid : request.getOrganisations()) {
+            for (RequestRepresentation request: organisationRequests) {
+                for (OrganisationDTO organisation : request.getOrganisations()) {
+                    UUID organisationUuid = organisation.getUuid();
                     if (!organisations.containsKey(organisationUuid)) {
                         organisations.put(organisationUuid, organisationClientService.findOrganisationByUuid(organisationUuid));
                     }

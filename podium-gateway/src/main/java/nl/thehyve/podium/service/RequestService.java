@@ -16,10 +16,8 @@ import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
-import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
@@ -652,11 +650,12 @@ public class RequestService {
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
         }
 
-        notificationService.submissionNotificationToRequester(user, organisationRequests);
+        List<RequestRepresentation> result = requestMapper.extendedRequestsToRequestDTOs(organisationRequests);
+        notificationService.submissionNotificationToRequester(user, result);
 
         log.debug("Deleting draft request.");
         deleteRequest(request.getId());
-        return requestMapper.extendedRequestsToRequestDTOs(organisationRequests);
+        return result;
     }
 
     /**

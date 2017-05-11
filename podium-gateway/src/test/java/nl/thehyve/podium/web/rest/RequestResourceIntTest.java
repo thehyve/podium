@@ -482,7 +482,7 @@ public class RequestResourceIntTest {
         return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
-    private static List<Request> nonEmptyRequestList() {
+    private static List<RequestRepresentation> nonEmptyRequestList() {
         return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
