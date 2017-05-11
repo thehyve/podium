@@ -182,7 +182,7 @@ public class RequestService {
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
         Page<Request> result = requestRepository.findAllByRequestReviewStatusAndOrganisations(status, organisationUuids, pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
@@ -207,7 +207,7 @@ public class RequestService {
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
         Page<Request> result = requestRepository.findAllByStatusAndOrganisations(status, organisationUuids, pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
