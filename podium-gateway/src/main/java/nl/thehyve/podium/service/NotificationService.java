@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.UUID;
  * Service responsible for sending notifications and fetching the required data for the notifications.
  */
 @Service
+@Transactional(readOnly = true)
 public class NotificationService {
 
     private Logger log  = LoggerFactory.getLogger(NotificationService.class);
@@ -34,6 +36,16 @@ public class NotificationService {
 
     @Autowired
     private MailService mailService;
+
+    private RequestService requestService;
+
+    /**
+     * RequestService is injected by the service post construct.
+     * @see RequestService
+     */
+    public void setRequestService(RequestService requestService) {
+        this.requestService = requestService;
+    }
 
     /**
      * Notify the requester about the submission of a new request.
@@ -63,85 +75,87 @@ public class NotificationService {
 
     /**
      * Notify organisation coordinators about the submission of a new request.
-     * @param organisation the organisation DTO object
-     * @param organisationRequest the submitted request object
+     * @param requestUuid The uuid of the request
      */
     @Async
-    public void submissionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
-        // Fetch organisation and organisation coordinators through Feign.
-        List<UserRepresentation> coordinators
-            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
-
-        mailService.sendSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
+    public void submissionNotificationToCoordinators(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        for(OrganisationDTO organisation: request.getOrganisations()) {
+            // Fetch organisation coordinators through Feign.
+            List<UserRepresentation> coordinators
+                = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+            mailService.sendSubmissionNotificationToCoordinators(request, organisation, coordinators);
+        }
     }
 
     /**
-     * Notify requester about the rejection of their request.
-     * @param user the authenticated user
-     * @param requestRepresentation the request object
+     * Notify requester about the approval or rejection of their request.
+     * @param requestUuid The uuid of the request
      */
-    public void rejectionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+    @Async
+    public void reviewProcessClosedNotificationToRequester(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
         // Fetch requester data through Feign.
-        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester());
 
-        mailService.sendRejectionNotificationToRequester(requester, requestRepresentation);
+        switch (request.getRequestReview().getDecision()) {
+            case Approved:
+                mailService.sendRequestApprovalNotificationToRequester(requester, request);
+                break;
+            case Rejected:
+                mailService.sendRejectionNotificationToRequester(requester, request);
+                break;
+            default:
+                log.error("Unexpected review process outcome for request {}: {}. No notification sent.",
+                    requestUuid, request.getRequestReview().getDecision());
+        }
     }
 
     /**
      * Notify organisation coordinators about the submission of a revised request.
-     * @param organisation the organisation DTO object
-     * @param organisationRequest the submitted request object
+     * @param requestUuid The uuid of the request
      */
     @Async
-    public void revisionNotificationToCoordinators(OrganisationDTO organisation, Request organisationRequest) {
-        // Fetch organisation coordinators through Feign.
-        List<UserRepresentation> coordinators
-            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+    public void revisionNotificationToCoordinators(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        for(OrganisationDTO organisation: request.getOrganisations()) {
+            // Fetch organisation coordinators through Feign.
+            List<UserRepresentation> coordinators
+                = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
-        mailService.sendRequestRevisionSubmissionNotificationToCoordinators(organisationRequest, organisation, coordinators);
+            mailService.sendRequestRevisionSubmissionNotificationToCoordinators(request, organisation, coordinators);
+        }
     }
 
     /**
      * Notify organisation reviewers about an available request to review.
      *
-     * @param organisation The organisation representation
-     * @param reviewRequest The request to be reviewed
+     * @param requestUuid The uuid of the request to be reviewed
      */
     @Async
-    public void reviewNotificationToReviewers(OrganisationDTO organisation, Request reviewRequest) {
-        // Fetch organisation reviewers through Feign.
-        List<UserRepresentation> reviewers
-            = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.REVIEWER);
+    public void reviewNotificationToReviewers(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        for(OrganisationDTO organisation: request.getOrganisations()) {
+            // Fetch organisation reviewers through Feign.
+            List<UserRepresentation> reviewers
+                = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.REVIEWER);
 
-        mailService.sendRequestReviewNotificationToReviewers(reviewRequest, organisation, reviewers);
-    }
-
-    /**
-     * Notify the requester about the approval of a their request.
-     * @param user the requester
-     * @param requestRepresentation The request that is approved.
-     */
-    @Async
-    public void approvalNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
-        // Fetch requester data through Feign.
-        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
-
-        mailService.sendRequestApprovalNotificationToRequester(requester, requestRepresentation);
+            mailService.sendRequestReviewNotificationToReviewers(request, organisation, reviewers);
+        }
     }
 
     /**
      * Notify the requester that their request requires one or more revisions.
-     * @param user the requester
-     * @param requestRepresentation The request that requires revision.
+     * @param requestUuid The uuid of the request
      */
     @Async
-    public void revisionNotificationToRequester(AuthenticatedUser user, RequestRepresentation requestRepresentation) {
+    public void revisionNotificationToRequester(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
         // Fetch requester data through Feign.
-        UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester());
 
-        mailService.sendRequestRevisionNotificationToRequester(requester, requestRepresentation);
+        mailService.sendRequestRevisionNotificationToRequester(requester, request);
     }
-
 
     /**
      * Fetch a user representation by UUID through feign.

@@ -69,7 +69,7 @@ export class RequestDetailComponent {
 
     requireRequestRevision() {
         this.isUpdating = true;
-        this.requestService.requireRevision(this.request.uuid)
+        this.requestService.requestRevision(this.request.uuid)
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)

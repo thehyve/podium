@@ -137,28 +137,26 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     loadSubmittedRequests() {
         this.currentRequestStatus = RequestStatusOptions.Review;
-
+        let params = {
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
         if (this.currentSearch) {
-            this.requestService.findMySubmittedRequests({
-                query: this.currentSearch,
-                size: this.itemsPerPage,
-                sort: this.sort()}
-            ).subscribe(
+            params['query'] = this.currentSearch;
+        } else {
+            params['page'] = this.page - 1;
+        }
+        if (this.isOrganisationOverview) {
+            this.requestService.findCoordinatorReviewRequests(params).subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available submitted requests.')
             );
-            return;
+        } else {
+            this.requestService.findMyReviewRequests(params).subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available submitted requests.')
+            );
         }
-
-        this.requestService.findMySubmittedRequests({
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()
-        }).subscribe(
-            (res) => this.processAvailableRequests(res.json(), res.headers),
-            (error) => this.onError('Error loading available submitted requests.')
-        );
-
     }
 
     editRequest(request) {
