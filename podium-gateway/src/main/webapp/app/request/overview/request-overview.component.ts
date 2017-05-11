@@ -20,6 +20,7 @@ import { RequestStatusOptions } from '../../shared/request/request-status/reques
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftModalModalComponent } from './delete-request-draft-modal.component';
 import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
+import { requestOverviewPaths } from './request-overview.constants';
 
 @Component({
     selector: 'pdm-request-overview',
@@ -38,6 +39,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     currentRequestStatus: RequestStatusOptions;
     totalItems: any;
     routeData: any;
+    routePath: any;
     currentSearch: any;
     queryCount: any;
     itemsPerPage: any;
@@ -47,38 +49,45 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     links: any;
-    isOrganisationOverview: boolean;
+    requestParams: any;
 
-    constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private requestService: RequestService,
-        private router: Router,
-        private parseLinks: ParseLinks,
-        private requestFormService: RequestFormService,
-        private eventManager: EventManager,
-        private principal: Principal,
-        private modalService: NgbModal,
-        private activatedRoute: ActivatedRoute
-    ) {
+    constructor(private jhiLanguageService: JhiLanguageService,
+                private requestService: RequestService,
+                private router: Router,
+                private parseLinks: ParseLinks,
+                private requestFormService: RequestFormService,
+                private eventManager: EventManager,
+                private principal: Principal,
+                private modalService: NgbModal,
+                private activatedRoute: ActivatedRoute) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.isOrganisationOverview = !!data['isOrganisationOverview'];
             this.pageHeader = data['pageHeader'];
             this.page = data['pagingParams'].page;
             this.previousPage = data['pagingParams'].page;
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
         });
+        this.requestParams = {
+            query: this.currentSearch ? this.currentSearch : this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['request']);
+        this.routePath = this.activatedRoute.snapshot.url[0].path;
+    }
+
+    isResearcherRoute(): boolean {
+        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
     }
 
     ngOnInit(): void {
+        this.currentRequestStatus = RequestStatusOptions.Review; // begin with submitted requests
         this.principal.identity().then((account) => {
             this.currentUser = account;
-            this.loadSubmittedRequests();
+            this.loadRequests();
         });
-
         this.registerChangeInRequests();
     }
 
@@ -94,7 +103,13 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         if (this.currentRequestStatus === RequestStatusOptions.Draft) {
             this.loadDrafts();
         } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
-            this.loadSubmittedRequests();
+            if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR) {
+                this.loadCoordinatorReviewRequests();
+            } else if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_REVIEWER) {
+                this.loadAllReviewerRequests();
+            } else {
+                this.loadMyReviewRequests();
+            }
         }
     }
 
@@ -103,60 +118,48 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.router.navigate(['./requests/new']);
     }
 
-    loadDrafts() {
-        this.currentRequestStatus = RequestStatusOptions.Draft;
-        if (this.currentSearch) {
-            this.requestService.findDrafts({
-                query: this.currentSearch,
-                size: this.itemsPerPage,
-                sort: this.sort()}
-            ).subscribe(
+    loadAllReviewerRequests() {
+        this.currentRequestStatus = RequestStatusOptions.Review;
+        this.requestService.findAllReviewerRequests(this.requestParams)
+            .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available request drafts.')
             );
-            return;
-        }
-
-        this.requestService.findDrafts({
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()
-        }).subscribe(
-            (res) => this.processAvailableRequests(res.json(), res.headers),
-            (error) => this.onError('Error loading available request drafts.')
-        );
     }
 
-    sort () {
+    loadCoordinatorReviewRequests() {
+        this.currentRequestStatus = RequestStatusOptions.Review;
+        this.requestService.findCoordinatorReviewRequests(this.requestParams)
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available request drafts.')
+            );
+    }
+
+    loadDrafts() {
+        this.currentRequestStatus = RequestStatusOptions.Draft;
+        this.requestService.findDrafts(this.requestParams)
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available request drafts.')
+            );
+    }
+
+    loadMyReviewRequests(): void {
+        this.currentRequestStatus = RequestStatusOptions.Review;
+        this.requestService.findMyReviewRequests(this.requestParams)
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available submitted requests.')
+            );
+    }
+
+    sort() {
         let result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
         if (this.predicate !== 'id') {
             result.push('id');
         }
         return result;
-    }
-
-    loadSubmittedRequests() {
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        let params = {
-            size: this.itemsPerPage,
-            sort: this.sort()
-        };
-        if (this.currentSearch) {
-            params['query'] = this.currentSearch;
-        } else {
-            params['page'] = this.page - 1;
-        }
-        if (this.isOrganisationOverview) {
-            this.requestService.findCoordinatorReviewRequests(params).subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available submitted requests.')
-            );
-        } else {
-            this.requestService.findMyReviewRequests(params).subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available submitted requests.')
-            );
-        }
     }
 
     editRequest(request) {
@@ -165,7 +168,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     deleteDraft(request) {
-        const modalRef  = this.modalService.open(RequestDraftModalModalComponent);
+        const modalRef = this.modalService.open(RequestDraftModalModalComponent);
         modalRef.componentInstance.request = request;
         modalRef.result.then((result) => {
             console.log(`Closed ${result}`);
@@ -185,7 +188,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.availableRequests = requests;
     }
 
-    loadPage (page: number) {
+    loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
@@ -194,8 +197,8 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     transition() {
         // Transition with queryParams
-        this.router.navigate([this.getNavUrlForRouter(this.router)], {queryParams:
-            {
+        this.router.navigate([this.getNavUrlForRouter(this.router)], {
+            queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
@@ -210,15 +213,14 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     private onSuccess(result) {
-        this.error =  null;
+        this.error = null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
     }
 
     private onError(error) {
-        this.error =  'ERROR';
+        this.error = 'ERROR';
         this.success = null;
         window.scrollTo(0, 0);
     }
-
 }

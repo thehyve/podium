@@ -8,7 +8,7 @@
  *
  */
 
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async, inject, fakeAsync } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { RequestOverviewComponent } from '../../../../../../main/webapp/app/request/overview/request-overview.component';
@@ -60,10 +60,10 @@ describe('Component Tests', () => {
                         provide: ActivatedRoute,
                         useValue: {
                             'data': Observable.from([{
-                                'isOrganisationOverview': false,
                                 'pagingParams': {},
                             }]),
                             snapshot: {
+                                url: [{path: '/foo'}],
                                 params: {},
                             }
                         },
@@ -84,9 +84,14 @@ describe('Component Tests', () => {
             comp = fixture.componentInstance;
         });
 
-        it('Should call load all on init', () => {
-            fixture.detectChanges();
-            expect(comp.isOrganisationOverview).toBe(false);
+        describe('ngOnInit()', () => {
+            beforeEach(() => {
+                spyOn(comp, 'registerChangeInRequests');
+            });
+            it('should load submitted requests and register change in requests', () => {
+                comp.ngOnInit();
+                expect(comp.registerChangeInRequests).toHaveBeenCalled();
+            });
         });
 
     });
