@@ -8,6 +8,7 @@
 package nl.thehyve.podium.common.service;
 
 import nl.thehyve.podium.common.resource.InternalUserResource;
+import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
@@ -170,11 +171,11 @@ public class SecurityService {
      */
     public boolean isCurrentUserInAnyOrganisationRole(UUID organisationUuid, String ... authorities) {
         log.info("Checking access for organisation {}", organisationUuid);
-        UserAuthenticationToken token = getUserAuthenticationToken();
-        if (token == null) {
+        AuthenticatedUser user = getCurrentUser();
+        if (user == null) {
             return false;
         }
-        Collection<String> organisationRoles = token.getOrganisationRoles().get(organisationUuid);
+        Collection<String> organisationRoles = user.getOrganisationAuthorities().get(organisationUuid);
         log.info("Organisation roles: {}", organisationRoles);
         return organisationRoles != null &&
             organisationRoles.stream().anyMatch(grantedAuthority ->

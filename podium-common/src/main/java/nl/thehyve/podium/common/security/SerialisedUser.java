@@ -8,10 +8,8 @@
 package nl.thehyve.podium.common.security;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class SerialisedUser implements AuthenticatedUser, Serializable {
 
@@ -30,8 +28,11 @@ public class SerialisedUser implements AuthenticatedUser, Serializable {
                           Map<UUID, Collection<String>> organisationAuthorities) {
         this.uuid = uuid;
         this.name = name;
-        this.authorityNames = authorityNames == null ? Collections.emptyList() : authorityNames;
+        this.authorityNames = new LinkedHashSet<>(authorityNames == null ? Collections.emptyList() : authorityNames);
         this.organisationAuthorities = organisationAuthorities == null ? Collections.emptyMap() : organisationAuthorities;
+        this.authorityNames.addAll(this.getOrganisationAuthorities().values().stream()
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet()));
     }
 
     @Override

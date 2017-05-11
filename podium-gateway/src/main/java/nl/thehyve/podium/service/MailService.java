@@ -8,10 +8,10 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.PodiumProperties;
 import nl.thehyve.podium.domain.Request;
-import nl.thehyve.podium.service.representation.RequestRepresentation;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

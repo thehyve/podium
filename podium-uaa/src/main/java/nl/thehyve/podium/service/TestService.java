@@ -36,7 +36,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 /**
- * Service class for managing users.
+ * Service class for clearing database for testing purposes.
  */
 @Profile({"dev", "test"})
 @Service

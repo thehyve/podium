@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
@@ -30,7 +31,7 @@ import java.util.*;
 @Table(name = "request")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "request")
-public class Request extends AbstractAuditingEntity implements Serializable, IdentifiableUser {
+public class Request extends AbstractAuditingEntity implements Serializable, IdentifiableUser, IdentifiableRequest {
 
     private static final long serialVersionUID = 1L;
 
@@ -106,6 +107,11 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     }
 
     public UUID getUuid() {
+        return uuid;
+    }
+
+    @Override
+    public UUID getRequestUuid() {
         return uuid;
     }
 

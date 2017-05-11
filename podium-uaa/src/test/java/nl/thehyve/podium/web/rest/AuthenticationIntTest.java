@@ -9,10 +9,10 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.security.CustomServerAuthenticationProvider;
-import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;

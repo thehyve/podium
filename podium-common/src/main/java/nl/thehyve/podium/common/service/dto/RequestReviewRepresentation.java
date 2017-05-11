@@ -5,11 +5,10 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.representation;
+package nl.thehyve.podium.common.service.dto;
 
 import nl.thehyve.podium.common.enumeration.DecisionOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import nl.thehyve.podium.domain.RequestReviewProcess;
 
 import java.io.Serializable;
 
@@ -29,13 +28,6 @@ public class RequestReviewRepresentation implements Serializable {
 
     public RequestReviewRepresentation() {
 
-    }
-
-    public RequestReviewRepresentation(RequestReviewProcess requestReview) {
-        this.id = requestReview.getId();
-        this.processInstanceId = requestReview.getProcessInstanceId();
-        this.status = requestReview.getStatus();
-        this.decision = requestReview.getDecision();
     }
 
     public Long getId() {

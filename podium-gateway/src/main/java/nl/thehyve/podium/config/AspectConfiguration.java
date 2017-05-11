@@ -8,6 +8,9 @@
 package nl.thehyve.podium.config;
 
 import nl.thehyve.podium.aop.logging.LoggingAspect;
+import nl.thehyve.podium.common.aop.security.AccessPolicyAspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -16,11 +19,20 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 @EnableAspectJAutoProxy
-public class LoggingAspectConfiguration {
+public class AspectConfiguration {
+
+    Logger log = LoggerFactory.getLogger(AspectConfiguration.class);
 
     @Bean
     @Profile(PodiumConstants.SPRING_PROFILE_DEVELOPMENT)
     public LoggingAspect loggingAspect(Environment env) {
         return new LoggingAspect(env);
     }
+
+    @Bean
+    public AccessPolicyAspect accessPolicyAspect() {
+        log.info("Initialising access policy aspect.");
+        return new AccessPolicyAspect();
+    }
+
 }

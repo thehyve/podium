@@ -7,27 +7,21 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
+import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
+import nl.thehyve.podium.common.test.AbstractAccessPolicyIntTest;
+import nl.thehyve.podium.common.test.Action;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.security.OAuth2TokenMockUtil;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
-import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.security.OAuth2TokenMockUtil;
-import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
@@ -39,14 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -55,16 +44,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import static nl.thehyve.podium.common.test.Action.format;
+import static nl.thehyve.podium.common.test.Action.newAction;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Integration test for the access policy on controller methods.
@@ -72,9 +59,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ContextConfiguration
 @SpringBootTest(classes = PodiumUaaApp.class)
-public class AccessPolicyIntTest {
+public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
-    Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
+    private Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
 
     @Autowired
     private UserService userService;
@@ -91,16 +78,15 @@ public class AccessPolicyIntTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private OAuth2TokenMockUtil tokenUtil;
-
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     private MockMvc mockMvc;
 
-    private ObjectMapper mapper = new ObjectMapper();
-
+    @Override
+    protected MockMvc getMockMvc() {
+        return mockMvc;
+    }
 
     @Before
     public void setup() {
@@ -149,7 +135,7 @@ public class AccessPolicyIntTest {
     private User testUser1;
     private User testUser2;
     private User anonymous;
-    private Set<User> allUsers = new LinkedHashSet<>();
+    private Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
 
     private User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
         log.info("Creating user {}", name);
@@ -246,59 +232,9 @@ public class AccessPolicyIntTest {
         reviewerBRole = roleService.findRoleByOrganisationAndAuthorityName(organisationB, AuthorityConstants.REVIEWER);
     }
 
-    static class Action {
-        HttpMethod method = HttpMethod.GET;
-        String url;
-        Map<String, String> parameters = new HashMap<>();
-        Object body;
-        Collection<User> allowedUsers = new LinkedHashSet<>();
-        HttpStatus expectedStatus;
-
-        public Action setMethod(HttpMethod method) {
-            this.method = method;
-            return this;
-        }
-
-        public Action setUrl(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public Action set(String param, Object value) {
-            this.parameters.put(param, value.toString());
-            return this;
-        }
-
-        public Action body(Object body) {
-            this.body = body;
-            return this;
-        }
-
-        public Action allow(User ... users) {
-            for (User user: users) {
-                this.allowedUsers.add(user);
-            }
-            return this;
-        }
-
-        public Action expect(HttpStatus status) {
-            this.expectedStatus = status;
-            return this;
-        }
-
-    }
-
-    public static Action newAction() {
-        return new Action();
-    }
-
 
     public static final String ROLE_ROUTE = "/api/roles";
     public static final String ROLE_SEARCH_ROUTE = "/api/_search/roles";
-
-    private String format(String url, String format, Object ... args) {
-        return url + String.format(format, args);
-    }
 
     private List<Action> actions = new ArrayList<>();
 
@@ -359,85 +295,11 @@ public class AccessPolicyIntTest {
         createActions();
     }
 
-    private RequestPostProcessor token(User user) {
-        if (user == null) {
-            return SecurityMockMvcRequestPostProcessors.anonymous();
-        }
-        return tokenUtil.oauth2Authentication(user);
-    }
-
-    private MockHttpServletRequestBuilder getRequest(Action action) {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(action.method, action.url);
-        if (action.body != null) {
-            try {
-                request = request
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsBytes(action.body));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("JSON serialisation error", e);
-            }
-        }
-        for(Map.Entry<String, String> entry: action.parameters.entrySet()) {
-            request = request.param(entry.getKey(), entry.getValue());
-        }
-        return request;
-    }
-
-    private void expectSuccess(Action action, User user) throws Exception {
-        mockMvc.perform(
-            getRequest(action)
-            .with(token(user))
-            .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk());
-    }
-
-    private void expectFail(Action action, User user) throws Exception {
-        mockMvc.perform(
-            getRequest(action)
-            .with(token(user))
-            .accept(MediaType.APPLICATION_JSON)
-        )
-        .andDo(result -> log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString()))
-        .andExpect(status().is4xxClientError());
-    }
-
-    private void expectStatus(Action action, User user) throws Exception {
-        mockMvc.perform(
-            getRequest(action)
-                .with(token(user))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andDo(result -> log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString()))
-        .andExpect(status().is(action.expectedStatus.value()));
-    }
-
     @Test
     @Transactional
     public void testAccessPolicy() throws Exception {
         setupData();
-
-        for (Action action: actions) {
-            for (User user: allUsers) {
-                String login = user == null ? "anonymous" : user.getLogin();
-                log.info("Testing action {} {} for user {}", action.method, action.url, login);
-                if (user == null) {
-                    log.info("Expect failure for anonymous...");
-                    expectFail(action, user);
-                } else if (action.expectedStatus != null) {
-                    log.info("Expect {}...", action.expectedStatus);
-                    expectStatus(action, user);
-                } else {
-                    if (action.allowedUsers.contains(user)) {
-                        log.info("Expect success...");
-                        expectSuccess(action, user);
-                    } else {
-                        log.info("Expect failure...");
-                        expectFail(action, user);
-                    }
-                }
-            }
-        }
+        runAll(actions, allUsers);
     }
 
 }
