@@ -8,6 +8,8 @@
 package nl.thehyve.podium.domain;
 
 import nl.thehyve.podium.common.domain.AbstractPodiumEvent;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -16,6 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "podium_event")
+@Document(indexName = "podium_event")
 public class PersistentAuditEvent extends AbstractPodiumEvent {
 
 }
