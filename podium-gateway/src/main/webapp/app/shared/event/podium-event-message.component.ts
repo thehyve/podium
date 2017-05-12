@@ -9,7 +9,6 @@
  */
 
 import { Component, OnInit, Input } from '@angular/core';
-import { PodiumEventMessageService } from './podium-event-message.service';
 import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';
 
@@ -25,14 +24,13 @@ export class PodiumEventMessageComponent implements OnInit {
     constructor(
         private requestService: RequestService
     ) {
-
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });
     }
 
     ngOnInit() {
-    }
 
+    }
 
 }
