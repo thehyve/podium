@@ -123,7 +123,6 @@ public class RequestReviewProcessService {
     /**
      * Copy properties from the process variables to the request review entity.
      */
-    @Timed
     private RequestReviewProcess updateRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
         // Update the request review object with the process variables.
         HistoricProcessInstance instance = findProcessInstance(requestReviewProcess.getProcessInstanceId());
@@ -136,7 +135,6 @@ public class RequestReviewProcessService {
         return requestReviewProcess;
     }
 
-    @Timed
     private RequestReviewProcess completeCurrentTask(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) {
         RequestReviewStatus status = requestReviewProcess.getStatus();
         if (status == RequestReviewStatus.None) {

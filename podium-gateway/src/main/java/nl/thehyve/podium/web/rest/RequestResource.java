@@ -233,7 +233,9 @@ public class RequestResource {
     @GetMapping("/requests/{uuid}/submit")
     @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<RequestRepresentation> submitRevisedRequest(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> submitRevisedRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid
+    ) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
         RequestRepresentation request = requestService.submitRevision(user, uuid);
@@ -339,7 +341,7 @@ public class RequestResource {
      *
      * @param uuid of the request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @return The list of requestDTOs generated
+     * @return The list of requestDTOs
      */
     @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
     @SecuredByRequestOwner

@@ -20,6 +20,7 @@ import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
@@ -416,11 +417,22 @@ public class RequestResourceIntTest {
         return res[0];
     }
 
-    private ResultActions performProcessAction(UserAuthenticationToken user, String action, UUID requestUuid) throws Exception {
+    /**
+     *
+     * @param user The authenticated user performing the action
+     * @param action The action to perform
+     * @param requestUuid The UUID of the request to perform the action on
+     * @param method The HttpMethod required to perform the action
+     * @return
+     * @throws Exception
+     */
+    private ResultActions performProcessAction(
+        UserAuthenticationToken user, String action, UUID requestUuid, HttpMethod method, MessageRepresentation message
+    ) throws Exception {
         return mockMvc.perform(
-            getRequest(HttpMethod.GET,
+            getRequest(method,
                 REQUESTS_ROUTE + "/" + requestUuid.toString() + "/" + action,
-                null,
+                message,
                 Collections.emptyMap())
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
@@ -692,8 +704,7 @@ public class RequestResourceIntTest {
         UUID requestUuid = coordinatorRequests.get(0).getUuid();
 
         // Submit for review
-        performProcessAction(coordinator1, ACTION_VALIDATE, requestUuid);
-
+        performProcessAction(coordinator1, ACTION_VALIDATE, requestUuid, HttpMethod.GET, null);
 
         // Fetch requests with status 'Review' for reviewer 1: should return 1 request
         mockMvc.perform(
@@ -757,9 +768,12 @@ public class RequestResourceIntTest {
         // Setup a submitted draft
         RequestRepresentation requestRepresentation = getSubmittedDraft();
 
+        MessageRepresentation rejectionMessage = new MessageRepresentation();
+        rejectionMessage.setSummary("Test rejection");
+
         // Reject the request.
         ResultActions rejectedRequest
-            = performProcessAction(coordinator1, ACTION_REJECT, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_REJECT, requestRepresentation.getUuid(), HttpMethod.POST, rejectionMessage);
 
         rejectedRequest
             .andDo(result -> {
@@ -780,7 +794,7 @@ public class RequestResourceIntTest {
 
         // Send for review
         ResultActions validatedRequest
-            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid(), HttpMethod.GET, null);
 
         validatedRequest
             .andExpect(status().isOk())
@@ -791,9 +805,12 @@ public class RequestResourceIntTest {
                 Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
             });
 
+        MessageRepresentation rejectionMessage = new MessageRepresentation();
+        rejectionMessage.setSummary("Test rejection");
+
         // Reject the request.
         ResultActions rejectedRequest
-            = performProcessAction(coordinator1, ACTION_REJECT, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_REJECT, requestRepresentation.getUuid(), HttpMethod.POST, rejectionMessage);
 
         rejectedRequest
             .andExpect(status().isOk())
@@ -814,7 +831,7 @@ public class RequestResourceIntTest {
 
         // Send for review
         ResultActions validatedRequest
-            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid(), HttpMethod.GET, null);
 
         validatedRequest
             .andExpect(status().isOk())
@@ -833,7 +850,7 @@ public class RequestResourceIntTest {
 
         // Send for review
         ResultActions validatedRequest
-            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid(), HttpMethod.GET, null);
 
         validatedRequest
             .andExpect(status().isOk())
@@ -846,7 +863,7 @@ public class RequestResourceIntTest {
 
         // Approve the request.
         ResultActions approvedRequest
-            = performProcessAction(coordinator1, ACTION_APPROVE, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_APPROVE, requestRepresentation.getUuid(), HttpMethod.GET, null);
 
         approvedRequest
             .andExpect(status().isOk())
@@ -864,9 +881,12 @@ public class RequestResourceIntTest {
         // Setup a submitted draft
         RequestRepresentation requestRepresentation = getSubmittedDraft();
 
+        MessageRepresentation revisionMessage = new MessageRepresentation();
+        revisionMessage.setSummary("Test revision. Please change fields xyz");
+
         // Send for revision
         ResultActions revisedRequest
-            = performProcessAction(coordinator1, ACTION_REQUEST_REVISION, requestRepresentation.getUuid());
+            = performProcessAction(coordinator1, ACTION_REQUEST_REVISION, requestRepresentation.getUuid(), HttpMethod.POST, revisionMessage);
 
         revisedRequest
             .andExpect(status().isOk())
