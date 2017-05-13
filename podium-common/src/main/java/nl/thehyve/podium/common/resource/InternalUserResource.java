@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.common.resource;
 
-import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.annotations.UserUuidParameter;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;

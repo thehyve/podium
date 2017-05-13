@@ -7,18 +7,12 @@
 
 package nl.thehyve.podium.common.service;
 
+import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.aop.security.AccessPolicyAspect;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.IdentifiableUser;
-import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
-import nl.thehyve.podium.common.security.annotations.OrganisationParameter;
-import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
-import nl.thehyve.podium.common.security.annotations.Public;
-import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
-import nl.thehyve.podium.common.security.annotations.SecuredByCurrentUser;
-import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
-import nl.thehyve.podium.common.security.annotations.UserParameter;
-import nl.thehyve.podium.common.security.annotations.UserUuidParameter;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.*;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.slf4j.Logger;
@@ -49,6 +43,9 @@ public class AccessPolicyService {
     @Autowired
     SecurityService securityService;
 
+    @Autowired
+    RequestSecurityService requestSecurityService;
+
     private static final Logger log = LoggerFactory.getLogger(AccessPolicyService.class);
 
     private static final Set<Class> SECURITY_ANNOTATION_TYPES = new HashSet<>();
@@ -58,6 +55,9 @@ public class AccessPolicyService {
         SECURITY_ANNOTATION_TYPES.add(SecuredByAuthority.class);
         SECURITY_ANNOTATION_TYPES.add(SecuredByOrganisation.class);
         SECURITY_ANNOTATION_TYPES.add(SecuredByCurrentUser.class);
+        SECURITY_ANNOTATION_TYPES.add(SecuredByRequestOwner.class);
+        SECURITY_ANNOTATION_TYPES.add(SecuredByRequestOrganisationCoordinator.class);
+        SECURITY_ANNOTATION_TYPES.add(SecuredByRequestOrganisationReviewer.class);
     }
 
     /**
@@ -114,6 +114,18 @@ public class AccessPolicyService {
         }
         IdentifiableUser user = (IdentifiableUser)object;
         return user.getUserUuid();
+    }
+
+    private static UUID getRequestUuid(Object object) {
+        if (!IdentifiableRequest.class.isAssignableFrom(object.getClass())) {
+            log.error("Parameter value has the wrong type: {} (expected {}).",
+                object.getClass().getSimpleName(),
+                IdentifiableRequest.class.getSimpleName()
+            );
+            return null;
+        }
+        IdentifiableRequest request = (IdentifiableRequest)object;
+        return request.getRequestUuid();
     }
 
     /**
@@ -216,6 +228,61 @@ public class AccessPolicyService {
     }
 
     /**
+     * Checks if the current user is the owner of the specified request.
+     * The rule is specified by the annotation @{code annotation} of type {@link SecuredByRequestOwner}.
+     *
+     * @param joinPoint the current context.
+     * @return true if the current user is the owner of the specified request.
+     */
+    private boolean checkSecuredByRequestOwner(JoinPoint joinPoint) {
+        String signature = joinPoint.getSignature().toShortString();
+        UUID requestUuid = getUuid(joinPoint, AccessPolicyService::getRequestUuid,
+            RequestParameter.class, RequestUuidParameter.class);
+        if (requestUuid == null) {
+            log.error("No request uuid field found in method {}.", signature);
+            return false;
+        }
+        if (requestSecurityService.isCurrentUserOwnerOfRequest(requestUuid)) {
+            log.debug("Access granted to request {} for user on method {}",
+                requestUuid, signature);
+            return true;
+        } else {
+            log.debug("Access denied to request {} for user on method {}",
+                requestUuid, signature);
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the current user has the specified role within an organisation that
+     * is associated with the specified request.
+     * The rule is specified by the annotation @{code annotation} of type
+     * {@link SecuredByRequestOrganisationCoordinator} or {@link SecuredByRequestOrganisationReviewer}.
+     *
+     * @param joinPoint the current context.
+     * @return true if the current user has the specified role within an organisation that
+     * is associated with the specified request.
+     */
+    private boolean checkSecuredByRequestOrganisationRole(JoinPoint joinPoint, String authority) {
+        String signature = joinPoint.getSignature().toShortString();
+        UUID requestUuid = getUuid(joinPoint, AccessPolicyService::getRequestUuid,
+            RequestParameter.class, RequestUuidParameter.class);
+        if (requestUuid == null) {
+            log.error("No request uuid field found in method {}.", signature);
+            return false;
+        }
+        if (requestSecurityService.isCurrentUserInOrganisationRoleForRequest(requestUuid, authority)) {
+            log.debug("Access granted to request {} for user on method {}",
+                requestUuid, signature);
+            return true;
+        } else {
+            log.debug("Access denied to request {} for user on method {}",
+                requestUuid, signature);
+            return false;
+        }
+    }
+
+    /**
      * Checks if the uuid of the current user matches the uuid specified by the rule in {@code annotation}.
      *
      * @param joinPoint the current context.
@@ -280,6 +347,15 @@ public class AccessPolicyService {
         }
         if (SecuredByCurrentUser.class.isAssignableFrom(annotation.annotationType())) {
             return checkSecuredByCurrentUser(joinPoint);
+        }
+        if (SecuredByRequestOwner.class.isAssignableFrom(annotation.annotationType())) {
+            return checkSecuredByRequestOwner(joinPoint);
+        }
+        if (SecuredByRequestOrganisationCoordinator.class.isAssignableFrom(annotation.annotationType())) {
+            return checkSecuredByRequestOrganisationRole(joinPoint, AuthorityConstants.ORGANISATION_COORDINATOR);
+        }
+        if (SecuredByRequestOrganisationReviewer.class.isAssignableFrom(annotation.annotationType())) {
+            return checkSecuredByRequestOrganisationRole(joinPoint, AuthorityConstants.REVIEWER);
         }
         log.debug("Access denied. Unsupported annotation of type {} on method {}",
             annotation.annotationType().getSimpleName(), signature);

@@ -5,28 +5,26 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.representation;
+package nl.thehyve.podium.common.service.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.domain.Attachment;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 /**
  * A DTO for the Request entity.
  */
-public class RequestRepresentation implements Serializable {
+public class RequestRepresentation implements IdentifiableRequest, Serializable {
 
     private Long id;
 
@@ -46,8 +44,6 @@ public class RequestRepresentation implements Serializable {
     @Valid
     private RequestDetailRepresentation requestDetail;
 
-    private Set<Attachment> attachments = new HashSet<>();
-
     private ZonedDateTime createdDate;
 
     private ZonedDateTime lastModifiedDate;
@@ -61,6 +57,12 @@ public class RequestRepresentation implements Serializable {
     }
 
     public UUID getUuid() {
+        return uuid;
+    }
+
+    @Override
+    @JsonIgnore
+    public UUID getRequestUuid() {
         return uuid;
     }
 
@@ -108,14 +110,6 @@ public class RequestRepresentation implements Serializable {
 
     public void setRequestReview(RequestReviewRepresentation requestReview) { this.requestReview = requestReview; }
 
-    public Set<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
     public ZonedDateTime getCreatedDate() {
         return createdDate;
     }
@@ -160,7 +154,6 @@ public class RequestRepresentation implements Serializable {
             ", status=" + status +
             ", organisations=" + organisations +
             ", requestDetail=" + requestDetail +
-            ", attachments=" + attachments +
             '}';
     }
 }

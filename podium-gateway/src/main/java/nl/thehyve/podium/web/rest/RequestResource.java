@@ -13,9 +13,10 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.RequestService;
-import nl.thehyve.podium.service.representation.RequestRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -26,17 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -69,6 +60,7 @@ public class RequestResource {
      * @return A transformed list of RequestDTOs
      */
     @GetMapping("/requests/drafts")
+    @SecuredByAuthority(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@ApiParam Pageable pageable) throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -85,8 +77,7 @@ public class RequestResource {
      * @return The requestRepresentation of the initialized request
      */
     @PostMapping("/requests/drafts")
-    @PreAuthorize("isAuthenticated()")
-    @Secured(AuthorityConstants.RESEARCHER)
+    @SecuredByAuthority(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<RequestRepresentation> createDraft() throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -107,8 +98,10 @@ public class RequestResource {
      * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}")
+    @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<RequestRepresentation> getDraft(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> getDraft(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation request = requestService.findRequestForRequester(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
@@ -123,10 +116,10 @@ public class RequestResource {
      * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests/drafts")
-    @PreAuthorize("isAuthenticated()")
-    @Secured(AuthorityConstants.RESEARCHER)
+    @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<RequestRepresentation> updateDraft(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> updateDraft(
+        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = requestService.updateDraft(user, request);
@@ -141,6 +134,7 @@ public class RequestResource {
      * @return ResponseEntity OK response when the request has been validated.
      */
     @PostMapping("/requests/drafts/validate")
+    @AnyAuthorisedUser
     @Timed
     public ResponseEntity<Void> validateDraft(@RequestBody @Valid RequestRepresentation request) {
         if (request == null) {
@@ -158,8 +152,10 @@ public class RequestResource {
      * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}/submit")
+    @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<List<RequestRepresentation>> submitDraft(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<List<RequestRepresentation>> submitDraft(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
         List<RequestRepresentation> requests = requestService.submitDraft(user, uuid);
@@ -174,6 +170,7 @@ public class RequestResource {
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
     @GetMapping("/requests/requester")
+    @SecuredByAuthority(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getRequesterRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -193,6 +190,7 @@ public class RequestResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/requests/status/{status}/requester")
+    @SecuredByAuthority(AuthorityConstants.RESEARCHER)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getRequesterRequestsByStatus(@PathVariable("status") RequestStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -213,10 +211,10 @@ public class RequestResource {
      * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests")
-    @PreAuthorize("isAuthenticated()")
-    @Secured(AuthorityConstants.RESEARCHER)
+    @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<RequestRepresentation> updateRequest(@RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> updateRevisionRequest(
+        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests (user: {})", user);
         RequestRepresentation result = requestService.updateRequest(user, request);
@@ -228,13 +226,14 @@ public class RequestResource {
      * Submit the request
      *
      * @param uuid of the request to be saved
+     * @return the updated request representation
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/submit")
-    @PreAuthorize("isAuthenticated()")
+    @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<RequestRepresentation> submitRequest(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> submitRevisedRequest(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
         RequestRepresentation request = requestService.submitRevision(user, uuid);
@@ -250,6 +249,7 @@ public class RequestResource {
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
     @GetMapping("/requests/reviewer")
+    @SecuredByAuthority(AuthorityConstants.REVIEWER)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getReviewerRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -271,6 +271,7 @@ public class RequestResource {
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
     @GetMapping("/requests/status/{status}/coordinator")
+    @SecuredByAuthority(AuthorityConstants.ORGANISATION_COORDINATOR)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequests(@PathVariable("status") RequestStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -292,9 +293,10 @@ public class RequestResource {
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
     @GetMapping("/requests/organisation/{uuid}/reviewer")
+    @SecuredByOrganisation(authorities = AuthorityConstants.REVIEWER)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getReviewerRequestsForOrganisation(
-        @PathVariable("uuid") UUID uuid, @ApiParam Pageable pageable)
+        @OrganisationUuidParameter @PathVariable("uuid") UUID uuid, @ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to get a page of requests for reviewers of organisation {}, user {}", uuid, user.getName());
@@ -315,9 +317,12 @@ public class RequestResource {
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
      */
     @GetMapping("/requests/status/{status}/organisation/{uuid}/coordinator")
+    @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_COORDINATOR)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequestsForOrganisation(
-        @PathVariable("status") RequestStatus status, @PathVariable("uuid") UUID uuid, @ApiParam Pageable pageable)
+        @PathVariable("status") RequestStatus status,
+        @OrganisationUuidParameter @PathVariable("uuid") UUID uuid,
+        @ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to get a page of requests with status {} for coordinators of organisation {}, user {}",
@@ -330,18 +335,19 @@ public class RequestResource {
     }
 
     /**
-     * Fetch the request
+     * GET /request/:uuid : Fetch the request
      *
-     * FIXME: UNSECURED - Add new annotation that check whether an member (coordinator or reviewer) of an organisation
-     *        has access to a different resource such as a Request.
      * @param uuid of the request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
      */
-    @GetMapping("/requests/{uuid}")
+    @RequestMapping(value = "/request/uuid/{uuid}", method = RequestMethod.GET)
+    @SecuredByRequestOwner
+    @SecuredByRequestOrganisationCoordinator
+    @SecuredByRequestOrganisationReviewer
     @Timed
-    public ResponseEntity<RequestRepresentation> getRequest(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> getRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException {
         RequestRepresentation request = requestService.findRequest(uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
@@ -354,8 +360,10 @@ public class RequestResource {
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @DeleteMapping("/requests/drafts/{uuid}")
+    @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<Void> deleteDraft(@PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+    public ResponseEntity<Void> deleteDraft(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to delete Request : {}", uuid);
         requestService.deleteDraft(user, uuid);
@@ -371,8 +379,10 @@ public class RequestResource {
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/validate")
+    @SecuredByRequestOrganisationCoordinator
     @Timed
-    public ResponseEntity<RequestRepresentation> validateRequest(@PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> validateRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to validate request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.validateRequest(user, uuid);
@@ -388,8 +398,10 @@ public class RequestResource {
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/reject")
+    @SecuredByRequestOrganisationCoordinator
     @Timed
-    public ResponseEntity<RequestRepresentation> rejectRequest(@PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> rejectRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to reject request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid);
@@ -405,8 +417,10 @@ public class RequestResource {
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/approve")
+    @SecuredByRequestOrganisationCoordinator
     @Timed
-    public ResponseEntity<RequestRepresentation> approveRequest(@PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> approveRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to approve request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.approveRequest(user, uuid);
@@ -422,8 +436,10 @@ public class RequestResource {
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/requestRevision")
+    @SecuredByRequestOrganisationCoordinator
     @Timed
-    public ResponseEntity<RequestRepresentation> requestRevision(@PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> requestRevision(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
         log.debug("REST request to apply revision to request details for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.requestRevision(user, uuid);
