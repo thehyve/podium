@@ -341,7 +341,7 @@ public class RequestResource {
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @return The list of requestDTOs generated
      */
-    @RequestMapping(value = "/request/uuid/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
     @SecuredByRequestOrganisationReviewer
