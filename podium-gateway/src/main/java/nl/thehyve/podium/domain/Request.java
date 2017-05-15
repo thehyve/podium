@@ -106,7 +106,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @JoinTable(name = "request_review_rounds",
         joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
         inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
-    private ArrayDeque<ReviewRound> reviewRounds;
+    private List<ReviewRound> reviewRounds;
 
     public Long getId() {
         return id;
@@ -253,11 +253,11 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         this.historicEvents = historicEvents;
     }
 
-    public ArrayDeque<ReviewRound> getReviewRounds() {
+    public List<ReviewRound> getReviewRounds() {
         return reviewRounds;
     }
 
-    public void setReviewRounds(ArrayDeque<ReviewRound> reviewRounds) {
+    public void setReviewRounds(List<ReviewRound> reviewRounds) {
         this.reviewRounds = reviewRounds;
     }
 

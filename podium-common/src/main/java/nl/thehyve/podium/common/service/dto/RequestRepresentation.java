@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayDeque;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
@@ -62,7 +62,7 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
         return uuid;
     }
 
-    private ArrayDeque<ReviewRoundRepresentation> reviewRounds;
+    private List<ReviewRoundRepresentation> reviewRounds;
 
     @Override
     @JsonIgnore
@@ -130,11 +130,11 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public ArrayDeque<ReviewRoundRepresentation> getReviewRounds() {
+    public List<ReviewRoundRepresentation> getReviewRounds() {
         return reviewRounds;
     }
 
-    public void setReviewRounds(ArrayDeque<ReviewRoundRepresentation> reviewRounds) {
+    public void setReviewRounds(List<ReviewRoundRepresentation> reviewRounds) {
         this.reviewRounds = reviewRounds;
     }
 
