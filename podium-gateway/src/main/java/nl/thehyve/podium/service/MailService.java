@@ -11,7 +11,6 @@ import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.PodiumProperties;
-import nl.thehyve.podium.domain.Request;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,7 +118,7 @@ public class MailService {
      */
     @Async
     public void sendSubmissionNotificationToRequester(
-        UserRepresentation requester, List<Request> organisationRequests, Map<UUID, OrganisationDTO> organisations
+        UserRepresentation requester, List<RequestRepresentation> organisationRequests, Map<UUID, OrganisationDTO> organisations
     ) {
         log.info("Notifying requester: requester = {}, #requests = {}",
             requester, organisationRequests == null ? null : organisationRequests.size());
