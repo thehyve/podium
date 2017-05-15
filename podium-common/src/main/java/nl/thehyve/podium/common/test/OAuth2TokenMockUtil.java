@@ -11,6 +11,7 @@ import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import org.mockito.BDDMockito;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,6 +38,7 @@ import static org.mockito.BDDMockito.given;
  * A bean providing simple mocking of OAuth2 access tokens for security integration tests.
  */
 @Component
+@Profile("test")
 public class OAuth2TokenMockUtil {
 
     @MockBean
