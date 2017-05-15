@@ -13,21 +13,16 @@ import { RequestDetail } from './request-detail';
 import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { RequestStatusOptions } from './request-status/request-status.constants';
 import { RequestReview } from './request-review';
-import { ReviewRound } from './review-round';
+import { RequestReviewFeedback } from './request-review-feedback';
 
-export class RequestBase implements Request {
+export class ReviewRound {
 
-    dateCreated?: Date = new Date();
-    dateLastModified?: Date = new Date();
-    uuid?: string;
     id?: string;
-    status?: RequestStatusOptions;
-    revisionDetail?: RequestDetail = new RequestDetail();
     requestDetail?: RequestDetail = new RequestDetail();
-    requestReview?: RequestReview;
-    reviewRounds?: ReviewRound[];
-    organisations?: Organisation[] = [];
-    requester?: string;
+    reviewFeedback?: RequestReviewFeedback[];
+    startDate?: Date;
+    endDate?: Date;
+    initiatedBy?: string;
 
     constructor() {
     }

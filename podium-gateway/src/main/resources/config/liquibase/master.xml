@@ -27,4 +27,5 @@
     <include file="./changelog/20170502164153_remove_parentRequest_Request.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170508092645_add_revisionDetail_Request.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170504145800_reorganise_events.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170515094712_add_reviewRound_reviewFeedback.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

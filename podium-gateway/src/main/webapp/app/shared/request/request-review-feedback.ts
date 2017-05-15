@@ -12,8 +12,12 @@ import { RequestReviewDecision } from './request-review-decision';
 
 export class RequestReviewFeedback {
 
-    decision?: RequestReviewDecision;
-    feedback?: string;
+    id?: string;
+    advice?: RequestReviewDecision;
+    reviewer?: string;
+    date?: Date;
+    summary?: string;
+    description?: string;
 
     constructor() {
     }
