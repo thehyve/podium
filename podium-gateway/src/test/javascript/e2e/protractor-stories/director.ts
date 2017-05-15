@@ -160,14 +160,18 @@ export class Director {
         return element.locator.click()
     }
 
-    public enterText(fieldName: string, text: string) {
+    public enterText(fieldName: string, text: string, specialKey?: string) {
         if (isUndefined(this.getCurrentPage().elements[fieldName])) {
             this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + fieldName + '.\n');
         }
         return Promise.all([
             this.getCurrentPage().elements[fieldName].locator.clear(),
             this.getCurrentPage().elements[fieldName].locator.sendKeys(text)
-        ])
+        ]).then(() => {
+            if (!isUndefined(specialKey)) {
+                return this.getCurrentPage().elements[fieldName].locator.sendKeys(specialKey);
+            }
+        })
     }
 
     public waitForPage(pageName: string) {

@@ -106,7 +106,7 @@ export class AdminConsole {
         })
     }
 
-    public checkOrganization(expectedOrganization, check) {
+    public checkorganisation(expectedorganisation, check) {
 
         return this.authenticate().then((body) => {
             let options = {
@@ -117,13 +117,13 @@ export class AdminConsole {
                 }
             };
             return request(options).then((body) => {
-                let organizations = parseJSON(body);
-                let organization = organizations.filter(function (value) {
-                    return value["shortName"] == expectedOrganization.properties["shortName"];
+                let organisations = parseJSON(body);
+                let organisation = organisations.filter(function (value) {
+                    return value["shortName"] == expectedorganisation.properties["shortName"];
                 })[0];
 
-                if (!check(expectedOrganization, organization)) {
-                    return JSON.stringify(organization) + " did not match for " + JSON.stringify(expectedOrganization)
+                if (!check(expectedorganisation, organisation)) {
+                    return JSON.stringify(organisation) + " did not match for " + JSON.stringify(expectedorganisation)
                 }
 
             })
@@ -195,7 +195,7 @@ export class AdminConsole {
         });
     }
 
-    public createOrganization(Organization: any) {
+    public createorganisation(organisation: any) {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'POST',
@@ -206,15 +206,15 @@ export class AdminConsole {
                 },
                 body: JSON.stringify(
                     {
-                        "name": Organization.properties['name'],
-                        "shortName": Organization.properties['shortName'],
+                        "name": organisation.properties['name'],
+                        "shortName": organisation.properties['shortName'],
                         "activated": true
                     }
                 )
             };
             return request(options).catch((reason) => {
-                    console.log("http createOrganization " + Organization.properties['shortName'] + " " + reason["statusCode"]);
-                    return "createOrganization failed"
+                    console.log("http createorganisation " + organisation.properties['shortName'] + " " + reason["statusCode"]);
+                    return "createorganisation failed"
                 }
             )
         });
@@ -284,11 +284,11 @@ export class AdminConsole {
             };
 
             return request(options).then((body) => {
-                let organizations = parseJSON(body);
-                let organization = organizations.filter(function (value) {
+                let organisations = parseJSON(body);
+                let organisation = organisations.filter(function (value) {
                     return value["shortName"] == orgShortName;
                 })[0];
-                return organization["uuid"] as string;
+                return organisation["uuid"] as string;
             }).catch((reason) => {
                 console.log("http getOrgUUID", orgShortName, reason["statusCode"], body);
                 return "getOrgUUID failed";
