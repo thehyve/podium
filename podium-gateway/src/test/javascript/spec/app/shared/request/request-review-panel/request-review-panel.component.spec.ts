@@ -11,7 +11,6 @@
 import { RequestReviewPanelComponent } from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 describe('RequestReviewPanelComponent (templateUrl)', () => {
@@ -47,8 +46,6 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
     describe('ngOnInit', () => {
         it('should get last review feedback on initialisation', () => {
             // TODO
-            comp.reviewRounds = [{}];
-            comp.ngOnInit();
         });
     });
 
