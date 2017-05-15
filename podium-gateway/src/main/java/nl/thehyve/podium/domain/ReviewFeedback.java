@@ -19,10 +19,14 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -51,12 +55,16 @@ public class ReviewFeedback implements Serializable {
 
     private UUID reviewer;
 
-    private DecisionOutcome advice;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "advice", nullable = false)
+    private DecisionOutcome advice = DecisionOutcome.None;
 
     private ZonedDateTime date;
 
     private String summary;
 
+    @Lob
     private String description;
 
     public Long getId() {

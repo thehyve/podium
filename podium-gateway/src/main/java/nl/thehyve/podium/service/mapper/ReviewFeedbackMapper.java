@@ -24,6 +24,7 @@ public interface ReviewFeedbackMapper {
 
     @Mapping(source = "message.summary", target = "summary")
     @Mapping(source = "message.description", target = "description")
+    @Mapping(target = "reviewer", ignore = true)
     ReviewFeedback reviewFeedbackRepresentationToReviewFeedback(ReviewFeedbackRepresentation reviewFeedbackRepresentation);
 
     @InheritInverseConfiguration

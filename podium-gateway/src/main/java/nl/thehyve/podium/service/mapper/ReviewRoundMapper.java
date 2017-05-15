@@ -10,7 +10,6 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
 import nl.thehyve.podium.common.service.dto.ReviewRoundRepresentation;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.service.util.DefaultRequestDetail;

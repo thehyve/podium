@@ -86,7 +86,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="decision" type="varchar(255)">
+            <column name="advice" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
 

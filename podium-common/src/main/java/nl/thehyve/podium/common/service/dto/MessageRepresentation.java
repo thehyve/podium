@@ -10,9 +10,12 @@
 
 package nl.thehyve.podium.common.service.dto;
 
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 public class MessageRepresentation implements Serializable {
+
+    @Size(max = 255)
     String summary;
     String description;
 
