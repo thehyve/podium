@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="now" value="GETDATE()" dbms="mssql"/>
+
+    <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
+
+    <!--
+        Add the reviewRound and reviewFeedback tables.
+    -->
+    <changeSet id="20170515094712-1" author="berndvdveen">
+        <createSequence sequenceName="review_round_seq" startValue="1000" incrementBy="50"/>
+
+        <createTable tableName="review_round">
+            <column name="review_round_id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="request_detail" type="bigint">
+                <constraints unique="true" nullable="true" />
+            </column>
+
+            <column name="start_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="timestamp"/>
+
+            <column name="initiated_by" type="uuid" />
+        </createTable>
+
+        <createTable tableName="review_round_review_feedback">
+            <column name="review_round_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_feedback_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_feedback_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="review_round_id, review_feedback_order" tableName="review_round_review_feedback"/>
+
+        <addForeignKeyConstraint baseColumnNames="review_round_id"
+                                 baseTableName="review_round_review_feedback"
+                                 constraintName="fk_review_round_review_feedback_review_round_id"
+                                 referencedColumnNames="review_round_id"
+                                 referencedTableName="review_round"/>
+
+        <addForeignKeyConstraint baseColumnNames="request_detail"
+                                 baseTableName="review_round"
+                                 constraintName="fk_review_round_request_detail"
+                                 referencedColumnNames="id"
+                                 referencedTableName="request_detail" />
+
+    </changeSet>
+    <changeSet id="20170515094712-2" author="berndvdveen">
+        <createSequence sequenceName="review_feedback_seq" startValue="1000" incrementBy="50"/>
+
+        <createTable tableName="review_feedback">
+            <column name="review_feedback_id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="reviewer" type="uuid">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="decision" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="summary" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="20170515094712-3" author="berndvdveen">
+        <createTable tableName="request_review_rounds">
+            <column name="request_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_round_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_round_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="request_id, review_round_order" tableName="request_review_rounds"/>
+
+        <addForeignKeyConstraint baseColumnNames="request_id"
+                                 baseTableName="request_review_rounds"
+                                 constraintName="fk_request_review_rounds_request_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="request"/>
+    </changeSet>
+</databaseChangeLog>

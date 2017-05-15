@@ -98,6 +98,16 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OrderColumn(name="review_round_order")
+    @JoinTable(name = "request_review_rounds",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
+    private ArrayDeque<ReviewRound> reviewRounds;
+
     public Long getId() {
         return id;
     }
@@ -237,6 +247,18 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     public Request addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
+    }
+
+    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
+        this.historicEvents = historicEvents;
+    }
+
+    public ArrayDeque<ReviewRound> getReviewRounds() {
+        return reviewRounds;
+    }
+
+    public void setReviewRounds(ArrayDeque<ReviewRound> reviewRounds) {
+        this.reviewRounds = reviewRounds;
     }
 
     @Override
