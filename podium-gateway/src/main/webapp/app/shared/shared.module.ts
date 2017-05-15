@@ -37,6 +37,7 @@ import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 import { RequestAccessService } from './request/request-access.service';
+import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 
 @NgModule({
     imports: [
@@ -47,12 +48,12 @@ import { RequestAccessService } from './request/request-access.service';
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        RequestReviewPanelComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
-        OrganisationSelectorComponent,
         EnumKeysPipe
     ],
     providers: [],
@@ -63,6 +64,7 @@ import { RequestAccessService } from './request/request-access.service';
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        RequestReviewPanelComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,

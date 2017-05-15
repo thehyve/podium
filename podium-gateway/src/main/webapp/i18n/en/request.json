@@ -44,6 +44,13 @@
             "requestTypes": "Request Types",
             "organisations": "Organisations"
         },
+        "review": {
+            "summaryTitle": "Review Summary",
+            "date": "Date",
+            "reviewerName": "Name",
+            "result": "Result",
+            "comment": "Comment"
+        },
         "delete": {
             "dialog": {
                 "title": "Confirm deletion of request draft",

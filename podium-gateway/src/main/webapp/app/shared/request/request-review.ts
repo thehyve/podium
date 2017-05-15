@@ -13,7 +13,11 @@ import { RequestReviewDecision } from './request-review-decision';
 export class RequestReview {
 
     status: RequestReviewStatusOptions;
-    decision?: RequestReviewDecision;
+    advice?: RequestReviewDecision;
+    reviewer?: string;
+    date?:  Date;
+    summary?: string;
+    description?: string;
 
     constructor() {
     }
