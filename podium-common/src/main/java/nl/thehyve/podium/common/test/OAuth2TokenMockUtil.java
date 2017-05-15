@@ -37,7 +37,6 @@ import static org.mockito.BDDMockito.given;
 /**
  * A bean providing simple mocking of OAuth2 access tokens for security integration tests.
  */
-@Profile("test")
 @Component
 @Profile("test")
 public class OAuth2TokenMockUtil {
