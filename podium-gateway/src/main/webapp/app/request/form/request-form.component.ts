@@ -224,7 +224,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
      * Return to the request overview
      */
     cancel() {
-        return this.router.navigate(['/requests/overview']);
+        return this.router.navigate(['/requests/my-requests']);
     }
 
     /**
