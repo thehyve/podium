@@ -30,7 +30,8 @@ import java.util.List;
     RequestDetailMapper.class,
     RequestReviewProcessMapper.class,
     OrganisationMapperHelper.class,
-    PodiumEventMapper.class
+    PodiumEventMapper.class,
+    ReviewRoundMapper.class
 })
 public interface RequestMapper {
 

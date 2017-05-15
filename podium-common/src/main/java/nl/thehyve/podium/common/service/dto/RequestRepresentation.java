@@ -16,8 +16,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -61,6 +61,8 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     public UUID getUuid() {
         return uuid;
     }
+
+    private List<ReviewRoundRepresentation> reviewRounds;
 
     @Override
     @JsonIgnore
@@ -134,6 +136,14 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     public void setHistoricEvents(List<PodiumEventRepresentation> historicEvents) {
         this.historicEvents = historicEvents;
+    }
+
+    public List<ReviewRoundRepresentation> getReviewRounds() {
+        return reviewRounds;
+    }
+
+    public void setReviewRounds(List<ReviewRoundRepresentation> reviewRounds) {
+        this.reviewRounds = reviewRounds;
     }
 
     @Override

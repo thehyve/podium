@@ -16,7 +16,7 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 
 /**
- * Mapper for the entity PrincipalInvestigator and its DTO PrincipalInvestigatorDTO.
+ * Mapper for the entity PrincipalInvestigator and its DTO PrincipalInvestigatorRepresentation.
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface PrincipalInvestigatorMapper {

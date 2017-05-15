@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 public class MessageRepresentation implements Serializable {
 
-    @Size(max=255)
+    @Size(max = 255)
     String summary;
     String description;
 

@@ -338,7 +338,7 @@ public class RequestResource {
     }
 
     /**
-     * GET /request/:uuid : Fetch the request
+     * GET /requests/:uuid : Fetch the request
      *
      * @param uuid of the request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
