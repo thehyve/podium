@@ -32,15 +32,4 @@ public interface PersistenceAuditEventRepository extends JpaRepository<Persisten
     List<PersistentAuditEvent> findByPrincipalAndEventDateAfterAndEventType(String principle, Date after, EventType type);
 
     Page<PersistentAuditEvent> findAllByEventDateBetween(Date fromDate, Date toDate, Pageable pageable);
-
-    @Query("select e from PersistentAuditEvent e" +
-        " join e.data d" +
-        " where e.eventType = nl.thehyve.podium.common.event.EventType.Status_Change" +
-        " and (KEY(d) = 'requestUuid' and d = :uuid)" +
-        " and (KEY(d) = 'targetStatus' and d = :status)" +
-        " order by e.id DESC")
-    List<PersistentAuditEvent> findOneLatestOfEventTypeByRequestUuidAndStatus(
-        @Param("uuid") String uuid,
-        @Param("status") String status,
-        Pageable pageable);
 }

@@ -25,10 +25,4 @@ public interface InternalAuditResource {
      */
     @RequestMapping(value = "/audit/events", method = RequestMethod.POST)
     ResponseEntity add(@RequestBody AuditEventRepresentation event);
-
-    @RequestMapping(value = "/audit/events/request/{uuid}/status/{status}")
-    ResponseEntity<AuditEventRepresentation> getLatestRequestStatusChangeEventForStatus(
-        @PathVariable("uuid") UUID uuid,
-        @PathVariable("status") RequestStatus status
-    );
 }

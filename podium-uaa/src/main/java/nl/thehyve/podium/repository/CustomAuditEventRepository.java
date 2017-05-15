@@ -92,15 +92,4 @@ public class CustomAuditEventRepository implements AuditEventRepository {
             persistenceAuditEventRepository.save(persistentAuditEvent);
         }
     }
-
-    public AuditEvent findByRequestUuidAndTargetStatus(UUID uuid, RequestStatus targetStatus) {
-        Pageable pageable = new PageRequest(0, 1);
-        List<PersistentAuditEvent> storedAuditEvents
-            = persistenceAuditEventRepository.findOneLatestOfEventTypeByRequestUuidAndStatus(uuid.toString(), targetStatus.toString(), pageable);
-        Optional<PersistentAuditEvent> storedAuditEvent = storedAuditEvents.stream().findFirst();
-        return storedAuditEvent
-            .map(auditEventConverter::convertToAuditEvent)
-            .orElse(null);
-
-    }
 }

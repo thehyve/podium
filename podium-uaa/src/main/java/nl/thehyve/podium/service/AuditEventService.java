@@ -74,8 +74,4 @@ public class AuditEventService {
     public void add(AuditEvent event) {
         customAuditEventRepository.add(event);
     }
-
-    public AuditEvent findByRequestUuidAndTargetStatus(UUID uuid, RequestStatus targetStatus ) {
-        return customAuditEventRepository.findByRequestUuidAndTargetStatus(uuid, targetStatus);
-    }
 }
