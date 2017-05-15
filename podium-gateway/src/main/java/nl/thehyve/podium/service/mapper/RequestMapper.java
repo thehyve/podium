@@ -29,7 +29,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {
     RequestDetailMapper.class,
     RequestReviewProcessMapper.class,
-    OrganisationMapperHelper.class
+    OrganisationMapperHelper.class,
+    ReviewRoundMapper.class
 })
 public interface RequestMapper {
 
