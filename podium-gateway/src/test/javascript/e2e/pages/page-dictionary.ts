@@ -16,7 +16,9 @@ import completedPage = require("./completed.page")
 import UserManagementPage = require("./user-management.page")
 import UserDetailsPage = require("./user-details.page")
 import OrganisationsManagementPage = require("./organisations-management.page")
+import OrganisationsConfigurationPage = require("./organisations-configuration.page")
 import OrganisationsDetailsPage = require("./organisations-details.page")
+import OrganisationsEditPage = require("./organisations-edit.page")
 import CreateOrganisationPage = require("./create-organisation.page")
 import NewRequestsPage = require("./new-requests.page")
 
@@ -35,8 +37,10 @@ function initPages() {
     PageDictionary['completed'] = new completedPage;
     PageDictionary['user management'] = new UserManagementPage;
     PageDictionary['user details'] = new UserDetailsPage;
-    PageDictionary['organization overview'] = new OrganisationsManagementPage();
-    PageDictionary['organization details'] = new OrganisationsDetailsPage();
+    PageDictionary['organisation overview'] = new OrganisationsManagementPage();
+    PageDictionary['organisation configuration'] = new OrganisationsConfigurationPage();
+    PageDictionary['organisation details'] = new OrganisationsDetailsPage();
+    PageDictionary['organisation edit'] = new OrganisationsEditPage();
     PageDictionary['create organisation'] = new CreateOrganisationPage();
     PageDictionary['new requests'] = new NewRequestsPage();
 

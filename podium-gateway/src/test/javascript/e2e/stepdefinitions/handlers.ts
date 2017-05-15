@@ -8,13 +8,13 @@
  * See the file LICENSE in the root of this repository.
  */
 import { browser } from 'protractor';
-let { defineSupportCode } = require('cucumber');
 import { Promise } from 'es6-promise';
+let { defineSupportCode } = require('cucumber');
 
-defineSupportCode(function({registerHandler}) {
+defineSupportCode(function ({ registerHandler }) {
     let delay = process.env.BROWSERSTACK_DELAY ? process.env.BROWSERSTACK_DELAY : 0;
 
     registerHandler('BeforeStep', function (features): Promise<any> {
-        return  browser.sleep(delay);
+        return browser.sleep(delay);
     });
 });

@@ -18,8 +18,8 @@ defineSupportCode(({ Given, When, Then }) => {
     Then(/^the overview contains the user's '(.*)' for the users '(.*)'$/, function (fieldString, userString): Promise<any> {
         let director = this.director as Director;
 
-        let fields = JSON.parse(fieldString);
-        let users = JSON.parse(userString);
+        let fields = fieldString.split(", ");
+        let users = userString.split(", ");
 
         let personas = director.getListOfPersonas(users);
 
@@ -67,7 +67,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
     Then(/^users are displayed in the following order: '(.*)'$/, function (userString): Promise<any> {
         let director = this.director as Director;
-        let users = JSON.parse(userString);
+        let users = userString.split(", ");
         let personas = director.getListOfPersonas(users);
         let fields = ["login"];
 

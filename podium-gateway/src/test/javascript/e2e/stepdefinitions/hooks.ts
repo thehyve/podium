@@ -25,16 +25,16 @@ defineSupportCode(function ({ After, Before }) {
         return Promise.all(createUserCalls);
     }
 
-    function setupOrganizations(adminConsole: AdminConsole, organizations: string[]) {
+    function setupOrganisations(adminConsole: AdminConsole, organisations: string[]) {
         let DataDictionary = initDataDictionary;
-        let createOrganizationsCalls = [];
+        let createOrganisationsCalls = [];
 
-        organizations.forEach(function (value) {
-            createOrganizationsCalls.push(adminConsole.createOrganization(
+        organisations.forEach(function (value) {
+            createOrganisationsCalls.push(adminConsole.createOrganization(
                 PersonaDictionary['BBMRI_Admin'],
                 DataDictionary[value]));
         });
-        return Promise.all(createOrganizationsCalls);
+        return Promise.all(createOrganisationsCalls);
     }
 
     function setupRequests(adminConsole: AdminConsole, requests: string[]) {
@@ -84,12 +84,12 @@ defineSupportCode(function ({ After, Before }) {
 
     Before({ tags: "@default" }, function (scenario): Promise<any> {
         let adminConsole = new AdminConsole();
-        let userList = ["BBMRI_Admin", "Dave", "Linda"];
-        let organizations = ["VarnameBank", 'SomeBank', 'XBank'];
+        let userList = ["BBMRI_Admin", "Dave", "Linda", "VarnameBank_Admin", "blank user"];
+        let organisations = ["VarnameBank", 'SomeBank', 'XBank'];
 
         return adminConsole.cleanDB().then(function () {
             return setupUsers(adminConsole, userList).then(function () {
-                setupOrganizations(adminConsole, organizations).then(function () {
+                setupOrganisations(adminConsole, organisations).then(function () {
                     return setupRoles(adminConsole, userList)
                 })
             })
