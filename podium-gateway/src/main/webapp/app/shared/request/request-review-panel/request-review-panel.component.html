@@ -9,27 +9,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <th scope="row">Marco Botton</th>
-        <td>5/15/2017, 12:13 PM</td>
-        <td>Approved</td>
+    <tr *ngFor="let feedback of lastReviewFeedback">
+        <th scope="row">{{feedback.reviewer.firstName}} {{feedback.reviewer.lastName}}</th>
+        <td>{{feedback.date | date:'short'}}</td>
+        <td>{{feedback.advice}}</td>
         <td>
-            <small>No further comment.</small>
+            <small>{{feedback.summary}}</small>
         </td>
-    </tr>
-    <tr>
-        <th scope="row">Valerie Smit</th>
-        <td>5/13/2017, 02:13 AM</td>
-        <td>Rejected</td>
-        <td>
-            <small>Lack of supplementary documents. Approval from lab supervisor is needed.</small>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">John Langzaam</th>
-        <td></td>
-        <td>In Progress</td>
-        <td></td>
     </tr>
     </tbody>
 </table>

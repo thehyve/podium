@@ -44,4 +44,12 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
         // el = de.nativeElement;
     });
 
+    describe('ngOnInit', () => {
+        it('should get last review feedback on initialisation', () => {
+            // TODO
+            comp.reviewRounds = [{}];
+            comp.ngOnInit();
+        });
+    });
+
 });
