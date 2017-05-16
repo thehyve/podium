@@ -25,15 +25,13 @@
         <!-- List of requests -->
         <ul>
             <li th:each="request : ${requests}">
-                <span th:each="organisationUuid: ${request.organisations}">
-                    <span th:text="${organisations.get(organisationUuid)}"></span>
+                <span th:each="organisation: ${request.organisations}">
+                    <span th:text="${organisation.getName()}"></span>
                 </span>
-                (<span th:each="requestType : ${request.getRequestDetail().getRequestType()}">
-                    <span th:text="${requestType}"></span>
-                </span>)
+                (<span th:text="${request.getRequestDetail().getRequestTypesString()}"></span>)
                 <br/>
-                <a th:href="@{|${baseUrl}/#/request/${request.getUuid()}|}">
-                    <span th:text="@{|${baseUrl}/#/request/${request.getUuid()}|}"></span>
+                <a th:href="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}">
+                    <span th:text="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}"></span>
                 </a>
             </li>
         </ul>

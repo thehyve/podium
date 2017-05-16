@@ -56,22 +56,7 @@ public class NotificationService {
     public void submissionNotificationToRequester(AuthenticatedUser user, List<RequestRepresentation> organisationRequests) {
         // Fetch requester data through Feign.
         UserRepresentation requester = this.fetchUserThroughFeign(user.getUuid());
-
-        Map<UUID, OrganisationDTO> organisations = new HashMap<>();
-        try {
-            for (RequestRepresentation request: organisationRequests) {
-                for (OrganisationDTO organisation : request.getOrganisations()) {
-                    UUID organisationUuid = organisation.getUuid();
-                    if (!organisations.containsKey(organisationUuid)) {
-                        organisations.put(organisationUuid, organisationClientService.findOrganisationByUuid(organisationUuid));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error fetching organisation details", e);
-            throw new ServiceNotAvailable("Could not fetch organisation details", e);
-        }
-        mailService.sendSubmissionNotificationToRequester(requester, organisationRequests, organisations);
+        mailService.sendSubmissionNotificationToRequester(requester, organisationRequests);
     }
 
     /**
