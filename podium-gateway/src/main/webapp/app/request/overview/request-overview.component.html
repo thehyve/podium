@@ -53,6 +53,10 @@
             </th>
             <th><span>Request type</span></th>
             <th><span>Organisations</span></th>
+            <th jhiSortBy="requestDetail.requester.firstName" *ngIf="!isResearcherRoute()">
+                <span>Requester</span>
+                <span class="fa fa-sort"></span>
+            </th>
             <th jhiSortBy="requestDetail.principalInvestigator.name" *ngIf="!isResearcherRoute()">
                 <span>Principal investigator</span>
                 <span class="fa fa-sort"></span>
@@ -88,6 +92,9 @@
                 <ul>
                     <li *ngFor="let organisation of request.organisations">{{organisation.name}}</li>
                 </ul>
+            </td>
+            <td *ngIf="!isResearcherRoute()">
+                {{ request.requester.firstName }} {{ request.requester.lastName }}
             </td>
             <td *ngIf="!isResearcherRoute()">
                 {{request.requestDetail.principalInvestigator.name || '-'}}
