@@ -114,12 +114,10 @@ public class MailService {
      *
      * @param requester the requester details
      * @param organisationRequests the list of generated requests
-     * @param organisations map of organisation uuids to organisation representation
      */
     @Async
     public void sendSubmissionNotificationToRequester(
-        UserRepresentation requester, List<RequestRepresentation> organisationRequests, Map<UUID, OrganisationDTO> organisations
-    ) {
+        UserRepresentation requester, List<RequestRepresentation> organisationRequests) {
         log.info("Notifying requester: requester = {}, #requests = {}",
             requester, organisationRequests == null ? null : organisationRequests.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
@@ -129,7 +127,6 @@ public class MailService {
         context.setVariable(USER, requester);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("requests", organisationRequests);
-        context.setVariable("organisations", organisations);
         String content = templateEngine.process("requesterRequestSubmitted", context);
         String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
