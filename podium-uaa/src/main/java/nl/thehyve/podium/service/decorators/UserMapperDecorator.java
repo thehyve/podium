@@ -22,9 +22,6 @@ import org.springframework.data.elasticsearch.core.completion.Completion;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by bernd on 29/03/2017.
- */
 public abstract class UserMapperDecorator implements UserMapper {
 
     @Autowired

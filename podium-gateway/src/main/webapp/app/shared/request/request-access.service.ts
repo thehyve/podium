@@ -74,7 +74,7 @@ export class RequestAccessService {
             return false;
         }
 
-        return this.currentUser.uuid === request.requester;
+        return this.currentUser.uuid === request.requester.uuid;
     }
 
     public isRequestStatus(request: RequestBase, status: RequestStatusOptions): boolean {

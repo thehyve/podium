@@ -12,10 +12,12 @@ import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.service.util.DefaultOrganisation;
 import nl.thehyve.podium.service.util.DefaultRequest;
 import nl.thehyve.podium.service.util.DefaultRequestDetail;
+import nl.thehyve.podium.service.util.DefaultUser;
 import nl.thehyve.podium.service.util.ExtendedOrganisation;
 import nl.thehyve.podium.service.util.ExtendedRequest;
+import nl.thehyve.podium.service.util.ExtendedUser;
 import nl.thehyve.podium.service.util.OrganisationMapperHelper;
-import nl.thehyve.podium.service.util.SafeRequestDetail;
+import nl.thehyve.podium.service.util.UserMapperHelper;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,6 +31,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {
     RequestDetailMapper.class,
     RequestReviewProcessMapper.class,
+    UserMapperHelper.class,
     OrganisationMapperHelper.class,
     PodiumEventMapper.class,
     ReviewRoundMapper.class
@@ -39,6 +42,7 @@ public interface RequestMapper {
     @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "requestReviewProcess", target = "requestReview")
+    @Mapping(target = "requester", qualifiedBy = DefaultUser.class)
     @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
     RequestRepresentation requestToRequestDTO(Request request);
 
@@ -73,23 +77,10 @@ public interface RequestMapper {
     @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
     @Mapping(source = "requestReviewProcess", target = "requestReview")
     @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class)
+    @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
     RequestRepresentation extendedRequestToRequestDTO(Request request);
 
     @ExtendedRequest
     @IterableMapping(qualifiedBy = ExtendedRequest.class)
     List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
-
-    @IterableMapping(qualifiedBy = ExtendedRequest.class)
-    List<RequestRepresentation> requestsToExtendedRequestDTOs(List<Request> requests);
-
-    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = SafeRequestDetail.class)
-    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = SafeRequestDetail.class)
-    @Mapping(target = "organisations", ignore = true)
-    @Mapping(target = "requestReviewProcess", ignore = true)
-    @Mapping(target = "historicEvents", ignore = true)
-    Request safeUpdateRequestRepresentationToRequest(
-        RequestRepresentation requestRepresentation,
-        @MappingTarget Request request
-    );
-
 }

@@ -24,4 +24,10 @@ public class InternalRequestServer implements InternalRequestResource {
         RequestRepresentation request = requestService.findRequest(uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<RequestRepresentation> getDefaultRequest(@RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException {
+        RequestRepresentation request = requestService.findRequestBasic(uuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
+    }
 }

@@ -30,7 +30,7 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private UUID uuid;
 
-    private UUID requester;
+    private UserRepresentation requester;
 
     @NotNull
     private RequestStatus status;
@@ -74,11 +74,11 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
         this.uuid = uuid;
     }
 
-    public UUID getRequester() {
+    public UserRepresentation getRequester() {
         return requester;
     }
 
-    public void setRequester(UUID requester) {
+    public void setRequester(UserRepresentation requester) {
         this.requester = requester;
     }
 
@@ -169,11 +169,19 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     @Override
     public String toString() {
-        return "RequestDTO{" +
+        return "RequestRepresentation{" +
             "id=" + id +
+            ", uuid=" + uuid +
+            ", requester=" + requester +
             ", status=" + status +
             ", organisations=" + organisations +
+            ", requestReview=" + requestReview +
+            ", revisionDetail=" + revisionDetail +
             ", requestDetail=" + requestDetail +
+            ", createdDate=" + createdDate +
+            ", lastModifiedDate=" + lastModifiedDate +
+            ", historicEvents=" + historicEvents +
+            ", reviewRounds=" + reviewRounds +
             '}';
     }
 }
