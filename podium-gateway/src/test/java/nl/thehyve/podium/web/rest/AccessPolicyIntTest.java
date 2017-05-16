@@ -296,7 +296,7 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         }
 
         // Return draft request 1
-        given(this.internalRequestResource.getRequest(eq(draftRequest1.getUuid())))
+        given(this.internalRequestResource.getDefaultRequest(eq(draftRequest1.getUuid())))
             .willReturn(ResponseEntity.ok(draftRequest1));
 
         // Mock mail sending

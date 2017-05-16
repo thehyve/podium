@@ -6,6 +6,7 @@
  */
 package nl.thehyve.podium.common.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.validation.Required;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A RequestDetailRepresentation.
@@ -167,6 +169,11 @@ public class RequestDetailRepresentation implements Serializable {
 
     public void setSearchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
+    }
+
+    @JsonIgnore
+    public String getRequestTypesString() {
+        return String.join(", ", requestType.stream().map(RequestType::name).collect(Collectors.toList()));
     }
 
     public Set<RequestType> getRequestType() { return requestType; }

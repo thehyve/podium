@@ -48,7 +48,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     links: any;
-    isLoadingRequests: boolean;
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private requestService: RequestService,
@@ -108,7 +107,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadRequests() {
-        this.isLoadingRequests = true;
         if (this.currentRequestStatus === RequestStatusOptions.Draft) {
             this.loadDrafts();
         } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
@@ -195,7 +193,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.availableRequests = requests;
-        this.isLoadingRequests = false;
     }
 
     loadPage(page: number) {

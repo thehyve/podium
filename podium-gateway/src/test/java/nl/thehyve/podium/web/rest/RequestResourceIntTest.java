@@ -16,7 +16,6 @@ import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.DecisionOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
@@ -43,7 +42,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -498,11 +496,6 @@ public class RequestResourceIntTest {
         return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
-    private static Map<UUID, OrganisationDTO> mapContainsKey(Object key) {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Map.class), hasKey(key)));
-    }
-
-
     @Test
     public void createDraft() throws Exception {
         long databaseSizeBeforeCreate = requestRepository
@@ -575,7 +568,7 @@ public class RequestResourceIntTest {
         Thread.sleep(1000);
 
         verify(this.mailService, times(1)).sendSubmissionNotificationToCoordinators(any(), any(), nonEmptyUserRepresentationList());
-        verify(this.mailService, times(1)).sendSubmissionNotificationToRequester(any(), nonEmptyRequestList(), mapContainsKey(organisationUuid1));
+        verify(this.mailService, times(1)).sendSubmissionNotificationToRequester(any(), nonEmptyRequestList());
         verify(this.auditService, times(1)).publishEvent(any());
 
         // Fetch requests with status 'Review'

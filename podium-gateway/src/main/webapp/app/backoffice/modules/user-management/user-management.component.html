@@ -26,15 +26,15 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
                 <th jhiSortBy="id">
                     <span jhiTranslate="global.field.id">ID</span>
-                    <span class="material-icons">sort</span>
+                    <span class="fa fa-sort"></span>
                 </th>
                 <th jhiSortBy="login">
                     <span jhiTranslate="userManagement.login">Login</span>
-                    <span class="material-icons">sort</span>
+                    <span class="fa fa-sort"></span>
                 </th>
                 <th jhiSortBy="email">
                     <span jhiTranslate="userManagement.email">Email</span>
-                    <span class="material-icons">sort</span>
+                    <span class="fa fa-sort"></span>
                 </th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
@@ -44,7 +44,7 @@
                 </th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']" jhiSortBy="createdDate">
                     <span jhiTranslate="userManagement.createdDate">Created Date</span>
-                    <span class="material-icons">sort</span>
+                    <span class="fa fa-sort"></span>
                 </th>
                 <th></th>
             </tr>

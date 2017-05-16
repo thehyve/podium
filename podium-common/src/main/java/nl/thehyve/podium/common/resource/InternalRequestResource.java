@@ -26,8 +26,11 @@ public interface InternalRequestResource {
      * @param uuid the uuid of the request to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the request, or with status 404 (Not Found)
      */
-    @RequestMapping(value = "/request/uuid/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
     ResponseEntity<RequestRepresentation> getRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException;
 
+    @RequestMapping(value = "/requests/{uuid}/basic", method = RequestMethod.GET)
+    ResponseEntity<RequestRepresentation> getDefaultRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException;
 }
