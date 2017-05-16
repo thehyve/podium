@@ -14,6 +14,7 @@ import { RequestBase } from '../request/request-base';
 import { PodiumEvent } from './podium-event';
 import { RequestStatusUpdateAction } from '../status-update/request-status-update-action';
 import { RequestAccessService } from '../request/request-access.service';
+import { RequestStatusOptions } from '../request/request-status/request-status.constants';
 
 @Component({
     selector: 'pdm-event-message-component',
@@ -48,9 +49,15 @@ export class PodiumEventMessageComponent implements OnInit {
     }
 
     isRevisionEvent(): boolean {
-       let revisionAction = RequestStatusUpdateAction.Revision;
+        let revisionAction = RequestStatusUpdateAction.Revision;
         let revisionStatus = RequestStatusUpdateAction[revisionAction];
         return this.lastEvent.data.targetStatus === revisionStatus;
+    }
+
+    isRejectionEvent(): boolean {
+        let closedAction = RequestStatusOptions.Closed;
+        let closedStatus = RequestStatusOptions[closedAction];
+        return this.lastEvent.data.targetStatus === closedStatus;
     }
 
     isRequestOwner(): boolean {
