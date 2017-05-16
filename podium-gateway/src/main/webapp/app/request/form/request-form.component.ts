@@ -200,7 +200,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.requestBase.revisionDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestBase.revisionDetail.id = this.revisionId;
 
-        this.requestService.saveRequest(this.requestBase)
+        this.requestService.saveRequestRevision(this.requestBase)
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
@@ -211,9 +211,9 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.isUpdating = true;
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
-        this.requestService.saveRequest(this.requestBase)
+        this.requestService.saveRequestRevision(this.requestBase)
             // Submit the request
-            .flatMap(() => this.requestService.submitRequest(this.requestBase.uuid))
+            .flatMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid))
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
@@ -224,7 +224,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
      * Return to the request overview
      */
     cancel() {
-        return this.router.navigate(['/requests/overview']);
+        return this.router.navigate(['/requests/my-requests']);
     }
 
     /**

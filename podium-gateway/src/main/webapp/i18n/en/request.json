@@ -30,6 +30,26 @@
             "title": "Confirm request submission",
             "question": "Are you sure you want to submit this request?"
         },
+        "statusupdate": {
+            "Revision": {
+                "title": "Send request for revision",
+                "question": "Are you sure you would like to send this request back for revision?"
+            },
+            "Reject": {
+                "title": "Permanently reject a request",
+                "question": "Are you sure you would to reject this request?"
+            },
+            "form": {
+                "summary": {
+                    "label": "Summary",
+                    "placeholder": "A summary of your message to the requester"
+                },
+                "description": {
+                    "label": "Description",
+                    "placeholder": "Details of your message"
+                }
+            }
+        },
         "detail": {
             "pageTitle": "Request Details",
             "title": "Title",

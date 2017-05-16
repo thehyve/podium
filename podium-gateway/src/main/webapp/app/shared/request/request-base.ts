@@ -8,11 +8,11 @@
  *
  */
 import { Request } from './request';
-import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';
 import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { RequestStatusOptions } from './request-status/request-status.constants';
 import { RequestReview } from './request-review';
+import { PodiumEvent } from '../event/podium-event';
 import { ReviewRound } from './review-round';
 
 export class RequestBase implements Request {
@@ -27,6 +27,8 @@ export class RequestBase implements Request {
     requestReview?: RequestReview;
     reviewRounds?: ReviewRound[];
     organisations?: Organisation[] = [];
+    historicEvents?: PodiumEvent[];
+
     requester?: string;
 
     constructor() {

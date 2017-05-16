@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
 import { RequestReviewFeedback } from './request-review-feedback';
+import { PodiumEventMessage } from '../event/podium-event-message';
 
 @Injectable()
 export class RequestService {
@@ -84,14 +85,14 @@ export class RequestService {
      * @param requestBase the request to save
      * @returns {Observable<Response>}
      */
-    saveRequest(requestBase: RequestBase): Observable<Response> {
+    saveRequestRevision(requestBase: RequestBase): Observable<Response> {
         let requestCopy: RequestBase = Object.assign({}, requestBase);
         return this.http.put(`${this.resourceUrl}`, requestCopy).map((response: Response) => {
             return response.json();
         });
     }
 
-    submitRequest(uuid: string): Observable<Response> {
+    submitRequestRevision(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/${uuid}/submit`).map((response: Response) => {
             return response.json();
         });
@@ -127,8 +128,8 @@ export class RequestService {
         return this.http.get(`${this.resourceUrl}/${uuid}/validate`);
     }
 
-    requestRevision(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/${uuid}/requestRevision`);
+    requestRevision(uuid: string, message: PodiumEventMessage): Observable<Response> {
+        return this.http.post(`${this.resourceUrl}/${uuid}/requestRevision`, message);
     }
 
     approveRequest(uuid: string): Observable<Response> {
@@ -140,8 +141,8 @@ export class RequestService {
         return this.http.post(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
     }
 
-    rejectRequest(uuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/${uuid}/reject`);
+    rejectRequest(uuid: string, message: PodiumEventMessage): Observable<Response> {
+        return this.http.post(`${this.resourceUrl}/${uuid}/reject`, message);
     }
 
     search(req?: any): Observable<Response> {

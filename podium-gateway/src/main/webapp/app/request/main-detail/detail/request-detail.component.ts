@@ -18,8 +18,9 @@ import { RequestReviewStatusOptions } from '../../../shared/request/request-stat
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
 import { Router } from '@angular/router';
-import { RequestActionToolbarComponent } from '../../../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
-import { RequestProgressBarComponent } from '../progress-bar/request-progress-bar.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
+import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -34,10 +35,10 @@ export class RequestDetailComponent {
     public isUpdating = false;
 
     constructor(
-        private router: Router,
         private requestService: RequestService,
         private requestAccessService: RequestAccessService,
-        private requestFormService: RequestFormService
+        private requestFormService: RequestFormService,
+        private modalService: NgbModal
     ) {
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
@@ -69,11 +70,7 @@ export class RequestDetailComponent {
 
     requireRequestRevision() {
         this.isUpdating = true;
-        this.requestService.requestRevision(this.request.uuid)
-            .subscribe(
-                (res) => this.onSuccess(res),
-                (err) => this.onError(err)
-            );
+        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Revision);
     }
 
     validateRequest() {
@@ -96,11 +93,20 @@ export class RequestDetailComponent {
 
     rejectRequest() {
         this.isUpdating = true;
-        this.requestService.rejectRequest(this.request.uuid)
-            .subscribe(
-                (res) => this.onSuccess(res),
-                (err) => this.onError(err)
-            );
+        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Reject);
+    }
+
+    confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
+        let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = request;
+        modalRef.componentInstance.statusUpdateAction = action;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+            this.isUpdating = false;
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+            this.isUpdating = false;
+        });
     }
 
     /**

@@ -42,5 +42,4 @@ public class InternalAuditServer implements InternalAuditResource {
         auditEventService.add(event.asAuditEvent());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 }

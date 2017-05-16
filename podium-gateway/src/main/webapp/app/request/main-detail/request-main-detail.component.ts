@@ -13,7 +13,6 @@ import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';
-import { RequestProgressBarComponent } from './progress-bar/request-progress-bar.component';
 
 @Component({
     selector: 'pdm-request-main-detail',

@@ -49,6 +49,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
     links: any;
+    isLoadingRequests: boolean;
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private requestService: RequestService,
@@ -58,7 +59,8 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
                 private eventManager: EventManager,
                 private principal: Principal,
                 private modalService: NgbModal,
-                private activatedRoute: ActivatedRoute) {
+                private activatedRoute: ActivatedRoute
+    ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.pageHeader = data['pageHeader'];
@@ -73,7 +75,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     getPageParams(): any {
-        let params:any = {
+        let params: any = {
             size: this.itemsPerPage,
             sort: this.sort()
         };
@@ -107,6 +109,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadRequests() {
+        this.isLoadingRequests = true;
         if (this.currentRequestStatus === RequestStatusOptions.Draft) {
             this.loadDrafts();
         } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
@@ -193,6 +196,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.availableRequests = requests;
+        this.isLoadingRequests = false;
     }
 
     loadPage(page: number) {
