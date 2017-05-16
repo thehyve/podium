@@ -15,6 +15,7 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
+import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -233,7 +234,9 @@ public class RequestResource {
     @GetMapping("/requests/{uuid}/submit")
     @SecuredByRequestOwner
     @Timed
-    public ResponseEntity<RequestRepresentation> submitRevisedRequest(@PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+    public ResponseEntity<RequestRepresentation> submitRevisedRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid
+    ) throws URISyntaxException, ActionNotAllowedInStatus {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
         RequestRepresentation request = requestService.submitRevision(user, uuid);
@@ -339,7 +342,7 @@ public class RequestResource {
      *
      * @param uuid of the request
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @return The list of requestDTOs generated
+     * @return The list of requestDTOs
      */
     @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
     @SecuredByRequestOwner
@@ -390,21 +393,23 @@ public class RequestResource {
     }
 
     /**
-     * GET /requests/:uuid/reject : Reject a request with uuid.
+     * POST /requests/:uuid/reject : Reject a request with uuid.
      *
      * @param uuid the uuid of the request to reject
+     * @param message the podium event message representation
      * @return the ResponseEntity with the rejected request representation
      *
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
-    @GetMapping("/requests/{uuid}/reject")
+    @PostMapping("/requests/{uuid}/reject")
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> rejectRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
+    ) throws ActionNotAllowedInStatus {
         log.debug("REST request to reject request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid);
+        RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid, message);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
@@ -428,21 +433,23 @@ public class RequestResource {
     }
 
     /**
-     * GET /requests/:uuid/requestRevision : Request a revision for request with uuid.
+     * POST /requests/:uuid/requestRevision : Request a revision for request with uuid.
      *
      * @param uuid the uuid of the request to request revision for
+     * @param message the podium event message representation
      * @return the ResponseEntity with the updated request representation
      *
      * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
      */
-    @GetMapping("/requests/{uuid}/requestRevision")
+    @PostMapping("/requests/{uuid}/requestRevision")
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> requestRevision(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
+    ) throws ActionNotAllowedInStatus {
         log.debug("REST request to apply revision to request details for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestRepresentation requestRepresentation = requestService.requestRevision(user, uuid);
+        RequestRepresentation requestRepresentation = requestService.requestRevision(user, uuid, message);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 

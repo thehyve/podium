@@ -8,6 +8,7 @@
 package nl.thehyve.podium.web.rest.errors;
 
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
+import nl.thehyve.podium.common.security.annotations.Public;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -32,6 +33,7 @@ import java.util.List;
  * Controller advice to translate the server side exceptions to client-friendly json structures.
  */
 @ControllerAdvice
+@Public
 public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);

@@ -48,6 +48,8 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private ZonedDateTime lastModifiedDate;
 
+    private List<PodiumEventRepresentation> historicEvents;
+
     public Long getId() {
         return id;
     }
@@ -126,6 +128,14 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public List<PodiumEventRepresentation> getHistoricEvents() {
+        return historicEvents;
+    }
+
+    public void setHistoricEvents(List<PodiumEventRepresentation> historicEvents) {
+        this.historicEvents = historicEvents;
     }
 
     public List<ReviewRoundRepresentation> getReviewRounds() {

@@ -30,6 +30,7 @@ import java.util.List;
     RequestDetailMapper.class,
     RequestReviewProcessMapper.class,
     OrganisationMapperHelper.class,
+    PodiumEventMapper.class,
     ReviewRoundMapper.class
 })
 public interface RequestMapper {
@@ -85,6 +86,7 @@ public interface RequestMapper {
     @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = SafeRequestDetail.class)
     @Mapping(target = "organisations", ignore = true)
     @Mapping(target = "requestReviewProcess", ignore = true)
+    @Mapping(target = "historicEvents", ignore = true)
     Request safeUpdateRequestRepresentationToRequest(
         RequestRepresentation requestRepresentation,
         @MappingTarget Request request

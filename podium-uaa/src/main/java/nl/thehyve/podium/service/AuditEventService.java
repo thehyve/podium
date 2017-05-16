@@ -7,6 +7,8 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.Status;
 import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.config.audit.AuditEventConverter;
 import nl.thehyve.podium.repository.CustomAuditEventRepository;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service for managing audit events.

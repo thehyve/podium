@@ -18,6 +18,7 @@ import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
@@ -100,7 +101,12 @@ public class RequestService {
         data.put("requestUuid", event.getRequestUuid().toString());
         data.put("sourceStatus", event.getSourceStatus().toString());
         data.put("targetStatus", event.getTargetStatus().toString());
-        data.put("message", event.getMessage());
+
+        if (event.getMessage() != null) {
+            data.put("messageSummary", event.getMessage().getSummary());
+            data.put("messageDescription", event.getMessage().getDescription());
+        }
+
         podiumEvent.setData(data);
         return podiumEvent;
     }
@@ -115,14 +121,14 @@ public class RequestService {
         publisher.publishEvent(event);
     }
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, String message) {
+    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, MessageRepresentation message) {
         StatusUpdateEvent event =
             new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
 
     }
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, String message) {
+    private void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
         StatusUpdateEvent event =
             new StatusUpdateEvent(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
@@ -496,7 +502,7 @@ public class RequestService {
         request = requestRepository.findOneByUuid(uuid);
         RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
 
-        publishStatusUpdate(user, RequestReviewStatus.Revision, request, "");
+        publishStatusUpdate(user, RequestReviewStatus.Revision, request, null);
 
         return requestRepresentation;
     }
@@ -542,12 +548,14 @@ public class RequestService {
         requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, RequestReviewStatus.Validation, request, "");
+        publishStatusUpdate(user, RequestReviewStatus.Validation, request, null);
         return requestMapper.requestToRequestDTO(request);
     }
 
     @Timed
-    public RequestRepresentation rejectRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public RequestRepresentation rejectRequest(
+        AuthenticatedUser user, UUID uuid, MessageRepresentation message
+    ) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
 
         checkReviewStatus(request, Arrays.asList(RequestReviewStatus.Validation, RequestReviewStatus.Review));
@@ -559,7 +567,7 @@ public class RequestService {
         requestReviewProcessService.reject(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, sourceReviewStatus, request, "");
+        publishStatusUpdate(user, sourceReviewStatus, request, message);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
@@ -574,12 +582,14 @@ public class RequestService {
         requestReviewProcessService.approve(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, RequestReviewStatus.Review, request, "");
+        publishStatusUpdate(user, RequestReviewStatus.Review, request, null);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     @Timed
-    public RequestRepresentation requestRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public RequestRepresentation requestRevision(
+        AuthenticatedUser user, UUID uuid, MessageRepresentation message
+    ) throws ActionNotAllowedInStatus {
         Request request = requestRepository.findOneByUuid(uuid);
 
         checkReviewStatus(request, Arrays.asList(RequestReviewStatus.Validation, RequestReviewStatus.Review));
@@ -591,7 +601,7 @@ public class RequestService {
         requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, sourceReviewStatus, request, "");
+        publishStatusUpdate(user, sourceReviewStatus, request, message);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
