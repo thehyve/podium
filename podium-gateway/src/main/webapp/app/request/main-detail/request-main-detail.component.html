@@ -17,6 +17,8 @@
 
             <pdm-request-progress-bar *ngIf="request" [request]="request"></pdm-request-progress-bar>
 
+            <pdm-event-message-component *ngIf="request" [request]="request"></pdm-event-message-component>
+
             <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
 

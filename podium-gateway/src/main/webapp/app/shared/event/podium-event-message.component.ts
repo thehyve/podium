@@ -11,26 +11,50 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';
+import { PodiumEvent } from './podium-event';
+import { RequestStatusUpdateAction } from '../status-update/request-status-update-action';
+import { RequestAccessService } from '../request/request-access.service';
 
 @Component({
     selector: 'pdm-event-message-component',
-    templateUrl: 'podium-event-message.component.html'
+    templateUrl: 'podium-event-message.component.html',
+    styleUrls: ['podium-event-message.component.scss']
 })
 
 export class PodiumEventMessageComponent implements OnInit {
     @Input()
     request: RequestBase;
+    lastEvent: PodiumEvent;
 
     constructor(
-        private requestService: RequestService
+        private requestService: RequestService,
+        private requestAccessService: RequestAccessService
     ) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
+            this.findLastHistoricMessageEventForCurrentStatus();
         });
+
     }
 
     ngOnInit() {
+        this.findLastHistoricMessageEventForCurrentStatus();
+    }
 
+    findLastHistoricMessageEventForCurrentStatus() {
+        let events: PodiumEvent[] = this.request.historicEvents;
+        let lastHistoricEvent = this.request.historicEvents[events.length - 1];
+        this.lastEvent = lastHistoricEvent;
+    }
+
+    isRevisionEvent(): boolean {
+       let revisionAction = RequestStatusUpdateAction.Revision;
+        let revisionStatus = RequestStatusUpdateAction[revisionAction];
+        return this.lastEvent.data.targetStatus === revisionStatus;
+    }
+
+    isRequestOwner(): boolean {
+        return this.requestAccessService.isRequesterOf(this.request);
     }
 
 }

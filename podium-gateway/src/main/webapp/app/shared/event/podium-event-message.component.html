@@ -8,6 +8,20 @@
   ~
   -->
 
-<div class="podium-event-message-wrapper">
+<div class="podium-event-message-wrapper" *ngIf="isRequestOwner()">
+    <div *ngIf="lastEvent" class="alert alert-info">
+            <span class="material-icons" *ngIf="isRevisionEvent()">
+                edit
+            </span>
 
+        <div class="message-text-container">
+            <strong>Summary:</strong>
+            <span>
+                {{ lastEvent.data.messageSummary }}
+            </span>
+            <br />
+            {{ lastEvent.data.messageDescription }}
+        </div>
+
+    </div>
 </div>
