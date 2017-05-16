@@ -19,14 +19,6 @@
                     <strong><span>{{requestDetails.title}}</span></strong>
                 </dd>
 
-                <dt><span jhiTranslate="request.detail.searchQuery">Search Query</span></dt>
-                <dd>
-                    <span>{{requestDetails.searchQuery}}</span>
-                </dd>
-                <dt><span jhiTranslate="request.detail.isCombined">Combined Request</span></dt>
-                <dd>
-                    <strong><span>{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
-                </dd>
                 <dt><span jhiTranslate="request.detail.requestTypes">Request Types</span></dt>
                 <dd>
                     <ul>
@@ -35,6 +27,10 @@
                         </li>
                     </ul>
                 </dd>
+                <dt><span jhiTranslate="request.detail.isCombined">Combined Request</span></dt>
+                <dd>
+                    <strong><span>{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
+                </dd>
                 <dt><span jhiTranslate="request.detail.organisations">Organisations</span></dt>
                 <dd>
                     <ul>
@@ -42,6 +38,10 @@
                             {{ organisation.name | capitalize }}
                         </li>
                     </ul>
+                </dd>
+                <dt><span jhiTranslate="request.detail.searchQuery">Search Query</span></dt>
+                <dd>
+                    <span>{{requestDetails.searchQuery}}</span>
                 </dd>
 
                 <dt><span jhiTranslate="request.detail.background">Background</span></dt>
