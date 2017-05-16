@@ -29,14 +29,14 @@ export class RequestReviewPanelComponent implements OnInit {
     }
 
     private getLastReviewFeedback() {
-        // get latest end date of review rounds
+        // get the latest start date of review rounds
         let _lastReviewRoundDate = Math.max.apply(Math, this.reviewRounds.map((reviewRound) => {
-            return reviewRound.endDate;
+            return reviewRound.startDate;
         }));
 
-        // get latest round
+        // get the latest round
         let _lastReviewRound = this.reviewRounds.find((reviewRound) => {
-            return reviewRound.endDate.getTime() === _lastReviewRoundDate;
+            return reviewRound.startDate.getTime() === _lastReviewRoundDate;
         });
 
         // return feedback of last review round

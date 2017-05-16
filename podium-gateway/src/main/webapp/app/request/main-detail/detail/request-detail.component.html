@@ -75,7 +75,9 @@
                 </dd>
             </dl>
 
-            <pdm-request-review-panel [reviewRounds]="request.reviewRounds"></pdm-request-review-panel>
+            <pdm-request-review-panel [reviewRounds]="request.reviewRounds"
+                                      *pdmHasAnyAuthority="['ROLE_ORGANISATION_COORDINATOR']">
+            </pdm-request-review-panel>
 
             <pdm-request-action-toolbar
                 [request]="request"
