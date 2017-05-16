@@ -40,7 +40,7 @@
         <thead>
         <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id">
-                <span>Request Id</span>
+                <span>Request id</span>
                 <span class="fa fa-sort"></span>
             </th>
             <th jhiSortBy="requestDetail.title">
@@ -51,18 +51,18 @@
                 <span>Status</span>
                 <span class="fa fa-sort"></span>
             </th>
-            <th><span>Request Type</span></th>
+            <th><span>Request type</span></th>
             <th><span>Organisations</span></th>
             <th jhiSortBy="requestDetail.principalInvestigator.name" *ngIf="!isResearcherRoute()">
-                <span>Principal Investigator</span>
+                <span>Principal investigator</span>
                 <span class="fa fa-sort"></span>
             </th>
             <th jhiSortBy="createdDate">
-                <span>Created Date</span>
+                <span>Date created</span>
                 <span class="fa fa-sort"></span>
             </th>
             <th jhiSortBy="lastModifiedDate">
-                <span>Last Modified</span>
+                <span>Last modified</span>
                 <span class="fa fa-sort"></span>
             </th>
             <th></th>
