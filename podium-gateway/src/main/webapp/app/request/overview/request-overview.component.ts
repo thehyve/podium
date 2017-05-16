@@ -24,8 +24,7 @@ import { requestOverviewPaths } from './request-overview.constants';
 
 @Component({
     selector: 'pdm-request-overview',
-    templateUrl: './request-overview.component.html',
-    styleUrls: ['request-overview.scss']
+    templateUrl: './request-overview.component.html'
 })
 
 export class RequestOverviewComponent implements OnInit, OnDestroy {

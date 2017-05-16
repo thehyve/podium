@@ -44,7 +44,9 @@ export class RequestReviewPanelComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.lastReviewFeedback = this.getLastReviewFeedback();
+        if (this.reviewRounds.length) {
+            this.lastReviewFeedback = this.getLastReviewFeedback();
+        }
     }
 }
 

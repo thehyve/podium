@@ -8,19 +8,28 @@
         <th jhiTranslate="request.review.comment">Comment</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody *ngIf="lastReviewFeedback">
     <tr *ngFor="let feedback of lastReviewFeedback">
         <th scope="row">{{feedback.reviewer.firstName}} {{feedback.reviewer.lastName}}</th>
         <td>{{feedback.date | date:'short'}}</td>
         <td><span class="tag" [ngClass]="{
-            'tag-success': feedback.advice == 'Approved',
-            'tag-danger': feedback.advice == 'Rejected',
-            'tag-default': feedback.advice == 'None'
-           }">
-            {{feedback.advice}}</span>
+                'tag-success': feedback.advice == 'Approved',
+                'tag-danger': feedback.advice == 'Rejected',
+                'tag-default': feedback.advice == 'None'
+               }">
+                {{feedback.advice}}</span>
         </td>
         <td>
             <small>{{feedback.summary}}</small>
+        </td>
+    </tr>
+    </tbody>
+    <tbody *ngIf="!lastReviewFeedback">
+    <tr>
+        <td colspan="4" class="no-results">
+            <div class="alert alert-info">
+                No review found
+            </div>
         </td>
     </tr>
     </tbody>

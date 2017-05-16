@@ -42,10 +42,7 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
     // synchronous beforeEach
     beforeEach(() => {
         fixture = TestBed.createComponent(RequestReviewPanelComponent);
-        comp = fixture.componentInstance; // OrganisationSelectorComponent test instance
-
-        // de = fixture.debugElement.query(By.css('h1'));
-        // el = de.nativeElement;
+        comp = fixture.componentInstance;
     });
 
     describe('ngOnInit', () => {
@@ -101,11 +98,17 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
             reviewRound2.reviewFeedback = [
                 reviewFeedback2, reviewFeedback3
             ];
-
-            comp.reviewRounds = [reviewRound1, reviewRound2]
         });
 
         it('should get last review feedback on initialisation', () => {
+            comp.reviewRounds = [];
+            fixture.detectChanges(); // initial binding
+            comp.ngOnInit();
+            expect(comp.lastReviewFeedback).toBe(undefined);
+        });
+
+        it('should get last review feedback on initialisation', () => {
+            comp.reviewRounds = [reviewRound1, reviewRound2];
             comp.ngOnInit();
             expect(comp.lastReviewFeedback.length).toBe(2);
         });
