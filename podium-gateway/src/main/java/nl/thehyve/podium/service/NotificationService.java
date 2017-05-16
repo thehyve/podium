@@ -82,7 +82,7 @@ public class NotificationService {
     public void reviewProcessClosedNotificationToRequester(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
         // Fetch requester data through Feign.
-        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester());
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
 
         switch (request.getRequestReview().getDecision()) {
             case Approved:
@@ -138,7 +138,7 @@ public class NotificationService {
     public void revisionNotificationToRequester(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
         // Fetch requester data through Feign.
-        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester());
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
 
         mailService.sendRequestRevisionNotificationToRequester(requester, request);
     }

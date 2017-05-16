@@ -75,13 +75,19 @@ public class RequestSecurityService {
         }
         try {
             log.debug("Fetching request {} ... ", requestUuid);
-            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequest(requestUuid);
+            ResponseEntity<RequestRepresentation> response = internalRequestResource.getDefaultRequest(requestUuid);
             if (response.getStatusCode() != HttpStatus.OK) {
                 log.error("Could not fetch request with uuid {}. Status code: {}", requestUuid, response.getStatusCode());
             }
-            log.debug("Request found. Owner: {}, current user: {}", response.getBody().getRequester(),
+
+            if (response.getBody().getRequester() == null) {
+                log.error("Requester not present in request representation. {}", response.getBody());
+                return false;
+            }
+
+            log.debug("Request found. Owner: {}, current user: {}", response.getBody().getRequester().getUuid(),
                 securityService.getCurrentUser().getUuid());
-            return (securityService.getCurrentUser().getUuid().equals(response.getBody().getRequester()));
+            return (securityService.getCurrentUser().getUuid().equals(response.getBody().getRequester().getUuid()));
         } catch (URISyntaxException e) {
             log.error("Could not fetch request with uuid {}", requestUuid);
             return false;

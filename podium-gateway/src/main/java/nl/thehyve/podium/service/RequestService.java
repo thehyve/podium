@@ -379,6 +379,23 @@ public class RequestService {
     }
 
     /**
+     *  Get the request
+     *
+     *  @param requestUuid the uuid of the request
+     *  @return the entity
+     *  @throws ResourceNotFound when the requested request could not be found.
+     */
+    @Transactional(readOnly = true)
+    public RequestRepresentation findRequestBasic(UUID requestUuid) {
+        log.debug("Request to get Basic request with uuid {}", requestUuid);
+        Request request = requestRepository.findOneByUuid(requestUuid);
+        if (request == null) {
+            throw new ResourceNotFound("Request not found.");
+        }
+        return requestMapper.requestToRequestDTO(request);
+    }
+
+    /**
      * Perform look up of request drafts by requester.
      *
      * @param requester The user to perform the lookup for

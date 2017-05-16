@@ -14,6 +14,7 @@ import { RequestStatusOptions } from './request-status/request-status.constants'
 import { RequestReview } from './request-review';
 import { PodiumEvent } from '../event/podium-event';
 import { ReviewRound } from './review-round';
+import { User } from '../user/user.model';
 
 export class RequestBase implements Request {
 
@@ -29,7 +30,7 @@ export class RequestBase implements Request {
     organisations?: Organisation[] = [];
     historicEvents?: PodiumEvent[];
 
-    requester?: string;
+    requester?: User;
 
     constructor() {
     }
