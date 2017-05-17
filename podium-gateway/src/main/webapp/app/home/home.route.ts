@@ -7,18 +7,15 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
-import { UserRouteAccessService } from '../shared';
 import { HomeComponent } from './';
 
 export const homeRoute: Route = {
-  path: '',
-  component: HomeComponent,
-  data: {
-    authorities: [],
-    pageTitle: 'home.title'
-  },
-  canActivate: [UserRouteAccessService]
+    path: '',
+    component: HomeComponent,
+    data: {
+        authorities: [],
+        pageTitle: 'home.title',
+        breadcrumb: 'Home'
+    }
 };

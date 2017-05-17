@@ -34,10 +34,10 @@ export * from './metrics/metrics.component';
 export * from './metrics/metrics-modal.component';
 export * from './metrics/metrics.service';
 export * from './metrics/metrics.route';
-export * from './user-management/user-management-dialog.component';
-export * from './user-management/user-management-delete-dialog.component';
-export * from './user-management/user-management-detail.component';
-export * from './user-management/user-management.component';
-export * from './user-management/user-management.route';
-export * from './user-management/user-modal.service';
+export * from './elasticsearch/elasticsearch.component';
+export * from './elasticsearch/elasticsearch.service';
+export * from './elasticsearch/elasticsearch-modal.component';
+export * from './elasticsearch/elasticsearch.route';
+
+
 export * from './admin.route';

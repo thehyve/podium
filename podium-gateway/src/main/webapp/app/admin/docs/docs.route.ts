@@ -7,16 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
-import { JhiDocsComponent } from './docs.component';
+import { PdmDocsComponent } from './docs.component';
 
 export const docsRoute: Route = {
-  path: 'docs',
-  component: JhiDocsComponent,
-  data: {
-    pageTitle: 'global.menu.admin.apidocs'
-  }
+    path: 'docs',
+    component: PdmDocsComponent,
+    data: {
+        pageTitle: 'global.menu.admin.apidocs',
+        breadcrumb: 'Swagger'
+    }
 };

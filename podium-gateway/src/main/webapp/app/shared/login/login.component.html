@@ -13,14 +13,33 @@
         <h1 >Sign in</h1>
     </div>
     <div class="col-md-8 offset-md-2">
-        <div class="alert alert-danger" *ngIf="authenticationError" >
-            <strong>Failed to sign in!</strong> Please check your credentials and try again.
+        <div class="alert alert-danger" *ngIf="authenticationError && !(userAccountLocked || emailNotVerified || accountNotVerified)" >
+            <strong>Failed to sign in!</strong>
+            Please check your credentials and try again.
+            <br/>
+            <br/>
+            <a class="alert-link" (click)="requestResetPassword()">Did you forget your password?</a>
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && userAccountLocked" >
+            <strong>Your user account is locked!</strong>
+            <br/>
+            Please contact the servicedesk.
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && emailNotVerified" >
+            <strong>Your email address has not been verified.</strong>
+            <br/>
+            Please use the link in the verification email sent to you at registration.
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && accountNotVerified" >
+            <strong>Your user account has not been verified by BBMRI yet.</strong>
+            <br/>
+            You will be notified by email when your account is verified.
         </div>
     </div>
     <div class="col-md-8 offset-md-2">
         <form class="form" role="form" (ngSubmit)="login()">
             <div class="form-group">
-                <label for="username" >Login</label>
+                <label for="username" >Username</label>
                 <input type="text" class="form-control" name="username" id="username" autocomplete="off" placeholder="{{'global.form.username.placeholder' | translate}}"
                 [(ngModel)]="username">
             </div>
@@ -29,21 +48,27 @@
                 <input type="password" class="form-control" name="password" id="password" autocomplete="off" placeholder="{{'login.form.password.placeholder' | translate}}"
                        [(ngModel)]="password">
             </div>
-            <div class="form-check">
-                <label class="form-check-label" for="rememberMe">
-                    <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" [(ngModel)]="rememberMe" checked>
-                    <span >Remember me</span>
-                </label>
+            <div class="row align-items-center">
+                <div class="col-3 col-sm-3">
+                    <button type="submit" class="btn btn-primary" >Sign in</button>
+                </div>
+                <div class="col-9 col-sm-9">
+                    <div class="form-check">
+                        <label class="form-check-label" for="rememberMe">
+                            <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" [(ngModel)]="rememberMe" checked>
+                            <span >Remember me</span>
+                        </label>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary" >Sign in</button>
         </form>
+        <p><br/><br/></p>
+
+        <button type="button" class="btn btn-secondary"(click)="register()">Register a new account</button>
         <p></p>
-        <div class="alert alert-warning">
-            <a class="alert-link" (click)="requestResetPassword()" >Did you forget your password?</a>
-        </div>
-        <div class="alert alert-warning">
-            <span >You don't have an account yet?</span>
-            <a class="alert-link" (click)="register()" >Register a new account</a>
-        </div>
+        <p>
+            <span>Forgot your password?</span>
+            <a tabindex="" (click)="requestResetPassword()">Request a password reset link</a>.
+        </p>
     </div>
 </div>

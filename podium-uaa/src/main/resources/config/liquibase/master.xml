@@ -23,4 +23,9 @@
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <include file="./changelog/20170207104100_added_organisation_and_roles_data.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170209105123_added_user_fields.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170210162230_added_user_verification.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170227173401_added_sequences.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170403162001_added_organisation_request_types.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170404150743_remove_user_authorities.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170504145800_reorganise_events.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

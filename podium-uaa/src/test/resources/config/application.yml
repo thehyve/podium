@@ -22,13 +22,15 @@ spring:
         name: podiumUaa
     jackson:
         serialization.write_dates_as_timestamps: false
+    cache:
+        type: none
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaa
         username: podiumUser
         password: podiumUser
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
+        database-platform: nl.thehyve.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         open-in-view: false
         show-sql: true
@@ -50,6 +52,7 @@ spring:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+                cluster.routing.allocation.disk.watermark.high: 99%
     mail:
         host: localhost
     mvc:
@@ -64,6 +67,9 @@ liquibase:
 security:
     basic:
         enabled: false
+    oauth2:
+        resource:
+            filter-order: 3
 
 server:
     port: 10344
@@ -99,3 +105,8 @@ podium:
         contactEmail:
         license:
         licenseUrl:
+
+uaa:
+    security:
+        accountLockingPeriodSeconds: 3
+        activationKeyValiditySeconds: 4 # 4 seconds for testing

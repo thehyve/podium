@@ -7,13 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Routes, CanActivate } from '@angular/router';
-
-import { UserRouteAccessService } from '../shared';
-
+import { Routes } from '@angular/router';
 import {
-    activateRoute,
+    verifyRoute,
     passwordRoute,
     passwordResetFinishRoute,
     passwordResetInitRoute,
@@ -22,7 +18,7 @@ import {
 } from './';
 
 let ACCOUNT_ROUTES = [
-   activateRoute,
+   verifyRoute,
    passwordRoute,
    passwordResetFinishRoute,
    passwordResetInitRoute,

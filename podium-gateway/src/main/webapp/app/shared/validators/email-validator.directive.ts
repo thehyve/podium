@@ -7,8 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Directive, forwardRef } from '@angular/core';
+import { Directive } from '@angular/core';
 import { NG_VALIDATORS, AbstractControl, ValidatorFn, Validator, FormControl } from '@angular/forms';
 
 
@@ -16,12 +15,12 @@ import { NG_VALIDATORS, AbstractControl, ValidatorFn, Validator, FormControl } f
 function validateEmailFactory(): ValidatorFn {
     return (c: AbstractControl) => {
 
-        // tslint:disable max-length
+        // tslint:disable
         let pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
         // tslint:enable
-        let isValid =pattern.test(c.value);
+        let isValid = pattern.test(c.value);
 
-        if(isValid) {
+        if (isValid) {
             return null;
         } else {
             return {

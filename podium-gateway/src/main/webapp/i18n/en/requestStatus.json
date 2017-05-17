@@ -1,0 +1,11 @@
+{
+    "requestStatus" : {
+        "Draft": "Draft",
+        "Submit": "Submitted",
+        "Validation": "Validation",
+        "Review": "Review",
+        "Delivery": "Delivery",
+        "Return": "Return",
+        "Revision": "Revision"
+    }
+}

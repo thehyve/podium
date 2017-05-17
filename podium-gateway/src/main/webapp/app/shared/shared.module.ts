@@ -7,11 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
-
 import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { SessionStorageService } from 'ng2-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
@@ -23,13 +22,22 @@ import {
     StateStorageService,
     LoginService,
     LoginModalService,
+    MessageService,
     Principal,
-    HasAuthorityDirective,
     HasAnyAuthorityDirective,
     EmailValidatorDirective,
+    PasswordValidatorDirective,
+    PasswordMatchesDirective,
+    WordLengthValidatorDirective,
     PodiumLoginComponent,
     SpecialismComponent
 } from './';
+import { AttachmentService } from './attachment/attachment.service';
+import { RequestService } from './request/request.service';
+import { EnumKeysPipe } from './pipes/enumKeys';
+import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
+import { RequestAccessService } from './request/request-access.service';
+import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 
 @NgModule({
     imports: [
@@ -39,34 +47,57 @@ import {
     declarations: [
         PodiumLoginComponent,
         SpecialismComponent,
+        OrganisationSelectorComponent,
         EmailValidatorDirective,
-        HasAuthorityDirective,
-        HasAnyAuthorityDirective
+        PodiumEventMessageComponent,
+        PasswordValidatorDirective,
+        PasswordMatchesDirective,
+        WordLengthValidatorDirective,
+        HasAnyAuthorityDirective,
+        EnumKeysPipe
     ],
-    providers: [
-        CookieService,
-        LoginService,
-        LoginModalService,
-        AccountService,
-        StateStorageService,
-        Principal,
-        CSRFService,
-        AuthServerProvider,
-        AuthService,
-        UserService,
-        DatePipe
-    ],
+    providers: [],
     entryComponents: [PodiumLoginComponent],
     exports: [
         PodiumGatewaySharedCommonModule,
+        PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
         SpecialismComponent,
+        OrganisationSelectorComponent,
+        PodiumEventMessageComponent,
         EmailValidatorDirective,
-        HasAuthorityDirective,
+        PasswordValidatorDirective,
+        PasswordMatchesDirective,
+        WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        EnumKeysPipe
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
 })
-export class PodiumGatewaySharedModule {}
+export class PodiumGatewaySharedModule {
+    static forRoot(): ModuleWithProviders {
+        return {
+            ngModule: PodiumGatewaySharedModule,
+            providers: [
+                CookieService,
+                LoginService,
+                LoginModalService,
+                MessageService,
+                AccountService,
+                SessionStorageService,
+                StateStorageService,
+                Principal,
+                CSRFService,
+                AuthServerProvider,
+                AuthService,
+                UserService,
+                AttachmentService,
+                RequestService,
+                RequestAccessService,
+                DatePipe
+            ]
+        };
+    }
+}

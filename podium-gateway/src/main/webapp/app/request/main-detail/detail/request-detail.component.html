@@ -1,0 +1,93 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div *ngIf="requestDetails">
+    <div [ngSwitch]="isInRevision">
+
+        <div *ngSwitchCase="false">
+
+            <dl>
+                <dt><span jhiTranslate="request.detail.title">Title</span></dt>
+                <dd>
+                    <strong><span>{{requestDetails.title}}</span></strong>
+                </dd>
+                <dt><span jhiTranslate="request.detail.background">Background</span></dt>
+                <dd>
+                    <span>{{requestDetails.background}}</span>
+                </dd>
+                <dt><span jhiTranslate="request.detail.researchQuestion">Research Question</span></dt>
+                <dd>
+                    <span>{{requestDetails.researchQuestion}}</span>
+                </dd>
+                <dt><span jhiTranslate="request.detail.hypothesis">Hypothesis</span></dt>
+                <dd>
+                    <span>{{requestDetails.hypothesis}}</span>
+                </dd>
+                <dt><span jhiTranslate="request.detail.methods">Methods</span></dt>
+                <dd>
+                    <span>{{requestDetails.methods}}</span>
+                </dd>
+                <dt><span jhiTranslate="request.detail.relatedRequestNumber">Related Request Number</span></dt>
+                <dd>
+                    <span>{{requestDetails.relatedRequestNumber || '-'}}</span>
+                </dd>
+                <dt><span jhiTranslate="request.detail.principalInvestigator">Principal Investigator</span></dt>
+                <dd>
+                    <address>
+                        <strong class="small">{{ requestDetails.principalInvestigator.name}}</strong><br />
+                        <strong class="small">{{ requestDetails.principalInvestigator.email}}</strong><br />
+                        <strong class="small">{{ requestDetails.principalInvestigator.jobTitle}}</strong><br />
+                        <strong class="small">{{ requestDetails.principalInvestigator.affiliation}}</strong><br />
+                    </address>
+                </dd>
+                <dt><span jhiTranslate="request.detail.searchQuery">Search Query</span></dt>
+                <dd>
+                    <span>{{requestDetails.searchQuery}}</span>
+                </dd>
+                <dt><span jhiTranslate="request.detail.isCombined">Combined Request</span></dt>
+                <dd>
+                    <strong><span>{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
+                </dd>
+                <dt><span jhiTranslate="request.detail.requestTypes">Request Types</span></dt>
+                <dd>
+                    <ul>
+                        <li *ngFor="let requestType of requestDetails.requestType">
+                            {{ requestType | capitalize }}
+                        </li>
+                    </ul>
+                </dd>
+                <dt><span jhiTranslate="request.detail.organisations">Organisations</span></dt>
+                <dd>
+                    <ul>
+                        <li *ngFor="let organisation of request.organisations">
+                            {{ organisation.name | capitalize }}
+                        </li>
+                    </ul>
+                </dd>
+            </dl>
+
+            <pdm-request-action-toolbar
+                [request]="request"
+                [isUpdating]="isUpdating"
+                (rejectChange)="rejectRequest()"
+                (submitReviewChange)="submitReview()"
+                (requireRevisionChange)="requireRequestRevision()"
+                (validateRequestChange)="validateRequest()"
+                (approveRequest)="approveRequest()">
+            </pdm-request-action-toolbar>
+        </div>
+
+        <div *ngSwitchCase="true">
+            <pdm-request-form
+                [isInRevision]="isInRevision">
+            </pdm-request-form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1178 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="gijs (generated)" id="1489499362467-1">
+        <createTable tableName="act_evt_log">
+            <column autoIncrement="true" name="log_nr_" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="act_evt_log_pkey"/>
+            </column>
+            <column name="type_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="time_stamp_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="data_" type="BYTEA"/>
+            <column name="lock_owner_" type="VARCHAR(255)"/>
+            <column name="lock_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column defaultValueNumeric="0" name="is_processed_" type="SMALLINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-2">
+        <createTable tableName="act_ge_bytearray">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="deployment_id_" type="VARCHAR(64)"/>
+            <column name="bytes_" type="BYTEA"/>
+            <column name="generated_" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-3">
+        <createTable tableName="act_ge_property">
+            <column name="name_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_" type="VARCHAR(300)"/>
+            <column name="rev_" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-4">
+        <createTable tableName="act_hi_actinst">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_def_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_inst_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="execution_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="act_id_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="call_proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="act_name_" type="VARCHAR(255)"/>
+            <column name="act_type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_" type="VARCHAR(255)"/>
+            <column name="start_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="duration_" type="BIGINT"/>
+            <column name="delete_reason_" type="VARCHAR(4000)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-5">
+        <createTable tableName="act_hi_attachment">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="description_" type="VARCHAR(4000)"/>
+            <column name="type_" type="VARCHAR(255)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="url_" type="VARCHAR(4000)"/>
+            <column name="content_id_" type="VARCHAR(64)"/>
+            <column name="time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-6">
+        <createTable tableName="act_hi_comment">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_" type="VARCHAR(255)"/>
+            <column name="time_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="action_" type="VARCHAR(255)"/>
+            <column name="message_" type="VARCHAR(4000)"/>
+            <column name="full_msg_" type="BYTEA"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-7">
+        <createTable tableName="act_hi_detail">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="act_inst_id_" type="VARCHAR(64)"/>
+            <column name="name_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="var_type_" type="VARCHAR(64)"/>
+            <column name="rev_" type="INT"/>
+            <column name="time_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bytearray_id_" type="VARCHAR(64)"/>
+            <column name="double_" type="FLOAT8"/>
+            <column name="long_" type="BIGINT"/>
+            <column name="text_" type="VARCHAR(4000)"/>
+            <column name="text2_" type="VARCHAR(4000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-8">
+        <createTable tableName="act_hi_identitylink">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id_" type="VARCHAR(255)"/>
+            <column name="type_" type="VARCHAR(255)"/>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="create_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-9">
+        <createTable tableName="act_hi_procinst">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_inst_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_key_" type="VARCHAR(255)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="duration_" type="BIGINT"/>
+            <column name="start_user_id_" type="VARCHAR(255)"/>
+            <column name="start_act_id_" type="VARCHAR(255)"/>
+            <column name="end_act_id_" type="VARCHAR(255)"/>
+            <column name="super_process_instance_id_" type="VARCHAR(64)"/>
+            <column name="delete_reason_" type="VARCHAR(4000)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+            <column name="name_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-10">
+        <createTable tableName="act_hi_taskinst">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="task_def_key_" type="VARCHAR(255)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="parent_task_id_" type="VARCHAR(64)"/>
+            <column name="description_" type="VARCHAR(4000)"/>
+            <column name="owner_" type="VARCHAR(255)"/>
+            <column name="assignee_" type="VARCHAR(255)"/>
+            <column name="start_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="claim_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="end_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="duration_" type="BIGINT"/>
+            <column name="delete_reason_" type="VARCHAR(4000)"/>
+            <column name="priority_" type="INT"/>
+            <column name="due_date_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="form_key_" type="VARCHAR(255)"/>
+            <column name="category_" type="VARCHAR(255)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-11">
+        <createTable tableName="act_hi_varinst">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="name_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="var_type_" type="VARCHAR(100)"/>
+            <column name="rev_" type="INT"/>
+            <column name="bytearray_id_" type="VARCHAR(64)"/>
+            <column name="double_" type="FLOAT8"/>
+            <column name="long_" type="BIGINT"/>
+            <column name="text_" type="VARCHAR(4000)"/>
+            <column name="text2_" type="VARCHAR(4000)"/>
+            <column name="create_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="last_updated_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-12">
+        <createTable tableName="act_id_bytearray">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="bytes_" type="BYTEA"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-13">
+        <createTable tableName="act_id_group">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="type_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-14">
+        <createTable tableName="act_id_info">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="user_id_" type="VARCHAR(64)"/>
+            <column name="type_" type="VARCHAR(64)"/>
+            <column name="key_" type="VARCHAR(255)"/>
+            <column name="value_" type="VARCHAR(255)"/>
+            <column name="password_" type="BYTEA"/>
+            <column name="parent_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-15">
+        <createTable tableName="act_id_membership">
+            <column name="user_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-16">
+        <createTable tableName="act_id_priv">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-17">
+        <createTable tableName="act_id_priv_mapping">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priv_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="group_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-18">
+        <createTable tableName="act_id_property">
+            <column name="name_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value_" type="VARCHAR(300)"/>
+            <column name="rev_" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-19">
+        <createTable tableName="act_id_token">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="token_value_" type="VARCHAR(255)"/>
+            <column name="token_date_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="ip_address_" type="VARCHAR(255)"/>
+            <column name="user_agent_" type="VARCHAR(255)"/>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="token_data_" type="VARCHAR(2000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-20">
+        <createTable tableName="act_id_user">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="first_" type="VARCHAR(255)"/>
+            <column name="last_" type="VARCHAR(255)"/>
+            <column name="email_" type="VARCHAR(255)"/>
+            <column name="pwd_" type="VARCHAR(255)"/>
+            <column name="picture_id_" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-21">
+        <createTable tableName="act_procdef_info">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_def_id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="info_json_id_" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-22">
+        <createTable tableName="act_re_deployment">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="category_" type="VARCHAR(255)"/>
+            <column name="key_" type="VARCHAR(255)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+            <column name="deploy_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="engine_version_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-23">
+        <createTable tableName="act_re_model">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="key_" type="VARCHAR(255)"/>
+            <column name="category_" type="VARCHAR(255)"/>
+            <column name="create_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="last_update_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="version_" type="INT"/>
+            <column name="meta_info_" type="VARCHAR(4000)"/>
+            <column name="deployment_id_" type="VARCHAR(64)"/>
+            <column name="editor_source_value_id_" type="VARCHAR(64)"/>
+            <column name="editor_source_extra_value_id_" type="VARCHAR(64)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-24">
+        <createTable tableName="act_re_procdef">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="category_" type="VARCHAR(255)"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="key_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version_" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deployment_id_" type="VARCHAR(64)"/>
+            <column name="resource_name_" type="VARCHAR(4000)"/>
+            <column name="dgrm_resource_name_" type="VARCHAR(4000)"/>
+            <column name="description_" type="VARCHAR(4000)"/>
+            <column name="has_start_form_key_" type="BOOLEAN"/>
+            <column name="has_graphical_notation_" type="BOOLEAN"/>
+            <column name="suspension_state_" type="INT"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+            <column name="engine_version_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-25">
+        <createTable tableName="act_ru_deadletter_job">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exclusive_" type="BOOLEAN"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="process_instance_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="exception_stack_id_" type="VARCHAR(64)"/>
+            <column name="exception_msg_" type="VARCHAR(4000)"/>
+            <column name="duedate_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="repeat_" type="VARCHAR(255)"/>
+            <column name="handler_type_" type="VARCHAR(255)"/>
+            <column name="handler_cfg_" type="VARCHAR(4000)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-26">
+        <createTable tableName="act_ru_event_subscr">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="event_type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_name_" type="VARCHAR(255)"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="activity_id_" type="VARCHAR(64)"/>
+            <column name="configuration_" type="VARCHAR(255)"/>
+            <column name="created_" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-27">
+        <createTable tableName="act_ru_execution">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="business_key_" type="VARCHAR(255)"/>
+            <column name="parent_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="super_exec_" type="VARCHAR(64)"/>
+            <column name="root_proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="act_id_" type="VARCHAR(255)"/>
+            <column name="is_active_" type="BOOLEAN"/>
+            <column name="is_concurrent_" type="BOOLEAN"/>
+            <column name="is_scope_" type="BOOLEAN"/>
+            <column name="is_event_scope_" type="BOOLEAN"/>
+            <column name="is_mi_root_" type="BOOLEAN"/>
+            <column name="suspension_state_" type="INT"/>
+            <column name="cached_ent_state_" type="INT"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="start_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="start_user_id_" type="VARCHAR(255)"/>
+            <column name="lock_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="is_count_enabled_" type="BOOLEAN"/>
+            <column name="evt_subscr_count_" type="INT"/>
+            <column name="task_count_" type="INT"/>
+            <column name="job_count_" type="INT"/>
+            <column name="timer_job_count_" type="INT"/>
+            <column name="susp_job_count_" type="INT"/>
+            <column name="deadletter_job_count_" type="INT"/>
+            <column name="var_count_" type="INT"/>
+            <column name="id_link_count_" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-28">
+        <createTable tableName="act_ru_identitylink">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="group_id_" type="VARCHAR(255)"/>
+            <column name="type_" type="VARCHAR(255)"/>
+            <column name="user_id_" type="VARCHAR(255)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-29">
+        <createTable tableName="act_ru_job">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lock_exp_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="lock_owner_" type="VARCHAR(255)"/>
+            <column name="exclusive_" type="BOOLEAN"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="process_instance_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="retries_" type="INT"/>
+            <column name="exception_stack_id_" type="VARCHAR(64)"/>
+            <column name="exception_msg_" type="VARCHAR(4000)"/>
+            <column name="duedate_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="repeat_" type="VARCHAR(255)"/>
+            <column name="handler_type_" type="VARCHAR(255)"/>
+            <column name="handler_cfg_" type="VARCHAR(4000)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-30">
+        <createTable tableName="act_ru_suspended_job">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exclusive_" type="BOOLEAN"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="process_instance_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="retries_" type="INT"/>
+            <column name="exception_stack_id_" type="VARCHAR(64)"/>
+            <column name="exception_msg_" type="VARCHAR(4000)"/>
+            <column name="duedate_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="repeat_" type="VARCHAR(255)"/>
+            <column name="handler_type_" type="VARCHAR(255)"/>
+            <column name="handler_cfg_" type="VARCHAR(4000)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-31">
+        <createTable tableName="act_ru_task">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="name_" type="VARCHAR(255)"/>
+            <column name="parent_task_id_" type="VARCHAR(64)"/>
+            <column name="description_" type="VARCHAR(4000)"/>
+            <column name="task_def_key_" type="VARCHAR(255)"/>
+            <column name="owner_" type="VARCHAR(255)"/>
+            <column name="assignee_" type="VARCHAR(255)"/>
+            <column name="delegation_" type="VARCHAR(64)"/>
+            <column name="priority_" type="INT"/>
+            <column name="create_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="due_date_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="category_" type="VARCHAR(255)"/>
+            <column name="suspension_state_" type="INT"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+            <column name="form_key_" type="VARCHAR(255)"/>
+            <column name="claim_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="is_count_enabled_" type="BOOLEAN"/>
+            <column name="var_count_" type="INT"/>
+            <column name="id_link_count_" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-32">
+        <createTable tableName="act_ru_timer_job">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lock_exp_time_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="lock_owner_" type="VARCHAR(255)"/>
+            <column name="exclusive_" type="BOOLEAN"/>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="process_instance_id_" type="VARCHAR(64)"/>
+            <column name="proc_def_id_" type="VARCHAR(64)"/>
+            <column name="retries_" type="INT"/>
+            <column name="exception_stack_id_" type="VARCHAR(64)"/>
+            <column name="exception_msg_" type="VARCHAR(4000)"/>
+            <column name="duedate_" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="repeat_" type="VARCHAR(255)"/>
+            <column name="handler_type_" type="VARCHAR(255)"/>
+            <column name="handler_cfg_" type="VARCHAR(4000)"/>
+            <column defaultValue="" name="tenant_id_" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-33">
+        <createTable tableName="act_ru_variable">
+            <column name="id_" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rev_" type="INT"/>
+            <column name="type_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="execution_id_" type="VARCHAR(64)"/>
+            <column name="proc_inst_id_" type="VARCHAR(64)"/>
+            <column name="task_id_" type="VARCHAR(64)"/>
+            <column name="bytearray_id_" type="VARCHAR(64)"/>
+            <column name="double_" type="FLOAT8"/>
+            <column name="long_" type="BIGINT"/>
+            <column name="text_" type="VARCHAR(4000)"/>
+            <column name="text2_" type="VARCHAR(4000)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-34">
+        <addPrimaryKey columnNames="id_" constraintName="act_ge_bytearray_pkey" tableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-35">
+        <addPrimaryKey columnNames="name_" constraintName="act_ge_property_pkey" tableName="act_ge_property"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-36">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_actinst_pkey" tableName="act_hi_actinst"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-37">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_attachment_pkey" tableName="act_hi_attachment"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-38">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_comment_pkey" tableName="act_hi_comment"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-39">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_detail_pkey" tableName="act_hi_detail"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-40">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_identitylink_pkey" tableName="act_hi_identitylink"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-41">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_procinst_pkey" tableName="act_hi_procinst"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-42">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_taskinst_pkey" tableName="act_hi_taskinst"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-43">
+        <addPrimaryKey columnNames="id_" constraintName="act_hi_varinst_pkey" tableName="act_hi_varinst"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-44">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_bytearray_pkey" tableName="act_id_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-45">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_group_pkey" tableName="act_id_group"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-46">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_info_pkey" tableName="act_id_info"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-47">
+        <addPrimaryKey columnNames="user_id_, group_id_" constraintName="act_id_membership_pkey" tableName="act_id_membership"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-48">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_priv_mapping_pkey" tableName="act_id_priv_mapping"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-49">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_priv_pkey" tableName="act_id_priv"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-50">
+        <addPrimaryKey columnNames="name_" constraintName="act_id_property_pkey" tableName="act_id_property"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-51">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_token_pkey" tableName="act_id_token"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-52">
+        <addPrimaryKey columnNames="id_" constraintName="act_id_user_pkey" tableName="act_id_user"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-53">
+        <addPrimaryKey columnNames="id_" constraintName="act_procdef_info_pkey" tableName="act_procdef_info"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-54">
+        <addPrimaryKey columnNames="id_" constraintName="act_re_deployment_pkey" tableName="act_re_deployment"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-55">
+        <addPrimaryKey columnNames="id_" constraintName="act_re_model_pkey" tableName="act_re_model"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-56">
+        <addPrimaryKey columnNames="id_" constraintName="act_re_procdef_pkey" tableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-57">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_deadletter_job_pkey" tableName="act_ru_deadletter_job"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-58">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_event_subscr_pkey" tableName="act_ru_event_subscr"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-59">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_execution_pkey" tableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-60">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_identitylink_pkey" tableName="act_ru_identitylink"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-61">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_job_pkey" tableName="act_ru_job"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-62">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_suspended_job_pkey" tableName="act_ru_suspended_job"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-63">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_task_pkey" tableName="act_ru_task"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-64">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_timer_job_pkey" tableName="act_ru_timer_job"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-65">
+        <addPrimaryKey columnNames="id_" constraintName="act_ru_variable_pkey" tableName="act_ru_variable"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-66">
+        <addUniqueConstraint columnNames="proc_inst_id_" constraintName="act_hi_procinst_proc_inst_id__key" tableName="act_hi_procinst"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-67">
+        <addUniqueConstraint columnNames="proc_def_id_" constraintName="act_uniq_info_procdef" tableName="act_procdef_info"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-68">
+        <addUniqueConstraint columnNames="key_, version_, tenant_id_" constraintName="act_uniq_procdef" tableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-69">
+        <createIndex indexName="act_idx_athrz_procedef" tableName="act_ru_identitylink">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-70">
+        <createIndex indexName="act_idx_bytear_depl" tableName="act_ge_bytearray">
+            <column name="deployment_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-71">
+        <createIndex indexName="act_idx_deadletter_job_exception" tableName="act_ru_deadletter_job">
+            <column name="exception_stack_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-72">
+        <createIndex indexName="act_idx_deadletter_job_execution_id" tableName="act_ru_deadletter_job">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-73">
+        <createIndex indexName="act_idx_deadletter_job_proc_def_id" tableName="act_ru_deadletter_job">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-74">
+        <createIndex indexName="act_idx_deadletter_job_process_instance_id" tableName="act_ru_deadletter_job">
+            <column name="process_instance_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-75">
+        <createIndex indexName="act_idx_event_subscr" tableName="act_ru_event_subscr">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-76">
+        <createIndex indexName="act_idx_event_subscr_config_" tableName="act_ru_event_subscr">
+            <column name="configuration_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-77">
+        <createIndex indexName="act_idx_exe_parent" tableName="act_ru_execution">
+            <column name="parent_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-78">
+        <createIndex indexName="act_idx_exe_procdef" tableName="act_ru_execution">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-79">
+        <createIndex indexName="act_idx_exe_procinst" tableName="act_ru_execution">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-80">
+        <createIndex indexName="act_idx_exe_root" tableName="act_ru_execution">
+            <column name="root_proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-81">
+        <createIndex indexName="act_idx_exe_super" tableName="act_ru_execution">
+            <column name="super_exec_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-82">
+        <createIndex indexName="act_idx_exec_buskey" tableName="act_ru_execution">
+            <column name="business_key_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-83">
+        <createIndex indexName="act_idx_hi_act_inst_end" tableName="act_hi_actinst">
+            <column name="end_time_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-84">
+        <createIndex indexName="act_idx_hi_act_inst_exec" tableName="act_hi_actinst">
+            <column name="execution_id_"/>
+            <column name="act_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-85">
+        <createIndex indexName="act_idx_hi_act_inst_procinst" tableName="act_hi_actinst">
+            <column name="proc_inst_id_"/>
+            <column name="act_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-86">
+        <createIndex indexName="act_idx_hi_act_inst_start" tableName="act_hi_actinst">
+            <column name="start_time_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-87">
+        <createIndex indexName="act_idx_hi_detail_act_inst" tableName="act_hi_detail">
+            <column name="act_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-88">
+        <createIndex indexName="act_idx_hi_detail_name" tableName="act_hi_detail">
+            <column name="name_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-89">
+        <createIndex indexName="act_idx_hi_detail_proc_inst" tableName="act_hi_detail">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-90">
+        <createIndex indexName="act_idx_hi_detail_task_id" tableName="act_hi_detail">
+            <column name="task_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-91">
+        <createIndex indexName="act_idx_hi_detail_time" tableName="act_hi_detail">
+            <column name="time_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-92">
+        <createIndex indexName="act_idx_hi_ident_lnk_procinst" tableName="act_hi_identitylink">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-93">
+        <createIndex indexName="act_idx_hi_ident_lnk_task" tableName="act_hi_identitylink">
+            <column name="task_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-94">
+        <createIndex indexName="act_idx_hi_ident_lnk_user" tableName="act_hi_identitylink">
+            <column name="user_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-95">
+        <createIndex indexName="act_idx_hi_pro_i_buskey" tableName="act_hi_procinst">
+            <column name="business_key_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-96">
+        <createIndex indexName="act_idx_hi_pro_inst_end" tableName="act_hi_procinst">
+            <column name="end_time_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-97">
+        <createIndex indexName="act_idx_hi_procvar_name_type" tableName="act_hi_varinst">
+            <column name="name_"/>
+            <column name="var_type_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-98">
+        <createIndex indexName="act_idx_hi_procvar_proc_inst" tableName="act_hi_varinst">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-99">
+        <createIndex indexName="act_idx_hi_procvar_task_id" tableName="act_hi_varinst">
+            <column name="task_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-100">
+        <createIndex indexName="act_idx_hi_task_inst_procinst" tableName="act_hi_taskinst">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-101">
+        <createIndex indexName="act_idx_ident_lnk_group" tableName="act_ru_identitylink">
+            <column name="group_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-102">
+        <createIndex indexName="act_idx_ident_lnk_user" tableName="act_ru_identitylink">
+            <column name="user_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-103">
+        <createIndex indexName="act_idx_idl_procinst" tableName="act_ru_identitylink">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-104">
+        <createIndex indexName="act_idx_job_exception" tableName="act_ru_job">
+            <column name="exception_stack_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-105">
+        <createIndex indexName="act_idx_job_execution_id" tableName="act_ru_job">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-106">
+        <createIndex indexName="act_idx_job_proc_def_id" tableName="act_ru_job">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-107">
+        <createIndex indexName="act_idx_job_process_instance_id" tableName="act_ru_job">
+            <column name="process_instance_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-108">
+        <createIndex indexName="act_idx_memb_group" tableName="act_id_membership">
+            <column name="group_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-109">
+        <createIndex indexName="act_idx_memb_user" tableName="act_id_membership">
+            <column name="user_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-110">
+        <createIndex indexName="act_idx_model_deployment" tableName="act_re_model">
+            <column name="deployment_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-111">
+        <createIndex indexName="act_idx_model_source" tableName="act_re_model">
+            <column name="editor_source_value_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-112">
+        <createIndex indexName="act_idx_model_source_extra" tableName="act_re_model">
+            <column name="editor_source_extra_value_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-113">
+        <createIndex indexName="act_idx_priv_group" tableName="act_id_priv_mapping">
+            <column name="group_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-114">
+        <createIndex indexName="act_idx_priv_mapping" tableName="act_id_priv_mapping">
+            <column name="priv_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-115">
+        <createIndex indexName="act_idx_priv_user" tableName="act_id_priv_mapping">
+            <column name="user_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-116">
+        <createIndex indexName="act_idx_procdef_info_json" tableName="act_procdef_info">
+            <column name="info_json_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-117">
+        <createIndex indexName="act_idx_suspended_job_exception" tableName="act_ru_suspended_job">
+            <column name="exception_stack_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-118">
+        <createIndex indexName="act_idx_suspended_job_execution_id" tableName="act_ru_suspended_job">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-119">
+        <createIndex indexName="act_idx_suspended_job_proc_def_id" tableName="act_ru_suspended_job">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-120">
+        <createIndex indexName="act_idx_suspended_job_process_instance_id" tableName="act_ru_suspended_job">
+            <column name="process_instance_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-121">
+        <createIndex indexName="act_idx_task_create" tableName="act_ru_task">
+            <column name="create_time_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-122">
+        <createIndex indexName="act_idx_task_exec" tableName="act_ru_task">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-123">
+        <createIndex indexName="act_idx_task_procdef" tableName="act_ru_task">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-124">
+        <createIndex indexName="act_idx_task_procinst" tableName="act_ru_task">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-125">
+        <createIndex indexName="act_idx_timer_job_exception" tableName="act_ru_timer_job">
+            <column name="exception_stack_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-126">
+        <createIndex indexName="act_idx_timer_job_execution_id" tableName="act_ru_timer_job">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-127">
+        <createIndex indexName="act_idx_timer_job_proc_def_id" tableName="act_ru_timer_job">
+            <column name="proc_def_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-128">
+        <createIndex indexName="act_idx_timer_job_process_instance_id" tableName="act_ru_timer_job">
+            <column name="process_instance_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-129">
+        <createIndex indexName="act_idx_tskass_task" tableName="act_ru_identitylink">
+            <column name="task_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-130">
+        <createIndex indexName="act_idx_var_bytearray" tableName="act_ru_variable">
+            <column name="bytearray_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-131">
+        <createIndex indexName="act_idx_var_exe" tableName="act_ru_variable">
+            <column name="execution_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-132">
+        <createIndex indexName="act_idx_var_procinst" tableName="act_ru_variable">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-133">
+        <createIndex indexName="act_idx_variable_task_id" tableName="act_ru_variable">
+            <column name="task_id_"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-134">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_identitylink" constraintName="act_fk_athrz_procedef" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-135">
+        <addForeignKeyConstraint baseColumnNames="deployment_id_" baseTableName="act_ge_bytearray" constraintName="act_fk_bytearr_depl" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_deployment"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-136">
+        <addForeignKeyConstraint baseColumnNames="exception_stack_id_" baseTableName="act_ru_deadletter_job" constraintName="act_fk_deadletter_job_exception" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-137">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_deadletter_job" constraintName="act_fk_deadletter_job_execution" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-138">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_deadletter_job" constraintName="act_fk_deadletter_job_proc_def" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-139">
+        <addForeignKeyConstraint baseColumnNames="process_instance_id_" baseTableName="act_ru_deadletter_job" constraintName="act_fk_deadletter_job_process_instance" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-140">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_event_subscr" constraintName="act_fk_event_exec" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-141">
+        <addForeignKeyConstraint baseColumnNames="parent_id_" baseTableName="act_ru_execution" constraintName="act_fk_exe_parent" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-142">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_execution" constraintName="act_fk_exe_procdef" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-143">
+        <addForeignKeyConstraint baseColumnNames="proc_inst_id_" baseTableName="act_ru_execution" constraintName="act_fk_exe_procinst" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-144">
+        <addForeignKeyConstraint baseColumnNames="super_exec_" baseTableName="act_ru_execution" constraintName="act_fk_exe_super" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-145">
+        <addForeignKeyConstraint baseColumnNames="proc_inst_id_" baseTableName="act_ru_identitylink" constraintName="act_fk_idl_procinst" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-146">
+        <addForeignKeyConstraint baseColumnNames="info_json_id_" baseTableName="act_procdef_info" constraintName="act_fk_info_json_ba" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-147">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_procdef_info" constraintName="act_fk_info_procdef" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-148">
+        <addForeignKeyConstraint baseColumnNames="exception_stack_id_" baseTableName="act_ru_job" constraintName="act_fk_job_exception" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-149">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_job" constraintName="act_fk_job_execution" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-150">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_job" constraintName="act_fk_job_proc_def" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-151">
+        <addForeignKeyConstraint baseColumnNames="process_instance_id_" baseTableName="act_ru_job" constraintName="act_fk_job_process_instance" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-152">
+        <addForeignKeyConstraint baseColumnNames="group_id_" baseTableName="act_id_membership" constraintName="act_fk_memb_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_id_group"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-153">
+        <addForeignKeyConstraint baseColumnNames="user_id_" baseTableName="act_id_membership" constraintName="act_fk_memb_user" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_id_user"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-154">
+        <addForeignKeyConstraint baseColumnNames="deployment_id_" baseTableName="act_re_model" constraintName="act_fk_model_deployment" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_deployment"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-155">
+        <addForeignKeyConstraint baseColumnNames="editor_source_value_id_" baseTableName="act_re_model" constraintName="act_fk_model_source" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-156">
+        <addForeignKeyConstraint baseColumnNames="editor_source_extra_value_id_" baseTableName="act_re_model" constraintName="act_fk_model_source_extra" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-157">
+        <addForeignKeyConstraint baseColumnNames="priv_id_" baseTableName="act_id_priv_mapping" constraintName="act_fk_priv_mapping" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_id_priv"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-158">
+        <addForeignKeyConstraint baseColumnNames="exception_stack_id_" baseTableName="act_ru_suspended_job" constraintName="act_fk_suspended_job_exception" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-159">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_suspended_job" constraintName="act_fk_suspended_job_execution" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-160">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_suspended_job" constraintName="act_fk_suspended_job_proc_def" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-161">
+        <addForeignKeyConstraint baseColumnNames="process_instance_id_" baseTableName="act_ru_suspended_job" constraintName="act_fk_suspended_job_process_instance" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-162">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_task" constraintName="act_fk_task_exe" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-163">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_task" constraintName="act_fk_task_procdef" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-164">
+        <addForeignKeyConstraint baseColumnNames="proc_inst_id_" baseTableName="act_ru_task" constraintName="act_fk_task_procinst" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-165">
+        <addForeignKeyConstraint baseColumnNames="exception_stack_id_" baseTableName="act_ru_timer_job" constraintName="act_fk_timer_job_exception" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-166">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_timer_job" constraintName="act_fk_timer_job_execution" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-167">
+        <addForeignKeyConstraint baseColumnNames="proc_def_id_" baseTableName="act_ru_timer_job" constraintName="act_fk_timer_job_proc_def" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_re_procdef"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-168">
+        <addForeignKeyConstraint baseColumnNames="process_instance_id_" baseTableName="act_ru_timer_job" constraintName="act_fk_timer_job_process_instance" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-169">
+        <addForeignKeyConstraint baseColumnNames="task_id_" baseTableName="act_ru_identitylink" constraintName="act_fk_tskass_task" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_task"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-170">
+        <addForeignKeyConstraint baseColumnNames="bytearray_id_" baseTableName="act_ru_variable" constraintName="act_fk_var_bytearray" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ge_bytearray"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-171">
+        <addForeignKeyConstraint baseColumnNames="execution_id_" baseTableName="act_ru_variable" constraintName="act_fk_var_exe" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+    <changeSet author="gijs (generated)" id="1489499362467-172">
+        <addForeignKeyConstraint baseColumnNames="proc_inst_id_" baseTableName="act_ru_variable" constraintName="act_fk_var_procinst" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_" referencedTableName="act_ru_execution"/>
+    </changeSet>
+
+    <changeSet author="gijs (generated)" id="1489499362467-173">
+        <loadData encoding="UTF-8"
+                  file="../act_ge_property.csv"
+                  relativeToChangelogFile="true"
+                  separator=";"
+                  tableName="act_ge_property"/>
+        <loadData encoding="UTF-8"
+                  file="../act_id_property.csv"
+                  relativeToChangelogFile="true"
+                  separator=";"
+                  tableName="act_id_property"/>
+    </changeSet>
+</databaseChangeLog>

@@ -7,13 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, Sanitizer } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-
 import { TranslateService } from 'ng2-translate';
 import { AlertService } from 'ng-jhipster';
-
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
@@ -21,6 +18,7 @@ import {
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 export function alertServiceProvider(sanitizer: Sanitizer, translateService: TranslateService) {
@@ -31,7 +29,8 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
 
 @NgModule({
     imports: [
-        PodiumGatewaySharedLibsModule
+        PodiumGatewaySharedLibsModule,
+        NgbModule
     ],
     declarations: [
         FindLanguageFromKeyPipe,

@@ -7,80 +7,62 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ParseLinks } from 'ng-jhipster';
-
 import { PodiumGatewaySharedModule } from '../shared';
-
 import {
-    adminState,
+    adminRoute,
     AuditsComponent,
-    UserMgmtComponent,
-    UserDialogComponent,
-    UserDeleteDialogComponent,
-    UserMgmtDetailComponent,
-    UserMgmtDialogComponent,
-    UserMgmtDeleteDialogComponent,
     LogsComponent,
-    JhiMetricsMonitoringModalComponent,
-    JhiMetricsMonitoringComponent,
-    JhiHealthModalComponent,
-    JhiHealthCheckComponent,
-    JhiConfigurationComponent,
-    JhiDocsComponent,
+    PdmMetricsMonitoringModalComponent,
+    PdmMetricsMonitoringComponent,
+    PdmHealthModalComponent,
+    PdmHealthCheckComponent,
+    PdmConfigurationComponent,
+    PdmDocsComponent,
     AuditsService,
-    JhiConfigurationService,
-    JhiHealthService,
-    JhiMetricsService,
+    PdmConfigurationService,
+    PdmHealthService,
+    PdmMetricsService,
     GatewayRoutesService,
-    JhiGatewayComponent,
-    LogsService,
-    UserResolvePagingParams,
-    UserResolve,
-    UserModalService
+    PdmGatewayComponent,
+    LogsService
 } from './';
-
+import { PdmElasticsearchComponent } from './elasticsearch/elasticsearch.component';
+import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-modal.component';
+import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(adminState, { useHash: true })
+        RouterModule.forChild(adminRoute)
     ],
     declarations: [
         AuditsComponent,
-        UserMgmtComponent,
-        UserDialogComponent,
-        UserDeleteDialogComponent,
-        UserMgmtDetailComponent,
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
         LogsComponent,
-        JhiConfigurationComponent,
-        JhiHealthCheckComponent,
-        JhiHealthModalComponent,
-        JhiDocsComponent,
-        JhiGatewayComponent,
-        JhiMetricsMonitoringComponent,
-        JhiMetricsMonitoringModalComponent
+        PdmConfigurationComponent,
+        PdmHealthCheckComponent,
+        PdmHealthModalComponent,
+        PdmDocsComponent,
+        PdmGatewayComponent,
+        PdmMetricsMonitoringComponent,
+        PdmMetricsMonitoringModalComponent,
+        PdmElasticsearchComponent,
+        PdmElasticsearchModalComponent
     ],
     entryComponents: [
-        UserMgmtDialogComponent,
-        UserMgmtDeleteDialogComponent,
-        JhiHealthModalComponent,
-        JhiMetricsMonitoringModalComponent,
+        PdmHealthModalComponent,
+        PdmElasticsearchModalComponent,
+        PdmMetricsMonitoringModalComponent,
     ],
     providers: [
         AuditsService,
-        JhiConfigurationService,
-        JhiHealthService,
-        JhiMetricsService,
+        PdmConfigurationService,
+        PdmHealthService,
+        PdmMetricsService,
         GatewayRoutesService,
         LogsService,
-        UserResolvePagingParams,
-        UserResolve,
-        UserModalService
+        PdmElasticsearchService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

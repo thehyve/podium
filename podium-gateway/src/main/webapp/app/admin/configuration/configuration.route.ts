@@ -7,16 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
-import { JhiConfigurationComponent } from './configuration.component';
+import { PdmConfigurationComponent } from './configuration.component';
 
 export const configurationRoute: Route = {
-  path: 'jhi-configuration',
-  component: JhiConfigurationComponent,
-  data: {
-    pageTitle: 'configuration.title'
-  }
+    path: 'pdm-configuration',
+    component: PdmConfigurationComponent,
+    data: {
+        pageTitle: 'configuration.title',
+        breadcrumb: 'configuration'
+    }
 };

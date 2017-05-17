@@ -7,18 +7,17 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { UserRouteAccessService } from '../shared';
 import { DashboardComponent } from './';
 
 export const dashboardRoute: Route = {
-  path: 'dashboard',
-  component: DashboardComponent,
-  data: {
-    authorities: [],
-    pageTitle: 'dashboard.title'
-  },
-  canActivate: [UserRouteAccessService]
+    path: 'dashboard',
+    component: DashboardComponent,
+    data: {
+        authorities: [],
+        pageTitle: 'dashboard.title',
+        breadcrumb: 'dashboard'
+    },
+    canActivate: [UserRouteAccessService]
 };

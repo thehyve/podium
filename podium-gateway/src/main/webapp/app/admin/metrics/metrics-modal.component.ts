@@ -7,15 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-    selector: 'jhi-metrics-modal',
+    selector: 'pdm-metrics-modal',
     templateUrl: './metrics-modal.component.html'
 })
-export class JhiMetricsMonitoringModalComponent implements OnInit {
+export class PdmMetricsMonitoringModalComponent implements OnInit {
 
     threadDumpFilter: any;
     threadDump: any;

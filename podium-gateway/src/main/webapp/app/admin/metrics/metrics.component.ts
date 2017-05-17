@@ -7,19 +7,17 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
-import { JhiMetricsMonitoringModalComponent } from './metrics-modal.component';
-import { JhiMetricsService } from './metrics.service';
+import { PdmMetricsMonitoringModalComponent } from './metrics-modal.component';
+import { PdmMetricsService } from './metrics.service';
 
 @Component({
-    selector: 'jhi-metrics',
+    selector: 'pdm-metrics',
     templateUrl: './metrics.component.html',
 })
-export class JhiMetricsMonitoringComponent implements OnInit {
+export class PdmMetricsMonitoringComponent implements OnInit {
     metrics: any = {};
     cachesStats: any = {};
     servicesStats: any = {};
@@ -29,7 +27,7 @@ export class JhiMetricsMonitoringComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
-        private metricsService: JhiMetricsService
+        private metricsService: PdmMetricsService
     ) {
         this.JCACHE_KEY = 'jcache.statistics';
         this.jhiLanguageService.setLocations(['metrics']);
@@ -71,7 +69,7 @@ export class JhiMetricsMonitoringComponent implements OnInit {
 
     refreshThreadDumpData () {
         this.metricsService.threadDump().subscribe((data) => {
-            const modalRef  = this.modalService.open(JhiMetricsMonitoringModalComponent, { size: 'lg'});
+            const modalRef  = this.modalService.open(PdmMetricsMonitoringModalComponent, { size: 'lg'});
             modalRef.componentInstance.threadDump = data;
             modalRef.result.then((result) => {
                 console.log(`Closed with: ${result}`);

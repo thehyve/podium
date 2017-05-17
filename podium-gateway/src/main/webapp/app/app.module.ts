@@ -1,59 +1,58 @@
-/*
- * Copyright (c) 2017. The Hyve and respective contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- *
- * See the file LICENSE in the root of this repository.
- *
- */
-
 import './vendor.ts';
-import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
-
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
-
-import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
-import { PodiumGatewayAdminModule } from './admin/admin.module';
-import { PodiumGatewayAccountModule } from './account/account.module';
-import { PodiumGatewayEntityModule } from './entities/entity.module';
-
-import { LayoutRoutingModule } from './layouts';
-import { HomeComponent } from './home';
-import { DashboardComponent } from './dashboard';
-
-import { customHttpProvider } from './blocks/interceptor/http.provider';
-import { PaginationConfig } from './blocks/config/uib-pagination.config';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {
-    JhiMainComponent,
+    LayoutRoutingModule,
+    PdmMainComponent,
     NavbarComponent,
     FooterComponent,
     ProfileService,
     PageRibbonComponent,
     ActiveMenuDirective,
-    ErrorComponent
+    ErrorComponent,
+    CompletedComponent
 } from './layouts';
+import { HomeComponent } from './home';
+import { DashboardComponent } from './dashboard';
+import { customHttpProvider } from './blocks/interceptor/http.provider';
+import { PaginationConfig } from './blocks/config/uib-pagination.config';
+import { TypeaheadModule } from 'ng2-bootstrap';
+import { OrganisationService } from './backoffice/modules/organisation/organisation.service';
+import { PodiumGatewayRequestModule } from './request/request.module';
+import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
+import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
+import { PodiumGatewayPodiumBackofficeModule } from './backoffice/podium/podium-backoffice.module';
+import { RoleService } from './shared/role/role.service';
+import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
+import { PodiumGatewayAdminModule } from './admin/admin.module';
+import { PodiumGatewayAccountModule } from './account/account.module';
+import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
 
 @NgModule({
     imports: [
+        NgbModule.forRoot(),
+        TypeaheadModule.forRoot(),
+        BreadcrumbsModule.forRoot(),
         BrowserModule,
         LayoutRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
-        PodiumGatewaySharedModule,
+        PodiumGatewaySharedModule.forRoot(),
         PodiumGatewayAdminModule,
+        PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
-        PodiumGatewayEntityModule
+        PodiumGatewayBbmriBackofficeModule,
+        PodiumGatewayOrganisationBackofficeModule,
+        PodiumGatewayPodiumBackofficeModule
     ],
     declarations: [
-        JhiMainComponent,
+        PdmMainComponent,
         HomeComponent,
         DashboardComponent,
         NavbarComponent,
         ErrorComponent,
+        CompletedComponent,
         PageRibbonComponent,
         ActiveMenuDirective,
         FooterComponent
@@ -64,8 +63,11 @@ import {
         { provide: Document, useValue: document },
         customHttpProvider(),
         PaginationConfig,
-        UserRouteAccessService
+        UserRouteAccessService,
+        OrganisationService,
+        RoleService
     ],
-    bootstrap: [ JhiMainComponent ]
+    bootstrap: [ PdmMainComponent ],
+    exports: [NgbModule]
 })
 export class PodiumGatewayAppModule {}

@@ -7,19 +7,16 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
-import { ProfileService } from '../profiles/profile.service'; // FIXME barrel doesnt work here
-import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from '../../shared';
-
+import { ProfileService } from '../profiles/profile.service';
+import { JhiLanguageHelper, Principal, LoginService } from '../../shared';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
 
 @Component({
-    selector: 'jhi-navbar',
+    selector: 'pdm-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: [
         'navbar.scss'
@@ -39,13 +36,12 @@ export class NavbarComponent implements OnInit {
         private languageHelper: JhiLanguageHelper,
         private languageService: JhiLanguageService,
         private principal: Principal,
-        private loginModalService: LoginModalService,
         private profileService: ProfileService,
         private router: Router
     ) {
         this.version = DEBUG_INFO_ENABLED ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
-        this.languageService.addLocation('home');
+        this.languageService.addLocation('global');
     }
 
     ngOnInit() {
@@ -72,7 +68,7 @@ export class NavbarComponent implements OnInit {
     }
 
     login() {
-        this.modalRef = this.loginModalService.open();
+        this.router.navigate(['']);
     }
 
     logout() {

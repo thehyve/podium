@@ -7,14 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import {ComponentFixture, TestBed, async} from '@angular/core/testing';
-
-import {By}              from '@angular/platform-browser';
-import {DebugElement}    from '@angular/core';
-
-import {SpecialismComponent} from '../../../../../../main/webapp/app/shared/specialism/specialism.component';
-import {FormsModule} from '@angular/forms';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
+import { SpecialismComponent } from '../../../../../../main/webapp/app/shared/specialism/specialism.component';
+import { FormsModule } from '@angular/forms';
 
 describe('SpecialismComponent (templateUrl)', () => {
 
@@ -28,17 +24,17 @@ describe('SpecialismComponent (templateUrl)', () => {
         TestBed.configureTestingModule({
             imports: [ FormsModule ],
             declarations: [SpecialismComponent], // declare the test component
-        }).compileComponents(); // compile template and css;
+        }).overrideComponent(SpecialismComponent, {
+            set: {
+                template: ''
+            }
+        }).compileComponents();
     }));
 
     // synchronous beforeEach
     beforeEach(() => {
         fixture = TestBed.createComponent(SpecialismComponent);
         comp = fixture.componentInstance; // SpecialismComponent test instance
-
-        // query for the title <input> by CSS element selector
-        de = fixture.debugElement.query(By.css('select'));
-        el = de.nativeElement;
     });
 
     it('should not select anything when it is instantiated', () => {

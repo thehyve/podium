@@ -4,29 +4,42 @@
 # This configuration will be overriden by the Spring profile you use,
 # for example application-dev.yml if you use the "dev" profile.
 #
-# More information on profiles: https://podium.github.io/profiles/
-# More information on configuration properties: https://podium.github.io/common-application-properties/
-# ===================================================================
-
-# ===================================================================
 # Standard Spring Boot properties.
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
 eureka:
+    client:
+        enabled: true
+        healthcheck:
+            enabled: true
+        register-with-eureka: true
+        fetch-registry: true
+        instance-info-replication-interval-seconds: 10
+        registry-fetch-interval-seconds: 10
     instance:
         appname: podiumGateway
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
-        statusPageUrlPath: ${management.context-path}/info
-        healthCheckUrlPath: ${management.context-path}/health
+        lease-renewal-interval-in-seconds: 5
+        lease-expiration-duration-in-seconds: 10
+        status-page-url-path: ${management.context-path}/info
+        health-check-url-path: ${management.context-path}/health
+        metadata-map:
+            profile: ${spring.profiles.active}
+            version: ${info.project.version}
+
 ribbon:
     eureka:
         enabled: true
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
+
 zuul:
     host:
-        connect-timeout-millis: 5000
-        socket-timeout-millis: 10000
+        max-total-connections: 1000
+        max-per-route-connections: 100
+    semaphore:
+        max-semaphores: 500
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
@@ -39,6 +52,8 @@ hystrix:
 
 management:
     context-path: /management
+    security:
+        roles: ADMIN
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -61,15 +76,33 @@ spring:
             enabled: false
     thymeleaf:
         mode: XHTML
+    security:
+        client-authorization:
+            access-token-uri: http://podiumuaa/oauth/token
+            token-service-id: podiumuaa
+            client-id: internal
+            client-secret: internal
+    data:
+        elasticsearch:
+            properties:
+                cluster.routing.allocation.disk.watermark.high: 99%
 
 security:
     basic:
         enabled: false
+    oauth2:
+        resource:
+            filter-order: 3
 
 server:
     session:
         cookie:
             http-only: true
+
+hazelcast:
+    phone:
+        home:
+            enabled: false
 
 # ===================================================================
 # Podium specific properties

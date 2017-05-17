@@ -32,9 +32,7 @@
     </appender>
 -->
 
-    <logger name="org.bbmri.podium" level="#logback.loglevel#"/>
-
-    <logger name="org.bbmri.podium" level="DEBUG"/>
+    <logger name="nl.thehyve.podium" level="#logback.loglevel#"/>
 
     <logger name="javax.activation" level="WARN"/>
     <logger name="javax.mail" level="WARN"/>
@@ -66,12 +64,27 @@
     <logger name="liquibase" level="WARN"/>
     <logger name="LiquibaseSchemaResolver" level="INFO"/>
     <logger name="sun.rmi.transport" level="WARN"/>
+    <logger name="org.flowable.engine" level="WARN"/>
+    <logger name="org.flowable.engine.impl" level="WARN"/>
+    <logger name="org.flowable.engine.impl.db" level="WARN"/>
+    <logger name="org.flowable.engine.impl.interceptor" level="WARN"/>
+    <logger name="org.flowable.spring.SpringTransactionInterceptor" level="WARN" />
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
 
-    <root level="#logback.loglevel#">
+    <springProfile name="dev">
+        <property name="default_level" value="DEBUG" />
+    </springProfile>
+    <springProfile name="test">
+        <property name="default_level" value="WARN" />
+    </springProfile>
+    <springProfile name="!dev">
+        <property name="default_level" value="INFO" />
+    </springProfile>
+    <logger name="nl.thehyve.podium" level="${default_level}"/>
+    <root level="${default_level}">
         <appender-ref ref="CONSOLE"/>
     </root>
 

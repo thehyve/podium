@@ -8,13 +8,19 @@
                 "search": "Search for organisation"
             },
             "delete": {
-                "question": "Are you sure you want to delete organisation {{ id }}?"
+                "question": "Are you sure you want to delete organisation {{ name }}?"
             },
             "detail": {
                 "title": "Organisation"
             },
             "name": "Name",
-            "shortName": "Short name"
+            "shortName": "Short name",
+            "activated": "Activated",
+            "deactivated": "Deactivated",
+            "organisationAdminInactive":
+                "Your organisation requires all fields to be filled in and has a user assigned for each of the roles.<br />Contact the BBMRI admin to validate your organisation.",
+            "saved": "Successfully saved organisation",
+            "updated": "Successfully updated organisation"
         }
     },
     "podiumuaaApp": {

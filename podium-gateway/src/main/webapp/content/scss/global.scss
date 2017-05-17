@@ -13,6 +13,10 @@
 Bootstrap tweaks
 ===============================================================*/
 
+html, body {
+    background-color: #f5f5f5;
+}
+
 body, h1, h2, h3, h4 {
     font-weight: 300;
 }
@@ -43,10 +47,18 @@ Generic styles
 
 /* other generic styles */
 
-.card {
+.card-wrapper {
     padding: 1.5%;
     margin-top: 20px;
     border: none;
+    background-color: transparent;
+}
+
+.card-container {
+    background-color: rgb(250, 250, 250);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    z-index: 0;
 }
 
 .error {
@@ -276,6 +288,34 @@ http://google.github.io/material-design-icons/
 
     /* Support for IE. */
     font-feature-settings: 'liga';
+
+    &.md-18 {
+        font-size: 18px;
+    }
+
+    &.md-36 {
+        font-size: 36px;
+    }
+
+    &.md-48 {
+        font-size: 48px;
+    }
+}
+
+/* ==========================================================================
+Breadcrumb bar
+========================================================================== */
+.breadcrumb {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    text-transform: uppercase;
+    padding: 1em 0 1em 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.098);
+    box-shadow: rgba(255, 255, 255, 0.70) 0 1px 0 0;
+    background-color: rgba(0, 0, 0, 0.020);
+    text-shadow: rgba(255, 255, 255, 0.55) 0 1px 0;
 }
 
 /* ==========================================================================
@@ -285,4 +325,82 @@ Additional classes
     display: none !important;
 }
 
-/* jhipster-needle-scss-add-main JHipster will add new css style */
+form {
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    h3:not(:first-child) {
+        margin: 60px 0 15px 0;
+    }
+
+    input, textarea {
+        font-size: 14px!important;
+    }
+
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        background-color: #fafafa;
+        border: 1px solid #cacece;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+        padding: 9px;
+        border-radius: 3px;
+        display: inline-block;
+        position: relative;
+        margin: 2px 15px 0 0;
+        vertical-align: top;
+
+        +label {
+            font-weight: 600;
+        }
+
+        &:active, &:checked:active {
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1)
+        }
+
+        &:checked {
+            background-color: #e9ecee;
+            border: 1px solid #adb8c0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+            color: #99a1a7;
+        }
+
+        &:focus {
+            outline: none;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &:checked:after {
+            content: '\2713';
+            line-height: 18px;
+            font-size: 16px;
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: #99a1a7;
+        }
+
+    }
+
+    .checkbox-group {
+        margin-left: 25px;
+    }
+}
+
+typeahead-container {
+    width: 300px !important;
+
+    ul.dropdown-menu {
+        padding: 10px!important;
+        font-size: 14px!important;
+    }
+}
+
+.alert {
+    border-radius: 0 !important;
+}
+

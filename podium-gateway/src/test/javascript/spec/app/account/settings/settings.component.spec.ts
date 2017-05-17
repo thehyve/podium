@@ -7,16 +7,13 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { JhiLanguageService } from 'ng-jhipster';
-
-import { JhiLanguageHelper } from '../../../../../../main/webapp/app/shared';
+import { JhiLanguageHelper, Principal, AccountService } from '../../../../../../main/webapp/app/shared';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { Principal, AccountService } from '../../../../../../main/webapp/app/shared';
 import { SettingsComponent } from '../../../../../../main/webapp/app/account/settings/settings.component';
 import { MockAccountService } from '../../../helpers/mock-account.service';
 import { MockPrincipal } from '../../../helpers/mock-principal.service';
@@ -28,8 +25,8 @@ describe('Component Tests', () => {
 
         let comp: SettingsComponent;
         let fixture: ComponentFixture<SettingsComponent>;
-        let mockAuth: MockAccountService;
-        let mockPrincipal: MockPrincipal;
+        let mockAuth: any;
+        let mockPrincipal: any;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({

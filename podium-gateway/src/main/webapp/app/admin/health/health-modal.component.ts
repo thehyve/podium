@@ -7,21 +7,19 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { JhiHealthService } from './health.service';
+import { PdmHealthService } from './health.service';
 
 @Component({
-    selector: 'jhi-health-modal',
+    selector: 'pdm-health-modal',
     templateUrl: './health-modal.component.html'
 })
-export class JhiHealthModalComponent {
+export class PdmHealthModalComponent {
 
     currentHealth: any;
 
-    constructor(private healthService: JhiHealthService, public activeModal: NgbActiveModal) {}
+    constructor(private healthService: PdmHealthService, public activeModal: NgbActiveModal) {}
 
     baseName(name) {
         return this.healthService.getBaseName(name);

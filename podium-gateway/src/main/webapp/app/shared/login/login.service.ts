@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { Principal } from '../auth/principal.service';
 import { AuthServerProvider } from '../auth/auth-jwt.service';
 

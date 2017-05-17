@@ -7,19 +7,17 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { GatewayRoutesService } from './gateway-routes.service';
 import { GatewayRoute } from './gateway-route.model';
 
 @Component({
-    selector: 'jhi-gateway',
+    selector: 'pdm-gateway',
     templateUrl: './gateway.component.html',
     providers: [ GatewayRoutesService ]
 })
-export class JhiGatewayComponent implements OnInit {
+export class PdmGatewayComponent implements OnInit {
 
     gatewayRoutes: GatewayRoute[];
     updatingRoutes: Boolean;

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2017  The Hyve and respective contributors.
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ See the file LICENSE in the root of this repository.
+  -->
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://thehyve.nl/podium">
+    <process id="podium_request_review_001" isExecutable="true" name="Podium request review">
+        <documentation>Definition for the request review process.</documentation>
+        <documentation><![CDATA[
+                    Reject
+               +-----------------------------------------------+
+               |                                               |
+ Submit  +-----+------+        +------------+  Approve  +------v-----+
+---------> Validation +-------->   Review   +----------->   Closed   |
+         +-^--------+-+        +-----+------+  Reject   +------------+
+           |        | Revise         |
+  Resubmit |        |                | Revise
+         +-+--------v-+              |
+         |  Revision  <--------------+
+         +------------+
+        ]]></documentation>
+
+
+
+        <!-- Start -->
+        <startEvent id="start" name="Start" flowable:initiator="initiator">
+            <documentation>Start the reviewing process for a request.</documentation>
+        </startEvent>
+
+        <sequenceFlow id="from_start_to_init" sourceRef="start" targetRef="init" />
+
+        <scriptTask id="init" name="Initialise the reviewing process" scriptFormat="groovy">
+            <documentation>Initialise the reviewing process.</documentation>
+            <script>
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.None)
+                execution.setVariable("initiator_id", "${initiator}")
+                execution.setVariable("date_created", new Date())
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="from_init_to_status_validation" sourceRef="init" targetRef="status_validation" />
+
+
+
+        <!-- Validation -->
+        <scriptTask id="status_validation" name="Update status to Validation" scriptFormat="groovy">
+            <documentation>Update status to Validation.</documentation>
+            <script>
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Validation)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="from_status_validation_to_validation" sourceRef="status_validation" targetRef="validation" />
+
+        <userTask id="validation" name="Validation">
+            <documentation>First check by the organisation coordinator.</documentation>
+        </userTask>
+
+        <sequenceFlow id="from_validation_to_validation_decision" sourceRef="validation" targetRef="validation_decision" />
+
+
+
+        <!-- Validation decision
+            Choice between:
+            - 'review' if validation_passed;
+            - 'revision' if !validation_passed && request_revision;
+            - 'reject' if !validation_passed && !request_revision.
+        -->
+        <exclusiveGateway id="validation_decision" name="Review of revision or reject" />
+        <sequenceFlow id="validation_to_review" sourceRef="validation_decision" targetRef="status_review">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${validation_passed == true}
+            ]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="validation_to_revision" sourceRef="validation_decision" targetRef="status_revision">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${validation_passed == false && request_revision == true}
+            ]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="validation_to_reject" sourceRef="validation_decision" targetRef="reject">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${validation_passed == false && request_revision == false}
+            ]]></conditionExpression>
+        </sequenceFlow>
+
+
+
+        <!-- Revision -->
+        <scriptTask id="status_revision" name="Update status to Revision" scriptFormat="groovy">
+            <documentation>Update status to Revision.</documentation>
+            <script>
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Revision)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="from_status_revision_to_revision" sourceRef="status_revision" targetRef="revision" />
+
+        <userTask id="revision" name="Revision">
+            <documentation>Revision of the request by the requester.</documentation>
+        </userTask>
+
+        <sequenceFlow id="from_revision_to_status_validation" sourceRef="revision" targetRef="status_validation" />
+
+
+
+        <!-- Review -->
+        <scriptTask id="status_review" name="Update status to Review" scriptFormat="groovy">
+            <documentation>Update status.</documentation>
+            <script>
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Review)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="from_status_review_to_review" sourceRef="status_review" targetRef="review" />
+
+        <userTask id="review" name="Review">
+            <documentation>Review by the organisation reviewers.</documentation>
+        </userTask>
+
+        <sequenceFlow id="from_review_to_review_decision" sourceRef="review" targetRef="review_decision" />
+
+
+
+        <!-- Review decision
+            Choice between:
+            - 'approve' if request_approved;
+            - 'revision' if !request_approved && request_revision;
+            - 'reject' if !request_approved && !request_revision.
+        -->
+        <exclusiveGateway id="review_decision" name="Review of revision or reject" />
+        <sequenceFlow id="review_to_approve" sourceRef="review_decision" targetRef="approve">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${request_approved == true}
+            ]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="review_to_revision" sourceRef="review_decision" targetRef="status_revision">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${request_approved == false && request_revision == true}
+            ]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="review_to_reject" sourceRef="review_decision" targetRef="reject">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${request_approved == false && request_revision == false}
+            ]]></conditionExpression>
+        </sequenceFlow>
+
+
+
+        <!-- Approve -->
+        <scriptTask id="approve" name="Approve the request" scriptFormat="groovy">
+            <documentation>Approve the request.</documentation>
+            <script>
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.Approved)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Closed)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="approve_to_end" sourceRef="approve" targetRef="end" />
+
+
+
+        <!-- Approve -->
+        <scriptTask id="reject" name="Reject the request" scriptFormat="groovy">
+            <documentation>Reject the request.</documentation>
+            <script>
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.Rejected)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Closed)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="reject_to_end" sourceRef="reject" targetRef="end" />
+
+
+
+        <!-- End -->
+        <endEvent id="end" name="End">
+            <documentation>End of the reviewing process.</documentation>
+        </endEvent>
+
+    </process>
+</definitions>

@@ -14,13 +14,8 @@ eureka:
     instance:
         prefer-ip-address: true
     client:
-        enabled: true
-        healthcheck:
-            enabled: true
-        registerWithEureka: true
-        fetchRegistry: true
-        serviceUrl:
-            defaultZone: http://admin:admin@localhost:8761/eureka/
+        service-url:
+            defaultZone: http://admin:${podium.registry.password}@localhost:8761/eureka/
 
 spring:
     devtools:
@@ -35,7 +30,7 @@ spring:
         username: podiumUser
         password: podiumUser
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
+        database-platform: nl.thehyve.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         show-sql: false
         properties:

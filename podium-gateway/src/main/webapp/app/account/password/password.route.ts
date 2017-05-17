@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { UserRouteAccessService } from '../../shared';
 import { PasswordComponent } from './password.component';
 
@@ -25,7 +23,8 @@ export const passwordRoute: Route = {
         'ROLE_REVIEWER',
         'ROLE_RESEARCHER'
       ],
-      pageTitle: 'global.menu.account.password'
+      pageTitle: 'global.menu.account.password',
+      breadcrumb: 'change password'
   },
   canActivate: [UserRouteAccessService]
 };

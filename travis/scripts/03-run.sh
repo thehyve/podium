@@ -49,15 +49,14 @@ launchCurlOrProtractor() {
 # Package UAA
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-uaa
-mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
+mvn -q "$MAVEN_OPTS" package -DskipTests -P"$PROFILE"
 mv target/*.war podium-uaa.war
-
 
 #-------------------------------------------------------------------------------
 # Package gateway
 #-------------------------------------------------------------------------------
 cd "$PODIUM_BASE"/podium-gateway
-mvn -q "$MAVEN_OPTS" package -DskipTests=true -P"$PROFILE"
+mvn -q "$MAVEN_OPTS" package -DskipTests -P"$PROFILE"
 mv target/*.war podium-gateway.war
 
 if [ $? -ne 0 ]; then
@@ -71,16 +70,13 @@ fi
 if [ "$RUN_PODIUM" == 1 ]; then
     cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
-        --spring.profiles.active="$PROFILE" \
-        --logging.level.org.bbmri.podium.sample=ERROR \
-        --logging.level.org.bbmri.podium.travis=ERROR &
+        --server.port="$PODIUM_UAA_RUN_PORT" \
+        --spring.profiles.active="$PROFILE",test &
     sleep 80
 
     cd "$PODIUM_BASE"/podium-gateway
     java -jar podium-gateway.war \
-        --spring.profiles.active="$PROFILE" \
-        --logging.level.org.bbmri.podium.sample=ERROR \
-        --logging.level.org.bbmri.podium.travis=ERROR &
+        --spring.profiles.active="$PROFILE",test &
     sleep 40
 
     #-------------------------------------------------------------------------------

@@ -1,0 +1,25 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="progressbar-container" *ngIf="request">
+    <ul class="progressbar">
+        <li [ngClass]="{
+                'completed': isCompleted(request, requestStatus.order),
+                'active': isActive(request, requestStatus.order),
+                'closed': isClosed(request)
+            }"
+            *ngFor="let requestStatus of requestStatusOptions">
+            <span [ngSwitch]="isRevisionStatus(request) && requestStatus.name == 'Validation'">
+                <span *ngSwitchCase="true" jhiTranslate="requestStatus.Revision">{{ requestStatus.name }}</span>
+                <span *ngSwitchCase="false" jhiTranslate="requestStatus.{{requestStatus.status}}">{{ requestStatus.name }}</span>
+            </span>
+        </li>
+    </ul>
+</div>

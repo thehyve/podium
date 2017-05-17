@@ -7,45 +7,34 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Directive, ElementRef, Input, Renderer, OnInit } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Principal } from './principal.service';
 
 @Directive({
-    selector: '[jhiHasAnyAuthority]'
+    selector: '[pdmHasAnyAuthority]'
 })
-export class HasAnyAuthorityDirective implements OnInit {
+export class HasAnyAuthorityDirective {
+    private authorities: string[];
 
-    @Input() jhiHasAnyAuthority: string;
-    authority: string[];
+    constructor(
+        private principal: Principal,
+        private templateRef: TemplateRef<any>,
+        private viewContainerRef: ViewContainerRef
+    ) {}
 
-    constructor(private principal: Principal, private el: ElementRef, private renderer: Renderer) {
+    @Input() set pdmHasAnyAuthority(value: string|string[]) {
+        this.authorities = typeof value === 'string' ? [ <string> value ] : <string[]> value;
+        this.updateView();
+        // Get notified each time authentication state changes.
+        this.principal.getAuthenticationState().subscribe(identity => this.updateView());
     }
 
-    ngOnInit() {
-        this.authority = this.jhiHasAnyAuthority.replace(/\s+/g, '').split(',');
-
-        if (this.authority.length > 0) {
-            this.setVisibilitySync();
-        }
-        this.principal.getAuthenticationState().subscribe(identity => this.setVisibilitySync());
-    }
-
-    private setVisible () {
-        this.renderer.setElementClass(this.el.nativeElement, 'hidden', false);
-    }
-
-    private setHidden () {
-        this.renderer.setElementClass(this.el.nativeElement, 'hidden', true);
-    }
-
-    private setVisibilitySync () {
-
-        let result = this.principal.hasAnyAuthority(this.authority);
-        if (result) {
-            this.setVisible();
-        } else {
-            this.setHidden();
-        }
+    private updateView(): void {
+        this.principal.hasAnyAuthority(this.authorities).then(result => {
+            this.viewContainerRef.clear();
+            if (result) {
+                this.viewContainerRef.createEmbeddedView(this.templateRef);
+            }
+        });
     }
 }

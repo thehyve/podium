@@ -7,26 +7,24 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
-import { JhiHealthService } from './health.service';
-import { JhiHealthModalComponent } from './health-modal.component';
+import { PdmHealthService } from './health.service';
+import { PdmHealthModalComponent } from './health-modal.component';
 
 @Component({
-    selector: 'jhi-health',
+    selector: 'pdm-health',
     templateUrl: './health.component.html',
 })
-export class JhiHealthCheckComponent implements OnInit {
+export class PdmHealthCheckComponent implements OnInit {
     healthData: any;
     updatingHealth: boolean;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
-        private healthService: JhiHealthService
+        private healthService: PdmHealthService
     ) {
         this.jhiLanguageService.setLocations(['health']);
 
@@ -58,7 +56,7 @@ export class JhiHealthCheckComponent implements OnInit {
     }
 
     showHealth(health: any) {
-        const modalRef  = this.modalService.open(JhiHealthModalComponent);
+        const modalRef  = this.modalService.open(PdmHealthModalComponent);
         modalRef.componentInstance.currentHealth = health;
         modalRef.result.then((result) => {
             console.log(`Closed with: ${result}`);

@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { UserRouteAccessService } from '../../shared';
 import { SettingsComponent } from './settings.component';
 
@@ -25,7 +23,8 @@ export const settingsRoute: Route = {
         'ROLE_REVIEWER',
         'ROLE_RESEARCHER'
       ],
-      pageTitle: 'global.menu.account.settings'
+      pageTitle: 'global.menu.account.settings',
+      breadcrumb: 'profile settings'
   },
   canActivate: [UserRouteAccessService]
 };

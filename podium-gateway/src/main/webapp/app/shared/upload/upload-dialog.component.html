@@ -1,0 +1,123 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+            (click)="clear()">&times;</button>
+    <h4 class="modal-title" id="uploadLabel" jhiTranslate="upload.dialog.header">Upload management</h4>
+</div>
+<div class="modal-body">
+    <jhi-alert-error></jhi-alert-error>
+
+    <div class="form-group">
+        <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="50%">Name</th>
+                    <th>Size</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of uploader.queue">
+                    <td><strong>{{ item?.file?.name }}</strong></td>
+                    <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                    <td *ngIf="uploader.isHTML5">
+                        <div class="progress" style="margin-bottom: 0;">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span *ngIf="item.isSuccess">
+                            <i class="material-icons">done</i>
+                        </span>
+                        <span *ngIf="item.isCancel">
+                            <i class="material-icons">cancel</i>
+                        </span>
+                        <span *ngIf="item.isError">
+                            <i class="material-icons">error_outline</i>
+                        </span>
+                    </td>
+                    <td nowrap>
+                        <button type="button" class="btn btn-success btn-sm"
+                                (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                            <i class="material-icons">cloud_upload</i>
+                            <span jhiTranslate="upload.dialog.action.upload">Upload</span>
+                        </button>
+                        <button type="button" class="btn btn-warning btn-sm"
+                                (click)="item.cancel()" [disabled]="!item.isUploading">
+                            <i class="material-icons">cancel</i>
+                            <span jhiTranslate="upload.dialog.action.cancel">Cancel</span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm"
+                                (click)="item.remove()">
+                            <i class="material-icons">remove_circle_outline</i>
+                            <span jhiTranslate="upload.dialog.action.remove">Remove</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <div class="card">
+                            <div ng2FileDrop
+                                 [ngClass]="{'upload-dropzone-hover': hasDropzoneOver}"
+                                 (fileOver)="fileOverDropzone($event)"
+                                 [uploader]="uploader"
+                                 class="card-block upload-drop-zone">
+                                Drop file(s) here
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div>
+        <div>
+            Queue progress:
+            <div class="progress" style="">
+                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-success btn-sm"
+                (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+            <i class="material-icons">cloud_upload</i>
+            <span jhiTranslate="upload.dialog.action.uploadAll">Upload all</span>
+        </button>
+        <button type="button" class="btn btn-warning btn-sm"
+                (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+            <i class="material-icons">cancel</i>
+            <span jhiTranslate="upload.dialog.action.cancelAll">Cancel all</span>
+        </button>
+        <button type="button" class="btn btn-danger btn-sm"
+                (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+            <i class="material-icons">remove_circle_outline</i>
+            <span jhiTranslate="upload.dialog.action.removeAll">Remove all</span>
+        </button>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+        <span class="material-icons">cancel</span>&nbsp;
+        <span jhiTranslate="upload.dialog.action.cancel">Cancel</span>
+    </button>
+    <button type="submit" [disabled]="isUploading || hasUploadedFiles" (click)="confirm()" class="btn btn-primary">
+        <span class="material-icons">save</span>&nbsp;
+        <span jhiTranslate="upload.dialog.action.confirm">Confirm</span>
+    </button>
+</div>

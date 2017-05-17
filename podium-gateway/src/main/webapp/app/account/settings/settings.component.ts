@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
 
 @Component({
@@ -62,6 +60,11 @@ export class SettingsComponent implements OnInit {
     copyAccount (account) {
         return {
             activated: account.activated,
+            specialism: account.specialism,
+            jobTitle: account.jobTitle,
+            department: account.department,
+            institute: account.institute,
+            telephone: account.telephone,
             email: account.email,
             firstName: account.firstName,
             langKey: account.langKey,

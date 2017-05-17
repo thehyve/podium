@@ -7,22 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Routes, CanActivate } from '@angular/router';
-
-import {
-    auditsRoute,
-    configurationRoute,
-    docsRoute,
-    healthRoute,
-    logsRoute,
-    metricsRoute,
-    gatewayRoute,
-    userMgmtRoute,
-    userDialogRoute
-} from './';
-
+import { Routes } from '@angular/router';
+import { auditsRoute, configurationRoute, docsRoute, healthRoute, logsRoute, metricsRoute, gatewayRoute } from './';
 import { UserRouteAccessService } from '../shared';
+import { elasticsearchRoute } from './elasticsearch/elasticsearch.route';
 
 let ADMIN_ROUTES = [
     auditsRoute,
@@ -31,18 +19,16 @@ let ADMIN_ROUTES = [
     healthRoute,
     logsRoute,
     gatewayRoute,
-    ...userMgmtRoute,
-    metricsRoute
+    metricsRoute,
+    elasticsearchRoute
 ];
 
-
-export const adminState: Routes = [{
-    path: '',
+export const adminRoute: Routes = [{
+    path: 'admin',
     data: {
-        authorities: ['ROLE_PODIUM_ADMIN']
+        authorities: ['ROLE_PODIUM_ADMIN'],
+        breadcrumb: 'admin'
     },
     canActivate: [UserRouteAccessService],
     children: ADMIN_ROUTES
-},
-    ...userDialogRoute
-];
+}];

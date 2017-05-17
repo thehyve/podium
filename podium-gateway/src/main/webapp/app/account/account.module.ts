@@ -7,34 +7,32 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { PodiumGatewaySharedModule } from '../shared';
 import {
     Register,
-    Activate,
     Password,
     PasswordResetInit,
     PasswordResetFinish,
     PasswordStrengthBarComponent,
     RegisterComponent,
-    ActivateComponent,
     PasswordComponent,
     PasswordResetInitComponent,
     PasswordResetFinishComponent,
     SettingsComponent,
+    VerifyComponent,
+    Verify,
     accountState
 } from './';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
-        RouterModule.forRoot(accountState, { useHash: true })
+        RouterModule.forChild(accountState)
     ],
     declarations: [
-        ActivateComponent,
+        VerifyComponent,
         RegisterComponent,
         PasswordComponent,
         PasswordStrengthBarComponent,
@@ -44,7 +42,7 @@ import {
     ],
     providers: [
         Register,
-        Activate,
+        Verify,
         Password,
         PasswordResetInit,
         PasswordResetFinish

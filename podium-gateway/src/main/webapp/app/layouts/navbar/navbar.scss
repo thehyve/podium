@@ -12,15 +12,19 @@
 /* ==========================================================================
 Navbar
 ========================================================================== */
+
+$link-color: #ccc;
+
 .navbar-version {
     font-size: 10px;
-    color: #ccc
+    color: $link-color;
 }
 
 .jh-navbar {
     background-color: #353d47;
     padding: .2em 1em;
     border-radius: 0;
+
     .profile-image {
         margin: -10px 0px;
         height: 40px;
@@ -38,10 +42,20 @@ Navbar
         .nav-item+.nav-item {
             margin-left: 1.5rem;
         }
+
+        .nav-item > * {
+            color: $link-color;
+        }
+
+        .nav-item .material-icons {
+            margin-right: 7px;
+        }
     }
+
     a.nav-link {
         font-weight: 400;
     }
+
     .jh-navbar-toggler {
         color: #ccc;
         font-size: 1.5em;
@@ -61,6 +75,7 @@ Navbar
 .navbar-title {
     display: inline-block;
     vertical-align: middle;
+    color: $link-color;
 }
 
 /* ==========================================================================
@@ -74,7 +89,7 @@ Logo styles
             width: 70px;
             display: inline-block;
             vertical-align: middle;
-            background: url("../../../content/images/logo-jhipster.png") no-repeat center center;
+            background: url("../../../content/images/bbmri-logo-image.png") no-repeat center center;
             background-size: contain;
         }
     }

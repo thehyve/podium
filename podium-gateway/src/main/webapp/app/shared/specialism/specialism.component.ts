@@ -7,8 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
     selector: 'podium-specialism',
@@ -39,29 +38,36 @@ export class SpecialismComponent implements OnInit {
         this.specialismChange.emit(this.specialism);
     }
 
+    ngAfterContentInit() {
+        let foundSpecialism = this.specialismOptions.find(item => item.value === this.specialismValue);
+        if (foundSpecialism === undefined) {
+            this.selectedSpecialism = 'Other';
+        }
+    }
+
     ngOnInit() {
         this.selectedSpecialism = this.specialism;
         this.specialismOptions = [
-            { value: '', display: '-- Please select specialism --' },
-            { value: 'Gastroenterology', display: 'Gastroenterology'},
-            { value: 'Gynaecology', display: 'Gynaecology'},
-            { value: 'Dermatology', display: 'Dermatology'},
-            { value: 'Medical Oncology', display: 'Medical Oncology'},
-            { value: 'Internal Medicine', display: 'Internal Medicine'},
-            { value: 'Radiology', display: 'Radiology'},
-            { value: 'Radiotherapy', display: 'Radiotherapy'},
-            { value: 'Haematology', display: 'Haematology'},
-            { value: 'Throat-nose-ear', display: 'Throat-nose-ear'},
-            { value: 'Surgery', display: 'Surgery'},
-            { value: 'Epidemiology', display: 'Epidemiology'},
-            { value: 'Primary care', display: 'Primary care'},
-            { value: 'Cardiology', display: 'Cardiology'},
-            { value: 'Pathology', display: 'Pathology'},
-            { value: 'Lung Disease', display: 'Lung Disease'},
-            { value: 'Urology', display: 'Urology'},
-            { value: 'Neurology', display: 'Neurology'},
-            { value: 'Endocrinology', display: 'Endocrinology'},
-            { value: 'Other', display: '-- Other --'}
+            {value: '', display: '-- Please select specialism --'},
+            {value: 'Gastroenterology', display: 'Gastroenterology'},
+            {value: 'Gynaecology', display: 'Gynaecology'},
+            {value: 'Dermatology', display: 'Dermatology'},
+            {value: 'Medical Oncology', display: 'Medical Oncology'},
+            {value: 'Internal Medicine', display: 'Internal Medicine'},
+            {value: 'Radiology', display: 'Radiology'},
+            {value: 'Radiotherapy', display: 'Radiotherapy'},
+            {value: 'Haematology', display: 'Haematology'},
+            {value: 'Throat-nose-ear', display: 'Throat-nose-ear'},
+            {value: 'Surgery', display: 'Surgery'},
+            {value: 'Epidemiology', display: 'Epidemiology'},
+            {value: 'Primary care', display: 'Primary care'},
+            {value: 'Cardiology', display: 'Cardiology'},
+            {value: 'Pathology', display: 'Pathology'},
+            {value: 'Lung Disease', display: 'Lung Disease'},
+            {value: 'Urology', display: 'Urology'},
+            {value: 'Neurology', display: 'Neurology'},
+            {value: 'Endocrinology', display: 'Endocrinology'},
+            {value: 'Other', display: '-- Other --'}
         ];
     }
 

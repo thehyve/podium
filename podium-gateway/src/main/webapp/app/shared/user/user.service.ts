@@ -7,16 +7,16 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
+import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-
 import { User } from './user.model';
 
 @Injectable()
 export class UserService {
     private resourceUrl = 'podiumuaa/api/users';
+    private resourceSearchUrl = 'podiumuaa/api/_search/users';
+    private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
 
     constructor(private http: Http) { }
 
@@ -26,6 +26,10 @@ export class UserService {
 
     update(user: User): Observable<Response> {
         return this.http.put(this.resourceUrl, user);
+    }
+
+    unlock(user: User): Observable<Response> {
+        return this.http.put(`${this.resourceUrl}/uuid/${user.uuid}/unlock`, {});
     }
 
     find(login: string): Observable<User> {
@@ -54,7 +58,35 @@ export class UserService {
         return this.http.get(this.resourceUrl, options);
     }
 
+    search(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
+    }
+
+    suggest(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceSuggestUrl}`, options).map((res: Response) => res.json());
+    }
+
     delete(login: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${login}`);
     }
+
+    private createRequestOption(req?: any): BaseRequestOptions {
+        let options: BaseRequestOptions = new BaseRequestOptions();
+        if (req) {
+            let params: URLSearchParams = new URLSearchParams();
+            params.set('page', req.page);
+            params.set('size', req.size);
+            if (req.sort) {
+                params.paramsMap.set('sort', req.sort);
+            }
+            params.set('query', req.query);
+
+            options.search = params;
+        }
+
+        return options;
+    }
+
 }

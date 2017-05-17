@@ -3,11 +3,8 @@
 #
 # This configuration is used for unit/integration tests.
 #
-# More information on profiles: https://jhipster.github.io/profiles/
 # More information on configuration properties: https://jhipster.github.io/common-application-properties/
-# ===================================================================
-
-# ===================================================================
+#
 # Standard Spring Boot properties.
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
@@ -20,6 +17,18 @@ eureka:
         appname: podiumGateway
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
 
+ribbon:
+    eureka:
+        enabled: false
+
+feign:
+    hystrix:
+        enabled: false
+
+podiumuaa:
+    ribbon:
+        listOfServers: localhost:8089
+
 spring:
     application:
         name: podiumGateway
@@ -27,6 +36,8 @@ spring:
         exclude: org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration, org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration
     jackson:
         serialization.write_dates_as_timestamps: false
+    cache:
+        type: none
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:h2:mem:podiumGateway;DB_CLOSE_DELAY=-1
@@ -34,10 +45,10 @@ spring:
         username:
         password:
     jpa:
-        database-platform: org.bbmri.podium.domain.util.FixedPostgreSQL82Dialect
-        database: POSTGRESQL
+        database-platform: nl.thehyve.podium.domain.util.FixedH2Dialect
+        database: H2
         open-in-view: false
-        show-sql: true
+        show-sql: false
         hibernate:
             ddl-auto: none
             naming:
@@ -65,6 +76,8 @@ spring:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+                cluster.routing.allocation.disk.watermark.high: 99%
+
     mail:
         host: localhost
     mvc:
@@ -79,38 +92,19 @@ liquibase:
 security:
     basic:
         enabled: false
+    oauth2:
+        resource:
+            filter-order: 3
 
 server:
     port: 10344
     address: localhost
 
-# ===================================================================
-# JHipster specific properties
-#
-# Full reference is available at: https://jhipster.github.io/common-application-properties/
-# ===================================================================
-
-jhipster:
+podium:
     async:
         core-pool-size: 2
         max-pool-size: 50
         queue-capacity: 10000
-    security:
-        authentication:
-            jwt:
-                secret:
-                # Token is valid 24 hours
-                token-validity-in-seconds: 86400
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the JHipsterProperties above
-#
-# More documentation is available at:
-# https://jhipster.github.io/common-application-properties/
-# ===================================================================
-
-application:
