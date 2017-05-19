@@ -7,6 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+let {defineSupportCode} = require('cucumber');
 import {$$} from "protractor";
 import {Director} from "../protractor-stories/director";
 import {AdminConsole} from "../protractor-stories/admin-console";
@@ -14,10 +15,9 @@ import {login} from "./util";
 import {isUndefined} from "util";
 
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
+defineSupportCode(({Given, When, Then}) => {
 
-    this.Then(/^the overview contains the organization's '(.*)' for the organizations '(.*)'$/, function (fieldString, organizationString, callback) {
+    Then(/^the overview contains the organization's '(.*)' for the organizations '(.*)'$/, function (fieldString, organizationString, callback) {
             let director = this.director as Director;
 
             let checksFinished = 0;
@@ -39,7 +39,7 @@ export = function () {
         }
     );
 
-    this.Then(/^organizations are displayed in the following order: '(.*)'$/, function (organizationString, callback) {
+    Then(/^organizations are displayed in the following order: '(.*)'$/, function (organizationString, callback) {
         let director = this.director as Director;
         let organizations = JSON.parse(organizationString);
         let organizationsList = director.getListOfData(organizations);
@@ -59,7 +59,7 @@ export = function () {
 
     });
 
-    this.Given(/^(.*) goes to the organization details page for '(.*)'$/, function (personaName, organizationName, callback) {
+    Given(/^(.*) goes to the organization details page for '(.*)'$/, function (personaName, organizationName, callback) {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -74,7 +74,7 @@ export = function () {
         }, callback);
     });
 
-    this.Then(/^the organization details page contains '(.*)'s data$/, function (organizationShortName, callback) {
+    Then(/^the organization details page contains '(.*)'s data$/, function (organizationShortName, callback) {
         let director = this.director as Director;
         let organization = director.getData(organizationShortName);
         let page = director.getCurrentPage();
@@ -89,7 +89,7 @@ export = function () {
         }, callback)
     });
 
-    this.When(/^(.*) creates the organization '(.*)'$/, function (personaName, organizationShortName, callback) {
+    When(/^(.*) creates the organization '(.*)'$/, function (personaName, organizationShortName, callback) {
         let director = this.director as Director;
         let organization = director.getData(organizationShortName);
         this.scenarioData = organization; //store it for the next step
@@ -102,7 +102,7 @@ export = function () {
         })
     });
 
-    this.Then(/^'(.*)' organization exists$/, function (organizationShortName, callback) {
+    Then(/^'(.*)' organization exists$/, function (organizationShortName, callback) {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -110,7 +110,7 @@ export = function () {
 
         adminConsole.checkOrganization(organization, checkOrg).then(callback,callback);
     });
-}
+});
 
 function checkOrg(expected, realData) {
     if (isUndefined(realData)) {

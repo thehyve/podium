@@ -7,16 +7,19 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+let {defineSupportCode} = require('cucumber');
 import {Director} from "../protractor-stories/director";
 import {AdminConsole} from "../protractor-stories/admin-console";
 import {$} from "protractor";
 import {login} from "./util";
 
+defineSupportCode(function({setDefaultTimeout}) {
+    setDefaultTimeout(30 * 1000);
+});
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
+defineSupportCode(({Given, When, Then}) => {
 
-    this.Given(/^(.*) goes to the '(.*)' page$/, function (personaName, pageName, callback) {
+    Given(/^(.*) goes to the '(.*)' page$/, function (personaName, pageName, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
@@ -29,7 +32,7 @@ export = function () {
         }
     });
 
-    this.When(/^(.*) attempts to login$/, function (personaName, callback) {
+    When(/^(.*) attempts to login$/, function (personaName, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
@@ -41,12 +44,12 @@ export = function () {
         }, callback)
     });
 
-    this.Then(/^(.*) is on the '(.*)' page$/, function (personaName, pageName, callback) {
+    Then(/^(.*) is on the '(.*)' page$/, function (personaName, pageName, callback) {
         let director = this.director as Director;
         director.at(pageName).then(callback, callback);
     });
 
-    this.When(/^(.*) edits the details:$/, function (personaName, fieldValueString, callback) {
+    When(/^(.*) edits the details:$/, function (personaName, fieldValueString, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
         let fieldValuePairs: {[key: string]: string} = JSON.parse(fieldValueString.trim());
@@ -63,7 +66,7 @@ export = function () {
 
     });
 
-    this.Then(/^the new details are saved$/, function (callback) {
+    Then(/^the new details are saved$/, function (callback) {
         let director = this.director as Director;
         Promise.resolve(director.getElement('SuccessMessage').locator.getText()).then(function (text) {
             if (text == 'Settings saved!') {
@@ -74,7 +77,7 @@ export = function () {
         })
     });
 
-    this.Then(/^the following fields are not editable:$/, function (fieldString, callback) {
+    Then(/^the following fields are not editable:$/, function (fieldString, callback) {
         let director = this.director as Director;
         let fields = JSON.parse(fieldString.trim());
 
@@ -92,7 +95,7 @@ export = function () {
     });
 
 
-    this.When(/^(.*) registers for a new account$/, function (personaName, callback) {
+    When(/^(.*) registers for a new account$/, function (personaName, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
@@ -132,7 +135,7 @@ export = function () {
 
     });
 
-    this.Then(/^an account is created$/, function (callback) {
+    Then(/^an account is created$/, function (callback) {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -141,7 +144,7 @@ export = function () {
         }, callback);
     });
 
-    this.When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts, callback) {
+    When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
         let adminConsole = this.adminConsole as AdminConsole;
@@ -157,7 +160,7 @@ export = function () {
         })
     });
 
-    this.Then(/^(.*) is locked out$/, function (personaName, callback) {
+    Then(/^(.*) is locked out$/, function (personaName, callback) {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -166,7 +169,7 @@ export = function () {
         }, callback)
     });
 
-    this.When(/^(.*) forgets to fill a field in the registration form$/, function (personaName, callback) {
+    When(/^(.*) forgets to fill a field in the registration form$/, function (personaName, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
@@ -207,7 +210,7 @@ export = function () {
         }, callback)
     });
 
-    this.Then(/^(.*) is not registered$/, function (personaName, callback) {
+    Then(/^(.*) is not registered$/, function (personaName, callback) {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -222,9 +225,7 @@ export = function () {
             callback(result + " does not equal " + expected);
         }
     }
-
-
-};
+});
 
 function checkNonExistend(expected, realData) {
     return realData.message == "error.404";

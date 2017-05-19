@@ -7,15 +7,15 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+let {defineSupportCode} = require('cucumber');
 import {$$} from "protractor";
 import {Director} from "../protractor-stories/director";
 import {login} from "./util";
 import {isUndefined} from "util";
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
+defineSupportCode(({Given, When, Then}) => {
 
-    this.Then(/^the overview contains the user's '(.*)' for the users '(.*)'$/, function (fieldString, userString, callback) {
+    Then(/^the overview contains the user's '(.*)' for the users '(.*)'$/, function (fieldString, userString, callback) {
             let director = this.director as Director;
 
             let checksFinished = 0;
@@ -88,7 +88,7 @@ export = function () {
     }
 
 
-    this.When(/^(.*) sorts by '(.*)'$/, function (personaName, sortingType, callback) {
+    When(/^(.*) sorts by '(.*)'$/, function (personaName, sortingType, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
@@ -99,7 +99,7 @@ export = function () {
         }
     });
 
-    this.Then(/^users are displayed in the following order: '(.*)'$/, function (userString, callback) {
+    Then(/^users are displayed in the following order: '(.*)'$/, function (userString, callback) {
         let director = this.director as Director;
         let users = JSON.parse(userString);
         let personas = director.getListOfPersonas(users);
@@ -117,7 +117,7 @@ export = function () {
         })
     });
 
-    this.Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName, callback) {
+    Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName, callback) {
         let director = this.director as Director;
         let sufix = director.getPersona(targetUserName).properties["userName"];
         let persona = director.getPersona(personaName);
@@ -127,7 +127,7 @@ export = function () {
         }, callback);
     });
 
-    this.Then(/^the user details page contains '(.*)'s data$/, function (personaName, callback) {
+    Then(/^the user details page contains '(.*)'s data$/, function (personaName, callback) {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
         let page = director.getCurrentPage();
@@ -142,7 +142,7 @@ export = function () {
             callback()
         }, callback)
     });
-}
+});
 
 function checkTextElement(element, expectedText, callback) {
 
