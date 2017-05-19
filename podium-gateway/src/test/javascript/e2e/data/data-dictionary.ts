@@ -8,7 +8,8 @@
  * See the file LICENSE in the root of this repository.
  */
 
-import {Organisation, Request} from "./templates"
+import {Organisation, Request, File} from "./templates"
+import {normalize} from 'path'
 
 let dataDictionary: {[key: string]: any} = Object.create(null);
 let dataObjects = [
@@ -48,7 +49,8 @@ let dataObjects = [
         "type Data": true,
         "type Images": true,
         "type Material": true,
-    })
+    }),
+    new File("example", normalize(__dirname + "/example")),
 ];
 
 dataObjects.forEach(function (persona) {
