@@ -80,6 +80,7 @@
     "proxy-middleware": "0.15.0",
     "raw-loader": "0.5.1",
     "request": "^2.81.0",
+    "request-promise-native": "^1.0.4",
     "run-sequence": "1.2.2",
     "sass-loader": "5.0.1",
     "sourcemap-istanbul-instrumenter-loader": "0.2.0",
