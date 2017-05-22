@@ -7,23 +7,23 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { $ } from "protractor";
-import { Interactable } from "../../protractor-stories/director";
+import { $ } from 'protractor';
+import { Interactable } from '../../protractor-stories/director';
 
 
 function initLocators() {
-    let elements: {[name: string]: Interactable};
+    let elements: { [name: string]: Interactable };
 
     elements = {
-        "firstName": {locator: $('input[name=firstName]')},
-        "lastName": {locator: $('input[name=lastName]')},
-        "email": {locator: $('input[name=email]')},
-        "telephone": {locator: $('input[name=telephone]')},
-        "department": {locator: $('input[name=department]')},
-        "jobTitle": {locator: $('input[name=jobTitle]')},
-        "specialism": {locator: $('select[name=specialism]')},
-        "Other specialism": {locator: $('input[placeholder="Other specialism"]')},
-        "submitButton": {locator: $('button[type=submit]')},
+        "firstName": { locator: $('input[name=firstName]') },
+        "lastName": { locator: $('input[name=lastName]') },
+        "email": { locator: $('input[name=email]') },
+        "telephone": { locator: $('input[name=telephone]') },
+        "department": { locator: $('input[name=department]') },
+        "jobTitle": { locator: $('input[name=jobTitle]') },
+        "specialism": { locator: $('select[name=specialism]') },
+        "Other specialism": { locator: $('input[placeholder="Other specialism"]') },
+        "submitButton": { locator: $('button[type=submit]') },
     }
 
     return elements;

@@ -7,13 +7,13 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, ElementFinder } from "protractor";
-import { Promise } from "es6-promise";
-import { isUndefined } from "util";
+import { browser, ElementFinder } from 'protractor';
+import { Promise } from 'es6-promise';
+import { isUndefined } from 'util';
 
 export interface Persona {
     name: string;
-    properties: {[key: string]: any};
+    properties: { [key: string]: any };
 }
 
 export interface Page {
@@ -21,7 +21,7 @@ export interface Page {
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
-    elements: {[name: string]: Interactable};
+    elements: { [name: string]: Interactable };
 }
 
 export interface Interactable {
@@ -39,12 +39,12 @@ export class Director {
     private searchDir: string;
     private currentPage: Page;
     private currentPersona: Persona;
-    private pageDictionary: {[key: string]: Page};
-    private personaDictionary: {[key: string]: Persona};
+    private pageDictionary: { [key: string]: Page };
+    private personaDictionary: { [key: string]: Persona };
     private dataDictionary = {};
 
 
-    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}, dataDictionary?) {
+    constructor(searchDir: string, PageDictionary: { [key: string]: Page }, personaDictionary: { [key: string]: Persona }, dataDictionary?) {
         this.searchDir = searchDir;
         this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;

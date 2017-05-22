@@ -7,8 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from "protractor";
-import { Interactable } from "../protractor-stories/director";
+import { browser, $ } from 'protractor';
+import { Interactable } from '../protractor-stories/director';
 import ProfileForm = require("./modules/profile-form")
 
 
@@ -19,7 +19,7 @@ import ProfileForm = require("./modules/profile-form")
 class UserManagementPage {
     public name: string;
     public url: string;
-    public elements: {[name: string]: Interactable};
+    public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
@@ -32,13 +32,13 @@ class UserManagementPage {
         this.name = "user management";
         this.url = "#/bbmri/user-management";
         this.elements = {
-            "HeaderID": {locator: $('th[jhisortby=id]')},
-            "HeaderLogin": {locator: $('th[jhisortby=login]')},
-            "HeaderEmail": {locator: $('th[jhisortby=email]')},
-            "HeaderLangKey": {locator: $('th[jhisortby=langKey]')},
-            "HeaderCreatedDate": {locator: $('th[jhisortby=createdDate]')},
-            "HeaderLastModifiedBy": {locator: $('th[jhisortby=lastModifiedBy]')},
-            "HeaderLastModifiedDate": {locator: $('th[jhisortby=lastModifiedDate]')},
+            "HeaderID": { locator: $('th[jhisortby=id]') },
+            "HeaderLogin": { locator: $('th[jhisortby=login]') },
+            "HeaderEmail": { locator: $('th[jhisortby=email]') },
+            "HeaderLangKey": { locator: $('th[jhisortby=langKey]') },
+            "HeaderCreatedDate": { locator: $('th[jhisortby=createdDate]') },
+            "HeaderLastModifiedBy": { locator: $('th[jhisortby=lastModifiedBy]') },
+            "HeaderLastModifiedDate": { locator: $('th[jhisortby=lastModifiedDate]') },
         }
     }
 }

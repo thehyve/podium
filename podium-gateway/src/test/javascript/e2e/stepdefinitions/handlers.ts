@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser } from "protractor";
+import { browser } from 'protractor';
 
 let myHandlers = function () {
     let delay = process.env.BROWSERSTACK_DELAY ? process.env.BROWSERSTACK_DELAY : 0;

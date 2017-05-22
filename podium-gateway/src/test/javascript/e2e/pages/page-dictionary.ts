@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { Page } from "../protractor-stories/director";
+import { Page } from '../protractor-stories/director';
 import SigninPage = require("./signin.page")
 import DashboardPage = require("./dashboard.page")
 import ProfilePage = require("./profile.page")
@@ -26,7 +26,7 @@ import NewRequestsPage = require("./new-requests.page")
  */
 
 function initPages() {
-    let PageDictionary: {[key: string]: Page} = Object.create(null);
+    let PageDictionary: { [key: string]: Page } = Object.create(null);
 
     PageDictionary['sign in'] = new SigninPage;
     PageDictionary['Dashboard'] = new DashboardPage;

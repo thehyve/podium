@@ -7,18 +7,18 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-let {defineSupportCode} = require('cucumber');
-import { Promise } from "es6-promise";
-import { Director } from "../protractor-stories/director";
-import { AdminConsole } from "../protractor-stories/admin-console";
-import { $ } from "protractor";
-import { login, promiseTrue, doInOrder } from "./util";
+let { defineSupportCode } = require('cucumber');
+import { Promise } from 'es6-promise';
+import { Director } from '../protractor-stories/director';
+import { AdminConsole } from '../protractor-stories/admin-console';
+import { $ } from 'protractor';
+import { login, promiseTrue, doInOrder } from './util';
 
-defineSupportCode(function ({setDefaultTimeout}) {
+defineSupportCode(function ({ setDefaultTimeout }) {
     setDefaultTimeout(30 * 1000);
 });
 
-defineSupportCode(({Given, When, Then}) => {
+defineSupportCode(({ Given, When, Then }) => {
 
     Given(/^(.*) goes to the '(.*)' page$/, function (personaName, pageName): Promise<any> {
         let director = this.director as Director;
@@ -53,7 +53,7 @@ defineSupportCode(({Given, When, Then}) => {
     When(/^(.*) edits the details:$/, function (personaName, fieldValueString): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
-        let fieldValuePairs: {[key: string]: string} = JSON.parse(fieldValueString.trim());
+        let fieldValuePairs: { [key: string]: string } = JSON.parse(fieldValueString.trim());
         this.scenarioData = fieldValuePairs;
         let promises = [];
 
@@ -89,8 +89,8 @@ defineSupportCode(({Given, When, Then}) => {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
-        let inputValues: {[key: string]: string} = persona.properties;
-        let fieldValueMapping: {[key: string]: string} = {
+        let inputValues: { [key: string]: string } = persona.properties;
+        let fieldValueMapping: { [key: string]: string } = {
             "username": "login",
             "firstName": "firstName",
             "lastName": "lastName",
@@ -160,8 +160,8 @@ defineSupportCode(({Given, When, Then}) => {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
-        let inputValues: {[key: string]: string} = persona.properties;
-        let fieldValueMapping: {[key: string]: string} = {
+        let inputValues: { [key: string]: string } = persona.properties;
+        let fieldValueMapping: { [key: string]: string } = {
             "username": "login",
             "firstName": "firstName",
             "lastName": "lastName",

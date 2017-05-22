@@ -9,9 +9,9 @@
  */
 import request = require('request-promise-native')
 
-import { isUndefined } from "util";
-import { browser } from "protractor";
-import { Persona } from "./director";
+import { isUndefined } from 'util';
+import { browser } from 'protractor';
+import { Persona } from './director';
 
 export class AdminConsole {
     public token: string;

@@ -7,8 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from "protractor";
-import { Interactable } from "../protractor-stories/director";
+import { browser, $ } from 'protractor';
+import { Interactable } from '../protractor-stories/director';
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
@@ -16,7 +16,7 @@ import { Interactable } from "../protractor-stories/director";
 class CreateOrganisationPage {
     public name: string;
     public url: string;
-    public elements: {[name: string]: Interactable};
+    public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
@@ -29,10 +29,10 @@ class CreateOrganisationPage {
         this.name = "create organisation";
         this.url = "#/bbmri/organisation/new";
         this.elements = {
-            "shortName": {locator: $('#field_shortName')},
-            "name": {locator: $('#field_name')},
-            "submitButton": {locator: $('.btn-primary')},
-            "cancelButton": {locator: $('.btn-default')},
+            "shortName": { locator: $('#field_shortName') },
+            "name": { locator: $('#field_name') },
+            "submitButton": { locator: $('.btn-primary') },
+            "cancelButton": { locator: $('.btn-default') },
         }
     }
 }

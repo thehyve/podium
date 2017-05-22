@@ -7,13 +7,13 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-let {defineSupportCode} = require('cucumber');
-import { Promise } from "es6-promise";
-import { $$ } from "protractor";
-import { Director } from "../protractor-stories/director";
-import { login, promiseTrue, doInOrder, checkTextElement } from "./util";
+let { defineSupportCode } = require('cucumber');
+import { Promise } from 'es6-promise';
+import { $$ } from 'protractor';
+import { Director } from '../protractor-stories/director';
+import { login, promiseTrue, doInOrder, checkTextElement } from './util';
 
-defineSupportCode(({Given, When, Then}) => {
+defineSupportCode(({ Given, When, Then }) => {
 
     Then(/^the overview contains the user's '(.*)' for the users '(.*)'$/, function (fieldString, userString): Promise<any> {
         let director = this.director as Director;

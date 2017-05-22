@@ -7,13 +7,13 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser } from "protractor";
-import { Interactable } from "../protractor-stories/director";
+import { browser } from 'protractor';
+import { Interactable } from '../protractor-stories/director';
 
 class completedPage {
     public name: string;
     public url: string;
-    public elements: {[name: string]: Interactable};
+    public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
