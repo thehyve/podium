@@ -11,7 +11,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UploadPopupService, UploadPopupComponent, UploadDialogComponent, uploadPopupRoute } from './';
-import { FileSelectDirective, FileDropDirective } from 'ng2-file-upload';
+import { FileUploadModule } from 'ng2-file-upload';
 import { FormsModule } from '@angular/forms';
 
 let UPLOAD_STATES = [
@@ -22,13 +22,12 @@ let UPLOAD_STATES = [
     imports: [
         FormsModule,
         CommonModule,
-        RouterModule.forChild(UPLOAD_STATES)
+        RouterModule.forChild(UPLOAD_STATES),
+        FileUploadModule
     ],
     declarations: [
         UploadDialogComponent,
-        UploadPopupComponent,
-        FileDropDirective,
-        FileSelectDirective
+        UploadPopupComponent
     ],
     entryComponents: [
         UploadDialogComponent,
