@@ -7,8 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {$} from "protractor";
-import {Interactable} from "../protractor-stories/director";
+import { $ } from "protractor";
+import { Interactable } from "../protractor-stories/director";
 import ProfileForm = require("./modules/profile-form")
 
 /*
@@ -23,7 +23,8 @@ class ProfilePage {
     constructor() {
         this.name = "profile";
         this.url = "#/settings";
-        this.elements = {...ProfileForm(),
+        this.elements = {
+            ...ProfileForm(),
             "institute": {locator: $('.form-control-static')}, //not future-proof
             "SuccessMessage": {locator: $('.alert-success').$('strong')},
         }

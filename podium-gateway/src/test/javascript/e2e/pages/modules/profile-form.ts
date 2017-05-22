@@ -7,11 +7,11 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {$} from "protractor";
-import {Interactable} from "../../protractor-stories/director";
+import { $ } from "protractor";
+import { Interactable } from "../../protractor-stories/director";
 
 
-function initLocators () {
+function initLocators() {
     let elements: {[name: string]: Interactable};
 
     elements = {

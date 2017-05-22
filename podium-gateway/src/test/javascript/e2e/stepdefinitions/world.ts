@@ -7,8 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
+import { Director } from "../protractor-stories/director";
+import { AdminConsole } from "../protractor-stories/admin-console";
 let {defineSupportCode} = require('cucumber');
 import initPages = require ("../pages/page-dictionary");
 import PersonaDictionary = require("../personas/persona-dictionary")
@@ -38,6 +38,6 @@ function initWolrd() {
     return new World();
 }
 
-defineSupportCode(function({setWorldConstructor}) {
+defineSupportCode(function ({setWorldConstructor}) {
     setWorldConstructor(initWolrd)
 });

@@ -8,13 +8,13 @@
  * See the file LICENSE in the root of this repository.
  */
 let {defineSupportCode} = require('cucumber');
-import { Promise } from 'es6-promise';
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
-import {$} from "protractor";
-import {login, promiseTrue, doInOrder} from "./util";
+import { Promise } from "es6-promise";
+import { Director } from "../protractor-stories/director";
+import { AdminConsole } from "../protractor-stories/admin-console";
+import { $ } from "protractor";
+import { login, promiseTrue, doInOrder } from "./util";
 
-defineSupportCode(function({setDefaultTimeout}) {
+defineSupportCode(function ({setDefaultTimeout}) {
     setDefaultTimeout(30 * 1000);
 });
 
@@ -77,7 +77,7 @@ defineSupportCode(({Given, When, Then}) => {
         let director = this.director as Director;
         let fields = JSON.parse(fieldString.trim());
 
-        return doInOrder(fields, (field)=>{
+        return doInOrder(fields, (field) => {
             return director.getElement(field).locator.getTagName().then((tagname) => {
                 return promiseTrue(tagname == 'div', field + " is editable");
             })

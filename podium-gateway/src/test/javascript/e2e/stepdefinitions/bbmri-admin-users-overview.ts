@@ -8,10 +8,10 @@
  * See the file LICENSE in the root of this repository.
  */
 let {defineSupportCode} = require('cucumber');
-import {Promise} from "es6-promise";
-import {$$} from "protractor";
-import {Director} from "../protractor-stories/director";
-import {login, promiseTrue, doInOrder, checkTextElement} from "./util";
+import { Promise } from "es6-promise";
+import { $$ } from "protractor";
+import { Director } from "../protractor-stories/director";
+import { login, promiseTrue, doInOrder, checkTextElement } from "./util";
 
 defineSupportCode(({Given, When, Then}) => {
 
@@ -24,7 +24,7 @@ defineSupportCode(({Given, When, Then}) => {
         let personas = director.getListOfPersonas(users);
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
-            return promiseTrue(count == personas.length, "expected " + personas.length + " fields for "+fields[0]+" but found " + count);
+            return promiseTrue(count == personas.length, "expected " + personas.length + " fields for " + fields[0] + " but found " + count);
         }).then(() => {
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
@@ -72,7 +72,7 @@ defineSupportCode(({Given, When, Then}) => {
         let fields = ["login"];
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
-            return promiseTrue(count == personas.length, "expected " + personas.length + " fields for "+fields[0]+" but found " + count);
+            return promiseTrue(count == personas.length, "expected " + personas.length + " fields for " + fields[0] + " but found " + count);
         }).then(() => {
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {

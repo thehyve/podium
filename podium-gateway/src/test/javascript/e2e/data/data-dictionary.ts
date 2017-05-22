@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-
-import {Organisation, Request, File} from "./templates"
-import {normalize} from 'path'
+import { Organisation, Request, File } from "./templates";
+import { normalize } from "path";
 
 let dataDictionary: {[key: string]: any} = Object.create(null);
 let dataObjects = [

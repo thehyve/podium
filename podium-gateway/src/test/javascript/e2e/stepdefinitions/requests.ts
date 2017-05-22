@@ -7,9 +7,9 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
-import {isUndefined} from "util";
+import { Director } from "../protractor-stories/director";
+import { AdminConsole } from "../protractor-stories/admin-console";
+import { isUndefined } from "util";
 
 export = function () {
     this.setDefaultTimeout(30 * 1000); //max time before callback
@@ -35,7 +35,7 @@ export = function () {
             });
 
             Promise.all(promisses).then(function () {
-                director.clickOn("save").then(callback,callback)
+                director.clickOn("save").then(callback, callback)
             })
         })
 

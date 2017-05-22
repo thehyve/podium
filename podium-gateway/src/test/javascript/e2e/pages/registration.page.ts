@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-
-import {browser, $} from "protractor";
-import {Interactable} from "../protractor-stories/director";
+import { browser, $ } from "protractor";
+import { Interactable } from "../protractor-stories/director";
 import ProfileForm = require("./modules/profile-form")
 
 
@@ -32,7 +31,8 @@ class RegistrationPage {
     constructor() {
         this.name = "registration";
         this.url = "#/register";
-        this.elements = {...ProfileForm(),
+        this.elements = {
+            ...ProfileForm(),
             "username": {locator: $('input[name=login]')},
             "institute": {locator: $('input[name=institute]')},
             "password": {locator: $('input[name=password]')},

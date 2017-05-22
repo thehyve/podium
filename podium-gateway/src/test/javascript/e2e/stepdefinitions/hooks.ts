@@ -7,12 +7,12 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {AdminConsole} from "../protractor-stories/admin-console";
+import { AdminConsole } from "../protractor-stories/admin-console";
 import PersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
 let {defineSupportCode} = require('cucumber');
 
-defineSupportCode(function({After, Before}) {
+defineSupportCode(function ({After, Before}) {
 
     function setupUsers(adminConsole: AdminConsole, personas: string[]) {
         let createUserCalls = [];

@@ -7,8 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director, Persona} from "../protractor-stories/director";
-import {Promise} from "es6-promise";
+import { Director, Persona } from "../protractor-stories/director";
+import { Promise } from "es6-promise";
 
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');

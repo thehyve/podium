@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Persona} from "./templates";
+import { Persona } from "./templates";
 
 /*
  * pages must be added to this dictionary for the director class to find them.

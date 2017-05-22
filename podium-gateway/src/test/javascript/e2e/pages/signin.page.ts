@@ -7,8 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {browser, $} from "protractor";
-import {Interactable} from "../protractor-stories/director";
+import { browser, $ } from "protractor";
+import { Interactable } from "../protractor-stories/director";
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.

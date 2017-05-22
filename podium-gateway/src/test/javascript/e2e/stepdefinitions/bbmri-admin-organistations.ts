@@ -8,12 +8,12 @@
  * See the file LICENSE in the root of this repository.
  */
 let {defineSupportCode} = require('cucumber');
-import {Promise} from "es6-promise";
-import {$$} from "protractor";
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
-import {login, doInOrder, promiseTrue, checkTextElement} from "./util";
-import {isUndefined} from "util";
+import { Promise } from "es6-promise";
+import { $$ } from "protractor";
+import { Director } from "../protractor-stories/director";
+import { AdminConsole } from "../protractor-stories/admin-console";
+import { login, doInOrder, promiseTrue, checkTextElement } from "./util";
+import { isUndefined } from "util";
 
 
 defineSupportCode(({Given, When, Then}) => {

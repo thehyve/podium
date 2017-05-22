@@ -7,9 +7,9 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, ElementFinder } from 'protractor';
-import { Promise } from 'es6-promise';
-import { isUndefined } from 'util';
+import { browser, ElementFinder } from "protractor";
+import { Promise } from "es6-promise";
+import { isUndefined } from "util";
 
 export interface Persona {
     name: string;
@@ -90,7 +90,7 @@ export class Director {
         let result = new Array(personaNames.length);
 
         personaNames.forEach(function (personaName, index) {
-            if (isUndefined(that.personaDictionary[personaName])){
+            if (isUndefined(that.personaDictionary[personaName])) {
                 that.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
             }
             result[index] = that.personaDictionary[personaName];
@@ -99,9 +99,9 @@ export class Director {
         return result;
     }
 
-    public getData(dataID: string){
+    public getData(dataID: string) {
         let that = this;
-        if (isUndefined(that.dataDictionary[dataID])){
+        if (isUndefined(that.dataDictionary[dataID])) {
             that.fatalError('The data: ' + dataID + ' does not exist.\n check your dataDictionary to see the available data');
         }
         return that.dataDictionary[dataID];
