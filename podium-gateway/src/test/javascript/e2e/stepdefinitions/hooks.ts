@@ -78,7 +78,7 @@ defineSupportCode(function ({ After, Before }) {
         return Promise.all(assignRoleCalls);
     }
 
-    Before({ tags: "@default" }, function (scenario) {
+    Before({ tags: "@default" }, function (scenario): Promise<any> {
         let adminConsole = new AdminConsole();
         let userList = ["BBMRI_Admin", "Dave", "Linda"];
         let organizations = ["VarnameBank", 'SomeBank', 'XBank'];
