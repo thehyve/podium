@@ -27,19 +27,12 @@ import org.springframework.util.StopWatch;
  *         <li>This is needed if you want to do some database requests at startup</li>
  *         <li>This ensure that the database is ready when the application starts</li>
  *     </ul>
- *     But as this is a rather slow process, we use this asynchronous version to speed up our start-up time:
- *     <ul>
- *         <li>On a recent MacBook Pro, start-up time is down from 14 seconds to 8 seconds</li>
- *         <li>In production, this can help your application run on platforms like Heroku, where it must start/restart very quickly</li>
- *     </ul>
  */
 public class AsyncSpringLiquibase extends SpringLiquibase {
 
     // named "logger" because there is already a field called "log" in "SpringLiquibase"
     private final Logger logger = LoggerFactory.getLogger(AsyncSpringLiquibase.class);
-
     private final TaskExecutor taskExecutor;
-
     private final Environment env;
 
     public AsyncSpringLiquibase(@Qualifier("taskExecutor") TaskExecutor taskExecutor, Environment env) {
