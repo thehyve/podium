@@ -34,10 +34,10 @@ class World {
     }
 }
 
-function initWolrd() {
+function initWorld() {
     return new World();
 }
 
 defineSupportCode(function ({ setWorldConstructor }) {
-    setWorldConstructor(initWolrd)
+    setWorldConstructor(initWorld)
 });

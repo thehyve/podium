@@ -22,10 +22,10 @@ export function login(director: Director, persona: Persona) {
     })
 }
 
-export function doInOrder<T>(paramaterArray: Array<T>, method: (T) => Promise<any>): Promise<any> {
-    if (paramaterArray.length > 0) {
-        return method(paramaterArray.pop()).then(() => {
-            return doInOrder(paramaterArray, method);
+export function doInOrder<T>(parameterArray: Array<T>, method: (T) => Promise<any>): Promise<any> {
+    if (parameterArray.length > 0) {
+        return method(parameterArray.pop()).then(() => {
+            return doInOrder(parameterArray, method);
         })
     }
 }
