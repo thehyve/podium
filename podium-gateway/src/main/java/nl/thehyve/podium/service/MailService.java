@@ -10,7 +10,7 @@ package nl.thehyve.podium.service;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,6 @@ import org.thymeleaf.spring4.SpringTemplateEngine;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class MailService {

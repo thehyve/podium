@@ -17,7 +17,7 @@ import com.datastax.driver.core.policies.LoadBalancingPolicy;
 import com.datastax.driver.core.policies.ReconnectionPolicy;
 import com.datastax.driver.core.policies.RetryPolicy;
 import com.datastax.driver.extras.codecs.jdk8.LocalDateCodec;
-import nl.thehyve.podium.config.PodiumConstants;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;

@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.service;
 
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.domain.User;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
