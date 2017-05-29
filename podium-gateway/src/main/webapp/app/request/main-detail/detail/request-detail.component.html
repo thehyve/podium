@@ -75,8 +75,7 @@
                 </dd>
             </dl>
 
-            <pdm-request-review-panel [reviewRounds]="request.reviewRounds"
-                                      *pdmHasAnyAuthority="['ROLE_ORGANISATION_COORDINATOR']">
+            <pdm-request-review-panel [reviewRounds]="request.reviewRounds" *ngIf="isRequestCoordinator()">
             </pdm-request-review-panel>
 
             <pdm-request-action-toolbar

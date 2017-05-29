@@ -82,6 +82,10 @@ export class RequestDetailComponent {
             );
     }
 
+    isRequestCoordinator(): boolean {
+        return this.requestAccessService.isCoordinatorFor(this.request);
+    }
+
     approveRequest() {
         this.isUpdating = true;
         this.requestService.approveRequest(this.request.uuid)
