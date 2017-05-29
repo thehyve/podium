@@ -192,18 +192,15 @@ defineSupportCode(({ Given, When, Then }) => {
 
         }
 
-        return Promise.all(promises).then(function () {
-            return director.clickOn('submitButton')
-        })
+        return Promise.all(promises);
     });
 
     Then(/^(.*) is not registered$/, function (personaName): Promise<any> {
         let director = this.director as Director;
-        let adminConsole = this.adminConsole as AdminConsole;
 
-        return director.at('registration').then(function () {
-            return adminConsole.checkUser(director.getPersona(personaName), checkNonExistend);
-        })
+        return director.getElement('submitButton').locator.isEnabled().then((enabled)=>{
+            return promiseTrue(!enabled, 'submitButton was enabled');
+        });
     });
 });
 
