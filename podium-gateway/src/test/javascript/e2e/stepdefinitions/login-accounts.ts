@@ -7,49 +7,53 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
-import {$} from "protractor";
-import {login} from "./util";
+let { defineSupportCode } = require('cucumber');
+import { Promise } from 'es6-promise';
+import { Director } from '../protractor-stories/director';
+import { AdminConsole } from '../protractor-stories/admin-console';
+import { $ } from 'protractor';
+import { login, promiseTrue, doInOrder } from './util';
 
+defineSupportCode(function ({ setDefaultTimeout }) {
+    setDefaultTimeout(30 * 1000);
+});
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
+defineSupportCode(({ Given, When, Then }) => {
 
-    this.Given(/^(.*) goes to the '(.*)' page$/, function (personaName, pageName, callback) {
+    Given(/^(.*) goes to the '(.*)' page$/, function (personaName, pageName): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
         if (['sign in', 'registration'].indexOf(pageName) < 0) {
-            login(director, persona).then(function () {
-                director.goToPage(pageName).then(callback, callback)
-            }, callback);
+            return login(director, persona).then(() => {
+                return director.goToPage(pageName)
+            });
         } else {
-            director.goToPage(pageName).then(callback, callback)
+            return director.goToPage(pageName)
         }
     });
 
-    this.When(/^(.*) attempts to login$/, function (personaName, callback) {
+    When(/^(.*) attempts to login$/, function (personaName): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
-        Promise.all([
+        return Promise.all([
             director.enterText('usernameInput', persona.properties['login']),
             director.enterText('passwordInput', persona.properties['password'])
-        ]).then(function () {
-            director.clickOn('submitButton').then(callback, callback)
-        }, callback)
+        ]).then(() => {
+            return director.clickOn('submitButton')
+        })
     });
 
-    this.Then(/^(.*) is on the '(.*)' page$/, function (personaName, pageName, callback) {
+    Then(/^(.*) is on the '(.*)' page$/, function (personaName, pageName): Promise<any> {
         let director = this.director as Director;
-        director.at(pageName).then(callback, callback);
+        return director.at(pageName);
     });
 
-    this.When(/^(.*) edits the details:$/, function (personaName, fieldValueString, callback) {
+    When(/^(.*) edits the details:$/, function (personaName, fieldValueString): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
-        let fieldValuePairs: {[key: string]: string} = JSON.parse(fieldValueString.trim());
+        let fieldValuePairs: { [key: string]: string } = JSON.parse(fieldValueString.trim());
         this.scenarioData = fieldValuePairs;
         let promises = [];
 
@@ -57,47 +61,36 @@ export = function () {
             promises.push(director.enterText(key, fieldValuePairs[key]))
         }
 
-        Promise.all(promises).then(function () {
-            director.clickOn('submitButton').then(callback, callback)
-        }, callback)
-
-    });
-
-    this.Then(/^the new details are saved$/, function (callback) {
-        let director = this.director as Director;
-        Promise.resolve(director.getElement('SuccessMessage').locator.getText()).then(function (text) {
-            if (text == 'Settings saved!') {
-                callback()
-            } else {
-                callback('data was not saved successfully')
-            }
+        return Promise.all(promises).then(() => {
+            return director.clickOn('submitButton')
         })
     });
 
-    this.Then(/^the following fields are not editable:$/, function (fieldString, callback) {
+    Then(/^the new details are saved$/, function (): Promise<any> {
+        let director = this.director as Director;
+        return Promise.resolve(director.getElement('SuccessMessage').locator.getText()).then((text) => {
+            return promiseTrue(text == 'Settings saved!', 'data was not saved successfully');
+        })
+    });
+
+    Then(/^the following fields are not editable:$/, function (fieldString): Promise<any> {
         let director = this.director as Director;
         let fields = JSON.parse(fieldString.trim());
 
-        let promises = [];
-
-        for (let index in fields) {
-            promises.push(director.getElement(fields[index]).locator.getTagName().then(function (tagname) {
-                checkWithCallback(tagname, 'div', callback);
-            }))
-        }
-
-        Promise.all(promises).then(function () { //ignore return value if all succeeded
-            callback();
-        }, callback);
+        return doInOrder(fields, (field) => {
+            return director.getElement(field).locator.getTagName().then((tagname) => {
+                return promiseTrue(tagname == 'div', field + " is editable");
+            })
+        })
     });
 
 
-    this.When(/^(.*) registers for a new account$/, function (personaName, callback) {
+    When(/^(.*) registers for a new account$/, function (personaName): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
-        let inputValues: {[key: string]: string} = persona.properties;
-        let fieldValueMapping: {[key: string]: string} = {
+        let inputValues: { [key: string]: string } = persona.properties;
+        let fieldValueMapping: { [key: string]: string } = {
             "username": "login",
             "firstName": "firstName",
             "lastName": "lastName",
@@ -126,52 +119,49 @@ export = function () {
 
         }
 
-        Promise.all(promises).then(function () {
-            director.clickOn('submitButton').then(callback, callback)
-        }, callback)
-
-    });
-
-    this.Then(/^an account is created$/, function (callback) {
-        let director = this.director as Director;
-        let adminConsole = this.adminConsole as AdminConsole;
-
-        director.at("completed").then(function () {
-            adminConsole.checkUser(director.getPersona("he"), checkNewUser).then(callback,callback);
-        }, callback);
-    });
-
-    this.When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts, callback) {
-        let director = this.director as Director;
-        let persona = director.getPersona(personaName);
-        let adminConsole = this.adminConsole as AdminConsole;
-        adminConsole.unlockUser(persona);
-
-        Promise.all([
-            director.enterText('usernameInput', persona.properties['login']),
-            director.enterText('passwordInput', 'wongPassword')
-        ]).then(function () {
-            for (let i = 0; i < attempts; i++) {
-                director.clickOn('submitButton').then(callback);
-            }
+        return Promise.all(promises).then(function () {
+            return director.clickOn('submitButton')
         })
     });
 
-    this.Then(/^(.*) is locked out$/, function (personaName, callback) {
+    Then(/^an account is created$/, function (): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        director.at('sign in').then(function () {
-            adminConsole.checkUser(director.getPersona(personaName), checkLocked).then(callback,callback);
-        }, callback)
+        return director.at("completed").then(() => {
+            return adminConsole.checkUser(director.getPersona("he"), checkNewUser);
+        });
     });
 
-    this.When(/^(.*) forgets to fill a field in the registration form$/, function (personaName, callback) {
+    When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
-        let inputValues: {[key: string]: string} = persona.properties;
-        let fieldValueMapping: {[key: string]: string} = {
+        return Promise.all([
+            director.enterText('usernameInput', persona.properties['login']),
+            director.enterText('passwordInput', 'wongPassword')
+        ]).then(function () {
+            return doInOrder(Array(attempts), (item) => {
+                return director.clickOn('submitButton')
+            })
+        })
+    });
+
+    Then(/^(.*) is locked out$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        return director.at('sign in').then(function () {
+            return adminConsole.checkUser(director.getPersona(personaName), checkLocked);
+        })
+    });
+
+    When(/^(.*) forgets to fill a field in the registration form$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+        let persona = director.getPersona(personaName);
+
+        let inputValues: { [key: string]: string } = persona.properties;
+        let fieldValueMapping: { [key: string]: string } = {
             "username": "login",
             "firstName": "firstName",
             "lastName": "lastName",
@@ -202,29 +192,20 @@ export = function () {
 
         }
 
-        Promise.all(promises).then(function () {
-            director.clickOn('submitButton').then(callback, callback)
-        }, callback)
+        return Promise.all(promises).then(function () {
+            return director.clickOn('submitButton')
+        })
     });
 
-    this.Then(/^(.*) is not registered$/, function (personaName, callback) {
+    Then(/^(.*) is not registered$/, function (personaName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        director.at('registration').then(function () {
-            adminConsole.checkUser(director.getPersona(personaName), checkNonExistend).then(callback,callback);
-        }, callback)
+        return director.at('registration').then(function () {
+            return adminConsole.checkUser(director.getPersona(personaName), checkNonExistend);
+        })
     });
-
-    //using a custom function instead of expect because expect cannot trigger the callback only for failures
-    function checkWithCallback(result, expected, callback) {
-        if (result != expected) {
-            callback(result + " does not equal " + expected);
-        }
-    }
-
-
-};
+});
 
 function checkNonExistend(expected, realData) {
     return realData.message == "error.404";

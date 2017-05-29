@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.common.security;
 
-import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.service.SecurityService;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
@@ -21,6 +21,6 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     @Override
     public String getCurrentAuditor() {
         String userName = SecurityService.getCurrentUserLogin();
-        return userName != null ? userName : Constants.SYSTEM_ACCOUNT;
+        return userName != null ? userName : PodiumConstants.SYSTEM_ACCOUNT;
     }
 }

@@ -7,11 +7,12 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {AdminConsole} from "../protractor-stories/admin-console";
+import { AdminConsole } from '../protractor-stories/admin-console';
 import PersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
+let { defineSupportCode } = require('cucumber');
 
-let Hooks: () => any = function () {
+defineSupportCode(function ({ After, Before }) {
 
     function setupUsers(adminConsole: AdminConsole, personas: string[]) {
         let createUserCalls = [];
@@ -77,23 +78,18 @@ let Hooks: () => any = function () {
         return Promise.all(assignRoleCalls);
     }
 
-    this.Before({tags: ["@default"]}, function (scenario, callback) {
+    Before({ tags: "@default" }, function (scenario): Promise<any> {
         let adminConsole = new AdminConsole();
         let userList = ["BBMRI_Admin", "Dave", "Linda"];
         let organizations = ["VarnameBank", 'SomeBank', 'XBank'];
 
-        adminConsole.cleanDB().then(function () {
-            Promise.all([
+        return adminConsole.cleanDB().then(function () {
+            return Promise.all([
                 setupUsers(adminConsole, userList),
                 setupOrganizations(adminConsole, organizations)
             ]).then(function () {
-                setupRoles(adminConsole, userList).then(function () {
-                    console.log("before hook succeeded");
-                    callback();
-                }, callback)
-            }, callback)
-        }, callback);
+                return setupRoles(adminConsole, userList)
+            })
+        });
     });
-};
-
-module.exports = Hooks;
+});

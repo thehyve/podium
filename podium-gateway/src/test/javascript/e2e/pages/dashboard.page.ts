@@ -13,7 +13,7 @@ import { Interactable } from '../protractor-stories/director';
 class DashboardPage {
     public name: string;
     public url: string;
-    public elements: {[name: string]: Interactable};
+    public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
@@ -26,7 +26,7 @@ class DashboardPage {
         this.name = "Dashboard";
         this.url = "#/dashboard";
         this.elements = {
-            "submitButton": {locator: $('span[ng-reflect-inner-h-t-m-l]')},
+            "submitButton": { locator: $('span[ng-reflect-inner-h-t-m-l]') },
         }
     }
 }

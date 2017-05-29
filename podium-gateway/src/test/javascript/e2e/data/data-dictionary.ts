@@ -7,10 +7,10 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+import { Organisation, Request, File } from './templates';
+import { normalize } from 'path';
 
-import {Organisation, Request} from "./templates"
-
-let dataDictionary: {[key: string]: any} = Object.create(null);
+let dataDictionary: { [key: string]: any } = Object.create(null);
 let dataObjects = [
     new Organisation('SomeBank', {
         "shortName": "SomeBank",
@@ -48,7 +48,8 @@ let dataObjects = [
         "type Data": true,
         "type Images": true,
         "type Material": true,
-    })
+    }),
+    new File("example", normalize(__dirname + "/example")),
 ];
 
 dataObjects.forEach(function (persona) {
