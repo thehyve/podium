@@ -13,7 +13,7 @@ import { isUndefined } from 'util';
 
 export interface Persona {
     name: string;
-    properties: {[key: string]: any};
+    properties: { [key: string]: any };
 }
 
 export interface Page {
@@ -21,7 +21,7 @@ export interface Page {
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
-    elements: {[name: string]: Interactable};
+    elements: { [name: string]: Interactable };
 }
 
 export interface Interactable {
@@ -39,12 +39,12 @@ export class Director {
     private searchDir: string;
     private currentPage: Page;
     private currentPersona: Persona;
-    private pageDictionary: {[key: string]: Page};
-    private personaDictionary: {[key: string]: Persona};
+    private pageDictionary: { [key: string]: Page };
+    private personaDictionary: { [key: string]: Persona };
     private dataDictionary = {};
 
 
-    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}, dataDictionary?) {
+    constructor(searchDir: string, PageDictionary: { [key: string]: Page }, personaDictionary: { [key: string]: Persona }, dataDictionary?) {
         this.searchDir = searchDir;
         this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
@@ -90,7 +90,7 @@ export class Director {
         let result = new Array(personaNames.length);
 
         personaNames.forEach(function (personaName, index) {
-            if (isUndefined(that.personaDictionary[personaName])){
+            if (isUndefined(that.personaDictionary[personaName])) {
                 that.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
             }
             result[index] = that.personaDictionary[personaName];
@@ -99,9 +99,9 @@ export class Director {
         return result;
     }
 
-    public getData(dataID: string){
+    public getData(dataID: string) {
         let that = this;
-        if (isUndefined(that.dataDictionary[dataID])){
+        if (isUndefined(that.dataDictionary[dataID])) {
             that.fatalError('The data: ' + dataID + ' does not exist.\n check your dataDictionary to see the available data');
         }
         return that.dataDictionary[dataID];

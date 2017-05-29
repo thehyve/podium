@@ -27,11 +27,11 @@ exports.config = {
     },
 
     // Code to start browserstack local before start of test
-    beforeLaunch: function(){
+    beforeLaunch: function () {
         console.log("Connecting local");
-        return new Promise(function(resolve, reject){
+        return new Promise(function (resolve, reject) {
             exports.bs_local = new browserstack.Local();
-            exports.bs_local.start({'key': exports.config.capabilities['browserstack.key'] }, function(error) {
+            exports.bs_local.start({'key': exports.config.capabilities['browserstack.key']}, function (error) {
                 if (error) return reject(error);
                 console.log('Connected. Now testing...');
 
@@ -41,8 +41,8 @@ exports.config = {
     },
 
     // Code to stop browserstack local after end of test
-    afterLaunch: function(){
-        return new Promise(function(resolve, reject){
+    afterLaunch: function () {
+        return new Promise(function (resolve, reject) {
             exports.bs_local.stop(resolve);
         });
     },

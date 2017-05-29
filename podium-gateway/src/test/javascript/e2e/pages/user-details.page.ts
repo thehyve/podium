@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-
-import {browser, $, $$, by, element} from "protractor";
-import {Interactable} from "../protractor-stories/director";
+import { browser, $ } from 'protractor';
+import { Interactable } from '../protractor-stories/director';
 import ProfileForm = require("./modules/profile-form")
 
 
@@ -20,7 +19,7 @@ import ProfileForm = require("./modules/profile-form")
 class UserDetails {
     public name: string;
     public url: string;
-    public elements: {[name: string]: Interactable};
+    public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
@@ -31,19 +30,19 @@ class UserDetails {
 
     constructor() {
         this.name = "User Details";
-        this.url = "#/user-management/";
+        this.url = "#/bbmri/user-management/detail/";
         this.elements = {
-            "login": {locator: $('.test-login')},
-            "firstName": {locator: $('.test-firstName')},
-            "lastName": {locator: $('.test-lastName')},
-            "email": {locator: $('.test-email')},
-            "telephone": {locator: $('.test-telephone')},
-            "institute": {locator: $('.test-institute')},
-            "department": {locator: $('.test-department')},
-            "jobTitle": {locator: $('.test-jobTitle')},
-            "specialism": {locator: $('.test-specialism')},
-            "activated": {locator: $('.test-activated')},
-            "authority": {locator: $('.test-authority')},
+            "login": { locator: $('.test-login') },
+            "firstName": { locator: $('.test-firstName') },
+            "lastName": { locator: $('.test-lastName') },
+            "email": { locator: $('.test-email') },
+            "telephone": { locator: $('.test-telephone') },
+            "institute": { locator: $('.test-institute') },
+            "department": { locator: $('.test-department') },
+            "jobTitle": { locator: $('.test-jobTitle') },
+            "specialism": { locator: $('.test-specialism') },
+            "activated": { locator: $('.test-activated') },
+            "authority": { locator: $('.test-authority') },
         }
     }
 }

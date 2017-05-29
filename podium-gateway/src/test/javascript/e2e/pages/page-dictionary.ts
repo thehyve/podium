@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Page} from "../protractor-stories/director";
+import { Page } from '../protractor-stories/director';
 import SigninPage = require("./signin.page")
 import DashboardPage = require("./dashboard.page")
 import ProfilePage = require("./profile.page")
@@ -21,14 +21,12 @@ import CreateOrganisationPage = require("./create-organisation.page")
 import NewRequestsPage = require("./new-requests.page")
 
 
-
-
 /*
  * pages must be added to this dictionary for the director class to find them.
  */
 
-function initPages () {
-    let PageDictionary: {[key: string]: Page} = Object.create(null);
+function initPages() {
+    let PageDictionary: { [key: string]: Page } = Object.create(null);
 
     PageDictionary['sign in'] = new SigninPage;
     PageDictionary['Dashboard'] = new DashboardPage;
