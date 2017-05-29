@@ -8,6 +8,10 @@
  *
  */
 
+/* ==============================================================
+Variables
+===============================================================*/
+$no-result-background: #f5f5f5;
 
 /* ==============================================================
 Bootstrap tweaks
@@ -404,10 +408,8 @@ typeahead-container {
     border-radius: 0 !important;
 }
 
-$background: #f5f5f5;
-
 .no-results {
-    background-color: $background;
+    background-color: $no-result-background;
     div {
         text-align: center;
         font-weight: 500;
