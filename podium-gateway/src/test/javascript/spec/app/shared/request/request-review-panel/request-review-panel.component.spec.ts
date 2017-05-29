@@ -45,6 +45,7 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
         comp = fixture.componentInstance;
     });
 
+
     describe('ngOnInit', () => {
 
         let reviewRound1 = new ReviewRound();
@@ -112,6 +113,20 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
             comp.ngOnInit();
             expect(comp.lastReviewFeedback.length).toBe(2);
         });
+    });
+
+    describe('toggleAdviseStyle', () => {
+
+        it('should give default style when no advice found', () => {
+            let _adviseStyle = comp.toggleAdviseStyle(undefined);
+            expect(_adviseStyle).toEqual('tag-default');
+        });
+
+        it('should give success style when advise is approved', () => {
+            let _adviseStyle = comp.toggleAdviseStyle(RequestReviewDecision.Approved);
+            expect(_adviseStyle).toEqual('tag-success');
+        })
+
     });
 
 });
