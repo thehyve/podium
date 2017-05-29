@@ -10,14 +10,11 @@
 import { RequestReviewStatusOptions } from './request-status/request-status.constants';
 import { RequestReviewDecision } from './request-review-decision';
 
-export class RequestReview {
+export class RequestReviewProcess {
 
     status: RequestReviewStatusOptions;
-    advice?: RequestReviewDecision;
-    reviewer?: string;
-    date?:  Date;
-    summary?: string;
-    description?: string;
+    processInstanceId: string;
+    decision?: RequestReviewDecision;
 
     constructor() {
     }
