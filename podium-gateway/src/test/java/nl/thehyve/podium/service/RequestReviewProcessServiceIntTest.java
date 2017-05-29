@@ -8,7 +8,7 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -76,7 +76,7 @@ public class RequestReviewProcessServiceIntTest {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.reject(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Closed, requestReviewProcess.getStatus());
-        Assert.assertEquals(DecisionOutcome.Rejected, requestReviewProcess.getDecision());
+        Assert.assertEquals(ReviewProcessOutcome.Rejected, requestReviewProcess.getDecision());
     }
 
     @Test(expected = ActionNotAllowedInStatus.class)
@@ -91,7 +91,7 @@ public class RequestReviewProcessServiceIntTest {
         requestReviewProcess = requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
         requestReviewProcess = requestReviewProcessService.reject(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Closed, requestReviewProcess.getStatus());
-        Assert.assertEquals(DecisionOutcome.Rejected, requestReviewProcess.getDecision());
+        Assert.assertEquals(ReviewProcessOutcome.Rejected, requestReviewProcess.getDecision());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class RequestReviewProcessServiceIntTest {
         requestReviewProcess = requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
         requestReviewProcess = requestReviewProcessService.approve(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Closed, requestReviewProcess.getStatus());
-        Assert.assertEquals(DecisionOutcome.Approved, requestReviewProcess.getDecision());
+        Assert.assertEquals(ReviewProcessOutcome.Approved, requestReviewProcess.getDecision());
     }
 
 }

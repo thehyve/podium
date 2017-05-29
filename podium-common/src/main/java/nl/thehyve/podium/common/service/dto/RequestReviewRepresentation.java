@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.common.service.dto;
 
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 
 import java.io.Serializable;
@@ -24,7 +24,7 @@ public class RequestReviewRepresentation implements Serializable {
 
     private RequestReviewStatus status = RequestReviewStatus.None;
 
-    private DecisionOutcome decision = DecisionOutcome.None;
+    private ReviewProcessOutcome decision = ReviewProcessOutcome.None;
 
     public RequestReviewRepresentation() {
 
@@ -54,11 +54,11 @@ public class RequestReviewRepresentation implements Serializable {
         this.status = status;
     }
 
-    public DecisionOutcome getDecision() {
+    public ReviewProcessOutcome getDecision() {
         return decision;
     }
 
-    public void setDecision(DecisionOutcome decision) {
+    public void setDecision(ReviewProcessOutcome decision) {
         this.decision = decision;
     }
 

@@ -8,7 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -128,7 +128,7 @@ public class RequestReviewProcessService {
         HistoricProcessInstance instance = findProcessInstance(requestReviewProcess.getProcessInstanceId());
         Map<String, Object> variables = instance.getProcessVariables();
         requestReviewProcess.setStatus((RequestReviewStatus) variables.get("status"));
-        requestReviewProcess.setDecision((DecisionOutcome) variables.get("decision"));
+        requestReviewProcess.setDecision((ReviewProcessOutcome) variables.get("decision"));
         requestReviewProcess = requestReviewProcessRepository.save(requestReviewProcess);
         // save to elastic search as well
         requestReviewProcessSearchRepository.save(requestReviewProcess);
@@ -161,15 +161,11 @@ public class RequestReviewProcessService {
             value);
     }
 
-    private static ActionNotAllowedInStatus actionNotAllowedInStatus(RequestReviewStatus status) throws ActionNotAllowedInStatus {
-        return new ActionNotAllowedInStatus("Invalid action in status: " + status.name());
-    }
-
     public RequestReviewProcess submitForValidation(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
         if (requestReviewProcess.getStatus() == RequestReviewStatus.Revision) {
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw actionNotAllowedInStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
     }
 
     public RequestReviewProcess submitForReview(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
@@ -177,7 +173,7 @@ public class RequestReviewProcessService {
             runtimeService.setVariable(requestReviewProcess.getProcessInstanceId(), "validation_passed", Boolean.TRUE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw actionNotAllowedInStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
     }
 
     public RequestReviewProcess requestRevision(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
@@ -190,7 +186,7 @@ public class RequestReviewProcessService {
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.TRUE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw actionNotAllowedInStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
     }
 
     public RequestReviewProcess reject(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
@@ -203,7 +199,7 @@ public class RequestReviewProcessService {
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.FALSE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw actionNotAllowedInStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
     }
 
     public RequestReviewProcess approve(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
@@ -212,7 +208,7 @@ public class RequestReviewProcessService {
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.FALSE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw actionNotAllowedInStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
     }
 
     @Timed

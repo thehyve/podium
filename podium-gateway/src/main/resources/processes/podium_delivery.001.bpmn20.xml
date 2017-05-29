@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2017  The Hyve and respective contributors.
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ See the file LICENSE in the root of this repository.
+  -->
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://thehyve.nl/podium">
+    <process id="podium_delivery_001" isExecutable="true" name="Podium delivery">
+        <documentation>Definition for the delivery process.</documentation>
+        <documentation><![CDATA[
+                          Release               Received
+  Start   +-------------+        +------------+        +------------+
++---------> Preparation +-------->  Released  +-------->   Closed   |
+          +------+------+        +------------+        +-----^------+
+                 |                              Cancel       |
+                 |     Reject                                |
+                 +-------------------------------------------+
+        ]]></documentation>
+
+
+
+        <!-- Start -->
+        <startEvent id="start" name="Start" flowable:initiator="initiator">
+            <documentation>Start the delivery process for a request and type.</documentation>
+        </startEvent>
+
+        <sequenceFlow id="from_start_to_init" sourceRef="start" targetRef="init" />
+
+        <scriptTask id="init" name="Initialise the delivery process" scriptFormat="groovy">
+            <documentation>Initialise the delivery process.</documentation>
+            <script>
+                execution.setVariable("outcome", nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome.None)
+                execution.setVariable("initiator_id", "${initiator}")
+                execution.setVariable("date_created", new Date())
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="from_init_to_status_preparation" sourceRef="init" targetRef="status_preparation" />
+
+
+
+        <!-- Preparation -->
+        <scriptTask id="status_preparation" name="Update status to Preparation" scriptFormat="groovy">
+            <documentation>Update status to Preparation.</documentation>
+            <script>
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.DeliveryStatus.Preparation)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="from_status_preparation_to_preparation" sourceRef="status_preparation" targetRef="preparation" />
+
+        <userTask id="preparation" name="Preparation">
+            <documentation>Preparing the delivery.</documentation>
+        </userTask>
+
+        <sequenceFlow id="from_preparation_to_delivery_decision" sourceRef="preparation" targetRef="delivery_decision" />
+
+
+
+
+        <!-- Delivery decision
+            Choice between:
+            - 'release' if release;
+            - 'reject' if !release.
+        -->
+        <exclusiveGateway id="delivery_decision" name="Release or reject" />
+        <sequenceFlow id="preparation_to_release" sourceRef="delivery_decision" targetRef="release">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${release == true}
+            ]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="preparation_to_reject" sourceRef="delivery_decision" targetRef="reject">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${release == false}
+            ]]></conditionExpression>
+        </sequenceFlow>
+
+
+
+        <!-- Release -->
+        <scriptTask id="release" name="Release" scriptFormat="groovy">
+            <documentation>Release.</documentation>
+            <script>
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.DeliveryStatus.Released)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="release_to_released" sourceRef="release" targetRef="released" />
+
+
+
+        <!-- Released -->
+        <userTask id="released" name="Released">
+            <documentation>The contents have been released.</documentation>
+        </userTask>
+
+        <sequenceFlow id="from_released_to_received_decision" sourceRef="released" targetRef="received_decision" />
+
+
+
+
+        <!-- Delivery received decision
+            Choice between:
+            - 'receive' if received;
+            - 'cancel' if !received.
+        -->
+        <exclusiveGateway id="received_decision" name="Release or reject" />
+        <sequenceFlow id="released_to_receive" sourceRef="received_decision" targetRef="receive">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${received == true}
+            ]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="released_to_cancel" sourceRef="received_decision" targetRef="cancel">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[
+                ${received == false}
+            ]]></conditionExpression>
+        </sequenceFlow>
+
+
+
+        <!-- Receive -->
+        <scriptTask id="receive" name="Reject the request" scriptFormat="groovy">
+            <documentation>Mark as received.</documentation>
+            <script>
+                execution.setVariable("outcome", nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome.Received)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.DeliveryStatus.Closed)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="received_to_end" sourceRef="receive" targetRef="end" />
+
+
+
+        <!-- Cancel -->
+        <scriptTask id="cancel" name="Cancel the delivery" scriptFormat="groovy">
+            <documentation>Cancel the delivery.</documentation>
+            <script>
+                execution.setVariable("outcome", nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome.Cancelled)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.DeliveryStatus.Closed)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="cancel_to_end" sourceRef="cancel" targetRef="end" />
+
+
+
+        <!-- Reject -->
+        <scriptTask id="reject" name="Reject the delivery" scriptFormat="groovy">
+            <documentation>Reject the delivery.</documentation>
+            <script>
+                execution.setVariable("outcome", nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome.Rejected)
+                execution.setVariable("status", nl.thehyve.podium.common.enumeration.DeliveryStatus.Closed)
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="reject_to_end" sourceRef="reject" targetRef="end" />
+
+
+
+        <!-- End -->
+        <endEvent id="end" name="End">
+            <documentation>End of the delivery process.</documentation>
+        </endEvent>
+
+    </process>
+</definitions>
