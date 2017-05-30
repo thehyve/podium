@@ -9,6 +9,8 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.RequestDetailService;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -54,6 +56,7 @@ public class RequestDetailResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/_search/requestdetails")
+    @SecuredByAuthority({ AuthorityConstants.ORGANISATION_COORDINATOR, AuthorityConstants.PODIUM_ADMIN })
     @Timed
     public ResponseEntity<List<RequestDetail>> searchRequestdetails(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {

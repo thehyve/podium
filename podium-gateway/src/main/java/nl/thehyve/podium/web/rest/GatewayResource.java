@@ -8,6 +8,8 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.web.rest.vm.RouteVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,7 @@ public class GatewayResource {
      * @return the ResponseEntity with status 200 (OK) and with body the list of routes
      */
     @GetMapping("/routes")
+    @SecuredByAuthority(AuthorityConstants.PODIUM_ADMIN)
     @Timed
     public ResponseEntity<List<RouteVM>> activeRoutes() {
         List<Route> routes = routeLocator.getRoutes();
