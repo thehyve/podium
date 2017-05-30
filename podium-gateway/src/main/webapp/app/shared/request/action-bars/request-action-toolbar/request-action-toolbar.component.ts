@@ -46,6 +46,7 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() submitReviewChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
+    @Output() startDeliveryChange = new EventEmitter();
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -135,5 +136,9 @@ export class RequestActionToolbarComponent implements OnInit {
 
     submitReview() {
         this.submitReviewChange.emit(true);
+    }
+
+    startDelivery() {
+        this.startDeliveryChange.emit(true);
     }
 }

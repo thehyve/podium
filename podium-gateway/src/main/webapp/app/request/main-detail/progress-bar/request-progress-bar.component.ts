@@ -23,6 +23,7 @@ import {
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestService } from '../../../shared/request/request.service';
+import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -78,14 +79,14 @@ export class RequestProgressBarComponent {
     }
 
     /**
-     * Check whether the request is closed
+     * Check whether the request is terminated
      * All closed states return an order of -1
      *
      * @param request the current request
      * @returns {boolean} true if the request status is closed
      */
-    isClosed(request: RequestBase): boolean {
-        return this.getRequestStatusOrder(request) === -1;
+    isTerminatedReview(request: RequestBase): boolean {
+        return this.getRequestStatusOrder(request) === -1 && request.requestReview.decision === RequestReviewDecision.Rejected;
     }
 
     isRevisionStatus(request: RequestBase): boolean {

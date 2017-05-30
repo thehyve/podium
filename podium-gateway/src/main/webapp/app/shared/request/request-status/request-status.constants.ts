@@ -22,13 +22,17 @@ const requestStatusesOpts: { [status: string]: any; } = {
         name: 'Review',
         order: 3
     },
+    'Approved': {
+        name: 'Approved',
+        order: 4
+    },
     'Delivery': {
         name: 'Delivery',
-        order: 4
+        order: 5
     },
     'Return' : {
         name: 'Return',
-        order: 5
+        order: 6
     }
 };
 
@@ -75,6 +79,7 @@ function convertToRequestStatusMap(requestStatuses: ReadonlyArray<RequestStatus>
 export enum RequestStatusOptions {
     Draft,
     Review,
+    Approved,
     Delivery,
     Closed,
     None
