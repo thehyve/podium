@@ -35,7 +35,6 @@ export class PodiumEventMessageComponent implements OnInit {
             this.request = request;
             this.findLastHistoricMessageEventForCurrentStatus();
         });
-
     }
 
     ngOnInit() {
@@ -43,9 +42,11 @@ export class PodiumEventMessageComponent implements OnInit {
     }
 
     findLastHistoricMessageEventForCurrentStatus() {
-        let events: PodiumEvent[] = this.request.historicEvents;
-        let lastHistoricEvent = this.request.historicEvents[events.length - 1];
-        this.lastEvent = lastHistoricEvent;
+        let messageEvents = this.request.historicEvents.filter((event) => {
+            return event.data.messageSummary != null;
+        });
+
+        this.lastEvent = messageEvents[messageEvents.length - 1];
     }
 
     isRevisionEvent(): boolean {
