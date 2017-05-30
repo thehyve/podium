@@ -60,7 +60,7 @@
             "relatedRequestNumber": "Related Request Number",
             "principalInvestigator": "Principal Investigator",
             "searchQuery": "Search Query",
-            "isCombined": "Combined Request",
+            "isCombined": "Linked Request",
             "requestTypes": "Request Types",
             "organisations": "Organisations"
         },
