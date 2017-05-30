@@ -19,6 +19,8 @@ exports.config = {
     'capabilities': {
         'browserstack.user': process.env.BROWSERSTACK_USER,
         'browserstack.key': process.env.BROWSERSTACK_KEY,
+        'build': 'podium-e2e-travis',
+        'name': process.env.TRAVIS_BRANCH,
         'os': 'Windows',
         'os_version': '7',
         'browserName': 'chrome',

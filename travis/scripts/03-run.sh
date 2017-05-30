@@ -35,6 +35,7 @@ launchCurlOrProtractor() {
         if [[ -f "tsconfig.json" ]]; then
           cd "$PODIUM_BASE"/podium-gateway
           yarn run e2e
+          yarn run e2e:firefox
         fi
         result=$?
         [ $result -eq 0 ] && break

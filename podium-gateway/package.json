@@ -32,7 +32,7 @@
     "reflect-metadata": "0.1.10",
     "rxjs": "5.3.0",
     "swagger-ui": "2.2.10",
-    "zone.js": "0.8.5"
+    "zone.js": "0.8.6"
   },
   "devDependencies": {
     "@angular/cli": "1.0.0",
@@ -115,6 +115,7 @@
     "test": "npm run lint && karma start src/test/javascript/karma.conf.js",
     "test:watch": "karma start --watch",
     "e2e": "protractor src/test/javascript/protractor.browserstack.conf.js",
+    "e2e:firefox": "protractor src/test/javascript/protractor.browserstack.conf.js --capabilities.browserName=firefox",
     "postinstall": "webdriver-manager update && npm run webpack:build"
   }
 }
