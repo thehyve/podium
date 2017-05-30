@@ -11,7 +11,7 @@ import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.event.EventType;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
@@ -74,9 +74,6 @@ public class RequestService {
     private RequestReviewProcessService requestReviewProcessService;
 
     @Autowired
-    private OrganisationClientService organisationClientService;
-
-    @Autowired
     private NotificationService notificationService;
 
     @Autowired
@@ -92,28 +89,9 @@ public class RequestService {
     }
 
 
-    private static PodiumEvent convert(StatusUpdateEvent event) {
-        PodiumEvent podiumEvent = new PodiumEvent();
-        podiumEvent.setPrincipal(event.getUsername());
-        podiumEvent.setEventType(EventType.Status_Change);
-        podiumEvent.setEventDate(event.getEventDate());
-        Map<String,String> data = new HashMap<>();
-        data.put("requestUuid", event.getRequestUuid().toString());
-        data.put("sourceStatus", event.getSourceStatus().toString());
-        data.put("targetStatus", event.getTargetStatus().toString());
-
-        if (event.getMessage() != null) {
-            data.put("messageSummary", event.getMessage().getSummary());
-            data.put("messageDescription", event.getMessage().getDescription());
-        }
-
-        podiumEvent.setData(data);
-        return podiumEvent;
-    }
-
     @Transactional
     private void persistAndPublishEvent(Request request, StatusUpdateEvent event) {
-        PodiumEvent historicEvent = convert(event);
+        PodiumEvent historicEvent = new PodiumEvent(event);
         entityManager.persist(historicEvent);
         request.addHistoricEvent(historicEvent);
         entityManager.persist(request);
@@ -121,14 +99,14 @@ public class RequestService {
         publisher.publishEvent(event);
     }
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, MessageRepresentation message) {
+    protected void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, MessageRepresentation message) {
         StatusUpdateEvent event =
             new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
 
     }
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
+    protected void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
         StatusUpdateEvent event =
             new StatusUpdateEvent(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
@@ -262,7 +240,7 @@ public class RequestService {
     }
 
     /**
-     * Checks if the status has the required status.
+     * Checks if the request has the required status.
      * @param request the request object.
      * @param status the required status.
      * @throws ActionNotAllowedInStatus iff the request does not have the required status.
@@ -274,7 +252,7 @@ public class RequestService {
     }
 
     /**
-     * Checks if the status has one of the required review statuses.
+     * Checks if the request has one of the required review statuses.
      * @param request the request object.
      * @param statuses the required review statuses.
      * @throws ActionNotAllowedInStatus iff the request is not in a review status or does not have one of the
@@ -600,6 +578,14 @@ public class RequestService {
 
         request = requestRepository.findOneByUuid(uuid);
         publishStatusUpdate(user, RequestReviewStatus.Review, request, null);
+
+        if (request.getRequestReviewProcess().getStatus() == RequestReviewStatus.Closed &&
+            request.getRequestReviewProcess().getDecision() == ReviewProcessOutcome.Approved) {
+            request.setStatus(RequestStatus.Approved);
+            request = save(request);
+            publishStatusUpdate(user, RequestStatus.Review, request, null);
+        }
+
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 

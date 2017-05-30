@@ -219,6 +219,19 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         this.requestReviewProcess = requestReviewProcess;
     }
 
+    public List<DeliveryProcess> getDeliveryProcesses() {
+        return deliveryProcesses;
+    }
+
+    public Request addDeliveryProcess(DeliveryProcess deliveryProcess) {
+        this.deliveryProcesses.add(deliveryProcess);
+        return this;
+    }
+
+    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
+        this.deliveryProcesses = deliveryProcesses;
+    }
+
     public Set<Attachment> getAttachments() {
         return attachments;
     }
