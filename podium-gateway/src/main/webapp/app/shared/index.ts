@@ -18,6 +18,7 @@ export * from './request/request-review-feedback';
 export * from './request/request';
 export * from './request/request-status/request-status.constants';
 export * from './request/request-status/request-status';
+export * from './request/request-review-panel/request-review-panel.component';
 export * from './organisation-selector/organisation-selector.component';
 export * from './request/principal-investigator';
 export * from './validators/password-validator.directive';

@@ -9,12 +9,13 @@
  */
 
 import { RequestReviewDecision } from './request-review-decision';
+import { User } from '../user/user.model';
 
 export class RequestReviewFeedback {
 
     id?: string;
     advice?: RequestReviewDecision;
-    reviewer?: string;
+    reviewer?: User;
     date?: Date;
     summary?: string;
     description?: string;
