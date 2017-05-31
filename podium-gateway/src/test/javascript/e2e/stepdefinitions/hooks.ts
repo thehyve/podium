@@ -10,6 +10,7 @@
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
 import { Persona } from '../personas/templates';
+import { browser } from 'protractor';
 import initPersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
 let { defineSupportCode } = require('cucumber');
@@ -84,6 +85,15 @@ defineSupportCode(function ({ After, Before }) {
         }
         return Promise.all(assignRoleCalls);
     }
+
+    Before(function (scenario): Promise<any> {
+        return browser.get('/').then((): Promise<any> => {
+            return Promise.all([
+                browser.executeScript('localStorage.clear();'),
+                browser.executeScript('sessionStorage.clear();')
+            ])
+        })
+    });
 
     Before({ tags: "@default" }, function (scenario): Promise<any> {
         let adminConsole = this.adminConsole as AdminConsole;

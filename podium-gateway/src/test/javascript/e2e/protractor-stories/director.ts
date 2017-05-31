@@ -52,9 +52,6 @@ export class Director {
         this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
         this.dataDictionary = dataDictionary;
-        browser.get('/');
-        browser.executeScript('localStorage.clear();');
-        browser.executeScript('sessionStorage.clear();');
     }
 
     fatalError(message: string) {
