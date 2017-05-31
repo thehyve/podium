@@ -258,8 +258,10 @@ public class DeliveryResourceIntTest {
         given(this.userClientService.findUserByUuid(any()))
             .willReturn(requesterRepresentation);
 
-        // Mock notification call
+        // Mock notification calls
         doNothing().when(this.mailService).sendSubmissionNotificationToCoordinators(any(), any(), anyListOf(UserRepresentation.class));
+        doNothing().when(this.mailService).sendDeliveryReleasedNotificationToRequester(any(), any(), any());
+        doNothing().when(this.mailService).sendDeliveryReceivedNotificationToCoordinators(any(), any(), any(), anyListOf(UserRepresentation.class));
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());
@@ -506,8 +508,15 @@ public class DeliveryResourceIntTest {
     public void startDeliveryProcesses() throws Exception {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
+
+        Thread.sleep(1000);
+        reset(this.auditService);
+
         List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
         Assert.assertEquals(2, deliveryProcesses.size());
+
+        // One request update, two delivery process updates
+        verify(this.auditService, times(3)).publishEvent(any());
     }
 
     @Test
@@ -516,6 +525,9 @@ public class DeliveryResourceIntTest {
         RequestRepresentation request = getApprovedRequest();
         List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
+
+        Thread.sleep(1000);
+        reset(this.auditService);
 
         // Release
         DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
@@ -533,6 +545,13 @@ public class DeliveryResourceIntTest {
                 Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
                 Assert.assertEquals(downloadUrl, resultDeliveryProcess.getReference());
             });
+
+        Thread.sleep(1000);
+
+        // Test if requester has been notified
+        verify(this.mailService, times(1)).sendDeliveryReleasedNotificationToRequester(any(), any(), any());
+        // Test status update event
+        verify(this.auditService, times(1)).publishEvent(any());
     }
 
     @Test
@@ -558,6 +577,9 @@ public class DeliveryResourceIntTest {
                 Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
             });
 
+        Thread.sleep(1000);
+        reset(this.auditService);
+
         // Received
         ResultActions receivedDeliveryResult
             = performDeliveryAction(requester, DELIVERY_RECEIVED, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.GET, reference);
@@ -572,6 +594,13 @@ public class DeliveryResourceIntTest {
                 Assert.assertEquals(DeliveryProcessOutcome.Received, resultDeliveryProcess.getOutcome());
                 Assert.assertEquals(downloadUrl, resultDeliveryProcess.getReference());
             });
+
+        Thread.sleep(1000);
+
+        // Test if requester has been notified
+        verify(this.mailService, times(1)).sendDeliveryReceivedNotificationToCoordinators(any(), any(), any(), anyListOf(UserRepresentation.class));
+        // Test status update events
+        verify(this.auditService, times(1)).publishEvent(any());
     }
 
     private void testCancel(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) throws Exception {
@@ -606,7 +635,15 @@ public class DeliveryResourceIntTest {
         List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
+        Thread.sleep(1000);
+        reset(this.auditService);
+
         testCancel(request, deliveryProcess);
+
+        Thread.sleep(1000);
+
+        // Test status update events
+        verify(this.auditService, times(1)).publishEvent(any());
     }
 
     @Test
@@ -615,6 +652,9 @@ public class DeliveryResourceIntTest {
         RequestRepresentation request = getApprovedRequest();
         List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
+
+        Thread.sleep(1000);
+        reset(this.auditService);
 
         // Release
         DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
@@ -631,6 +671,11 @@ public class DeliveryResourceIntTest {
             });
 
         testCancel(request, deliveryProcess);
+
+        Thread.sleep(1000);
+
+        // Test status update events
+        verify(this.auditService, times(2)).publishEvent(any());
     }
 
 }
