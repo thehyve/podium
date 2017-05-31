@@ -89,31 +89,6 @@ public class DeliveryResource {
     }
 
     /**
-     * POST /requests/:requestUuid/deliveries/:deliveryProcessUuid/reject
-     * Reject a delivery process for the delivery with uuid deliveryProcessUuid.
-     *
-     * @param requestUuid the uuid of the request the delivery process belongs to
-     * @param deliveryProcessUuid the uuid of delivery process
-     * @param message the podium event message representation
-     * @return the ResponseEntity with the delivery process representation
-     *
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     */
-    @PostMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/reject")
-    @SecuredByRequestOrganisationCoordinator
-    @Timed
-    public ResponseEntity<DeliveryProcessRepresentation> rejectDelivery(
-        @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid,
-        @PathVariable("deliveryProcessUuid") UUID deliveryProcessUuid,
-        @RequestBody MessageRepresentation message
-    ) throws ActionNotAllowed {
-        log.debug("REST request to reject delivery process for request {}, delivery {}", requestUuid, deliveryProcessUuid);
-        AuthenticatedUser user = securityService.getCurrentUser();
-        DeliveryProcessRepresentation deliveryProcess = deliveryService.reject(user, requestUuid, deliveryProcessUuid, message);
-        return new ResponseEntity<>(deliveryProcess, HttpStatus.OK);
-    }
-
-    /**
      * POST /requests/:requestUuid/deliveries/:deliveryProcessUuid/release
      * Release the delivery with uuid deliveryProcessUuid.
      *

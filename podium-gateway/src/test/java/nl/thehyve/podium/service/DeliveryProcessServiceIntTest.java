@@ -65,11 +65,11 @@ public class DeliveryProcessServiceIntTest {
     }
 
     @Test
-    public void testRejectAfterPreparation() throws ActionNotAllowed {
+    public void testCancelAfterPreparation() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
-        deliveryProcess = deliveryProcessService.reject(authenticatedUser, deliveryProcess);
+        deliveryProcess = deliveryProcessService.cancel(authenticatedUser, deliveryProcess);
         Assert.assertEquals(DeliveryStatus.Closed, deliveryProcess.getStatus());
-        Assert.assertEquals(DeliveryProcessOutcome.Rejected, deliveryProcess.getOutcome());
+        Assert.assertEquals(DeliveryProcessOutcome.Cancelled, deliveryProcess.getOutcome());
     }
 
     @Test
@@ -91,22 +91,9 @@ public class DeliveryProcessServiceIntTest {
     }
 
     @Test(expected = ActionNotAllowed.class)
-    public void testApproveAfterValidationNotAllowed() throws ActionNotAllowed {
+    public void testReceivedAfterStartNotAllowed() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcessService.received(authenticatedUser, deliveryProcess);
-    }
-
-    @Test(expected = ActionNotAllowed.class)
-    public void testCancelAfterValidationNotAllowed() throws ActionNotAllowed {
-        DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
-        deliveryProcessService.cancel(authenticatedUser, deliveryProcess);
-    }
-
-    @Test(expected = ActionNotAllowed.class)
-    public void testRejectAfterReleasedNotAllowed() throws ActionNotAllowed {
-        DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
-        deliveryProcess = deliveryProcessService.release(authenticatedUser, deliveryProcess);
-        deliveryProcessService.reject(authenticatedUser, deliveryProcess);
     }
 
 }

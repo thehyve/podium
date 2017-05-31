@@ -80,32 +80,38 @@ public class DeliveryService {
         persistAndPublishDeliveryEvent(deliveryProcess, event);
     }
 
-    /**
-     * Checks if the request has the required status.
-     * @param request the request object.
-     * @param status the required status.
-     * @return the status iff the request has the required status.
-     * @throws ActionNotAllowed iff the request does not have the required status.
-     */
-    private RequestStatus checkStatus(Request request, RequestStatus status) throws ActionNotAllowed {
-        if (request.getStatus() != status) {
-            throw ActionNotAllowed.forStatus(request.getStatus());
-        }
-        return status;
+    private boolean isCurrentStatusAllowed(Status currentStatus, Status ... allowedStatuses) {
+        return Arrays.stream(allowedStatuses).anyMatch(status ->
+            status.equals(currentStatus)
+        );
     }
 
     /**
-     * Checks if the delivery process has the required status.
-     * @param deliveryProcess the delivery process object.
-     * @param status the required status.
-     * @return the status iff the delivery process has the required status.
-     * @throws ActionNotAllowed iff the delivery process does not have the required status.
+     * Checks if the request has any of the allowed statuses.
+     * @param request the request object.
+     * @param allowedStatuses the allowed statuses.
+     * @return the current status iff the request has any of the allowed statuses.
+     * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
      */
-    private DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus status) throws ActionNotAllowed {
-        if (deliveryProcess.getStatus() != status) {
+    private RequestStatus checkStatus(Request request, Status ... allowedStatuses) throws ActionNotAllowed {
+        if (!isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
+            throw ActionNotAllowed.forStatus(request.getStatus());
+        }
+        return request.getStatus();
+    }
+
+    /**
+     * Checks if the delivery process has any of the allowed statuses.
+     * @param deliveryProcess the delivery process object.
+     * @param allowedStatuses the allowed statuses.
+     * @return the current status iff the delivery process has any of the allowed statuses.
+     * @throws ActionNotAllowed iff the delivery process does not have any of the allowed statuses.
+     */
+    private DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, Status ... allowedStatuses) throws ActionNotAllowed {
+        if (!isCurrentStatusAllowed(deliveryProcess.getStatus(), allowedStatuses)) {
             throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
         }
-        return status;
+        return deliveryProcess.getStatus();
     }
 
     /**
@@ -186,25 +192,6 @@ public class DeliveryService {
     }
 
     /**
-     * Reject the delivery process: the status of the process is updated to {@link DeliveryStatus#Closed},
-     * the outcome is set to {@link DeliveryProcessOutcome#Rejected}.
-     * Publishes a status update event for the process.
-     * @param user the current user.
-     * @param requestUuid the uuid of the request the delivery process belongs to.
-     * @param deliveryProcessUuid the uuid of the delivery process.
-     * @return the representation of the updated delivery process.
-     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Preparation}.
-     */
-    public DeliveryProcessRepresentation reject(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowed {
-        Request request = requestRepository.findOneByUuid(requestUuid);
-        DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
-        deliveryProcess = deliveryProcessService.reject(user, deliveryProcess);
-        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, message);
-        return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
-    }
-
-    /**
      * Marks the delivery process as received: the status of the process
      * is updated to {@link DeliveryStatus#Closed}, the outcome is set to {@link DeliveryProcessOutcome#Received}.
      * Publishes a status update event for the process.
@@ -231,12 +218,12 @@ public class DeliveryService {
      * @param requestUuid the uuid of the request the delivery process belongs to.
      * @param deliveryProcessUuid the uuid of the delivery process.
      * @return the representation of the updated delivery process.
-     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Released}.
+     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Preparation} or {@link DeliveryStatus#Released}.
      */
     public DeliveryProcessRepresentation cancel(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
+        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation, DeliveryStatus.Released);
         deliveryProcess = deliveryProcessService.cancel(user, deliveryProcess);
         publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, message);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);

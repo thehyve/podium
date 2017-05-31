@@ -20,7 +20,7 @@
 +---------> Preparation +-------->  Released  +-------->   Closed   |
           +------+------+        +------------+        +-----^------+
                  |                              Cancel       |
-                 |     Reject                                |
+                 |     Cancel                                |
                  +-------------------------------------------+
         ]]></documentation>
 
@@ -68,15 +68,15 @@
         <!-- Delivery decision
             Choice between:
             - 'release' if release;
-            - 'reject' if !release.
+            - 'cancel' if !release.
         -->
-        <exclusiveGateway id="delivery_decision" name="Release or reject" />
+        <exclusiveGateway id="delivery_decision" name="Release or cancel" />
         <sequenceFlow id="preparation_to_release" sourceRef="delivery_decision" targetRef="release">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${release == true}
             ]]></conditionExpression>
         </sequenceFlow>
-        <sequenceFlow id="preparation_to_reject" sourceRef="delivery_decision" targetRef="reject">
+        <sequenceFlow id="preparation_to_cancel" sourceRef="delivery_decision" targetRef="cancel">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${release == false}
             ]]></conditionExpression>
@@ -111,7 +111,7 @@
             - 'receive' if received;
             - 'cancel' if !received.
         -->
-        <exclusiveGateway id="received_decision" name="Release or reject" />
+        <exclusiveGateway id="received_decision" name="Release or cancel" />
         <sequenceFlow id="released_to_receive" sourceRef="received_decision" targetRef="receive">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${received == true}
@@ -126,7 +126,7 @@
 
 
         <!-- Receive -->
-        <scriptTask id="receive" name="Reject the request" scriptFormat="groovy">
+        <scriptTask id="receive" name="Mark the delivery as received" scriptFormat="groovy">
             <documentation>Mark as received.</documentation>
             <script>
                 execution.setVariable("outcome", nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome.Received)
@@ -148,19 +148,6 @@
         </scriptTask>
 
         <sequenceFlow id="cancel_to_end" sourceRef="cancel" targetRef="end" />
-
-
-
-        <!-- Reject -->
-        <scriptTask id="reject" name="Reject the delivery" scriptFormat="groovy">
-            <documentation>Reject the delivery.</documentation>
-            <script>
-                execution.setVariable("outcome", nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome.Rejected)
-                execution.setVariable("status", nl.thehyve.podium.common.enumeration.DeliveryStatus.Closed)
-            </script>
-        </scriptTask>
-
-        <sequenceFlow id="reject_to_end" sourceRef="reject" targetRef="end" />
 
 
 

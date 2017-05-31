@@ -116,7 +116,6 @@ public class DeliveryResourceIntTest {
     private static final String ACTION_VALIDATE = "validate";
     private static final String ACTION_APPROVE = "approve";
     private static final String ACTION_START_DELIVERY = "startDelivery";
-    private static final String DELIVERY_REJECT = "reject";
     private static final String DELIVERY_RELEASE = "release";
     private static final String DELIVERY_RECEIVED = "received";
     private static final String DELIVERY_CANCEL = "cancel";
@@ -575,58 +574,7 @@ public class DeliveryResourceIntTest {
             });
     }
 
-    @Test
-    public void rejectDelivery() throws Exception {
-        initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
-        DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
-
-        // Reject
-        MessageRepresentation message = new MessageRepresentation();
-        String summary = "Delivery rejected";
-        message.setSummary(summary);
-        message.setDescription("Rejected because data is unavailable.");
-        ResultActions rejectDeliveryResult
-            = performDeliveryAction(coordinator1, DELIVERY_REJECT, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.POST, message);
-
-        rejectDeliveryResult
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                DeliveryProcessRepresentation resultDeliveryProcess =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
-                Assert.assertEquals(DeliveryStatus.Closed, resultDeliveryProcess.getStatus());
-                Assert.assertEquals(DeliveryProcessOutcome.Rejected, resultDeliveryProcess.getOutcome());
-                List<PodiumEventRepresentation> events = resultDeliveryProcess.getHistoricEvents();
-                Assert.assertNotEquals(0, events.size());
-                events.forEach(event -> log.info("Event: {}", event));
-                PodiumEventRepresentation latestEvent = events.get(events.size() - 1);
-                Assert.assertEquals(summary, latestEvent.getData().get("messageSummary"));
-            });
-    }
-
-    @Test
-    public void cancelDelivery() throws Exception {
-        initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
-        DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
-
-        // Release
-        DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
-        ResultActions releaseDeliveryResult
-            = performDeliveryAction(coordinator1, DELIVERY_RELEASE, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.POST, reference);
-
-        releaseDeliveryResult
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                DeliveryProcessRepresentation resultDeliveryProcess =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
-                Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
-            });
-
+    private void testCancel(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) throws Exception {
         // Cancel
         MessageRepresentation message = new MessageRepresentation();
         String summary = "Delivery cancelled";
@@ -649,6 +597,40 @@ public class DeliveryResourceIntTest {
                 PodiumEventRepresentation latestEvent = events.get(events.size() - 1);
                 Assert.assertEquals(summary, latestEvent.getData().get("messageSummary"));
             });
+    }
+
+    @Test
+    public void cancelDeliveryAfterStart() throws Exception {
+        initMocks();
+        RequestRepresentation request = getApprovedRequest();
+        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
+        DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
+
+        testCancel(request, deliveryProcess);
+    }
+
+    @Test
+    public void cancelReleasedDelivery() throws Exception {
+        initMocks();
+        RequestRepresentation request = getApprovedRequest();
+        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
+        DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
+
+        // Release
+        DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
+        ResultActions releaseDeliveryResult
+            = performDeliveryAction(coordinator1, DELIVERY_RELEASE, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.POST, reference);
+
+        releaseDeliveryResult
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                DeliveryProcessRepresentation resultDeliveryProcess =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
+                Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
+            });
+
+        testCancel(request, deliveryProcess);
     }
 
 }

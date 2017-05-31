@@ -10,7 +10,6 @@ package nl.thehyve.podium.common.enumeration;
 public enum DeliveryProcessOutcome {
     Cancelled,
     Received,
-    Rejected,
     Returned,
     None
 }

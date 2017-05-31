@@ -191,31 +191,18 @@ public class DeliveryProcessService {
     }
 
     /**
-     * Completes the Released task and cancels the specified delivery process, which will
+     * Completes the Preparation or Released task and cancels the specified delivery process, which will
      * end the process and set the outcome to Cancelled.
      * @param user the current user.
      * @param deliveryProcess the delivery process object.
      * @return the updated delivery process object.
-     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Released}.
+     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Preparation} or {@link DeliveryStatus#Released}.
      */
     public DeliveryProcess cancel(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowed {
         if (deliveryProcess.getStatus() == DeliveryStatus.Released) {
             setVariable(deliveryProcess, DeliveryVariable.Received, Boolean.FALSE);
             return completeCurrentTask(user, deliveryProcess);
-        }
-        throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
-    }
-
-    /**
-     * Completes the Released task and rejects the specified delivery process, which will
-     * end the process and set the outcome to Rejected.
-     * @param user the current user.
-     * @param deliveryProcess the delivery process object.
-     * @return the updated delivery process object.
-     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Preparation}.
-     */
-    public DeliveryProcess reject(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowed {
-        if (deliveryProcess.getStatus() == DeliveryStatus.Preparation) {
+        } else if (deliveryProcess.getStatus() == DeliveryStatus.Preparation) {
             setVariable(deliveryProcess, DeliveryVariable.Release, Boolean.FALSE);
             return completeCurrentTask(user, deliveryProcess);
         }
