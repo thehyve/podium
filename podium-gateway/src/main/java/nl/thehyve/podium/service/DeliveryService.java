@@ -131,10 +131,10 @@ public class DeliveryService {
     }
 
     /**
-     *
-     * @param uuid
-     * @return
-     * @throws ActionNotAllowed
+     * Gets all delivery processes for a request.
+     * @param uuid the uuid of the request.
+     * @return a list of representations of the delivery processes belonging to the request.
+     * @throws ActionNotAllowed iff the request is not in status Delivery.
      */
     public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
