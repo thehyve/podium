@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
 import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';
+import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -28,7 +29,7 @@ import { RequestStatusUpdateDialogComponent } from '../../../shared/status-updat
 })
 
 export class RequestDetailComponent {
-
+    public RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
     public request: RequestBase;
     public requestDetails: RequestDetail;
     public isInRevision = false;
@@ -59,7 +60,9 @@ export class RequestDetailComponent {
         }
     }
 
-    submitReview(requestReviewFeedback: RequestReviewFeedback) {
+    submitReview(decision: RequestReviewDecision) {
+        let requestReviewFeedback = new RequestReviewFeedback();
+        // TODO : init modal
         this.isUpdating = true;
         this.requestService.submitReview(this.request.uuid, requestReviewFeedback)
             .subscribe(

@@ -43,9 +43,10 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() submitDraftChange = new EventEmitter();
     @Output() approveRequestChange = new EventEmitter();
     @Output() submitRequestChange = new EventEmitter();
-    @Output() submitReviewChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
+    @Output() markAcceptable = new EventEmitter();
+    @Output() markUnacceptable = new EventEmitter();
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -53,15 +54,13 @@ export class RequestActionToolbarComponent implements OnInit {
         private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
-
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
-            this.initializeStatuses();
         });
     }
 
     ngOnInit() {
-        this.initializeStatuses();
+         this.initializeStatuses();
     }
 
     initializeStatuses() {
@@ -133,7 +132,11 @@ export class RequestActionToolbarComponent implements OnInit {
         this.submitRequestChange.emit(true);
     }
 
-    submitReview() {
-        this.submitReviewChange.emit(true);
+    markRequestAcceptable() {
+        this.markAcceptable.emit(true);
+    }
+
+    markRequestUnacceptable() {
+        this.markUnacceptable.emit(true);
     }
 }

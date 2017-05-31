@@ -134,7 +134,12 @@
                 <div *ngIf="isRequestReviewer()">
                     <!-- Review -->
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-outline-primary" (click)="submitReview()">Submit review</button>
+                        <button type="button" class="btn btn-danger" (click)="markRequestUnacceptable()">
+                            <span jhiTranslate="request.toolbar.reject">Reject</span>
+                        </button>
+                        <button type="button" class="btn btn-success" (click)="markRequestAcceptable()">
+                            <span jhiTranslate="request.toolbar.approve">Approve</span>
+                        </button>
                     </div>
                 </div>
             </div>

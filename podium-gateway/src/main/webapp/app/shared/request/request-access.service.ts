@@ -59,7 +59,7 @@ export class RequestAccessService {
             return false;
         }
 
-        let requiredAuthority = OrganisationAuthorityOptions.ROLE_ORGANISATION_REVIEWER;
+        let requiredAuthority = OrganisationAuthorityOptions.ROLE_REVIEWER;
         let requiredPermission = OrganisationAuthorityOptions[requiredAuthority];
         return this.hasPermissionInAnyOrganisation(request, requiredPermission);
     }

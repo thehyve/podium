@@ -27,7 +27,7 @@
                         </li>
                     </ul>
                 </dd>
-                <dt><span jhiTranslate="request.detail.isCombined">Linked Request</span></dt>
+                <dt><span jhiTranslate="request.detail.isLinked">Linked Request</span></dt>
                 <dd>
                     <strong><span>{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
                 </dd>
@@ -82,10 +82,11 @@
                 [request]="request"
                 [isUpdating]="isUpdating"
                 (rejectChange)="rejectRequest()"
-                (submitReviewChange)="submitReview()"
                 (requireRevisionChange)="requireRequestRevision()"
                 (validateRequestChange)="validateRequest()"
-                (approveRequest)="approveRequest()">
+                (approveRequest)="approveRequest()"
+                (markAcceptable)="submitReview(RequestReviewDecision.Approved)"
+                (markUnacceptable)="submitReview(RequestReviewDecision.Rejected)">
             </pdm-request-action-toolbar>
         </div>
 
