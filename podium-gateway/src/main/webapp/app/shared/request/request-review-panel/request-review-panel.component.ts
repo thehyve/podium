@@ -20,6 +20,7 @@ import { RequestReviewDecision } from '../request-review-decision';
 
 export class RequestReviewPanelComponent implements OnInit {
 
+    RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
     lastReviewFeedback: RequestReviewFeedback[];
 
     private optionStyles = [
