@@ -31,13 +31,15 @@ export class PodiumEventMessageComponent implements OnInit {
         private requestService: RequestService,
         private requestAccessService: RequestAccessService
     ) {
+
+    }
+
+    ngOnInit() {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.findLastHistoricMessageEventForCurrentStatus();
         });
-    }
 
-    ngOnInit() {
         this.findLastHistoricMessageEventForCurrentStatus();
     }
 
