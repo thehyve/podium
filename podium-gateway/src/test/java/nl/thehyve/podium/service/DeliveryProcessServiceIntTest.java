@@ -9,7 +9,7 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.*;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.DeliveryProcess;
@@ -58,14 +58,14 @@ public class DeliveryProcessServiceIntTest {
     }
 
     @Test
-    public void testToReleasedAfterPreparation() throws ActionNotAllowedInStatus {
+    public void testToReleasedAfterPreparation() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcess = deliveryProcessService.release(authenticatedUser, deliveryProcess);
         Assert.assertEquals(DeliveryStatus.Released, deliveryProcess.getStatus());
     }
 
     @Test
-    public void testRejectAfterPreparation() throws ActionNotAllowedInStatus {
+    public void testRejectAfterPreparation() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcess = deliveryProcessService.reject(authenticatedUser, deliveryProcess);
         Assert.assertEquals(DeliveryStatus.Closed, deliveryProcess.getStatus());
@@ -73,7 +73,7 @@ public class DeliveryProcessServiceIntTest {
     }
 
     @Test
-    public void testToReceivedAfterReleased() throws ActionNotAllowedInStatus {
+    public void testToReceivedAfterReleased() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcess = deliveryProcessService.release(authenticatedUser, deliveryProcess);
         deliveryProcess = deliveryProcessService.received(authenticatedUser, deliveryProcess);
@@ -82,7 +82,7 @@ public class DeliveryProcessServiceIntTest {
     }
 
     @Test
-    public void testCancelAfterReleased() throws ActionNotAllowedInStatus {
+    public void testCancelAfterReleased() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcess = deliveryProcessService.release(authenticatedUser, deliveryProcess);
         deliveryProcess = deliveryProcessService.cancel(authenticatedUser, deliveryProcess);
@@ -90,20 +90,20 @@ public class DeliveryProcessServiceIntTest {
         Assert.assertEquals(DeliveryProcessOutcome.Cancelled, deliveryProcess.getOutcome());
     }
 
-    @Test(expected = ActionNotAllowedInStatus.class)
-    public void testApproveAfterValidationNotAllowed() throws ActionNotAllowedInStatus {
+    @Test(expected = ActionNotAllowed.class)
+    public void testApproveAfterValidationNotAllowed() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcessService.received(authenticatedUser, deliveryProcess);
     }
 
-    @Test(expected = ActionNotAllowedInStatus.class)
-    public void testCancelAfterValidationNotAllowed() throws ActionNotAllowedInStatus {
+    @Test(expected = ActionNotAllowed.class)
+    public void testCancelAfterValidationNotAllowed() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcessService.cancel(authenticatedUser, deliveryProcess);
     }
 
-    @Test(expected = ActionNotAllowedInStatus.class)
-    public void testRejectAfterReleasedNotAllowed() throws ActionNotAllowedInStatus {
+    @Test(expected = ActionNotAllowed.class)
+    public void testRejectAfterReleasedNotAllowed() throws ActionNotAllowed {
         DeliveryProcess deliveryProcess = deliveryProcessService.start(authenticatedUser, RequestType.Data);
         deliveryProcess = deliveryProcessService.release(authenticatedUser, deliveryProcess);
         deliveryProcessService.reject(authenticatedUser, deliveryProcess);

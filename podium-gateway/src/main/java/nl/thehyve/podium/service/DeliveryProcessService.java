@@ -9,7 +9,7 @@ package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.*;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.DeliveryProcess;
@@ -35,6 +35,7 @@ import java.util.Map;
 
 @Service
 @Transactional
+@Timed
 public class DeliveryProcessService {
 
     public enum DeliveryTask {
@@ -158,39 +159,78 @@ public class DeliveryProcessService {
             value);
     }
 
-    public DeliveryProcess release(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowedInStatus {
+    /**
+     * Completes the Preparation task and forwards to Released for the specified delivery process.
+     * @param user the current user.
+     * @param deliveryProcess the delivery process object.
+     * @return the updated delivery process object.
+     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Preparation}.
+     */
+    public DeliveryProcess release(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowed {
         if (deliveryProcess.getStatus() == DeliveryStatus.Preparation) {
             setVariable(deliveryProcess, DeliveryVariable.Release, Boolean.TRUE);
             return completeCurrentTask(user, deliveryProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(deliveryProcess.getStatus());
+        throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
     }
 
-    public DeliveryProcess received(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowedInStatus {
+    /**
+     * Completes the Released task and forwards to Received for the specified delivery process, which will
+     * end the process and set the outcome to Received.
+     * @param user the current user.
+     * @param deliveryProcess the delivery process object.
+     * @return the updated delivery process object.
+     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Released}.
+     */
+    public DeliveryProcess received(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowed {
         if (deliveryProcess.getStatus() == DeliveryStatus.Released) {
             setVariable(deliveryProcess, DeliveryVariable.Received, Boolean.TRUE);
             return completeCurrentTask(user, deliveryProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(deliveryProcess.getStatus());
+        throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
     }
 
-    public DeliveryProcess cancel(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowedInStatus {
+    /**
+     * Completes the Released task and cancels the specified delivery process, which will
+     * end the process and set the outcome to Cancelled.
+     * @param user the current user.
+     * @param deliveryProcess the delivery process object.
+     * @return the updated delivery process object.
+     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Released}.
+     */
+    public DeliveryProcess cancel(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowed {
         if (deliveryProcess.getStatus() == DeliveryStatus.Released) {
             setVariable(deliveryProcess, DeliveryVariable.Received, Boolean.FALSE);
             return completeCurrentTask(user, deliveryProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(deliveryProcess.getStatus());
+        throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
     }
 
-    public DeliveryProcess reject(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowedInStatus {
+    /**
+     * Completes the Released task and rejects the specified delivery process, which will
+     * end the process and set the outcome to Rejected.
+     * @param user the current user.
+     * @param deliveryProcess the delivery process object.
+     * @return the updated delivery process object.
+     * @throws ActionNotAllowed iff the current status is not {@link DeliveryStatus#Preparation}.
+     */
+    public DeliveryProcess reject(AuthenticatedUser user, DeliveryProcess deliveryProcess) throws ActionNotAllowed {
         if (deliveryProcess.getStatus() == DeliveryStatus.Preparation) {
             setVariable(deliveryProcess, DeliveryVariable.Release, Boolean.FALSE);
             return completeCurrentTask(user, deliveryProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(deliveryProcess.getStatus());
+        throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
     }
 
-    @Timed
+    /**
+     * Start a delivery process for the specified request type.
+     * Starts a process instance, associates the current user with that instance,
+     * sets the request type and returns a delivery process object.
+     *
+     * @param user the current user.
+     * @param type the request type.
+     * @return the delivery process object.
+     */
     public DeliveryProcess start(@NotNull AuthenticatedUser user, @NotNull RequestType type) {
         log.info("Creating delivery process instance for user {}, type {}", user.getName(), type);
 

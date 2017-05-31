@@ -8,12 +8,13 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.enumeration.Status;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
@@ -83,24 +84,28 @@ public class DeliveryService {
      * Checks if the request has the required status.
      * @param request the request object.
      * @param status the required status.
-     * @throws ActionNotAllowedInStatus iff the request does not have the required status.
+     * @return the status iff the request has the required status.
+     * @throws ActionNotAllowed iff the request does not have the required status.
      */
-    private void checkStatus(Request request, RequestStatus status) throws ActionNotAllowedInStatus {
+    private RequestStatus checkStatus(Request request, RequestStatus status) throws ActionNotAllowed {
         if (request.getStatus() != status) {
-            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+            throw ActionNotAllowed.forStatus(request.getStatus());
         }
+        return status;
     }
 
     /**
      * Checks if the delivery process has the required status.
      * @param deliveryProcess the delivery process object.
      * @param status the required status.
-     * @throws ActionNotAllowedInStatus iff the delivery process does not have the required status.
+     * @return the status iff the delivery process has the required status.
+     * @throws ActionNotAllowed iff the delivery process does not have the required status.
      */
-    private void checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus status) throws ActionNotAllowedInStatus {
+    private DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus status) throws ActionNotAllowed {
         if (deliveryProcess.getStatus() != status) {
-            throw ActionNotAllowedInStatus.forStatus(deliveryProcess.getStatus());
+            throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
         }
+        return status;
     }
 
     /**
@@ -123,9 +128,9 @@ public class DeliveryService {
      *
      * @param uuid
      * @return
-     * @throws ActionNotAllowedInStatus
+     * @throws ActionNotAllowed
      */
-    public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID uuid) throws ActionNotAllowedInStatus {
+    public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
         checkStatus(request, RequestStatus.Delivery);
         return request.getDeliveryProcesses().stream()
@@ -135,14 +140,15 @@ public class DeliveryService {
 
     /**
      * Start delivery processes for each of the selected request types for a request.
+     * Publishes a status update event for each of the started processes and one for the request.
      * @param user the current user.
      * @param uuid the uuid of the request.
      * @return the list of generated delivery process instances.
-     * @throws ActionNotAllowedInStatus iff the request is not in status Approved.
+     * @throws ActionNotAllowed iff the request is not in status Approved.
      */
-    public List<DeliveryProcessRepresentation> startDelivery(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public List<DeliveryProcessRepresentation> startDelivery(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        checkStatus(request, RequestStatus.Approved);
+        RequestStatus sourceStatus = checkStatus(request, RequestStatus.Approved);
         List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
         for(RequestType type: request.getRequestDetail().getRequestType()) {
             DeliveryProcess deliveryProcess = deliveryProcessService.start(user, type);
@@ -152,80 +158,87 @@ public class DeliveryService {
         }
         request.setStatus(RequestStatus.Delivery);
         request = requestRepository.save(request);
-        requestService.publishStatusUpdate(user, RequestStatus.Approved, request, null);
+        requestService.publishStatusUpdate(user, sourceStatus, request, null);
         return deliveryProcesses;
     }
 
     /**
-     *
-     * @param user
-     * @param requestUuid
-     * @param deliveryProcessUuid
-     * @param reference
-     * @return
-     * @throws ActionNotAllowedInStatus
+     * Marks the delivery process as released: the status of the process
+     * is updated to {@link DeliveryStatus#Released}.
+     * The delivery reference is stored in the delivery process object.
+     * Publishes a status update event for the process.
+     * @param user the current user.
+     * @param requestUuid the uuid of the request the delivery process belongs to.
+     * @param deliveryProcessUuid the uuid of the delivery process.
+     * @param reference the delivery reference (e.g., URL or track and trace code).
+     * @return the representation of the updated delivery process.
+     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Preparation}.
      */
-    public DeliveryProcessRepresentation release(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, DeliveryReferenceRepresentation reference) throws ActionNotAllowedInStatus {
+    public DeliveryProcessRepresentation release(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, DeliveryReferenceRepresentation reference) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
+        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
         deliveryProcess = deliveryProcessService.release(user, deliveryProcess);
         deliveryProcess.setReference(reference.getReference());
         requestRepository.save(request);
-        publishDeliveryStatusUpdate(user, DeliveryStatus.Preparation, request, deliveryProcess, null);
+        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, null);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 
     /**
-     *
-     * @param user
-     * @param requestUuid
-     * @param deliveryProcessUuid
-     * @param message
-     * @return
-     * @throws ActionNotAllowedInStatus
+     * Reject the delivery process: the status of the process is updated to {@link DeliveryStatus#Closed},
+     * the outcome is set to {@link DeliveryProcessOutcome#Rejected}.
+     * Publishes a status update event for the process.
+     * @param user the current user.
+     * @param requestUuid the uuid of the request the delivery process belongs to.
+     * @param deliveryProcessUuid the uuid of the delivery process.
+     * @return the representation of the updated delivery process.
+     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Preparation}.
      */
-    public DeliveryProcessRepresentation reject(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowedInStatus {
+    public DeliveryProcessRepresentation reject(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
+        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
         deliveryProcess = deliveryProcessService.reject(user, deliveryProcess);
-        publishDeliveryStatusUpdate(user, DeliveryStatus.Preparation, request, deliveryProcess, message);
+        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, message);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 
     /**
-     *
-     * @param user
-     * @param requestUuid
-     * @param deliveryProcessUuid
-     * @return
-     * @throws ActionNotAllowedInStatus
+     * Marks the delivery process as received: the status of the process
+     * is updated to {@link DeliveryStatus#Closed}, the outcome is set to {@link DeliveryProcessOutcome#Received}.
+     * Publishes a status update event for the process.
+     * @param user the current user.
+     * @param requestUuid the uuid of the request the delivery process belongs to.
+     * @param deliveryProcessUuid the uuid of the delivery process.
+     * @return the representation of the updated delivery process.
+     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Released}.
      */
-    public DeliveryProcessRepresentation received(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid) throws ActionNotAllowedInStatus {
+    public DeliveryProcessRepresentation received(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
+        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
         deliveryProcess = deliveryProcessService.received(user, deliveryProcess);
-        publishDeliveryStatusUpdate(user, DeliveryStatus.Released, request, deliveryProcess, null);
+        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, null);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 
     /**
-     *
-     * @param user
-     * @param requestUuid
-     * @param deliveryProcessUuid
-     * @param message
-     * @return
-     * @throws ActionNotAllowedInStatus
+     * Marks the delivery process as cancelled: the status of the process
+     * is updated to {@link DeliveryStatus#Closed}, the outcome is set to {@link DeliveryProcessOutcome#Cancelled}.
+     * Publishes a status update event for the process.
+     * @param user the current user.
+     * @param requestUuid the uuid of the request the delivery process belongs to.
+     * @param deliveryProcessUuid the uuid of the delivery process.
+     * @return the representation of the updated delivery process.
+     * @throws ActionNotAllowed iff the delivery process is not in status {@link DeliveryStatus#Released}.
      */
-    public DeliveryProcessRepresentation cancel(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowedInStatus {
+    public DeliveryProcessRepresentation cancel(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
+        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
         deliveryProcess = deliveryProcessService.cancel(user, deliveryProcess);
-        publishDeliveryStatusUpdate(user, DeliveryStatus.Released, request, deliveryProcess, message);
+        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, message);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 

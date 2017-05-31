@@ -12,17 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class ActionNotAllowedInStatus extends Exception {
-    public ActionNotAllowedInStatus(String msg) {
+public class ActionNotAllowed extends Exception {
+    public ActionNotAllowed(String msg) {
         super(msg);
     }
 
-    public ActionNotAllowedInStatus(String msg, Throwable t) {
+    public ActionNotAllowed(String msg, Throwable t) {
         super(msg, t);
     }
 
-    public static ActionNotAllowedInStatus forStatus(Status status) {
-        return new ActionNotAllowedInStatus("Action not allowed in status: " + status.name());
+    public static ActionNotAllowed forStatus(Status status) {
+        return new ActionNotAllowed("Action not allowed in status: " + status.name());
     }
 
 }

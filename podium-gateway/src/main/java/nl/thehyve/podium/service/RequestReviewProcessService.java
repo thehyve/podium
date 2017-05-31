@@ -10,7 +10,7 @@ package nl.thehyve.podium.service;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.RequestReviewProcess;
@@ -161,22 +161,22 @@ public class RequestReviewProcessService {
             value);
     }
 
-    public RequestReviewProcess submitForValidation(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
+    public RequestReviewProcess submitForValidation(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowed {
         if (requestReviewProcess.getStatus() == RequestReviewStatus.Revision) {
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
-    public RequestReviewProcess submitForReview(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
+    public RequestReviewProcess submitForReview(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowed {
         if (requestReviewProcess.getStatus() == RequestReviewStatus.Validation) {
             runtimeService.setVariable(requestReviewProcess.getProcessInstanceId(), "validation_passed", Boolean.TRUE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
-    public RequestReviewProcess requestRevision(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
+    public RequestReviewProcess requestRevision(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowed {
         if (requestReviewProcess.getStatus() == RequestReviewStatus.Validation) {
             setVariable(requestReviewProcess, ReviewVariable.ValidationPassed, Boolean.FALSE);
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.TRUE);
@@ -186,10 +186,10 @@ public class RequestReviewProcessService {
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.TRUE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
-    public RequestReviewProcess reject(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
+    public RequestReviewProcess reject(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowed {
         if (requestReviewProcess.getStatus() == RequestReviewStatus.Validation) {
             setVariable(requestReviewProcess, ReviewVariable.ValidationPassed, Boolean.FALSE);
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.FALSE);
@@ -199,16 +199,16 @@ public class RequestReviewProcessService {
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.FALSE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
-    public RequestReviewProcess approve(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowedInStatus {
+    public RequestReviewProcess approve(AuthenticatedUser user, RequestReviewProcess requestReviewProcess) throws ActionNotAllowed {
         if (requestReviewProcess.getStatus() == RequestReviewStatus.Review) {
             setVariable(requestReviewProcess, ReviewVariable.RequestApproved, Boolean.TRUE);
             setVariable(requestReviewProcess, ReviewVariable.RequestRevision, Boolean.FALSE);
             return completeCurrentTask(user, requestReviewProcess);
         }
-        throw ActionNotAllowedInStatus.forStatus(requestReviewProcess.getStatus());
+        throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
     @Timed
