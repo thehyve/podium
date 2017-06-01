@@ -4,6 +4,7 @@
 # Functions
 #-------------------------------------------------------------------------------
 launchCurlOrProtractor() {
+    browserName="$1"
     retryCount=1
     maxRetry=10
     httpUrl="http://localhost:8080"
@@ -34,8 +35,11 @@ launchCurlOrProtractor() {
         result=0
         if [[ -f "tsconfig.json" ]]; then
           cd "$PODIUM_BASE"/podium-gateway
-          yarn run e2e
-          yarn run e2e:firefox
+          if [ "$browserName" == "chrome" ]; then
+            yarn run e2e
+          else
+            yarn run "e2e:${browserName}"
+          fi
         fi
         result=$?
         [ $result -eq 0 ] && break
@@ -84,6 +88,6 @@ if [ "$RUN_PODIUM" == 1 ]; then
     # Once everything is started, run the tests
     #-------------------------------------------------------------------------------
     if [ "$PROTRACTOR" == 1 ]; then
-        launchCurlOrProtractor
+        launchCurlOrProtractor "${BROWSER_NAME}"
     fi
 fi
