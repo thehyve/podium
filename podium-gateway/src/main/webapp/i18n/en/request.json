@@ -71,7 +71,8 @@
             "date": "Date",
             "reviewerName": "Name",
             "result": "Result",
-            "comment": "Comment"
+            "comment": "Comment",
+            "noResults": "No reviews found"
         },
         "delete": {
             "dialog": {
