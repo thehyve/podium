@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.security.CustomAccessTokenConverter;
 import nl.thehyve.podium.security.CustomAuthenticationProvider;

@@ -7,12 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Request } from './request';
 import { User } from '../user/user.model';
 import { RequestDetail } from './request-detail';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
-import { RequestStatusOptions } from './request-status/request-status.constants';
-import { RequestReview } from './request-review';
 import { RequestReviewFeedback } from './request-review-feedback';
 
 export class ReviewRound {
@@ -22,7 +18,7 @@ export class ReviewRound {
     reviewFeedback?: RequestReviewFeedback[];
     startDate?: Date;
     endDate?: Date;
-    initiatedBy?: string;
+    initiatedBy?: User;
 
     constructor() {
     }

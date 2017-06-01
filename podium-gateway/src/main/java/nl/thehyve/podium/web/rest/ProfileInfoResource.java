@@ -7,10 +7,9 @@
 
 package nl.thehyve.podium.web.rest;
 
-import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.Public;
-import nl.thehyve.podium.config.DefaultProfileUtil;
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.DefaultProfileUtil;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

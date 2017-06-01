@@ -8,6 +8,7 @@
 package nl.thehyve.podium.config;
 
 import com.datastax.driver.core.Session;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.gateway.accesscontrol.AccessControlFilter;
 import nl.thehyve.podium.gateway.ratelimiting.RateLimitingFilter;
 import nl.thehyve.podium.gateway.ratelimiting.RateLimitingRepository;

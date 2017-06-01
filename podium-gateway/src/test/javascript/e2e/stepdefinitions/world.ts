@@ -7,8 +7,9 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
+import { Director } from '../protractor-stories/director';
+import { AdminConsole } from '../protractor-stories/admin-console';
+let { defineSupportCode } = require('cucumber');
 import initPages = require ("../pages/page-dictionary");
 import PersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
@@ -16,7 +17,7 @@ import initDataDictionary = require("../data/data-dictionary")
 /*
  *
  * The world class is recreated at the start of a cucumber scenario.
- * It is given as the 'this' context to a step
+ * It is given as the 'this' context to steps and hooks
  * Here it is used to create the director class at the start of a scenario so it can be accessed with this.director in every step
  */
 class World {
@@ -33,6 +34,10 @@ class World {
     }
 }
 
-export = function () {
-    this.World = World;
-};
+function initWorld() {
+    return new World();
+}
+
+defineSupportCode(function ({ setWorldConstructor }) {
+    setWorldConstructor(initWorld)
+});

@@ -12,7 +12,7 @@ export * from './request';
 export * from './request-type';
 export * from './request-base';
 export * from './request-detail';
-export * from './request-review';
+export * from './request-review-process';
 export * from './request.service';
 export * from './request-access.service';
 export * from './principal-investigator';

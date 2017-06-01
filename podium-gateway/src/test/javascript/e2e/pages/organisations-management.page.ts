@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-
-import {browser, $, $$, by, element} from "protractor";
-import {Interactable} from "../protractor-stories/director";
+import { browser, $ } from 'protractor';
+import { Interactable } from '../protractor-stories/director';
 import ProfileForm = require("./modules/profile-form")
 
 
@@ -20,7 +19,7 @@ import ProfileForm = require("./modules/profile-form")
 class OrganisationsManagementPage {
     public name: string;
     public url: string;
-    public elements: {[name: string]: Interactable};
+    public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
@@ -33,8 +32,8 @@ class OrganisationsManagementPage {
         this.name = "organisation management";
         this.url = "#/bbmri/organisation";
         this.elements = {
-            "HeaderShortName": {locator: $('th[jhisortby=shortName]')},
-            "HeaderName": {locator: $('th[jhisortby=name]')},
+            "HeaderShortName": { locator: $('th[jhisortby=shortName]') },
+            "HeaderName": { locator: $('th[jhisortby=name]') },
         }
     }
 }

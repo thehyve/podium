@@ -11,6 +11,7 @@ public class StatusUpdateEvent extends AbstractEvent {
     private final Status sourceStatus;
     private final Status targetStatus;
     private final UUID requestUuid;
+    private final UUID deliveryProcessUuid;
     private final MessageRepresentation message;
 
     public StatusUpdateEvent(
@@ -18,11 +19,13 @@ public class StatusUpdateEvent extends AbstractEvent {
         Status sourceStatus,
         Status targetStatus,
         UUID requestUuid,
+        UUID deliveryProcessUuid,
         MessageRepresentation message) {
         super(user, EventType.Status_Change);
         this.sourceStatus = sourceStatus;
         this.targetStatus = targetStatus;
         this.requestUuid = requestUuid;
+        this.deliveryProcessUuid = deliveryProcessUuid;
         this.message = message;
     }
 
@@ -30,8 +33,26 @@ public class StatusUpdateEvent extends AbstractEvent {
         AuthenticatedUser user,
         Status sourceStatus,
         Status targetStatus,
+        UUID requestUuid,
+        MessageRepresentation message) {
+        this(user, sourceStatus, targetStatus, requestUuid, null, message);
+    }
+
+    public StatusUpdateEvent(
+        AuthenticatedUser user,
+        Status sourceStatus,
+        Status targetStatus,
+        UUID requestUuid,
+        UUID deliveryProcessUuid) {
+        this(user, sourceStatus, targetStatus, requestUuid, deliveryProcessUuid, null);
+    }
+
+    public StatusUpdateEvent(
+        AuthenticatedUser user,
+        Status sourceStatus,
+        Status targetStatus,
         UUID requestUuid) {
-        this(user, sourceStatus, targetStatus, requestUuid, null);
+        this(user, sourceStatus, targetStatus, requestUuid, null, null);
     }
 
     public Status getSourceStatus() {
@@ -46,14 +67,25 @@ public class StatusUpdateEvent extends AbstractEvent {
         return requestUuid;
     }
 
+    public UUID getDeliveryProcessUuid() {
+        return deliveryProcessUuid;
+    }
+
     public MessageRepresentation getMessage() {
         return message;
     }
 
     @Override
     public String toString() {
-        return "Status of request " + requestUuid.toString() + " has been updated: " +
-            sourceStatus.toString() + " --> " + targetStatus.toString();
+        if (deliveryProcessUuid == null) {
+            return "Status of request " + requestUuid.toString() + " has been updated: " +
+                sourceStatus.toString() + " --> " + targetStatus.toString();
+        } else {
+            return "Status of delivery " + deliveryProcessUuid.toString() +
+                " (request " + requestUuid.toString() + ")" +
+                " has been updated: " +
+                sourceStatus.toString() + " --> " + targetStatus.toString();
+        }
     }
 
 }

@@ -60,9 +60,16 @@
             "relatedRequestNumber": "Related Request Number",
             "principalInvestigator": "Principal Investigator",
             "searchQuery": "Search Query",
-            "isCombined": "Combined Request",
+            "isCombined": "Linked Request",
             "requestTypes": "Request Types",
             "organisations": "Organisations"
+        },
+        "review": {
+            "summaryTitle": "Review Summary",
+            "date": "Date",
+            "reviewerName": "Name",
+            "result": "Result",
+            "comment": "Comment"
         },
         "delete": {
             "dialog": {
