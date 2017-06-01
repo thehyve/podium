@@ -44,17 +44,20 @@ export class RequestReviewPanelComponent implements OnInit {
 
     private getLastReviewFeedback() {
         // get the latest start date of review rounds
-        let _lastReviewRoundDate = Math.max.apply(Math, this.reviewRounds.map((reviewRound) => {
-            return reviewRound.startDate;
-        }));
+        let _lastReviewRoundDate = new Date(Math.max.apply(null, this.reviewRounds.map((reviewRound) => {
+            return new Date(reviewRound.startDate);
+        })));
 
         // get the latest round
         let _lastReviewRound = this.reviewRounds.find((reviewRound) => {
-            return reviewRound.startDate.getTime() === _lastReviewRoundDate;
+            return new Date(reviewRound.startDate).getTime() === _lastReviewRoundDate.getTime();
         });
 
         // return feedback of last review round
-        return _lastReviewRound.reviewFeedback;
+        if (_lastReviewRound) {
+            return _lastReviewRound.reviewFeedback;
+        }
+        return null;
     }
 
     ngOnInit(): void {

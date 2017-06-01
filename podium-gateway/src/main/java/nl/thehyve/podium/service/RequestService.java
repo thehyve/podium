@@ -8,23 +8,33 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
+import nl.thehyve.podium.common.service.dto.ReviewRoundRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
+import nl.thehyve.podium.domain.ReviewFeedback;
+import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.RequestRepository;
+import nl.thehyve.podium.repository.ReviewRoundRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -74,6 +84,12 @@ public class RequestService {
     private RequestReviewProcessService requestReviewProcessService;
 
     @Autowired
+    private ReviewRoundService reviewRoundService;
+
+    @Autowired
+    private OrganisationClientService organisationClientService;
+
+    @Autowired
     private NotificationService notificationService;
 
     @Autowired
@@ -103,7 +119,6 @@ public class RequestService {
         StatusUpdateEvent event =
             new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
-
     }
 
     protected void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
@@ -111,7 +126,6 @@ public class RequestService {
             new StatusUpdateEvent(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
     }
-
 
     /**
      * Save a request.
@@ -433,9 +447,7 @@ public class RequestService {
         if (request.getStatus() != RequestStatus.Draft) {
             throw ActionNotAllowed.forStatus(request.getStatus());
         }
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
-        }
+
         request = requestMapper.updateRequestDTOToRequest(body, request);
         save(request);
         return requestMapper.requestToRequestDTO(request);
@@ -457,11 +469,6 @@ public class RequestService {
 
         checkReviewStatus(request, RequestReviewStatus.Revision);
 
-        // FIXME: [AOP] Only requester should be able to perform an update to the request.
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
-        }
-
         requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
 
         request = save(request);
@@ -481,11 +488,6 @@ public class RequestService {
         Request request = requestRepository.findOneByUuid(uuid);
 
         checkReviewStatus(request, RequestReviewStatus.Revision);
-
-        // Is the current user the owner of the request
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request.");
-        }
 
         // Update the request details with the updated revision details
         request.setRequestDetail(request.getRevisionDetail());
@@ -543,6 +545,13 @@ public class RequestService {
         requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
+
+        // Once successfully started initiate review round and review feedback processes.
+        ReviewRound reviewRound = reviewRoundService.createReviewRoundForRequest(request);
+        request.getReviewRounds().add(reviewRound);
+
+        requestRepository.save(request);
+
         publishStatusUpdate(user, RequestReviewStatus.Validation, request, null);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
@@ -643,8 +652,27 @@ public class RequestService {
         // TODO: Aggregate mails for multiple organisations per user.
 
         for (UUID organisationUuid: request.getOrganisations()) {
-            // TODO: validate request type of the request with the supported request types of the organisation.
             Request organisationRequest = requestMapper.clone(request);
+
+            try {
+                Set<RequestType> selectedRequestTypes = organisationRequest.getRequestDetail().getRequestType();
+
+                // Fetch the organisation object and filter the organisation supported request types.
+                OrganisationDTO organisationDTO = organisationClientService.findOrganisationByUuid(organisationUuid);
+
+                Set<RequestType> organisationSupportedRequestTypes
+                    = organisationDTO.getRequestTypes().stream()
+                        .flatMap(supportedRequestType ->
+                            selectedRequestTypes.stream().filter(supportedRequestType::equals)
+                        )
+                        .collect(Collectors.toCollection(HashSet::new));
+
+                // Set the by the organisation supported request types for this request.
+                organisationRequest.getRequestDetail().setRequestType(organisationSupportedRequestTypes);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation", e);
+            }
 
             // Create organisation revision details
             RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());

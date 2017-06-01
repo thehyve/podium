@@ -11,7 +11,7 @@
 /* ==============================================================
 Variables
 ===============================================================*/
-$no-result-background: #fff;
+$no-result-background: #f5f5f5;
 
 /* ==============================================================
 Bootstrap tweaks
@@ -413,6 +413,10 @@ typeahead-container {
     div {
         text-align: center;
         font-weight: 500;
+    }
+
+    .transparent-bg {
+        background-color: transparent;
     }
 }
 
