@@ -83,7 +83,7 @@ defineSupportCode(function ({ After, Before }) {
     }
 
     Before({ tags: "@default" }, function (scenario): Promise<any> {
-        let adminConsole = new AdminConsole();
+        let adminConsole = this.adminConsole as AdminConsole;
         let userList = ["BBMRI_Admin", "Dave", "Linda", "VarnameBank_Admin", "blank user"];
         let organisations = ["VarnameBank", 'SomeBank', 'XBank'];
 
@@ -98,5 +98,12 @@ defineSupportCode(function ({ After, Before }) {
 
     Before(function (scenario): Promise<any> {
         return browser.sleep(2000);
+    });
+
+    Before({ tags: "@request" }, function (scenario): Promise<any> {
+        let adminConsole = this.adminConsole as AdminConsole;
+        let organisations = ["DataBank", 'ImageBank', 'BioBank', 'MultiBank'];
+
+        return setuporganisations(adminConsole, organisations)
     });
 });

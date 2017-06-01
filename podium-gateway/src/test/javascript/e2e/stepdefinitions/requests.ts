@@ -10,38 +10,65 @@
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { isUndefined } from 'util';
+import { Promise } from 'es6-promise';
+import { doInOrder, promiseTrue } from './util';
+import { Organisation } from '../data/templates';
+let { defineSupportCode } = require('cucumber');
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
 
-    this.When(/^(.*) creates a new draft filling data for '(.*)'$/, function (personaName, requestName, callback) {
+defineSupportCode(({ Given, When, Then }) => {
+
+    When(/^(.*) creates a new draft filling data for '(.*)'$/, function (personaName, requestName): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
         let request = director.getData(requestName);
         this.scenarioData = request; //store for next step
         let page = director.getCurrentPage();
-        let promisses = [];
 
-        director.clickOn("new draft").then(function () {
-            ["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
-                "piEmail", "piFunction", "piAffiliation", "searchQuery"].forEach(function (key) {
-                promisses.push(director.enterText(key, request.properties[key]));
-            });
+        return director.clickOn("new draft").then(() => {
+            return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
+                "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
+                return director.enterText(key, request.properties[key]);
+            }).then(() => {
+                return doInOrder(request.properties["requestTypes"], (type) => {
+                    return director.clickOn(type);
+                }).then(() => {
+                    return director.clickOn("save")
+                })
+            })
+        });
 
-            ["type Data", "type Images", "type Material"].forEach(function (key) {
-                if (request.properties[key]) {
-                    promisses.push(director.clickOn(key));
-                }
-            });
+    });
 
-            Promise.all(promisses).then(function () {
-                director.clickOn("save").then(callback, callback)
+    When(/^(.*) selects request types '(.*)'$/, function (personaName, requestTypes) {
+        let director = this.director as Director;
+        let types = requestTypes.split(", ");
+
+        return doInOrder(types, (type) => {
+            return director.clickOn(type);
+        })
+    });
+
+    Then(/^the organisations '(.*)' can be selected$/, function (organisationNames) {
+        let director = this.director as Director;
+        let orgList = organisationNames.split(", ");
+        let orgNames: string[] = [];
+
+        director.getListOfData(orgList).forEach((org: Organisation) => {
+            orgNames.push(org.properties["name"]);
+        });
+
+        return director.getElement("organisations").locator.$$('option').each((element) => {
+            return element.getText().then((text) => {
+                return promiseTrue(orgNames.some((item) => {
+                    return text.trim() == item;
+                }), "\"" + text + "\"" + "Should not be selectable")
             })
         })
 
     });
 
-    this.Then(/^the draft is saved$/, function (callback) {
+    Then(/^the draft is saved$/, function (callback) {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -50,7 +77,8 @@ export = function () {
         adminConsole.checkDraft(this.scenarioData, checkDraft, persona).then(callback, callback);
 
     });
-}
+});
+
 
 function checkDraft(expected, realData) {
     if (isUndefined(realData)) {

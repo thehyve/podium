@@ -205,7 +205,7 @@ export class AdminConsole {
         });
     }
 
-    public createOrganization(persona: Persona, Organization: any) {
+    public createOrganization(persona: Persona, organisation: any) {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
@@ -216,14 +216,15 @@ export class AdminConsole {
                 },
                 body: JSON.stringify(
                     {
-                        "name": Organization.properties['name'],
-                        "shortName": Organization.properties['shortName'],
-                        "activated": true
+                        "name": organisation.properties['name'],
+                        "shortName": organisation.properties['shortName'],
+                        "activated": true,
+                        "requestTypes": organisation.properties['requestTypes']
                     }
                 )
             };
             return request(options).catch((reason) => {
-                    console.log("http createOrganization " + Organization.properties['shortName'] + " " + reason["statusCode"]);
+                    console.log("http createOrganization " + organisation.properties['shortName'] + " " + reason["statusCode"]);
                     return "createOrganization failed"
                 }
             )

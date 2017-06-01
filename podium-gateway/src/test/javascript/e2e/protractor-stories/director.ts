@@ -154,7 +154,7 @@ export class Director {
         }
     }
 
-    public clickOn(elementName: string) {
+    public clickOn(elementName: string): Promise<any> {
         let element = this.getElement(elementName);
         this.handleDestination(element);
         return element.locator.click()

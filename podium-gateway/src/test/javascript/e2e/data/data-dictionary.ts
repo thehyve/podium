@@ -19,13 +19,36 @@ let dataObjects = [
     new Organisation("VarnameBank", {
         "shortName": "VarnameBank",
         "name": "International variable name bank",
-        "uuid": "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
         "activated": true
     }),
     new Organisation("XBank", {
         "shortName": "XBank",
         "name": "Bank",
         "activated": true
+    }),
+    new Organisation("DataBank", {
+        "shortName": "DataBank",
+        "name": "Data-Bank",
+        "activated": true,
+        "requestTypes": ["Data"]
+    }),
+    new Organisation("ImageBank", {
+        "shortName": "ImageBank",
+        "name": "Image-Bank",
+        "activated": true,
+        "requestTypes": ["Images"]
+    }),
+    new Organisation("BioBank", {
+        "shortName": "BioBank",
+        "name": "Bio-Bank",
+        "activated": true,
+        "requestTypes": ["Material"]
+    }),
+    new Organisation("MultiBank", {
+        "shortName": "MultiBank",
+        "name": "Multi-Bank",
+        "activated": true,
+        "requestTypes": ["Material", "Images", "Data"]
     }),
     new Organisation("NewOrg", {
         "shortName": "NewOrg",
@@ -44,9 +67,7 @@ let dataObjects = [
         "piFunction": "piFunction01",
         "piAffiliation": "piAffiliation01",
         "searchQuery": "searchQuery01",
-        "type Data": true,
-        "type Images": true,
-        "type Material": true,
+        "requestTypes": ["Material", "Images", "Data"]
     }),
     {
         "name": "menuRoleMapping",

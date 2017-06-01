@@ -111,6 +111,7 @@ public class TestResource {
         organisation.setName(organisationData.getName());
         organisation.setShortName(organisationData.getShortName());
         organisation.setActivated(organisationData.getActivated());
+        organisation.setRequestTypes(organisationData.getRequestTypes());
         organisation = organisationService.save(organisation);
 
         OrganisationDTO result = new OrganisationDTO();
