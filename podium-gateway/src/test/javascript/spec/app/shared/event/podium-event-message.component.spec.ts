@@ -9,7 +9,7 @@
  */
 
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
-import { DebugElement, EventEmitter } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { PodiumEventMessageComponent } from '../../../../../../main/webapp/app/shared/event/podium-event-message.component';
 import { PodiumEvent } from '../../../../../../main/webapp/app/shared/event/podium-event';
 import { RequestBase } from '../../../../../../main/webapp/app/shared/request/request-base';
@@ -20,9 +20,10 @@ import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { MockPrincipal } from '../../../helpers/mock-principal.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
+import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
+import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
 
 describe('PodiumEventMessageComponent (templateUrl)', () => {
-
     let comp: PodiumEventMessageComponent;
     let fixture: ComponentFixture<PodiumEventMessageComponent>;
     let de: DebugElement;
@@ -34,6 +35,8 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
             providers: [
                 BaseRequestOptions,
                 MockBackend,
+                MockPrincipal,
+                AccountService,
                 RequestService,
                 RequestAccessService,
                 {
@@ -84,6 +87,9 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
 
         request.historicEvents.push(statusChangeEvent);
         request.historicEvents.push(revisionEvent);
+
+        request.requester = new User();
+        request.requester.uuid = 'johndoeuuid';
 
         return request;
     };
@@ -138,7 +144,21 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
             let isRejectionEvent = comp.isRejectionEvent();
             expect(isRejectionEvent).toBeFalsy();
         });
+    });
 
+    describe('Permission for the page', () => {
+        beforeEach(() => {
+            comp.request = getDummyRequest();
+            fixture.detectChanges(); // initial binding
+        });
+
+        it('should be able to check whether the current user is the requester', inject([RequestAccessService],
+            ((requestAccessService: RequestAccessService) => {
+                spyOn(requestAccessService, 'isRequesterOf');
+                comp.isRequestOwner();
+                expect(requestAccessService.isRequesterOf).toHaveBeenCalledWith(comp.request);
+            })
+        ));
     });
 
 });

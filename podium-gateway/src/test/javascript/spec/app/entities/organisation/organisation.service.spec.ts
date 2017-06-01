@@ -19,7 +19,6 @@ describe('OrganisationService (Mocked)', () => {
         TestBed.configureTestingModule({
             providers: [
                 OrganisationService,
-
                 MockBackend,
                 BaseRequestOptions,
                 {

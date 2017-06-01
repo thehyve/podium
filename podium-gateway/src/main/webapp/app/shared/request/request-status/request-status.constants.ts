@@ -77,20 +77,20 @@ function convertToRequestStatusMap(requestStatuses: ReadonlyArray<RequestStatus>
 }
 
 export enum RequestStatusOptions {
-    Draft,
-    Review,
-    Approved,
-    Delivery,
-    Closed,
-    None
+    Draft       = <any>'Draft',
+    Review      = <any>'Review',
+    Approved    = <any>'Approved',
+    Delivery    = <any>'Delivery',
+    Closed      = <any>'Closed',
+    None        = <any>'None',
 }
 
 export enum RequestReviewStatusOptions {
-    Revision,
-    Validation,
-    Review,
-    Closed,
-    None
+    Revision    = <any>'Revision',
+    Validation  = <any>'Validation',
+    Review      = <any>'Review',
+    Closed      = <any>'Closed',
+    None        = <any>'None'
 }
 
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
