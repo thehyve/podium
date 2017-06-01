@@ -55,7 +55,6 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
         let reviewFeedback3 = new RequestReviewFeedback();
         let dummyUser = new User();
 
-
         beforeEach(() => {
             dummyUser.uuid = 'dumdum01';
             dummyUser.firstName = 'Foo';

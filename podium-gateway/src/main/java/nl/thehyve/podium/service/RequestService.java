@@ -316,7 +316,7 @@ public class RequestService {
         log.debug("Request to get all organisation requests for an organisation for a reviewer");
         checkOrganisationAccess(user, organisationUuid, AuthorityConstants.REVIEWER);
         Page<Request> result = requestRepository.findAllByRequestReviewStatusAndOrganisations(RequestReviewStatus.Review, Collections.singleton(organisationUuid), pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
@@ -566,7 +566,7 @@ public class RequestService {
 
         request = requestRepository.findOneByUuid(uuid);
         publishStatusUpdate(user, RequestReviewStatus.Validation, request, null);
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     @Timed

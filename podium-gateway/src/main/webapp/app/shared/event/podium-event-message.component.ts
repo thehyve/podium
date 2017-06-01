@@ -8,13 +8,14 @@
  *
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';
 import { PodiumEvent } from './podium-event';
 import { RequestStatusUpdateAction } from '../status-update/request-status-update-action';
 import { RequestAccessService } from '../request/request-access.service';
 import { RequestStatusOptions } from '../request/request-status/request-status.constants';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-event-message-component',
@@ -22,30 +23,39 @@ import { RequestStatusOptions } from '../request/request-status/request-status.c
     styleUrls: ['podium-event-message.component.scss']
 })
 
-export class PodiumEventMessageComponent implements OnInit {
+export class PodiumEventMessageComponent implements OnInit, OnDestroy {
     @Input()
     request: RequestBase;
     lastEvent: PodiumEvent;
+    requestSubscription: Subscription;
 
     constructor(
         private requestService: RequestService,
         private requestAccessService: RequestAccessService
     ) {
-        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+    }
+
+    ngOnInit() {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.findLastHistoricMessageEventForCurrentStatus();
         });
 
-    }
-
-    ngOnInit() {
         this.findLastHistoricMessageEventForCurrentStatus();
     }
 
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
+    }
+
     findLastHistoricMessageEventForCurrentStatus() {
-        let events: PodiumEvent[] = this.request.historicEvents;
-        let lastHistoricEvent = this.request.historicEvents[events.length - 1];
-        this.lastEvent = lastHistoricEvent;
+        let messageEvents = this.request.historicEvents.filter((event) => {
+            return event.data.messageSummary != null;
+        });
+
+        this.lastEvent = messageEvents[messageEvents.length - 1];
     }
 
     isRevisionEvent(): boolean {

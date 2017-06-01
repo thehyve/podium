@@ -9,7 +9,8 @@
   -->
 
 <div class="podium-event-message-wrapper" *ngIf="isRequestOwner()">
-    <div *ngIf="lastEvent && (isRevisionEvent() || isRejectionEvent())" class="alert alert-info">
+    <div *ngIf="lastEvent && (isRevisionEvent() || isRejectionEvent())" class="alert"
+         [ngClass]="{'alert-info': isRevisionEvent(), 'alert-danger': isRejectionEvent()}">
             <span class="material-icons" *ngIf="isRevisionEvent()">
                 edit
             </span>

@@ -10,6 +10,8 @@ package nl.thehyve.podium.web.rest;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import com.codahale.metrics.annotation.Timed;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.web.rest.vm.LoggerVM;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 public class LogsResource {
 
     @GetMapping("/logs")
+    @SecuredByAuthority(AuthorityConstants.PODIUM_ADMIN)
     @Timed
     public List<LoggerVM> getList() {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -42,6 +45,7 @@ public class LogsResource {
 
     @PutMapping("/logs")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @SecuredByAuthority(AuthorityConstants.PODIUM_ADMIN)
     @Timed
     public void changeLevel(@RequestBody LoggerVM jsonLogger) {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();

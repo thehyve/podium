@@ -138,6 +138,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Approved -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Review)">
+
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+                    <div class="alert alert-info" jhiTranslate="request.toolbar.approved">
+                        Your request has been approved and is pending start of delivery by the organisation coordinator.
+                    </div>
+                </div>
+
+                <!-- Coordinator action to start request delivery -->
+                <div *ngIf="isRequestCoordinator()">
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-default test-request-start-delivery-btn"
+                                (click)="startDeliveryChange()">
+                            <span jhiTranslate="request.toolbar.startDelivery">Start delivery process</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </fieldset>
 
     </form>
