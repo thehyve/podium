@@ -74,7 +74,7 @@ public class DeliveryService {
         publisher.publishEvent(event);
     }
 
-    private void publishDeliveryStatusUpdate(AuthenticatedUser user, Status sourceStatus, Request request, DeliveryProcess deliveryProcess, MessageRepresentation message) {
+    private void publishDeliveryStatusUpdate(AuthenticatedUser user, DeliveryStatus sourceStatus, Request request, DeliveryProcess deliveryProcess, MessageRepresentation message) {
         StatusUpdateEvent event =
             new StatusUpdateEvent(user, sourceStatus, deliveryProcess.getStatus(), request.getUuid(), deliveryProcess.getUuid(), message);
         persistAndPublishDeliveryEvent(deliveryProcess, event);
@@ -159,7 +159,7 @@ public class DeliveryService {
         for(RequestType type: request.getRequestDetail().getRequestType()) {
             DeliveryProcess deliveryProcess = deliveryProcessService.start(user, type);
             request.addDeliveryProcess(deliveryProcess);
-            publishDeliveryStatusUpdate(user, RequestStatus.Approved, request, deliveryProcess, null);
+            publishDeliveryStatusUpdate(user, DeliveryStatus.None, request, deliveryProcess, null);
             deliveryProcesses.add(deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess));
         }
         request.setStatus(RequestStatus.Delivery);
