@@ -10,7 +10,7 @@
 
 package nl.thehyve.podium.common.service.dto;
 
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 
 import java.time.ZonedDateTime;
 
@@ -19,7 +19,7 @@ public class ReviewFeedbackRepresentation {
 
     private UserRepresentation reviewer;
 
-    private DecisionOutcome advice;
+    private ReviewProcessOutcome advice;
 
     private ZonedDateTime date;
 
@@ -41,11 +41,11 @@ public class ReviewFeedbackRepresentation {
         this.reviewer = reviewer;
     }
 
-    public DecisionOutcome getAdvice() {
+    public ReviewProcessOutcome getAdvice() {
         return advice;
     }
 
-    public void setAdvice(DecisionOutcome advice) {
+    public void setAdvice(ReviewProcessOutcome advice) {
         this.advice = advice;
     }
 

@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.common.enumeration;
 
-public enum DecisionOutcome {
+public enum ReviewProcessOutcome {
     Approved,
     Rejected,
     None

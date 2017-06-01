@@ -10,7 +10,7 @@
 
 package nl.thehyve.podium.domain;
 
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
@@ -58,7 +58,7 @@ public class ReviewFeedback implements Serializable {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "advice", nullable = false)
-    private DecisionOutcome advice = DecisionOutcome.None;
+    private ReviewProcessOutcome advice = ReviewProcessOutcome.None;
 
     private ZonedDateTime date;
 
@@ -83,11 +83,11 @@ public class ReviewFeedback implements Serializable {
         this.reviewer = reviewer;
     }
 
-    public DecisionOutcome getAdvice() {
+    public ReviewProcessOutcome getAdvice() {
         return advice;
     }
 
-    public void setAdvice(DecisionOutcome advice) {
+    public void setAdvice(ReviewProcessOutcome advice) {
         this.advice = advice;
     }
 

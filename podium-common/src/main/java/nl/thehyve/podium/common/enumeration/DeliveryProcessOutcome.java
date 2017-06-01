@@ -7,13 +7,9 @@
 
 package nl.thehyve.podium.common.enumeration;
 
-/**
- * The RequestStatus enumeration.
- */
-public enum RequestStatus implements Status {
-    Draft,
-    Review,
-    Approved,
-    Delivery,
-    Closed
+public enum DeliveryProcessOutcome {
+    Cancelled,
+    Received,
+    Returned,
+    None
 }

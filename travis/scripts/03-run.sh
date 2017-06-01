@@ -73,12 +73,12 @@ if [ "$RUN_PODIUM" == 1 ]; then
     java -jar podium-uaa.war \
         --server.port="$PODIUM_UAA_RUN_PORT" \
         --spring.profiles.active="$PROFILE",test &
-    sleep 80
+    sleep 120
 
     cd "$PODIUM_BASE"/podium-gateway
     java -jar podium-gateway.war \
         --spring.profiles.active="$PROFILE",test &
-    sleep 40
+    sleep 100
 
     #-------------------------------------------------------------------------------
     # Once everything is started, run the tests
