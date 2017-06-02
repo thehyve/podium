@@ -15,6 +15,7 @@ import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
 import nl.thehyve.podium.common.service.dto.DeliveryReferenceRepresentation;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.service.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,13 +80,13 @@ public class DeliveryResource {
     @GetMapping("/requests/{requestUuid}/startDelivery")
     @SecuredByRequestOrganisationCoordinator
     @Timed
-    public ResponseEntity<List<DeliveryProcessRepresentation>> startDelivery(
+    public ResponseEntity<RequestRepresentation> startDelivery(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid
     ) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/startDelivery (user: {})", requestUuid, user);
-        List<DeliveryProcessRepresentation> deliveryProcesses = deliveryService.startDelivery(user, requestUuid);
-        return new ResponseEntity<>(deliveryProcesses, HttpStatus.OK);
+        RequestRepresentation request = deliveryService.startDelivery(user, requestUuid);
+        return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
     /**
