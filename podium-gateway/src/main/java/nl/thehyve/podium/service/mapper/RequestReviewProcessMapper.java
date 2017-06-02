@@ -10,8 +10,8 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.domain.RequestReviewProcess;
 import nl.thehyve.podium.common.service.dto.RequestReviewRepresentation;
+import nl.thehyve.podium.domain.RequestReviewProcess;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

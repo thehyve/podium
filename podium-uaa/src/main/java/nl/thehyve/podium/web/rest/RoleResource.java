@@ -22,7 +22,6 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;

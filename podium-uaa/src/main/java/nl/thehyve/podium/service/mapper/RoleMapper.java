@@ -16,11 +16,8 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.util.UuidMapper;
-import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

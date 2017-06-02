@@ -8,7 +8,11 @@
 package nl.thehyve.podium.common.security;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SerialisedUser implements AuthenticatedUser, Serializable {

@@ -7,14 +7,12 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translate';
-import { RequestProgressBarComponent }
-    from '../../../../../../../main/webapp/app/request/main-detail/progress-bar/request-progress-bar.component';
+import { RequestProgressBarComponent } from '../../../../../../../main/webapp/app/request/main-detail/progress-bar/request-progress-bar.component';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
 import { MockLanguageService } from '../../../../helpers/mock-language.service';
@@ -25,7 +23,7 @@ import { RequestService } from '../../../../../../../main/webapp/app/shared/requ
 import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
 import {
     RequestReviewStatusOptions,
-    RequestStatusOptions,
+    RequestStatusOptions
 } from '../../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
 

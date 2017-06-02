@@ -7,8 +7,8 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.common.service.dto.PrincipalInvestigatorRepresentation;
+import nl.thehyve.podium.domain.PrincipalInvestigator;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

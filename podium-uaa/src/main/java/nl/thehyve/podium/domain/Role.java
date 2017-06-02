@@ -9,7 +9,6 @@ package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,7 +29,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * A Role.

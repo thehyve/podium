@@ -14,8 +14,6 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
-import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

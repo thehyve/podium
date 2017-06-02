@@ -8,7 +8,6 @@
 package nl.thehyve.podium.common.service;
 
 import nl.thehyve.podium.common.resource.InternalUserResource;
-import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;

@@ -8,8 +8,8 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;

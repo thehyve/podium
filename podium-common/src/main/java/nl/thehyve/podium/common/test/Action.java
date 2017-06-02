@@ -4,7 +4,11 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * Class that encodes a test action.

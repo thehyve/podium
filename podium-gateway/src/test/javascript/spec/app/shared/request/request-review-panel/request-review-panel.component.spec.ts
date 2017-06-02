@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestReviewPanelComponent } from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';

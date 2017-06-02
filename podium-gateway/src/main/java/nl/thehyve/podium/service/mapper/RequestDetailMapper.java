@@ -7,8 +7,8 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
+import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.util.DefaultRequestDetail;
 import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;

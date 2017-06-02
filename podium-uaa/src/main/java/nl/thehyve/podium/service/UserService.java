@@ -9,6 +9,7 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.UaaProperties;
 import nl.thehyve.podium.domain.Role;
@@ -20,7 +21,6 @@ import nl.thehyve.podium.exceptions.VerificationKeyExpired;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;

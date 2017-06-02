@@ -7,12 +7,11 @@
 
 package nl.thehyve.podium.common.resource;
 
-import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.service.dto.AuditEventRepresentation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @RequestMapping("/internal")
 public interface InternalAuditResource {
