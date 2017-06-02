@@ -20,6 +20,7 @@ import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
+import nl.thehyve.podium.domain.DeliveryProcess;
 import nl.thehyve.podium.service.*;
 import org.junit.After;
 import org.junit.Assert;
@@ -116,6 +117,7 @@ public class DeliveryResourceIntTest {
     private static final String ACTION_VALIDATE = "validate";
     private static final String ACTION_APPROVE = "approve";
     private static final String ACTION_START_DELIVERY = "startDelivery";
+    private static final String ACTION_GET_DELIVERIES = "deliveries";
     private static final String DELIVERY_RELEASE = "release";
     private static final String DELIVERY_RECEIVED = "received";
     private static final String DELIVERY_CANCEL = "cancel";
@@ -138,6 +140,15 @@ public class DeliveryResourceIntTest {
         organisation.setName("Test organisation " + i);
         organisation.setShortName("Test" + i);
         organisation.setActivated(true);
+
+        // The organisation accepts the Material and Data request types
+        Set<RequestType> requestTypes = Sets.newSet(
+            RequestType.Material,
+            RequestType.Data
+        );
+
+        organisation.setRequestTypes(requestTypes);
+
         return organisation;
     }
 
@@ -485,36 +496,74 @@ public class DeliveryResourceIntTest {
         return res[0];
     }
 
-    private List<DeliveryProcessRepresentation> createDeliveryProcesses(RequestRepresentation request) throws Exception {
-        final List<DeliveryProcessRepresentation>[] res = new List[1];
+    private RequestRepresentation createDeliveryProcesses(RequestRepresentation request) throws Exception {
+        final RequestRepresentation[] res = new RequestRepresentation[1];
         // Start delivery.
         ResultActions startDeliveryResult
             = performProcessAction(coordinator1, ACTION_START_DELIVERY, request.getUuid(), HttpMethod.GET, null);
 
         startDeliveryResult
+            .andDo(result -> {
+                log.info("Result delivery request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation deliveryRequest =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                res[0] = deliveryRequest;
+            })
+            .andExpect(status().isOk());
+        return res[0];
+    }
+
+    private List<DeliveryProcessRepresentation> getDeliveryProcesses(RequestRepresentation request) throws Exception {
+        // Fetch delivery processes
+        ResultActions deliveryProcessesResult
+            = performProcessAction(coordinator1, ACTION_GET_DELIVERIES, request.getUuid(), HttpMethod.GET, null);
+
+        final List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
+
+        deliveryProcessesResult
             .andExpect(status().isOk())
             .andDo(result -> {
                 log.info("Result delivery processes: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                List<DeliveryProcessRepresentation> deliveryProcesses =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), deliveryProcessListTypeReference);
-                res[0] = deliveryProcesses;
+                deliveryProcesses.addAll(
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), deliveryProcessListTypeReference));
             });
-        return res[0];
+
+        return deliveryProcesses;
     }
+
 
     @Test
     public void startDeliveryProcesses() throws Exception {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
-        Assert.assertEquals(2, deliveryProcesses.size());
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        Assert.assertNotNull(deliveryRequest);
+        Assert.assertEquals(deliveryRequest.getStatus(), RequestStatus.Delivery);
     }
 
     @Test
     public void releaseDelivery() throws Exception {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
+
+        // Setup delivery request
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+
+        // Fetch delivery processes
+        ResultActions deliveryProcessesResult
+            = performProcessAction(coordinator1, ACTION_GET_DELIVERIES, deliveryRequest.getUuid(), HttpMethod.GET, null);
+
+        final List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
+
+        deliveryProcessesResult
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result delivery processes: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                deliveryProcesses.addAll(
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), deliveryProcessListTypeReference)
+                );
+            });
+
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         // Release
@@ -539,7 +588,8 @@ public class DeliveryResourceIntTest {
     public void deliveryReceived() throws Exception {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         // Release
@@ -603,7 +653,8 @@ public class DeliveryResourceIntTest {
     public void cancelDeliveryAfterStart() throws Exception {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         testCancel(request, deliveryProcess);
@@ -613,7 +664,8 @@ public class DeliveryResourceIntTest {
     public void cancelReleasedDelivery() throws Exception {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
-        List<DeliveryProcessRepresentation> deliveryProcesses = createDeliveryProcesses(request);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         // Release
