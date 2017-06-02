@@ -154,7 +154,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
 
     toggleActivated (organisation) {
         organisation.activated = !organisation.activated;
-        this.organisationService.activate(organisation.id, organisation.activated).subscribe(
+        this.organisationService.activate(organisation.uuid, organisation.activated).subscribe(
             (res: Response) => {
                 if (res.status === 200) {
                     this.error = null;
