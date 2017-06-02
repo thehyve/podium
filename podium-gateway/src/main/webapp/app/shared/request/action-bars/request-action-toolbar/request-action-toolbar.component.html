@@ -8,8 +8,7 @@
   ~
   -->
 
-<div class="request-action-toolbar" *ngIf="request">
-
+<div class="request-action-wrapper request-action-toolbar" *ngIf="request">
     <form>
         <fieldset [disabled]="isUpdating">
             <!-- Draft / Submit -->
@@ -50,7 +49,7 @@
 
                     <!-- Revision -->
                     <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
-                        <button type="button" class="btn btn-outline-default" id="cancel-btn" (click)="cancel()">
+                        <button type="button" class="btn btn-default" id="cancel-btn" (click)="cancel()">
                             <span jhiTranslate="request.toolbar.cancel">Cancel</span>
                         </button>
                         <div class="float-xs-right">
@@ -134,7 +133,7 @@
                 <div *ngIf="isRequestReviewer()">
                     <!-- Review -->
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-outline-primary" (click)="submitReview()">Submit review</button>
+                        <button type="button" class="btn btn-primary" (click)="submitReview()">Submit review</button>
                     </div>
                 </div>
             </div>
@@ -153,7 +152,7 @@
                 <div *ngIf="isRequestCoordinator()">
                     <div class="float-xs-right">
                         <button type="button" class="btn btn-default test-request-start-delivery-btn"
-                                (click)="startDeliveryChange()">
+                                (click)="startDelivery()">
                             <span jhiTranslate="request.toolbar.startDelivery">Start delivery process</span>
                         </button>
                     </div>

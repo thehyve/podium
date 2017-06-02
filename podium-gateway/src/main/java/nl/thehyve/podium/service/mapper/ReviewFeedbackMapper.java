@@ -17,6 +17,7 @@ import nl.thehyve.podium.service.util.UserMapperHelper;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 /**
  * Mapper for the entity ReviewFeedback and its DTO ReviewFeedbackRepresentation.
@@ -33,4 +34,15 @@ public interface ReviewFeedbackMapper {
     @Mapping(source = "description", target = "message.description")
     @Mapping(target = "reviewer", qualifiedBy = ExtendedUser.class)
     ReviewFeedbackRepresentation reviewFeedbackToReviewFeedbackRepresentation(ReviewFeedback reviewFeedback);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "reviewer", ignore = true)
+    @Mapping(target = "date", ignore = true)
+    @Mapping(source = "message.summary", target = "summary")
+    @Mapping(source = "message.description", target = "description")
+    ReviewFeedback safeUpdateReviewFeedbackFromDTO(
+        ReviewFeedbackRepresentation reviewFeedbackRepresentation,
+        @MappingTarget ReviewFeedback reviewFeedback
+    );
 }

@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ReviewRoundService {
 
     private final Logger log = LoggerFactory.getLogger(ReviewRoundService.class);
@@ -72,6 +74,8 @@ public class ReviewRoundService {
      */
     @Timed
     public ReviewRound createReviewRoundForRequest(Request request) {
+        log.debug("Creating review round for request {}", request.getUuid());
+
         // Create new review round
         ReviewRound reviewRound = new ReviewRound();
         reviewRound.setRequestDetail(request.getRequestDetail());
@@ -120,5 +124,20 @@ public class ReviewRoundService {
 
         return reviewRound;
     }
+
+    public Request finalizeReviewRoundForRequest(Request request) {
+        log.debug("Finalizing review round for request {}", request.getUuid());
+        ReviewRound reviewRound = request.getReviewRounds().stream().reduce((a, b) -> b).orElse(null);
+
+        // Finalize an open review round.
+        if (reviewRound != null && reviewRound.getEndDate() == null) {
+            reviewRound.setEndDate(ZonedDateTime.now());
+            reviewRoundRepository.save(reviewRound);
+            reviewRoundSearchRepository.save(reviewRound);
+        }
+
+        return request;
+    }
+
 
 }
