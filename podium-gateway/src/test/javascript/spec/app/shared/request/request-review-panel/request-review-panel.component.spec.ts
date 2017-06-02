@@ -8,7 +8,8 @@
  *
  */
 
-import { RequestReviewPanelComponent } from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
+import { RequestReviewPanelComponent }
+    from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +18,9 @@ import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shar
 import { User } from '../../../../../../../main/webapp/app/shared/user/user.model';
 import { RequestReviewFeedback } from '../../../../../../../main/webapp/app/shared/request/request-review-feedback';
 import { ReviewRound } from '../../../../../../../main/webapp/app/shared/request/review-round';
+import { RequestService } from '../../../../../../../main/webapp/app/shared/request/request.service';
+import { MockBackend } from '@angular/http/testing';
+import { BaseRequestOptions, Http } from '@angular/http';
 
 describe('RequestReviewPanelComponent (templateUrl)', () => {
 
@@ -28,7 +32,18 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            providers: [],
+            providers: [
+                MockBackend,
+                BaseRequestOptions,
+                RequestService,
+                {
+                    provide: Http,
+                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
+                        return new Http(backendInstance, defaultOptions);
+                    },
+                    deps: [MockBackend, BaseRequestOptions]
+                }
+            ],
             imports: [FormsModule],
             declarations: [RequestReviewPanelComponent], // declare the test component
         }).overrideComponent(RequestReviewPanelComponent, {
