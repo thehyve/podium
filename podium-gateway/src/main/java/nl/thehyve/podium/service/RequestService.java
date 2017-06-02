@@ -553,6 +553,14 @@ public class RequestService {
 
         request = requestRepository.findOneByUuid(uuid);
         publishReviewStatusUpdate(user, sourceReviewStatus, request, message);
+
+        if (request.getRequestReviewProcess().getStatus() == RequestReviewStatus.Closed &&
+            request.getRequestReviewProcess().getDecision() == ReviewProcessOutcome.Rejected) {
+            request.setStatus(RequestStatus.Closed);
+            request = save(request);
+            publishStatusUpdate(user, sourceStatus, request, null);
+        }
+
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
