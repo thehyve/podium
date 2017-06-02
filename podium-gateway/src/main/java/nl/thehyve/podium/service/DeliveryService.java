@@ -86,14 +86,8 @@ public class DeliveryService {
 
     private void publishDeliveryStatusUpdate(AuthenticatedUser user, DeliveryStatus sourceStatus, Request request, DeliveryProcess deliveryProcess, MessageRepresentation message) {
         StatusUpdateEvent event =
-            new StatusUpdateEvent(user, sourceStatus, deliveryProcess.getStatus(), request.getUuid(), deliveryProcess.getUuid(), message);
+            new StatusUpdateEvent<>(user, sourceStatus, deliveryProcess.getStatus(), request.getUuid(), deliveryProcess.getUuid(), message);
         persistAndPublishDeliveryEvent(deliveryProcess, event);
-    }
-
-    private <S extends Status> boolean isCurrentStatusAllowed(S currentStatus, S ... allowedStatuses) {
-        return Arrays.stream(allowedStatuses).anyMatch(status ->
-            status == currentStatus
-        );
     }
 
     /**
@@ -103,8 +97,8 @@ public class DeliveryService {
      * @return the current status iff the request has any of the allowed statuses.
      * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
      */
-    private RequestStatus checkStatus(Request request, RequestStatus ... allowedStatuses) throws ActionNotAllowed {
-        if (!isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
+    private static RequestStatus checkStatus(Request request, RequestStatus ... allowedStatuses) throws ActionNotAllowed {
+        if (!Status.isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
             throw ActionNotAllowed.forStatus(request.getStatus());
         }
         return request.getStatus();
@@ -117,8 +111,8 @@ public class DeliveryService {
      * @return the current status iff the delivery process has any of the allowed statuses.
      * @throws ActionNotAllowed iff the delivery process does not have any of the allowed statuses.
      */
-    private DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus ... allowedStatuses) throws ActionNotAllowed {
-        if (!isCurrentStatusAllowed(deliveryProcess.getStatus(), allowedStatuses)) {
+    private static DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus ... allowedStatuses) throws ActionNotAllowed {
+        if (!Status.isCurrentStatusAllowed(deliveryProcess.getStatus(), allowedStatuses)) {
             throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
         }
         return deliveryProcess.getStatus();
