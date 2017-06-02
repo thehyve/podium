@@ -33,7 +33,7 @@ env:
   matrix:
     - TASK=integration
     - TASK=e2e; BROWSER_NAME=chrome
-    - TASK=e2e; BROWSER_NAME=firefox
+    # - TASK=e2e; BROWSER_NAME=firefox
 before_install:
   - nvm install $NODE_VERSION
   - node -v
