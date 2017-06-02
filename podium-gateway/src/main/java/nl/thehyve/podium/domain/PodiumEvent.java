@@ -12,7 +12,8 @@ import nl.thehyve.podium.common.domain.AbstractPodiumEvent;
 import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
 

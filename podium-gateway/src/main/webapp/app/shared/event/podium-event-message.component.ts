@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';

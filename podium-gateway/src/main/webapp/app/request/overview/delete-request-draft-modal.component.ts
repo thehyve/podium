@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { RequestService } from '../../shared/request/request.service';
 import { EventManager } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';

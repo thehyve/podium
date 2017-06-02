@@ -12,7 +12,6 @@ import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
-import { organisationRoute } from '../../backoffice/modules/organisation/organisation.route';
 
 @Component({
     selector: 'pdm-organisation-selector',

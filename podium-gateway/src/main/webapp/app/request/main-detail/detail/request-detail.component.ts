@@ -7,8 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
@@ -17,7 +16,6 @@ import { RequestAccessService } from '../../../shared/request/request-access.ser
 import { RequestReviewStatusOptions } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
-import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
 import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';

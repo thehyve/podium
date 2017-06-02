@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';

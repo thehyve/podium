@@ -20,7 +20,9 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
 import nl.thehyve.podium.common.service.dto.DeliveryReferenceRepresentation;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.domain.*;
+import nl.thehyve.podium.domain.DeliveryProcess;
+import nl.thehyve.podium.domain.PodiumEvent;
+import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.service.mapper.DeliveryProcessMapper;
 import org.slf4j.Logger;
@@ -31,7 +33,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 

@@ -12,7 +12,8 @@ import { UserRouteAccessService } from '../shared';
 import { requestFormRoute } from './';
 import { requestFormEditRoute } from './form/request-form-edit.route';
 import {
-    requestOverviewRoute, organisationRequestOverviewRoute,
+    requestOverviewRoute,
+    organisationRequestOverviewRoute,
     reviewerRequestOverviewRoute
 } from './overview/request-overview.route';
 import { requestMainDetailRoute } from './main-detail/request-main-detail.route';
