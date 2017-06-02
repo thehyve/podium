@@ -232,9 +232,9 @@ public class OrganisationServer implements OrganisationResource {
     }
 
     /**
-     * PUT /organisations/:id/activation?value=:activation : activate or deactivate the "id" organisation
+     * PUT /organisations/:uuid/activation?value=:activation : activate or deactivate the "uuid" organisation
      *
-     * @param id the id of the organisation to be activated/deactivated
+     * @param uuid the uuid of the organisation to be activated/deactivated
      * @param activation boolean activation flag (true or false)
      * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
      * or with status 400 (Bad Request) if the organisation is not valid,

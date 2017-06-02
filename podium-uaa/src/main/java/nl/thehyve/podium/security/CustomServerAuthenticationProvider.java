@@ -9,6 +9,7 @@ package nl.thehyve.podium.security;
 
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.config.UaaProperties;
+import nl.thehyve.podium.config.UaaProperties.Security;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.AccountNotVerifiedException;
 import nl.thehyve.podium.exceptions.EmailNotVerifiedException;
@@ -84,9 +85,9 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
      * - the provided password matches the (encrypted) password of the user.
      *
      * If the wrong password is provided for too many times (configured in
-     * {@link UaaProperties.Security#maxFailedLoginAttempts}), the user accounts is blocked.
-     * If the setting {@link UaaProperties.Security#timeBasedUnlockingEnabled} is true (default is false),
-     * the account will be automatically unlocked after {@link UaaProperties.Security#accountLockingPeriodSeconds}
+     * {@link Security#maxFailedLoginAttempts}), the user accounts is blocked.
+     * If the setting {@link Security#timeBasedUnlockingEnabled} is true (default is false),
+     * the account will be automatically unlocked after {@link Security#accountLockingPeriodSeconds}
      * seconds.
      *
      * @param authentication the {@link UsernamePasswordAuthenticationToken} object.
