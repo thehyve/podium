@@ -13,9 +13,11 @@ package nl.thehyve.podium.repository;
 import nl.thehyve.podium.domain.ReviewFeedback;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.UUID;
+
 /**
- * Spring Data JPA repository for the RequestDetail entity.
+ * Spring Data JPA repository for the ReviewFeedback entity.
  */
 public interface ReviewFeedbackRepository extends JpaRepository<ReviewFeedback, Long> {
-
+    ReviewFeedback findOneByUuid(UUID reviewFeedbackUuid);
 }

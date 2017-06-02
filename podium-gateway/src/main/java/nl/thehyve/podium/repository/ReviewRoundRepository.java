@@ -13,9 +13,11 @@ package nl.thehyve.podium.repository;
 import nl.thehyve.podium.domain.ReviewRound;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.UUID;
+
 /**
  * Spring Data JPA repository for the ReviewRound entity.
  */
 public interface ReviewRoundRepository extends JpaRepository<ReviewRound, Long> {
-
+    ReviewRound findOneByUuid(UUID reviewRoundUuid);
 }

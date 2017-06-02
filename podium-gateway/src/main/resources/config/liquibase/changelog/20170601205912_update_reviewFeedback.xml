@@ -35,6 +35,22 @@
         <dropNotNullConstraint columnDataType="varchar"
                                columnName="summary"
                                tableName="review_feedback"/>
-
     </changeSet>
+
+    <!-- Add UUID fields to review round and review feedback-->
+    <changeSet id="20170601205912-2" author="berndvdveen">
+
+        <addColumn tableName="review_round">
+            <column name="uuid" type="uuid">
+                <constraints unique="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="review_feedback">
+            <column name="uuid" type="uuid">
+                <constraints unique="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
