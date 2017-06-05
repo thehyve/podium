@@ -22,7 +22,7 @@ describe('SpecialismComponent (templateUrl)', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [ FormsModule ],
+            imports: [FormsModule],
             declarations: [SpecialismComponent], // declare the test component
         }).overrideComponent(SpecialismComponent, {
             set: {

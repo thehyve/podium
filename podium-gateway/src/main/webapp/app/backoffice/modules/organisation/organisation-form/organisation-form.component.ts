@@ -38,8 +38,7 @@ export class OrganisationFormComponent implements OnInit {
         private principal: Principal,
         private eventManager: EventManager,
         private route: ActivatedRoute,
-        private router: Router
-    ) {
+        private router: Router) {
         this.jhiLanguageService.setLocations(['organisation']);
     }
 
@@ -52,7 +51,9 @@ export class OrganisationFormComponent implements OnInit {
             let uuid = params['uuid'];
             if (uuid) {
                 this.organisationService.findByUuid(uuid).subscribe(
-                    (organisation) => { this.organisation = organisation; },
+                    (organisation) => {
+                        this.organisation = organisation;
+                    },
                     (res) => this.onError(res)
                 );
             } else {
@@ -63,7 +64,7 @@ export class OrganisationFormComponent implements OnInit {
         });
     }
 
-    onSaveSuccess (result, isCreate: boolean) {
+    onSaveSuccess(result, isCreate: boolean) {
         if (isCreate) {
             this.organisation = result;
         }
@@ -74,16 +75,16 @@ export class OrganisationFormComponent implements OnInit {
         this.isSaving = false;
     }
 
-    onSaveError (error) {
+    onSaveError(error) {
         this.isSaving = false;
         this.onError(error);
     }
 
-    onError (error) {
+    onError(error) {
         this.alertService.error(error.message, null, null);
     }
 
-    save () {
+    save() {
         this.isSaving = true;
         if (this.organisation.uuid) {
             this.organisationService.update(this.organisation)
@@ -102,14 +103,14 @@ export class OrganisationFormComponent implements OnInit {
 
     updateRequestType(selectedRequestType, event) {
         let _idx = this.organisation.requestTypes.indexOf(selectedRequestType.value);
-        if ( _idx < 0) {
+        if (_idx < 0) {
             this.organisation.requestTypes.push(selectedRequestType.value);
         } else {
             this.organisation.requestTypes.splice(_idx, 1);
         }
     }
 
-    isOrganisationAdmin (currentUser: User) {
+    isOrganisationAdmin(currentUser: User) {
         if (currentUser) {
             return currentUser.authorities.indexOf('ROLE_ORGANISATION_ADMIN') > -1;
         }

@@ -16,11 +16,8 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.util.UuidMapper;
-import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -29,25 +26,25 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity User and its DTO UserDTO.
  */
-@Mapper(componentModel = "spring", uses = { UuidMapper.class })
+@Mapper(componentModel = "spring", uses = {UuidMapper.class})
 public interface RoleMapper {
     RoleRepresentation roleToRoleDTO(Role role);
 
     List<RoleRepresentation> rolesToRoleDTOs(List<Role> role);
 
-    default Set<UUID> uuidsFromUsers (Set<User> users) {
+    default Set<UUID> uuidsFromUsers(Set<User> users) {
         return users.stream().map(User::getUuid)
             .collect(Collectors.toSet());
     }
 
-    default UUID uuidFromOrganisation (Organisation organisation) {
+    default UUID uuidFromOrganisation(Organisation organisation) {
         if (organisation == null) {
             return null;
         }
         return organisation.getUuid();
     }
 
-    default String stringFromAuthority (Authority authority) {
+    default String stringFromAuthority(Authority authority) {
         if (authority == null) {
             return null;
         }

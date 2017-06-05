@@ -24,10 +24,10 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
-* Test class for the SecurityService utility class.
-*
-* @see SecurityService
-*/
+ * Test class for the SecurityService utility class.
+ *
+ * @see SecurityService
+ */
 public class SecurityServiceUnitTest {
 
     @Test

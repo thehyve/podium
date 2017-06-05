@@ -23,7 +23,8 @@ export class RequestService {
 
     public onRequestUpdate: EventEmitter<RequestBase> = new EventEmitter<RequestBase>(false);
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     createDraft(): Observable<RequestBase> {
         return this.http.post(`${this.resourceUrl}/drafts`, null).map((res: Response) => {

@@ -8,7 +8,6 @@
 package nl.thehyve.podium.common.test;
 
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import org.mockito.BDDMockito;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Profile;
@@ -31,7 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.given;
 
 /**

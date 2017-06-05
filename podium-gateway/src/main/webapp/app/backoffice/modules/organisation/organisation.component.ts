@@ -49,14 +49,13 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         private router: Router,
         private eventManager: EventManager,
         private paginationUtil: PaginationUtil,
-        private paginationConfig: PaginationConfig
-    ) {
+        private paginationConfig: PaginationConfig) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
-             this.page = data['pagingParams'].page;
-             this.previousPage = data['pagingParams'].page;
-             this.reverse = data['pagingParams'].ascending;
-             this.predicate = data['pagingParams'].predicate;
+            this.page = data['pagingParams'].page;
+            this.previousPage = data['pagingParams'].page;
+            this.reverse = data['pagingParams'].ascending;
+            this.predicate = data['pagingParams'].predicate;
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
         this.jhiLanguageService.setLocations(['organisation']);
@@ -67,10 +66,11 @@ export class OrganisationComponent implements OnInit, OnDestroy {
             this.organisationService.search({
                 query: this.currentSearch,
                 size: this.itemsPerPage,
-                sort: this.sort()}).subscribe(
-                    (res: Response) => this.onSuccess(res.json(), res.headers),
-                    (res: Response) => this.onError(res.json())
-                );
+                sort: this.sort()
+            }).subscribe(
+                (res: Response) => this.onSuccess(res.json(), res.headers),
+                (res: Response) => this.onError(res.json())
+            );
             return;
         }
         this.organisationService.query({
@@ -82,16 +82,18 @@ export class OrganisationComponent implements OnInit, OnDestroy {
             (res: Response) => this.onError(res.json())
         );
     }
-    loadPage (page: number) {
+
+    loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             this.transition();
         }
     }
+
     transition() {
         // Transition with queryParams
-        this.router.navigate([this.getNavUrlForRouter(this.router)], {queryParams:
-            {
+        this.router.navigate([this.getNavUrlForRouter(this.router)], {
+            queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
@@ -110,7 +112,8 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         }]);
         this.loadAll();
     }
-    search (query) {
+
+    search(query) {
         if (!query) {
             return this.clear();
         }
@@ -124,6 +127,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         }]);
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
         this.principal.identity().then((account) => {
@@ -136,7 +140,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackUuid (index: number, item: Organisation) {
+    trackUuid(index: number, item: Organisation) {
         return item.uuid;
     }
 
@@ -144,7 +148,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         this.eventSubscriber = this.eventManager.subscribe('organisationListModification', (response) => this.loadAll());
     }
 
-    sort () {
+    sort() {
         let result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
         if (this.predicate !== 'id') {
             result.push('id');
@@ -152,7 +156,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         return result;
     }
 
-    toggleActivated (organisation) {
+    toggleActivated(organisation) {
         organisation.activated = !organisation.activated;
         this.organisationService.activate(organisation.id, organisation.activated).subscribe(
             (res: Response) => {
@@ -168,14 +172,14 @@ export class OrganisationComponent implements OnInit, OnDestroy {
         );
     }
 
-    private onSuccess (data, headers) {
+    private onSuccess(data, headers) {
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.organisations = data;
     }
 
-    private onError (error) {
+    private onError(error) {
         this.alertService.error(error.message, null, null);
     }
 

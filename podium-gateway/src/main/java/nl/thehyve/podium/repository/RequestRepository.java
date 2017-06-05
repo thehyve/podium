@@ -23,7 +23,7 @@ import java.util.UUID;
  * Spring Data JPA repository for the Request entity.
  */
 @SuppressWarnings("unused")
-public interface RequestRepository extends JpaRepository<Request,Long> {
+public interface RequestRepository extends JpaRepository<Request, Long> {
 
     Request findOneByUuid(UUID requestUuid);
 

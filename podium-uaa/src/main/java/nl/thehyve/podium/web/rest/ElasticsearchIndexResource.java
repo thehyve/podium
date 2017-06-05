@@ -43,15 +43,16 @@ public class ElasticsearchIndexResource {
     @Autowired
     private ElasticsearchIndexService elasticsearchIndexService;
 
-    public ElasticsearchIndexResource( ) {}
+    public ElasticsearchIndexResource() {
+    }
 
     /**
      * Reindex all Elasticsearch documents
      *
-     * @throws URISyntaxException Exception thrown when URI is malformed.
      * @return ResponseEntity without a type
+     * @throws URISyntaxException Exception thrown when URI is malformed.
      */
-    @SecuredByAuthority({ AuthorityConstants.PODIUM_ADMIN })
+    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN})
     @GetMapping(value = "/elasticsearch/index",
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed

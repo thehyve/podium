@@ -42,7 +42,7 @@ describe('RoleAssignComponent', () => {
     let dummyBbmriAdmin: User = {
         id: 1,
         uuid: 'dummy-uuid-1',
-        authorities : [ 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN' ],
+        authorities: ['ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
         firstName: 'Dummy BBMRI',
         lastName: 'Admin'
     };
@@ -50,22 +50,22 @@ describe('RoleAssignComponent', () => {
     let dummyOrganisationAdmin: User = {
         id: 2,
         uuid: 'dummy-uuid-2',
-        authorities : [ 'ROLE_ORGANISATION_ADMIN' ],
+        authorities: ['ROLE_ORGANISATION_ADMIN'],
         firstName: 'Dummy Organisation',
         lastName: 'Admin'
     };
 
     let dummyRoles: Role[] = [
         {
-            'id' : 3,
-            'organisation' : '12dd08b3-eb8b-476e-a0b3-716cb6b5df7a',
-            'authority' : 'ROLE_ORGANISATION_ADMIN',
-            'users' : [ 'dummy-uuid-1', 'dummy-uuid-2' ]
+            'id': 3,
+            'organisation': '12dd08b3-eb8b-476e-a0b3-716cb6b5df7a',
+            'authority': 'ROLE_ORGANISATION_ADMIN',
+            'users': ['dummy-uuid-1', 'dummy-uuid-2']
         }, {
-            'id' : 4,
-            'organisation' : '12dd08b3-eb8b-476e-a0b3-716cb6b5df7a',
-            'authority' : 'ROLE_ORGANISATION_COORDINATOR',
-            'users' : [ ]
+            'id': 4,
+            'organisation': '12dd08b3-eb8b-476e-a0b3-716cb6b5df7a',
+            'authority': 'ROLE_ORGANISATION_COORDINATOR',
+            'users': []
         }, {
             'id': 5,
             'organisation': '12dd08b3-eb8b-476e-a0b3-716cb6b5df7a',

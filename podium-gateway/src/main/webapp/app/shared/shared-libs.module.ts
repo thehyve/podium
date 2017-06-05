@@ -41,4 +41,5 @@ import { UiSwitchModule } from 'angular2-ui-switch';
         UiSwitchModule
     ]
 })
-export class PodiumGatewaySharedLibsModule {}
+export class PodiumGatewaySharedLibsModule {
+}

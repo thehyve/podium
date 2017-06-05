@@ -37,7 +37,7 @@ import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
         BreadcrumbsModule.forRoot(),
         BrowserModule,
         LayoutRoutingModule,
-        Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
+        Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-' }),
         PodiumGatewaySharedModule.forRoot(),
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
@@ -67,7 +67,8 @@ import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
         OrganisationService,
         RoleService
     ],
-    bootstrap: [ PdmMainComponent ],
+    bootstrap: [PdmMainComponent],
     exports: [NgbModule]
 })
-export class PodiumGatewayAppModule {}
+export class PodiumGatewayAppModule {
+}

@@ -36,9 +36,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class RequestDetailResource {
 
-    private final Logger log = LoggerFactory.getLogger(RequestDetailResource.class);
-
     private static final String ENTITY_NAME = "requestdetail";
+
+    private final Logger log = LoggerFactory.getLogger(RequestDetailResource.class);
 
     private final RequestDetailService requestDetailService;
 
@@ -56,7 +56,7 @@ public class RequestDetailResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/_search/requestdetails")
-    @SecuredByAuthority({ AuthorityConstants.ORGANISATION_COORDINATOR, AuthorityConstants.PODIUM_ADMIN })
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_COORDINATOR, AuthorityConstants.PODIUM_ADMIN})
     @Timed
     public ResponseEntity<List<RequestDetail>> searchRequestdetails(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {

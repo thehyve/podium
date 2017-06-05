@@ -47,13 +47,11 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
     classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class AuditServiceIntTest {
 
+    private static String tokenUuid = String.valueOf(UUID.randomUUID());
+
+    private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
+
     private final Logger log = LoggerFactory.getLogger(AuditServiceIntTest.class);
-
-    @Autowired
-    private AuditService auditService;
-
-    @Autowired
-    private LoadBalancerClient loadBalancer;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(8089));
@@ -62,9 +60,11 @@ public class AuditServiceIntTest {
     @Qualifier("requestAuth2ClientContext")
     OAuth2ClientContext requestAuth2ClientContext;
 
-    private static String tokenUuid = String.valueOf(UUID.randomUUID());
+    @Autowired
+    private AuditService auditService;
 
-    private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
+    @Autowired
+    private LoadBalancerClient loadBalancer;
 
     @Before
     public void setup() {
@@ -89,8 +89,8 @@ public class AuditServiceIntTest {
         StatusUpdateEvent mockEvent = new StatusUpdateEvent(mockUser, RequestReviewStatus.Review, RequestReviewStatus.Revision, requestUuid);
 
         stubFor(post(urlEqualTo("/internal/audit/events"))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.CREATED.value())));
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.CREATED.value())));
 
         auditService.publishEvent(mockEvent);
 

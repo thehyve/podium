@@ -37,8 +37,7 @@ export class NavbarComponent implements OnInit {
         private languageService: JhiLanguageService,
         private principal: Principal,
         private profileService: ProfileService,
-        private router: Router
-    ) {
+        private router: Router) {
         this.version = DEBUG_INFO_ENABLED ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
         this.languageService.addLocation('global');
@@ -56,7 +55,7 @@ export class NavbarComponent implements OnInit {
     }
 
     changeLanguage(languageKey: string) {
-      this.languageService.changeLanguage(languageKey);
+        this.languageService.changeLanguage(languageKey);
     }
 
     collapseNavbar() {

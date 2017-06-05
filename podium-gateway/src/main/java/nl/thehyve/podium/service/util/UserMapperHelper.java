@@ -44,7 +44,8 @@ public class UserMapperHelper {
 
         try {
             userRepresentation = userClientService.findUserByUuid(uuid);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         return userRepresentation;
     }

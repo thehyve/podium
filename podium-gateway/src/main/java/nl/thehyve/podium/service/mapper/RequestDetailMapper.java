@@ -7,15 +7,15 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
+import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.service.util.DefaultRequestDetail;
 import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
+@Mapper(componentModel = "spring", uses = {PrincipalInvestigatorMapper.class})
 public interface RequestDetailMapper {
 
     @DefaultRequestDetail
@@ -31,6 +31,7 @@ public interface RequestDetailMapper {
 
     /**
      * Safely transform requestDetail representation to a requestDetail entity
+     *
      * @param requestDetailRepresentation data to be mapped
      * @param requestDetail entity to map to
      * @return the mapping target

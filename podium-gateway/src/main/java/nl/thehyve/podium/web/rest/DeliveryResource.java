@@ -10,7 +10,9 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.security.annotations.*;
+import nl.thehyve.podium.common.security.annotations.RequestUuidParameter;
+import nl.thehyve.podium.common.security.annotations.SecuredByRequestOrganisationCoordinator;
+import nl.thehyve.podium.common.security.annotations.SecuredByRequestOwner;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
 import nl.thehyve.podium.common.service.dto.DeliveryReferenceRepresentation;
@@ -21,7 +23,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
@@ -35,9 +42,9 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class DeliveryResource {
 
-    private final Logger log = LoggerFactory.getLogger(DeliveryResource.class);
-
     private static final String ENTITY_NAME = "delivery";
+
+    private final Logger log = LoggerFactory.getLogger(DeliveryResource.class);
 
     @Autowired
     private DeliveryService deliveryService;
@@ -52,7 +59,7 @@ public class DeliveryResource {
      * @param requestUuid of the request to fetch the delivery processes for
      * @return the list of delivery process representations
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{requestUuid}/deliveries")
     @SecuredByRequestOwner
@@ -74,7 +81,7 @@ public class DeliveryResource {
      * @param requestUuid of the request to start delivery processes for
      * @return the list of created delivery process representations
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{requestUuid}/startDelivery")
     @SecuredByRequestOrganisationCoordinator
@@ -96,7 +103,6 @@ public class DeliveryResource {
      * @param deliveryProcessUuid the uuid of delivery process
      * @param reference the reference to the released delivery (e.g., URL, track and trace number)
      * @return the ResponseEntity with the delivery process representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the delivery.
      */
     @PostMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/release")
@@ -121,7 +127,6 @@ public class DeliveryResource {
      * @param deliveryProcessUuid the uuid of delivery process
      * @param message the podium event message representation
      * @return the ResponseEntity with the delivery process representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the delivery.
      */
     @PostMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/cancel")
@@ -145,7 +150,6 @@ public class DeliveryResource {
      * @param requestUuid the uuid of the request the delivery process belongs to
      * @param deliveryProcessUuid the uuid of delivery process
      * @return the ResponseEntity with the delivery process representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the delivery.
      */
     @GetMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/received")

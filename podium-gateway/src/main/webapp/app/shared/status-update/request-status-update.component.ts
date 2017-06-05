@@ -7,12 +7,11 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestStatusUpdateAction } from './request-status-update-action';
 import { PodiumEventMessage } from '../event/podium-event-message';
 import { RequestBase, RequestService } from '../request';
-import { Observable } from 'rxjs';
 import { Response } from '@angular/http';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -32,8 +31,7 @@ export class RequestStatusUpdateDialogComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestService: RequestService,
-        private activeModal: NgbActiveModal
-    ) {
+        private activeModal: NgbActiveModal) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
     }
 

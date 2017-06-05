@@ -17,7 +17,7 @@ import java.util.UUID;
  * Spring Data JPA repository for the DeliveryProcess entity.
  */
 @SuppressWarnings("unused")
-public interface DeliveryProcessRepository extends JpaRepository<DeliveryProcess,Long> {
+public interface DeliveryProcessRepository extends JpaRepository<DeliveryProcess, Long> {
 
     DeliveryProcess findOneByUuid(UUID deliveryProcessUuid);
 

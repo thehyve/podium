@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Test class for authentication.
- *
+ * <p>
  * See {@link CustomServerAuthenticationProvider}
  */
 @ActiveProfiles({"test", "h2"})
@@ -110,7 +110,7 @@ public class AuthenticationIntTest {
                 .with(bbmriAdminToken())
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -145,10 +145,10 @@ public class AuthenticationIntTest {
                 .param("username", "joe")
                 .param("password", AccountResourceIntTest.VALID_PASSWORD)
         )
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.token_type").value("bearer"))
-        .andExpect(jsonPath("$.access_token").isNotEmpty());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.token_type").value("bearer"))
+            .andExpect(jsonPath("$.access_token").isNotEmpty());
     }
 
     @Test
@@ -156,145 +156,94 @@ public class AuthenticationIntTest {
     public void testSuccessfulAuthentication() throws Exception {
         mockMvc.perform(
             post("/oauth/token")
-            .accept(MediaType.APPLICATION_JSON)
-            .with(client())
-            .param("grant_type", "password")
-            .param("username", testUserName)
-            .param("password", testPassword)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(client())
+                .param("grant_type", "password")
+                .param("username", testUserName)
+                .param("password", testPassword)
         )
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.token_type").value("bearer"))
-        .andExpect(jsonPath("$.access_token").isNotEmpty());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.token_type").value("bearer"))
+            .andExpect(jsonPath("$.access_token").isNotEmpty());
     }
 
     @Test
     @Transactional
     public void testAccountLockedAfterFailedAttempts() throws Exception {
         // 4 times "Bad credentials"
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             log.info("Attempt {}", i);
             mockMvc.perform(
                 post("/oauth/token")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(client())
+                    .param("grant_type", "password")
+                    .param("username", testUserName)
+                    .param("password", incorrectPassword)
+            )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.error_description").value("Bad credentials"));
+        }
+        // 5th time "The user account is blocked."
+        mockMvc.perform(
+            post("/oauth/token")
                 .accept(MediaType.APPLICATION_JSON)
                 .with(client())
                 .param("grant_type", "password")
                 .param("username", testUserName)
                 .param("password", incorrectPassword)
-            )
+        )
             .andExpect(status().isBadRequest())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.error_description").value("Bad credentials"));
-        }
-        // 5th time "The user account is blocked."
-        mockMvc.perform(
-            post("/oauth/token")
-            .accept(MediaType.APPLICATION_JSON)
-            .with(client())
-            .param("grant_type", "password")
-            .param("username", testUserName)
-            .param("password", incorrectPassword)
-        )
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.error_description").value("The user account is locked."));
+            .andExpect(jsonPath("$.error_description").value("The user account is locked."));
         // Also blocked with correct credentials
         mockMvc.perform(
             post("/oauth/token")
-            .accept(MediaType.APPLICATION_JSON)
-            .with(client())
-            .param("grant_type", "password")
-            .param("username", testUserName)
-            .param("password", testPassword)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(client())
+                .param("grant_type", "password")
+                .param("username", testUserName)
+                .param("password", testPassword)
         )
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.error_description").value("The user account is locked."));
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.error_description").value("The user account is locked."));
     }
 
     @Test
     @Transactional
     public void testAccountStillLockedAfterTimeout() throws Exception {
         // 4 times "Bad credentials"
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             log.info("Attempt {}", i);
             mockMvc.perform(
                 post("/oauth/token")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(client())
+                    .param("grant_type", "password")
+                    .param("username", testUserName)
+                    .param("password", incorrectPassword)
+            )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.error_description").value("Bad credentials"));
+        }
+        // 5th time "The user account is locked."
+        mockMvc.perform(
+            post("/oauth/token")
                 .accept(MediaType.APPLICATION_JSON)
                 .with(client())
                 .param("grant_type", "password")
                 .param("username", testUserName)
                 .param("password", incorrectPassword)
-            )
+        )
             .andExpect(status().isBadRequest())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.error_description").value("Bad credentials"));
-        }
-        // 5th time "The user account is locked."
-        mockMvc.perform(
-            post("/oauth/token")
-            .accept(MediaType.APPLICATION_JSON)
-            .with(client())
-            .param("grant_type", "password")
-            .param("username", testUserName)
-            .param("password", incorrectPassword)
-        )
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.error_description").value("The user account is locked."));
+            .andExpect(jsonPath("$.error_description").value("The user account is locked."));
         // Sleep for 4 seconds
         Thread.sleep(4 * 1000);
-        // Login successful
-        mockMvc.perform(
-            post("/oauth/token")
-            .accept(MediaType.APPLICATION_JSON)
-            .with(client())
-            .param("grant_type", "password")
-            .param("username", testUserName)
-            .param("password", testPassword)
-        )
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.error_description").value("The user account is locked."));
-    }
-
-    @Test
-    @Transactional
-    public void testAccountAvailableAfterUnlock() throws Exception {
-        // 4 times "Bad credentials"
-        for(int i = 0; i < 4; i++) {
-            log.info("Attempt {}", i);
-            mockMvc.perform(
-                post("/oauth/token")
-                .accept(MediaType.APPLICATION_JSON)
-                .with(client())
-                .param("grant_type", "password")
-                .param("username", testUserName)
-                .param("password", incorrectPassword)
-            )
-            .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.error_description").value("Bad credentials"));
-        }
-        // 5th time "The user account is locked."
-        mockMvc.perform(
-            post("/oauth/token")
-            .accept(MediaType.APPLICATION_JSON)
-            .with(client())
-            .param("grant_type", "password")
-            .param("username", testUserName)
-            .param("password", incorrectPassword)
-        )
-        .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        .andExpect(jsonPath("$.error_description").value("The user account is locked."));
-        // Unlock account
-        mockMvc.perform(
-            put("/api/users/uuid/" + testUserUuid.toString() + "/unlock")
-            .with(bbmriAdminToken())
-            .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk());
         // Login successful
         mockMvc.perform(
             post("/oauth/token")
@@ -304,6 +253,57 @@ public class AuthenticationIntTest {
                 .param("username", testUserName)
                 .param("password", testPassword)
         )
-        .andExpect(status().isOk());
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.error_description").value("The user account is locked."));
+    }
+
+    @Test
+    @Transactional
+    public void testAccountAvailableAfterUnlock() throws Exception {
+        // 4 times "Bad credentials"
+        for (int i = 0; i < 4; i++) {
+            log.info("Attempt {}", i);
+            mockMvc.perform(
+                post("/oauth/token")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .with(client())
+                    .param("grant_type", "password")
+                    .param("username", testUserName)
+                    .param("password", incorrectPassword)
+            )
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.error_description").value("Bad credentials"));
+        }
+        // 5th time "The user account is locked."
+        mockMvc.perform(
+            post("/oauth/token")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(client())
+                .param("grant_type", "password")
+                .param("username", testUserName)
+                .param("password", incorrectPassword)
+        )
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.error_description").value("The user account is locked."));
+        // Unlock account
+        mockMvc.perform(
+            put("/api/users/uuid/" + testUserUuid.toString() + "/unlock")
+                .with(bbmriAdminToken())
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk());
+        // Login successful
+        mockMvc.perform(
+            post("/oauth/token")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(client())
+                .param("grant_type", "password")
+                .param("username", testUserName)
+                .param("password", testPassword)
+        )
+            .andExpect(status().isOk());
     }
 }

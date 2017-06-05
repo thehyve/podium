@@ -107,7 +107,7 @@
 
                 <!--Telephone number-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="telephone" >Telephone</label>
+                    <label class="form-control-label" for="telephone">Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="settingsAccount.telephone" id="telephone"
                            #telephone="ngModel" name="telephone" required maxlength="15" pattern="^[0-9]+$"
                            placeholder="{{'global.form.telephone.placeholder' | translate}}">
@@ -126,13 +126,13 @@
 
                 <!--Institute-->
                 <div class="form-group">
-                    <label  class="form-control-label">Institute</label>
+                    <label class="form-control-label">Institute</label>
                     <div class="form-control-static">{{settingsAccount.institute}}</div>
                 </div>
 
                 <!--Department-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="department" >Department</label>
+                    <label class="form-control-label" for="department">Department</label>
                     <input type="text" class="form-control" [(ngModel)]="settingsAccount.department" id="department"
                            #department="ngModel" name="department" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.department.placeholder' | translate}}">
@@ -151,7 +151,7 @@
 
                 <!--Function (Job Title)-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="jobTitle" >Function</label>
+                    <label class="form-control-label" for="jobTitle">Function</label>
                     <input type="text" class="form-control" [(ngModel)]="settingsAccount.jobTitle" id="jobTitle"
                            #jobTitle="ngModel" name="jobTitle" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.jobTitle.placeholder' | translate}}">
@@ -170,7 +170,7 @@
 
                 <!--Specialism-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="jobTitle" >Specialism</label>
+                    <label class="form-control-label" for="jobTitle">Specialism</label>
                     <podium-specialism [(specialism)]="settingsAccount.specialism"></podium-specialism>
                 </div>
 

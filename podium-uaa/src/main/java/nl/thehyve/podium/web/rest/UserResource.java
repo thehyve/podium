@@ -52,7 +52,7 @@ import java.util.UUID;
 
 /**
  * REST controller for managing users.
- *
+ * <p>
  * <p>This class accesses the User entity, and needs to fetch its collection of authorities.</p>
  * <p>
  * For a normal use-case, it would be better to have an eager relationship between User and Authority,
@@ -101,11 +101,11 @@ public class UserResource {
      * </p>
      *
      * @param userData the user to create
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     * @throws UserAccountException when the login already exists.
      * @return the ResponseEntity with status
      * 201 (Created) and with body the new user,
      * 400 (Bad Request) if the login or email is already in use
+     * @throws URISyntaxException   if the Location URI syntax is incorrect.
+     * @throws UserAccountException when the login already exists.
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
@@ -116,7 +116,7 @@ public class UserResource {
         try {
             User newUser = userService.createUser(userData);
             mailService.sendCreationEmail(newUser);
-        } catch(EmailAddressAlreadyInUse e) {
+        } catch (EmailAddressAlreadyInUse e) {
             Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(userData.getEmail());
             userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
         } catch (LoginAlreadyInUse e) {
@@ -130,10 +130,10 @@ public class UserResource {
      * PUT  /users : Updates an existing User.
      *
      * @param userData the user to update
-     * @throws UserAccountException when the login already exists.
      * @return the ResponseEntity with status 200 (OK) and with body the updated user,
      * or with status 400 (Bad Request) if the login or email is already in use,
      * or with status 500 (Internal Server Error) if the user couldn't be updated
+     * @throws UserAccountException when the login already exists.
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users")
@@ -141,7 +141,7 @@ public class UserResource {
     public ResponseEntity<ManagedUserVM> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to update User : {}", userData);
         userService.updateUser(userData);
-        Optional<User> userOptional =  userService.getUserByUuid(userData.getUuid());
+        Optional<User> userOptional = userService.getUserByUuid(userData.getUuid());
         if (userOptional.isPresent()) {
             return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
         }

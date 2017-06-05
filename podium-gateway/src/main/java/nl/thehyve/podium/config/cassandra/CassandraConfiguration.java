@@ -37,20 +37,24 @@ import org.springframework.util.StringUtils;
 @Profile({PodiumConstants.SPRING_PROFILE_DEVELOPMENT, PodiumConstants.SPRING_PROFILE_PRODUCTION})
 public class CassandraConfiguration {
 
-    @Value("${spring.data.cassandra.protocolVersion:V4}")
-    private ProtocolVersion protocolVersion;
+    private final Logger log = LoggerFactory.getLogger(CassandraConfiguration.class);
 
     @Autowired(required = false)
     MetricRegistry metricRegistry;
 
-    private final Logger log = LoggerFactory.getLogger(CassandraConfiguration.class);
+    @Value("${spring.data.cassandra.protocolVersion:V4}")
+    private ProtocolVersion protocolVersion;
+
+    public static <T> T instantiate(Class<T> type) {
+        return BeanUtils.instantiate(type);
+    }
 
     @Bean
     public Cluster cluster(CassandraProperties properties) {
         Cluster.Builder builder = Cluster.builder()
-                .withClusterName(properties.getClusterName())
-                .withProtocolVersion(protocolVersion)
-                .withPort(getPort(properties));
+            .withClusterName(properties.getClusterName())
+            .withProtocolVersion(protocolVersion)
+            .withPort(getPort(properties));
 
         if (properties.getUsername() != null) {
             builder.withCredentials(properties.getUsername(), properties.getPassword());
@@ -81,8 +85,8 @@ public class CassandraConfiguration {
         Cluster cluster = builder.build();
 
         cluster.getConfiguration().getCodecRegistry()
-                .register(LocalDateCodec.instance)
-                .register(CustomZonedDateTimeCodec.instance);
+            .register(LocalDateCodec.instance)
+            .register(CustomZonedDateTimeCodec.instance);
 
         if (metricRegistry != null) {
             cluster.init();
@@ -94,10 +98,6 @@ public class CassandraConfiguration {
 
     protected int getPort(CassandraProperties properties) {
         return properties.getPort();
-    }
-
-    public static <T> T instantiate(Class<T> type) {
-        return BeanUtils.instantiate(type);
     }
 
     private QueryOptions getQueryOptions(CassandraProperties properties) {

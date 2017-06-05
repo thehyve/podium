@@ -12,11 +12,11 @@ import { UserRouteAccessService } from '../../shared';
 import { VerifyComponent } from './verify.component';
 
 export const verifyRoute: Route = {
-  path: 'verify',
-  component: VerifyComponent,
-  data: {
-    authorities: [],
-    pageTitle: 'verify.title'
-  },
-  canActivate: [UserRouteAccessService]
+    path: 'verify',
+    component: VerifyComponent,
+    data: {
+        authorities: [],
+        pageTitle: 'verify.title'
+    },
+    canActivate: [UserRouteAccessService]
 };

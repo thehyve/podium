@@ -29,13 +29,13 @@ public class OAuth2InterceptedFeignConfiguration {
 
     private final LoadBalancedResourceDetails loadBalancedResourceDetails;
 
-    public OAuth2InterceptedFeignConfiguration(LoadBalancedResourceDetails loadBalancedResourceDetails) {
-        this.loadBalancedResourceDetails = loadBalancedResourceDetails;
-    }
-
     @Autowired
     @Qualifier("requestAuth2ClientContext")
     OAuth2ClientContext requestAuth2ClientContext;
+
+    public OAuth2InterceptedFeignConfiguration(LoadBalancedResourceDetails loadBalancedResourceDetails) {
+        this.loadBalancedResourceDetails = loadBalancedResourceDetails;
+    }
 
     @Profile("!test")
     @RequestScoped

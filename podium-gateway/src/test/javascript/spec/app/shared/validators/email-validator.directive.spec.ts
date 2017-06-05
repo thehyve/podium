@@ -15,7 +15,7 @@ describe('EmailValidatorDirective (simple)', () => {
     let validator: EmailValidatorDirective;
     let invalidResultObj = {
         emailValidator: {
-            valid : false
+            valid: false
         }
     };
 

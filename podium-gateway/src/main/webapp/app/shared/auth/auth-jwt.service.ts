@@ -17,22 +17,22 @@ export class AuthServerProvider {
     constructor(
         private http: Http,
         private $localStorage: LocalStorageService,
-        private $sessionStorage: SessionStorageService
-    ) {}
+        private $sessionStorage: SessionStorageService) {
+    }
 
-    getToken () {
+    getToken() {
         return this.$localStorage.retrieve('authenticationToken') || this.$sessionStorage.retrieve('authenticationToken');
     }
 
-    login (credentials): Observable<any> {
+    login(credentials): Observable<any> {
         let data = new URLSearchParams();
         data.append('grant_type', 'password');
         data.append('username', credentials.username);
         data.append('password', credentials.password);
 
-        let headers = new Headers ({
+        let headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization' : 'Basic d2ViX2FwcDo='
+            'Authorization': 'Basic d2ViX2FwcDo='
         });
 
         return this.http.post('podiumuaa/oauth/token', data, {
@@ -64,7 +64,7 @@ export class AuthServerProvider {
         }
     }
 
-    logout (): Observable<any> {
+    logout(): Observable<any> {
         return new Observable(observer => {
             this.$localStorage.clear('authenticationToken');
             this.$sessionStorage.clear('authenticationToken');

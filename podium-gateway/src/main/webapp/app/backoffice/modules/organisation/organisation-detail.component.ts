@@ -26,8 +26,7 @@ export class OrganisationDetailComponent implements OnInit, OnDestroy {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private organisationService: OrganisationService,
-        private route: ActivatedRoute
-    ) {
+        private route: ActivatedRoute) {
         this.jhiLanguageService.setLocations(['organisation']);
     }
 
@@ -37,11 +36,12 @@ export class OrganisationDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    load (uuid) {
+    load(uuid) {
         this.organisationService.findByUuid(uuid).subscribe(organisation => {
             this.organisation = organisation;
         });
     }
+
     previousState() {
         window.history.back();
     }

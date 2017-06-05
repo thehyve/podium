@@ -9,7 +9,9 @@ package nl.thehyve.podium.exceptions;
 
 public class VerificationKeyExpired extends Throwable {
 
-    public VerificationKeyExpired() { super(); }
+    public VerificationKeyExpired() {
+        super();
+    }
 
     public VerificationKeyExpired(String msg) {
         super(msg);

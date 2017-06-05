@@ -9,7 +9,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({name: 'findLanguageFromKey'})
+@Pipe({ name: 'findLanguageFromKey' })
 export class FindLanguageFromKeyPipe implements PipeTransform {
     private languages: any = {
         'ca': 'Català',
@@ -43,6 +43,7 @@ export class FindLanguageFromKeyPipe implements PipeTransform {
         'zh-cn': '中文（简体）',
         'zh-tw': '繁體中文'
     };
+
     transform(lang: string): string {
         return this.languages[lang];
     }

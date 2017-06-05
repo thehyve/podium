@@ -12,7 +12,6 @@ import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
-import { organisationRoute } from '../../backoffice/modules/organisation/organisation.route';
 
 @Component({
     selector: 'pdm-organisation-selector',
@@ -29,28 +28,30 @@ export class OrganisationSelectorComponent implements OnInit {
     @Output() organisationChange = new EventEmitter();
 
     @Input() requestTypes: RequestType[];
+
     @Input()
     get organisations() {
         return this.selectedOrganisations;
     }
+
     set organisations(val) {
         this.selectedOrganisations = val;
         this.organisationChange.emit(this.selectedOrganisations);
     }
 
-    private static onError (error) {
+    private static onError(error) {
         return Observable.throw(new Error(error.status));
     }
 
     constructor(
-        private organisationService: OrganisationService
-    ) { }
+        private organisationService: OrganisationService) {
+    }
 
     onChange() {
         // get organisation instance of selected uuid
         this.organisations = this.selectedOrganisationUuids.map(
             (selected) => {
-                return this.organisationOptions.find( (option) => {
+                return this.organisationOptions.find((option) => {
                     return option.uuid === selected;
                 });
             }
@@ -77,7 +78,7 @@ export class OrganisationSelectorComponent implements OnInit {
 
     ngOnInit() {
         // set selected organisations
-        this.selectedOrganisationUuids = this.organisations.map( organisation => {
+        this.selectedOrganisationUuids = this.organisations.map(organisation => {
             return organisation.uuid;
         });
         // load organisation options

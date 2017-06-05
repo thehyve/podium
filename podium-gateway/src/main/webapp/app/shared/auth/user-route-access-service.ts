@@ -18,11 +18,12 @@ export class UserRouteAccessService implements CanActivate {
     constructor(
         private router: Router,
         private auth: AuthService,
-        private stateStorageService: StateStorageService) {}
+        private stateStorageService: StateStorageService) {
+    }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
         this.setStateStorage(route, state);
-        return this.auth.authorize(false).then( canActivate => {
+        return this.auth.authorize(false).then(canActivate => {
             return canActivate;
         });
     }
@@ -41,8 +42,8 @@ export class UserRouteAccessService implements CanActivate {
             destinationData = destinationEvent.data;
             destinationName = state.url;
         }
-        let from = {name: this.router.url.slice(1)};
-        let destination = {name: destinationName, data: destinationData};
+        let from = { name: this.router.url.slice(1) };
+        let destination = { name: destinationName, data: destinationData };
         this.stateStorageService.storeDestinationState(destination, params, from);
     }
 }

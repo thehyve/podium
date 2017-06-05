@@ -2,8 +2,8 @@ import ch.qos.logback.classic.LoggerContext
 import org.slf4j.LoggerFactory
 
 /**
- * Performance test for the Attachment entity.
- */
+  * Performance test for the Attachment entity.
+  */
 class AttachmentGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
@@ -39,44 +39,44 @@ class AttachmentGatlingTest extends Simulation {
 
     val scn = scenario("Test the Attachment entity")
         .exec(http("First unauthenticated request")
-        .get("/api/account")
-        .headers(headers_http)
-        .check(status.is(401))).exitHereIfFailed
+            .get("/api/account")
+            .headers(headers_http)
+            .check(status.is(401))).exitHereIfFailed
         .pause(10)
         .exec(http("Authentication")
-        .post("/api/authenticate")
-        .headers(headers_http_authentication)
-        .body(StringBody("""{"username":"admin", "password":"admin"}""")).asJSON
-        .check(header.get("Authorization").saveAs("access_token"))).exitHereIfFailed
+            .post("/api/authenticate")
+            .headers(headers_http_authentication)
+            .body(StringBody("""{"username":"admin", "password":"admin"}""")).asJSON
+            .check(header.get("Authorization").saveAs("access_token"))).exitHereIfFailed
         .pause(1)
         .exec(http("Authenticated request")
-        .get("/api/account")
-        .headers(headers_http_authenticated)
-        .check(status.is(200)))
+            .get("/api/account")
+            .headers(headers_http_authenticated)
+            .check(status.is(200)))
         .pause(10)
         .repeat(2) {
             exec(http("Get all attachments")
-            .get("/api/attachments")
-            .headers(headers_http_authenticated)
-            .check(status.is(200)))
-            .pause(10 seconds, 20 seconds)
-            .exec(http("Create new attachment")
-            .post("/api/attachments")
-            .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "description":"SAMPLE_TEXT", "filename":"SAMPLE_TEXT", "type":null, "date":"2020-01-01T00:00:00.000Z", "mimeType":"SAMPLE_TEXT"}""")).asJSON
-            .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_attachment_url"))).exitHereIfFailed
-            .pause(10)
-            .repeat(5) {
-                exec(http("Get created attachment")
-                .get("${new_attachment_url}")
-                .headers(headers_http_authenticated))
+                .get("/api/attachments")
+                .headers(headers_http_authenticated)
+                .check(status.is(200)))
+                .pause(10 seconds, 20 seconds)
+                .exec(http("Create new attachment")
+                    .post("/api/attachments")
+                    .headers(headers_http_authenticated)
+                    .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "description":"SAMPLE_TEXT", "filename":"SAMPLE_TEXT", "type":null, "date":"2020-01-01T00:00:00.000Z", "mimeType":"SAMPLE_TEXT"}""")).asJSON
+                    .check(status.is(201))
+                    .check(headerRegex("Location", "(.*)").saveAs("new_attachment_url"))).exitHereIfFailed
                 .pause(10)
-            }
-            .exec(http("Delete created attachment")
-            .delete("${new_attachment_url}")
-            .headers(headers_http_authenticated))
-            .pause(10)
+                .repeat(5) {
+                    exec(http("Get created attachment")
+                        .get("${new_attachment_url}")
+                        .headers(headers_http_authenticated))
+                        .pause(10)
+                }
+                .exec(http("Delete created attachment")
+                    .delete("${new_attachment_url}")
+                    .headers(headers_http_authenticated))
+                .pause(10)
         }
 
     val users = scenario("Users").exec(scn)

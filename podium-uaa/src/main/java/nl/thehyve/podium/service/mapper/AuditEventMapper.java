@@ -16,7 +16,7 @@ import org.springframework.boot.actuate.audit.AuditEvent;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = { })
+@Mapper(componentModel = "spring", uses = {})
 public interface AuditEventMapper {
 
     AuditEventRepresentation auditEventToAuditEventRepresentation(AuditEvent auditEvent);

@@ -1,6 +1,6 @@
 {
     "podiumGatewayApp": {
-        "role" : {
+        "role": {
             "home": {
                 "title": "Roles",
                 "createLabel": "Create a new Role",
@@ -26,7 +26,7 @@
         }
     },
     "podiumuaaApp": {
-        "role" : {
+        "role": {
             "created": "A new Role is created with identifier {{ param }}",
             "updated": "A Role is updated with identifier {{ param }}",
             "deleted": "A Role is deleted with identifier {{ param }}"

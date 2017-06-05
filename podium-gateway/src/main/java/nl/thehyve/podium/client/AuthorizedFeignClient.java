@@ -21,7 +21,7 @@ public @interface AuthorizedFeignClient {
 
     /**
      * A custom <code>@Configuration</code> for the feign client.
-     *
+     * <p>
      * Can contain override <code>@Bean</code> definition for the pieces that
      * make up the client, for instance {@link feign.codec.Decoder},
      * {@link feign.codec.Encoder}, {@link feign.Contract}.
@@ -34,12 +34,14 @@ public @interface AuthorizedFeignClient {
 
     /**
      * An absolute URL or resolvable hostname (the protocol is optional).
+     *
      * @return the url
      */
     String url() default "";
 
     /**
      * Whether 404s should be decoded instead of throwing FeignExceptions.
+     *
      * @return whether 404s should be decoded
      */
     boolean decode404() default false;
@@ -47,6 +49,7 @@ public @interface AuthorizedFeignClient {
     /**
      * Fallback class for the specified Feign client interface. The fallback class must
      * implement the interface annotated by this annotation and be a valid Spring bean.
+     *
      * @return the fallback class
      */
     Class<?> fallback() default void.class;
@@ -54,6 +57,7 @@ public @interface AuthorizedFeignClient {
     /**
      * Path prefix to be used by all method-level mappings. Can be used with or without
      * <code>@RibbonClient</code>.
+     *
      * @return the path prefix
      */
     String path() default "";

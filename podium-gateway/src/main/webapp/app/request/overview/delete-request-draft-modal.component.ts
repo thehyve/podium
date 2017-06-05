@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { RequestService } from '../../shared/request/request.service';
 import { EventManager } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
@@ -26,8 +24,8 @@ export class RequestDraftModalModalComponent {
     constructor(
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
-        private eventManager: EventManager
-    ) {}
+        private eventManager: EventManager) {
+    }
 
     confirmDelete() {
         this.requestService.deleteDraft(this.request.uuid).subscribe((res) => {

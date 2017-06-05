@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, Input } from '@angular/core';
 import { ReviewRound } from '../review-round';
 import { RequestReviewFeedback } from '../request-review-feedback';
@@ -23,9 +22,9 @@ export class RequestReviewPanelComponent implements OnInit {
     lastReviewFeedback: RequestReviewFeedback[];
 
     private optionStyles = [
-        {style: 'tag-success', advise: RequestReviewDecision.Approved},
-        {style: 'tag-danger', advise: RequestReviewDecision.Rejected},
-        {style: 'tag-default', advise: RequestReviewDecision.None},
+        { style: 'tag-success', advise: RequestReviewDecision.Approved },
+        { style: 'tag-danger', advise: RequestReviewDecision.Rejected },
+        { style: 'tag-default', advise: RequestReviewDecision.None },
     ];
 
     @Input()

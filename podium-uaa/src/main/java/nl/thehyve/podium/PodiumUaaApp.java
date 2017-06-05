@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @ComponentScan
-@EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class })
-@EnableConfigurationProperties({ PodiumProperties.class, UaaProperties.class, LiquibaseProperties.class })
+@EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
+@EnableConfigurationProperties({PodiumProperties.class, UaaProperties.class, LiquibaseProperties.class})
 @EnableDiscoveryClient
 public class PodiumUaaApp {
 
@@ -80,7 +80,7 @@ public class PodiumUaaApp {
 
         String configServerStatus = env.getProperty("configserver.status");
         log.info("\n----------------------------------------------------------\n\t" +
-        "Config Server: \t{}\n----------------------------------------------------------",
+                "Config Server: \t{}\n----------------------------------------------------------",
             configServerStatus == null ? "Not found or not setup for this application" : configServerStatus);
     }
 }

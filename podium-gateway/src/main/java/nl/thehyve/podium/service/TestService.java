@@ -29,13 +29,13 @@ public class TestService {
     private final Logger log = LoggerFactory.getLogger(TestService.class);
 
     @Autowired
+    EntityManager entityManager;
+
+    @Autowired
     private RequestRepository requestRepository;
 
     @Autowired
     private RequestSearchRepository requestSearchRepository;
-
-    @Autowired
-    EntityManager entityManager;
 
     /**
      * Delete all:

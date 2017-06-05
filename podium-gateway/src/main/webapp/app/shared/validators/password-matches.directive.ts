@@ -26,7 +26,7 @@ import { NG_VALIDATORS, Validator, FormControl } from '@angular/forms';
 @Directive({
     selector: '[passwordMatches][formControlName],[passwordMatches][formControl],[passwordMatches][ngModel]',
     providers: [
-        {provide: NG_VALIDATORS, useExisting: PasswordMatchesDirective, multi: true}
+        { provide: NG_VALIDATORS, useExisting: PasswordMatchesDirective, multi: true }
     ]
 })
 export class PasswordMatchesDirective implements Validator {

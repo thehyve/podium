@@ -50,16 +50,16 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
             http
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
-            .and()
+                .and()
                 .csrf()
                 .disable()
                 .headers()
                 .frameOptions()
                 .disable()
-            .and()
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/verify").permitAll()
@@ -93,7 +93,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
             .withClient("web_app")
             .scopes("openid")
             .autoApprove(true)
-            .authorizedGrantTypes("implicit","refresh_token", "password", "authorization_code")
+            .authorizedGrantTypes("implicit", "refresh_token", "password", "authorization_code")
             .and()
             .withClient(podiumProperties.getSecurity().getClientAuthorization().getClientId())
             .secret(podiumProperties.getSecurity().getClientAuthorization().getClientSecret())
@@ -116,7 +116,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
     /**
      * Apply the token converter (and enhancer) for token store.
      *
-     *  @return A JWTTokenStore using the `jwtAccessTokenConverter`.
+     * @return A JWTTokenStore using the `jwtAccessTokenConverter`.
      */
     @Bean
     public JwtTokenStore tokenStore() {
@@ -145,8 +145,8 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         KeyPair keyPair = new KeyStoreKeyFactory(
-             new ClassPathResource("keystore.jks"), "password".toCharArray())
-             .getKeyPair("selfsigned");
+            new ClassPathResource("keystore.jks"), "password".toCharArray())
+            .getKeyPair("selfsigned");
         converter.setKeyPair(keyPair);
         converter.setAccessTokenConverter(defaultAccessTokenConverter());
         return converter;
@@ -155,6 +155,6 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess(
-                "isAuthenticated()");
+            "isAuthenticated()");
     }
 }

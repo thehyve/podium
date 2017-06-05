@@ -18,7 +18,8 @@ export class UserService {
     private resourceSearchUrl = 'podiumuaa/api/_search/users';
     private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     create(user: User): Observable<Response> {
         return this.http.post(this.resourceUrl, user);

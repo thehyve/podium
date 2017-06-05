@@ -20,4 +20,5 @@ import java.lang.annotation.Target;
 @Qualifier
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface DefaultUser {}
+public @interface DefaultUser {
+}

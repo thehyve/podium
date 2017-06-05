@@ -14,7 +14,7 @@ import nl.thehyve.podium.common.service.dto.PodiumEventRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = { })
+@Mapper(componentModel = "spring", uses = {})
 public interface PodiumEventMapper {
     PodiumEventRepresentation podiumEventToPodiumEventRepresentation(PodiumEvent podiumEvent);
 }

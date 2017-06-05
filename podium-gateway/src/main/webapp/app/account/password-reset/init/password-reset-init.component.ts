@@ -25,8 +25,7 @@ export class PasswordResetInitComponent implements OnInit {
         private jhiLanguageService: JhiLanguageService,
         private passwordResetInit: PasswordResetInit,
         private elementRef: ElementRef,
-        private renderer: Renderer
-    ) {
+        private renderer: Renderer) {
         this.jhiLanguageService.setLocations(['reset']);
     }
 
@@ -38,7 +37,7 @@ export class PasswordResetInitComponent implements OnInit {
         this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#email'), 'focus', []);
     }
 
-    requestReset () {
+    requestReset() {
 
         this.error = null;
         this.errorEmailNotExists = null;

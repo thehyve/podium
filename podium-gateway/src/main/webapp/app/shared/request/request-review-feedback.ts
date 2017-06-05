@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestReviewDecision } from './request-review-decision';
 import { User } from '../user/user.model';
 

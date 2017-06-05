@@ -49,12 +49,12 @@ describe('Component Tests', () => {
                     }
                 ]
             })
-            .overrideComponent(PdmHealthCheckComponent, {
-                set: {
-                    template: ''
-                }
-            })
-            .compileComponents();
+                .overrideComponent(PdmHealthCheckComponent, {
+                    set: {
+                        template: ''
+                    }
+                })
+                .compileComponents();
         }));
 
         beforeEach(() => {

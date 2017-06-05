@@ -18,7 +18,8 @@ export class OrganisationService {
     private resourceUrl = 'podiumuaa/api/organisations';
     private resourceSearchUrl = 'podiumuaa/api/_search/organisations';
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     create(organisation: Organisation): Observable<Response> {
         let copy: Organisation = Object.assign({}, organisation);
@@ -80,7 +81,7 @@ export class OrganisationService {
 
     jsonArrayToOrganisations(arr: any) {
         return arr.map((item) => {
-            return new Organisation (item);
+            return new Organisation(item);
         });
     }
 

@@ -8,7 +8,9 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.common.enumeration.*;
+import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
+import nl.thehyve.podium.common.enumeration.DeliveryStatus;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -38,43 +40,9 @@ import java.util.Map;
 @Timed
 public class DeliveryProcessService {
 
-    public enum DeliveryTask {
-        Preparation("preparation"),
-        Released("released");
-
-        private String taskId;
-
-        public String getTaskId() {
-            return taskId;
-        }
-
-        DeliveryTask(String taskId) {
-            this.taskId = taskId;
-        }
-    }
-
-    public enum DeliveryVariable {
-        Release("release"),
-        Received("received");
-
-        private String variableName;
-
-        public String getVariableName() {
-            return variableName;
-        }
-
-        DeliveryVariable(String variableName) {
-            this.variableName = variableName;
-        }
-    }
+    public static final String CURRENT_DELIVERY_PROCESS_VERSION = "podium_delivery_001";
 
     private static final Map<DeliveryStatus, DeliveryTask> taskForStatus = new HashMap<>(3);
-    {
-        taskForStatus.put(DeliveryStatus.Preparation, DeliveryTask.Preparation);
-        taskForStatus.put(DeliveryStatus.Released, DeliveryTask.Released);
-    }
-
-    public static final String CURRENT_DELIVERY_PROCESS_VERSION = "podium_delivery_001";
 
     Logger log = LoggerFactory.getLogger(DeliveryProcessService.class);
 
@@ -93,8 +61,14 @@ public class DeliveryProcessService {
     @Autowired
     private DeliveryProcessSearchRepository deliveryProcessSearchRepository;
 
+    {
+        taskForStatus.put(DeliveryStatus.Preparation, DeliveryTask.Preparation);
+        taskForStatus.put(DeliveryStatus.Released, DeliveryTask.Released);
+    }
+
     /**
      * Finds request.
+     *
      * @param processInstanceId
      * @return the current request if it exists; null otherwise.
      */
@@ -108,6 +82,7 @@ public class DeliveryProcessService {
 
     /**
      * Finds current task. Assumes that at most one task is currently active.
+     *
      * @param processInstanceId
      * @return the current task if it exists, null otherwise.
      */
@@ -161,6 +136,7 @@ public class DeliveryProcessService {
 
     /**
      * Completes the Preparation task and forwards to Released for the specified delivery process.
+     *
      * @param user the current user.
      * @param deliveryProcess the delivery process object.
      * @return the updated delivery process object.
@@ -177,6 +153,7 @@ public class DeliveryProcessService {
     /**
      * Completes the Released task and forwards to Received for the specified delivery process, which will
      * end the process and set the outcome to Received.
+     *
      * @param user the current user.
      * @param deliveryProcess the delivery process object.
      * @return the updated delivery process object.
@@ -193,6 +170,7 @@ public class DeliveryProcessService {
     /**
      * Completes the Preparation or Released task and cancels the specified delivery process, which will
      * end the process and set the outcome to Cancelled.
+     *
      * @param user the current user.
      * @param deliveryProcess the delivery process object.
      * @return the updated delivery process object.
@@ -238,6 +216,36 @@ public class DeliveryProcessService {
         deliveryProcess = deliveryProcessRepository.save(deliveryProcess);
 
         return updateDeliveryProcess(deliveryProcess);
+    }
+
+    public enum DeliveryTask {
+        Preparation("preparation"),
+        Released("released");
+
+        private String taskId;
+
+        DeliveryTask(String taskId) {
+            this.taskId = taskId;
+        }
+
+        public String getTaskId() {
+            return taskId;
+        }
+    }
+
+    public enum DeliveryVariable {
+        Release("release"),
+        Received("received");
+
+        private String variableName;
+
+        DeliveryVariable(String variableName) {
+            this.variableName = variableName;
+        }
+
+        public String getVariableName() {
+            return variableName;
+        }
     }
 
 }

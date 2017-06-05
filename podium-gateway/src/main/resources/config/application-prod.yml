@@ -77,8 +77,6 @@ server:
 
 # ===================================================================
 # Podium specific properties
-#
-# Full reference is available at: https://podium.github.io/common-application-properties/
 # ===================================================================
 
 podium:

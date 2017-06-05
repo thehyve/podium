@@ -22,4 +22,5 @@ let BACKOFFICE_ROUTES = [
     exports: [RouterModule]
 })
 
-export class OrganisationRoutingModule {}
+export class OrganisationRoutingModule {
+}

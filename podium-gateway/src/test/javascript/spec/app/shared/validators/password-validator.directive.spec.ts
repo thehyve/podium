@@ -15,7 +15,7 @@ describe('PasswordValidatorDirective (simple)', () => {
     let validator: PasswordValidatorDirective;
     let invalidResultObj = {
         passwordValidator: {
-            valid : false
+            valid: false
         }
     };
 

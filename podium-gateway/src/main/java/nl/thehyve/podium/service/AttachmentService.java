@@ -51,10 +51,10 @@ public class AttachmentService {
     }
 
     /**
-     *  Get all the attachments.
+     * Get all the attachments.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<Attachment> findAll(Pageable pageable) {
@@ -64,10 +64,10 @@ public class AttachmentService {
     }
 
     /**
-     *  Get one attachment by id.
+     * Get one attachment by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Attachment findOne(Long id) {
@@ -77,9 +77,9 @@ public class AttachmentService {
     }
 
     /**
-     *  Delete the  attachment by id.
+     * Delete the  attachment by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete Attachment : {}", id);
@@ -90,9 +90,9 @@ public class AttachmentService {
     /**
      * Search for the attachment corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<Attachment> search(String query, Pageable pageable) {

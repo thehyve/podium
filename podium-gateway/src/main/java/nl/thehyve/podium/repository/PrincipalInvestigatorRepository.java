@@ -14,6 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Spring Data JPA repository for the PrincipalInvestigator entity.
  */
 @SuppressWarnings("unused")
-public interface PrincipalInvestigatorRepository extends JpaRepository<PrincipalInvestigator,Long> {
+public interface PrincipalInvestigatorRepository extends JpaRepository<PrincipalInvestigator, Long> {
 
 }

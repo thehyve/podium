@@ -8,8 +8,8 @@
 package nl.thehyve.podium.domain;
 
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
-import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;

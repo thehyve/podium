@@ -7,11 +7,11 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.common.config.PodiumProperties;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +32,11 @@ import java.util.Locale;
 @Service
 public class MailService {
 
-    private final Logger log = LoggerFactory.getLogger(MailService.class);
-
     private static final String USER = "user";
 
     private static final String BASE_URL = "baseUrl";
+
+    private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     @Autowired
     private PodiumProperties podiumProperties;
@@ -52,6 +52,7 @@ public class MailService {
 
     /**
      * Sends email with provided parameters.
+     *
      * @param to the adressee
      * @param subject subject line.
      * @param content the message body.
@@ -93,7 +94,7 @@ public class MailService {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             request, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
-        for (UserRepresentation user: coordinators) {
+        for (UserRepresentation user : coordinators) {
             log.debug("Sending request submitted e-mail to '{}'", user.getEmail());
             Locale locale = Locale.forLanguageTag(user.getLangKey());
             Context context = new Context(locale);
@@ -168,7 +169,7 @@ public class MailService {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             request, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
-        for (UserRepresentation user: coordinators) {
+        for (UserRepresentation user : coordinators) {
             log.debug("Sending request revision e-mail to '{}'", user.getEmail());
             Locale locale = Locale.forLanguageTag(user.getLangKey());
             Context context = new Context(locale);
@@ -288,7 +289,7 @@ public class MailService {
         log.info("Notifying coordinators: delivery = {}, organisation = {}, #coordinators = {}",
             deliveryProcess, organisation, coordinators == null ? null : coordinators.size());
         log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
-        for (UserRepresentation user: coordinators) {
+        for (UserRepresentation user : coordinators) {
             log.debug("Sending delivery received e-mail to '{}'", user.getEmail());
             Locale locale = Locale.forLanguageTag(user.getLangKey());
             Context context = new Context(locale);

@@ -14,12 +14,13 @@ import { OrganisationService } from './organisation.service';
 @Injectable()
 export class OrganisationPopupService {
     private isOpen = false;
-    constructor (
-        private modalService: NgbModal,
-        private organisationService: OrganisationService
-    ) {}
 
-    open (component: Component, uuid?: string | any): NgbModalRef {
+    constructor(
+        private modalService: NgbModal,
+        private organisationService: OrganisationService) {
+    }
+
+    open(component: Component, uuid?: string | any): NgbModalRef {
         if (this.isOpen) {
             return;
         }
@@ -35,7 +36,7 @@ export class OrganisationPopupService {
     }
 
     organisationModalRef(component: Component, organisation: Organisation): NgbModalRef {
-        let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.organisation = organisation;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);

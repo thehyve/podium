@@ -13,36 +13,41 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
-        <h4 class="modal-title" id="myOrganisationLabel" jhiTranslate="podiumGatewayApp.organisation.home.createOrEditLabel">Create or edit a Organisation</h4>
+        <h4 class="modal-title" id="myOrganisationLabel"
+            jhiTranslate="podiumGatewayApp.organisation.home.createOrEditLabel">Create or edit a Organisation</h4>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
         <div class="form-group" [hidden]="!organisation.id">
             <label for="uuid" jhiTranslate="global.field.uuid">UUID</label>
             <input type="text" class="form-control" id="uuid" name="uuid"
-                   [(ngModel)]="organisation.uuid" readonly />
+                   [(ngModel)]="organisation.uuid" readonly/>
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.shortName" for="field_shortName">Short Name</label>
+            <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.shortName"
+                   for="field_shortName">Short Name</label>
             <input type="text" class="form-control" name="shortName" id="field_shortName"
-                [(ngModel)]="organisation.shortName"
-            required maxlength="50" />
+                   [(ngModel)]="organisation.shortName"
+                   required maxlength="50"/>
             <div [hidden]="!(editForm.controls.shortName?.dirty && editForm.controls.shortName?.invalid)">
                 <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.shortName?.errors?.required" jhiTranslate="entity.validation.required">
-                   This field is required.
+                       [hidden]="!editForm.controls.shortName?.errors?.required"
+                       jhiTranslate="entity.validation.required">
+                    This field is required.
                 </small>
                 <small class="form-text text-danger"
-                   [hidden]="!editForm.controls.shortName?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
-                   This field cannot be longer than 50 characters.
+                       [hidden]="!editForm.controls.shortName?.errors?.maxlength"
+                       jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
+                    This field cannot be longer than 50 characters.
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name" for="field_name">Name</label>
+            <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name"
+                   for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
                    [(ngModel)]="organisation.name"
-                   required />
+                   required/>
             <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                 <small class="form-text text-danger"
                        [hidden]="!editForm.controls.name?.errors?.required" jhiTranslate="entity.validation.required">

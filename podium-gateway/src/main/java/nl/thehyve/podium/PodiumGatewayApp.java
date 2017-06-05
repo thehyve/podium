@@ -36,7 +36,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @ComponentScan(excludeFilters =
-    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class))
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class)
+)
 @EnableAutoConfiguration(exclude = {
     MetricFilterAutoConfiguration.class,
     MetricRepositoryAutoConfiguration.class,
@@ -55,26 +56,6 @@ public class PodiumGatewayApp {
 
     public PodiumGatewayApp(Environment env) {
         this.env = env;
-    }
-
-    /**
-     * Initializes podiumGateway.
-     * <p>
-     * Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile
-     * <p>
-     * You can find more information on how profiles work with Podium on <a href="http://podium.github.io/profiles/">http://podium.github.io/profiles/</a>.
-     */
-    @PostConstruct
-    public void initApplication() {
-        Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        if (activeProfiles.contains(PodiumConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(PodiumConstants.SPRING_PROFILE_PRODUCTION)) {
-            log.error("You have misconfigured your application! It should not run " +
-                "with both the 'dev' and 'prod' profiles at the same time.");
-        }
-        if (activeProfiles.contains(PodiumConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(PodiumConstants.SPRING_PROFILE_CLOUD)) {
-            log.error("You have misconfigured your application! It should not" +
-                "run with both the 'dev' and 'cloud' profiles at the same time.");
-        }
     }
 
     /**
@@ -102,5 +83,24 @@ public class PodiumGatewayApp {
         log.info("\n----------------------------------------------------------\n\t" +
                 "Config Server: \t{}\n----------------------------------------------------------",
             (configServerStatus == null) ? "Not found or not setup for this application" : configServerStatus);
+    }
+
+    /**
+     * Initializes podiumGateway.
+     * <p>
+     * Spring profiles can be configured with a program arguments --spring.profiles.active=your-active-profile
+     * <p>
+     */
+    @PostConstruct
+    public void initApplication() {
+        Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
+        if (activeProfiles.contains(PodiumConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(PodiumConstants.SPRING_PROFILE_PRODUCTION)) {
+            log.error("You have misconfigured your application! It should not run " +
+                "with both the 'dev' and 'prod' profiles at the same time.");
+        }
+        if (activeProfiles.contains(PodiumConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(PodiumConstants.SPRING_PROFILE_CLOUD)) {
+            log.error("You have misconfigured your application! It should not" +
+                "run with both the 'dev' and 'cloud' profiles at the same time.");
+        }
     }
 }

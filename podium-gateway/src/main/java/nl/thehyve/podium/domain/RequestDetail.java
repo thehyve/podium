@@ -84,8 +84,8 @@ public class RequestDetail implements Serializable {
     @ElementCollection(targetClass = RequestType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
-        name="request_detail_request_types",
-        joinColumns=@JoinColumn(name="request_detail_id")
+        name = "request_detail_request_types",
+        joinColumns = @JoinColumn(name = "request_detail_id")
     )
     private Set<RequestType> requestType;
 
@@ -104,17 +104,21 @@ public class RequestDetail implements Serializable {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public RequestDetail title(String title) {
         this.title = title;
         return this;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getBackground() {
         return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public RequestDetail background(String background) {
@@ -122,12 +126,12 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setBackground(String background) {
-        this.background = background;
-    }
-
     public String getResearchQuestion() {
         return researchQuestion;
+    }
+
+    public void setResearchQuestion(String researchQuestion) {
+        this.researchQuestion = researchQuestion;
     }
 
     public RequestDetail researchQuestion(String researchQuestion) {
@@ -135,12 +139,12 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setResearchQuestion(String researchQuestion) {
-        this.researchQuestion = researchQuestion;
-    }
-
     public String getHypothesis() {
         return hypothesis;
+    }
+
+    public void setHypothesis(String hypothesis) {
+        this.hypothesis = hypothesis;
     }
 
     public RequestDetail hypothesis(String hypothesis) {
@@ -148,12 +152,12 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setHypothesis(String hypothesis) {
-        this.hypothesis = hypothesis;
-    }
-
     public String getMethods() {
         return methods;
+    }
+
+    public void setMethods(String methods) {
+        this.methods = methods;
     }
 
     public RequestDetail methods(String methods) {
@@ -161,21 +165,17 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setMethods(String methods) {
-        this.methods = methods;
-    }
-
     public String getRelatedRequestNumber() {
         return relatedRequestNumber;
+    }
+
+    public void setRelatedRequestNumber(String relatedRequestNumber) {
+        this.relatedRequestNumber = relatedRequestNumber;
     }
 
     public RequestDetail relatedRequestNumber(String relatedRequestNumber) {
         this.relatedRequestNumber = relatedRequestNumber;
         return this;
-    }
-
-    public void setRelatedRequestNumber(String relatedRequestNumber) {
-        this.relatedRequestNumber = relatedRequestNumber;
     }
 
     public PrincipalInvestigator getPrincipalInvestigator() {
@@ -190,8 +190,16 @@ public class RequestDetail implements Serializable {
         return combinedRequest;
     }
 
+    public void setCombinedRequest(Boolean combinedRequest) {
+        this.combinedRequest = combinedRequest;
+    }
+
     public String getSearchQuery() {
         return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
     }
 
     public RequestDetail searchQuery(String searchQuery) {
@@ -199,13 +207,13 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
+    public Set<RequestType> getRequestType() {
+        return requestType;
     }
 
-    public Set<RequestType> getRequestType() { return requestType; }
-
-    public void setRequestType(Set<RequestType> requestType) { this.requestType = requestType; }
+    public void setRequestType(Set<RequestType> requestType) {
+        this.requestType = requestType;
+    }
 
     public Boolean isCombinedRequest() {
         return combinedRequest;
@@ -214,10 +222,6 @@ public class RequestDetail implements Serializable {
     public RequestDetail combinedRequest(Boolean combinedRequest) {
         this.combinedRequest = combinedRequest;
         return this;
-    }
-
-    public void setCombinedRequest(Boolean combinedRequest) {
-        this.combinedRequest = combinedRequest;
     }
 
     @Override

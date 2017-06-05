@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { Principal } from '../auth/principal.service';
 import { User } from '../user/user.model';
@@ -21,8 +20,7 @@ export class RequestAccessService {
     private currentUser: User;
 
     constructor(
-        private principal: Principal
-    ) {
+        private principal: Principal) {
         this.loadCurrentUser(false);
     }
 

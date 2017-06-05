@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity User and its DTO UserDTO.
  */
-@Mapper(componentModel = "spring", uses = { UuidMapper.class })
+@Mapper(componentModel = "spring", uses = {UuidMapper.class})
 @DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
 
@@ -67,7 +67,7 @@ public interface UserMapper {
     @Mapping(target = "adminVerified", ignore = true)
     @Mapping(target = "accountLocked", ignore = true)
     @Mapping(target = "authorities", ignore = true)
-    // Copy user properties, except login, password, email, activated.
+        // Copy user properties, except login, password, email, activated.
     User safeUpdateUserWithUserDTO(UserRepresentation userDTO, @MappingTarget User user);
 
     // Decorated is used to generate the fullname for the searchuser
@@ -88,7 +88,7 @@ public interface UserMapper {
         return user;
     }
 
-    default Set<String> stringsFromAuthorities (Set<Authority> authorities) {
+    default Set<String> stringsFromAuthorities(Set<Authority> authorities) {
         return authorities.stream().map(Authority::getName)
             .collect(Collectors.toSet());
     }
@@ -97,12 +97,12 @@ public interface UserMapper {
         return strings.stream().map(Authority::new).collect(Collectors.toSet());
     }
 
-    default Set<String> stringsFromGrantedAuthorities (Set<GrantedAuthority> authorities) {
+    default Set<String> stringsFromGrantedAuthorities(Set<GrantedAuthority> authorities) {
         return authorities.stream().map(GrantedAuthority::getAuthority)
             .collect(Collectors.toSet());
     }
 
-    default Set<GrantedAuthority> grantedAuthoritiesFromStrings (Set<String> strings) {
+    default Set<GrantedAuthority> grantedAuthoritiesFromStrings(Set<String> strings) {
         return strings.stream().map(SimpleGrantedAuthority::new)
             .collect(Collectors.toSet());
     }

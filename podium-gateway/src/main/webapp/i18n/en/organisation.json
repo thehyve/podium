@@ -1,6 +1,6 @@
 {
     "podiumGatewayApp": {
-        "organisation" : {
+        "organisation": {
             "home": {
                 "title": "Organisations",
                 "createLabel": "Create a new organisation",
@@ -17,14 +17,13 @@
             "shortName": "Short name",
             "activated": "Activated",
             "deactivated": "Deactivated",
-            "organisationAdminInactive":
-                "Your organisation requires all fields to be filled in and has a user assigned for each of the roles.<br />Contact the BBMRI admin to validate your organisation.",
+            "organisationAdminInactive": "Your organisation requires all fields to be filled in and has a user assigned for each of the roles.<br />Contact the BBMRI admin to validate your organisation.",
             "saved": "Successfully saved organisation",
             "updated": "Successfully updated organisation"
         }
     },
     "podiumuaaApp": {
-        "organisation" : {
+        "organisation": {
             "created": "A new organisation is created with identifier {{ param }}",
             "updated": "An organisation is updated with identifier {{ param }}",
             "deleted": "An organisation is deleted with identifier {{ param }}"

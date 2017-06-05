@@ -51,7 +51,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
                     let entityKey = httpResponse.headers.get(headers[1]);
                     if (errorHeader) {
                         let entityName = translateService.instant('global.menu.entities.' + entityKey);
-                        this.addErrorAlert(errorHeader, errorHeader, {entityName: entityName});
+                        this.addErrorAlert(errorHeader, errorHeader, { entityName: entityName });
                     } else if (httpResponse.text() !== '' && httpResponse.json() && httpResponse.json().fieldErrors) {
                         let fieldErrors = httpResponse.json().fieldErrors;
                         for (i = 0; i < fieldErrors.length; i++) {
@@ -61,7 +61,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
                             let fieldName = translateService.instant('podiumGatewayApp.' +
                                 fieldError.objectName + '.' + convertedField);
                             this.addErrorAlert(
-                                'Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, {fieldName: fieldName});
+                                'Field ' + fieldName + ' cannot be empty', 'error.' + fieldError.message, { fieldName: fieldName });
                         }
                     } else if (httpResponse.text() !== '' && httpResponse.json() && httpResponse.json().message) {
                         this.addErrorAlert(httpResponse.json().message, httpResponse.json().message, httpResponse.json());
@@ -91,7 +91,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
         }
     }
 
-    addErrorAlert (message, key?, data?) {
+    addErrorAlert(message, key?, data?) {
         key = key && key !== null ? key : message;
         this.alerts.push(
             this.alertService.addAlert(

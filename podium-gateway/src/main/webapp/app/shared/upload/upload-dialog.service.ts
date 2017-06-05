@@ -13,11 +13,12 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 @Injectable()
 export class UploadPopupService {
     private isOpen = false;
-    constructor (
-        private modalService: NgbModal
-    ) {}
 
-    open (component: Component, uuid?: string | any): NgbModalRef {
+    constructor(
+        private modalService: NgbModal) {
+    }
+
+    open(component: Component, uuid?: string | any): NgbModalRef {
         if (this.isOpen) {
             return;
         }
@@ -35,7 +36,7 @@ export class UploadPopupService {
     }
 
     uploadModalRef(component: Component): NgbModalRef {
-        let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static' });
         modalRef.result.then(result => {
             this.isOpen = false;
         }, (reason) => {

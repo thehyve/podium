@@ -13,6 +13,7 @@ package nl.thehyve.podium.service;
 /**
  * Created by bernd on 25/03/2017.
  */
+
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
@@ -95,11 +96,11 @@ public class ElasticsearchIndexService {
     /**
      * Service for reindexing an entity in Elasticsearch.
      *
-     * @param entityClass The java entity to that has to be indexed in elasticsearch
-     * @param jpaRepository Instance of a java entity jpa repository
-     * @param searchEntityClass The Elasticsearch document entity that will be used in the mapping of the java entity
+     * @param entityClass             The java entity to that has to be indexed in elasticsearch
+     * @param jpaRepository           Instance of a java entity jpa repository
+     * @param searchEntityClass       The Elasticsearch document entity that will be used in the mapping of the java entity
      * @param elasticsearchRepository Instane of the elasticsearchrepository for this document entity
-     * @param mapperFunction The mapper function to apply for the transformation of the entity to the searchentity
+     * @param mapperFunction          The mapper function to apply for the transformation of the entity to the searchentity
      */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")

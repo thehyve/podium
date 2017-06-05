@@ -17,7 +17,8 @@ export class ProfileService {
 
     private profileInfoUrl = 'api/profile-info';
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     getProfileInfo(): Observable<ProfileInfo> {
         return this.http.get(this.profileInfoUrl)

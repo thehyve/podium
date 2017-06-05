@@ -111,7 +111,7 @@ public class OrganisationService {
         // FIXME: Check cascase ALL
         organisationRepository.save(organisation);
 
-        if(!roleService.organisationHasAnyRole(organisation)) {
+        if (!roleService.organisationHasAnyRole(organisation)) {
             Set<Role> roles = findOrganisationAuthorities().stream()
                 .map(authority -> roleService.save(new Role(authority, organisation)))
                 .collect(Collectors.toSet());
@@ -137,8 +137,8 @@ public class OrganisationService {
     /**
      * Get all the organisations.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<OrganisationDTO> findAll(Pageable pageable) {
@@ -156,8 +156,8 @@ public class OrganisationService {
     @Transactional(readOnly = true)
     public Page<OrganisationDTO> findAllAvailable(Pageable pageable) {
         log.debug("Request to get active organisations by request type(s)");
-        Page<Organisation> result  = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
-        return  result.map(organisationMapper::organisationToOrganisationDTO);
+        Page<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
+        return result.map(organisationMapper::organisationToOrganisationDTO);
     }
 
     /**
@@ -174,7 +174,7 @@ public class OrganisationService {
     }
 
     /**
-     *  Get one organisation by id.
+     * Get one organisation by id.
      *
      * @param id the id of the entity
      * @return the entity
@@ -186,7 +186,7 @@ public class OrganisationService {
     }
 
     /**
-     *  Get an organisationDTO by uuid.
+     * Get an organisationDTO by uuid.
      *
      * @param uuid the uuid of the entity
      * @return the entity
@@ -199,7 +199,7 @@ public class OrganisationService {
     }
 
     /**
-     *  Get one organisation by uuid.
+     * Get one organisation by uuid.
      *
      * @param uuid the uuid of the entity
      * @return the entity
@@ -213,10 +213,9 @@ public class OrganisationService {
     /**
      * (De-)activate the organisation
      *
-     *  @param id The id of the organisation to be activated.
-     *  @param activated Boolean indicating if the organisation is to be activated or not.
-     *
-     *  @return OrganisationDTO of the updated Organisation
+     * @param id        The id of the organisation to be activated.
+     * @param activated Boolean indicating if the organisation is to be activated or not.
+     * @return OrganisationDTO of the updated Organisation
      */
     public OrganisationDTO activation(Long id, boolean activated) {
         Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
@@ -231,10 +230,10 @@ public class OrganisationService {
     }
 
     /**
-     *  Get one organisation by short name.
+     * Get one organisation by short name.
      *
-     *  @param shortName the short name of the entity
-     *  @return the entity
+     * @param shortName the short name of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public Organisation findByShortName(String shortName) {
@@ -264,7 +263,7 @@ public class OrganisationService {
     /**
      * Search for the organisation corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable Pagination object of the requested page
      * @return the list of entities
      */

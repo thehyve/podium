@@ -17,7 +17,7 @@ import { StateStorageService } from '../auth/state-storage.service';
     selector: 'podium-login',
     templateUrl: './login.component.html'
 })
-export class  PodiumLoginComponent implements OnInit, AfterViewInit {
+export class PodiumLoginComponent implements OnInit, AfterViewInit {
     authenticationError: boolean;
     userAccountLocked: boolean;
     emailNotVerified: boolean;
@@ -34,8 +34,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         private stateStorageService: StateStorageService,
         private elementRef: ElementRef,
         private renderer: Renderer,
-        private router: Router
-    ) {
+        private router: Router) {
         this.credentials = {};
     }
 
@@ -47,7 +46,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#username'), 'focus', []);
     }
 
-    cancel () {
+    cancel() {
         this.credentials = {
             username: null,
             password: null,
@@ -59,7 +58,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         this.accountNotVerified = false;
     }
 
-    login () {
+    login() {
         this.loginService.login({
             username: this.username,
             password: this.password,
@@ -85,7 +84,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             let previousState = this.stateStorageService.getPreviousState();
             if (previousState) {
                 this.stateStorageService.resetPreviousState();
-                this.router.navigate([previousState.name], { queryParams:  previousState.params });
+                this.router.navigate([previousState.name], { queryParams: previousState.params });
             } else {
                 this.router.navigate(['/dashboard']);
             }
@@ -95,7 +94,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             this.emailNotVerified = false;
             this.accountNotVerified = false;
             if (err && err._body) {
-                let response =  JSON.parse(err._body);
+                let response = JSON.parse(err._body);
                 switch (response.error_description) {
                     case 'The user account is locked.':
                         this.userAccountLocked = true;
@@ -111,11 +110,11 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         });
     }
 
-    register () {
+    register() {
         this.router.navigate(['/register']);
     }
 
-    requestResetPassword () {
+    requestResetPassword() {
         this.router.navigate(['/reset', 'request']);
     }
 }

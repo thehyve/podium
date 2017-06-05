@@ -22,7 +22,6 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -72,17 +71,18 @@ public class RoleResource {
     @Autowired
     private OrganisationService organisationService;
 
-    public RoleResource() {}
+    public RoleResource() {
+    }
 
     private void copyProperties(RoleRepresentation source, Role target) {
         Set<UUID> currentUsers = target.getUsers().stream().map(User::getUuid).collect(Collectors.toSet());
         Set<UUID> desiredUsers = source.getUsers();
         Set<UUID> deleteUsers = Sets.difference(currentUsers, desiredUsers);
         Set<UUID> addUsers = Sets.difference(desiredUsers, currentUsers);
-        Set<User> result = target.getUsers().stream().filter( u ->
+        Set<User> result = target.getUsers().stream().filter(u ->
             !deleteUsers.contains(u.getUuid())
         ).collect(Collectors.toSet());
-        for (UUID userUuid: addUsers) {
+        for (UUID userUuid : addUsers) {
             Optional<User> user = userService.getUserByUuid(userUuid);
             if (user.isPresent()) {
                 result.add(user.get());
@@ -103,7 +103,7 @@ public class RoleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @SecuredByOrganisation(authorities= {AuthorityConstants.ORGANISATION_ADMIN})
+    @SecuredByOrganisation(authorities = {AuthorityConstants.ORGANISATION_ADMIN})
     @PutMapping("/roles")
     @Timed
     public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation roleRepresentation) throws URISyntaxException {
@@ -181,7 +181,7 @@ public class RoleResource {
      * SEARCH  /_search/roles?query=:query : search for the role corresponding
      * to the query.
      *
-     * @param query the query of the role search
+     * @param query    the query of the role search
      * @param pageable the pagination information
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers

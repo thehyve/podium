@@ -38,12 +38,12 @@ describe('RequestService (Mocked)', () => {
         })));
 
     describe('someMethod', () => {
-        const mockResponse = [ {
-            "id" : 999,
-            "uuid" : "xxx",
-            "requester" : "xxx",
-            "status" : "Review",
-        } ];
+        const mockResponse = [{
+            "id": 999,
+            "uuid": "xxx",
+            "requester": "xxx",
+            "status": "Review",
+        }];
 
         let args = {
             page: 0,
@@ -61,11 +61,11 @@ describe('RequestService (Mocked)', () => {
 
                 result.subscribe(res => {
                     expect(res.json()).toEqual([{
-                        "id" : 999,
-                        "uuid" : "xxx",
-                        "requester" : "xxx",
-                        "status" : "Review",
-                    }] );
+                        "id": 999,
+                        "uuid": "xxx",
+                        "requester": "xxx",
+                        "status": "Review",
+                    }]);
                 });
             })));
     });

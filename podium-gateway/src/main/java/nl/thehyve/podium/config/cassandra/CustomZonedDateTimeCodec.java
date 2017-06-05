@@ -30,27 +30,27 @@ public class CustomZonedDateTimeCodec extends TypeCodec<ZonedDateTime> {
     public static final CustomZonedDateTimeCodec instance = new CustomZonedDateTimeCodec();
 
     private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
-            .parseCaseSensitive()
-            .parseStrict()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE)
-            .optionalStart()
-            .appendLiteral('T')
-            .appendValue(HOUR_OF_DAY, 2)
-            .appendLiteral(':')
-            .appendValue(MINUTE_OF_HOUR, 2)
-            .optionalEnd()
-            .optionalStart()
-            .appendLiteral(':')
-            .appendValue(SECOND_OF_MINUTE, 2)
-            .optionalEnd()
-            .optionalStart()
-            .appendFraction(NANO_OF_SECOND, 0, 9, true)
-            .optionalEnd()
-            .optionalStart()
-            .appendZoneOrOffsetId()
-            .optionalEnd()
-            .toFormatter()
-            .withZone(ZoneOffset.UTC);
+        .parseCaseSensitive()
+        .parseStrict()
+        .append(DateTimeFormatter.ISO_LOCAL_DATE)
+        .optionalStart()
+        .appendLiteral('T')
+        .appendValue(HOUR_OF_DAY, 2)
+        .appendLiteral(':')
+        .appendValue(MINUTE_OF_HOUR, 2)
+        .optionalEnd()
+        .optionalStart()
+        .appendLiteral(':')
+        .appendValue(SECOND_OF_MINUTE, 2)
+        .optionalEnd()
+        .optionalStart()
+        .appendFraction(NANO_OF_SECOND, 0, 9, true)
+        .optionalEnd()
+        .optionalStart()
+        .appendZoneOrOffsetId()
+        .optionalEnd()
+        .toFormatter()
+        .withZone(ZoneOffset.UTC);
 
     private CustomZonedDateTimeCodec() {
         super(DataType.timestamp(), ZonedDateTime.class);
@@ -81,23 +81,23 @@ public class CustomZonedDateTimeCodec extends TypeCodec<ZonedDateTime> {
 
     @Override
     public ZonedDateTime parse(String value) {
-            // strip enclosing single quotes, if any
-            if (ParseUtils.isQuoted(value)) {
-                value = ParseUtils.unquote(value);
-            }
-            if (isLongLiteral(value)) {
-                try {
-                    long millis = Long.parseLong(value);
-                    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
-                } catch (NumberFormatException e) {
-                    throw new InvalidTypeException(String.format("Cannot parse timestamp value from \"%s\"", value));
-                }
-            }
+        // strip enclosing single quotes, if any
+        if (ParseUtils.isQuoted(value)) {
+            value = ParseUtils.unquote(value);
+        }
+        if (isLongLiteral(value)) {
             try {
-                return ZonedDateTime.from(FORMATTER.parse(value));
-            } catch (DateTimeParseException e) {
+                long millis = Long.parseLong(value);
+                return ZonedDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
+            } catch (NumberFormatException e) {
                 throw new InvalidTypeException(String.format("Cannot parse timestamp value from \"%s\"", value));
             }
-     }
+        }
+        try {
+            return ZonedDateTime.from(FORMATTER.parse(value));
+        } catch (DateTimeParseException e) {
+            throw new InvalidTypeException(String.format("Cannot parse timestamp value from \"%s\"", value));
+        }
+    }
 
 }

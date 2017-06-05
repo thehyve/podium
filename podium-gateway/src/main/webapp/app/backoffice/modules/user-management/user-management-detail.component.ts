@@ -24,8 +24,7 @@ export class UserMgmtDetailComponent implements OnInit, OnDestroy {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private userService: UserService,
-        private route: ActivatedRoute
-    ) {
+        private route: ActivatedRoute) {
         this.jhiLanguageService.setLocations(['user-management']);
     }
 
@@ -35,7 +34,7 @@ export class UserMgmtDetailComponent implements OnInit, OnDestroy {
         });
     }
 
-    load (login) {
+    load(login) {
         this.userService.find(login).subscribe(user => {
             this.user = user;
         });

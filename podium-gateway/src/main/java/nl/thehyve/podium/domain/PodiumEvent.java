@@ -12,7 +12,8 @@ import nl.thehyve.podium.common.domain.AbstractPodiumEvent;
 import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class PodiumEvent extends AbstractPodiumEvent {
         this.setPrincipal(event.getUsername());
         this.setEventType(EventType.Status_Change);
         this.setEventDate(event.getEventDate());
-        Map<String,String> data = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("requestUuid", event.getRequestUuid().toString());
         if (event.getDeliveryProcessUuid() != null) {
             data.put("deliveryProcessUuid", event.getDeliveryProcessUuid().toString());

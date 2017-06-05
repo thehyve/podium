@@ -20,8 +20,9 @@ export class CompletedComponent implements OnInit {
     completedTitle: string;
     completedContent: string;
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private messageService: MessageService) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private messageService: MessageService) {
         this.jhiLanguageService.setLocations(['completed']);
     }
 

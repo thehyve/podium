@@ -19,16 +19,16 @@ export class Principal {
     private authenticationState = new Subject<any>();
 
     constructor(
-        private account: AccountService
-    ) {}
+        private account: AccountService) {
+    }
 
-    authenticate (_identity) {
+    authenticate(_identity) {
         this._identity = _identity;
         this.authenticated = _identity !== null;
         this.authenticationState.next(this._identity);
     }
 
-    hasAnyAuthority (authorities: string[]): Promise<boolean> {
+    hasAnyAuthority(authorities: string[]): Promise<boolean> {
         if (!this.authenticated || !this._identity || !this._identity.authorities) {
             return Promise.resolve(false);
         }
@@ -42,9 +42,9 @@ export class Principal {
         return Promise.resolve(false);
     }
 
-    hasAuthority (authority: String): Promise<boolean> {
+    hasAuthority(authority: String): Promise<boolean> {
         if (!this.authenticated) {
-           return Promise.resolve(false);
+            return Promise.resolve(false);
         }
 
         return this.identity().then(id => {
@@ -54,7 +54,7 @@ export class Principal {
         });
     }
 
-    identity (force?: boolean): Promise<any> {
+    identity(force?: boolean): Promise<any> {
         if (force === true) {
             this._identity = undefined;
         }
@@ -84,11 +84,11 @@ export class Principal {
         });
     }
 
-    isAuthenticated (): boolean {
+    isAuthenticated(): boolean {
         return this.authenticated;
     }
 
-    isIdentityResolved (): boolean {
+    isIdentityResolved(): boolean {
         return this._identity !== undefined;
     }
 
@@ -97,6 +97,6 @@ export class Principal {
     }
 
     getImageUrl(): String {
-        return this.isIdentityResolved () ? this._identity.imageUrl : null;
+        return this.isIdentityResolved() ? this._identity.imageUrl : null;
     }
 }

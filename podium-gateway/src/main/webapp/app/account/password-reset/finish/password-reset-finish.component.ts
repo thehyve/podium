@@ -32,8 +32,7 @@ export class PasswordResetFinishComponent implements OnInit {
         private route: ActivatedRoute,
         private elementRef: ElementRef,
         private renderer: Renderer,
-        private router: Router
-    ) {
+        private router: Router) {
         this.jhiLanguageService.setLocations(['reset']);
     }
 
@@ -47,13 +46,13 @@ export class PasswordResetFinishComponent implements OnInit {
 
     ngAfterViewInit() {
         if (this.elementRef.nativeElement.querySelector('#password') != null) {
-          this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#password'), 'focus', []);
+            this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#password'), 'focus', []);
         }
     }
 
     finishReset() {
         this.error = null;
-        this.passwordResetFinish.save({key: this.key, newPassword: this.resetAccount.password}).subscribe(() => {
+        this.passwordResetFinish.save({ key: this.key, newPassword: this.resetAccount.password }).subscribe(() => {
             this.success = 'OK';
         }, () => {
             this.success = null;

@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
@@ -70,8 +70,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         private principal: Principal,
         private eventManager: EventManager,
         private organisationService: OrganisationService,
-        private modalService: NgbModal
-    ) {
+        private modalService: NgbModal) {
         this.jhiLanguageService.setLocations(['request']);
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -148,7 +147,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
 
     updateRequestType(selectedRequestType, event) {
         let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
-        if ( _idx < 0) {
+        if (_idx < 0) {
             this.requestDetail.requestType.push(selectedRequestType.value);
         } else {
             this.requestDetail.requestType.splice(_idx, 1);
@@ -168,7 +167,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     }
 
     confirmSubmitModal(request: RequestBase) {
-        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.request = request;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
@@ -212,7 +211,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveRequestRevision(this.requestBase)
-            // Submit the request
+        // Submit the request
             .flatMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid))
             .subscribe(
                 (res) => this.onSuccess(res),
@@ -245,7 +244,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
 
     private onSuccess(result) {
         this.isUpdating = false;
-        this.error =  null;
+        this.error = null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
 
@@ -254,7 +253,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
 
     private onError(error) {
         this.isUpdating = false;
-        this.error =  'ERROR';
+        this.error = 'ERROR';
         this.success = null;
         window.scrollTo(0, 0);
     }

@@ -11,14 +11,29 @@ import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -72,10 +87,10 @@ public class DeliveryProcess extends AbstractAuditingEntity {
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderColumn(name="event_order")
+    @OrderColumn(name = "event_order")
     @JoinTable(name = "delivery_process_historic_events",
-        joinColumns = @JoinColumn(name="delivery_process_id", referencedColumnName="id"),
-        inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
+        joinColumns = @JoinColumn(name = "delivery_process_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "event_id"))
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     public Long getId() {
@@ -152,13 +167,13 @@ public class DeliveryProcess extends AbstractAuditingEntity {
         return historicEvents;
     }
 
+    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
+        this.historicEvents = historicEvents;
+    }
+
     public DeliveryProcess addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
-    }
-
-    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
-        this.historicEvents = historicEvents;
     }
 
 }

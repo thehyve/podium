@@ -14,8 +14,6 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
-import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +50,8 @@ public class RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public RoleService() { }
+    public RoleService() {
+    }
 
     /**
      * Save a role.
@@ -131,7 +130,7 @@ public class RoleService {
     /**
      * Get the role for an authority within an organisation.
      *
-     * @param organisation The organisation to fetch the role for.
+     * @param organisation  The organisation to fetch the role for.
      * @param authorityName Authority name to fetch role for.
      * @return the entity
      */
@@ -163,7 +162,7 @@ public class RoleService {
     /**
      * Search for the role corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable Pagination object of the requested page
      * @return the list of entities
      */

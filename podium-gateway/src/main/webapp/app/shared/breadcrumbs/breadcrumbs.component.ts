@@ -13,8 +13,7 @@ import { Principal } from '../auth/principal.service';
 
 @Component({
     selector: 'pdm-breadcrumb',
-    template:
-        `<div  *ngIf="isAuthenticated()">
+    template: `<div  *ngIf="isAuthenticated()">
             <div #template>
                 <ng-content></ng-content>
             </div>
@@ -34,8 +33,7 @@ export class BreadcrumbComponent {
 
     constructor(
         private breadcrumbService: BreadcrumbService,
-        private principal: Principal
-    ) {
+        private principal: Principal) {
         breadcrumbService.onBreadcrumbChange.subscribe((crumbs: Breadcrumb[]) => {
             this.breadcrumbs = crumbs;
         });

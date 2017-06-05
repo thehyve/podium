@@ -18,7 +18,8 @@ export class RoleService {
     private resourceUrl = 'podiumuaa/api/roles';
     private resourceSearchUrl = 'podiumuaa/api/_search/roles';
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     update(role: Role): Observable<Role> {
         let copy: Role = Object.assign({}, role);
@@ -42,13 +43,13 @@ export class RoleService {
     query(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceUrl, options)
-        ;
+            ;
     }
 
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options)
-        ;
+            ;
     }
 
 

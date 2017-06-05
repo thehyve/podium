@@ -15,9 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -27,7 +25,7 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class NotificationService {
 
-    private Logger log  = LoggerFactory.getLogger(NotificationService.class);
+    private Logger log = LoggerFactory.getLogger(NotificationService.class);
 
     @Autowired
     private OrganisationClientService organisationClientService;
@@ -44,6 +42,7 @@ public class NotificationService {
 
     /**
      * RequestService is injected by the service post construct.
+     *
      * @param requestService the request service.
      * @see RequestService
      */
@@ -53,6 +52,7 @@ public class NotificationService {
 
     /**
      * DeliveryService is injected by the service post construct.
+     *
      * @param deliveryService the delivery service.
      * @see DeliveryService
      */
@@ -98,6 +98,7 @@ public class NotificationService {
 
     /**
      * Notify the requester about the submission of a new request.
+     *
      * @param user the requester
      * @param organisationRequests the list of organisation requests generated at request submission.
      */
@@ -110,12 +111,13 @@ public class NotificationService {
 
     /**
      * Notify organisation coordinators about the submission of a new request.
+     *
      * @param requestUuid The uuid of the request
      */
     @Async
     public void submissionNotificationToCoordinators(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for (OrganisationDTO organisation : request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
@@ -125,6 +127,7 @@ public class NotificationService {
 
     /**
      * Notify requester about the approval or rejection of their request.
+     *
      * @param requestUuid The uuid of the request
      */
     @Async
@@ -148,12 +151,13 @@ public class NotificationService {
 
     /**
      * Notify organisation coordinators about the submission of a revised request.
+     *
      * @param requestUuid The uuid of the request
      */
     @Async
     public void revisionNotificationToCoordinators(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for (OrganisationDTO organisation : request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
@@ -170,7 +174,7 @@ public class NotificationService {
     @Async
     public void reviewNotificationToReviewers(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for (OrganisationDTO organisation : request.getOrganisations()) {
             // Fetch organisation reviewers through Feign.
             List<UserRepresentation> reviewers
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.REVIEWER);
@@ -181,6 +185,7 @@ public class NotificationService {
 
     /**
      * Notify the requester that their request requires one or more revisions.
+     *
      * @param requestUuid The uuid of the request
      */
     @Async
@@ -194,6 +199,7 @@ public class NotificationService {
 
     /**
      * Send a delivery released notification to the requester for this delivery.
+     *
      * @param requestUuid the uuid of the request the delivery belongs to.
      * @param deliveryProcessUuid the uuid of the delivery.
      */
@@ -210,6 +216,7 @@ public class NotificationService {
     /**
      * Send a notification to the organisation coordinators if the outcome of the
      * delivery is that it has been received.
+     *
      * @param requestUuid the uuid of the request the delivery belongs to.
      * @param deliveryProcessUuid the uuid of the delivery.
      */
@@ -223,7 +230,7 @@ public class NotificationService {
             return;
         }
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for (OrganisationDTO organisation : request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);

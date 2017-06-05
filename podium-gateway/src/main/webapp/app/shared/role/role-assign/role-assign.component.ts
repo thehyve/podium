@@ -50,8 +50,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         private userService: UserService,
         private alertService: AlertService,
         private principal: Principal,
-        private eventManager: EventManager
-    ) {
+        private eventManager: EventManager) {
         this.jhiLanguageService.setLocations(['organisation', 'role']);
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
         this.authorityOptions = ORGANISATION_AUTHORITIES;
@@ -64,7 +63,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
 
         this.registerChangeInRoles();
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK' });
     }
 
     ngOnDestroy() {
@@ -104,13 +103,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     public generateOrganisationUser(user: User, role: Role): OrganisationUser {
         let orgUser: OrganisationUser = new OrganisationUser();
 
-        if ( user ) {
+        if (user) {
             orgUser.fullName = user.firstName + ' ' + user.lastName;
             orgUser.uuid = user.uuid;
             orgUser.searchTerm = orgUser.fullName;
         }
 
-        if ( role ) {
+        if (role) {
             orgUser.previousAuthority = role.authority;
             orgUser.authority = role.authority;
             orgUser.isSaved = user.uuid != null;
@@ -135,7 +134,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
             // Runs on every search
             // each organisation user has a 'searchTerm' property that is used as the input and is bound to [(ngModel)]
             // when user types into the input .next is called with the value from the input
-            observer.next({query: organisationUser.searchTerm });
+            observer.next({ query: organisationUser.searchTerm });
         }).mergeMap((term: any) => this.userService.suggest(term));
     }
 
@@ -148,8 +147,12 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         // Find and Update role by authority
         let role = this.getRoleByAuthority(user.authority);
         this.updateRole(role, user, false).subscribe(
-            (res) => { this.onSaveSuccess(res, false); },
-            (err) => { this.onError(err); }
+            (res) => {
+                this.onSaveSuccess(res, false);
+            },
+            (err) => {
+                this.onError(err);
+            }
         );
     }
 
@@ -169,11 +172,17 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                 // Add new role
                 let role = this.getRoleByAuthority(user.authority);
                 this.updateRole(role, user, false).subscribe(
-                    (res: Response) => { this.onSaveSuccess(res, false); },
-                    (err: Response) => { this.onError(err); },
+                    (res: Response) => {
+                        this.onSaveSuccess(res, false);
+                    },
+                    (err: Response) => {
+                        this.onError(err);
+                    },
                 );
             },
-            (err: Response) => { this.onError(err); }
+            (err: Response) => {
+                this.onError(err);
+            }
         );
     }
 
@@ -186,8 +195,12 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         let role = this.getRoleByAuthority(user.authority);
 
         this.updateRole(role, user, true).subscribe(
-            (res: Response) => { this.onSaveSuccess(res, true); },
-            (err: Response) => { this.onError(err); }
+            (res: Response) => {
+                this.onSaveSuccess(res, true);
+            },
+            (err: Response) => {
+                this.onError(err);
+            }
         );
     }
 
@@ -269,7 +282,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                 } else {
                     // Check if role already has user
                     if (userIdx > -1) {
-                        this.onError({message: 'Cannot add user ' + user.fullName + ' to the same role twice.'});
+                        this.onError({ message: 'Cannot add user ' + user.fullName + ' to the same role twice.' });
                     } else {
                         role.users.push(user.uuid);
                     }
@@ -286,7 +299,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                         }
                     );
             } else {
-                this.onError({message: 'Cannot find role for authority ' + user.authority });
+                this.onError({ message: 'Cannot find role for authority ' + user.authority });
             }
         });
     }
@@ -294,14 +307,14 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     private onSaveSuccess(res: Response, isDelete: boolean) {
         let notification = isDelete ? 'podiumGatewayApp.roleAssign.deleted' : 'podiumGatewayApp.roleAssign.saved';
         this.alertService.success(notification);
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK' });
     }
 
-    private onError (error) {
+    private onError(error) {
         this.alertService.error(error.message, null, null);
     }
 
-    private onSaveError (error) {
+    private onSaveError(error) {
         this.alertService.error(error.message, null, null);
     }
 

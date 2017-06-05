@@ -49,4 +49,5 @@ let BBMRI_ROUTES = [
     exports: [RouterModule]
 })
 
-export class OrganisationBackofficeRoutingModule {}
+export class OrganisationBackofficeRoutingModule {
+}

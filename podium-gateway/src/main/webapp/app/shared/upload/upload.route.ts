@@ -11,12 +11,12 @@ import { Routes } from '@angular/router';
 import { UploadPopupComponent } from './upload-dialog.component';
 
 export const uploadPopupRoute: Routes = [
-  {
-    path: 'upload',
-    component: UploadPopupComponent,
-    data: {
-        pageTitle: 'upload.dialog.header'
-    },
-    outlet: 'popup'
-  }
+    {
+        path: 'upload',
+        component: UploadPopupComponent,
+        data: {
+            pageTitle: 'upload.dialog.header'
+        },
+        outlet: 'popup'
+    }
 ];

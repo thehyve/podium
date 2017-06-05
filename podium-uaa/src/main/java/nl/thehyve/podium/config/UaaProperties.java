@@ -11,9 +11,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Properties specific to the User Authentication component of Podium.
- *
  * <p>
- *     Properties are configured in the application.yml file.
+ * <p>
+ * Properties are configured in the application.yml file.
  * </p>
  */
 @ConfigurationProperties(prefix = "uaa", ignoreUnknownFields = false)
@@ -34,10 +34,10 @@ public class UaaProperties {
 
         /**
          * Maximum number of failed login attempts before the user account is locked.
-         *
+         * <p>
          * Property: uaa.security.maxFailedLoginAttempts (default: 5)
          *
-         *  @return The number of maximum failed login attempts allowed.
+         * @return The number of maximum failed login attempts allowed.
          */
         public long getMaxFailedLoginAttempts() {
             return maxFailedLoginAttempts;
@@ -50,7 +50,7 @@ public class UaaProperties {
         /**
          * If true, the account will only be temporarily locked, see {@link #accountLockingPeriodSeconds};
          * otherwise, an admin action is required to unlock the account.
-         *
+         * <p>
          * Property: uaa.security.timeBasedUnlockingEnabled (default: false)
          *
          * @return boolean indicating whether time based account unlocking is enabled.
@@ -66,10 +66,10 @@ public class UaaProperties {
         /**
          * The number of seconds an account is locked after too many failed login attempts.
          * Automatic unlocking is only active if {@link #timeBasedUnlockingEnabled}.
-         *
+         * <p>
          * Property: uaa.security.accountBlockingPeriodSeconds (default: 300 = 5 minutes)
          *
-         *  @return Number of seconds indicating how long the account is locked after exceeding max login attempts.
+         * @return Number of seconds indicating how long the account is locked after exceeding max login attempts.
          */
         public long getAccountLockingPeriodSeconds() {
             return accountLockingPeriodSeconds;
@@ -81,12 +81,14 @@ public class UaaProperties {
 
         /**
          * The number of seconds an activation key is valid.
-         *
+         * <p>
          * Property: uaa.security.activationKeyValiditySeconds { default: 604800 }
          *
-         *  @return Number of seconds indicating how long an activation key is valid for.
+         * @return Number of seconds indicating how long an activation key is valid for.
          */
-        public long getActivationKeyValiditySeconds() { return activationKeyValiditySeconds; }
+        public long getActivationKeyValiditySeconds() {
+            return activationKeyValiditySeconds;
+        }
 
         public void setActivationKeyValiditySeconds(long activationKeyValidity) {
             this.activationKeyValiditySeconds = activationKeyValidity;

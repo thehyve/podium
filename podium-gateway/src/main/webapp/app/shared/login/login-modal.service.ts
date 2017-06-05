@@ -14,11 +14,12 @@ import { PodiumLoginComponent } from './login.component';
 @Injectable()
 export class LoginModalService {
     private isOpen = false;
-    constructor (
-        private modalService: NgbModal,
-    ) {}
 
-    open (): NgbModalRef {
+    constructor(
+        private modalService: NgbModal,) {
+    }
+
+    open(): NgbModalRef {
         if (this.isOpen) {
             return;
         }

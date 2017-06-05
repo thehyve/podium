@@ -29,8 +29,7 @@ export class HomeComponent implements OnInit {
         private jhiLanguageService: JhiLanguageService,
         private principal: Principal,
         private eventManager: EventManager,
-        private router: Router
-    ) {
+        private router: Router) {
         this.jhiLanguageService.setLocations(['home']);
     }
 

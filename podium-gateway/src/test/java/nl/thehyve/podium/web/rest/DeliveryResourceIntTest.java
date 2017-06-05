@@ -13,14 +13,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.enumeration.*;
+import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
+import nl.thehyve.podium.common.enumeration.DeliveryStatus;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestType;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
+import nl.thehyve.podium.common.service.dto.DeliveryReferenceRepresentation;
+import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.PodiumEventRepresentation;
+import nl.thehyve.podium.common.service.dto.PrincipalInvestigatorRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
-import nl.thehyve.podium.service.*;
+import nl.thehyve.podium.service.AuditService;
+import nl.thehyve.podium.service.MailService;
+import nl.thehyve.podium.service.OrganisationClientService;
+import nl.thehyve.podium.service.TestService;
+import nl.thehyve.podium.service.UserClientService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,13 +64,21 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.eq;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,6 +91,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration
 @SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class DeliveryResourceIntTest {
+
+    public static final String REQUESTS_ROUTE = "/api/requests";
+
+    private static final String ACTION_VALIDATE = "validate";
+
+    private static final String ACTION_APPROVE = "approve";
+
+    private static final String ACTION_START_DELIVERY = "startDelivery";
+
+    private static final String DELIVERY_RELEASE = "release";
+
+    private static final String DELIVERY_RECEIVED = "received";
+
+    private static final String DELIVERY_CANCEL = "cancel";
+
+    private static final String mockRequesterUsername = "requester";
+
+    private static UUID organisationUuid1 = UUID.randomUUID();
+
+    private static UUID organisationUuid2 = UUID.randomUUID();
+
+    private static UUID coordinatorUuid1 = UUID.randomUUID();
+
+    private static UUID coordinatorUuid2 = UUID.randomUUID();
+
+    private static UUID reviewerUuid1 = UUID.randomUUID();
+
+    private static UUID reviewerUuid2 = UUID.randomUUID();
+
+    private static UUID mockRequesterUuid = UUID.randomUUID();
+
+    private static Set<String> requesterAuthorities =
+        Sets.newSet(AuthorityConstants.RESEARCHER);
+
+    private static Set<String> coordinatorAuthorities =
+        Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR);
+
+    private static Set<String> reviewerAuthorities =
+        Sets.newSet(AuthorityConstants.REVIEWER);
 
     private Logger log = LoggerFactory.getLogger(DeliveryResourceIntTest.class);
 
@@ -93,44 +157,24 @@ public class DeliveryResourceIntTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     private TypeReference<List<RequestRepresentation>> requestListTypeReference =
-        new TypeReference<List<RequestRepresentation>>(){};
+        new TypeReference<List<RequestRepresentation>>() {
+        };
 
     private TypeReference<List<DeliveryProcessRepresentation>> deliveryProcessListTypeReference =
-        new TypeReference<List<DeliveryProcessRepresentation>>(){};
+        new TypeReference<List<DeliveryProcessRepresentation>>() {
+        };
 
     private MockMvc mockMvc;
 
     private UserAuthenticationToken requester;
+
     private UserAuthenticationToken coordinator1;
+
     private UserAuthenticationToken coordinator2;
+
     private UserAuthenticationToken reviewer1;
+
     private UserAuthenticationToken reviewer2;
-
-    private static UUID organisationUuid1 = UUID.randomUUID();
-    private static UUID organisationUuid2 = UUID.randomUUID();
-    private static UUID coordinatorUuid1 = UUID.randomUUID();
-    private static UUID coordinatorUuid2 = UUID.randomUUID();
-    private static UUID reviewerUuid1 = UUID.randomUUID();
-    private static UUID reviewerUuid2 = UUID.randomUUID();
-
-    private static final String ACTION_VALIDATE = "validate";
-    private static final String ACTION_APPROVE = "approve";
-    private static final String ACTION_START_DELIVERY = "startDelivery";
-    private static final String DELIVERY_RELEASE = "release";
-    private static final String DELIVERY_RECEIVED = "received";
-    private static final String DELIVERY_CANCEL = "cancel";
-
-    private static final String mockRequesterUsername = "requester";
-    private static UUID mockRequesterUuid = UUID.randomUUID();
-
-    private static Set<String> requesterAuthorities =
-        Sets.newSet(AuthorityConstants.RESEARCHER);
-    private static Set<String> coordinatorAuthorities =
-        Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR);
-    private static Set<String> reviewerAuthorities =
-        Sets.newSet(AuthorityConstants.REVIEWER);
-
-    public static final String REQUESTS_ROUTE = "/api/requests";
 
     private static OrganisationDTO createOrganisation(int i, UUID uuid) {
         OrganisationDTO organisation = new OrganisationDTO();
@@ -293,7 +337,7 @@ public class DeliveryResourceIntTest {
                 throw new RuntimeException("JSON serialisation error", e);
             }
         }
-        for (Map.Entry<String, String> entry: parameters.entrySet()) {
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
             request = request.param(entry.getKey(), entry.getValue());
         }
         return request;
@@ -310,11 +354,11 @@ public class DeliveryResourceIntTest {
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isCreated())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            request[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-        });
+            .andExpect(status().isCreated())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                request[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+            });
 
         Thread.sleep(100);
 
@@ -331,11 +375,11 @@ public class DeliveryResourceIntTest {
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            resultRequest[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                resultRequest[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+            });
         return resultRequest[0];
     }
 
@@ -356,7 +400,6 @@ public class DeliveryResourceIntTest {
     }
 
     /**
-     *
      * @param user The authenticated user performing the action
      * @param action The action to perform
      * @param requestUuid The UUID of the request to perform the action on
@@ -379,7 +422,6 @@ public class DeliveryResourceIntTest {
     }
 
     /**
-     *
      * @param user The authenticated user performing the action
      * @param action The action to perform
      * @param requestUuid The UUID of the request to perform the action on
@@ -423,20 +465,20 @@ public class DeliveryResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), requestListTypeReference);
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), requestListTypeReference);
 
-            // Number of requests should equal the number of organisations it was submitted to
-            Assert.assertEquals(organisations.size(), requests.size());
-            for (RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
-            }
-            res[0] = requests;
-        });
+                // Number of requests should equal the number of organisations it was submitted to
+                Assert.assertEquals(organisations.size(), requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                    Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
+                }
+                res[0] = requests;
+            });
 
         return res[0];
     }

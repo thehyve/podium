@@ -5,8 +5,8 @@ import ch.qos.logback.classic.LoggerContext
 import org.slf4j.LoggerFactory
 
 /**
- * Performance test for the Role entity.
- */
+  * Performance test for the Role entity.
+  */
 class RoleGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
@@ -35,7 +35,7 @@ class RoleGatlingTest extends Simulation {
     val headers_http_authentication = Map(
         "Content-Type" -> """application/x-www-form-urlencoded""",
         "Accept" -> """application/json""",
-        "Authorization"-> authorization_header
+        "Authorization" -> authorization_header
     )
 
     val headers_http_authenticated = Map(
@@ -45,50 +45,50 @@ class RoleGatlingTest extends Simulation {
 
     val scn = scenario("Test the Role entity")
         .exec(http("First unauthenticated request")
-        .get("/api/account")
-        .headers(headers_http)
-        .check(status.is(401))).exitHereIfFailed
+            .get("/api/account")
+            .headers(headers_http)
+            .check(status.is(401))).exitHereIfFailed
         .pause(10)
         .exec(http("Authentication")
-        .post("/oauth/token")
-        .headers(headers_http_authentication)
-        .formParam("username", "admin")
-        .formParam("password", "admin")
-        .formParam("grant_type", "password")
-        .formParam("scope", "read write")
-        .formParam("client_secret", "my-secret-token-to-change-in-production")
-        .formParam("client_id", "podiumUaaapp")
-        .formParam("submit", "Login")
-        .check(jsonPath("$.access_token").saveAs("access_token"))).exitHereIfFailed
+            .post("/oauth/token")
+            .headers(headers_http_authentication)
+            .formParam("username", "admin")
+            .formParam("password", "admin")
+            .formParam("grant_type", "password")
+            .formParam("scope", "read write")
+            .formParam("client_secret", "my-secret-token-to-change-in-production")
+            .formParam("client_id", "podiumUaaapp")
+            .formParam("submit", "Login")
+            .check(jsonPath("$.access_token").saveAs("access_token"))).exitHereIfFailed
         .pause(1)
         .exec(http("Authenticated request")
-        .get("/api/account")
-        .headers(headers_http_authenticated)
-        .check(status.is(200)))
+            .get("/api/account")
+            .headers(headers_http_authenticated)
+            .check(status.is(200)))
         .pause(10)
         .repeat(2) {
             exec(http("Get all roles")
-            .get("/api/roles")
-            .headers(headers_http_authenticated)
-            .check(status.is(200)))
-            .pause(10 seconds, 20 seconds)
-            .exec(http("Create new role")
-            .post("/api/roles")
-            .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null}""")).asJSON
-            .check(status.is(201))
-            .check(headerRegex("Location", "(.*)").saveAs("new_role_url"))).exitHereIfFailed
-            .pause(10)
-            .repeat(5) {
-                exec(http("Get created role")
-                .get("${new_role_url}")
-                .headers(headers_http_authenticated))
+                .get("/api/roles")
+                .headers(headers_http_authenticated)
+                .check(status.is(200)))
+                .pause(10 seconds, 20 seconds)
+                .exec(http("Create new role")
+                    .post("/api/roles")
+                    .headers(headers_http_authenticated)
+                    .body(StringBody("""{"id":null}""")).asJSON
+                    .check(status.is(201))
+                    .check(headerRegex("Location", "(.*)").saveAs("new_role_url"))).exitHereIfFailed
                 .pause(10)
-            }
-            .exec(http("Delete created role")
-            .delete("${new_role_url}")
-            .headers(headers_http_authenticated))
-            .pause(10)
+                .repeat(5) {
+                    exec(http("Get created role")
+                        .get("${new_role_url}")
+                        .headers(headers_http_authenticated))
+                        .pause(10)
+                }
+                .exec(http("Delete created role")
+                    .delete("${new_role_url}")
+                    .headers(headers_http_authenticated))
+                .pause(10)
         }
 
     val users = scenario("Users").exec(scn)

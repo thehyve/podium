@@ -48,13 +48,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
     classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class OrganisationServiceIntTest {
 
+    private static String tokenUuid = String.valueOf(UUID.randomUUID());
+
+    private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
+
     private final Logger log = LoggerFactory.getLogger(OrganisationServiceIntTest.class);
-
-    @Autowired
-    private OrganisationClientService organisationService;
-
-    @Autowired
-    private LoadBalancerClient loadBalancer;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(8089));
@@ -63,9 +61,11 @@ public class OrganisationServiceIntTest {
     @Qualifier("requestAuth2ClientContext")
     OAuth2ClientContext requestAuth2ClientContext;
 
-    private static String tokenUuid = String.valueOf(UUID.randomUUID());
+    @Autowired
+    private OrganisationClientService organisationService;
 
-    private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
+    @Autowired
+    private LoadBalancerClient loadBalancer;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -90,10 +90,10 @@ public class OrganisationServiceIntTest {
         mockOrganisations.add(mockOrganisation);
 
         stubFor(get(urlEqualTo("/api/organisations/all"))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(mockOrganisations))));
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader("Content-Type", APPLICATION_JSON_VALUE)
+                .withBody(mapper.writeValueAsString(mockOrganisations))));
 
         List<OrganisationDTO> organisations = organisationService.findAllOrganisations();
         assertThat(organisations).isNotEmpty();

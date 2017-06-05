@@ -70,17 +70,21 @@ public class PrincipalInvestigator implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public PrincipalInvestigator name(String name) {
         this.name = name;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public PrincipalInvestigator email(String email) {
@@ -88,12 +92,12 @@ public class PrincipalInvestigator implements Serializable {
         return this;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getJobTitle() {
         return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
     }
 
     public PrincipalInvestigator jobTitle(String jobTitle) {
@@ -101,21 +105,17 @@ public class PrincipalInvestigator implements Serializable {
         return this;
     }
 
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
     public String getAffiliation() {
         return affiliation;
+    }
+
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
     }
 
     public PrincipalInvestigator affiliation(String affiliation) {
         this.affiliation = affiliation;
         return this;
-    }
-
-    public void setAffiliation(String affiliation) {
-        this.affiliation = affiliation;
     }
 
     @Override

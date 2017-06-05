@@ -44,6 +44,10 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
     private final Logger log = LoggerFactory.getLogger(MicroserviceSecurityConfiguration.class);
 
     @Autowired
+    @Qualifier("customAccessTokenConverter")
+    CustomAccessTokenConverter customAccessTokenConverter;
+
+    @Autowired
     private PodiumProperties podiumProperties;
 
     @Autowired
@@ -65,10 +69,10 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
             .headers()
             .frameOptions()
             .disable()
-        .and()
+            .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
+            .and()
             .authorizeRequests()
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/**").authenticated()
@@ -81,13 +85,9 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
 
-    @Autowired
-    @Qualifier("customAccessTokenConverter")
-    CustomAccessTokenConverter customAccessTokenConverter;
-
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter(
-            @Qualifier("loadBalancedRestTemplate") RestTemplate keyUriRestTemplate) {
+        @Qualifier("loadBalancedRestTemplate") RestTemplate keyUriRestTemplate) {
 
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setVerifierKey(getKeyFromAuthorizationServer(keyUriRestTemplate));

@@ -53,4 +53,5 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
         JhiAlertErrorComponent
     ]
 })
-export class PodiumGatewaySharedCommonModule {}
+export class PodiumGatewaySharedCommonModule {
+}

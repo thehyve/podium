@@ -13,6 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Spring Data JPA repository for the RequestDetail entity.
  */
-public interface RequestDetailRepository extends JpaRepository<RequestDetail,Long> {
+public interface RequestDetailRepository extends JpaRepository<RequestDetail, Long> {
 
 }

@@ -41,7 +41,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (authentication == null) {
             throw new InvalidTokenException("Invalid token (token not found)");
         }
-        OAuth2Authentication auth = (OAuth2Authentication)authentication;
+        OAuth2Authentication auth = (OAuth2Authentication) authentication;
         if (auth.getName() == null) {
             throw new InvalidTokenException("Invalid token: " + auth);
         }

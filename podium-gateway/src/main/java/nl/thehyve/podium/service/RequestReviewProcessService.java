@@ -8,8 +8,8 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -37,46 +37,9 @@ import java.util.Map;
 @Transactional
 public class RequestReviewProcessService {
 
-    public enum ReviewTask {
-        Validation("validation"),
-        Review("review"),
-        Revision("revision");
-
-        private String taskId;
-
-        public String getTaskId() {
-            return taskId;
-        }
-
-        ReviewTask(String taskId) {
-            this.taskId = taskId;
-        }
-    }
-
-    public enum ReviewVariable {
-        ValidationPassed("validation_passed"),
-        RequestRevision("request_revision"),
-        RequestApproved("request_approved");
-
-        private String variableName;
-
-        public String getVariableName() {
-            return variableName;
-        }
-
-        ReviewVariable(String variableName) {
-            this.variableName = variableName;
-        }
-    }
+    public static final String CURRENT_PROCESS_VERSION = "podium_request_review_001";
 
     private static final Map<RequestReviewStatus, ReviewTask> taskForStatus = new HashMap<>(3);
-    {
-        taskForStatus.put(RequestReviewStatus.Validation, ReviewTask.Validation);
-        taskForStatus.put(RequestReviewStatus.Review, ReviewTask.Review);
-        taskForStatus.put(RequestReviewStatus.Revision, ReviewTask.Revision);
-    }
-
-    public static final String CURRENT_PROCESS_VERSION = "podium_request_review_001";
 
     Logger log = LoggerFactory.getLogger(RequestReviewProcessService.class);
 
@@ -95,8 +58,15 @@ public class RequestReviewProcessService {
     @Autowired
     private RequestReviewProcessSearchRepository requestReviewProcessSearchRepository;
 
+    {
+        taskForStatus.put(RequestReviewStatus.Validation, ReviewTask.Validation);
+        taskForStatus.put(RequestReviewStatus.Review, ReviewTask.Review);
+        taskForStatus.put(RequestReviewStatus.Revision, ReviewTask.Revision);
+    }
+
     /**
      * Finds request.
+     *
      * @param processInstanceId
      * @return the current request if it exists; null otherwise.
      */
@@ -110,6 +80,7 @@ public class RequestReviewProcessService {
 
     /**
      * Finds current task. Assumes that at most one task is currently active.
+     *
      * @param requestId
      * @return the current task if it exists, null otherwise.
      */
@@ -231,6 +202,38 @@ public class RequestReviewProcessService {
         requestReviewProcess = requestReviewProcessRepository.save(requestReviewProcess);
 
         return updateRequestReviewProcess(requestReviewProcess);
+    }
+
+    public enum ReviewTask {
+        Validation("validation"),
+        Review("review"),
+        Revision("revision");
+
+        private String taskId;
+
+        ReviewTask(String taskId) {
+            this.taskId = taskId;
+        }
+
+        public String getTaskId() {
+            return taskId;
+        }
+    }
+
+    public enum ReviewVariable {
+        ValidationPassed("validation_passed"),
+        RequestRevision("request_revision"),
+        RequestApproved("request_approved");
+
+        private String variableName;
+
+        ReviewVariable(String variableName) {
+            this.variableName = variableName;
+        }
+
+        public String getVariableName() {
+            return variableName;
+        }
     }
 
 }

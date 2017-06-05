@@ -36,8 +36,7 @@ export class RequestMainDetailComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private route: ActivatedRoute,
-        private requestService: RequestService
-    ) {
+        private requestService: RequestService) {
         this.jhiLanguageService.setLocations(['request']);
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -67,7 +66,7 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     private onError(error) {
-        this.error =  'ERROR';
+        this.error = 'ERROR';
         this.success = null;
     }
 }

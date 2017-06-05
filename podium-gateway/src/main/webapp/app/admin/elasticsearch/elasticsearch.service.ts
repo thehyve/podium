@@ -14,7 +14,8 @@ import { Observable } from 'rxjs/Rx';
 @Injectable()
 export class PdmElasticsearchService {
 
-    constructor (private http: Http) {}
+    constructor(private http: Http) {
+    }
 
     reindex(): Observable<Response> {
         return this.http.get('podiumuaa/api/elasticsearch/index').map((res: Response) => res);

@@ -49,16 +49,16 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     reverse: any;
     links: any;
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestService: RequestService,
-                private router: Router,
-                private parseLinks: ParseLinks,
-                private requestFormService: RequestFormService,
-                private eventManager: EventManager,
-                private principal: Principal,
-                private modalService: NgbModal,
-                private activatedRoute: ActivatedRoute
-    ) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestService: RequestService,
+        private router: Router,
+        private parseLinks: ParseLinks,
+        private requestFormService: RequestFormService,
+        private eventManager: EventManager,
+        private principal: Principal,
+        private modalService: NgbModal,
+        private activatedRoute: ActivatedRoute) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
             this.pageHeader = data['pageHeader'];

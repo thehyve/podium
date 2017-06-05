@@ -28,12 +28,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.EntityManager;
 
 /**
  * Service class for clearing database for testing purposes.
@@ -89,7 +89,7 @@ public class TestService {
     public void clearDatabase() {
         // Delete all organisation roles
         Set<Role> roles = new HashSet<>();
-        for (Role role: roleRepository.findAll()) {
+        for (Role role : roleRepository.findAll()) {
             if (role.getOrganisation() != null) {
                 roles.add(role);
             }
@@ -99,13 +99,13 @@ public class TestService {
 
         // Delete all users except "admin" and "system"
         List<User> users = new ArrayList<>();
-        for(User user: userRepository.findAll()) {
+        for (User user : userRepository.findAll()) {
             if (!specialUsers.contains(user.getLogin())) {
                 users.add(user);
                 log.info("Scheduling user for deletion: {}", user.getLogin());
                 // delete user from associated (non-organisational) roles
                 if (user.getRoles() != null) {
-                    for(Role role: user.getRoles()) {
+                    for (Role role : user.getRoles()) {
                         log.info("Removing user {} from role {}", user.getLogin(), role.getAuthority());
                         role.getUsers().remove(user);
                         entityManager.persist(role);
@@ -125,6 +125,7 @@ public class TestService {
 
     /**
      * Assigns users to a role. The role is fetched based on the organisation UUID and the authority.
+     *
      * @param roleData representation containing organisation UUID, authority and a set of user UUIDs.
      */
     @Profile({"dev", "test"})
@@ -157,7 +158,7 @@ public class TestService {
         entityManager.flush();
 
         // Refresh associated users (because of caching)
-        for(User user: role.getUsers()) {
+        for (User user : role.getUsers()) {
             entityManager.refresh(user);
         }
     }

@@ -6,9 +6,9 @@
   ~ See the file LICENSE in the root of this repository.
   -->
 
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:flowable="http://flowable.org/bpmn"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              typeLanguage="http://www.w3.org/2001/XMLSchema"
              expressionLanguage="http://www.w3.org/1999/XPath"
              targetNamespace="http://thehyve.nl/podium">
@@ -25,13 +25,12 @@
         ]]></documentation>
 
 
-
         <!-- Start -->
         <startEvent id="start" name="Start" flowable:initiator="initiator">
             <documentation>Start the delivery process for a request and type.</documentation>
         </startEvent>
 
-        <sequenceFlow id="from_start_to_init" sourceRef="start" targetRef="init" />
+        <sequenceFlow id="from_start_to_init" sourceRef="start" targetRef="init"/>
 
         <scriptTask id="init" name="Initialise the delivery process" scriptFormat="groovy">
             <documentation>Initialise the delivery process.</documentation>
@@ -42,8 +41,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="from_init_to_status_preparation" sourceRef="init" targetRef="status_preparation" />
-
+        <sequenceFlow id="from_init_to_status_preparation" sourceRef="init" targetRef="status_preparation"/>
 
 
         <!-- Preparation -->
@@ -54,15 +52,14 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="from_status_preparation_to_preparation" sourceRef="status_preparation" targetRef="preparation" />
+        <sequenceFlow id="from_status_preparation_to_preparation" sourceRef="status_preparation"
+                      targetRef="preparation"/>
 
         <userTask id="preparation" name="Preparation">
             <documentation>Preparing the delivery.</documentation>
         </userTask>
 
-        <sequenceFlow id="from_preparation_to_delivery_decision" sourceRef="preparation" targetRef="delivery_decision" />
-
-
+        <sequenceFlow id="from_preparation_to_delivery_decision" sourceRef="preparation" targetRef="delivery_decision"/>
 
 
         <!-- Delivery decision
@@ -70,7 +67,7 @@
             - 'release' if release;
             - 'cancel' if !release.
         -->
-        <exclusiveGateway id="delivery_decision" name="Release or cancel" />
+        <exclusiveGateway id="delivery_decision" name="Release or cancel"/>
         <sequenceFlow id="preparation_to_release" sourceRef="delivery_decision" targetRef="release">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${release == true}
@@ -83,7 +80,6 @@
         </sequenceFlow>
 
 
-
         <!-- Release -->
         <scriptTask id="release" name="Release" scriptFormat="groovy">
             <documentation>Release.</documentation>
@@ -92,8 +88,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="release_to_released" sourceRef="release" targetRef="released" />
-
+        <sequenceFlow id="release_to_released" sourceRef="release" targetRef="released"/>
 
 
         <!-- Released -->
@@ -101,9 +96,7 @@
             <documentation>The contents have been released.</documentation>
         </userTask>
 
-        <sequenceFlow id="from_released_to_received_decision" sourceRef="released" targetRef="received_decision" />
-
-
+        <sequenceFlow id="from_released_to_received_decision" sourceRef="released" targetRef="received_decision"/>
 
 
         <!-- Delivery received decision
@@ -111,7 +104,7 @@
             - 'receive' if received;
             - 'cancel' if !received.
         -->
-        <exclusiveGateway id="received_decision" name="Release or cancel" />
+        <exclusiveGateway id="received_decision" name="Release or cancel"/>
         <sequenceFlow id="released_to_receive" sourceRef="received_decision" targetRef="receive">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${received == true}
@@ -124,7 +117,6 @@
         </sequenceFlow>
 
 
-
         <!-- Receive -->
         <scriptTask id="receive" name="Mark the delivery as received" scriptFormat="groovy">
             <documentation>Mark as received.</documentation>
@@ -134,8 +126,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="received_to_end" sourceRef="receive" targetRef="end" />
-
+        <sequenceFlow id="received_to_end" sourceRef="receive" targetRef="end"/>
 
 
         <!-- Cancel -->
@@ -147,8 +138,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="cancel_to_end" sourceRef="cancel" targetRef="end" />
-
+        <sequenceFlow id="cancel_to_end" sourceRef="cancel" targetRef="end"/>
 
 
         <!-- End -->

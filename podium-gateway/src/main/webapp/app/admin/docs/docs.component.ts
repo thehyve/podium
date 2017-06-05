@@ -14,5 +14,6 @@ import { Component } from '@angular/core';
     templateUrl: './docs.component.html'
 })
 export class PdmDocsComponent {
-    constructor () {}
+    constructor() {
+    }
 }

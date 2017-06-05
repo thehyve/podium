@@ -24,7 +24,8 @@ export class PdmMetricsMonitoringModalComponent implements OnInit {
     threadDumpTimedWaiting: number = 0;
     threadDumpWaiting: number = 0;
 
-    constructor(public activeModal: NgbActiveModal) {}
+    constructor(public activeModal: NgbActiveModal) {
+    }
 
     ngOnInit() {
         this.threadDump.forEach((value) => {
@@ -43,7 +44,7 @@ export class PdmMetricsMonitoringModalComponent implements OnInit {
             this.threadDumpTimedWaiting + this.threadDumpBlocked;
     }
 
-    getTagClass (threadState) {
+    getTagClass(threadState) {
         if (threadState === 'RUNNABLE') {
             return 'tag-success';
         } else if (threadState === 'WAITING') {

@@ -9,10 +9,11 @@
   -->
 
 <div class="modal-header">
-    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span>
+    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')">
+        <span aria-hidden="true">&times;</span>
     </button>
     <h4 class="modal-title" id="showHealthLabel">
-		{{'health.indicator.' + baseName(currentHealth.name) | translate}}
+        {{'health.indicator.' + baseName(currentHealth.name) | translate}}
         {{subSystemName(currentHealth.name)}}
     </h4>
 </div>
@@ -38,9 +39,11 @@
     </div>
     <div *ngIf="currentHealth.error">
         <h4 jhiTranslate="health.details.error">Error</h4>
-            <pre>{{currentHealth.error}}</pre>
+        <pre>{{currentHealth.error}}</pre>
     </div>
 </div>
 <div class="modal-footer">
-    <button data-dismiss="modal" class="btn btn-secondary float-xs-left" type="button" (click)="activeModal.dismiss('closed')">Done</button>
+    <button data-dismiss="modal" class="btn btn-secondary float-xs-left" type="button"
+            (click)="activeModal.dismiss('closed')">Done
+    </button>
 </div>

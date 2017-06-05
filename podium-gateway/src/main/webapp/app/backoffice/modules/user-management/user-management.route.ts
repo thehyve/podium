@@ -22,27 +22,29 @@ import { UserRouteAccessService } from '../../../shared/auth/user-route-access-s
 @Injectable()
 export class UserResolve implements CanActivate {
 
-  constructor(private principal: Principal) { }
+    constructor(private principal: Principal) {
+    }
 
-  canActivate() {
-    return this.principal.identity().then(account => this.principal.hasAnyAuthority(['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']));
-  }
+    canActivate() {
+        return this.principal.identity().then(account => this.principal.hasAnyAuthority(['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']));
+    }
 }
 
 @Injectable()
 export class UserResolvePagingParams implements Resolve<any> {
 
-  constructor(private paginationUtil: PaginationUtil) {}
+    constructor(private paginationUtil: PaginationUtil) {
+    }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-      let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-      let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-      return {
-          page: this.paginationUtil.parsePage(page),
-          predicate: this.paginationUtil.parsePredicate(sort),
-          ascending: this.paginationUtil.parseAscending(sort)
-    };
-  }
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
+        let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
+        return {
+            page: this.paginationUtil.parsePage(page),
+            predicate: this.paginationUtil.parsePredicate(sort),
+            ascending: this.paginationUtil.parseAscending(sort)
+        };
+    }
 }
 
 export const userDialogRoute: Routes = [

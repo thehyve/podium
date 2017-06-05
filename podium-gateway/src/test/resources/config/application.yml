@@ -3,8 +3,6 @@
 #
 # This configuration is used for unit/integration tests.
 #
-# More information on configuration properties: https://jhipster.github.io/common-application-properties/
-#
 # Standard Spring Boot properties.
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html

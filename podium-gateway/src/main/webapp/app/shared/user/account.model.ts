@@ -22,6 +22,6 @@ export class Account {
         public langKey: string,
         public lastName: string,
         public login: string,
-        public imageUrl: string
-    ) { }
+        public imageUrl: string) {
+    }
 }

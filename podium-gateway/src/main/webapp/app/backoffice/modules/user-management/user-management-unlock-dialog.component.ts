@@ -28,22 +28,23 @@ export class UserMgmtUnlockDialogComponent {
         private userService: UserService,
         public activeModal: NgbActiveModal,
         private eventManager: EventManager,
-        private router: Router
-    ) {
+        private router: Router) {
         this.jhiLanguageService.setLocations(['user-management']);
     }
 
-    clear () {
+    clear() {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true });
     }
 
-    confirmUnlock (user) {
+    confirmUnlock(user) {
         this.userService.unlock(user).subscribe(response => {
-            this.eventManager.broadcast({ name: 'userListModification',
-                content: 'Unlock a user'});
+            this.eventManager.broadcast({
+                name: 'userListModification',
+                content: 'Unlock a user'
+            });
             this.activeModal.dismiss(true);
-            this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+            this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true });
         });
     }
 
@@ -58,10 +59,10 @@ export class UserUnlockDialogComponent implements OnInit, OnDestroy {
     modalRef: NgbModalRef;
     routeSub: any;
 
-    constructor (
+    constructor(
         private route: ActivatedRoute,
-        private userModalService: UserModalService
-    ) {}
+        private userModalService: UserModalService) {
+    }
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {

@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import org.junit.Before;
@@ -33,8 +32,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -50,7 +47,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
     classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class UserClientServiceIntTest {
 
+    private static String tokenUuid = String.valueOf(UUID.randomUUID());
+
+    private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
+
     private final Logger log = LoggerFactory.getLogger(UserClientServiceIntTest.class);
+
+    @Rule
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(8089));
+
+    @Autowired
+    @Qualifier("requestAuth2ClientContext")
+    OAuth2ClientContext requestAuth2ClientContext;
 
     @Autowired
     private UserClientService userClientService;
@@ -60,17 +68,6 @@ public class UserClientServiceIntTest {
 
     @Autowired
     private LoadBalancerClient loadBalancer;
-
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(8089));
-
-    @Autowired
-    @Qualifier("requestAuth2ClientContext")
-    OAuth2ClientContext requestAuth2ClientContext;
-
-    private static String tokenUuid = String.valueOf(UUID.randomUUID());
-
-    private static OAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(tokenUuid);
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -95,10 +92,10 @@ public class UserClientServiceIntTest {
         mockUser.setUuid(userUuid);
 
         stubFor(get(urlEqualTo("/internal/users/uuid/" + userUuid.toString()))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", APPLICATION_JSON_VALUE)
-                        .withBody(mapper.writeValueAsString(mockUser))));
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.OK.value())
+                .withHeader("Content-Type", APPLICATION_JSON_VALUE)
+                .withBody(mapper.writeValueAsString(mockUser))));
 
         UserRepresentation user = userClientService.findUserByUuid(userUuid);
         assertThat(user).isNotNull();

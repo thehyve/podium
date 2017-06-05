@@ -20,4 +20,5 @@ import { OrganisationBackofficeRoutingModule } from './organisation-backoffice.r
         RouterModule
     ]
 })
-export class PodiumGatewayOrganisationBackofficeModule {}
+export class PodiumGatewayOrganisationBackofficeModule {
+}

@@ -24,14 +24,14 @@ export class OrganisationDialogComponent implements OnInit {
     organisation: Organisation;
     authorities: any[];
     isSaving: boolean;
+
     constructor(
         public activeModal: NgbActiveModal,
         private jhiLanguageService: JhiLanguageService,
         private alertService: AlertService,
         private organisationService: OrganisationService,
         private eventManager: EventManager,
-        private router: Router
-    ) {
+        private router: Router) {
         this.jhiLanguageService.setLocations(['organisation']);
     }
 
@@ -39,12 +39,13 @@ export class OrganisationDialogComponent implements OnInit {
         this.isSaving = false;
         this.authorities = ['ROLE_PODIUM_ADMIN'];
     }
-    clear () {
+
+    clear() {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true });
     }
 
-    save () {
+    save() {
         this.isSaving = true;
         if (this.organisation.uuid) {
             this.organisationService.update(this.organisation)
@@ -59,19 +60,19 @@ export class OrganisationDialogComponent implements OnInit {
         }
     }
 
-    private onSaveSuccess (result: Response) {
-        this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK'});
+    private onSaveSuccess(result: Response) {
+        this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(new Organisation(result));
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true });
     }
 
-    private onSaveError (error) {
+    private onSaveError(error) {
         this.isSaving = false;
         this.onError(error);
     }
 
-    private onError (error) {
+    private onError(error) {
         this.alertService.error(error.message, null, null);
     }
 }
@@ -85,14 +86,14 @@ export class OrganisationPopupComponent implements OnInit, OnDestroy {
     modalRef: NgbModalRef;
     routeSub: any;
 
-    constructor (
+    constructor(
         private route: ActivatedRoute,
-        private organisationPopupService: OrganisationPopupService
-    ) {}
+        private organisationPopupService: OrganisationPopupService) {
+    }
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {
-            if ( params['uuid'] ) {
+            if (params['uuid']) {
                 this.modalRef = this.organisationPopupService
                     .open(OrganisationDialogComponent, params['uuid']);
             } else {

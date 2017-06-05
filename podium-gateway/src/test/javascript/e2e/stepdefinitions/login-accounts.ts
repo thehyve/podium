@@ -198,7 +198,7 @@ defineSupportCode(({ Given, When, Then }) => {
     Then(/^(.*) is not registered$/, function (personaName): Promise<any> {
         let director = this.director as Director;
 
-        return director.getElement('submitButton').locator.isEnabled().then((enabled)=>{
+        return director.getElement('submitButton').locator.isEnabled().then((enabled) => {
             return promiseTrue(!enabled, 'submitButton was enabled');
         });
     });
