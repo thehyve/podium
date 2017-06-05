@@ -14,8 +14,9 @@
     <pdm-breadcrumb #parent>
         <nav class="breadcrumb">
             <template ngFor let-route [ngForOf]="parent.breadcrumbs">
-                <a    *ngIf="!route.terminal" class="breadcrumb-item" href="" [routerLink]="[route.url]">{{ route.displayName }}</a>
-                <span *ngIf="route.terminal"  class="breadcrumb-item active">{{ route.displayName }}</span>
+                <a *ngIf="!route.terminal" class="breadcrumb-item" href="" [routerLink]="[route.url]">{{
+                    route.displayName }}</a>
+                <span *ngIf="route.terminal" class="breadcrumb-item active">{{ route.displayName }}</span>
             </template>
         </nav>
     </pdm-breadcrumb>

@@ -20,4 +20,5 @@ import { PodiumBackofficeRoutingModule } from './podium-backoffice.routing';
         RouterModule
     ]
 })
-export class PodiumGatewayPodiumBackofficeModule {}
+export class PodiumGatewayPodiumBackofficeModule {
+}

@@ -15,7 +15,7 @@ import { GatewayRoute } from './gateway-route.model';
 @Component({
     selector: 'pdm-gateway',
     templateUrl: './gateway.component.html',
-    providers: [ GatewayRoutesService ]
+    providers: [GatewayRoutesService]
 })
 export class PdmGatewayComponent implements OnInit {
 
@@ -24,16 +24,15 @@ export class PdmGatewayComponent implements OnInit {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private gatewayRoutesService: GatewayRoutesService
-    ) {
+        private gatewayRoutesService: GatewayRoutesService) {
         this.jhiLanguageService.setLocations(['gateway']);
     }
 
-    ngOnInit () {
+    ngOnInit() {
         this.refresh();
     }
 
-    refresh () {
+    refresh() {
         this.updatingRoutes = true;
         this.gatewayRoutesService.findAll().subscribe(gatewayRoutes => {
             this.gatewayRoutes = gatewayRoutes;

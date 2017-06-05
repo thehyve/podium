@@ -69,4 +69,5 @@ import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
         RouterModule
     ]
 })
-export class PodiumGatewayOrganisationModule {}
+export class PodiumGatewayOrganisationModule {
+}

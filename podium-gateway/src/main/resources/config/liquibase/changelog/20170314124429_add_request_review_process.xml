@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <property name="now" value="now()" dbms="mysql,h2"/>
@@ -10,47 +10,47 @@
 
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
-   <changeSet author="gijs@thehyve.nl" id="1489495478282-1">
-       <createSequence sequenceName="request_review_seq" startValue="1000" incrementBy="50"/>
-   </changeSet>
-   <changeSet author="gijs@thehyve.nl" id="1489495478282-2">
-      <createTable tableName="request_review_process">
-          <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-              <constraints primaryKey="true" nullable="false"/>
-          </column>
-          <column name="created_by" type="varchar(50)">
-            <constraints nullable="false"/>
-         </column>
-         <column name="created_date" type="timestamp" defaultValueDate="${now}">
-            <constraints nullable="false"/>
-         </column>
-         <column name="last_modified_by" type="varchar(50)"/>
-         <column name="last_modified_date" type="timestamp"/>
-         <column name="decision" type="varchar(255)">
-            <constraints nullable="false"/>
-         </column>
-         <column name="process_instance_id" type="varchar(255)">
-            <constraints nullable="false"/>
-         </column>
-         <column name="status" type="varchar(255)">
-            <constraints nullable="false"/>
-         </column>
-      </createTable>
-   </changeSet>
-   <changeSet author="gijs@thehyve.nl" id="1489495478282-3">
-      <addColumn tableName="request">
-         <column name="request_review_process" type="int8">
-             <constraints foreignKeyName="" unique="true" nullable="true" />
-         </column>
-      </addColumn>
-   </changeSet>
-   <changeSet author="gijs@thehyve.nl" id="1489495478282-7">
-      <addForeignKeyConstraint baseColumnNames="request_review_process"
-                               baseTableName="request"
-                               constraintName="fk_request_request_review"
-                               deferrable="false"
-                               initiallyDeferred="false"
-                               referencedColumnNames="id"
-                               referencedTableName="request_review_process"/>
-   </changeSet>
+    <changeSet author="gijs@thehyve.nl" id="1489495478282-1">
+        <createSequence sequenceName="request_review_seq" startValue="1000" incrementBy="50"/>
+    </changeSet>
+    <changeSet author="gijs@thehyve.nl" id="1489495478282-2">
+        <createTable tableName="request_review_process">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+            <column name="decision" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_instance_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="gijs@thehyve.nl" id="1489495478282-3">
+        <addColumn tableName="request">
+            <column name="request_review_process" type="int8">
+                <constraints foreignKeyName="" unique="true" nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="gijs@thehyve.nl" id="1489495478282-7">
+        <addForeignKeyConstraint baseColumnNames="request_review_process"
+                                 baseTableName="request"
+                                 constraintName="fk_request_request_review"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 referencedColumnNames="id"
+                                 referencedTableName="request_review_process"/>
+    </changeSet>
 </databaseChangeLog>

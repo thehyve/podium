@@ -12,12 +12,12 @@ import { UserRouteAccessService } from '../../shared';
 import { RequestFormComponent } from './request-form.component';
 
 export const requestFormRoute: Route = {
-  path: 'new',
-  component: RequestFormComponent,
-  data: {
-    authorities: ['ROLE_RESEARCHER'],
-    pageTitle: 'request.pageTitle',
-    breadcrumb: 'new'
-  },
-  canActivate: [UserRouteAccessService]
+    path: 'new',
+    component: RequestFormComponent,
+    data: {
+        authorities: ['ROLE_RESEARCHER'],
+        pageTitle: 'request.pageTitle',
+        breadcrumb: 'new'
+    },
+    canActivate: [UserRouteAccessService]
 };

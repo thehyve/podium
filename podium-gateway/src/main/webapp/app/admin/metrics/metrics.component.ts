@@ -22,13 +22,12 @@ export class PdmMetricsMonitoringComponent implements OnInit {
     cachesStats: any = {};
     servicesStats: any = {};
     updatingMetrics: boolean = true;
-    JCACHE_KEY: string ;
+    JCACHE_KEY: string;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
-        private metricsService: PdmMetricsService
-    ) {
+        private metricsService: PdmMetricsService) {
         this.JCACHE_KEY = 'jcache.statistics';
         this.jhiLanguageService.setLocations(['metrics']);
     }
@@ -37,7 +36,7 @@ export class PdmMetricsMonitoringComponent implements OnInit {
         this.refresh();
     }
 
-    refresh () {
+    refresh() {
         this.updatingMetrics = true;
         this.metricsService.getMetrics().subscribe((metrics) => {
             this.metrics = metrics;
@@ -67,9 +66,9 @@ export class PdmMetricsMonitoringComponent implements OnInit {
         });
     }
 
-    refreshThreadDumpData () {
+    refreshThreadDumpData() {
         this.metricsService.threadDump().subscribe((data) => {
-            const modalRef  = this.modalService.open(PdmMetricsMonitoringModalComponent, { size: 'lg'});
+            const modalRef = this.modalService.open(PdmMetricsMonitoringModalComponent, { size: 'lg' });
             modalRef.componentInstance.threadDump = data;
             modalRef.result.then((result) => {
                 console.log(`Closed with: ${result}`);

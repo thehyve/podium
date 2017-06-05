@@ -21,8 +21,8 @@ export class PdmElasticsearchModalComponent {
 
     constructor(
         private elasticsearchService: PdmElasticsearchService,
-        public activeModal: NgbActiveModal
-    ) {}
+        public activeModal: NgbActiveModal) {
+    }
 
     confirmReindex() {
         this.isReindexing = true;

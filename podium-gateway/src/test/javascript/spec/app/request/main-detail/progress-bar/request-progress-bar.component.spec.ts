@@ -72,8 +72,7 @@ describe('RequestProgressBarComponent', () => {
 
     let getDummyRequestWithStatus = (
         status: RequestStatusOptions = RequestStatusOptions.None,
-        reviewStatus?: RequestReviewStatusOptions
-    ): RequestBase => {
+        reviewStatus?: RequestReviewStatusOptions): RequestBase => {
         // Only interested in the statuses of the request and its processes
         let request = new RequestBase();
         request.status = status;

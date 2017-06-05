@@ -47,21 +47,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AttachmentResourceIntTest {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
+
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
     private static final String DEFAULT_FILENAME = "AAAAAAAAAA";
+
     private static final String UPDATED_FILENAME = "BBBBBBBBBB";
 
     private static final AttachmentType DEFAULT_TYPE = AttachmentType.MTA;
+
     private static final AttachmentType UPDATED_TYPE = AttachmentType.DTA;
 
     private static final LocalDate DEFAULT_DATE = LocalDate.ofEpochDay(0L);
+
     private static final LocalDate UPDATED_DATE = LocalDate.now(ZoneId.systemDefault());
 
     private static final String DEFAULT_MIME_TYPE = "AAAAAAAAAA";
+
     private static final String UPDATED_MIME_TYPE = "BBBBBBBBBB";
 
     @Autowired
@@ -86,6 +92,25 @@ public class AttachmentResourceIntTest {
 
     private Attachment attachment;
 
+    /**
+     * Create an entity for this test.
+     * <p>
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Attachment createEntity(EntityManager em) {
+        Attachment attachment = new Attachment()
+            .name(DEFAULT_NAME)
+            .description(DEFAULT_DESCRIPTION)
+            .filename(DEFAULT_FILENAME)
+            .type(DEFAULT_TYPE)
+            .date(DEFAULT_DATE)
+            .mimeType(DEFAULT_MIME_TYPE);
+        UUID uploader = UUID.randomUUID();
+        attachment.setUploader(uploader);
+        return attachment;
+    }
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -93,25 +118,6 @@ public class AttachmentResourceIntTest {
         this.restAttachmentMockMvc = MockMvcBuilders.standaloneSetup(attachmentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
-    }
-
-    /**
-     * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
-    public static Attachment createEntity(EntityManager em) {
-        Attachment attachment = new Attachment()
-                .name(DEFAULT_NAME)
-                .description(DEFAULT_DESCRIPTION)
-                .filename(DEFAULT_FILENAME)
-                .type(DEFAULT_TYPE)
-                .date(DEFAULT_DATE)
-                .mimeType(DEFAULT_MIME_TYPE);
-        UUID uploader = UUID.randomUUID();
-        attachment.setUploader(uploader);
-        return attachment;
     }
 
     @Before

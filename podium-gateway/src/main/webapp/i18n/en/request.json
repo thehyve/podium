@@ -148,12 +148,10 @@
                     "placeholder": "Affiliation of the principal investigator"
                 }
             },
-
             "searchQuery": {
                 "label": "Search Query",
                 "placeholder": "Search query for sample selection"
             },
-
             "messages": {
                 "success": "Changes are saved.",
                 "error": "Saving failed.",
@@ -190,7 +188,6 @@
                     "relatedRequestNumber": {
                         "maxlength": "The related request number cannot be longer than 50 characters."
                     },
-
                     "principalInvestigator": {
                         "name": {
                             "required": "A principal investigator name is required.",
@@ -213,7 +210,6 @@
                             "maxlength": "The principal investigator affiliation cannot be longer than 150 characters."
                         }
                     },
-
                     "searchQuery": {
                         "required": "Search query is required.",
                         "minlength": "Search query has to be at least 1 character long.",
@@ -233,6 +229,5 @@
                 }
             }
         }
-
     }
 }

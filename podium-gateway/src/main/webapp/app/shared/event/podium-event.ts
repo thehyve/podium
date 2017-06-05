@@ -13,7 +13,7 @@ export class PodiumEvent {
     principal?: string;
     eventDate?: Date;
     eventType?: any;
-    data?: {[key: string]: string};
+    data?: { [key: string]: string };
 
     constructor() {
 

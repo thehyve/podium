@@ -66,4 +66,5 @@ import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumGatewayAdminModule {}
+export class PodiumGatewayAdminModule {
+}

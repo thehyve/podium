@@ -24,8 +24,8 @@ export class RequestDraftModalModalComponent {
     constructor(
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
-        private eventManager: EventManager
-    ) {}
+        private eventManager: EventManager) {
+    }
 
     confirmDelete() {
         this.requestService.deleteDraft(this.request.uuid).subscribe((res) => {

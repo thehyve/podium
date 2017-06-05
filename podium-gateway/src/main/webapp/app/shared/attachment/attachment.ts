@@ -13,6 +13,6 @@ export class Attachment {
     constructor(
         public id?: number,
         public name?: string,
-        public type?: AttachmentType
-    ) { }
+        public type?: AttachmentType) {
+    }
 }

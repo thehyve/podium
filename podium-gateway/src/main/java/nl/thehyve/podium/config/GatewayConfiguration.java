@@ -25,7 +25,7 @@ public class GatewayConfiguration {
     public static class SwaggerBasePathRewritingConfiguration {
 
         @Bean
-        public SwaggerBasePathRewritingFilter swaggerBasePathRewritingFilter(){
+        public SwaggerBasePathRewritingFilter swaggerBasePathRewritingFilter() {
             return new SwaggerBasePathRewritingFilter();
         }
     }
@@ -34,7 +34,7 @@ public class GatewayConfiguration {
     public static class AccessControlFilterConfiguration {
 
         @Bean
-        public AccessControlFilter accessControlFilter(RouteLocator routeLocator, PodiumProperties podiumProperties){
+        public AccessControlFilter accessControlFilter(RouteLocator routeLocator, PodiumProperties podiumProperties) {
             return new AccessControlFilter(routeLocator, podiumProperties);
         }
     }

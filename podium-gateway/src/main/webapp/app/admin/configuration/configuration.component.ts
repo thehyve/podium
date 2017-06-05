@@ -25,8 +25,7 @@ export class PdmConfigurationComponent {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private configurationService: PdmConfigurationService
-    ) {
+        private configurationService: PdmConfigurationService) {
         this.jhiLanguageService.setLocations(['configuration']);
         this.configKeys = [];
         this.filter = '';

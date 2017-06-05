@@ -19,7 +19,8 @@ import { OrganisationFormComponent } from './organisation-form/organisation-form
 @Injectable()
 export class OrganisationResolvePagingParams implements Resolve<any> {
 
-    constructor(private paginationUtil: PaginationUtil) {}
+    constructor(private paginationUtil: PaginationUtil) {
+    }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';

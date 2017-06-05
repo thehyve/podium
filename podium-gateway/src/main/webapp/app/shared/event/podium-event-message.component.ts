@@ -30,8 +30,7 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
 
     constructor(
         private requestService: RequestService,
-        private requestAccessService: RequestAccessService
-    ) {
+        private requestAccessService: RequestAccessService) {
     }
 
     ngOnInit() {

@@ -2,7 +2,9 @@
 var SpyObject = (function () {
     function SpyObject(type) {
         var _this = this;
-        if (type === void 0) { type = null; }
+        if (type === void 0) {
+            type = null;
+        }
         if (type) {
             Object.keys(type.prototype).forEach(function (prop) {
                 var m = null;
@@ -17,18 +19,29 @@ var SpyObject = (function () {
             });
         }
     }
+
     SpyObject.stub = function (object, config, overrides) {
-        if (object === void 0) { object = null; }
-        if (config === void 0) { config = null; }
-        if (overrides === void 0) { overrides = null; }
+        if (object === void 0) {
+            object = null;
+        }
+        if (config === void 0) {
+            config = null;
+        }
+        if (overrides === void 0) {
+            overrides = null;
+        }
         if (!(object instanceof SpyObject)) {
             overrides = config;
             config = object;
             object = new SpyObject();
         }
         var m = {};
-        Object.keys(config).forEach(function (key) { return m[key] = config[key]; });
-        Object.keys(overrides).forEach(function (key) { return m[key] = overrides[key]; });
+        Object.keys(config).forEach(function (key) {
+            return m[key] = config[key];
+        });
+        Object.keys(overrides).forEach(function (key) {
+            return m[key] = overrides[key];
+        });
         Object.keys(m).forEach(function (key) {
             object.spy(key).andReturn(m[key]);
         });

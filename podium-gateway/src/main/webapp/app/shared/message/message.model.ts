@@ -11,10 +11,10 @@
 export class Message {
     public messageTitle?: string;
     public messageBody?: string;
-    constructor (
+
+    constructor(
         messageTitle?: string,
-        messageBody?: string
-    ) {
+        messageBody?: string) {
         this.messageTitle = messageTitle ? messageTitle : null;
         this.messageBody = messageBody ? messageBody : null;
     }

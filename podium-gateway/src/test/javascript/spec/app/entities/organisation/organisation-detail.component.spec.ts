@@ -41,7 +41,7 @@ describe('Component Tests', () => {
                     DatePipe,
                     {
                         provide: ActivatedRoute,
-                        useValue: new MockActivatedRoute({uuid: '123'})
+                        useValue: new MockActivatedRoute({ uuid: '123' })
                     },
                     {
                         provide: Http,
@@ -80,7 +80,7 @@ describe('Component Tests', () => {
 
                 // THEN
                 expect(service.findByUuid).toHaveBeenCalledWith('123');
-                expect(comp.organisation).toEqual(jasmine.objectContaining({id: 10}));
+                expect(comp.organisation).toEqual(jasmine.objectContaining({ id: 10 }));
             });
         });
     });

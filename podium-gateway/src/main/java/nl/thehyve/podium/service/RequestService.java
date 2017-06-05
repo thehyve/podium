@@ -91,12 +91,43 @@ public class RequestService {
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * Checks if the request has any of the allowed statuses
+     *
+     * @param request the request object.
+     * @param allowedStatuses the allowed statuses.
+     * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
+     */
+    private static RequestStatus checkStatus(Request request, RequestStatus... allowedStatuses) throws ActionNotAllowed {
+        if (!Status.isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
+            throw ActionNotAllowed.forStatus(request.getStatus());
+        }
+        return request.getStatus();
+    }
+
+    /**
+     * Checks if the request has one of the allowed review statuses.
+     *
+     * @param request the request object.
+     * @param allowedStatuses the allowed review statuses.
+     * @throws ActionNotAllowed iff the request is not in a review status or does not have any of the
+     *                          allowed review statuses.
+     */
+    private static RequestReviewStatus checkReviewStatus(Request request, RequestReviewStatus... allowedStatuses) throws ActionNotAllowed {
+        if (request.getStatus() != RequestStatus.Review) {
+            throw ActionNotAllowed.forStatus(request.getStatus());
+        }
+        RequestReviewStatus currentReviewStatus = request.getRequestReviewProcess().getStatus();
+        if (!Status.isCurrentStatusAllowed(currentReviewStatus, allowedStatuses)) {
+            throw ActionNotAllowed.forStatus(currentReviewStatus);
+        }
+        return currentReviewStatus;
+    }
 
     @PostConstruct
     private void init() {
         notificationService.setRequestService(this);
     }
-
 
     @Transactional
     private void persistAndPublishEvent(Request request, StatusUpdateEvent event) {
@@ -121,7 +152,6 @@ public class RequestService {
         persistAndPublishEvent(request, event);
     }
 
-
     /**
      * Save a request.
      *
@@ -135,13 +165,14 @@ public class RequestService {
 
     /**
      * Save request draft
+     *
      * @param requestRepresentation request representation
      * @return saved request representation
      */
     @Transactional
     public RequestRepresentation saveDraft(RequestRepresentation requestRepresentation) {
         log.debug("Save request draft with request id : {}", requestRepresentation.getId());
-        Request request =  requestRepository.findOne(requestRepresentation.getId());
+        Request request = requestRepository.findOne(requestRepresentation.getId());
         Request updatedRequest = null;
         if (request != null) {
             updatedRequest = requestMapper.updateRequestDTOToRequest(requestRepresentation, request);
@@ -151,11 +182,11 @@ public class RequestService {
     }
 
     /**
-     *  Get all the requests.
+     * Get all the requests.
      *
-     *  @param requester the current user (the requester)
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param requester the current user (the requester)
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
@@ -165,9 +196,9 @@ public class RequestService {
     }
 
     private Page<RequestRepresentation> findAllOrganisationRequestsInReviewStatusForRole(AuthenticatedUser user,
-                                                                          RequestReviewStatus status,
-                                                                          String authority,
-                                                                          Pageable pageable) {
+                                                                                         RequestReviewStatus status,
+                                                                                         String authority,
+                                                                                         Pageable pageable) {
         Set<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
             .filter(entry -> entry.getValue().contains(authority))
             .map(Map.Entry::getKey)
@@ -177,11 +208,11 @@ public class RequestService {
     }
 
     /**
-     *  Get all the requests in review status 'Review' to organisations for which the current user is a reviewer.
+     * Get all the requests in review status 'Review' to organisations for which the current user is a reviewer.
      *
-     *  @param user the current user (the coordinator)
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param user the current user (the coordinator)
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<RequestRepresentation> findAllForReviewer(AuthenticatedUser user, Pageable pageable) {
@@ -202,12 +233,12 @@ public class RequestService {
     }
 
     /**
-     *  Get all the requests to organisations for which the current user is a coordinator.
+     * Get all the requests to organisations for which the current user is a coordinator.
      *
-     *  @param user the current user (the coordinator)
-     *  @param status the status to filter on
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param user the current user (the coordinator)
+     * @param status the status to filter on
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<RequestRepresentation> findAllForCoordinatorInStatus(AuthenticatedUser user,
@@ -220,13 +251,14 @@ public class RequestService {
     /**
      * Checks if the user has the requested authority for at least one of the organisations with the specified
      * organisation uuids.
+     *
      * @param user the user object.
      * @param organisationUuids the collection of organisation uuids.
      * @param authority the requested authority.
      * @throws AccessDenied iff the user does not have the required access rights.
      */
     private void checkOrganisationAccess(AuthenticatedUser user, Collection<UUID> organisationUuids, String authority) {
-        for (UUID organisationUuid: organisationUuids) {
+        for (UUID organisationUuid : organisationUuids) {
             Collection<String> organisationAuthorities = user.getOrganisationAuthorities().get(organisationUuid);
             if (organisationAuthorities != null && organisationAuthorities.contains(authority)) {
                 // the authority is present for one of the organisations
@@ -239,6 +271,7 @@ public class RequestService {
     /**
      * Checks if the user has the requested authority for the organisation with the specified
      * organisation uuid.
+     *
      * @param user the user object.
      * @param organisationUuid the uuid of the organisation.
      * @param authority the requested authority.
@@ -249,44 +282,13 @@ public class RequestService {
     }
 
     /**
-     * Checks if the request has any of the allowed statuses
-     * @param request the request object.
-     * @param allowedStatuses the allowed statuses.
-     * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
-     */
-    private static RequestStatus checkStatus(Request request, RequestStatus ... allowedStatuses) throws ActionNotAllowed {
-        if (!Status.isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
-            throw ActionNotAllowed.forStatus(request.getStatus());
-        }
-        return request.getStatus();
-    }
-
-    /**
-     * Checks if the request has one of the allowed review statuses.
-     * @param request the request object.
-     * @param allowedStatuses the allowed review statuses.
-     * @throws ActionNotAllowed iff the request is not in a review status or does not have any of the
-     * allowed review statuses.
-     */
-    private static RequestReviewStatus checkReviewStatus(Request request, RequestReviewStatus ... allowedStatuses) throws ActionNotAllowed {
-        if (request.getStatus() != RequestStatus.Review) {
-            throw ActionNotAllowed.forStatus(request.getStatus());
-        }
-        RequestReviewStatus currentReviewStatus = request.getRequestReviewProcess().getStatus();
-        if (!Status.isCurrentStatusAllowed(currentReviewStatus, allowedStatuses)) {
-            throw ActionNotAllowed.forStatus(currentReviewStatus);
-        }
-        return currentReviewStatus;
-    }
-
-    /**
-     *  Get all the requests in review status 'Review' to the organisation for which the current user is a reviewer.
+     * Get all the requests in review status 'Review' to the organisation for which the current user is a reviewer.
      *
-     *  @param user the current user (the reviewer)
-     *  @param organisationUuid the uuid of the organisation for which to fetch the requests
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     *  @throws AccessDenied iff the user is not a reviewer for the organisation with uuid organisationUuid.
+     * @param user the current user (the reviewer)
+     * @param organisationUuid the uuid of the organisation for which to fetch the requests
+     * @param pageable the pagination information
+     * @return the list of entities
+     * @throws AccessDenied iff the user is not a reviewer for the organisation with uuid organisationUuid.
      */
     @Transactional(readOnly = true)
     public Page<RequestRepresentation> findAllForReviewerByOrganisation(AuthenticatedUser user, UUID organisationUuid, Pageable pageable) {
@@ -297,14 +299,14 @@ public class RequestService {
     }
 
     /**
-     *  Get all the requests to the organisation for which the current user is a coordinator.
+     * Get all the requests to the organisation for which the current user is a coordinator.
      *
-     *  @param user the current user (the coordinator)
-     *  @param status the status to filter on
-     *  @param organisationUuid the uuid of the organisation for which to fetch the requests
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     *  @throws AccessDenied iff the user is not a coordinator for the organisation with uuid organisationUuid.
+     * @param user the current user (the coordinator)
+     * @param status the status to filter on
+     * @param organisationUuid the uuid of the organisation for which to fetch the requests
+     * @param pageable the pagination information
+     * @return the list of entities
+     * @throws AccessDenied iff the user is not a coordinator for the organisation with uuid organisationUuid.
      */
     @Transactional(readOnly = true)
     public Page<RequestRepresentation> findAllForCoordinatorByOrganisationInStatus(AuthenticatedUser user,
@@ -318,12 +320,12 @@ public class RequestService {
     }
 
     /**
-     *  Get the request for the requester
+     * Get the request for the requester
      *
-     *  @param requester the current user (the requester)
-     *  @param requestUuid the uuid of the request
-     *  @return the entity
-     *  @throws AccessDenied iff the user is not the requester of the request.
+     * @param requester the current user (the requester)
+     * @param requestUuid the uuid of the request
+     * @return the entity
+     * @throws AccessDenied iff the user is not the requester of the request.
      */
     @Transactional(readOnly = true)
     public RequestRepresentation findRequestForRequester(IdentifiableUser requester, UUID requestUuid) {
@@ -339,11 +341,11 @@ public class RequestService {
     }
 
     /**
-     *  Get the request
+     * Get the request
      *
-     *  @param requestUuid the uuid of the request
-     *  @return the entity
-     *  @throws ResourceNotFound when the requested request could not be found.
+     * @param requestUuid the uuid of the request
+     * @return the entity
+     * @throws ResourceNotFound when the requested request could not be found.
      */
     @Transactional(readOnly = true)
     public RequestRepresentation findRequest(UUID requestUuid) {
@@ -356,11 +358,11 @@ public class RequestService {
     }
 
     /**
-     *  Get the request
+     * Get the request
      *
-     *  @param requestUuid the uuid of the request
-     *  @return the entity
-     *  @throws ResourceNotFound when the requested request could not be found.
+     * @param requestUuid the uuid of the request
+     * @return the entity
+     * @throws ResourceNotFound when the requested request could not be found.
      */
     @Transactional(readOnly = true)
     public RequestRepresentation findRequestBasic(UUID requestUuid) {
@@ -507,11 +509,11 @@ public class RequestService {
     }
 
     /**
-     *  Delete the request by uuid.
+     * Delete the request by uuid.
      *
-     *  @param user the current user
-     *  @param uuid the uuid of the request
-     *  @throws ActionNotAllowed if the request is not in status 'Draft'.
+     * @param user the current user
+     * @param uuid the uuid of the request
+     * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
     @Timed
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowed {
@@ -647,7 +649,7 @@ public class RequestService {
         List<Request> organisationRequests = new ArrayList<>();
         // TODO: Aggregate mails for multiple organisations per user.
 
-        for (UUID organisationUuid: request.getOrganisations()) {
+        for (UUID organisationUuid : request.getOrganisations()) {
             // TODO: validate request type of the request with the supported request types of the organisation.
             Request organisationRequest = requestMapper.clone(request);
 
@@ -679,9 +681,9 @@ public class RequestService {
     /**
      * Search for the request corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<RequestRepresentation> search(String query, Pageable pageable) {

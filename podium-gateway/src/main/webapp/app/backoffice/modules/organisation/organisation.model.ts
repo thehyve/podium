@@ -25,7 +25,7 @@ export class Organisation implements IOrganisation {
     public roles?: Role[];
     public requestTypes?: RequestType[];
 
-    constructor(jsonResponse? : any) {
+    constructor(jsonResponse?: any) {
         jsonResponse ? Object.assign(this, jsonResponse) : this;
     }
 

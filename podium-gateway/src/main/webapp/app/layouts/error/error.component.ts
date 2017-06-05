@@ -19,8 +19,7 @@ export class ErrorComponent implements OnInit {
     error403: boolean;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService
-    ) {
+        private jhiLanguageService: JhiLanguageService) {
         this.jhiLanguageService.setLocations(['error']);
     }
 

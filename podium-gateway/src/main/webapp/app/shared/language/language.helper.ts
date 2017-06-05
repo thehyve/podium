@@ -15,7 +15,7 @@ import { LANGUAGES } from './language.constants';
 @Injectable()
 export class JhiLanguageHelper {
 
-    constructor (private translateService: TranslateService, private titleService: Title ) {
+    constructor(private translateService: TranslateService, private titleService: Title) {
         this.init();
     }
 
@@ -32,7 +32,7 @@ export class JhiLanguageHelper {
      */
     updateTitle(titleKey?: string) {
 
-        if (!titleKey && this.titleService.getTitle() ) {
+        if (!titleKey && this.titleService.getTitle()) {
             titleKey = this.titleService.getTitle();
         }
 
@@ -41,6 +41,6 @@ export class JhiLanguageHelper {
         });
     }
 
-    private init () {
+    private init() {
     }
 }

@@ -22,8 +22,7 @@ export function interceptableFactory(
     localStorage: LocalStorageService,
     sessionStorage: SessionStorageService,
     injector: Injector,
-    eventManager: EventManager
-) {
+    eventManager: EventManager) {
     return new InterceptableHttp(
         backend,
         defaultOptions,

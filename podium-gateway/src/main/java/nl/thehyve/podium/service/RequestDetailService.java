@@ -30,12 +30,13 @@ public class RequestDetailService {
     private final Logger log = LoggerFactory.getLogger(RequestDetailService.class);
 
     @Autowired
-    private  RequestDetailRepository requestDetailRepository;
+    private RequestDetailRepository requestDetailRepository;
 
     @Autowired
-    private  RequestdetailSearchRepository requestdetailSearchRepository;
+    private RequestdetailSearchRepository requestdetailSearchRepository;
 
-    public RequestDetailService() {}
+    public RequestDetailService() {
+    }
 
     /**
      * Save a requestDetail.
@@ -53,9 +54,9 @@ public class RequestDetailService {
     /**
      * Search for the requestdetail corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<RequestDetail> search(String query, Pageable pageable) {

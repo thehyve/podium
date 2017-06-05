@@ -39,9 +39,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class AttachmentResource {
 
-    private final Logger log = LoggerFactory.getLogger(AttachmentResource.class);
-
     private static final String ENTITY_NAME = "attachment";
+
+    private final Logger log = LoggerFactory.getLogger(AttachmentResource.class);
 
     private final AttachmentService attachmentService;
 
@@ -68,6 +68,7 @@ public class AttachmentResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
     /**
      * SEARCH  /_search/attachments?query=:query : search for the attachment corresponding
      * to the query.

@@ -53,4 +53,5 @@ import { RequestStatusUpdateDialogComponent } from '../shared/status-update/requ
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumGatewayRequestModule {}
+export class PodiumGatewayRequestModule {
+}

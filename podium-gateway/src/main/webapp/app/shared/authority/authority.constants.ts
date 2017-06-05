@@ -10,25 +10,25 @@
 import { Authority } from './authority';
 
 const authorityNames: { [token: string]: string; } = {
-    'ROLE_PODIUM_ADMIN':                'Podium administrator',
-    'ROLE_BBMRI_ADMIN':                 'BBMRI administrator',
-    'ROLE_ORGANISATION_ADMIN':          'Organisation administrator',
-    'ROLE_ORGANISATION_COORDINATOR':    'Organisation coordinator',
-    'ROLE_REVIEWER':                    'Reviewer',
-    'ROLE_RESEARCHER':                  'Researcher'
+    'ROLE_PODIUM_ADMIN': 'Podium administrator',
+    'ROLE_BBMRI_ADMIN': 'BBMRI administrator',
+    'ROLE_ORGANISATION_ADMIN': 'Organisation administrator',
+    'ROLE_ORGANISATION_COORDINATOR': 'Organisation coordinator',
+    'ROLE_REVIEWER': 'Reviewer',
+    'ROLE_RESEARCHER': 'Researcher'
 };
 
 const organisationAuthorities: { [token: string]: string; } = {
-    'ROLE_ORGANISATION_ADMIN':          'Organisation administrator',
-    'ROLE_ORGANISATION_COORDINATOR':    'Organisation coordinator',
-    'ROLE_REVIEWER':                    'Reviewer'
+    'ROLE_ORGANISATION_ADMIN': 'Organisation administrator',
+    'ROLE_ORGANISATION_COORDINATOR': 'Organisation coordinator',
+    'ROLE_REVIEWER': 'Reviewer'
 };
 
 function convertNamesToAuthorities(names: { [token: string]: string; }): Array<Authority> {
     let result: Array<Authority> = [];
     for (const token in names) {
         if (names.hasOwnProperty(token)) {
-            result.push({token: token, name: names[token]});
+            result.push({ token: token, name: names[token] });
         }
     }
     return result;

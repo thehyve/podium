@@ -49,4 +49,5 @@ import {
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumGatewayAccountModule {}
+export class PodiumGatewayAccountModule {
+}

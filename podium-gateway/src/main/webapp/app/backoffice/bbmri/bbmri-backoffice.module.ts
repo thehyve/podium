@@ -20,4 +20,5 @@ import { BbmriBackofficeRoutingModule } from './bbmri-backoffice.routing';
         RouterModule
     ]
 })
-export class PodiumGatewayBbmriBackofficeModule {}
+export class PodiumGatewayBbmriBackofficeModule {
+}

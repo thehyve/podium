@@ -15,7 +15,7 @@
     </div>
 
     <div class="card-container"
-        [ngClass]="{
+         [ngClass]="{
             'col-md-6 offset-md-3': !isInRevision,
             'col-md-12 nested-request-form': isInRevision
         }">
@@ -37,7 +37,7 @@
                     <input type="text" class="form-control" name="title" id="title"
                            required minlength="1" maxlength="50" #title="ngModel"
                            autocomplete="off" placeholder="{{'request.form.title.placeholder' | translate}}"
-                           [(ngModel)]="requestDetail.title" />
+                           [(ngModel)]="requestDetail.title"/>
 
                     <div *ngIf="title.dirty && title.invalid">
                         <small class="form-text text-danger" *ngIf="title.errors.required"
@@ -59,7 +59,7 @@
 
                 <!-- Request type -->
                 <div class="form-group">
-                    <label for="requestTypes"  jhiTranslate="request.form.requestType.label">Request Type(s)*</label>
+                    <label for="requestTypes" jhiTranslate="request.form.requestType.label">Request Type(s)*</label>
                     <div class="checkbox-group">
                         <div *ngFor="let requestType of requestTypeOptions | enumKeys">
                             <label>
@@ -69,13 +69,14 @@
                                        value="{{requestType.value}}"
                                        [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
-                                       (change)="updateRequestType(requestType, $event)" />
+                                       (change)="updateRequestType(requestType, $event)"/>
                                 {{requestType.value | capitalize}}
                             </label>
                         </div>
                     </div>
                     <small jhiTranslate="request.form.requestType.footnote">* Changing this value will clear
-                        organisation selection.</small>
+                        organisation selection.
+                    </small>
                 </div>
 
                 <!-- Linked Request-->
@@ -88,7 +89,7 @@
                                    id="combinedRequest"
                                    [disabled]="isInRevision"
                                    [(ngModel)]="requestDetail.combinedRequest"
-                                   value="true" disabled />
+                                   value="true" disabled/>
                             <span jhiTranslate="request.form.isLinked.placeHolder">Is a linked request</span>
                         </label>
                     </div>
@@ -173,7 +174,8 @@
                     <label for="researchQuestion"
                            jhiTranslate="request.form.researchQuestion.label">Research Question</label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
-                              autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
+                              autocomplete="off"
+                              placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
                               required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
                               [wordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
                     </textarea>
@@ -265,7 +267,7 @@
                     <input type="text" class="form-control" name="relatedRequestNumber" id="relatedRequestNumber"
                            maxlength="50" autocomplete="off" #relatedRequestNumber="ngModel"
                            placeholder="{{'request.form.relatedRequestNumber.placeholder' | translate}}"
-                           [(ngModel)]="requestDetail.relatedRequestNumber" />
+                           [(ngModel)]="requestDetail.relatedRequestNumber"/>
 
                     <div *ngIf="relatedRequestNumber.dirty && relatedRequestNumber.invalid">
                         <small class="form-text text-danger" *ngIf="relatedRequestNumber.errors.maxlength"
@@ -290,7 +292,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piName="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.name.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.name" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.name"/>
 
                             <div *ngIf="piName.dirty && piName.invalid">
                                 <small class="form-text text-danger" *ngIf="piName.errors.required"
@@ -319,7 +321,7 @@
                             </label>
                             <input type="text" class="form-control" name="piEmail" id="piEmail"
                                    required minlength="1" maxlength="150"
-                                   autocomplete="off"  #piEmail="ngModel"
+                                   autocomplete="off" #piEmail="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.email.placeholder' | translate}}"
                                    [(ngModel)]="requestDetail.principalInvestigator.email" emailValidator>
 
@@ -358,7 +360,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piFunction="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.function.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.jobTitle" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.jobTitle"/>
 
                             <div *ngIf="piFunction.dirty && piFunction.invalid">
                                 <small class="form-text text-danger" *ngIf="piFunction.errors.required"
@@ -389,7 +391,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piAffiliation="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.affiliation.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.affiliation" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.affiliation"/>
 
                             <div *ngIf="piAffiliation.dirty && piAffiliation.invalid">
                                 <small class="form-text text-danger" *ngIf="piAffiliation.errors.required"
@@ -414,7 +416,7 @@
                 <!-- Attachments -->
                 <button type="button" class="btn btn-default"
                         [routerLink]="['/', { outlets: { popup: 'upload'} }]"
-                        replaceUrl="false" >Upload attachments
+                        replaceUrl="false">Upload attachments
                 </button>
 
                 <pdm-request-action-toolbar

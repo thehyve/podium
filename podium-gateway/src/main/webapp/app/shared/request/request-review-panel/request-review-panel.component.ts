@@ -22,9 +22,9 @@ export class RequestReviewPanelComponent implements OnInit {
     lastReviewFeedback: RequestReviewFeedback[];
 
     private optionStyles = [
-        {style: 'tag-success', advise: RequestReviewDecision.Approved},
-        {style: 'tag-danger', advise: RequestReviewDecision.Rejected},
-        {style: 'tag-default', advise: RequestReviewDecision.None},
+        { style: 'tag-success', advise: RequestReviewDecision.Approved },
+        { style: 'tag-danger', advise: RequestReviewDecision.Rejected },
+        { style: 'tag-default', advise: RequestReviewDecision.None },
     ];
 
     @Input()

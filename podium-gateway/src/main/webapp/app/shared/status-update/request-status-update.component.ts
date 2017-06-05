@@ -31,8 +31,7 @@ export class RequestStatusUpdateDialogComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestService: RequestService,
-        private activeModal: NgbActiveModal
-    ) {
+        private activeModal: NgbActiveModal) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
     }
 

@@ -92,17 +92,21 @@ public class Attachment implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Attachment name(String name) {
         this.name = name;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Attachment description(String description) {
@@ -110,12 +114,12 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getFilename() {
         return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public Attachment filename(String filename) {
@@ -123,12 +127,12 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
     public AttachmentType getType() {
         return type;
+    }
+
+    public void setType(AttachmentType type) {
+        this.type = type;
     }
 
     public Attachment type(AttachmentType type) {
@@ -136,12 +140,12 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setType(AttachmentType type) {
-        this.type = type;
-    }
-
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Attachment date(LocalDate date) {
@@ -149,12 +153,12 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public String getMimeType() {
         return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public Attachment mimeType(String mimeType) {
@@ -162,21 +166,17 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
     public UUID getUploader() {
         return uploader;
+    }
+
+    public void setUploader(UUID user) {
+        this.uploader = user;
     }
 
     public Attachment uploader(UUID user) {
         this.uploader = user;
         return this;
-    }
-
-    public void setUploader(UUID user) {
-        this.uploader = user;
     }
 
     public Request getRequest() {

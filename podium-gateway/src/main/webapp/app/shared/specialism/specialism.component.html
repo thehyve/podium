@@ -9,8 +9,8 @@
   -->
 
 <select id="specialism" name="specialism" class="form-control" [(ngModel)]="selectedSpecialism" (change)="onChange()"
-        required >
-    <option  *ngFor="let specialismOption of specialismOptions" [value]="specialismOption.value">
+        required>
+    <option *ngFor="let specialismOption of specialismOptions" [value]="specialismOption.value">
         {{specialismOption.display}}
     </option>
 </select>

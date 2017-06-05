@@ -14,6 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Spring Data JPA repository for the RequestReviewProcess entity.
  */
 @SuppressWarnings("unused")
-public interface RequestReviewProcessRepository extends JpaRepository<RequestReviewProcess,Long> {
+public interface RequestReviewProcessRepository extends JpaRepository<RequestReviewProcess, Long> {
 
 }

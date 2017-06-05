@@ -11,10 +11,10 @@ import { browser } from 'protractor';
 import { Promise } from 'es6-promise';
 let { defineSupportCode } = require('cucumber');
 
-defineSupportCode(function({registerHandler}) {
+defineSupportCode(function ({ registerHandler }) {
     let delay = process.env.BROWSERSTACK_DELAY ? process.env.BROWSERSTACK_DELAY : 0;
 
     registerHandler('BeforeStep', function (features): Promise<any> {
-        return  browser.sleep(delay);
+        return browser.sleep(delay);
     });
 });

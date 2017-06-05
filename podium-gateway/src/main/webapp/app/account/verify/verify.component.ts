@@ -28,12 +28,11 @@ export class VerifyComponent implements OnInit {
         private jhiLanguageService: JhiLanguageService,
         private verify: Verify,
         private route: ActivatedRoute,
-        private router: Router
-    ) {
+        private router: Router) {
         this.jhiLanguageService.setLocations(['verify']);
     }
 
-    ngOnInit () {
+    ngOnInit() {
         this.route.queryParams.subscribe(params => {
             this.verifyKey = params['key'];
             this.verify.get(params['key']).subscribe(() => {

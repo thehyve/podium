@@ -87,10 +87,10 @@ public class DeliveryProcess extends AbstractAuditingEntity {
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderColumn(name="event_order")
+    @OrderColumn(name = "event_order")
     @JoinTable(name = "delivery_process_historic_events",
-        joinColumns = @JoinColumn(name="delivery_process_id", referencedColumnName="id"),
-        inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
+        joinColumns = @JoinColumn(name = "delivery_process_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "event_id"))
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     public Long getId() {
@@ -167,13 +167,13 @@ public class DeliveryProcess extends AbstractAuditingEntity {
         return historicEvents;
     }
 
+    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
+        this.historicEvents = historicEvents;
+    }
+
     public DeliveryProcess addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
-    }
-
-    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
-        this.historicEvents = historicEvents;
     }
 
 }

@@ -13,7 +13,7 @@ import { NG_VALIDATORS, ValidatorFn, Validator, FormControl } from '@angular/for
 @Directive({
     selector: '[wordLengthValidator][ngModel]',
     providers: [
-        {provide: NG_VALIDATORS, useExisting: WordLengthValidatorDirective, multi: true}
+        { provide: NG_VALIDATORS, useExisting: WordLengthValidatorDirective, multi: true }
     ]
 })
 
@@ -22,19 +22,19 @@ export class WordLengthValidatorDirective implements Validator {
 
     @Input() wordLengthValidator: number;
 
-   constructor() {
+    constructor() {
     }
 
     validate(c: FormControl) {
-       if (!c.value || c.value.split(' ').length <= this.wordLengthValidator) {
+        if (!c.value || c.value.split(' ').length <= this.wordLengthValidator) {
             return null;
-       } else {
-           return {
-               wordLengthValidator: {
-                   valid: false
-               }
-           };
-       }
+        } else {
+            return {
+                wordLengthValidator: {
+                    valid: false
+                }
+            };
+        }
     }
 
 }

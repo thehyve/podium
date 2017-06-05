@@ -76,6 +76,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
+    public static final String REQUEST_ROUTE = "/api/requests";
+
     Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
 
     @Autowired
@@ -107,6 +109,64 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
     private MockMvc mockMvc;
 
+    private OrganisationDTO organisationA;
+
+    private OrganisationDTO organisationB;
+
+    private List<OrganisationDTO> organisations = new ArrayList<>();
+
+    private Map<UUID, Map<String, Set<UUID>>> organisationRoles = new HashMap<>();
+
+    private AuthenticatedUser podiumAdmin;
+
+    private AuthenticatedUser bbmriAdmin;
+
+    private AuthenticatedUser adminOrganisationA;
+
+    private AuthenticatedUser adminOrganisationB;
+
+    private AuthenticatedUser adminOrganisationAandB;
+
+    private AuthenticatedUser coordinatorOrganisationA;
+
+    private AuthenticatedUser coordinatorOrganisationB;
+
+    private AuthenticatedUser coordinatorOrganisationAandB;
+
+    private AuthenticatedUser reviewerAandB;
+
+    private AuthenticatedUser reviewerA;
+
+    private AuthenticatedUser researcher;
+
+    private AuthenticatedUser testUser1;
+
+    private AuthenticatedUser testUser2;
+
+    private AuthenticatedUser anonymous;
+
+    private Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
+
+    private Map<String, SerialisedUser> userStore = new HashMap<>();
+
+    private Map<UUID, UserRepresentation> userInfo = new HashMap<>();
+
+    private RequestRepresentation draftRequest1;
+
+    private List<Action> actions = new ArrayList<>();
+
+    private static OrganisationDTO createOrganisation(String organisationName, UUID organisationUuid) {
+        Set<RequestType> requestTypes = new HashSet<>();
+        requestTypes.add(RequestType.Data);
+
+        OrganisationDTO organisation = new OrganisationDTO();
+        organisation.setUuid(organisationUuid);
+        organisation.setName(organisationName);
+        organisation.setShortName(organisationName);
+        organisation.setRequestTypes(requestTypes);
+        return organisation;
+    }
+
     @Override
     protected MockMvc getMockMvc() {
         return mockMvc;
@@ -131,29 +191,11 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         testService.clearDatabase();
     }
 
-
-    private OrganisationDTO organisationA;
-    private OrganisationDTO organisationB;
-    private List<OrganisationDTO> organisations = new ArrayList<>();
-    private Map<UUID, Map<String, Set<UUID>>> organisationRoles = new HashMap<>();
-
-    private static OrganisationDTO createOrganisation(String organisationName, UUID organisationUuid) {
-        Set<RequestType> requestTypes = new HashSet<>();
-        requestTypes.add(RequestType.Data);
-
-        OrganisationDTO organisation = new OrganisationDTO();
-        organisation.setUuid(organisationUuid);
-        organisation.setName(organisationName);
-        organisation.setShortName(organisationName);
-        organisation.setRequestTypes(requestTypes);
-        return organisation;
-    }
-
     private void createOrganisations() {
         organisationA = createOrganisation("A", UUID.randomUUID());
         organisationB = createOrganisation("B", UUID.randomUUID());
         organisations.addAll(Arrays.asList(organisationA, organisationB));
-        for (OrganisationDTO organisation: organisations) {
+        for (OrganisationDTO organisation : organisations) {
             Map<String, Set<UUID>> roles = new HashMap<>();
             roles.put(AuthorityConstants.ORGANISATION_ADMIN, new HashSet<>());
             roles.put(AuthorityConstants.ORGANISATION_COORDINATOR, new HashSet<>());
@@ -162,25 +204,7 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         }
     }
 
-    private AuthenticatedUser podiumAdmin;
-    private AuthenticatedUser bbmriAdmin;
-    private AuthenticatedUser adminOrganisationA;
-    private AuthenticatedUser adminOrganisationB;
-    private AuthenticatedUser adminOrganisationAandB;
-    private AuthenticatedUser coordinatorOrganisationA;
-    private AuthenticatedUser coordinatorOrganisationB;
-    private AuthenticatedUser coordinatorOrganisationAandB;
-    private AuthenticatedUser reviewerAandB;
-    private AuthenticatedUser reviewerA;
-    private AuthenticatedUser researcher;
-    private AuthenticatedUser testUser1;
-    private AuthenticatedUser testUser2;
-    private AuthenticatedUser anonymous;
-    private Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
-    private Map<String, SerialisedUser> userStore = new HashMap<>();
-    private Map<UUID, UserRepresentation> userInfo = new HashMap<>();
-
-    private AuthenticatedUser createUser(String name, String authority, OrganisationDTO ... organisations) {
+    private AuthenticatedUser createUser(String name, String authority, OrganisationDTO... organisations) {
         log.info("Creating user {}", name);
         UUID userUuid = UUID.randomUUID();
         UserRepresentation userDetails = new UserRepresentation();
@@ -188,12 +212,12 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         userDetails.setUuid(userUuid);
         userDetails.setLogin("test_" + name);
         userDetails.setEmail("test_" + name + "@localhost");
-        userDetails.setFirstName("test_firstname_"+name);
-        userDetails.setLastName("test_lastname_"+name);
+        userDetails.setFirstName("test_firstname_" + name);
+        userDetails.setLastName("test_lastname_" + name);
         Set<String> authorities = new HashSet<>();
         Map<UUID, Collection<String>> roles = new HashMap<>();
         if (organisations.length > 0) {
-            for (OrganisationDTO organisation: organisations) {
+            for (OrganisationDTO organisation : organisations) {
                 log.info("Assigning role {} for organisation {}", authority, organisation.getName());
                 organisationRoles.get(organisation.getUuid()).get(authority).add(userUuid);
                 roles.put(organisation.getUuid(), Sets.newSet(authority));
@@ -227,7 +251,7 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         adminOrganisationAandB = createUser("adminOrganisationAandB", AuthorityConstants.ORGANISATION_ADMIN, organisationA, organisationB);
         coordinatorOrganisationA = createUser("coordinatorOrganisationA", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA);
         coordinatorOrganisationB = createUser("coordinatorOrganisationB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationB);
-        coordinatorOrganisationAandB= createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
+        coordinatorOrganisationAandB = createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
         reviewerAandB = createUser("reviewerAandB", AuthorityConstants.REVIEWER, organisationA, organisationB);
         reviewerA = createUser("reviewerA", AuthorityConstants.REVIEWER, organisationA);
         researcher = createUser("researcher", AuthorityConstants.RESEARCHER);
@@ -237,15 +261,9 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         allUsers.add(anonymous);
     }
 
-    private RequestRepresentation draftRequest1;
-
     private void createRequests() {
         draftRequest1 = requestService.createDraft(researcher);
     }
-
-    public static final String REQUEST_ROUTE = "/api/requests";
-
-    private List<Action> actions = new ArrayList<>();
 
     private void createRequestActions() {
         // GET /requests/drafts
@@ -290,7 +308,7 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
     private void initMocks() throws URISyntaxException {
         // Mock Feign client for organisations
-        for(OrganisationDTO organisation: organisations) {
+        for (OrganisationDTO organisation : organisations) {
             given(this.organisationService.findOrganisationByUuid(eq(organisation.getUuid())))
                 .willReturn(organisation);
         }
@@ -300,12 +318,12 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
             .willReturn(Collections.emptyList());
 
         // Mock Feign client for fetching user information
-        for(Map.Entry<UUID, UserRepresentation> userEntry: userInfo.entrySet()) {
+        for (Map.Entry<UUID, UserRepresentation> userEntry : userInfo.entrySet()) {
             given(this.userClientService.findUserByUuid(eq(userEntry.getKey())))
                 .willReturn(userEntry.getValue());
         }
 
-        for(Map.Entry<String, SerialisedUser> userEntry: userStore.entrySet()) {
+        for (Map.Entry<String, SerialisedUser> userEntry : userStore.entrySet()) {
             given(this.internalUserResource.getAuthenticatedUserByLogin(eq(userEntry.getKey())))
                 .willReturn(ResponseEntity.ok(userEntry.getValue()));
         }

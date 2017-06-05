@@ -49,4 +49,5 @@ let PODIUM_ROUTES = [
     exports: [RouterModule]
 })
 
-export class PodiumBackofficeRoutingModule {}
+export class PodiumBackofficeRoutingModule {
+}

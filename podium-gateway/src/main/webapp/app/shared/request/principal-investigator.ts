@@ -15,5 +15,6 @@ export class PrincipalInvestigator {
     jobTitle: string;
     affiliation: string;
 
-    constructor() {}
+    constructor() {
+    }
 }

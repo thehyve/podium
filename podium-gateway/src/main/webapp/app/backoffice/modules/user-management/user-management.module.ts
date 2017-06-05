@@ -60,4 +60,5 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         RouterModule
     ]
 })
-export class PodiumGatewayUserMgmtModule {}
+export class PodiumGatewayUserMgmtModule {
+}

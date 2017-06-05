@@ -26,12 +26,11 @@ export class RequestFormSubmitDialogComponent {
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
         private router: Router,
-        private messageService: MessageService
-    ) {
+        private messageService: MessageService) {
         this.jhiLanguageService.setLocations(['request']);
     }
 
-    clear () {
+    clear() {
         this.activeModal.dismiss('cancel');
     }
 
@@ -47,11 +46,11 @@ export class RequestFormSubmitDialogComponent {
         this.messageService.store(new Message(submittedTitle, submittedMessage));
     }
 
-    confirmSubmit (request: RequestBase) {
+    confirmSubmit(request: RequestBase) {
         this.requestService.submitDraft(request.uuid).subscribe(response => {
             this.activeModal.dismiss(true);
             this.setSubmitSuccessMessage(response);
-            this.router.navigate(['completed', { outlets: { submit: null }}], { replaceUrl: true });
+            this.router.navigate(['completed', { outlets: { submit: null } }], { replaceUrl: true });
         });
     }
 

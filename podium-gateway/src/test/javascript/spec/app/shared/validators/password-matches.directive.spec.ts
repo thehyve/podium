@@ -15,7 +15,7 @@ describe('PasswordMatchesDirective', () => {
 
     let invalidResultObj = {
         passwordMatches: {
-            valid : false
+            valid: false
         }
     };
 

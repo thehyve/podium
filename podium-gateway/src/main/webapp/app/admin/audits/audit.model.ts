@@ -14,6 +14,6 @@ export class Audit {
         public data: AuditData,
         public principal: string,
         public timestamp: string,
-        public type: string
-    ) { }
+        public type: string) {
+    }
 }

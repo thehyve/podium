@@ -64,9 +64,9 @@
     }
 
     li.completed:before, li.completed:after,
-        li.active:before, li.active:after {
-            background: #27AE60;
-            color: white;
+    li.active:before, li.active:after {
+        background: #27AE60;
+        color: white;
     }
 
     li.active:before {

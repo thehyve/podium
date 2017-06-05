@@ -14,7 +14,8 @@ import { Observable } from 'rxjs/Rx';
 @Injectable()
 export class PdmMetricsService {
 
-    constructor (private http: Http) {}
+    constructor(private http: Http) {
+    }
 
     getMetrics(): Observable<any> {
         return this.http.get('management/metrics').map((res: Response) => res.json());

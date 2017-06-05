@@ -1,5 +1,5 @@
 {
-    "requestStatus" : {
+    "requestStatus": {
         "Draft": "Draft",
         "Submit": "Submitted",
         "Validation": "Validation",

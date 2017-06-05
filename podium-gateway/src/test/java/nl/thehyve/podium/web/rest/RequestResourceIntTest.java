@@ -92,6 +92,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class RequestResourceIntTest {
 
+    public static final String REQUESTS_ROUTE = "/api/requests";
+
+    public static final String REQUESTS_SEARCH_ROUTE = "/api/_search/requests";
+
+    private static final String ACTION_VALIDATE = "validate";
+
+    private static final String ACTION_APPROVE = "approve";
+
+    private static final String ACTION_REQUEST_REVISION = "requestRevision";
+
+    private static final String ACTION_REJECT = "reject";
+
+    private static final String mockRequesterUsername = "requester";
+
+    private static UUID organisationUuid1 = UUID.randomUUID();
+
+    private static UUID organisationUuid2 = UUID.randomUUID();
+
+    private static UUID coordinatorUuid1 = UUID.randomUUID();
+
+    private static UUID coordinatorUuid2 = UUID.randomUUID();
+
+    private static UUID reviewerUuid1 = UUID.randomUUID();
+
+    private static UUID reviewerUuid2 = UUID.randomUUID();
+
+    private static UUID mockRequesterUuid = UUID.randomUUID();
+
+    private static Set<String> requesterAuthorities =
+        Sets.newSet(AuthorityConstants.RESEARCHER);
+
+    private static Set<String> coordinatorAuthorities =
+        Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR);
+
+    private static Set<String> reviewerAuthorities =
+        Sets.newSet(AuthorityConstants.REVIEWER);
+
     private Logger log = LoggerFactory.getLogger(RequestResourceIntTest.class);
 
     @Autowired
@@ -124,40 +161,20 @@ public class RequestResourceIntTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     private TypeReference<List<RequestRepresentation>> listTypeReference =
-        new TypeReference<List<RequestRepresentation>>(){};
+        new TypeReference<List<RequestRepresentation>>() {
+        };
 
     private MockMvc mockMvc;
 
     private UserAuthenticationToken requester;
+
     private UserAuthenticationToken coordinator1;
+
     private UserAuthenticationToken coordinator2;
+
     private UserAuthenticationToken reviewer1;
+
     private UserAuthenticationToken reviewer2;
-
-    private static UUID organisationUuid1 = UUID.randomUUID();
-    private static UUID organisationUuid2 = UUID.randomUUID();
-    private static UUID coordinatorUuid1 = UUID.randomUUID();
-    private static UUID coordinatorUuid2 = UUID.randomUUID();
-    private static UUID reviewerUuid1 = UUID.randomUUID();
-    private static UUID reviewerUuid2 = UUID.randomUUID();
-
-    private static final String ACTION_VALIDATE = "validate";
-    private static final String ACTION_APPROVE = "approve";
-    private static final String ACTION_REQUEST_REVISION = "requestRevision";
-    private static final String ACTION_REJECT = "reject";
-
-    private static final String mockRequesterUsername = "requester";
-    private static UUID mockRequesterUuid = UUID.randomUUID();
-
-    private static Set<String> requesterAuthorities =
-        Sets.newSet(AuthorityConstants.RESEARCHER);
-    private static Set<String> coordinatorAuthorities =
-        Sets.newSet(AuthorityConstants.ORGANISATION_COORDINATOR);
-    private static Set<String> reviewerAuthorities =
-        Sets.newSet(AuthorityConstants.REVIEWER);
-
-    public static final String REQUESTS_ROUTE = "/api/requests";
-    public static final String REQUESTS_SEARCH_ROUTE = "/api/_search/requests";
 
     private static OrganisationDTO createOrganisation(int i, UUID uuid) {
         OrganisationDTO organisation = new OrganisationDTO();
@@ -202,6 +219,14 @@ public class RequestResourceIntTest {
         Map<UUID, Collection<String>> roles = new HashMap<>();
         roles.put(organisationUuid, Sets.newSet(authority));
         return roles;
+    }
+
+    private static List<UserRepresentation> nonEmptyUserRepresentationList() {
+        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+    }
+
+    private static List<RequestRepresentation> nonEmptyRequestList() {
+        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
     @Before
@@ -328,7 +353,7 @@ public class RequestResourceIntTest {
                 throw new RuntimeException("JSON serialisation error", e);
             }
         }
-        for (Map.Entry<String, String> entry: parameters.entrySet()) {
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
             request = request.param(entry.getKey(), entry.getValue());
         }
         return request;
@@ -345,11 +370,11 @@ public class RequestResourceIntTest {
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isCreated())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            request[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-        });
+            .andExpect(status().isCreated())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                request[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+            });
 
         Thread.sleep(100);
 
@@ -366,11 +391,11 @@ public class RequestResourceIntTest {
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            resultRequest[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                resultRequest[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+            });
         return resultRequest[0];
     }
 
@@ -414,17 +439,16 @@ public class RequestResourceIntTest {
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            res[0] = requests;
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                res[0] = requests;
+            });
         return res[0];
     }
 
     /**
-     *
      * @param user The authenticated user performing the action
      * @param action The action to perform
      * @param requestUuid The UUID of the request to perform the action on
@@ -466,20 +490,20 @@ public class RequestResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
 
-            // Number of requests should equal the number of organisations it was submitted to
-            Assert.assertEquals(organisations.size(), requests.size());
-            for (RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
-            }
-            res[0] = requests;
-        });
+                // Number of requests should equal the number of organisations it was submitted to
+                Assert.assertEquals(organisations.size(), requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                    Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
+                }
+                res[0] = requests;
+            });
 
         return res[0];
     }
@@ -496,25 +520,17 @@ public class RequestResourceIntTest {
         return result.get(0);
     }
 
-    private static List<UserRepresentation> nonEmptyUserRepresentationList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
-    }
-
-    private static List<RequestRepresentation> nonEmptyRequestList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
-    }
-
     @Test
     public void createDraft() throws Exception {
         long databaseSizeBeforeCreate = requestRepository
-                .findAllByRequesterAndStatus(mockRequesterUuid, RequestStatus.Draft, null).getTotalElements();
+            .findAllByRequesterAndStatus(mockRequesterUuid, RequestStatus.Draft, null).getTotalElements();
 
         RequestRepresentation request = newDraft(requester);
 
         Assert.assertNotNull(request.getUuid());
 
         long databaseSizeAfterCreate = requestRepository
-                .findAllByRequesterAndStatus(mockRequesterUuid, RequestStatus.Draft, null).getTotalElements();
+            .findAllByRequesterAndStatus(mockRequesterUuid, RequestStatus.Draft, null).getTotalElements();
         Assert.assertEquals(databaseSizeBeforeCreate + 1, databaseSizeAfterCreate);
     }
 
@@ -529,21 +545,21 @@ public class RequestResourceIntTest {
                 REQUESTS_ROUTE + "/drafts",
                 null,
                 Collections.emptyMap())
-            .with(token(requester))
-            .accept(MediaType.APPLICATION_JSON)
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(requestUuids.size(), requests.size());
-            Set<UUID> resultUuids = new TreeSet<>();
-            for(RequestRepresentation req: requests) {
-                resultUuids.add(req.getUuid());
-            }
-            Assert.assertEquals(requestUuids, resultUuids);
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(requestUuids.size(), requests.size());
+                Set<UUID> resultUuids = new TreeSet<>();
+                for (RequestRepresentation req : requests) {
+                    resultUuids.add(req.getUuid());
+                }
+                Assert.assertEquals(requestUuids, resultUuids);
+            });
     }
 
     @Test
@@ -558,10 +574,10 @@ public class RequestResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+            });
 
         Request req = requestRepository.findOneByUuid(request.getUuid());
         Assert.assertNull(req);
@@ -588,18 +604,18 @@ public class RequestResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                Request reqObj = requestRepository.findOneByUuid(req.getUuid());
-                Assert.assertEquals(1, reqObj.getHistoricEvents().size());
-            }
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(1, requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                    Request reqObj = requestRepository.findOneByUuid(req.getUuid());
+                    Assert.assertEquals(1, reqObj.getHistoricEvents().size());
+                }
+            });
     }
 
     @Test
@@ -616,16 +632,16 @@ public class RequestResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(3, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-            }
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(3, requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                }
+            });
     }
 
     @Test
@@ -642,16 +658,16 @@ public class RequestResourceIntTest {
                 .with(token(coordinator1))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-            }
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(1, requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                }
+            });
 
         // Fetch requests with status 'Review' for coordinator 2: should return 3 requests
         mockMvc.perform(
@@ -662,16 +678,16 @@ public class RequestResourceIntTest {
                 .with(token(coordinator2))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(3, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-            }
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(3, requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                }
+            });
 
         // Fetch requests with status 'Review' for coordinator 2, organisation 2: should return 2 requests
         mockMvc.perform(
@@ -682,16 +698,16 @@ public class RequestResourceIntTest {
                 .with(token(coordinator2))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(2, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-            }
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(2, requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                }
+            });
     }
 
     @Test
@@ -716,18 +732,18 @@ public class RequestResourceIntTest {
                 .with(token(reviewer1))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(requestUuid, req.getUuid());
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                Assert.assertEquals(RequestReviewStatus.Review, req.getRequestReview().getStatus());
-            }
-        });
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(1, requests.size());
+                for (RequestRepresentation req : requests) {
+                    Assert.assertEquals(requestUuid, req.getUuid());
+                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                    Assert.assertEquals(RequestReviewStatus.Review, req.getRequestReview().getStatus());
+                }
+            });
     }
 
     @Test
@@ -757,10 +773,10 @@ public class RequestResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isBadRequest())
-        .andDo(result -> {
-            log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-        });
+            .andExpect(status().isBadRequest())
+            .andDo(result -> {
+                log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+            });
     }
 
     @Test

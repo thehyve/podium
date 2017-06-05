@@ -19,7 +19,8 @@ export class PdmHealthModalComponent {
 
     currentHealth: any;
 
-    constructor(private healthService: PdmHealthService, public activeModal: NgbActiveModal) {}
+    constructor(private healthService: PdmHealthService, public activeModal: NgbActiveModal) {
+    }
 
     baseName(name) {
         return this.healthService.getBaseName(name);

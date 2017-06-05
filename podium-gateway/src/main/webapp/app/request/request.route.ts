@@ -42,5 +42,5 @@ export const requestRoute: Routes = [
             authorities: ['ROLE_RESEARCHER', 'ROLE_ORGANISATION_COORDINATOR', 'ROLE_REVIEWER'],
             breadcrumb: 'requests'
         },
-        canActivate: [ UserRouteAccessService ]
-}];
+        canActivate: [UserRouteAccessService]
+    }];

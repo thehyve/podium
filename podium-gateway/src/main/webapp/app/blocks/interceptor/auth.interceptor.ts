@@ -16,8 +16,7 @@ export class AuthInterceptor extends HttpInterceptor {
 
     constructor(
         private localStorage: LocalStorageService,
-        private sessionStorage: SessionStorageService
-    ) {
+        private sessionStorage: SessionStorageService) {
         super();
     }
 

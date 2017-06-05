@@ -24,8 +24,7 @@ export class PdmHealthCheckComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
-        private healthService: PdmHealthService
-    ) {
+        private healthService: PdmHealthService) {
         this.jhiLanguageService.setLocations(['health']);
 
     }
@@ -56,7 +55,7 @@ export class PdmHealthCheckComponent implements OnInit {
     }
 
     showHealth(health: any) {
-        const modalRef  = this.modalService.open(PdmHealthModalComponent);
+        const modalRef = this.modalService.open(PdmHealthModalComponent);
         modalRef.componentInstance.currentHealth = health;
         modalRef.result.then((result) => {
             console.log(`Closed with: ${result}`);

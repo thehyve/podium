@@ -24,13 +24,13 @@ import java.util.Date;
  */
 public class RateLimitingFilter extends ZuulFilter {
 
-    private final Logger log = LoggerFactory.getLogger(RateLimitingFilter.class);
-
     private static final String TIME_PERIOD = "hour";
 
-    private long rateLimit = 100000L;
+    private final Logger log = LoggerFactory.getLogger(RateLimitingFilter.class);
 
     private final RateLimitingRepository rateLimitingRepository;
+
+    private long rateLimit = 100000L;
 
     public RateLimitingFilter(RateLimitingRepository rateLimitingRepository, PodiumProperties podiumProperties) {
         this.rateLimitingRepository = rateLimitingRepository;
@@ -62,7 +62,7 @@ public class RateLimitingFilter extends ZuulFilter {
         // check current rate limit
         // default limit per user is 100,000 API calls per hour
         Long count = rateLimitingRepository.getCounter(id, TIME_PERIOD, date);
-        log.debug("Rate limiting for user {} at {} - {}",  id, date, count);
+        log.debug("Rate limiting for user {} at {} - {}", id, date, count);
         if (count > rateLimit) {
             apiLimitExceeded();
         } else {
@@ -89,7 +89,7 @@ public class RateLimitingFilter extends ZuulFilter {
         if (login != null) {
             return login;
         } else {
-          return httpServletRequest.getRemoteAddr();
+            return httpServletRequest.getRemoteAddr();
         }
     }
 

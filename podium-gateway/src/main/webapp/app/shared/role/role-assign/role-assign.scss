@@ -10,17 +10,17 @@
 
 $warn-color: rgb(255, 87, 34) !important;
 $success-color: rgb(139, 175, 74) !important;
-$default-color: rgb(33, 150, 243)!important;
+$default-color: rgb(33, 150, 243) !important;
 
 @mixin transition($transition...) {
-    -moz-transition:    $transition;
-    -o-transition:      $transition;
+    -moz-transition: $transition;
+    -o-transition: $transition;
     -webkit-transition: $transition;
-    transition:         $transition;
+    transition: $transition;
 }
 
 .user-select-input {
-   font-size: 1rem!important;
+    font-size: 1rem !important;
 }
 
 .role-actions {

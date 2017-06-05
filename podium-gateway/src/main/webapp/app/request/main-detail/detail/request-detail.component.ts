@@ -36,8 +36,7 @@ export class RequestDetailComponent {
         private requestService: RequestService,
         private requestAccessService: RequestAccessService,
         private requestFormService: RequestFormService,
-        private modalService: NgbModal
-    ) {
+        private modalService: NgbModal) {
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
 
@@ -108,7 +107,7 @@ export class RequestDetailComponent {
     }
 
     confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
-        let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
         modalRef.result.then(result => {

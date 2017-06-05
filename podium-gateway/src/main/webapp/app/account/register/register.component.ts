@@ -31,15 +31,15 @@ export class RegisterComponent implements OnInit {
     successMessage: Message;
     modalRef: NgbModalRef;
 
-    constructor(private languageService: JhiLanguageService,
-                private loginModalService: LoginModalService,
-                private messageService: MessageService,
-                private registerService: Register,
-                private elementRef: ElementRef,
-                private renderer: Renderer,
-                private translate: TranslateService,
-                private router: Router
-    ) {
+    constructor(
+        private languageService: JhiLanguageService,
+        private loginModalService: LoginModalService,
+        private messageService: MessageService,
+        private registerService: Register,
+        private elementRef: ElementRef,
+        private renderer: Renderer,
+        private translate: TranslateService,
+        private router: Router) {
         this.languageService.setLocations(['register']);
     }
 

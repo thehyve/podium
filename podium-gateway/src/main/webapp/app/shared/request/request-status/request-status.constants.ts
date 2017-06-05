@@ -30,7 +30,7 @@ const requestStatusesOpts: { [status: string]: any; } = {
         name: 'Delivery',
         order: 5
     },
-    'Return' : {
+    'Return': {
         name: 'Return',
         order: 6
     }
@@ -60,7 +60,7 @@ function convertNamesToRequestStatuses(names: { [status: string]: any; }): Array
     let result: Array<RequestStatus> = [];
     for (const status in names) {
         if (names.hasOwnProperty(status)) {
-            result.push({status: status, name: names[status].name, order: names[status].order});
+            result.push({ status: status, name: names[status].name, order: names[status].order });
         }
     }
     return result;
@@ -77,20 +77,20 @@ function convertToRequestStatusMap(requestStatuses: ReadonlyArray<RequestStatus>
 }
 
 export enum RequestStatusOptions {
-    Draft       = <any>'Draft',
-    Review      = <any>'Review',
-    Approved    = <any>'Approved',
-    Delivery    = <any>'Delivery',
-    Closed      = <any>'Closed',
-    None        = <any>'None',
+    Draft = <any>'Draft',
+    Review = <any>'Review',
+    Approved = <any>'Approved',
+    Delivery = <any>'Delivery',
+    Closed = <any>'Closed',
+    None = <any>'None',
 }
 
 export enum RequestReviewStatusOptions {
-    Revision    = <any>'Revision',
-    Validation  = <any>'Validation',
-    Review      = <any>'Review',
-    Closed      = <any>'Closed',
-    None        = <any>'None'
+    Revision = <any>'Revision',
+    Validation = <any>'Validation',
+    Review = <any>'Review',
+    Closed = <any>'Closed',
+    None = <any>'None'
 }
 
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);

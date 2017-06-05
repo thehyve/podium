@@ -60,9 +60,9 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class RequestResource {
 
-    private final Logger log = LoggerFactory.getLogger(RequestResource.class);
-
     private static final String ENTITY_NAME = "request";
+
+    private final Logger log = LoggerFactory.getLogger(RequestResource.class);
 
     @Autowired
     private RequestService requestService;
@@ -74,8 +74,8 @@ public class RequestResource {
      * Fetch drafts for the current user
      *
      * @param pageable the pagination information
-     * @throws URISyntaxException if the Location URI syntax is incorrect
      * @return A transformed list of RequestDTOs
+     * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @GetMapping("/requests/drafts")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
@@ -91,8 +91,8 @@ public class RequestResource {
     /**
      * Create a new request draft
      *
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @return The requestRepresentation of the initialized request
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      */
     @PostMapping("/requests/drafts")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
@@ -111,9 +111,9 @@ public class RequestResource {
      * Fetch the request draft
      *
      * @param uuid of the request draft
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request
      */
     @GetMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
@@ -129,9 +129,9 @@ public class RequestResource {
      * Update a request draft
      *
      * @param request the request to be updated
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request.
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      */
     @PutMapping("/requests/drafts")
     @SecuredByRequestOwner
@@ -165,9 +165,9 @@ public class RequestResource {
      * Submit the request draft
      *
      * @param uuid of the request draft to be saved
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      * @return The list of requestDTOs generated
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/drafts/{uuid}/submit")
     @SecuredByRequestOwner
@@ -184,8 +184,8 @@ public class RequestResource {
      * GET  /requests/requester : get all the requests for which the current user is the requester.
      *
      * @param pageable the pagination information
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/requests/requester")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
@@ -224,9 +224,9 @@ public class RequestResource {
      * Update a request
      *
      * @param request the request to be updated
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request.
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      */
     @PutMapping("/requests")
     @SecuredByRequestOwner
@@ -246,7 +246,7 @@ public class RequestResource {
      * @param uuid of the request to be saved
      * @return the updated request representation
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed   when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/submit")
     @SecuredByRequestOwner
@@ -265,8 +265,8 @@ public class RequestResource {
      * user is a reviewer.
      *
      * @param pageable the pagination information
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/requests/reviewer")
     @SecuredByAuthority(AuthorityConstants.REVIEWER)
@@ -287,8 +287,8 @@ public class RequestResource {
      *
      * @param status the status to filter on
      * @param pageable the pagination information
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/requests/status/{status}/coordinator")
     @SecuredByAuthority(AuthorityConstants.ORGANISATION_COORDINATOR)
@@ -309,8 +309,8 @@ public class RequestResource {
      *
      * @param uuid the uuid of the organisation for which to fetch the requests
      * @param pageable the pagination information
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/requests/organisation/{uuid}/reviewer")
     @SecuredByOrganisation(authorities = AuthorityConstants.REVIEWER)
@@ -333,8 +333,8 @@ public class RequestResource {
      * @param status the status to filter on
      * @param uuid the uuid of the organisation for which to fetch the requests
      * @param pageable the pagination information
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      * @return the ResponseEntity with status 200 (OK) and the list of requests in body
+     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/requests/status/{status}/organisation/{uuid}/coordinator")
     @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_COORDINATOR)
@@ -350,7 +350,7 @@ public class RequestResource {
         Page<RequestRepresentation> page = requestService.findAllForCoordinatorByOrganisationInStatus(
             user, status, uuid, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
-            "/api/requests/status/" + status.toString() + "/organisation/" + uuid.toString()+ "/coordinator");
+            "/api/requests/status/" + status.toString() + "/organisation/" + uuid.toString() + "/coordinator");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -358,8 +358,8 @@ public class RequestResource {
      * GET /requests/:uuid : Fetch the request
      *
      * @param uuid of the request
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @return The list of requestDTOs
+     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      */
     @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
     @SecuredByRequestOwner
@@ -395,7 +395,6 @@ public class RequestResource {
      *
      * @param uuid the uuid of the request to validate
      * @return the ResponseEntity with the validated request representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/validate")
@@ -415,7 +414,6 @@ public class RequestResource {
      * @param uuid the uuid of the request to reject
      * @param message the podium event message representation
      * @return the ResponseEntity with the rejected request representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @PostMapping("/requests/{uuid}/reject")
@@ -435,7 +433,6 @@ public class RequestResource {
      *
      * @param uuid the uuid of the request to approve
      * @return the ResponseEntity with the approved request representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/approve")
@@ -455,7 +452,6 @@ public class RequestResource {
      * @param uuid the uuid of the request to request revision for
      * @param message the podium event message representation
      * @return the ResponseEntity with the updated request representation
-     *
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @PostMapping("/requests/{uuid}/requestRevision")

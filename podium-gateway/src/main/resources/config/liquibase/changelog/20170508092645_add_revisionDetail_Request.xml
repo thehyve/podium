@@ -10,8 +10,8 @@
   -->
 
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <!--
@@ -20,7 +20,7 @@
     <changeSet id="20170508092645-1" author="berndvdveen">
         <addColumn tableName="request">
             <column name="revision_detail" type="bigint">
-                <constraints unique="true" nullable="true" />
+                <constraints unique="true" nullable="true"/>
             </column>
         </addColumn>
     </changeSet>

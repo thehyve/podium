@@ -39,4 +39,5 @@ let UPLOAD_STATES = [
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumUploadModule {}
+export class PodiumUploadModule {
+}

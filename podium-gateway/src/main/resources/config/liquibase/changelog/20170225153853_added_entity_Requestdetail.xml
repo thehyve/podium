@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <property name="now" value="now()" dbms="mysql,h2"/>
@@ -50,7 +50,7 @@
             </column>
 
             <column name="principal_investigator" type="bigint">
-                <constraints unique="true" nullable="true" />
+                <constraints unique="true" nullable="true"/>
             </column>
         </createTable>
 

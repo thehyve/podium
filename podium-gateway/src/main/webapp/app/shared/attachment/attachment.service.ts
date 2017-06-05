@@ -18,7 +18,8 @@ export class AttachmentService {
     private resourceUrl = 'api/attachments';
     private resourceSearchUrl = 'api/_search/attachments';
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) {
+    }
 
     findAttachmentsForRequest(requestUUID: string): Observable<Attachment[]> {
         return this.http.get(`${this.resourceUrl}/request/${requestUUID}`).map((res: Response) => {

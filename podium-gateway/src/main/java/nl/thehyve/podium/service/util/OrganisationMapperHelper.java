@@ -65,7 +65,8 @@ public class OrganisationMapperHelper {
         try {
             OrganisationDTO remoteOrganisation = organisationClientService.findOrganisationByUuid(uuid);
             organisationRepresentation.setName(remoteOrganisation.getName());
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         return organisationRepresentation;
     }

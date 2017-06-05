@@ -44,7 +44,7 @@ describe('Component Tests', () => {
                     },
                     {
                         provide: ActivatedRoute,
-                        useValue: new MockActivatedRoute({'key': 'ABC123'})
+                        useValue: new MockActivatedRoute({ 'key': 'ABC123' })
                     },
                     {
                         provide: Router,

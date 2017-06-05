@@ -10,8 +10,8 @@
   -->
 
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <property name="now" value="now()" dbms="mysql,h2"/>
@@ -33,7 +33,7 @@
             </column>
 
             <column name="request_detail" type="bigint">
-                <constraints unique="true" nullable="true" />
+                <constraints unique="true" nullable="true"/>
             </column>
 
             <column name="start_date" type="timestamp" defaultValueDate="${now}">
@@ -42,7 +42,7 @@
 
             <column name="end_date" type="timestamp"/>
 
-            <column name="initiated_by" type="uuid" />
+            <column name="initiated_by" type="uuid"/>
         </createTable>
 
         <createTable tableName="review_round_review_feedback">
@@ -69,7 +69,7 @@
                                  baseTableName="review_round"
                                  constraintName="fk_review_round_request_detail"
                                  referencedColumnNames="id"
-                                 referencedTableName="request_detail" />
+                                 referencedTableName="request_detail"/>
 
     </changeSet>
     <changeSet id="20170515094712-2" author="berndvdveen">
@@ -81,7 +81,7 @@
             </column>
 
             <column name="reviewer" type="uuid">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="advice" type="varchar(255)">

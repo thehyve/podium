@@ -68,10 +68,10 @@ public class ReviewRound implements Serializable {
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderColumn(name="review_feedback_order")
+    @OrderColumn(name = "review_feedback_order")
     @JoinTable(name = "review_round_review_feedback",
-        joinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"),
-        inverseJoinColumns = @JoinColumn(name="review_feedback_id", referencedColumnName="review_feedback_id"))
+        joinColumns = @JoinColumn(name = "review_round_id", referencedColumnName = "review_round_id"),
+        inverseJoinColumns = @JoinColumn(name = "review_feedback_id", referencedColumnName = "review_feedback_id"))
     private List<ReviewFeedback> reviewFeedback;
 
     @CreatedDate
@@ -84,7 +84,9 @@ public class ReviewRound implements Serializable {
     @Column(name = "initiated_by")
     private UUID initiatedBy;
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;

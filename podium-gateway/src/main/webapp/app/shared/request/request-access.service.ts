@@ -20,8 +20,7 @@ export class RequestAccessService {
     private currentUser: User;
 
     constructor(
-        private principal: Principal
-    ) {
+        private principal: Principal) {
         this.loadCurrentUser(false);
     }
 

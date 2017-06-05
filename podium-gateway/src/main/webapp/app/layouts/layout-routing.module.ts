@@ -25,7 +25,7 @@ let LAYOUT_ROUTES = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(LAYOUT_ROUTES, {useHash: true})
+        RouterModule.forRoot(LAYOUT_ROUTES, { useHash: true })
     ],
     exports: [
         RouterModule

@@ -10,7 +10,8 @@
 
 <form name="deleteDraftForm" ng-submit="confirmDelete()">
     <div class="modal-header">
-        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
+        <button aria-label="Close" data-dismiss="modal" class="close" type="button"
+                (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" jhiTranslate="request.delete.dialog.title">Confirm deletion of request draft</h4>
     </div>
     <div class="modal-body">
@@ -20,7 +21,8 @@
         </p>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default float-xs-left" data-dismiss="modal" (click)="activeModal.dismiss('cancelled')">
+        <button type="button" class="btn btn-default float-xs-left" data-dismiss="modal"
+                (click)="activeModal.dismiss('cancelled')">
             <i class="material-icons">keyboard_backspace</i>
             <span jhiTranslate="request.delete.dialog.cancel">Cancel</span>
         </button>

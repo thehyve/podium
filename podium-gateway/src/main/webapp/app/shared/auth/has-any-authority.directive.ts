@@ -19,11 +19,11 @@ export class HasAnyAuthorityDirective {
     constructor(
         private principal: Principal,
         private templateRef: TemplateRef<any>,
-        private viewContainerRef: ViewContainerRef
-    ) {}
+        private viewContainerRef: ViewContainerRef) {
+    }
 
     @Input() set pdmHasAnyAuthority(value: string|string[]) {
-        this.authorities = typeof value === 'string' ? [ <string> value ] : <string[]> value;
+        this.authorities = typeof value === 'string' ? [<string> value] : <string[]> value;
         this.updateView();
         // Get notified each time authentication state changes.
         this.principal.getAuthenticationState().subscribe(identity => this.updateView());

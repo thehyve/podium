@@ -82,8 +82,8 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     @ElementCollection(targetClass = java.util.UUID.class)
     @CollectionTable(
-        name="request_organisations",
-        joinColumns=@JoinColumn(name="request_id")
+        name = "request_organisations",
+        joinColumns = @JoinColumn(name = "request_id")
     )
     @Column(name = "organisation_uuid")
     private Set<UUID> organisations = new HashSet<>();
@@ -104,10 +104,10 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderColumn(name="delivery_process_order")
+    @OrderColumn(name = "delivery_process_order")
     @JoinTable(name = "request_delivery_processes",
-        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
-        inverseJoinColumns = @JoinColumn(name="delivery_process_id", referencedColumnName="id"))
+        joinColumns = @JoinColumn(name = "request_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "delivery_process_id", referencedColumnName = "id"))
     private List<DeliveryProcess> deliveryProcesses;
 
     @Column(nullable = false)
@@ -118,28 +118,28 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "request_attachments",
-               joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="attachment_id", referencedColumnName="id"))
+        joinColumns = @JoinColumn(name = "request_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "attachment_id", referencedColumnName = "id"))
     private Set<Attachment> attachments = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderColumn(name="event_order")
+    @OrderColumn(name = "event_order")
     @JoinTable(name = "request_historic_events",
-        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
-        inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
+        joinColumns = @JoinColumn(name = "request_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "event_id"))
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderColumn(name="review_round_order")
+    @OrderColumn(name = "review_round_order")
     @JoinTable(name = "request_review_rounds",
-        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
-        inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
+        joinColumns = @JoinColumn(name = "request_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "review_round_id", referencedColumnName = "review_round_id"))
     private List<ReviewRound> reviewRounds;
 
     public Long getId() {
@@ -154,11 +154,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return uuid;
     }
 
-    @Override
-    public UUID getRequestUuid() {
-        return uuid;
-    }
-
     /**
      * Only the database can return the UUID from the stored entity
      * Pre-persist will add a {@link UUID} to the entity
@@ -168,6 +163,11 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
      */
     public void setUuid(UUID uuid) {
         // pass
+    }
+
+    @Override
+    public UUID getRequestUuid() {
+        return uuid;
     }
 
     @PrePersist
@@ -181,17 +181,21 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return status;
     }
 
+    public void setStatus(RequestStatus status) {
+        this.status = status;
+    }
+
     public Request status(RequestStatus status) {
         this.status = status;
         return this;
     }
 
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
     public Set<UUID> getOrganisations() {
         return organisations;
+    }
+
+    public void setOrganisations(Set<UUID> organisations) {
+        this.organisations = organisations;
     }
 
     public Request organisations(Set<UUID> organisations) {
@@ -209,13 +213,13 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return this;
     }
 
-    public void setOrganisations(Set<UUID> organisations) {
-        this.organisations = organisations;
+    public RequestDetail getRevisionDetail() {
+        return revisionDetail;
     }
 
-    public RequestDetail getRevisionDetail() { return revisionDetail; }
-
-    public void setRevisionDetail(RequestDetail revisionDetail) { this.revisionDetail = revisionDetail; }
+    public void setRevisionDetail(RequestDetail revisionDetail) {
+        this.revisionDetail = revisionDetail;
+    }
 
     public Request revisionDetail(RequestDetail revisionDetail) {
         this.revisionDetail = revisionDetail;
@@ -226,13 +230,13 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return requestDetail;
     }
 
+    public void setRequestDetail(RequestDetail requestDetail) {
+        this.requestDetail = requestDetail;
+    }
+
     public Request requestDetail(RequestDetail requestDetail) {
         this.requestDetail = requestDetail;
         return this;
-    }
-
-    public void setRequestDetail(RequestDetail requestDetail) {
-        this.requestDetail = requestDetail;
     }
 
     public RequestReviewProcess getRequestReviewProcess() {
@@ -247,17 +251,21 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return deliveryProcesses;
     }
 
+    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
+        this.deliveryProcesses = deliveryProcesses;
+    }
+
     public Request addDeliveryProcess(DeliveryProcess deliveryProcess) {
         this.deliveryProcesses.add(deliveryProcess);
         return this;
     }
 
-    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
-        this.deliveryProcesses = deliveryProcesses;
-    }
-
     public Set<Attachment> getAttachments() {
         return attachments;
+    }
+
+    public void setAttachments(Set<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
     public Request attachments(Set<Attachment> attachments) {
@@ -275,10 +283,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return this;
     }
 
-    public void setAttachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
     public UUID getRequester() {
         return requester;
     }
@@ -291,13 +295,13 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return historicEvents;
     }
 
+    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
+        this.historicEvents = historicEvents;
+    }
+
     public Request addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
-    }
-
-    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
-        this.historicEvents = historicEvents;
     }
 
     public List<ReviewRound> getReviewRounds() {

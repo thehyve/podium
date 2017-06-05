@@ -6,9 +6,9 @@
   ~ See the file LICENSE in the root of this repository.
   -->
 
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:flowable="http://flowable.org/bpmn"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              typeLanguage="http://www.w3.org/2001/XMLSchema"
              expressionLanguage="http://www.w3.org/1999/XPath"
              targetNamespace="http://thehyve.nl/podium">
@@ -29,13 +29,12 @@
         ]]></documentation>
 
 
-
         <!-- Start -->
         <startEvent id="start" name="Start" flowable:initiator="initiator">
             <documentation>Start the reviewing process for a request.</documentation>
         </startEvent>
 
-        <sequenceFlow id="from_start_to_init" sourceRef="start" targetRef="init" />
+        <sequenceFlow id="from_start_to_init" sourceRef="start" targetRef="init"/>
 
         <scriptTask id="init" name="Initialise the reviewing process" scriptFormat="groovy">
             <documentation>Initialise the reviewing process.</documentation>
@@ -46,8 +45,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="from_init_to_status_validation" sourceRef="init" targetRef="status_validation" />
-
+        <sequenceFlow id="from_init_to_status_validation" sourceRef="init" targetRef="status_validation"/>
 
 
         <!-- Validation -->
@@ -58,14 +56,14 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="from_status_validation_to_validation" sourceRef="status_validation" targetRef="validation" />
+        <sequenceFlow id="from_status_validation_to_validation" sourceRef="status_validation" targetRef="validation"/>
 
         <userTask id="validation" name="Validation">
             <documentation>First check by the organisation coordinator.</documentation>
         </userTask>
 
-        <sequenceFlow id="from_validation_to_validation_decision" sourceRef="validation" targetRef="validation_decision" />
-
+        <sequenceFlow id="from_validation_to_validation_decision" sourceRef="validation"
+                      targetRef="validation_decision"/>
 
 
         <!-- Validation decision
@@ -74,7 +72,7 @@
             - 'revision' if !validation_passed && request_revision;
             - 'reject' if !validation_passed && !request_revision.
         -->
-        <exclusiveGateway id="validation_decision" name="Review of revision or reject" />
+        <exclusiveGateway id="validation_decision" name="Review of revision or reject"/>
         <sequenceFlow id="validation_to_review" sourceRef="validation_decision" targetRef="status_review">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${validation_passed == true}
@@ -92,7 +90,6 @@
         </sequenceFlow>
 
 
-
         <!-- Revision -->
         <scriptTask id="status_revision" name="Update status to Revision" scriptFormat="groovy">
             <documentation>Update status to Revision.</documentation>
@@ -101,14 +98,13 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="from_status_revision_to_revision" sourceRef="status_revision" targetRef="revision" />
+        <sequenceFlow id="from_status_revision_to_revision" sourceRef="status_revision" targetRef="revision"/>
 
         <userTask id="revision" name="Revision">
             <documentation>Revision of the request by the requester.</documentation>
         </userTask>
 
-        <sequenceFlow id="from_revision_to_status_validation" sourceRef="revision" targetRef="status_validation" />
-
+        <sequenceFlow id="from_revision_to_status_validation" sourceRef="revision" targetRef="status_validation"/>
 
 
         <!-- Review -->
@@ -119,14 +115,13 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="from_status_review_to_review" sourceRef="status_review" targetRef="review" />
+        <sequenceFlow id="from_status_review_to_review" sourceRef="status_review" targetRef="review"/>
 
         <userTask id="review" name="Review">
             <documentation>Review by the organisation reviewers.</documentation>
         </userTask>
 
-        <sequenceFlow id="from_review_to_review_decision" sourceRef="review" targetRef="review_decision" />
-
+        <sequenceFlow id="from_review_to_review_decision" sourceRef="review" targetRef="review_decision"/>
 
 
         <!-- Review decision
@@ -135,7 +130,7 @@
             - 'revision' if !request_approved && request_revision;
             - 'reject' if !request_approved && !request_revision.
         -->
-        <exclusiveGateway id="review_decision" name="Review decision" />
+        <exclusiveGateway id="review_decision" name="Review decision"/>
         <sequenceFlow id="review_to_approve" sourceRef="review_decision" targetRef="approve">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${request_approved == true}
@@ -153,7 +148,6 @@
         </sequenceFlow>
 
 
-
         <!-- Approve -->
         <scriptTask id="approve" name="Approve the request" scriptFormat="groovy">
             <documentation>Approve the request.</documentation>
@@ -163,8 +157,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="approve_to_end" sourceRef="approve" targetRef="end" />
-
+        <sequenceFlow id="approve_to_end" sourceRef="approve" targetRef="end"/>
 
 
         <!-- Reject -->
@@ -176,8 +169,7 @@
             </script>
         </scriptTask>
 
-        <sequenceFlow id="reject_to_end" sourceRef="reject" targetRef="end" />
-
+        <sequenceFlow id="reject_to_end" sourceRef="reject" targetRef="end"/>
 
 
         <!-- End -->

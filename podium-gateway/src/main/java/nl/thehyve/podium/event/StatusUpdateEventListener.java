@@ -19,6 +19,7 @@ public class StatusUpdateEventListener {
     private Logger log = LoggerFactory.getLogger(StatusUpdateEventListener.class);
 
     private AuditService auditService;
+
     private NotificationService notificationService;
 
     @Autowired

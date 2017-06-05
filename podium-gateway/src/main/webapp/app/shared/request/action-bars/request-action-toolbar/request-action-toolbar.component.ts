@@ -51,8 +51,7 @@ export class RequestActionToolbarComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
-        private requestService: RequestService
-    ) {
+        private requestService: RequestService) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {

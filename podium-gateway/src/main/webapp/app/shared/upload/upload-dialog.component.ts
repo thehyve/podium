@@ -34,28 +34,27 @@ export class UploadDialogComponent implements OnInit {
         private jhiLanguageService: JhiLanguageService,
         private alertService: AlertService,
         private eventManager: EventManager,
-        private router: Router
-    ) {
+        private router: Router) {
     }
 
     ngOnInit() {
     }
 
-    clear () {
+    clear() {
         /**
          * Remove pending files
          */
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true });
     }
 
-    confirm () {
+    confirm() {
         this.eventManager.broadcast({
             name: 'uploadListModification',
             content: 'File list updated'
         });
         this.activeModal.dismiss(true);
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true });
     }
 
     public fileOverDropzone(e: any): void {
@@ -73,10 +72,10 @@ export class UploadPopupComponent implements OnInit, OnDestroy {
     modalRef: NgbModalRef;
     routeSub: any;
 
-    constructor (
+    constructor(
         private route: ActivatedRoute,
-        private uploadPopupService: UploadPopupService
-    ) {}
+        private uploadPopupService: UploadPopupService) {
+    }
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {

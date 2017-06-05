@@ -39,7 +39,7 @@ describe('Component Tests', () => {
                     },
                     RequestService,
                     {
-                        provide: Router,  useClass: MockRouter
+                        provide: Router, useClass: MockRouter
                     },
                     ParseLinks,
                     MockBackend,
@@ -62,7 +62,7 @@ describe('Component Tests', () => {
                                 'pagingParams': {},
                             }]),
                             snapshot: {
-                                url: [{path: '/foo'}],
+                                url: [{ path: '/foo' }],
                                 params: {},
                             }
                         },

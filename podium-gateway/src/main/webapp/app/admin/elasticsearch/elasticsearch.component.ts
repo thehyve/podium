@@ -21,13 +21,12 @@ export class PdmElasticsearchComponent {
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private modalService: NgbModal
-    ) {
+        private modalService: NgbModal) {
         this.jhiLanguageService.setLocations(['elasticsearch']);
     }
 
     confirmReindexing() {
-        const modalRef  = this.modalService.open(PdmElasticsearchModalComponent);
+        const modalRef = this.modalService.open(PdmElasticsearchModalComponent);
         modalRef.result.then((result) => {
             this.processingIndex = result;
         }, (reason) => {

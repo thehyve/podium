@@ -11,15 +11,15 @@ import { Route } from '@angular/router';
 import { NavbarComponent } from './layouts';
 /* import { AuthService } from './shared';
 
-@Injectable()
-export class AuthorizeResolve implements Resolve<any> {
+ @Injectable()
+ export class AuthorizeResolve implements Resolve<any> {
 
-  constructor(private authService: AuthService) {}
+ constructor(private authService: AuthService) {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this.authService.authorize();
-  }
-} */
+ resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+ return this.authService.authorize();
+ }
+ } */
 
 export const navbarRoute: Route = {
     path: '',
@@ -28,4 +28,4 @@ export const navbarRoute: Route = {
     //   'authorize': AuthorizeResolve
     // },
     outlet: 'navbar'
-  };
+};

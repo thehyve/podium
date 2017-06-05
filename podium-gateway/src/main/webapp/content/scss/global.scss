@@ -25,7 +25,6 @@ body, h1, h2, h3, h4 {
     font-weight: 300;
 }
 
-
 /* ==========================================================================
 Browser Upgrade Prompt
 ========================================================================== */
@@ -41,12 +40,12 @@ Generic styles
 ========================================================================== */
 
 /* Error highlight on input fields */
-.ng-valid[required], .ng-valid.required  {
-  border-left: 5px solid green;
+.ng-valid[required], .ng-valid.required {
+    border-left: 5px solid green;
 }
 
-.ng-invalid:not(form)  {
-  border-left: 5px solid red;
+.ng-invalid:not(form) {
+    border-left: 5px solid red;
 }
 
 /* other generic styles */
@@ -76,19 +75,48 @@ Generic styles
 
 .break {
     white-space: normal;
-    word-break:break-all;
+    word-break: break-all;
 }
 
-.voffset  { margin-top: 2px; }
-.voffset1 { margin-top: 5px; }
-.voffset2 { margin-top: 10px; }
-.voffset3 { margin-top: 15px; }
-.voffset4 { margin-top: 30px; }
-.voffset5 { margin-top: 40px; }
-.voffset6 { margin-top: 60px; }
-.voffset7 { margin-top: 80px; }
-.voffset8 { margin-top: 100px; }
-.voffset9 { margin-top: 150px; }
+.voffset {
+    margin-top: 2px;
+}
+
+.voffset1 {
+    margin-top: 5px;
+}
+
+.voffset2 {
+    margin-top: 10px;
+}
+
+.voffset3 {
+    margin-top: 15px;
+}
+
+.voffset4 {
+    margin-top: 30px;
+}
+
+.voffset5 {
+    margin-top: 40px;
+}
+
+.voffset6 {
+    margin-top: 60px;
+}
+
+.voffset7 {
+    margin-top: 80px;
+}
+
+.voffset8 {
+    margin-top: 100px;
+}
+
+.voffset9 {
+    margin-top: 150px;
+}
 
 .readonly {
     background-color: #eee;
@@ -106,7 +134,7 @@ table td[class*=col-], table th[class*=col-] {
 make sure browsers use the pointer cursor for anchors, even with no href
 ========================================================================== */
 a:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .hand {
@@ -119,7 +147,7 @@ Custom alerts for notification
 .alerts {
     .alert {
         text-overflow: ellipsis;
-        pre{
+        pre {
             background: none;
             border: none;
             font: inherit;
@@ -172,6 +200,7 @@ entity tables helpers
         }
     }
 }
+
 @include no-padding("left");
 @include no-padding("right");
 @include no-padding("top");
@@ -180,17 +209,19 @@ entity tables helpers
 
 /* bootstrap 3 input-group 100% width
    http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
-.width-min { width: 1% !important; }
+.width-min {
+    width: 1% !important;
+}
 
 /* Makes toolbar not wrap on smaller screens
    http://www.sketchingwithcss.com/samplechapter/cheatsheet.html#right */
 .flex-btn-group-container {
-   display: -webkit-flex;
-   display: flex;
-   -webkit-flex-direction: row;
-   flex-direction: row;
-   -webkit-justify-content: flex-end;
-   justify-content: flex-end;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 .jh-table > {
@@ -241,15 +272,14 @@ ui bootstrap tweaks
 }
 
 .datetime-picker-dropdown > li.date-picker-menu div > table .btn-default,
-.uib-datepicker-popup  > li > div.uib-datepicker > table .btn-default {
+.uib-datepicker-popup > li > div.uib-datepicker > table .btn-default {
     border: 0;
 }
 
 .datetime-picker-dropdown > li.date-picker-menu div > table:focus,
-.uib-datepicker-popup  > li > div.uib-datepicker > table:focus {
+.uib-datepicker-popup > li > div.uib-datepicker > table:focus {
     outline: none;
 }
-
 
 /* ==========================================================================
 Material design icons - self hosting
@@ -271,7 +301,7 @@ http://google.github.io/material-design-icons/
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;  /* Preferred icon size */
+    font-size: 24px; /* Preferred icon size */
     display: inline-flex;
     line-height: 1;
     text-transform: none;
@@ -340,14 +370,14 @@ form {
     }
 
     input, textarea {
-        font-size: 14px!important;
+        font-size: 14px !important;
     }
 
     input[type="checkbox"] {
         -webkit-appearance: none;
         background-color: #fafafa;
         border: 1px solid #cacece;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
         padding: 9px;
         border-radius: 3px;
         display: inline-block;
@@ -355,18 +385,18 @@ form {
         margin: 2px 15px 0 0;
         vertical-align: top;
 
-        +label {
+        + label {
             font-weight: 600;
         }
 
         &:active, &:checked:active {
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1)
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px 1px 3px rgba(0, 0, 0, 0.1)
         }
 
         &:checked {
             background-color: #e9ecee;
             border: 1px solid #adb8c0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
             color: #99a1a7;
         }
 
@@ -399,8 +429,8 @@ typeahead-container {
     width: 300px !important;
 
     ul.dropdown-menu {
-        padding: 10px!important;
-        font-size: 14px!important;
+        padding: 10px !important;
+        font-size: 14px !important;
     }
 }
 

@@ -37,18 +37,18 @@
                     <label class="form-control-label" for="login" jhiTranslate="global.form.username">Username</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.login" id="login" name="login"
                            #login="ngModel" placeholder="{{'global.form.username.placeholder' | translate}}"
-                            required minlength="1" maxlength="50" pattern="^[_'.@A-Za-z0-9-]*$">
+                           required minlength="1" maxlength="50" pattern="^[_'.@A-Za-z0-9-]*$">
                     <div *ngIf="login.dirty && login.invalid">
                         <small class="form-text text-danger" *ngIf="login.errors.required"
                                jhiTranslate="register.messages.validate.login.required">
                             Your username is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="login.errors.minlength"
-                                jhiTranslate="register.messages.validate.login.minlength">
+                               jhiTranslate="register.messages.validate.login.minlength">
                             Your username is required to be at least 1 character.
                         </small>
                         <small class="form-text text-danger" *ngIf="login.errors.maxlength"
-                                jhiTranslate="register.messages.validate.login.maxlength">
+                               jhiTranslate="register.messages.validate.login.maxlength">
                             Your username cannot be longer than 50 characters.
                         </small>
                         <small class="form-text text-danger" *ngIf="login.errors.pattern"
@@ -60,7 +60,7 @@
 
                 <!--First name-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="firstName" >First name</label>
+                    <label class="form-control-label" for="firstName">First name</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.firstName" id="firstName"
                            #firstName="ngModel" name="firstName" required minlength="1" maxlength="50"
                            placeholder="{{'global.form.firstName.placeholder' | translate}}">
@@ -79,7 +79,7 @@
 
                 <!--Last name-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="lastName" >Last name</label>
+                    <label class="form-control-label" for="lastName">Last name</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.lastName" id="lastName"
                            #lastName="ngModel" name="lastName" required minlength="1" maxlength="50"
                            placeholder="{{'global.form.lastName.placeholder' | translate}}">
@@ -98,13 +98,13 @@
 
                 <!--E-mail-->
                 <div class="form-group">
-                    <label class="form-control-label" for="email" >E-mail</label>
+                    <label class="form-control-label" for="email">E-mail</label>
                     <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                            placeholder="{{'global.form.email.placeholder' | translate}}"
                            [(ngModel)]="registerAccount.email" maxlength="100" required emailValidator>
                     <div *ngIf="email.dirty && email.invalid">
                         <small class="form-text text-danger" *ngIf="email.errors.required"
-                                jhiTranslate="global.messages.validate.email.required">
+                               jhiTranslate="global.messages.validate.email.required">
                             Your e-mail is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="email.errors.emailValidator"
@@ -120,7 +120,7 @@
 
                 <!--Telephone number-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="telephone" >Telephone</label>
+                    <label class="form-control-label" for="telephone">Telephone</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.telephone" id="telephone"
                            #telephone="ngModel" name="telephone" required maxlength="15" pattern="^[0-9]+$"
                            placeholder="{{'global.form.telephone.placeholder' | translate}}">
@@ -139,7 +139,7 @@
 
                 <!--Institute-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="institute" >Institute</label>
+                    <label class="form-control-label" for="institute">Institute</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.institute" id="institute"
                            #institute="ngModel" name="institute" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.institute.placeholder' | translate}}">
@@ -158,7 +158,7 @@
 
                 <!--Department-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="department" >Department</label>
+                    <label class="form-control-label" for="department">Department</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.department" id="department"
                            #department="ngModel" name="department" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.department.placeholder' | translate}}">
@@ -178,7 +178,7 @@
 
                 <!--Function (Job Title)-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="jobTitle" >Function</label>
+                    <label class="form-control-label" for="jobTitle">Function</label>
                     <input type="text" class="form-control" [(ngModel)]="registerAccount.jobTitle" id="jobTitle"
                            #jobTitle="ngModel" name="jobTitle" required minlength="1" maxlength="150"
                            placeholder="{{'global.form.jobTitle.placeholder' | translate}}">
@@ -197,7 +197,7 @@
 
                 <!--Specialism-->
                 <div class="form-group">
-                    <label  class="form-control-label" for="jobTitle" >Specialism</label>
+                    <label class="form-control-label" for="jobTitle">Specialism</label>
                     <podium-specialism [(specialism)]="registerAccount.specialism"></podium-specialism>
                 </div>
 
@@ -209,10 +209,10 @@
                     <label class="form-control-label" for="password">New password</label>
                     <input type="password" class="form-control" id="password" name="password" #password="ngModel"
                            placeholder="{{'global.form.newpassword.placeholder' | translate}}"
-                            [(ngModel)]="registerAccount.password" maxlength=1000 required passwordValidator>
+                           [(ngModel)]="registerAccount.password" maxlength=1000 required passwordValidator>
                     <div *ngIf="password.dirty && password.invalid">
                         <small class="form-text text-danger" *ngIf="password.errors.required"
-                                jhiTranslate="global.messages.validate.newpassword.required">
+                               jhiTranslate="global.messages.validate.newpassword.required">
                             Your password is required.
                         </small>
                         <small class="form-text text-danger" *ngIf="password.errors.passwordValidator">
@@ -220,7 +220,7 @@
                             non-alphanumeric characters.
                         </small>
                         <small class="form-text text-danger" *ngIf="password.errors.maxlength"
-                                jhiTranslate="global.messages.validate.newpassword.maxlength">
+                               jhiTranslate="global.messages.validate.newpassword.maxlength">
                             Your password cannot be longer than 1000 characters.
                         </small>
                     </div>
@@ -232,7 +232,7 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            #confirmPasswordInput="ngModel"
                            placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
-                            [(ngModel)]="confirmPassword" maxlength=1000 required [passwordMatches]="password">
+                           [(ngModel)]="confirmPassword" maxlength=1000 required [passwordMatches]="password">
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
                                jhiTranslate="global.messages.validate.confirmpassword.required">
@@ -246,7 +246,8 @@
                 </div>
 
                 <button type="submit" [disabled]="registerForm.form.invalid" class="btn btn-primary"
-                        jhiTranslate="register.form.button">Register</button>
+                        jhiTranslate="register.form.button">Register
+                </button>
             </form>
             <p></p>
             <div class="alert alert-warning">
