@@ -1,5 +1,6 @@
 package nl.thehyve.podium.event;
 
+import nl.thehyve.podium.common.enumeration.DeliveryStatus;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
@@ -53,6 +54,14 @@ public class StatusUpdateEventListener {
             event.getTargetStatus() == RequestReviewStatus.Validation) {
             // Send revision submitted emails to all organisation coordinators for this request
             notificationService.revisionNotificationToCoordinators(event.getRequestUuid());
+        } else if (event.getSourceStatus() == DeliveryStatus.Preparation &&
+            event.getTargetStatus() == DeliveryStatus.Released) {
+            // Send delivery released email to the requester for this delivery
+            notificationService.deliveryReleasedNotificationToRequester(event.getRequestUuid(), event.getDeliveryProcessUuid());
+        } else if (event.getSourceStatus() == DeliveryStatus.Released &&
+            event.getTargetStatus() == DeliveryStatus.Closed) {
+            // Send delivery closed email to all organisation coordinators for this delivery
+            notificationService.deliveryClosedNotificationToCoordinators(event.getRequestUuid(), event.getDeliveryProcessUuid());
         }
     }
 

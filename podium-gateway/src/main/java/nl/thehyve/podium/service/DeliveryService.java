@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,6 +56,9 @@ public class DeliveryService {
     private DeliveryProcessService deliveryProcessService;
 
     @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
     private DeliveryProcessMapper deliveryProcessMapper;
 
     @Autowired
@@ -62,6 +66,12 @@ public class DeliveryService {
 
     @Autowired
     private EntityManager entityManager;
+
+
+    @PostConstruct
+    private void init() {
+        notificationService.setDeliveryService(this);
+    }
 
 
     @Transactional
@@ -80,9 +90,9 @@ public class DeliveryService {
         persistAndPublishDeliveryEvent(deliveryProcess, event);
     }
 
-    private boolean isCurrentStatusAllowed(Status currentStatus, Status ... allowedStatuses) {
+    private <S extends Status> boolean isCurrentStatusAllowed(S currentStatus, S ... allowedStatuses) {
         return Arrays.stream(allowedStatuses).anyMatch(status ->
-            status.equals(currentStatus)
+            status == currentStatus
         );
     }
 
@@ -93,7 +103,7 @@ public class DeliveryService {
      * @return the current status iff the request has any of the allowed statuses.
      * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
      */
-    private RequestStatus checkStatus(Request request, Status ... allowedStatuses) throws ActionNotAllowed {
+    private RequestStatus checkStatus(Request request, RequestStatus ... allowedStatuses) throws ActionNotAllowed {
         if (!isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
             throw ActionNotAllowed.forStatus(request.getStatus());
         }
@@ -107,7 +117,7 @@ public class DeliveryService {
      * @return the current status iff the delivery process has any of the allowed statuses.
      * @throws ActionNotAllowed iff the delivery process does not have any of the allowed statuses.
      */
-    private DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, Status ... allowedStatuses) throws ActionNotAllowed {
+    private DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus ... allowedStatuses) throws ActionNotAllowed {
         if (!isCurrentStatusAllowed(deliveryProcess.getStatus(), allowedStatuses)) {
             throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
         }
@@ -132,16 +142,26 @@ public class DeliveryService {
 
     /**
      * Gets all delivery processes for a request.
-     * @param uuid the uuid of the request.
+     * @param requestUuid the uuid of the request.
      * @return a list of representations of the delivery processes belonging to the request.
-     * @throws ActionNotAllowed iff the request is not in status Delivery.
      */
-    public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID uuid) throws ActionNotAllowed {
-        Request request = requestRepository.findOneByUuid(uuid);
-        checkStatus(request, RequestStatus.Delivery);
+    public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID requestUuid) throws ActionNotAllowed {
+        Request request = requestRepository.findOneByUuid(requestUuid);
         return request.getDeliveryProcesses().stream()
             .map(deliveryProcessMapper::deliveryProcessToDeliveryProcessRepresentation)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets the delivery processes by uuid belonging to a request by uuid.
+     * @param requestUuid the uuid of the request.
+     * @param deliveryProcessUuid the uuid of the delivery process.
+     * @return a representation of the delivery process.
+     */
+    public DeliveryProcessRepresentation getDeliveryForRequestByUuid(UUID requestUuid, UUID deliveryProcessUuid) {
+        Request request = requestRepository.findOneByUuid(requestUuid);
+        DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
+        return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 
     /**
