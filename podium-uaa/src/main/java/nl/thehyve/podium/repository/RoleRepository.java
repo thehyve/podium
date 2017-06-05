@@ -22,7 +22,7 @@ import java.util.List;
  * Spring Data JPA repository for the Role entity.
  */
 @SuppressWarnings("unused")
-public interface RoleRepository extends JpaRepository<Role,Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Query(value = "select distinct role from Role role left join fetch role.users",
         countQuery = "select count(role) from Role role")

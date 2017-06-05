@@ -91,9 +91,8 @@ public class UserService {
      * If the activation key has expired return null
      *
      * @param key The activation key.
-     * @throws VerificationKeyExpired Thrown when the used verification key has expired.
-     *
      * @return the user
+     * @throws VerificationKeyExpired Thrown when the used verification key has expired.
      */
     public Optional<User> verifyRegistration(String key) throws VerificationKeyExpired {
         log.debug("Verifying user for activation key {}", key);
@@ -105,7 +104,7 @@ public class UserService {
         if (foundUser.isPresent()) {
             User user = foundUser.get();
 
-            if(user.getActivationKeyDate().isBefore(keyValidPeriod)) {
+            if (user.getActivationKeyDate().isBefore(keyValidPeriod)) {
                 throw new VerificationKeyExpired();
             }
             // activate given user for the registration key.
@@ -143,14 +142,14 @@ public class UserService {
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
+        log.debug("Reset user password for reset key {}", key);
 
-       return userRepository.findOneByDeletedIsFalseAndResetKey(key)
+        return userRepository.findOneByDeletedIsFalseAndResetKey(key)
             .filter(user -> {
                 ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
-           })
-           .map(user -> {
+            })
+            .map(user -> {
                 if (!user.isEmailVerified()) {
                     user.setEmailVerified(true);
                     user.setActivationKey(null);
@@ -164,7 +163,7 @@ public class UserService {
                 user.setResetKey(null);
                 user.setResetDate(null);
                 return user;
-           });
+            });
     }
 
     public Optional<User> requestPasswordReset(String mail) {
@@ -183,7 +182,7 @@ public class UserService {
      * Throws a {@link UserAccountException} if the e-mail address or login are already in use.
      *
      * @param updatedUserData the updated user account data.
-     * @param userId the id of the user to be updated. Can be {@code null} for new accounts.
+     * @param userId          the id of the user to be updated. Can be {@code null} for new accounts.
      * @throws UserAccountException if the e-mail address or login are already in use.
      */
     private void checkForExistingLoginAndEmail(UserRepresentation updatedUserData, Long userId) throws UserAccountException {
@@ -244,7 +243,7 @@ public class UserService {
         user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         if (userData.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
-            userData.getAuthorities().forEach( authority -> {
+            userData.getAuthorities().forEach(authority -> {
                 Role role = roleService.findRoleByAuthorityName(authority);
                 if (role != null) {
                     roles.add(role);
@@ -268,7 +267,6 @@ public class UserService {
     }
 
     /**
-     *
      * @param userData user data to update
      * @return Updated user data as UserRepresentation
      * @throws UserAccountException
@@ -301,7 +299,7 @@ public class UserService {
         user.setAdminVerified(userData.isAdminVerified());
         Set<Role> managedRoles = user.getRoles();
         managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
-        userData.getAuthorities().forEach( authority -> {
+        userData.getAuthorities().forEach(authority -> {
             if (!AuthorityConstants.isOrganisationAuthority(authority)) {
                 log.info("Adding role: {}", authority);
                 Role role = roleService.findRoleByAuthorityName(authority);
@@ -405,8 +403,8 @@ public class UserService {
     /**
      * Search for the organisation corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @return the list of entities
+     * @param query the query of the search
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public List<SearchUser> search(String query) {

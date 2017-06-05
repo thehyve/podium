@@ -100,16 +100,16 @@ public class OrganisationServer implements OrganisationResource {
     @Timed
     public ResponseEntity<OrganisationDTO> updateOrganisation(@OrganisationParameter @Valid @RequestBody OrganisationDTO organisationDTO)
         throws ResourceNotFound, URISyntaxException {
-            log.debug("REST request to update Organisation : {}", organisationDTO);
-            if (organisationDTO.getId() == null) {
-                throw new ResourceNotFound("ID not defined for organisation.");
-            }
+        log.debug("REST request to update Organisation : {}", organisationDTO);
+        if (organisationDTO.getId() == null) {
+            throw new ResourceNotFound("ID not defined for organisation.");
+        }
 
-            OrganisationDTO updatedOrganisation = organisationService.update(organisationDTO);
+        OrganisationDTO updatedOrganisation = organisationService.update(organisationDTO);
 
-            return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedOrganisation.getId().toString()))
-                .body(organisationDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedOrganisation.getId().toString()))
+            .body(organisationDTO);
     }
 
     /**
@@ -206,7 +206,7 @@ public class OrganisationServer implements OrganisationResource {
     /**
      * PUT /organisations/:id/activation?value=:activation : activate or deactivate the "id" organisation
      *
-     * @param id the id of the organisation to be activated/deactivated
+     * @param id         the id of the organisation to be activated/deactivated
      * @param activation boolean activation flag (true or false)
      * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
      * or with status 400 (Bad Request) if the organisation is not valid,
@@ -217,16 +217,16 @@ public class OrganisationServer implements OrganisationResource {
     @PutMapping("/organisations/{id}/activation")
     @Timed
     public ResponseEntity<OrganisationDTO> setOrganisationActivation(
-        @PathVariable Long id,  @RequestParam (value = "value",required = true) boolean activation) throws
+        @PathVariable Long id, @RequestParam(value = "value", required = true) boolean activation) throws
         URISyntaxException {
 
         // FIXME: Use UUID as unique id argument
-            log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
-            OrganisationDTO updatedOrganisationDTO = organisationService.activation(id, activation);
+        log.debug("REST request to activate/deactivate Organisation : {}", id, activation);
+        OrganisationDTO updatedOrganisationDTO = organisationService.activation(id, activation);
 
-            return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedOrganisationDTO.getId().toString()))
-                .body(updatedOrganisationDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedOrganisationDTO.getId().toString()))
+            .body(updatedOrganisationDTO);
     }
 
     /**
@@ -248,7 +248,7 @@ public class OrganisationServer implements OrganisationResource {
      * SEARCH  /_search/organisations?query=:query : search for the organisation corresponding
      * to the query.
      *
-     * @param query the query of the organisation search
+     * @param query    the query of the organisation search
      * @param pageable the pagination information
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers

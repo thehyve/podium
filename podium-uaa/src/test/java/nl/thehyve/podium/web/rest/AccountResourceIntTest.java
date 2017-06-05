@@ -97,21 +97,21 @@ public class AccountResourceIntTest {
     @Test
     public void testNonAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/api/authenticate")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string(""));
     }
 
     @Test
     public void testAuthenticatedUser() throws Exception {
         restUserMockMvc.perform(get("/api/authenticate")
-                .with(request -> {
-                    request.setRemoteUser("test");
-                    return request;
-                })
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("test"));
+            .with(request -> {
+                request.setRemoteUser("test");
+                return request;
+            })
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string("test"));
     }
 
     @Test
@@ -130,14 +130,14 @@ public class AccountResourceIntTest {
         when(mockUserService.getUserWithAuthorities()).thenReturn(user);
 
         restUserMockMvc.perform(get("/api/account")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.login").value("test"))
-                .andExpect(jsonPath("$.firstName").value("john"))
-                .andExpect(jsonPath("$.lastName").value("doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@bbmri-podium.com"))
-                .andExpect(jsonPath("$.authorities").value(AuthorityConstants.PODIUM_ADMIN));
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.login").value("test"))
+            .andExpect(jsonPath("$.firstName").value("john"))
+            .andExpect(jsonPath("$.lastName").value("doe"))
+            .andExpect(jsonPath("$.email").value("john.doe@bbmri-podium.com"))
+            .andExpect(jsonPath("$.authorities").value(AuthorityConstants.PODIUM_ADMIN));
     }
 
     @Test
@@ -145,12 +145,13 @@ public class AccountResourceIntTest {
         when(mockUserService.getUserWithAuthorities()).thenReturn(null);
 
         restUserMockMvc.perform(get("/api/account")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
     }
 
     /**
      * Set all mandatory fields except first name, last name, username, email.
+     *
      * @param user the object to set the fields on.
      */
     static void setMandatoryFields(UserRepresentation user) {
@@ -237,7 +238,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterInvalidPassword() throws Exception {
         StringBuilder tooLongPassword = new StringBuilder();
-        for (int i=0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             tooLongPassword.append("Abcdef12345%^&*");
         }
         String[] invalidPasswords = {
@@ -250,7 +251,7 @@ public class AccountResourceIntTest {
             "123456^&*(", // password without alphabetical symbols
             tooLongPassword.toString() // password larger than 1000 characters
         };
-        for(String password: invalidPasswords) {
+        for (String password : invalidPasswords) {
             ManagedUserVM invalidUser = new ManagedUserVM();
             setMandatoryFields(invalidUser);
             invalidUser.setId(null);
@@ -363,7 +364,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().isCreated());
 
-        verify(mockMailService).sendAccountAlreadyExists((User)anyObject());
+        verify(mockMailService).sendAccountAlreadyExists((User) anyObject());
 
         Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("johnjr");
         assertThat(userDup.isPresent()).isFalse();
@@ -423,7 +424,8 @@ public class AccountResourceIntTest {
                     restMvc.perform(get("/api/verify")
                         .param("key", user.getActivationKey()))
                         .andExpect(status().isOk());
-                } catch (Exception ex) { }
+                } catch (Exception ex) {
+                }
 
                 return user;
             });
@@ -463,7 +465,8 @@ public class AccountResourceIntTest {
                         .andReturn();
 
                     assertThat(result.getResponse().getContentAsString()).isEqualTo("renew");
-                } catch (Exception ex) {}
+                } catch (Exception ex) {
+                }
 
                 return user;
             });

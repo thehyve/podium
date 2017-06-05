@@ -26,25 +26,25 @@ import java.util.stream.Collectors;
 /**
  * Mapper for the entity User and its DTO UserDTO.
  */
-@Mapper(componentModel = "spring", uses = { UuidMapper.class })
+@Mapper(componentModel = "spring", uses = {UuidMapper.class})
 public interface RoleMapper {
     RoleRepresentation roleToRoleDTO(Role role);
 
     List<RoleRepresentation> rolesToRoleDTOs(List<Role> role);
 
-    default Set<UUID> uuidsFromUsers (Set<User> users) {
+    default Set<UUID> uuidsFromUsers(Set<User> users) {
         return users.stream().map(User::getUuid)
             .collect(Collectors.toSet());
     }
 
-    default UUID uuidFromOrganisation (Organisation organisation) {
+    default UUID uuidFromOrganisation(Organisation organisation) {
         if (organisation == null) {
             return null;
         }
         return organisation.getUuid();
     }
 
-    default String stringFromAuthority (Authority authority) {
+    default String stringFromAuthority(Authority authority) {
         if (authority == null) {
             return null;
         }

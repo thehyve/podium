@@ -64,7 +64,7 @@ public class TestResource {
      *
      * @param userData the user to create.
      * @return the ResponseEntity with status 201 (Created),
-     *      or with status 400 (Bad Request) if the login or email is already in use.
+     * or with status 400 (Bad Request) if the login or email is already in use.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("users")
@@ -82,7 +82,7 @@ public class TestResource {
             }
             user = userService.save(user);
             userService.changePassword(user, userData.getPassword());
-        } catch(EmailAddressAlreadyInUse e) {
+        } catch (EmailAddressAlreadyInUse e) {
             log.error("Email already in use: {}", userData.getEmail());
             throw e;
         } catch (LoginAlreadyInUse e) {

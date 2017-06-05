@@ -43,6 +43,6 @@ public class UserDetailsService implements org.springframework.security.core.use
             }
             return user;
         }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " +
-        "database"));
+            "database"));
     }
 }

@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Mapper for the entity Organisation and its OrganisationDTO.
  */
-@Mapper(componentModel = "spring", uses = { UuidMapper.class })
+@Mapper(componentModel = "spring", uses = {UuidMapper.class})
 public interface OrganisationMapper {
     OrganisationDTO organisationToOrganisationDTO(Organisation organisation);
 

@@ -25,13 +25,13 @@ import java.util.List;
 public abstract class UserMapperDecorator implements UserMapper {
 
     @Autowired
-    @Qualifier( "delegate" )
+    @Qualifier("delegate")
     private UserMapper delegate;
 
     @Override
     public SearchUser userToSearchUser(User user) {
         SearchUser searchUser = delegate.userToSearchUser(user);
-        String[] fullname = { searchUser.getFirstName(), searchUser.getLastName()};
+        String[] fullname = {searchUser.getFirstName(), searchUser.getLastName()};
         Completion fullNameCompletion = new Completion(fullname);
 
         // Set the elasticsearch payload as json
@@ -40,7 +40,7 @@ public abstract class UserMapperDecorator implements UserMapper {
         try {
             userUUID.put("uuid", searchUser.getUuid());
             fullNameCompletion.setPayload(userUUID.toString());
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             //
         }
 
@@ -55,14 +55,14 @@ public abstract class UserMapperDecorator implements UserMapper {
 
     @Override
     public List<SearchUser> usersToSearchUsers(List<User> users) {
-        if ( users == null ) {
+        if (users == null) {
             return null;
         }
 
         List<SearchUser> list = new ArrayList<>();
 
-        for ( User user : users ) {
-            list.add( userToSearchUser( user ) );
+        for (User user : users) {
+            list.add(userToSearchUser(user));
         }
 
         return list;
@@ -80,7 +80,7 @@ public abstract class UserMapperDecorator implements UserMapper {
         try {
             JSONObject uuidObject = new JSONObject(entry.getPayloadAsString());
             searchUser.setUuid((String) uuidObject.get("uuid"));
-        } catch(Exception ex) {
+        } catch (Exception ex) {
 
         }
 
@@ -96,7 +96,7 @@ public abstract class UserMapperDecorator implements UserMapper {
         List<SearchUser> searchUsers = new ArrayList<>();
 
         for (CompletionSuggestion.Entry.Option entry : entries) {
-            searchUsers.add( completionSuggestOptionToSearchUser(entry) );
+            searchUsers.add(completionSuggestOptionToSearchUser(entry));
         }
 
         return searchUsers;

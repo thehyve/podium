@@ -109,7 +109,7 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         organisation.setRequestTypes(requestTypes);
         organisation = organisationService.save(organisation);
         entityManager.persist(organisation);
-        for(Role role: organisation.getRoles()) {
+        for (Role role : organisation.getRoles()) {
             entityManager.persist(role);
         }
         entityManager.flush();
@@ -137,17 +137,17 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
     private User anonymous;
     private Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
 
-    private User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
+    private User createUser(String name, String authority, Organisation... organisations) throws UserAccountException {
         log.info("Creating user {}", name);
         ManagedUserVM userVM = new ManagedUserVM();
         userVM.setLogin("test_" + name);
         userVM.setEmail("test_" + name + "@localhost");
-        userVM.setFirstName("test_firstname_"+name);
-        userVM.setLastName("test_lastname_"+name);
+        userVM.setFirstName("test_firstname_" + name);
+        userVM.setLastName("test_lastname_" + name);
         userVM.setPassword("Password123!");
         User user = userService.createUser(userVM);
         if (organisations.length > 0) {
-            for (Organisation organisation: organisations) {
+            for (Organisation organisation : organisations) {
                 log.info("Assigning role {} for organisation {}", authority, organisation.getName());
                 Role role = roleService.findRoleByOrganisationAndAuthorityName(organisation, authority);
                 assert (role != null);
@@ -185,7 +185,7 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
         adminOrganisationAandB = createUser("adminOrganisationAandB", AuthorityConstants.ORGANISATION_ADMIN, organisationA, organisationB);
         coordinatorOrganisationA = createUser("coordinatorOrganisationA", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA);
         coordinatorOrganisationB = createUser("coordinatorOrganisationB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationB);
-        coordinatorOrganisationAandB= createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
+        coordinatorOrganisationAandB = createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
         reviewerAandB = createUser("reviewerAandB", AuthorityConstants.REVIEWER, organisationA, organisationB);
         reviewerA = createUser("reviewerA", AuthorityConstants.REVIEWER, organisationA);
         researcher = createUser("researcher", AuthorityConstants.RESEARCHER);

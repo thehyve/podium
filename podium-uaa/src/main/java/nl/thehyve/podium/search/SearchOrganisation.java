@@ -63,19 +63,33 @@ public class SearchOrganisation implements Serializable {
         return activated;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public void setUuid(String uuid) { this.uuid = uuid; }
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setShortName(String shortName) { this.shortName = shortName; }
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
 
-    public void setActivated(boolean activated) { this.activated = activated; }
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
 
-    public Set<RequestType> getRequestTypes() { return requestTypes; }
+    public Set<RequestType> getRequestTypes() {
+        return requestTypes;
+    }
 
-    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestTypes = requestTypes; }
+    public void setRequestTypes(Set<RequestType> requestTypes) {
+        this.requestTypes = requestTypes;
+    }
 
     @Override
     public boolean equals(Object o) {

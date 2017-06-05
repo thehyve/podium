@@ -33,7 +33,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="organisation_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="true"/>
             </column>
 
             <column name="authority_name" type="varchar(50)">

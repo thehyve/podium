@@ -63,15 +63,15 @@ public class AuditResource {
      * GET  /audits : get a page of AuditEvents between the fromDate and toDate.
      *
      * @param fromDate the start of the time period of AuditEvents to get
-     * @param toDate the end of the time period of AuditEvents to get
+     * @param toDate   the end of the time period of AuditEvents to get
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of AuditEvents in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping(params = {"fromDate", "toDate"})
     public ResponseEntity<List<AuditEvent>> getByDates(
-        @RequestParam(value = "fromDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-        @RequestParam(value = "toDate") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate,
+        @RequestParam(value = "fromDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
+        @RequestParam(value = "toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate,
         @ApiParam Pageable pageable) throws URISyntaxException {
         Page<AuditEvent> page = auditEventService.findByDates(fromDate, toDate, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/management/audits");
@@ -87,7 +87,7 @@ public class AuditResource {
     @GetMapping("/{id:.+}")
     public ResponseEntity<AuditEvent> get(@PathVariable Long id) {
         return auditEventService.find(id)
-                .map((entity) -> new ResponseEntity<>(entity, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            .map((entity) -> new ResponseEntity<>(entity, HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

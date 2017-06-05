@@ -48,7 +48,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Test class for the AuditResource REST controller.
- *
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
@@ -86,7 +85,8 @@ public class AuditResourceIntTest {
     private MockMvc restAuditMockMvc;
 
     private TypeReference<List<AuditEventRepresentation>> listTypeReference =
-        new TypeReference<List<AuditEventRepresentation>>(){};
+        new TypeReference<List<AuditEventRepresentation>>() {
+        };
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -94,7 +94,7 @@ public class AuditResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         AuditEventService auditEventService =
-                new AuditEventService(customAuditEventRepository, auditEventRepository, auditEventConverter);
+            new AuditEventService(customAuditEventRepository, auditEventRepository, auditEventConverter);
         AuditResource auditResource = new AuditResource(auditEventService);
         this.restAuditMockMvc = MockMvcBuilders.standaloneSetup(auditResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
@@ -118,18 +118,18 @@ public class AuditResourceIntTest {
 
         // Get all the audits
         restAuditMockMvc.perform(get("/management/audits"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andDo(result -> {
-                    log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                    List<AuditEventRepresentation> events =
-                        mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-                    Assert.assertEquals(1, events.size());
-                    for(AuditEventRepresentation event: events) {
-                        log.info(" - {}", event);
-                    }
-                })
-                .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<AuditEventRepresentation> events =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+                Assert.assertEquals(1, events.size());
+                for (AuditEventRepresentation event : events) {
+                    log.info(" - {}", event);
+                }
+            })
+            .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
     }
 
     @Test
@@ -139,9 +139,9 @@ public class AuditResourceIntTest {
 
         // Get the audit
         restAuditMockMvc.perform(get("/management/audits/{id}", auditEvent.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.principal").value(SAMPLE_PRINCIPAL));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.principal").value(SAMPLE_PRINCIPAL));
     }
 
     @Test
@@ -150,10 +150,10 @@ public class AuditResourceIntTest {
         auditEventRepository.save(auditEvent);
 
         // Generate dates for selecting audits by date, making sure the period will contain the audit
-        String fromDate  = FORMATTER.format(LocalDateTime.ofInstant(SAMPLE_INSTANT, ZoneId.systemDefault()).minusDays(1));
+        String fromDate = FORMATTER.format(LocalDateTime.ofInstant(SAMPLE_INSTANT, ZoneId.systemDefault()).minusDays(1));
         String toDate = FORMATTER.format(LocalDateTime.ofInstant(SAMPLE_INSTANT, ZoneId.systemDefault()).plusDays(1));
         // Get the audit
-        restAuditMockMvc.perform(get("/management/audits?fromDate="+fromDate+"&toDate="+toDate))
+        restAuditMockMvc.perform(get("/management/audits?fromDate=" + fromDate + "&toDate=" + toDate))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andDo(result -> {
@@ -161,7 +161,7 @@ public class AuditResourceIntTest {
                 List<AuditEventRepresentation> events =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
                 Assert.assertEquals(1, events.size());
-                for(AuditEventRepresentation event: events) {
+                for (AuditEventRepresentation event : events) {
                     log.info(" - {}", event);
                 }
             })
@@ -174,7 +174,7 @@ public class AuditResourceIntTest {
         auditEventRepository.save(auditEvent);
 
         // Generate dates for selecting audits by date, making sure the period will not contain the sample audit
-        String fromDate  = FORMATTER.format(LocalDateTime.ofInstant(SAMPLE_INSTANT, ZoneId.systemDefault()).minusDays(2));
+        String fromDate = FORMATTER.format(LocalDateTime.ofInstant(SAMPLE_INSTANT, ZoneId.systemDefault()).minusDays(2));
         String toDate = FORMATTER.format(LocalDateTime.ofInstant(SAMPLE_INSTANT, ZoneId.systemDefault()).minusDays(1));
 
         // Query audits but expect no results
@@ -188,7 +188,7 @@ public class AuditResourceIntTest {
     public void getNonExistingAudit() throws Exception {
         // Get the audit
         restAuditMockMvc.perform(get("/management/audits/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
 }

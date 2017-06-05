@@ -50,7 +50,8 @@ public class RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public RoleService() { }
+    public RoleService() {
+    }
 
     /**
      * Save a role.
@@ -129,7 +130,7 @@ public class RoleService {
     /**
      * Get the role for an authority within an organisation.
      *
-     * @param organisation The organisation to fetch the role for.
+     * @param organisation  The organisation to fetch the role for.
      * @param authorityName Authority name to fetch role for.
      * @return the entity
      */
@@ -161,7 +162,7 @@ public class RoleService {
     /**
      * Search for the role corresponding to the query.
      *
-     * @param query the query of the search
+     * @param query    the query of the search
      * @param pageable Pagination object of the requested page
      * @return the list of entities
      */

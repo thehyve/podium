@@ -149,13 +149,21 @@ public class SearchUser implements Serializable {
         this.specialism = specialism;
     }
 
-    public Completion getFullNameSuggest() { return fullNameSuggest; }
+    public Completion getFullNameSuggest() {
+        return fullNameSuggest;
+    }
 
-    public void setFullNameSuggest(Completion fullNameSuggest) { this.fullNameSuggest = fullNameSuggest; }
+    public void setFullNameSuggest(Completion fullNameSuggest) {
+        this.fullNameSuggest = fullNameSuggest;
+    }
 
-    public String getFullName() { return fullName; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     @Override
     public int hashCode() {

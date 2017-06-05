@@ -109,7 +109,7 @@ public class OrganisationResourceIntTest {
 
     /**
      * Create an entityDTO for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -305,7 +305,7 @@ public class OrganisationResourceIntTest {
 
     @Test
     @Transactional
-    public void setOrganisationActivation() throws  Exception {
+    public void setOrganisationActivation() throws Exception {
         // Initialize the database
         organisationService.save(organisation);
 
@@ -317,8 +317,8 @@ public class OrganisationResourceIntTest {
         restOrganisationMockMvc.perform(
             put("/api/organisations/{id}/activation?value={activate}", organisation.getId(),
                 UPDATED_ACTIVATED)
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedOrganisation)))
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(updatedOrganisation)))
             .andExpect(status().isOk());
 
         // Validate the Organisation in the database

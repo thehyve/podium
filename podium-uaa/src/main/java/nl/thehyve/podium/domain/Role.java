@@ -57,8 +57,8 @@ public class Role implements Serializable, IdentifiableOrganisation {
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "role_users",
-               joinColumns = @JoinColumn(name="roles_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="users_id", referencedColumnName="id"))
+        joinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"))
     private Set<User> users = new HashSet<>();
 
     @ManyToOne

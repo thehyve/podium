@@ -49,7 +49,7 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authenticationProvider(customServerAuthenticationProvider)
             .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
-            ;
+        ;
     }
 
     @Override

@@ -82,7 +82,7 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
      * by an administrator) and
      * - the user account is not locked and
      * - the provided password matches the (encrypted) password of the user.
-     *
+     * <p>
      * If the wrong password is provided for too many times (configured in
      * {@link UaaProperties.Security#maxFailedLoginAttempts}), the user accounts is blocked.
      * If the setting {@link UaaProperties.Security#timeBasedUnlockingEnabled} is true (default is false),
@@ -91,10 +91,10 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
      *
      * @param authentication the {@link UsernamePasswordAuthenticationToken} object.
      * @return a {@link UserAuthenticationToken} object if the authentication is successful.
-     * @throws BadCredentialsException if the user account does not exists or the password is incorrect.
-     * @throws EmailNotVerifiedException if the user email address has not been verified.
+     * @throws BadCredentialsException     if the user account does not exists or the password is incorrect.
+     * @throws EmailNotVerifiedException   if the user email address has not been verified.
      * @throws AccountNotVerifiedException if the user account has not been verified.
-     * @throws UserAccountLockedException if the user account is locked.
+     * @throws UserAccountLockedException  if the user account is locked.
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

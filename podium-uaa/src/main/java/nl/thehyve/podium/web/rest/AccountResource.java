@@ -62,12 +62,12 @@ public class AccountResource {
      * POST  /register : register the user.
      *
      * @param managedUserVM the managed user View Model
-     * @throws UserAccountException Exception thrown when a user login is already in use.
      * @return the ResponseEntity with status 201 (Created) if the user is registered or 400 (Bad Request) if the login or e-mail is already in use
+     * @throws UserAccountException Exception thrown when a user login is already in use.
      */
     @Public
     @PostMapping(path = "/register",
-                    produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+        produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
     public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) throws UserAccountException {
         HttpHeaders textPlainHeaders = new HttpHeaders();
@@ -75,7 +75,7 @@ public class AccountResource {
         try {
             User user = userService.registerUser(managedUserVM);
             mailService.sendVerificationEmail(user);
-        } catch(EmailAddressAlreadyInUse e) {
+        } catch (EmailAddressAlreadyInUse e) {
             Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
             userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
         } catch (LoginAlreadyInUse e) {
@@ -89,9 +89,9 @@ public class AccountResource {
      * GET  /activate : activate the registered user.
      *
      * @param key the activation key
-     * @return  the ResponseEntity with status
-     *          200 (OK) and the activated user in body,
-     *          500 (Internal Server Error) if the user couldn't be activated
+     * @return the ResponseEntity with status
+     * 200 (OK) and the activated user in body,
+     * 500 (Internal Server Error) if the user couldn't be activated
      */
     @Public
     @GetMapping("/verify")
@@ -105,7 +105,7 @@ public class AccountResource {
             } else {
                 return new ResponseEntity<>("error", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } catch(VerificationKeyExpired vke) {
+        } catch (VerificationKeyExpired vke) {
             return new ResponseEntity<>("renew", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -135,9 +135,9 @@ public class AccountResource {
     /**
      * GET  /account : get the current user.
      *
-     * @return  the ResponseEntity with status
-     *          200 (OK) and the current user in body,
-     *          500 (Internal Server Error) if the user couldn't be returned
+     * @return the ResponseEntity with status
+     * 200 (OK) and the current user in body,
+     * 500 (Internal Server Error) if the user couldn't be returned
      */
     @AnyAuthorisedUser
     @GetMapping("/account")
@@ -215,8 +215,8 @@ public class AccountResource {
     @Timed
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
         return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
-              .map(user -> new ResponseEntity<String>(HttpStatus.OK))
-              .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+            .map(user -> new ResponseEntity<String>(HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
 }
