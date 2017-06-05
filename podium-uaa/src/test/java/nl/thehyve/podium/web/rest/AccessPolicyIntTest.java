@@ -240,6 +240,27 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
     private void createActions() {
         // Roles
+
+        // GET /roles
+        actions.add(newAction()
+            .setUrl(ROLE_ROUTE)
+            .allow(podiumAdmin, bbmriAdmin));
+        // GET /roles/organisation/{uuid}
+        actions.add(newAction()
+            .setUrl(format(ROLE_ROUTE, "/organisation/%s", organisationA.getUuid()))
+            .allow(podiumAdmin, bbmriAdmin,
+                adminOrganisationA, adminOrganisationAandB,
+                coordinatorOrganisationA, coordinatorOrganisationAandB,
+                reviewerA, reviewerAandB));
+        // GET /roles/{id}
+        actions.add(newAction()
+            .setUrl(format(ROLE_ROUTE, "/%d", reviewerBRole.getId()))
+            .allow(podiumAdmin, bbmriAdmin));
+        // GET /_search/roles
+        actions.add(newAction()
+            .setUrl(ROLE_SEARCH_ROUTE)
+            .set("query", "admin")
+            .allow(podiumAdmin, bbmriAdmin));
         // POST /roles. Not allowed!
         actions.add(newAction()
             .setUrl(ROLE_ROUTE).setMethod(HttpMethod.POST)
@@ -266,26 +287,6 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
             .setMethod(HttpMethod.PUT)
             .body(editedReviewerARole)
             .allow(podiumAdmin, bbmriAdmin, adminOrganisationA, adminOrganisationAandB));
-        // GET /roles
-        actions.add(newAction()
-            .setUrl(ROLE_ROUTE)
-            .allow(podiumAdmin, bbmriAdmin));
-        // GET /roles/organisation/{uuid}
-        actions.add(newAction()
-            .setUrl(format(ROLE_ROUTE, "/organisation/%s", organisationA.getUuid()))
-            .allow(podiumAdmin, bbmriAdmin,
-                adminOrganisationA, adminOrganisationAandB,
-                coordinatorOrganisationA, coordinatorOrganisationAandB,
-                reviewerA, reviewerAandB));
-        // GET /roles/{id}
-        actions.add(newAction()
-            .setUrl(format(ROLE_ROUTE, "/%d", reviewerBRole.getId()))
-            .allow(podiumAdmin, bbmriAdmin));
-        // GET /_search/roles
-        actions.add(newAction()
-            .setUrl(ROLE_SEARCH_ROUTE)
-            .set("query", "admin")
-            .allow(podiumAdmin, bbmriAdmin));
     }
 
     private void setupData() throws UserAccountException {
