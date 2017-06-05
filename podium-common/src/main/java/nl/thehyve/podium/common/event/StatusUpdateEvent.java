@@ -6,18 +6,18 @@ import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 
 import java.util.UUID;
 
-public class StatusUpdateEvent extends AbstractEvent {
+public class StatusUpdateEvent<S extends Status> extends AbstractEvent {
 
-    private final Status sourceStatus;
-    private final Status targetStatus;
+    private final S sourceStatus;
+    private final S targetStatus;
     private final UUID requestUuid;
     private final UUID deliveryProcessUuid;
     private final MessageRepresentation message;
 
     public StatusUpdateEvent(
         AuthenticatedUser user,
-        Status sourceStatus,
-        Status targetStatus,
+        S sourceStatus,
+        S targetStatus,
         UUID requestUuid,
         UUID deliveryProcessUuid,
         MessageRepresentation message) {
@@ -31,8 +31,8 @@ public class StatusUpdateEvent extends AbstractEvent {
 
     public StatusUpdateEvent(
         AuthenticatedUser user,
-        Status sourceStatus,
-        Status targetStatus,
+        S sourceStatus,
+        S targetStatus,
         UUID requestUuid,
         MessageRepresentation message) {
         this(user, sourceStatus, targetStatus, requestUuid, null, message);
@@ -40,8 +40,8 @@ public class StatusUpdateEvent extends AbstractEvent {
 
     public StatusUpdateEvent(
         AuthenticatedUser user,
-        Status sourceStatus,
-        Status targetStatus,
+        S sourceStatus,
+        S targetStatus,
         UUID requestUuid,
         UUID deliveryProcessUuid) {
         this(user, sourceStatus, targetStatus, requestUuid, deliveryProcessUuid, null);
@@ -49,17 +49,17 @@ public class StatusUpdateEvent extends AbstractEvent {
 
     public StatusUpdateEvent(
         AuthenticatedUser user,
-        Status sourceStatus,
-        Status targetStatus,
+        S sourceStatus,
+        S targetStatus,
         UUID requestUuid) {
         this(user, sourceStatus, targetStatus, requestUuid, null, null);
     }
 
-    public Status getSourceStatus() {
+    public S getSourceStatus() {
         return sourceStatus;
     }
 
-    public Status getTargetStatus() {
+    public S getTargetStatus() {
         return targetStatus;
     }
 
