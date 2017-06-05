@@ -539,12 +539,12 @@ public class DeliveryResourceIntTest {
         initMocks();
         RequestRepresentation request = getApprovedRequest();
 
+        Thread.sleep(1000);
+        reset(this.auditService);
+
         RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
         Assert.assertNotNull(deliveryRequest);
         Assert.assertEquals(deliveryRequest.getStatus(), RequestStatus.Delivery);
-
-        Thread.sleep(1000);
-        reset(this.auditService);
 
         // One request update, two delivery process updates
         verify(this.auditService, times(3)).publishEvent(any());
