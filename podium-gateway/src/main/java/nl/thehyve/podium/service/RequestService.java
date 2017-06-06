@@ -725,30 +725,50 @@ public class RequestService {
      *
      * @return ReviewFeedback the updated review feedback
      * @throws AccessDenied if the currently logged in user is not the owner of the feedback given
+     * @throws ActionNotAllowed when the feedback supplied is not part of the request.
      */
     @Timed
     public ReviewFeedback provideReviewFeedback(
         AuthenticatedUser user,
+        RequestRepresentation requestRepresentation,
         ReviewFeedbackRepresentation feedbackRepresentation
-    ) {
+    ) throws ActionNotAllowed {
         log.debug("Providing review feedback for {}", feedbackRepresentation.getUuid());
-        if (user.getUuid() != feedbackRepresentation.getReviewer().getUuid()) {
+
+        ReviewFeedback feedback = reviewFeedbackRepository.findOneByUuid(feedbackRepresentation.getUuid());
+
+        if (feedback == null) {
+            throw new ResourceNotFound("Review feedback could not be found for " + feedbackRepresentation.getUuid());
+        }
+
+        // Check whether the feedback is part of the request.
+        Optional<ReviewFeedbackRepresentation> optionalFeedback
+            = requestRepresentation.getReviewRounds().stream()
+                .map(ReviewRoundRepresentation::getReviewFeedback)
+                .flatMap(List::stream)
+                .filter(reviewFeedback -> reviewFeedback.getUuid() == feedbackRepresentation.getUuid())
+                .findFirst();
+
+        // When this review feedback is not part of the request
+        if (!optionalFeedback.isPresent()) {
+            throw new ActionNotAllowed(
+                String.format("Review feedback (%s) is not part of the request (%s)",
+                    feedbackRepresentation.getUuid(),
+                    requestRepresentation.getUuid())
+            );
+        }
+
+        if (user.getUuid() != feedback.getUuid()) {
             log.error("Current user ({}) is not the assignee ({}) of the review feedback ({}).",
-                user.getUuid(), feedbackRepresentation.getReviewer().getUuid(), feedbackRepresentation.getUuid()
+                user.getUuid(), feedback.getReviewer(), feedbackRepresentation.getUuid()
             );
             throw new AccessDenied("Current user is not the review feedback assignee.");
         }
 
-        ReviewFeedback feedback = reviewFeedbackRepository.findOneByUuid(feedbackRepresentation.getUuid());
-
-        if (feedback != null) {
-            feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackRepresentation, feedback);
-            reviewFeedbackRepository.save(feedback);
-            reviewFeedbackSearchRepository.save(feedback);
-            return feedback;
-        }
-
-        throw new ResourceNotFound("Review feedback could not be found for " + feedbackRepresentation.getUuid());
+        feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackRepresentation, feedback);
+        reviewFeedbackRepository.save(feedback);
+        reviewFeedbackSearchRepository.save(feedback);
+        return feedback;
     }
 
     /**
