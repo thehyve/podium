@@ -57,7 +57,7 @@ let personas = [
     }),
     new Persona("BBMRI_Admin", {
         "login": "bbmri_admin",
-        "password": "2piYJ4G{MokC",
+        "password": "bbmri_admin123!",
         "firstName": "BBMRI administrator",
         "lastName": "BBMRI administrator",
         "email": "bbmri_admin@localhost",
@@ -135,14 +135,57 @@ let personas = [
         "adminVerified": true,
         "accountLocked": false
     }),
-    new Persona('Rob', {
-        "login": "admin",
-        "password": "admin",
-    })
+    new Persona('VarnameBank_Admin', {
+        "login": "varnamebank_admin",
+        "password": "varnamebank_admin123!",
+        "firstName": "VarnameBank",
+        "lastName": "Admin",
+        "email": "VarnameBank_Admin@localhost",
+        "telephone": "0123456789",
+        "institute": "some bio thing",
+        "department": "AB-100",
+        "jobTitle": "chief researcher",
+        "specialism": "Other",
+        "Other specialism": "Other specialism",
+        "authority": [{
+            orgShortName: "VarnameBank",
+            role: "ROLE_ORGANISATION_ADMIN"
+        }],
+        "emailVerified": true,
+        "adminVerified": true,
+        "accountLocked": false
+    }),
+    new Persona('blank user', {
+        "login": "blank-user",
+        "password": "2piYJ4G{MokC",
+        "firstName": "blank",
+        "lastName": "user",
+        "email": "blank_user@localhost",
+        "telephone": "0123456789",
+        "institute": "some bio thing",
+        "department": "AB-100",
+        "jobTitle": "chief researcher",
+        "specialism": "Other",
+        "Other specialism": "Other specialism",
+        "authority": [{
+            orgShortName: "none",
+            role: "ROLE_RESEARCHER"
+        }],
+        "emailVerified": true,
+        "adminVerified": true,
+        "accountLocked": false
+    }),
 ];
 
-personas.forEach(function (persona) {
+personas.forEach((persona) => {
+    persona = preprocess(persona);
     PersonaDictionary[persona.name] = persona;
 });
+
+function preprocess(persona: Persona): Persona {
+    persona.properties["login"] = persona.properties["login"].toLowerCase();
+    persona.properties["email"] = persona.properties["email"].toLowerCase();
+    return persona;
+}
 
 export = PersonaDictionary;

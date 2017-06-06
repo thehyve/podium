@@ -11,12 +11,11 @@ import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
 import OrganisationsOverviewCommon = require("./modules/organisations-overview")
 
-
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class OrganisationsManagementPage {
+class OrganisationsConfigurationPage {
     public name: string;
     public url: string;
     public elements: { [name: string]: Interactable };
@@ -29,12 +28,12 @@ class OrganisationsManagementPage {
     }
 
     constructor() {
-        this.name = "organisation management";
-        this.url = "#/bbmri/organisation";
+        this.name = "organisation configuration";
+        this.url = "#/organisation/configuration";
         this.elements = {
             ...OrganisationsOverviewCommon(),
         }
     }
 }
 
-export = OrganisationsManagementPage;
+export = OrganisationsConfigurationPage;

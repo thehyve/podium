@@ -7,8 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { Organisation, Request, File } from './templates';
-import { normalize } from 'path';
+import { Organisation, Request } from './templates';
 
 let dataDictionary: { [key: string]: any } = Object.create(null);
 let dataObjects = [
@@ -49,11 +48,16 @@ let dataObjects = [
         "type Images": true,
         "type Material": true,
     }),
-    new File("example", normalize(__dirname + "/example")),
+    {
+        "name": "menuRoleMapping",
+        "Organisation administrator": "ROLE_ORGANISATION_ADMIN",
+        "Organisation coordinator": "ROLE_ORGANISATION_COORDINATOR",
+        "Reviewer": "ROLE_REVIEWER",
+    }
 ];
 
-dataObjects.forEach(function (persona) {
-    dataDictionary[persona.name] = persona;
+dataObjects.forEach(function (data) {
+    dataDictionary[data.name] = data;
 });
 
 export = dataDictionary;
