@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 /**
  * REST controller for managing Organisation.
  */
-@SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
+@SecuredByAuthority({AuthorityConstants.BBMRI_ADMIN})
 @Timed
 @RestController
 public class OrganisationServer implements OrganisationResource {
@@ -102,8 +102,8 @@ public class OrganisationServer implements OrganisationResource {
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_ADMIN)
+    @SecuredByAuthority({AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/organisations")
     public ResponseEntity<OrganisationDTO> updateOrganisation(@OrganisationParameter @Valid @RequestBody OrganisationDTO organisationDTO)
         throws ResourceNotFound, URISyntaxException {
@@ -126,7 +126,6 @@ public class OrganisationServer implements OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations")
     public ResponseEntity<List<OrganisationDTO>> getOrganisations(@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -143,7 +142,6 @@ public class OrganisationServer implements OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @Override
     public ResponseEntity<List<OrganisationDTO>> getAllOrganisations()
         throws URISyntaxException {
@@ -159,7 +157,6 @@ public class OrganisationServer implements OrganisationResource {
      * @param id the id of the organisation to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations/{id}")
     @Deprecated
     public ResponseEntity<OrganisationDTO> getOrganisationById(@PathVariable Long id) {
@@ -174,26 +171,35 @@ public class OrganisationServer implements OrganisationResource {
     /**
      * GET  /organisations/admin : get a paginated list organisations for which the current user
      * is an admin.
+     * If the user is a {@link AuthorityConstants#BBMRI_ADMIN}, all organisations are fetched.
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN})
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/organisations/admin")
     public ResponseEntity<List<OrganisationDTO>> getAdminOrganisations(@ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to get a page of Organisations for admin {}", user.getName());
-        // Get the uuids of the organisations for which the user is admin
-        Collection<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
-            .filter(entry -> entry.getValue().contains(AuthorityConstants.ORGANISATION_ADMIN))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
-        // Fetch the organisation entities
-        Page<OrganisationDTO> page = organisationService.findAvailableOrganisationsByUuids(organisationUuids, pageable);
+        Page<OrganisationDTO> page;
+        if (user.getAuthorityNames().contains(AuthorityConstants.BBMRI_ADMIN)) {
+            // Fetch all organisations for the BBMRI_ADMIN user
+            log.debug("Fetching all organisations for the BBMRI admin.");
+            page = organisationService.findAll(pageable);
+        } else {
+            // Get the uuids of the organisations for which the user is admin
+            log.debug("Fetching organisations for the organisation admin.");
+            Collection<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
+                .filter(entry -> entry.getValue().contains(AuthorityConstants.ORGANISATION_ADMIN))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+            // Fetch the organisation entities
+            page = organisationService.findAvailableOrganisationsByUuids(organisationUuids, pageable);
+        }
         List<OrganisationDTO> result = page.getContent();
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations/admin");
         return new ResponseEntity<>(result, headers, HttpStatus.OK);
     }
 
@@ -241,7 +247,6 @@ public class OrganisationServer implements OrganisationResource {
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/organisations/{uuid}/activation")
     public ResponseEntity<OrganisationDTO> setOrganisationActivation(
         @PathVariable UUID uuid,  @RequestParam(value = "value", required = true) boolean activation) throws
