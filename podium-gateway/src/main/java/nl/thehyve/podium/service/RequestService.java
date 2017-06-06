@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Sets;
 import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -682,11 +683,10 @@ public class RequestService {
 
                 // Fetch the organisation object and filter the organisation supported request types.
                 OrganisationDTO organisationDTO = organisationClientService.findOrganisationByUuid(organisationUuid);
+                Set<RequestType> organisationRequestTypes = organisationDTO.getRequestTypes();
 
                 Set<RequestType> organisationSupportedRequestTypes
-                    = selectedRequestTypes.stream()
-                        .filter(organisationDTO.getRequestTypes()::contains)
-                        .collect(Collectors.toSet());
+                    = Sets.intersection(selectedRequestTypes, organisationRequestTypes);
 
                 // Set the by the organisation supported request types for this request.
                 organisationRequest.getRequestDetail().setRequestType(organisationSupportedRequestTypes);
