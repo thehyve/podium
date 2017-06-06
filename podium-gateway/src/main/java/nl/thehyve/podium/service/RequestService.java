@@ -684,11 +684,9 @@ public class RequestService {
                 OrganisationDTO organisationDTO = organisationClientService.findOrganisationByUuid(organisationUuid);
 
                 Set<RequestType> organisationSupportedRequestTypes
-                    = organisationDTO.getRequestTypes().stream()
-                        .flatMap(supportedRequestType ->
-                            selectedRequestTypes.stream().filter(supportedRequestType::equals)
-                        )
-                        .collect(Collectors.toCollection(HashSet::new));
+                    = selectedRequestTypes.stream()
+                        .filter(organisationDTO.getRequestTypes()::contains)
+                        .collect(Collectors.toSet());
 
                 // Set the by the organisation supported request types for this request.
                 organisationRequest.getRequestDetail().setRequestType(organisationSupportedRequestTypes);
@@ -697,7 +695,6 @@ public class RequestService {
                 log.error("Error fetching organisation", e);
                 throw new ServiceNotAvailable("Could not fetch organisation", e);
             }
-
 
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
