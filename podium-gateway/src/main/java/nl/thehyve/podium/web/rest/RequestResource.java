@@ -455,7 +455,7 @@ public class RequestResource {
     }
 
     /**
-     * POST /requests/:uuid/review : Submit review feedback for a request in review
+     * PUT /requests/:uuid/review : Submit review feedback for a request in review
      *
      * @param uuid the uuid of the request to provide the review feedback for
      * @param feedback the review feedback representation holding the advice and optional message
@@ -471,8 +471,10 @@ public class RequestResource {
     ) throws ActionNotAllowed {
         log.debug("REST request to provide review feedback advice for request : {}", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        requestService.provideReviewFeedback(user, feedback);
+
         RequestRepresentation requestRepresentation = requestService.findRequest(uuid);
+        requestService.provideReviewFeedback(user, requestRepresentation, feedback);
+
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
