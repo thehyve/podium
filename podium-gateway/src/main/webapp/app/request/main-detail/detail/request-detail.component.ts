@@ -50,12 +50,15 @@ export class RequestDetailComponent {
 
     setRequest(request) {
         this.request = request;
-        this.requestDetails = request.requestDetail;
-        this.isInRevision = false;
 
-        if (this.isRevisionStatusForRequester(request)) {
-            this.isInRevision = true;
-            this.requestFormService.request = request;
+        if (request) {
+            this.requestDetails = request.requestDetail;
+            this.isInRevision = false;
+
+            if (this.isRevisionStatusForRequester(request)) {
+                this.isInRevision = true;
+                this.requestFormService.request = request;
+            }
         }
     }
 

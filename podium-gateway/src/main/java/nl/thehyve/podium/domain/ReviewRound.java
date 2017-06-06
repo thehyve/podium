@@ -32,6 +32,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -59,6 +60,9 @@ public class ReviewRound implements Serializable {
     )
     @Column(name = "review_round_id")
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private UUID uuid;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
@@ -88,6 +92,28 @@ public class ReviewRound implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Only the database can return the UUID from the stored entity
+     * Pre-persist will add a {@link UUID} to the entity
+     * This setter is only added to satisfy mapstruct e.g.
+     *
+     * @param uuid is ignored.
+     */
+    public void setUuid(UUID uuid) {
+        // pass
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
     }
 
     public RequestDetail getRequestDetail() {
