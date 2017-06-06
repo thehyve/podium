@@ -462,7 +462,7 @@ public class RequestResource {
      *
      * @throws ActionNotAllowed
      */
-    @PostMapping("/requests/{uuid}/review")
+    @PutMapping("/requests/{uuid}/review")
     @SecuredByRequestOrganisationReviewer
     @Timed
     public ResponseEntity<RequestRepresentation> reviewRequest(
