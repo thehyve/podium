@@ -127,13 +127,19 @@ public class ReviewRoundService {
 
     public Request finalizeReviewRoundForRequest(Request request) {
         log.debug("Finalizing review round for request {}", request.getUuid());
-        ReviewRound reviewRound = request.getReviewRounds().stream().reduce((a, b) -> b).orElse(null);
 
-        // Finalize an open review round.
-        if (reviewRound != null && reviewRound.getEndDate() == null) {
-            reviewRound.setEndDate(ZonedDateTime.now());
-            reviewRoundRepository.save(reviewRound);
-            reviewRoundSearchRepository.save(reviewRound);
+        // Get last review round
+        List<ReviewRound> reviewRounds = request.getReviewRounds();
+
+        if (!reviewRounds.isEmpty()) {
+            ReviewRound reviewRound = reviewRounds.get(reviewRounds.size() - 1);
+
+            // Finalize an open review round.
+            if (reviewRound != null && reviewRound.getEndDate() == null) {
+                reviewRound.setEndDate(ZonedDateTime.now());
+                reviewRoundRepository.save(reviewRound);
+                reviewRoundSearchRepository.save(reviewRound);
+            }
         }
 
         return request;
