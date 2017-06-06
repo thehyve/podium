@@ -76,6 +76,16 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @JoinColumn(unique = true, name = "request_review_process")
     private RequestReviewProcess requestReviewProcess;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OrderColumn(name="delivery_process_order")
+    @JoinTable(name = "request_delivery_processes",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="delivery_process_id", referencedColumnName="id"))
+    private List<DeliveryProcess> deliveryProcesses;
+
     @Column(nullable = false)
     private UUID requester;
 
@@ -207,6 +217,19 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
         this.requestReviewProcess = requestReviewProcess;
+    }
+
+    public List<DeliveryProcess> getDeliveryProcesses() {
+        return deliveryProcesses;
+    }
+
+    public Request addDeliveryProcess(DeliveryProcess deliveryProcess) {
+        this.deliveryProcesses.add(deliveryProcess);
+        return this;
+    }
+
+    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
+        this.deliveryProcesses = deliveryProcesses;
     }
 
     public Set<Attachment> getAttachments() {

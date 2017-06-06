@@ -145,6 +145,10 @@ export class RequestService {
         return this.http.post(`${this.resourceUrl}/${uuid}/reject`, message);
     }
 
+    startRequestDelivery(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
+    }
+
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);

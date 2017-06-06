@@ -40,7 +40,7 @@
         <scriptTask id="init" name="Initialise the reviewing process" scriptFormat="groovy">
             <documentation>Initialise the reviewing process.</documentation>
             <script>
-                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.None)
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.ReviewProcessOutcome.None)
                 execution.setVariable("initiator_id", "${initiator}")
                 execution.setVariable("date_created", new Date())
             </script>
@@ -135,7 +135,7 @@
             - 'revision' if !request_approved && request_revision;
             - 'reject' if !request_approved && !request_revision.
         -->
-        <exclusiveGateway id="review_decision" name="Review of revision or reject" />
+        <exclusiveGateway id="review_decision" name="Review decision" />
         <sequenceFlow id="review_to_approve" sourceRef="review_decision" targetRef="approve">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[
                 ${request_approved == true}
@@ -158,7 +158,7 @@
         <scriptTask id="approve" name="Approve the request" scriptFormat="groovy">
             <documentation>Approve the request.</documentation>
             <script>
-                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.Approved)
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.ReviewProcessOutcome.Approved)
                 execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Closed)
             </script>
         </scriptTask>
@@ -167,11 +167,11 @@
 
 
 
-        <!-- Approve -->
+        <!-- Reject -->
         <scriptTask id="reject" name="Reject the request" scriptFormat="groovy">
             <documentation>Reject the request.</documentation>
             <script>
-                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.DecisionOutcome.Rejected)
+                execution.setVariable("decision", nl.thehyve.podium.common.enumeration.ReviewProcessOutcome.Rejected)
                 execution.setVariable("status", nl.thehyve.podium.common.enumeration.RequestReviewStatus.Closed)
             </script>
         </scriptTask>

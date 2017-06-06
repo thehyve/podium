@@ -84,9 +84,10 @@
                 (rejectChange)="rejectRequest()"
                 (requireRevisionChange)="requireRequestRevision()"
                 (validateRequestChange)="validateRequest()"
-                (approveRequest)="approveRequest()"
                 (markAcceptable)="submitReview(RequestReviewDecision.Approved)"
                 (markUnacceptable)="submitReview(RequestReviewDecision.Rejected)">
+                (approveRequestChange)="approveRequest()"
+                (startDeliveryChange)="startRequestDelivery()">
             </pdm-request-action-toolbar>
         </div>
 

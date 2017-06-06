@@ -15,10 +15,19 @@
 
     .material-icons {
         font-size: 32px;
+        margin-right: 15px;
         vertical-align: inherit;
+        float: left;
+    }
+
+    .alert {
+        align-items: center;
+        display: flex;
+        box-shadow: 1px 1px 3px 0;
     }
 
     .message-text-container {
-        display: inline-block;
+        display: block;
+        float: left;
     }
 }

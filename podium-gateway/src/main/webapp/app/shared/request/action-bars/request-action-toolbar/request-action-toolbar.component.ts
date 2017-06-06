@@ -47,6 +47,7 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() requireRevisionChange = new EventEmitter();
     @Output() markAcceptable = new EventEmitter();
     @Output() markUnacceptable = new EventEmitter();
+    @Output() startDeliveryChange = new EventEmitter();
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -138,5 +139,9 @@ export class RequestActionToolbarComponent implements OnInit {
 
     markRequestUnacceptable() {
         this.markUnacceptable.emit(true);
+    }
+
+    startDelivery() {
+        this.startDeliveryChange.emit(true);
     }
 }

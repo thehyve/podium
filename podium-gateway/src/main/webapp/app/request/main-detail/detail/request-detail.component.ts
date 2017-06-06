@@ -103,6 +103,15 @@ export class RequestDetailComponent {
         return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Reject);
     }
 
+    startRequestDelivery() {
+        this.isUpdating = true;
+        this.requestService.startRequestDelivery(this.request.uuid)
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onError(err)
+            );
+    }
+
     confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
         let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;

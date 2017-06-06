@@ -38,6 +38,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +82,9 @@ public class UserService {
 
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * Activate a user by a given key.
@@ -353,6 +357,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneByDeletedIsFalseAndLogin(login).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
