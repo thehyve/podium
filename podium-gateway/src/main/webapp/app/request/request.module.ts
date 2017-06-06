@@ -22,7 +22,9 @@ import {
 } from './overview/delete-request-draft-modal.component';
 import { RequestResolvePagingParams } from './overview/request-overview.route';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { RequestStatusUpdateDialogComponent } from '../shared/status-update/request-status-update.component';
+import { ReviewStatusComponent } from '../shared/review-status/review-status.component';
+import { RequestUpdateStatusDialogComponent } from '../shared/status-update/request-update-status-dialog.component';
+import { RequestUpdateReviewDialogComponent } from '../shared/status-update/request-update-review-dialog.component';
 
 @NgModule({
     imports: [
@@ -40,13 +42,16 @@ import { RequestStatusUpdateDialogComponent } from '../shared/status-update/requ
         RequestDetailComponent,
         RequestActionToolbarComponent,
         RequestProgressBarComponent,
-        RequestStatusUpdateDialogComponent
+        RequestUpdateStatusDialogComponent,
+        RequestUpdateReviewDialogComponent,
+        ReviewStatusComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
         RequestDraftModalModalComponent,
-        RequestStatusUpdateDialogComponent
-
+        RequestUpdateStatusDialogComponent,
+        RequestUpdateReviewDialogComponent,
+        ReviewStatusComponent
     ],
     providers: [
         RequestFormService,

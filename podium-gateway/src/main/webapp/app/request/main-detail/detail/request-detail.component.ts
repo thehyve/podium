@@ -8,20 +8,19 @@
  *
  */
 
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
-import { RequestReviewFeedback } from '../../../shared/request/request-review-feedback';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestReviewStatusOptions } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
-import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
-import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';
 import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
+import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
+import { RequestUpdateAction } from '../../../shared/status-update/request-update-action';
+import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -29,7 +28,9 @@ import { RequestReviewDecision } from '../../../shared/request/request-review-de
 })
 
 export class RequestDetailComponent {
+
     public RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
+
     public request: RequestBase;
     public requestDetails: RequestDetail;
     public isInRevision = false;
@@ -61,19 +62,21 @@ export class RequestDetailComponent {
     }
 
     submitReview(decision: RequestReviewDecision) {
-        let requestReviewFeedback = new RequestReviewFeedback();
-        // TODO : init modal
-        this.isUpdating = true;
-        this.requestService.submitReview(this.request.uuid, requestReviewFeedback)
-            .subscribe(
-                (res) => this.onSuccess(res.json()),
-                (err) => this.onError(err)
-            );
+        let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = this.request;
+        modalRef.componentInstance.reviewStatus = decision;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+            this.isUpdating = false;
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+            this.isUpdating = false;
+        });
     }
 
     requireRequestRevision() {
         this.isUpdating = true;
-        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Revision);
+        return this.confirmStatusUpdateModal(this.request, RequestUpdateAction.Revision);
     }
 
     validateRequest() {
@@ -100,7 +103,7 @@ export class RequestDetailComponent {
 
     rejectRequest() {
         this.isUpdating = true;
-        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Reject);
+        return this.confirmStatusUpdateModal(this.request, RequestUpdateAction.Reject);
     }
 
     startRequestDelivery() {
@@ -112,8 +115,8 @@ export class RequestDetailComponent {
             );
     }
 
-    confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
-        let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
+    confirmStatusUpdateModal(request: RequestBase, action: RequestUpdateAction) {
+        let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
         modalRef.result.then(result => {

@@ -35,11 +35,19 @@
         "statusupdate": {
             "Revision": {
                 "title": "Send request for revision",
-                "question": "Are you sure you would like to send this request back for revision?"
+                "question": "Are you sure you want to send this request back for revision?"
             },
             "Reject": {
                 "title": "Permanently reject a request",
-                "question": "Are you sure you would to reject this request?"
+                "question": "Are you sure you want to reject this request?"
+            },
+            "Approved": {
+                "title": "Mark request as acceptable",
+                "question": "Are you sure you want to mark this request as acceptable?"
+            },
+            "Rejected": {
+                "title": "Mark request as unacceptable",
+                "question": "Are you sure you want to mark this request as unacceptable?"
             },
             "form": {
                 "summary": {

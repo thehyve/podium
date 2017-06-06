@@ -12,10 +12,10 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';
 import { PodiumEvent } from './podium-event';
-import { RequestStatusUpdateAction } from '../status-update/request-status-update-action';
 import { RequestAccessService } from '../request/request-access.service';
 import { RequestStatusOptions } from '../request/request-status/request-status.constants';
 import { Subscription } from 'rxjs';
+import { RequestUpdateAction } from '../status-update/request-update-action';
 
 @Component({
     selector: 'pdm-event-message-component',
@@ -59,8 +59,8 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
     }
 
     isRevisionEvent(): boolean {
-        let revisionAction = RequestStatusUpdateAction.Revision;
-        let revisionStatus = RequestStatusUpdateAction[revisionAction];
+        let revisionAction = RequestUpdateAction.Revision;
+        let revisionStatus = RequestUpdateAction[revisionAction];
         return this.lastEvent.data.targetStatus === revisionStatus;
     }
 
