@@ -52,7 +52,7 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
 
     findLastHistoricMessageEventForCurrentStatus() {
         let messageEvents = this.request.historicEvents.filter((event) => {
-            return event.data.messageSummary != null;
+            return event.data.messageSummary != null && event.data.targetStatus === this.request.status.toString();
         });
 
         this.lastEvent = messageEvents[messageEvents.length - 1];

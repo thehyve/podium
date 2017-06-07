@@ -1,0 +1,54 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="request-action-wrapper" *ngIf="requestDeliveries">
+    <h3 jhiTranslate="delivery.title">Delivery</h3>
+    <!--<p jhiTranslate="delivery.info">
+        Delivery info
+    </p>-->
+    <table class="table">
+        <thead>
+            <tr>
+                <th jhiTranslate="delivery.type">Type</th>
+                <th jhiTranslate="delivery.status">Status</th>
+                <th jhiTranslate="delivery.notes">Notes on delivery</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let delivery of requestDeliveries">
+                <td jhiTranslate="requestType.{{delivery.type}}">Delivery Type</td>
+                <td jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery Status</td>
+                <td>{{ delivery.notes || 'No notes available' }}</td>
+                <td>
+                    <div class="btn-group pull-right" dropdown>
+                        <button type="button" class="btn btn-outline-primary"
+                                (click)="performAction(primaryStateOptions[delivery.status][delivery.type].action, delivery)">
+                            {{ primaryStateOptions[delivery.status][delivery.type].label }}
+                        </button>
+                        <button type="button" dropdownToggle class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
+                            <span class="caret"></span>
+                            <span class="sr-only">Delivery actions</span>
+                        </button>
+                        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li role="menuitem"
+                                *ngFor="let option of secondaryStateOptions[delivery.status][delivery.type]">
+                                <a href="#" class="dropdown-item"
+                                   (click)="performAction(secondaryStateOptions[delivery.status][delivery.type].action, delivery)">
+                                    {{ option.label }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

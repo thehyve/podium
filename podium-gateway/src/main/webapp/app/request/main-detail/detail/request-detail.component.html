@@ -78,6 +78,9 @@
             <pdm-request-review-panel [reviewRounds]="request.reviewRounds" *ngIf="isRequestCoordinator()">
             </pdm-request-review-panel>
 
+            <pdm-request-delivery-panel [request]="request" *ngIf="request">
+            </pdm-request-delivery-panel>
+
             <pdm-request-action-toolbar
                 [request]="request"
                 [isUpdating]="isUpdating"

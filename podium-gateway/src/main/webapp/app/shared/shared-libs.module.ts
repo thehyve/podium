@@ -16,7 +16,8 @@ import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { PodiumUploadModule } from './upload/upload.module';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
 import { TabsModule } from 'ng2-bootstrap/tabs';
-import { UiSwitchModule } from 'angular2-ui-switch';
+import { UiSwitchModule } from 'angular2-ui-switch'
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import { UiSwitchModule } from 'angular2-ui-switch';
         InfiniteScrollModule,
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
-        UiSwitchModule
+        UiSwitchModule,
+        BsDropdownModule.forRoot()
     ],
     exports: [
         FormsModule,
@@ -38,7 +40,8 @@ import { UiSwitchModule } from 'angular2-ui-switch';
         InfiniteScrollModule,
         TooltipModule,
         TabsModule,
-        UiSwitchModule
+        UiSwitchModule,
+        BsDropdownModule
     ]
 })
 export class PodiumGatewaySharedLibsModule {}

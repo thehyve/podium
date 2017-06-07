@@ -49,6 +49,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
+    @Output() finishDeliveryChange = new EventEmitter();
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
@@ -148,5 +149,9 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     startDelivery() {
         this.startDeliveryChange.emit(true);
+    }
+
+    finishDelivery() {
+        this.finishDeliveryChange.emit(true);
     }
 }

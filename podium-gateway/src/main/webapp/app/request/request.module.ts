@@ -23,12 +23,13 @@ import {
 import { RequestResolvePagingParams } from './overview/request-overview.route';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateDialogComponent } from '../shared/status-update/request-status-update.component';
+import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-delivery-panel.component';
+import { DeliveryService } from '../shared/delivery/delivery.service';
 
 @NgModule({
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
-        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
@@ -40,18 +41,19 @@ import { RequestStatusUpdateDialogComponent } from '../shared/status-update/requ
         RequestDetailComponent,
         RequestActionToolbarComponent,
         RequestProgressBarComponent,
-        RequestStatusUpdateDialogComponent
+        RequestStatusUpdateDialogComponent,
+        RequestDeliveryPanelComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
         RequestDraftModalModalComponent,
         RequestStatusUpdateDialogComponent
-
     ],
     providers: [
         RequestFormService,
         RequestOverviewService,
-        RequestResolvePagingParams
+        RequestResolvePagingParams,
+        DeliveryService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

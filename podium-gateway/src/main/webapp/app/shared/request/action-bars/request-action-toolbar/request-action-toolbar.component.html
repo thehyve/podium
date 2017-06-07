@@ -159,6 +159,40 @@
                 </div>
 
             </div>
+
+            <!-- Delivery -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Delivery)">
+
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+                    <div class="alert alert-info" jhiTranslate="request.toolbar.delivery">
+                        Your request is currently in the process of delivery. You will be notified when action is required on your behalf.
+                    </div>
+                </div>
+
+                <!-- Coordinator action to start request delivery -->
+                <div *ngIf="isRequestCoordinator()">
+                    <button type="button" class="btn btn-danger test-reject-request-delivery-btn"
+                            tooltip="Please validate the request by checking the box above."
+                            [isDisabled]="checks.canClose"
+                            (click)="rejectRequest()">
+                        <span jhiTranslate="request.toolbar.close">
+                            Close request
+                        </span>
+                    </button>
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-success test-request-finish-delivery-btn"
+                                [disabled]="checks.canFinalize"
+                                tooltip="Please validate the request by checking the box above."
+                                [isDisabled]="checks.canFinalize"
+                                (click)="finishDelivery()">
+                            <span jhiTranslate="request.toolbar.finishDelivery">
+                                Finalize request
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </fieldset>
 
     </form>

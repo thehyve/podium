@@ -1,0 +1,10 @@
+{
+    "delivery" : {
+        "title": "Delivery",
+        "info": "Some delivery info",
+        "type": "Type",
+        "status": "Status",
+        "notes": "Notes on delivery",
+        "action": "Action"
+    }
+}
