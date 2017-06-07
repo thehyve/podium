@@ -14,7 +14,7 @@
         <td>{{feedback.date | date:'short'}}</td>
         <td>
             <span class="tag" [ngClass]="toggleAdviseStyle(feedback.advice)">
-                {{RequestReviewDecision[feedback.advice]}}
+                {{feedback.advice}}
             </span>
         </td>
         <td>

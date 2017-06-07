@@ -23,7 +23,6 @@ import { Subscription } from 'rxjs';
 
 export class RequestReviewPanelComponent implements OnInit, OnDestroy {
 
-    RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
     lastReviewFeedback: RequestReviewFeedback[];
     requestSubscription: Subscription;
 
