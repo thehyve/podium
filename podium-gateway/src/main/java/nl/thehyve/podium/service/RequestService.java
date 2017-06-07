@@ -746,7 +746,7 @@ public class RequestService {
             = requestRepresentation.getReviewRounds().stream()
                 .map(ReviewRoundRepresentation::getReviewFeedback)
                 .flatMap(List::stream)
-                .filter(reviewFeedback -> reviewFeedback.getUuid() == feedbackRepresentation.getUuid())
+                .filter(reviewFeedback -> reviewFeedback.getUuid().equals(feedbackRepresentation.getUuid()))
                 .findFirst();
 
         // When this review feedback is not part of the request
@@ -758,7 +758,7 @@ public class RequestService {
             );
         }
 
-        if (user.getUuid() != feedback.getUuid()) {
+        if (!user.getUuid().equals(feedback.getUuid())) {
             log.error("Current user ({}) is not the assignee ({}) of the review feedback ({}).",
                 user.getUuid(), feedback.getReviewer(), feedbackRepresentation.getUuid()
             );
