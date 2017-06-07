@@ -8,28 +8,42 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Sets;
+import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.Status;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
+import nl.thehyve.podium.common.service.dto.ReviewRoundRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
+import nl.thehyve.podium.domain.ReviewFeedback;
+import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.RequestRepository;
+import nl.thehyve.podium.repository.ReviewFeedbackRepository;
+import nl.thehyve.podium.repository.ReviewRoundRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
+import nl.thehyve.podium.repository.search.ReviewFeedbackSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.service.mapper.ReviewFeedbackMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +83,25 @@ public class RequestService {
     private RequestDetailMapper requestDetailMapper;
 
     @Autowired
+    private ReviewFeedbackMapper reviewFeedbackMapper;
+
+    @Autowired
     private RequestSearchRepository requestSearchRepository;
 
     @Autowired
+    private ReviewFeedbackRepository reviewFeedbackRepository;
+
+    @Autowired
+    private ReviewFeedbackSearchRepository reviewFeedbackSearchRepository;
+
+    @Autowired
     private RequestReviewProcessService requestReviewProcessService;
+
+    @Autowired
+    private ReviewRoundService reviewRoundService;
+
+    @Autowired
+    private OrganisationClientService organisationClientService;
 
     @Autowired
     private NotificationService notificationService;
@@ -104,7 +133,6 @@ public class RequestService {
         StatusUpdateEvent event =
             new StatusUpdateEvent<>(user, sourceStatus, request.getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
-
     }
 
     protected void publishReviewStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
@@ -112,7 +140,6 @@ public class RequestService {
             new StatusUpdateEvent<>(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
     }
-
 
     /**
      * Save a request.
@@ -424,9 +451,7 @@ public class RequestService {
         if (request.getStatus() != RequestStatus.Draft) {
             throw ActionNotAllowed.forStatus(request.getStatus());
         }
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
-        }
+
         request = requestMapper.updateRequestDTOToRequest(body, request);
         save(request);
         return requestMapper.requestToRequestDTO(request);
@@ -448,11 +473,6 @@ public class RequestService {
 
         checkReviewStatus(request, RequestReviewStatus.Revision);
 
-        // FIXME: [AOP] Only requester should be able to perform an update to the request.
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
-        }
-
         requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
 
         request = save(request);
@@ -472,11 +492,6 @@ public class RequestService {
         Request request = requestRepository.findOneByUuid(uuid);
 
         checkReviewStatus(request, RequestReviewStatus.Revision);
-
-        // Is the current user the owner of the request
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request.");
-        }
 
         // Update the request details with the updated revision details
         request.setRequestDetail(request.getRevisionDetail());
@@ -534,6 +549,13 @@ public class RequestService {
         requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
+
+        // Once successfully started initiate review round and review feedback processes.
+        ReviewRound reviewRound = reviewRoundService.createReviewRoundForRequest(request);
+        request.getReviewRounds().add(reviewRound);
+
+        requestRepository.save(request);
+
         publishReviewStatusUpdate(user, sourceReviewStatus, request, null);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
@@ -550,6 +572,9 @@ public class RequestService {
 
         // Reject the request
         requestReviewProcessService.reject(user, request.getRequestReviewProcess());
+
+        // Finalize a potentially available review round
+        reviewRoundService.finalizeReviewRoundForRequest(request);
 
         request = requestRepository.findOneByUuid(uuid);
         publishReviewStatusUpdate(user, sourceReviewStatus, request, message);
@@ -585,6 +610,9 @@ public class RequestService {
             publishStatusUpdate(user, sourceStatus, request, null);
         }
 
+        // Finalize a potentially available review round
+        reviewRoundService.finalizeReviewRoundForRequest(request);
+
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
@@ -601,6 +629,10 @@ public class RequestService {
         requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
+
+        // Finalize a potentially available review round
+        reviewRoundService.finalizeReviewRoundForRequest(request);
+
         publishReviewStatusUpdate(user, sourceReviewStatus, request, message);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
@@ -640,12 +672,29 @@ public class RequestService {
         // TODO: Aggregate mails for multiple organisations per user.
 
         for (UUID organisationUuid: request.getOrganisations()) {
-            // TODO: validate request type of the request with the supported request types of the organisation.
             Request organisationRequest = requestMapper.clone(request);
 
             // Create organisation revision details
             RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());
             organisationRequest.setRevisionDetail(revisionDetail);
+
+            try {
+                Set<RequestType> selectedRequestTypes = organisationRequest.getRequestDetail().getRequestType();
+
+                // Fetch the organisation object and filter the organisation supported request types.
+                OrganisationDTO organisationDTO = organisationClientService.findOrganisationByUuid(organisationUuid);
+                Set<RequestType> organisationRequestTypes = organisationDTO.getRequestTypes();
+
+                Set<RequestType> organisationSupportedRequestTypes
+                    = Sets.intersection(selectedRequestTypes, organisationRequestTypes);
+
+                // Set the by the organisation supported request types for this request.
+                organisationRequest.getRequestDetail().setRequestType(organisationSupportedRequestTypes);
+                organisationRequest.getRevisionDetail().setRequestType(organisationSupportedRequestTypes);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation", e);
+            }
 
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
@@ -666,6 +715,60 @@ public class RequestService {
         log.debug("Deleting draft request.");
         deleteRequest(request.getId());
         return result;
+    }
+
+    /**
+     * Provide the review feedback for a review round in a request.
+     *
+     * @param user the currently logged in user
+     * @param feedbackRepresentation the feedback supplied by the reviewer
+     *
+     * @return ReviewFeedback the updated review feedback
+     * @throws AccessDenied if the currently logged in user is not the owner of the feedback given
+     * @throws ActionNotAllowed when the feedback supplied is not part of the request.
+     */
+    @Timed
+    public ReviewFeedback provideReviewFeedback(
+        AuthenticatedUser user,
+        RequestRepresentation requestRepresentation,
+        ReviewFeedbackRepresentation feedbackRepresentation
+    ) throws ActionNotAllowed {
+        log.debug("Providing review feedback for {}", feedbackRepresentation.getUuid());
+
+        ReviewFeedback feedback = reviewFeedbackRepository.findOneByUuid(feedbackRepresentation.getUuid());
+
+        if (feedback == null) {
+            throw new ResourceNotFound("Review feedback could not be found for " + feedbackRepresentation.getUuid());
+        }
+
+        // Check whether the feedback is part of the request.
+        Optional<ReviewFeedbackRepresentation> optionalFeedback
+            = requestRepresentation.getReviewRounds().stream()
+                .map(ReviewRoundRepresentation::getReviewFeedback)
+                .flatMap(List::stream)
+                .filter(reviewFeedback -> reviewFeedback.getUuid() == feedbackRepresentation.getUuid())
+                .findFirst();
+
+        // When this review feedback is not part of the request
+        if (!optionalFeedback.isPresent()) {
+            throw new ActionNotAllowed(
+                String.format("Review feedback (%s) is not part of the request (%s)",
+                    feedbackRepresentation.getUuid(),
+                    requestRepresentation.getUuid())
+            );
+        }
+
+        if (user.getUuid() != feedback.getUuid()) {
+            log.error("Current user ({}) is not the assignee ({}) of the review feedback ({}).",
+                user.getUuid(), feedback.getReviewer(), feedbackRepresentation.getUuid()
+            );
+            throw new AccessDenied("Current user is not the review feedback assignee.");
+        }
+
+        feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackRepresentation, feedback);
+        reviewFeedbackRepository.save(feedback);
+        reviewFeedbackSearchRepository.save(feedback);
+        return feedback;
     }
 
     /**

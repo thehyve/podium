@@ -8,20 +8,27 @@
  *
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ReviewRound } from '../review-round';
 import { RequestReviewFeedback } from '../request-review-feedback';
 import { RequestReviewDecision } from '../request-review-decision';
+import { RequestService } from '../request.service';
+import { RequestBase } from '../request-base';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-request-review-panel',
     templateUrl: './request-review-panel.component.html'
 })
 
-export class RequestReviewPanelComponent implements OnInit {
+export class RequestReviewPanelComponent implements OnInit, OnDestroy {
 
     RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
     lastReviewFeedback: RequestReviewFeedback[];
+    requestSubscription: Subscription;
+
+    @Input()
+    reviewRounds: ReviewRound[];
 
     private optionStyles = [
         {style: 'tag-success', advise: RequestReviewDecision.Approved},
@@ -29,11 +36,13 @@ export class RequestReviewPanelComponent implements OnInit {
         {style: 'tag-default', advise: RequestReviewDecision.None},
     ];
 
-    @Input()
-    reviewRounds: ReviewRound[];
-
-    constructor() {
-
+    constructor(
+        private requestService: RequestService
+    ) {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.reviewRounds = request.reviewRounds;
+            this.lastReviewFeedback = this.getLastReviewFeedback();
+        });
     }
 
     toggleAdviseStyle(advise: RequestReviewDecision): string {
@@ -45,22 +54,31 @@ export class RequestReviewPanelComponent implements OnInit {
 
     private getLastReviewFeedback() {
         // get the latest start date of review rounds
-        let _lastReviewRoundDate = Math.max.apply(Math, this.reviewRounds.map((reviewRound) => {
-            return reviewRound.startDate;
-        }));
+        let _lastReviewRoundDate = new Date(Math.max.apply(null, this.reviewRounds.map((reviewRound) => {
+            return new Date(reviewRound.startDate);
+        })));
 
         // get the latest round
         let _lastReviewRound = this.reviewRounds.find((reviewRound) => {
-            return reviewRound.startDate.getTime() === _lastReviewRoundDate;
+            return new Date(reviewRound.startDate).getTime() === _lastReviewRoundDate.getTime();
         });
 
         // return feedback of last review round
-        return _lastReviewRound.reviewFeedback;
+        if (_lastReviewRound && _lastReviewRound.endDate == null) {
+            return _lastReviewRound.reviewFeedback;
+        }
+        return null;
     }
 
     ngOnInit(): void {
         if (this.reviewRounds.length) {
             this.lastReviewFeedback = this.getLastReviewFeedback();
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
         }
     }
 }

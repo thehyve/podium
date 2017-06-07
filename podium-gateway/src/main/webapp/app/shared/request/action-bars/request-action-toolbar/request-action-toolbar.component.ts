@@ -7,13 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Form } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-status/request-status.constants';
 import { RequestAccessService } from '../../request-access.service';
 import { RequestService } from '../../request.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -21,7 +22,7 @@ import { RequestService } from '../../request.service';
     styleUrls: ['request-action-toolbar.scss']
 })
 
-export class RequestActionToolbarComponent implements OnInit {
+export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     private status: string;
     private reviewStatus?: string;
@@ -30,6 +31,7 @@ export class RequestActionToolbarComponent implements OnInit {
     public checks: any = {
         validation: false
     };
+    private requestSubscription: Subscription;
 
     @Input() form: Form;
     @Input() request: RequestBase;
@@ -55,13 +57,19 @@ export class RequestActionToolbarComponent implements OnInit {
         private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
-        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });
     }
 
     ngOnInit() {
          this.initializeStatuses();
+    }
+
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
     }
 
     initializeStatuses() {

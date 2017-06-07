@@ -80,7 +80,7 @@
             "reviewerName": "Name",
             "result": "Result",
             "comment": "Comment",
-            "noResults": "No reviews found"
+            "noResults": "No active reviews found"
         },
         "delete": {
             "dialog": {

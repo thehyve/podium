@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.PodiumGatewayApp;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
@@ -58,6 +59,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -157,6 +159,14 @@ public class RequestResourceIntTest {
         organisation.setName("Test organisation " + i);
         organisation.setShortName("Test" + i);
         organisation.setActivated(true);
+
+        // The organisation accepts the Material and Data request types
+        Set<RequestType> requestTypes = Sets.newSet(
+            RequestType.Material,
+            RequestType.Data
+        );
+
+        organisation.setRequestTypes(requestTypes);
         return organisation;
     }
 
@@ -458,7 +468,6 @@ public class RequestResourceIntTest {
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON)
         )
-        .andExpect(status().isOk())
         .andDo(result -> {
             log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
             List<RequestRepresentation> requests =
@@ -471,7 +480,8 @@ public class RequestResourceIntTest {
                 Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
             }
             res[0] = requests;
-        });
+        })
+        .andExpect(status().isOk());
 
         return res[0];
     }
@@ -833,6 +843,10 @@ public class RequestResourceIntTest {
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+
+                // Expect one review round to have been created
+                Assert.assertEquals(requestResult.getReviewRounds().size(), 1);
+                Assert.assertNull(requestResult.getReviewRounds().get(0).getEndDate());
             });
     }
 

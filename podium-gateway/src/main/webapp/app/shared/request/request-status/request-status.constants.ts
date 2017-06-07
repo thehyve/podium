@@ -30,8 +30,8 @@ const requestStatusesOpts: { [status: string]: any; } = {
         name: 'Delivery',
         order: 5
     },
-    'Return' : {
-        name: 'Return',
+    'Finished' : {
+        name: 'Finished',
         order: 6
     }
 };

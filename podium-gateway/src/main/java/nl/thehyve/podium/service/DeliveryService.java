@@ -20,9 +20,11 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
 import nl.thehyve.podium.common.service.dto.DeliveryReferenceRepresentation;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.*;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.service.mapper.DeliveryProcessMapper;
+import nl.thehyve.podium.service.mapper.RequestMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,9 @@ public class DeliveryService {
 
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private RequestMapper requestMapper;
 
     @Autowired
     private DeliveryProcessService deliveryProcessService;
@@ -166,7 +171,7 @@ public class DeliveryService {
      * @return the list of generated delivery process instances.
      * @throws ActionNotAllowed iff the request is not in status Approved.
      */
-    public List<DeliveryProcessRepresentation> startDelivery(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
+    public RequestRepresentation startDelivery(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
         RequestStatus sourceStatus = checkStatus(request, RequestStatus.Approved);
         List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
@@ -179,7 +184,7 @@ public class DeliveryService {
         request.setStatus(RequestStatus.Delivery);
         request = requestRepository.save(request);
         requestService.publishStatusUpdate(user, sourceStatus, request, null);
-        return deliveryProcesses;
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     /**

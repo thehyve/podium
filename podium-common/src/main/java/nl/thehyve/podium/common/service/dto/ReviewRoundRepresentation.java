@@ -17,6 +17,8 @@ import java.util.UUID;
 public class ReviewRoundRepresentation {
     private Long id;
 
+    private UUID uuid;
+
     private RequestDetailRepresentation requestDetail;
 
     private List<ReviewFeedbackRepresentation> reviewFeedback;
@@ -33,6 +35,14 @@ public class ReviewRoundRepresentation {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public RequestDetailRepresentation getRequestDetail() {

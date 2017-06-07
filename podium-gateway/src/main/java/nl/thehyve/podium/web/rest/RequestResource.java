@@ -16,6 +16,7 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -450,6 +451,30 @@ public class RequestResource {
         log.debug("REST request to apply revision to request details for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.requestRevision(user, uuid, message);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * PUT /requests/:uuid/review : Submit review feedback for a request in review
+     *
+     * @param uuid the uuid of the request to provide the review feedback for
+     * @param feedback the review feedback representation holding the advice and optional message
+     *
+     * @throws ActionNotAllowed
+     */
+    @PutMapping("/requests/{uuid}/review")
+    @SecuredByRequestOrganisationReviewer
+    @Timed
+    public ResponseEntity<RequestRepresentation> reviewRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid,
+        @RequestBody ReviewFeedbackRepresentation feedback
+    ) throws ActionNotAllowed {
+        log.debug("REST request to provide review feedback advice for request : {}", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        RequestRepresentation requestRepresentation = requestService.findRequest(uuid);
+        requestService.provideReviewFeedback(user, requestRepresentation, feedback);
+
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
