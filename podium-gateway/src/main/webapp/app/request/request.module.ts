@@ -25,6 +25,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewStatusComponent } from '../shared/review-status/review-status.component';
 import { RequestUpdateStatusDialogComponent } from '../shared/status-update/request-update-status-dialog.component';
 import { RequestUpdateReviewDialogComponent } from '../shared/status-update/request-update-review-dialog.component';
+import { RequestMainDetailResolver } from './main-detail/request-main-detail-resolver.service';
 
 @NgModule({
     imports: [
@@ -56,7 +57,8 @@ import { RequestUpdateReviewDialogComponent } from '../shared/status-update/requ
     providers: [
         RequestFormService,
         RequestOverviewService,
-        RequestResolvePagingParams
+        RequestResolvePagingParams,
+        RequestMainDetailResolver,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

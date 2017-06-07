@@ -10,6 +10,7 @@
 import { Route } from '@angular/router';
 import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
 import { RequestMainDetailComponent } from './request-main-detail.component';
+import { RequestMainDetailResolver } from './request-main-detail-resolver.service';
 
 export const requestMainDetailRoute: Route = {
     path: 'detail/:uuid',
@@ -19,5 +20,8 @@ export const requestMainDetailRoute: Route = {
         pageTitle: 'request.pageTitle',
         breadcrumb: 'details'
     },
-    canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService],
+    resolve: {
+        request: RequestMainDetailResolver
+    }
 };

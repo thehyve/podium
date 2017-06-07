@@ -13,6 +13,7 @@ import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';
+import { RequestMainDetailResolver } from './request-main-detail-resolver.service';
 
 @Component({
     selector: 'pdm-request-main-detail',
@@ -33,11 +34,9 @@ export class RequestMainDetailComponent implements OnInit {
     public error: any;
     public success: any;
 
-    constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private route: ActivatedRoute,
-        private requestService: RequestService
-    ) {
+    constructor(private jhiLanguageService: JhiLanguageService,
+                private route: ActivatedRoute,
+                private requestService: RequestService) {
         this.jhiLanguageService.setLocations(['request']);
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -46,19 +45,11 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     ngOnInit() {
-
-        /**
-         * Resolve request
-         */
-        this.route.params.subscribe(params => {
-            let uuid = params['uuid'];
-            if (uuid) {
-                this.requestService.findByUuid(uuid).subscribe(
-                    (request) => this.onSuccess(request),
-                    (res) => this.onError(res)
-                );
-            }
-        });
+        this.route.data
+            .subscribe((data: { request: RequestBase }) => {
+                this.request = data.request;
+                this.onSuccess(data.request);
+            }, err => this.onError(err));
     }
 
     private onSuccess(request: RequestBase) {
@@ -67,7 +58,7 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     private onError(error) {
-        this.error =  'ERROR';
+        this.error = 'ERROR';
         this.success = null;
     }
 }
