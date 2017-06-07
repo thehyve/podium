@@ -7,12 +7,13 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-let { defineSupportCode } = require('cucumber');
+import { Persona } from '../personas/templates';
 import { Promise } from 'es6-promise';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { $ } from 'protractor';
 import { login, promiseTrue, doInOrder } from './util';
+let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ setDefaultTimeout }) {
     setDefaultTimeout(30 * 1000);
@@ -22,7 +23,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
     Given(/^(.*) goes to the '(.*)' page$/, function (personaName, pageName): Promise<any> {
         let director = this.director as Director;
-        let persona = director.getPersona(personaName);
+        let persona: Persona = director.getPersona(personaName);
 
         if (['sign in', 'registration'].indexOf(pageName) < 0) {
             return login(director, persona).then(() => {
@@ -38,8 +39,8 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona(personaName);
 
         return Promise.all([
-            director.enterText('usernameInput', persona.properties['login']),
-            director.enterText('passwordInput', persona.properties['password'])
+            director.enterText('usernameInput', persona['login']),
+            director.enterText('passwordInput', persona['password'])
         ]).then(() => {
             return director.clickOn('submitButton')
         })
@@ -89,7 +90,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
 
-        let inputValues: { [key: string]: string } = persona.properties;
+        let inputValues: { [key: string]: any } = persona;
         let fieldValueMapping: { [key: string]: string } = {
             "username": "login",
             "firstName": "firstName",
@@ -135,10 +136,10 @@ defineSupportCode(({ Given, When, Then }) => {
 
     When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts): Promise<any> {
         let director = this.director as Director;
-        let persona = director.getPersona(personaName);
+        let persona: Persona = director.getPersona(personaName);
 
         return Promise.all([
-            director.enterText('usernameInput', persona.properties['login']),
+            director.enterText('usernameInput', persona['login']),
             director.enterText('passwordInput', 'wongPassword')
         ]).then(function () {
             return doInOrder(Array(attempts), (item) => {
@@ -158,9 +159,9 @@ defineSupportCode(({ Given, When, Then }) => {
 
     When(/^(.*) forgets to fill a field in the registration form$/, function (personaName): Promise<any> {
         let director = this.director as Director;
-        let persona = director.getPersona(personaName);
+        let persona: Persona = director.getPersona(personaName);
 
-        let inputValues: { [key: string]: string } = persona.properties;
+        let inputValues: { [key: string]: any } = persona;
         let fieldValueMapping: { [key: string]: string } = {
             "username": "login",
             "firstName": "firstName",
@@ -208,15 +209,15 @@ function checkNonExistend(expected, realData) {
     return realData.message == "error.404";
 }
 
-function checkNewUser(expected, realData) {
-    return expected.properties["login"] == realData.login &&
-        expected.properties.email == realData.email &&
+function checkNewUser(expected: Persona, realData) {
+    return expected["login"] == realData.login &&
+        expected["email"] == realData.email &&
         false == realData.emailVerified &&
         false == realData.adminVerified
 }
 
-function checkLocked(expected, realData) {
-    return expected.properties["login"] == realData.login &&
-        expected.properties.email == realData.email &&
+function checkLocked(expected: Persona, realData) {
+    return expected["login"] == realData.login &&
+        expected["email"] == realData.email &&
         true == realData.accountLocked
 }

@@ -8,9 +8,9 @@ Feature: researcher can do requests (BRPREQ-134)
         Then the organisations '<organisations>' can be selected
 
         Examples:
-            | requestTypes           | organisations        |
-            | Data                   | DataBank, MultiBank  |
-            | Images                 | ImageBank, MultiBank |
-            | Material               | BioBank, MultiBank   |
-            | Data, Images, Material | MultiBank            |
+            | requestTypes           | organisations                           |
+            | Data                   | DataBank, MultiBank                     |
+            | Images                 | ImageBank, MultiBank                    |
+            | Material               | BioBank, MultiBank                      |
+            | Data, Images, Material | DataBank, ImageBank, BioBank, MultiBank |
 

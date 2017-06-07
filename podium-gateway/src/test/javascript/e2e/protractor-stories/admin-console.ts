@@ -11,11 +11,12 @@ import request = require('request-promise-native')
 
 import { isUndefined } from 'util';
 import { browser } from 'protractor';
-import { Persona } from './director';
 import { isNullOrUndefined } from 'util';
 import PersonaDictionary = require('../personas/persona-dictionary');
 
 let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
+import { Persona } from '../personas/templates';
+import { Organisation, Request } from '../data/templates';
 
 export class AdminConsole {
     public token: string;
@@ -28,8 +29,8 @@ export class AdminConsole {
         let password;
 
         if (!isUndefined(persona)) {
-            login = persona.properties["login"];
-            password = persona.properties["password"];
+            login = persona["login"];
+            password = persona["password"];
         } else {
             login = "admin";
             password = "admin";
@@ -50,11 +51,11 @@ export class AdminConsole {
         return request(options)
     }
 
-    public checkUser(persona, check) {
+    public checkUser(persona: Persona, check) {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties['login'],
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -64,14 +65,14 @@ export class AdminConsole {
                     let user = parseJSON(body);
 
                     if (!check(persona, user)) {
-                        console.log("http checkUser " + persona.properties['login']);
+                        console.log("http checkUser " + persona['login']);
                         return "checkUser failed";
                     }
                 }, (reason) => {
                     let user = parseJSON(reason['error']);
 
                     if (!check(persona, user)) {
-                        console.log("http checkUser " + persona.properties['login'] + " " + reason["statusCode"]);
+                        console.log("http checkUser " + persona['login'] + " " + reason["statusCode"]);
                         return "checkUser failed";
                     }
                 }
@@ -79,14 +80,14 @@ export class AdminConsole {
         });
     }
 
-    public unlockUser(persona) {
+    public unlockUser(persona: Persona) {
         let token;
 
         this.authenticate().then((body) => {
             token = parseJSON(body).access_token;
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/users/' + persona.properties['login'],
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -103,14 +104,14 @@ export class AdminConsole {
                     }
                 };
                 return request(options).then((body), (reason) => {
-                    console.log("http unlockUser " + persona.properties['login'] + " " + reason["statusCode"], body);
+                    console.log("http unlockUser " + persona['login'] + " " + reason["statusCode"], body);
                     return "unlockUser failed"
                 })
             })
         })
     }
 
-    public checkOrganization(expectedOrganization, check) {
+    public checkOrganisation(expectedOrganisation: Organisation, check) {
 
         return this.authenticate(PersonaDictionary['BBMRI_Admin']).then((body) => {
             let options = {
@@ -121,20 +122,20 @@ export class AdminConsole {
                 }
             };
             return request(options).then((body) => {
-                let organizations = parseJSON(body);
-                let organization = organizations.filter(function (value) {
-                    return value["shortName"] == expectedOrganization.properties["shortName"];
+                let organisations = parseJSON(body);
+                let organisation = organisations.filter(function (value) {
+                    return value["shortName"] == expectedOrganisation["shortName"];
                 })[0];
 
-                if (!check(expectedOrganization, organization)) {
-                    return JSON.stringify(organization) + " did not match for " + JSON.stringify(expectedOrganization)
+                if (!check(expectedOrganisation, organisation)) {
+                    return JSON.stringify(organisation) + " did not match for " + JSON.stringify(expectedOrganisation)
                 }
 
             })
         });
     }
 
-    public checkDraft(expectedDraft, check, user) {
+    public checkDraft(expectedDraft: Request, check, user) {
 
         return this.authenticate(user).then((body) => {
             let options = {
@@ -148,7 +149,7 @@ export class AdminConsole {
                 let drafts = parseJSON(body);
 
                 let draft = drafts.filter(function (value) {
-                    return value["requestDetail"]["title"] == expectedDraft.properties["title"];
+                    return value["requestDetail"]["title"] == expectedDraft["title"];
                 })[0];
 
                 if (!check(expectedDraft, draft)) {
@@ -162,27 +163,27 @@ export class AdminConsole {
         return this.authenticate().then((body) => {
             let userData = {
                 "id": null,
-                "login": persona.properties['login'],
-                "firstName": persona.properties['firstName'],
-                "lastName": persona.properties['lastName'],
-                "email": persona.properties['email'],
-                "telephone": persona.properties['telephone'],
-                "institute": persona.properties['institute'],
-                "department": persona.properties['department'],
-                "jobTitle": persona.properties['jobTitle'],
-                "specialism": persona.properties['specialism'],
-                "emailVerified": persona.properties['emailVerified'],
-                "adminVerified": persona.properties['adminVerified'],
-                "accountLocked": persona.properties['accountLocked'],
+                "login": persona['login'],
+                "firstName": persona['firstName'],
+                "lastName": persona['lastName'],
+                "email": persona['email'],
+                "telephone": persona['telephone'],
+                "institute": persona['institute'],
+                "department": persona['department'],
+                "jobTitle": persona['jobTitle'],
+                "specialism": persona['specialism'],
+                "emailVerified": persona['emailVerified'],
+                "adminVerified": persona['adminVerified'],
+                "accountLocked": persona['accountLocked'],
                 "langKey": "en",
                 "createdBy": null,
                 "createdDate": null,
                 "lastModifiedBy": null,
                 "lastModifiedDate": null,
-                "password": persona.properties['password']
+                "password": persona['password']
             };
             // Set non-organisation authorities
-            let roles: any[] = persona.properties['authority'];
+            let roles: any[] = persona['authority'];
             if (!isNullOrUndefined(roles)) {
                 userData['authorities'] = roles
                     .map((role) => role['role'])
@@ -199,13 +200,13 @@ export class AdminConsole {
             };
 
             return request(options).catch((reason) => {
-                console.log("http createUser " + persona.properties['login'], reason["statusCode"]);
+                console.log("http createUser " + persona['login'], reason["statusCode"]);
                 return "createUser failed"
             });
         });
     }
 
-    public createOrganization(persona: Persona, organisation: any) {
+    public createOrganisation(persona: Persona, organisation: Organisation) {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
@@ -216,22 +217,22 @@ export class AdminConsole {
                 },
                 body: JSON.stringify(
                     {
-                        "name": organisation.properties['name'],
-                        "shortName": organisation.properties['shortName'],
-                        "activated": true,
-                        "requestTypes": organisation.properties['requestTypes']
+                        "name": organisation['name'],
+                        "shortName": organisation['shortName'],
+                        "activated": organisation['activated'],
+                        "requestTypes": organisation['requestTypes']
                     }
                 )
             };
             return request(options).catch((reason) => {
-                    console.log("http createOrganization " + organisation.properties['shortName'] + " " + reason["statusCode"]);
-                    return "createOrganization failed"
+                    console.log("http createorganisation " + organisation['shortName'] + " " + reason["statusCode"]);
+                    return "createorganisation failed"
                 }
             )
         });
     }
 
-    public createRequest(Request: any) {
+    public createRequest(request: Request) {
         let that = this;
         return new Promise(function (resolve, reject) {
             if (false) {
@@ -306,6 +307,27 @@ export class AdminConsole {
             })
         });
     }
+
+    public newDraft(persona: Persona) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/requests/drafts',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            });
+        })
+    }
+
+    public saveDraft(draft) {
+
+    }
+
 }
 
 function parseJSON(string: string) {

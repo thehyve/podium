@@ -12,7 +12,7 @@ import { AdminConsole } from '../protractor-stories/admin-console';
 import { isUndefined } from 'util';
 import { Promise } from 'es6-promise';
 import { doInOrder, promiseTrue } from './util';
-import { Organisation } from '../data/templates';
+import { Organisation, Request } from '../data/templates';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -21,16 +21,16 @@ defineSupportCode(({ Given, When, Then }) => {
     When(/^(.*) creates a new draft filling data for '(.*)'$/, function (personaName, requestName): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
-        let request = director.getData(requestName);
+        let request: Request = director.getData(requestName);
         this.scenarioData = request; //store for next step
         let page = director.getCurrentPage();
 
         return director.clickOn("new draft").then(() => {
             return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
                 "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
-                return director.enterText(key, request.properties[key]);
+                return director.enterText(key, request[key]);
             }).then(() => {
-                return doInOrder(request.properties["requestTypes"], (type) => {
+                return doInOrder(request["requestTypes"], (type) => {
                     return director.clickOn(type);
                 }).then(() => {
                     return director.clickOn("save")
@@ -55,17 +55,20 @@ defineSupportCode(({ Given, When, Then }) => {
         let orgNames: string[] = [];
 
         director.getListOfData(orgList).forEach((org: Organisation) => {
-            orgNames.push(org.properties["name"]);
+            orgNames.push(org["name"]);
         });
 
-        return director.getElement("organisations").locator.$$('option').each((element) => {
-            return element.getText().then((text) => {
-                return promiseTrue(orgNames.some((item) => {
-                    return text.trim() == item;
-                }), "\"" + text + "\"" + "Should not be selectable")
+        return Promise.resolve(director.getElement("organisations").locator.$$('option').count()).then((count) => {
+            return promiseTrue(count == orgNames.length, "expected " + orgNames.length + " organisations but found " + count);
+        }).then(() => {
+            return director.getElement("organisations").locator.$$('option').each((element) => {
+                return element.getText().then((text) => {
+                    return promiseTrue(orgNames.some((item) => {
+                        return text.trim() == item;
+                    }), "\"" + text + "\"" + "Should not be selectable only: " + orgNames)
+                })
             })
         })
-
     });
 
     Then(/^the draft is saved$/, function (callback) {
@@ -80,7 +83,7 @@ defineSupportCode(({ Given, When, Then }) => {
 });
 
 
-function checkDraft(expected, realData) {
+function checkDraft(expected: Request, realData) {
     if (isUndefined(realData)) {
         return false
     }

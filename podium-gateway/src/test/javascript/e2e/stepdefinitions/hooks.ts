@@ -8,37 +8,39 @@
  * See the file LICENSE in the root of this repository.
  */
 import { AdminConsole } from '../protractor-stories/admin-console';
-import { browser } from 'protractor';
 import { Promise } from 'es6-promise';
-import PersonaDictionary = require("../personas/persona-dictionary")
+import { Persona } from '../personas/templates';
+import initPersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ After, Before }) {
 
     function setupUsers(adminConsole: AdminConsole, personas: string[]) {
+        let personaDictionary = initPersonaDictionary();
         let createUserCalls = [];
 
         personas.forEach(function (value) {
-            createUserCalls.push(adminConsole.createUser(PersonaDictionary[value]));
+            createUserCalls.push(adminConsole.createUser(personaDictionary[value]));
         });
         return Promise.all(createUserCalls);
     }
 
     function setupOrganisations(adminConsole: AdminConsole, organisations: string[]) {
-        let DataDictionary = initDataDictionary;
+        let DataDictionary = initDataDictionary();
+        let personaDictionary = initPersonaDictionary();
         let createOrganisationsCalls = [];
 
         organisations.forEach(function (value) {
             createOrganisationsCalls.push(adminConsole.createOrganization(
-                PersonaDictionary['BBMRI_Admin'],
+                personaDictionary['BBMRI_Admin'],
                 DataDictionary[value]));
         });
         return Promise.all(createOrganisationsCalls);
     }
 
     function setupRequests(adminConsole: AdminConsole, requests: string[]) {
-        let DataDictionary = initDataDictionary;
+        let DataDictionary = initDataDictionary();
 
         requests.forEach(function (value) {
             adminConsole.createRequest(DataDictionary[value]);
@@ -47,10 +49,11 @@ defineSupportCode(function ({ After, Before }) {
     }
 
     function getPersonaList(personas: string[]) {
+        let personaDictionary = initPersonaDictionary();
         let personaList = [];
         personas.forEach(function (personaName) {
             let name = personaName;
-            personaList.push(PersonaDictionary[name])
+            personaList.push(personaDictionary[name])
         });
         return personaList;
     }
@@ -59,10 +62,10 @@ defineSupportCode(function ({ After, Before }) {
         let personalist = getPersonaList(personas);
         let authorityBatches = {};
 
-        personalist.forEach(function (persona) {
-            persona.properties["authority"].forEach(function (authority) {
+        personalist.forEach(function (persona: Persona) {
+            persona["authority"].forEach(function (authority) {
                 (authorityBatches[authority.orgShortName] = authorityBatches[authority.orgShortName] || {});
-                (authorityBatches[authority.orgShortName][authority.role] = authorityBatches[authority.orgShortName][authority.role] || []).push(persona.properties["login"])
+                (authorityBatches[authority.orgShortName][authority.role] = authorityBatches[authority.orgShortName][authority.role] || []).push(persona["login"])
             })
         });
         return authorityBatches;
@@ -96,14 +99,10 @@ defineSupportCode(function ({ After, Before }) {
         });
     });
 
-    Before(function (scenario): Promise<any> {
-        return browser.sleep(2000);
-    });
-
     Before({ tags: "@request" }, function (scenario): Promise<any> {
         let adminConsole = this.adminConsole as AdminConsole;
         let organisations = ["DataBank", 'ImageBank', 'BioBank', 'MultiBank'];
 
-        return setuporganisations(adminConsole, organisations)
+        return setupOrganisations(adminConsole, organisations)
     });
 });

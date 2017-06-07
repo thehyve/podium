@@ -120,6 +120,7 @@ public class TestResource {
         result.setName(organisation.getName());
         result.setShortName(organisation.getShortName());
         result.setActivated(organisation.isActivated());
+        result.setRequestTypes(organisation.getRequestTypes());
         return ResponseEntity.created(new URI("/api/organisations/" + organisation.getId()))
             .body(result);
     }

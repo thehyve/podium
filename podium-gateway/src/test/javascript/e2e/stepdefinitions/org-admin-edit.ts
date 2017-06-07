@@ -13,6 +13,8 @@ import { protractor, by } from 'protractor';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { isUndefined } from 'util';
 import { Promise } from 'es6-promise';
+import { Persona } from '../personas/templates';
+import { Organisation } from '../data/templates';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -61,13 +63,13 @@ defineSupportCode(({ Given, When, Then }) => {
     Then(/^the organisation's data has changed$/, function (): Promise<any> {
         let adminConsole = this.adminConsole as AdminConsole;
 
-        return adminConsole.checkorganisation(this.scenarioData, (expected, realData) => {
+        return adminConsole.checkOrganisation(this.scenarioData, (expected: Organisation, realData) => {
             if (isUndefined(realData)) {
                 return false
             }
-            return realData.activated == expected.properties.activated &&
-                realData.name == expected.properties.name &&
-                realData.shortName == expected.properties.shortName &&
+            return realData.activated == expected["activated"] &&
+                realData.name == expected["name"] &&
+                realData.shortName == expected["shortName"] &&
                 JSON.stringify(realData.requestTypes.sort()) == JSON.stringify(this.scenarioData.requestTypes.sort())
         })
 
@@ -75,17 +77,15 @@ defineSupportCode(({ Given, When, Then }) => {
 });
 
 function checkRole(director: Director, adminConsole: AdminConsole, user: string, role: string, uuid: string): Promise<any> {
-    return adminConsole.checkUser(director.getPersona(user), (expected, realData) => {
-        return expected.properties["login"] == realData.login &&
-            expected.properties.email == realData.email &&
+    return adminConsole.checkUser(director.getPersona(user), (expected: Persona, realData) => {
+        return expected["login"] == realData.login &&
+            expected["email"] == realData.email &&
             realData.organisationAuthorities[uuid + ""].includes(role);
     })
 }
 
 function addRole(director: Director, targetName: string, role: string): Promise<any> {
-
-
-    return director.enterText("user selection", director.getPersona(targetName).properties["firstName"], protractor.Key.ENTER).then(() => {
+    return director.enterText("user selection", director.getPersona(targetName)["firstName"], protractor.Key.ENTER).then(() => {
             return director.getElement("user selection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
                 () => {
                     return director.clickOn("add")

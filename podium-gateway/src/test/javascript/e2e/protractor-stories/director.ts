@@ -12,8 +12,11 @@ import { Promise } from 'es6-promise';
 import { isUndefined } from 'util';
 
 export interface Persona {
-    name: string;
-    properties: { [key: string]: any };
+    personaID: string;
+}
+
+export interface Data {
+    dataID: string;
 }
 
 export interface Page {
@@ -41,7 +44,7 @@ export class Director {
     private currentPersona: Persona;
     private pageDictionary: { [key: string]: Page };
     private personaDictionary: { [key: string]: Persona };
-    private dataDictionary = {};
+    private dataDictionary: { [key: string]: Data };
 
 
     constructor(searchDir: string, PageDictionary: { [key: string]: Page }, personaDictionary: { [key: string]: Persona }, dataDictionary?) {
@@ -78,14 +81,14 @@ export class Director {
         return this.currentPersona = this.personaDictionary[personaName];
     }
 
-    public getPersona(personaName: string) {
+    public getPersona(personaName: string): Persona {
         if (personaName != "he" && personaName != "she") {
             this.setCurrentPersonaTo(personaName);
         }
         return this.currentPersona;
     }
 
-    public getListOfPersonas(personaNames: string[]) {
+    public getListOfPersonas(personaNames: string[]): Persona[] {
         let that = this;
         let result = new Array(personaNames.length);
 
@@ -127,7 +130,7 @@ export class Director {
 
     public at(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        // browser.waitForAngular('make sure the page is loaded before doing a check');
+        browser.waitForAngular('make sure the page is loaded before doing a check');
         return Promise.resolve(page.at()).then(function (v) {
             return new Promise(function (resolve, reject) {
                 if (v) {
@@ -188,6 +191,6 @@ export class Director {
         let element = this.getElement(elementName);
         let file = this.getData(fileName);
 
-        return element.locator.sendKeys(file.path).then(() => browser.sleep((uploadTimer || 1000)))
+        return element.locator.sendKeys(file["path"]).then(() => browser.sleep((uploadTimer || 1000)))
     }
 }

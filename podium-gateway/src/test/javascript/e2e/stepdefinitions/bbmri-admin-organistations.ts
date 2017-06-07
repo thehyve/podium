@@ -7,13 +7,14 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-let { defineSupportCode } = require('cucumber');
+import { Organisation } from '../data/templates';
 import { Promise } from 'es6-promise';
 import { $$ } from 'protractor';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { login, doInOrder, promiseTrue, checkTextElement } from './util';
 import { isUndefined } from 'util';
+let { defineSupportCode } = require('cucumber');
 
 
 defineSupportCode(({ Given, When, Then }) => {
@@ -23,7 +24,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let fields = fieldString.split(", ");
         let organisations = organisationString.split(", ");
 
-        let organisationsList = director.getListOfData(organisations);
+        let organisationsList: Organisation[] = director.getListOfData(organisations);
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
             return promiseTrue(count == organisationsList.length, "expected " + organisationsList.length + " organisations but found " + count);
@@ -31,7 +32,7 @@ defineSupportCode(({ Given, When, Then }) => {
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
                     return element.getText().then((text) => {
-                        return Promise.resolve(promiseTrue(text == organisationsList[index].properties[field], field + ": " + text + " did not equal " + organisationsList[index].properties[field]));
+                        return Promise.resolve(promiseTrue(text == organisationsList[index][field], field + ": " + text + " did not equal " + organisationsList[index][field]));
                     })
                 });
             });
@@ -41,7 +42,7 @@ defineSupportCode(({ Given, When, Then }) => {
     Then(/^organisations are displayed in the following order: '(.*)'$/, function (organisationString): Promise<any> {
         let director = this.director as Director;
         let organisations = organisationString.split(", ");
-        let organisationsList = director.getListOfData(organisations);
+        let organisationsList: Organisation[] = director.getListOfData(organisations);
 
         let fields = ["shortName"];
 
@@ -51,7 +52,7 @@ defineSupportCode(({ Given, When, Then }) => {
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
                     return element.getText().then((text) => {
-                        return Promise.resolve(promiseTrue(text == organisationsList[index].properties[field], field + ": " + text + " did not equal " + organisationsList[index].properties[field]));
+                        return Promise.resolve(promiseTrue(text == organisationsList[index][field], field + ": " + text + " did not equal " + organisationsList[index][field]));
                     })
                 });
             });
@@ -73,12 +74,12 @@ defineSupportCode(({ Given, When, Then }) => {
 
     Then(/^the organisation details page contains '(.*)'s data$/, function (organisationShortName): Promise<any> {
         let director = this.director as Director;
-        let organisation = director.getData(organisationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
         let page = director.getCurrentPage();
 
         let promisses = [
-            checkTextElement(page.elements['shortName'].locator, organisation.properties['shortName']),
-            checkTextElement(page.elements['name'].locator, organisation.properties['name'])
+            checkTextElement(page.elements['shortName'].locator, organisation['shortName']),
+            checkTextElement(page.elements['name'].locator, organisation['name'])
         ];
 
         return Promise.all(promisses)
@@ -86,12 +87,12 @@ defineSupportCode(({ Given, When, Then }) => {
 
     When(/^(.*) creates the organisation '(.*)'$/, function (personaName, organisationShortName): Promise<any> {
         let director = this.director as Director;
-        let organisation = director.getData(organisationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
         this.scenarioData = organisation; //store it for the next step
 
         return Promise.all([
-            director.enterText('shortName', organisation.properties['shortName']),
-            director.enterText('name', organisation.properties['name'])
+            director.enterText('shortName', organisation['shortName']),
+            director.enterText('name', organisation['name'])
         ]).then(function () {
             return director.clickOn('submitButton');
         })
@@ -101,19 +102,19 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        let organisation = director.getData(organisationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
 
-        return adminConsole.checkorganisation(organisation, checkOrg);
+        return adminConsole.checkOrganisation(organisation, checkOrg);
     });
 });
 
-function checkOrg(expected, realData) {
+function checkOrg(expected: Organisation, realData) {
     if (isUndefined(realData)) {
         return false
     }
-    return realData.activated == expected.properties.activated &&
-        realData.name == expected.properties.name &&
-        realData.shortName == expected.properties.shortName
+    return realData.activated == expected["activated"] &&
+        realData.name == expected["name"] &&
+        realData.shortName == expected["shortName"]
 
 }
 
