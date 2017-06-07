@@ -54,11 +54,11 @@ export class OrganisationService {
 
     query(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options);
+        return this.http.get(`${this.resourceUrl}/admin`, options);
     }
 
-    activate(id: number, activate: boolean): Observable<Response> {
-        return this.http.put(`${this.resourceUrl}/${id}/activation?value=${activate}`, {}).map((res: Response) => {
+    activate(uuid: string, activate: boolean): Observable<Response> {
+        return this.http.put(`${this.resourceUrl}/${uuid}/activation?value=${activate}`, {}).map((res: Response) => {
             return res.json();
         });
     }

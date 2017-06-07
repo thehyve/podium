@@ -42,7 +42,7 @@ Feature: All users have to login. (BRPREQ-2, BRPREQ-4)
     @default
     Scenario: register a new user
         Given Simone goes to the 'registration' page
-        When he registers for a new account
+        When she registers for a new account
         Then an account is created
 
     @default

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public abstract class AbstractAccessPolicyIntTest {
+public abstract class AbstractAuthorisedUserIntTest {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -37,7 +37,7 @@ public abstract class AbstractAccessPolicyIntTest {
      */
     protected abstract MockMvc getMockMvc();
 
-    private RequestPostProcessor token(AuthenticatedUser user) {
+    protected RequestPostProcessor token(AuthenticatedUser user) {
         if (user == null) {
             return SecurityMockMvcRequestPostProcessors.anonymous();
         }

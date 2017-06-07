@@ -129,6 +129,7 @@ public class TestResource {
      * (if applicable) the organisation UUID.
      *
      * @param roleData the role identifiers and the set of user uuids.
+     * @return status code {@link HttpStatus#CREATED}.
      */
     @PostMapping("roles/assign")
     @Timed
