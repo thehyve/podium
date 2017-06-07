@@ -30,7 +30,9 @@ defineSupportCode(function ({ After, Before }) {
         let createOrganizationsCalls = [];
 
         organizations.forEach(function (value) {
-            createOrganizationsCalls.push(adminConsole.createOrganization(DataDictionary[value]));
+            createOrganizationsCalls.push(adminConsole.createOrganization(
+                PersonaDictionary['BBMRI_Admin'],
+                DataDictionary[value]));
         });
         return Promise.all(createOrganizationsCalls);
     }
@@ -86,11 +88,10 @@ defineSupportCode(function ({ After, Before }) {
         let organizations = ["VarnameBank", 'SomeBank', 'XBank'];
 
         return adminConsole.cleanDB().then(function () {
-            return Promise.all([
-                setupUsers(adminConsole, userList),
-                setupOrganizations(adminConsole, organizations)
-            ]).then(function () {
-                return setupRoles(adminConsole, userList)
+            return setupUsers(adminConsole, userList).then(function () {
+                setupOrganizations(adminConsole, organizations).then(function () {
+                    return setupRoles(adminConsole, userList)
+                })
             })
         });
     });

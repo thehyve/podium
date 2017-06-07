@@ -38,7 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  * Service class for clearing database for testing purposes.
@@ -150,6 +149,7 @@ public class TestService {
                 roleData.getAuthority(), roleData.getOrganisation());
             throw new ResourceNotFound(message);
         }
+        entityManager.refresh(role);
         Set<User> users = new HashSet<>();
         if (roleData.getUsers() != null) {
             for (String userLogin : roleData.getUsers()) {
