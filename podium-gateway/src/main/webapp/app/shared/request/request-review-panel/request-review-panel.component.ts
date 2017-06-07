@@ -40,7 +40,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     ) {
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.reviewRounds = request.reviewRounds;
-            this.lastReviewFeedback = this.getLastReviewFeedback();
+            this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.reviewRounds);
         });
     }
 
@@ -51,27 +51,9 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         return foundStyle ? foundStyle.style : 'tag-default';
     }
 
-    private getLastReviewFeedback() {
-        // get the latest start date of review rounds
-        let _lastReviewRoundDate = new Date(Math.max.apply(null, this.reviewRounds.map((reviewRound) => {
-            return new Date(reviewRound.startDate);
-        })));
-
-        // get the latest round
-        let _lastReviewRound = this.reviewRounds.find((reviewRound) => {
-            return new Date(reviewRound.startDate).getTime() === _lastReviewRoundDate.getTime();
-        });
-
-        // return feedback of last review round
-        if (_lastReviewRound && _lastReviewRound.endDate == null) {
-            return _lastReviewRound.reviewFeedback;
-        }
-        return null;
-    }
-
     ngOnInit(): void {
         if (this.reviewRounds.length) {
-            this.lastReviewFeedback = this.getLastReviewFeedback();
+            this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.reviewRounds);
         }
     }
 

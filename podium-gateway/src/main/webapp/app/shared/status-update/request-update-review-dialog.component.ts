@@ -15,6 +15,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PodiumEventMessage } from '../event/podium-event-message';
 import { RequestReviewDecision } from '../request/request-review-decision';
 import { RequestUpdateDialogComponent } from './request-update-dialog.component';
+import { RequestReviewFeedback } from '../request/request-review-feedback';
+import { User } from '../user/user.model';
 
 @Component({
     templateUrl: './request-update-dialog.component.html',
@@ -23,6 +25,7 @@ import { RequestUpdateDialogComponent } from './request-update-dialog.component'
 
 export class RequestUpdateReviewDialogComponent extends RequestUpdateDialogComponent implements OnInit {
     reviewStatus: RequestReviewDecision;
+    currentUser: User;
     headerStyle: string;
     buttonStyle: string;
     status: string;
@@ -53,23 +56,22 @@ export class RequestUpdateReviewDialogComponent extends RequestUpdateDialogCompo
         super.close();
     }
 
+    composeReviewFeedback(): RequestReviewFeedback {
+        let feedback = this.requestService.getLastReviewFeedbackByUser(this.request, this.currentUser);
+        if (feedback) {
+            feedback.advice = this.reviewStatus;
+            feedback.message = this.message;
+        }
+        return feedback;
+    }
+
     /**
      * Confirm and submit a status update with a message
      * returns an unsubscribed observable with the action
      */
     confirmStatusUpdate() {
-        if (this.reviewStatus === RequestReviewDecision.Rejected) {
-            // TODO: submit to review api
-            this.requestService.submitReview(this.request.uuid, this.message)
-                .subscribe((res) => this.onSuccess(res));
-        }
-
-        if (this.reviewStatus === RequestReviewDecision.Approved) {
-            // TODO: submit to review api
-            this.requestService.submitReview(this.request.uuid, this.message)
-                .subscribe((res) => this.onSuccess(res));
-        }
-
+        this.requestService.submitReview(this.request.uuid, this.composeReviewFeedback())
+            .subscribe((res) => this.onSuccess(res));
         super.onUnknownStatus();
     }
 }

@@ -14,6 +14,8 @@ import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
 import { RequestReviewFeedback } from './request-review-feedback';
 import { PodiumEventMessage } from '../event/podium-event-message';
+import { User } from '../user/user.model';
+import { ReviewRound } from './review-round';
 
 @Injectable()
 export class RequestService {
@@ -138,7 +140,7 @@ export class RequestService {
 
     submitReview(uuid: string, reviewFeedback: RequestReviewFeedback) {
         let feedbackCopy: RequestReviewFeedback = Object.assign({}, reviewFeedback);
-        return this.http.post(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
+        return this.http.put(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
     }
 
     rejectRequest(uuid: string, message: PodiumEventMessage): Observable<Response> {
@@ -172,5 +174,34 @@ export class RequestService {
             options.search = params;
         }
         return options;
+    }
+
+    getLastReviewFeedbacks(reviewRounds: ReviewRound[]): RequestReviewFeedback[] {
+        // get the latest start date of review rounds
+        let lastReviewRoundDate = new Date(Math.max.apply(null, reviewRounds.map((reviewRound) => {
+            return new Date(reviewRound.startDate);
+        })));
+
+        // get the latest round
+        let lastReviewRound = reviewRounds.find((reviewRound) => {
+            return new Date(reviewRound.startDate).getTime() === lastReviewRoundDate.getTime();
+        });
+
+        // return feedback of last review round
+        if (lastReviewRound && lastReviewRound.endDate == null) {
+            return lastReviewRound.reviewFeedback;
+        }
+        return null;
+    }
+
+    getLastReviewFeedbackByUser(request: RequestBase, user: User): RequestReviewFeedback {
+        let lastFeedbacks = this.getLastReviewFeedbacks(request.reviewRounds);
+        let lastFeedback: RequestReviewFeedback;
+        if (lastFeedbacks.length) {
+            lastFeedback = lastFeedbacks.find((feedback) => {
+                 return feedback.reviewer.uuid === user.uuid;
+            });
+        }
+        return lastFeedback;
     }
 }

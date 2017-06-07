@@ -21,6 +21,8 @@ import { RequestReviewDecision } from '../../../shared/request/request-review-de
 import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
 import { RequestUpdateAction } from '../../../shared/status-update/request-update-action';
 import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
+import { Principal } from '../../../shared/auth/principal.service';
+import { User } from '../../../shared/user/user.model';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -36,17 +38,22 @@ export class RequestDetailComponent {
     public isInRevision = false;
     public isUpdating = false;
 
-    constructor(
-        private requestService: RequestService,
-        private requestAccessService: RequestAccessService,
-        private requestFormService: RequestFormService,
-        private modalService: NgbModal
-    ) {
+    private currentUser: User;
+
+    constructor(private requestService: RequestService,
+                private requestAccessService: RequestAccessService,
+                private requestFormService: RequestFormService,
+                private modalService: NgbModal,
+                private principal: Principal) {
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.setRequest(request);
+        });
+
+        this.principal.identity().then((account) => {
+            this.currentUser = account;
         });
     }
 
@@ -65,8 +72,9 @@ export class RequestDetailComponent {
     }
 
     submitReview(decision: RequestReviewDecision) {
-        let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = this.request;
+        modalRef.componentInstance.currentUser = this.currentUser;
         modalRef.componentInstance.reviewStatus = decision;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
@@ -119,7 +127,7 @@ export class RequestDetailComponent {
     }
 
     confirmStatusUpdateModal(request: RequestBase, action: RequestUpdateAction) {
-        let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
         modalRef.result.then(result => {
