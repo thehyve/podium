@@ -10,7 +10,6 @@
 
 // Every DeliveryState has multiple options available for each RequestType
 export const DeliveryStateOptions: any = {
-
     'primary': {
         'Preparation': {
             'Data': {
@@ -81,6 +80,18 @@ export const DeliveryStateOptions: any = {
                     'action': 'cancel'
                 }
             ]
+        }
+    },
+    'icons': {
+        'type': {
+            'Data': 'dns',
+            'Material': 'blur_on',
+            'Images': 'image'
+        },
+        'status': {
+            'Preparation': 'local_grocery_store',
+            'Released': 'local_shipping',
+            'Received': 'done'
         }
     }
 

@@ -25,6 +25,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateDialogComponent } from '../shared/status-update/request-status-update.component';
 import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-delivery-panel.component';
 import { DeliveryService } from '../shared/delivery/delivery.service';
+import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
 
 @NgModule({
     imports: [
@@ -42,12 +43,14 @@ import { DeliveryService } from '../shared/delivery/delivery.service';
         RequestActionToolbarComponent,
         RequestProgressBarComponent,
         RequestStatusUpdateDialogComponent,
+        DeliveryStatusUpdateDialogComponent,
         RequestDeliveryPanelComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
         RequestDraftModalModalComponent,
-        RequestStatusUpdateDialogComponent
+        RequestStatusUpdateDialogComponent,
+        DeliveryStatusUpdateDialogComponent
     ],
     providers: [
         RequestFormService,

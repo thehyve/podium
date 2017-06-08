@@ -21,7 +21,7 @@
             "sendForReview": "Send for review",
             "saveAndSubmit": "Save and submit",
             "startDelivery": "Start delivery process",
-            "finishDelivery": "Finalize request",
+            "finalizeRequest": "Finalize request",
             "save": "Save",
             "requestRevision": "Request revision",
             "reject": "Reject",

@@ -16,6 +16,9 @@ import { RequestAccessService } from '../../shared/request/request-access.servic
 import { Delivery } from '../../shared/delivery/delivery';
 import { DeliveryService } from '../../shared/delivery/delivery.service';
 import { DeliveryStateOptions } from '../../shared/delivery/delivery-state-options.constants';
+import { DeliveryStatusUpdateAction } from '../../shared/delivery-update/delivery-update-action';
+import { DeliveryStatusUpdateDialogComponent } from '../../shared/delivery-update/delivery-update.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'pdm-request-delivery-panel',
@@ -28,13 +31,18 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     @Input()
     request: RequestBase;
 
-    requestDeliveries: Delivery[];
-    requestSubscription: Subscription;
-    primaryStateOptions: any = DeliveryStateOptions.primary;
-    secondaryStateOptions: any = DeliveryStateOptions.secondary;
+    public requestDeliveries: Delivery[];
+    public requestSubscription: Subscription;
+    public deliverySubscription: Subscription;
+    public primaryStateOptions: any = DeliveryStateOptions.primary;
+    public secondaryStateOptions: any = DeliveryStateOptions.secondary;
+    public iconStateOptions: any = DeliveryStateOptions.icons;
+
+    public isUpdating = false;
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
+        private modalService: NgbModal,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
         private deliveryService: DeliveryService
@@ -47,6 +55,10 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
             this.request = request;
             this.getDeliveries();
         });
+
+        this.deliverySubscription = this.deliveryService.onDeliveryUpdate.subscribe((deliveries: Delivery[]) => {
+            this.requestDeliveries = deliveries;
+        });
     }
 
     ngOnInit() {
@@ -58,6 +70,10 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         if (this.requestSubscription) {
             this.requestSubscription.unsubscribe();
+        }
+
+        if (this.deliverySubscription) {
+            this.deliverySubscription.unsubscribe();
         }
     }
 
@@ -74,24 +90,43 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         this.requestDeliveries = res;
     }
 
+    onSuccessUpdate(res: Delivery) {
+        console.log('Success update ', res);
+        this.deliveryService.deliveryUpdateEvent(res);
+    }
+
     onError(err: any) {
         console.log('ERRORR ', err);
     }
 
-    get self() {
-        return this;
-    }
-
     releaseType(delivery: Delivery) {
         console.log('Releasing ', delivery);
+        this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Release);
     }
 
     receiveType(delivery: Delivery) {
         console.log('Receiving', delivery);
+        this.deliveryService.receiveDelivery(this.request.uuid, delivery.uuid)
+            .subscribe((res) => this.onSuccessUpdate(res.json()));
     }
 
     cancelType(delivery: Delivery) {
         console.log('Cancelling ', delivery);
+        this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Cancel);
+    }
+
+    confirmStatusUpdateModal(request: RequestBase, delivery: Delivery, action: DeliveryStatusUpdateAction) {
+        let modalRef = this.modalService.open(DeliveryStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = request;
+        modalRef.componentInstance.delivery = delivery;
+        modalRef.componentInstance.statusUpdateAction = action;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+            this.isUpdating = false;
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+            this.isUpdating = false;
+        });
     }
 
     performAction(action: string, delivery: Delivery) {

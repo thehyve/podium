@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
 import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';
+import { PodiumEventMessage } from '../../../shared/event/podium-event-message';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -106,6 +107,14 @@ export class RequestDetailComponent {
     startRequestDelivery() {
         this.isUpdating = true;
         this.requestService.startRequestDelivery(this.request.uuid)
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onError(err)
+            );
+    }
+
+    finalizeRequest(message?: PodiumEventMessage) {
+        this.requestService.finalizeRequest(this.request.uuid, message)
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)

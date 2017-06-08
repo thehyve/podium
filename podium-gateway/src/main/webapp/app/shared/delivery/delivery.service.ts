@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Http, BaseRequestOptions, URLSearchParams, Response } from '@angular/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Delivery } from './delivery';
 import { DeliveryReference } from './delivery-reference';
 import { PodiumEventMessage } from '../event/podium-event-message';
@@ -18,6 +18,8 @@ import { PodiumEventMessage } from '../event/podium-event-message';
 export class DeliveryService {
 
     private resourceUrl = 'api/requests';
+
+    public onDeliveryUpdate: Subject<Delivery> = new Subject();
 
     constructor(private http: Http) {}
 
@@ -41,11 +43,15 @@ export class DeliveryService {
             });
     }
 
-    receivedDelivery(requestUuid: string, deliveryUuid: string): Observable<Response> {
+    receiveDelivery(requestUuid: string, deliveryUuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/received`)
             .map((res: Response) => {
                 return res.json();
             });
+    }
+
+    public deliveryUpdateEvent(delivery: Delivery) {
+        this.onDeliveryUpdate.next(delivery);
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {

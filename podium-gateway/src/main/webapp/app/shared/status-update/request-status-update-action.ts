@@ -9,6 +9,7 @@
  */
 
 export enum RequestStatusUpdateAction {
-    Reject,
-    Revision
+    Reject      = <any>'Reject',
+    Revision    = <any>'Revision',
+    Close       = <any>'Close',
 }

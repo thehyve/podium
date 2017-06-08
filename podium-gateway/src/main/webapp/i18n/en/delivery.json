@@ -6,5 +6,18 @@
         "status": "Status",
         "notes": "Notes on delivery",
         "action": "Action"
+    },
+    "update": {
+        "Release": {
+            "Data": {
+                "header": "Release data for {requestId}"
+            },
+            "Images": {
+                "header": "Release of images for {requestId}"
+            },
+            "Material": {
+                "header": "Release of material for {requestId}"
+            }
+        }
     }
 }

@@ -172,21 +172,13 @@
 
                 <!-- Coordinator action to start request delivery -->
                 <div *ngIf="isRequestCoordinator()">
-                    <button type="button" class="btn btn-danger test-reject-request-delivery-btn"
-                            tooltip="Please validate the request by checking the box above."
-                            [isDisabled]="checks.canClose"
-                            (click)="rejectRequest()">
-                        <span jhiTranslate="request.toolbar.close">
-                            Close request
-                        </span>
-                    </button>
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-success test-request-finish-delivery-btn"
+                        <button type="button" class="btn btn-default test-request-finalize-request-btn"
                                 [disabled]="checks.canFinalize"
-                                tooltip="Please validate the request by checking the box above."
+                                tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
                                 [isDisabled]="checks.canFinalize"
-                                (click)="finishDelivery()">
-                            <span jhiTranslate="request.toolbar.finishDelivery">
+                                (click)="finalizeRequest()">
+                            <span jhiTranslate="request.toolbar.finalizeRequest">
                                 Finalize request
                             </span>
                         </button>

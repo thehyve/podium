@@ -13,7 +13,7 @@
     <!--<p jhiTranslate="delivery.info">
         Delivery info
     </p>-->
-    <table class="table">
+    <table class="table delivery-overview">
         <thead>
             <tr>
                 <th jhiTranslate="delivery.type">Type</th>
@@ -24,8 +24,14 @@
         </thead>
         <tbody>
             <tr *ngFor="let delivery of requestDeliveries">
-                <td jhiTranslate="requestType.{{delivery.type}}">Delivery Type</td>
-                <td jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery Status</td>
+                <td>
+                    <span class="material-icons">{{ iconStateOptions.type[delivery.type] }}</span>
+                    <span jhiTranslate="requestType.{{delivery.type}}">Delivery Type</span>
+                </td>
+                <td>
+                    <span class="material-icons">{{ iconStateOptions.status[delivery.status] }}</span>
+                    <span jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery Status</span>
+                </td>
                 <td>{{ delivery.notes || 'No notes available' }}</td>
                 <td>
                     <div class="btn-group pull-right" dropdown>

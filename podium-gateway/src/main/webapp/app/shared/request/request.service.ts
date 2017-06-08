@@ -149,6 +149,10 @@ export class RequestService {
         return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
     }
 
+    finalizeRequest(uuid: string, message?: PodiumEventMessage) {
+        return this.http.post(`${this.resourceUrl}/${uuid}/finalize`, message);
+    }
+
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);
