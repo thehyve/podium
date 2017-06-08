@@ -10,52 +10,74 @@
 
 <div class="delivery-status-update-container">
     <form #statusUpdateForm="ngForm" class="form" role="form" (ngSubmit)="confirmStatusUpdate()">
-        <div class="modal-header" [ngClass]="{'reject-header': statusUpdateAction == 'Reject', 'revision-header': statusUpdateAction == 'Revision'}">
+        <div class="modal-header" [ngClass]="{'cancel-header': statusUpdateAction == 'Cancel', 'release-header': statusUpdateAction == 'Release'}">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                     (click)="close()">&times;</button>
             <h4 class="modal-title">
-                <span class="material-icons">warning</span>&nbsp;
-                <span jhiTranslate="delivery.update.{{statusUpdateAction}}.{{delivery.type}}.header" translateValues="{requestId: request.id}">
-                      Are you sure you want to reject or request a revision for this request?
+                <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">warning</span>
+                <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
+                <span jhiTranslate="delivery.update.{{statusUpdateAction}}.{{delivery.type}}.header" translateValues="{{getHeaderTranslation()}}">
+                    Delivery update header
                 </span>
             </h4>
         </div>
         <div class="modal-body">
             <jhi-alert-error></jhi-alert-error>
 
-            {{ statusUpdateAction }}
+            <div [ngSwitch]="statusUpdateAction">
+                <div *ngSwitchCase="statusUpdateOptions.Release">
+                    <div class="form-group">
+                        <label for="reference"
+                               jhiTranslate="delivery.update.form.referenceLabel">Reference</label>
 
-            <div class="form-group">
-                <label for="messageSummary"
-                       jhiTranslate="request.deliveryupdate.form.summary.label">Summary</label>
+                        <input type="text" class="form-control" name="reference" id="reference"
+                               required minlength="1" maxlength="2000" #reference="ngModel"
+                               autocomplete="off" placeholder="{{'delivery.update.form.referencePlaceholder' | translate}}"
+                               [(ngModel)]="releaseMessage.reference" />
+                    </div>
+                </div>
 
-                <input type="text" class="form-control" name="messageSummary" id="messageSummary"
-                       required minlength="1" maxlength="50" #messageSummary="ngModel"
-                       autocomplete="off" placeholder="{{'request.deliveryupdate.form.summary.placeholder' | translate}}"
-                       [(ngModel)]="cancelledMessage.summary" />
+                <div *ngSwitchCase="statusUpdateOptions.Cancel">
+                    <div class="form-group">
+                        <label for="messageSummary"
+                               jhiTranslate="delivery.update.form.eventMessageSummaryLabel">Summary</label>
+
+                        <input type="text" class="form-control" name="messageSummary" id="messageSummary"
+                               required minlength="1" maxlength="50" #messageSummary="ngModel"
+                               autocomplete="off" placeholder="{{'delivery.update.form.eventMessageSummaryPlaceholder' | translate}}"
+                               [(ngModel)]="cancelledMessage.summary" />
+                    </div>
+                    <div class="form-group">
+                        <label for="messageDescription"
+                               jhiTranslate="delivery.update.form.eventMessageDescriptionLabel">Description</label>
+
+                        <textarea type="text" class="form-control" name="messageDescription" id="messageDescription"
+                                  autocomplete="off" minlength="1" maxlength="500" rows="4"
+                                  placeholder="{{'delivery.update.form.eventMessageDescriptionPlaceholder' | translate}}"
+                                  #messageDescription="ngModel"
+                                  [(ngModel)]="cancelledMessage.description">
+                        </textarea>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="messageDescription"
-                       jhiTranslate="request.deliveryupdate.form.description.label">Description</label>
 
-                <textarea type="text" class="form-control" name="messageDescription" id="messageDescription"
-                          autocomplete="off" placeholder="{{'request.deliveryupdate.form.description.placeholder' | translate}}"
-                          minlength="1" maxlength="500" rows="4" #messageDescription="ngModel"
-                          [(ngModel)]="cancelledMessage.description">
-                    </textarea>
-            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">
                 <span class="material-icons">cancel</span>&nbsp;
-                <span jhiTranslate="request.action.cancel">Cancel</span>
+                <span jhiTranslate="delivery.actions.cancel">Cancel</span>
             </button>
-            <button type="submit" [disabled]="!statusUpdateForm.form.valid" class="btn"
-                    [ngClass]="{'btn-danger': cancelledMessage == 'Reject', 'btn-default': cancelledMessage == 'Revision'}">
-                <span class="material-icons">send</span>&nbsp;
-                <span jhiTranslate="request.action.submit"
-                      tooltip="Please provide at least a summary of your message."
-                      [isDisabled]="statusUpdateForm.form.valid">Submit</span>
+            <button type="submit" [disabled]="!statusUpdateForm.form.valid"
+                    tooltip="{{getSubmitTooltip()}}"
+                    [isDisabled]="statusUpdateForm.form.valid" class="btn"
+                    [ngClass]="{
+                        'btn-danger': statusUpdateAction == 'Cancel',
+                        'btn-success': statusUpdateAction == 'Release'
+                    }">
+                <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">cancel</span>
+                <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
+                &nbsp;
+                <span jhiTranslate="delivery.actions.submit">Submit</span>
             </button>
         </div>
     </form>

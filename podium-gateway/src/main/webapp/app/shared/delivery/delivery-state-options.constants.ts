@@ -91,7 +91,8 @@ export const DeliveryStateOptions: any = {
         'status': {
             'Preparation': 'local_grocery_store',
             'Released': 'local_shipping',
-            'Received': 'done'
+            'Received': 'done',
+            'Closed': 'cancel'
         }
     }
 

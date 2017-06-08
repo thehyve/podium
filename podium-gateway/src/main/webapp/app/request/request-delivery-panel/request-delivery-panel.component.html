@@ -32,9 +32,19 @@
                     <span class="material-icons">{{ iconStateOptions.status[delivery.status] }}</span>
                     <span jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery Status</span>
                 </td>
-                <td>{{ delivery.notes || 'No notes available' }}</td>
                 <td>
-                    <div class="btn-group pull-right" dropdown>
+                    <span *ngIf="delivery.status != deliveryStatusOptions.Closed">
+                    {{ delivery.reference || 'No reference available' }}
+                    </span>
+                    <span *ngIf="delivery.status == deliveryStatusOptions.Closed">
+                    {{ delivery.notes || 'No notes available' }}
+                    </span>
+
+                </td>
+                <td>
+                    
+                    <div class="btn-group pull-right" dropdown
+                         *ngIf="delivery.status != deliveryStatusOptions.Closed && delivery.status != deliveryStatusOptions.Received">
                         <button type="button" class="btn btn-outline-primary"
                                 (click)="performAction(primaryStateOptions[delivery.status][delivery.type].action, delivery)">
                             {{ primaryStateOptions[delivery.status][delivery.type].label }}
@@ -46,8 +56,8 @@
                         <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
                             <li role="menuitem"
                                 *ngFor="let option of secondaryStateOptions[delivery.status][delivery.type]">
-                                <a href="#" class="dropdown-item"
-                                   (click)="performAction(secondaryStateOptions[delivery.status][delivery.type].action, delivery)">
+                                <a href="javascript:void(0);" class="dropdown-item"
+                                   (click)="performAction(option.action, delivery)">
                                     {{ option.label }}
                                 </a>
                             </li>

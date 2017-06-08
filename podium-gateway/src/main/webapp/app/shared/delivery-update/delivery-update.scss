@@ -21,11 +21,12 @@
             margin-top: 6px;
         }
 
-        &.revision-header {
-            background-color: #e5e5e5;
+        &.release-header {
+            background-color: rgba(92, 184, 92, 1);
+            color: white;
         }
 
-        &.reject-header {
+        &.cancel-header {
             background-color: rgba(204, 48, 44, 1);
             color: white;
         }

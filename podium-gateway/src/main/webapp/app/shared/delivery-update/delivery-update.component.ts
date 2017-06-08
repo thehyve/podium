@@ -7,8 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
+import { Component } from '@angular/core';
 import { DeliveryStatusUpdateAction } from './delivery-update-action';
 import { RequestBase, RequestService } from '../request';
 import { Response } from '@angular/http';
@@ -29,16 +28,14 @@ export class DeliveryStatusUpdateDialogComponent {
     request: RequestBase;
     delivery: Delivery;
     statusUpdateAction: DeliveryStatusUpdateAction;
+    statusUpdateOptions = DeliveryStatusUpdateAction;
     releaseMessage: DeliveryReference = new DeliveryReference();
     cancelledMessage: PodiumEventMessage = new PodiumEventMessage();
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private deliveryService: DeliveryService,
         private activeModal: NgbActiveModal
     ) {
-        this.jhiLanguageService.addLocation('request');
-        this.jhiLanguageService.addLocation('requestStatus');
 
     }
 
@@ -63,12 +60,26 @@ export class DeliveryStatusUpdateDialogComponent {
                 .subscribe((res) => this.onSuccess(res));
         }
 
-        this.activeModal.dismiss(new Error('Unknown status update action'));
+        // this.activeModal.dismiss(new Error('Unknown status update action'));
+    }
+
+    getHeaderTranslation() {
+        let requestId = this.request.id;
+        return '{requestId: \'' + requestId + '\'}';
+    };
+
+    getSubmitTooltip(): string {
+        if (this.statusUpdateAction === DeliveryStatusUpdateAction.Release) {
+            return 'Please provide a reference indicating release details.';
+        } else if (this.statusUpdateAction === DeliveryStatusUpdateAction.Cancel) {
+            return 'Please provide at least a summary of your message.';
+        }
+
+        return '';
     }
 
     onSuccess(res: Response) {
-        this.request = res.json();
-        // this.deliveryService.onDeliveryUpdate();
-        this.activeModal.close();
+        // this.deliveryService.deliveryUpdateEvent(res);
+        this.activeModal.close(true);
     }
 }

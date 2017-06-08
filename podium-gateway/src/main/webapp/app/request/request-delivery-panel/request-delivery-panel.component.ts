@@ -19,6 +19,7 @@ import { DeliveryStateOptions } from '../../shared/delivery/delivery-state-optio
 import { DeliveryStatusUpdateAction } from '../../shared/delivery-update/delivery-update-action';
 import { DeliveryStatusUpdateDialogComponent } from '../../shared/delivery-update/delivery-update.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DeliveryStatus } from '../../shared/delivery/delivery-status.constants';
 
 @Component({
     selector: 'pdm-request-delivery-panel',
@@ -37,6 +38,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     public primaryStateOptions: any = DeliveryStateOptions.primary;
     public secondaryStateOptions: any = DeliveryStateOptions.secondary;
     public iconStateOptions: any = DeliveryStateOptions.icons;
+    public deliveryStatusOptions = DeliveryStatus;
 
     public isUpdating = false;
 
@@ -80,13 +82,11 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     getDeliveries()  {
         this.deliveryService.getDeliveries(this.request.uuid)
             .subscribe(
-                (res) => this.onSuccess(res),
-                (err) => this.onError(err)
+                (res) => this.onSuccess(res)
             );
     }
 
     onSuccess(res: Delivery[]) {
-        console.log('SUCCESS DELIVERIES ', res);
         this.requestDeliveries = res;
     }
 
@@ -95,23 +95,16 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         this.deliveryService.deliveryUpdateEvent(res);
     }
 
-    onError(err: any) {
-        console.log('ERRORR ', err);
-    }
-
     releaseType(delivery: Delivery) {
-        console.log('Releasing ', delivery);
         this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Release);
     }
 
     receiveType(delivery: Delivery) {
-        console.log('Receiving', delivery);
         this.deliveryService.receiveDelivery(this.request.uuid, delivery.uuid)
             .subscribe((res) => this.onSuccessUpdate(res.json()));
     }
 
     cancelType(delivery: Delivery) {
-        console.log('Cancelling ', delivery);
         this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Cancel);
     }
 
@@ -121,16 +114,16 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.delivery = delivery;
         modalRef.componentInstance.statusUpdateAction = action;
         modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
+            if (result) {
+                this.getDeliveries();
+            }
             this.isUpdating = false;
         }, (reason) => {
-            console.log(`Dismissed ${reason}`);
             this.isUpdating = false;
         });
     }
 
     performAction(action: string, delivery: Delivery) {
-        console.log('Act ', action, delivery);
         switch(action) {
             case 'release':
                 this.releaseType(delivery);
