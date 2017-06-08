@@ -17,7 +17,7 @@ import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.common.test.AbstractAccessPolicyIntTest;
+import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.common.test.Action;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.service.*;
@@ -40,7 +40,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.net.URISyntaxException;
@@ -59,7 +58,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @RunWith(SpringRunner.class)
 @ContextConfiguration
 @SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
-public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
+public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
 
     Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
 

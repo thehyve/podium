@@ -127,12 +127,17 @@ public class TestResourceIntTest {
         userData.setLangKey("en");
         userData.setAdminVerified(true);
         userData.setEmailVerified(true);
-        //userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.BBMRI_ADMIN)));
+        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.BBMRI_ADMIN)));
 
         mockMvc.perform(post("/api/test/users")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isCreated());
+
+        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin("bbmri_admin");
+        assertThat(userOptional.isPresent()).isTrue();
+        User user = userOptional.get();
+        assertThat(user.getAuthorityNames()).containsExactly(AuthorityConstants.BBMRI_ADMIN);
     }
 
     @Test
