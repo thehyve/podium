@@ -12,6 +12,10 @@ import request = require('request-promise-native')
 import { isUndefined } from 'util';
 import { browser } from 'protractor';
 import { Persona } from './director';
+import { isNullOrUndefined } from 'util';
+import PersonaDictionary = require('../personas/persona-dictionary');
+
+let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
 
 export class AdminConsole {
     public token: string;
@@ -108,7 +112,7 @@ export class AdminConsole {
 
     public checkOrganization(expectedOrganization, check) {
 
-        return this.authenticate().then((body) => {
+        return this.authenticate(PersonaDictionary['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'podiumuaa/api/organisations/',
@@ -156,6 +160,34 @@ export class AdminConsole {
 
     public createUser(persona: Persona) {
         return this.authenticate().then((body) => {
+            let userData = {
+                "id": null,
+                "login": persona.properties['login'],
+                "firstName": persona.properties['firstName'],
+                "lastName": persona.properties['lastName'],
+                "email": persona.properties['email'],
+                "telephone": persona.properties['telephone'],
+                "institute": persona.properties['institute'],
+                "department": persona.properties['department'],
+                "jobTitle": persona.properties['jobTitle'],
+                "specialism": persona.properties['specialism'],
+                "emailVerified": persona.properties['emailVerified'],
+                "adminVerified": persona.properties['adminVerified'],
+                "accountLocked": persona.properties['accountLocked'],
+                "langKey": "en",
+                "createdBy": null,
+                "createdDate": null,
+                "lastModifiedBy": null,
+                "lastModifiedDate": null,
+                "password": persona.properties['password']
+            };
+            // Set non-organisation authorities
+            let roles: any[] = persona.properties['authority'];
+            if (!isNullOrUndefined(roles)) {
+                userData['authorities'] = roles
+                    .map((role) => role['role'])
+                    .filter((authority) => nonOrganisationAuthorities.indexOf(authority) >= 0);
+            }
             let options = {
                 method: 'POST',
                 url: browser.baseUrl + 'podiumuaa/api/test/users',
@@ -163,29 +195,7 @@ export class AdminConsole {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(
-                    {
-                        "id": null,
-                        "login": persona.properties['login'],
-                        "firstName": persona.properties['firstName'],
-                        "lastName": persona.properties['lastName'],
-                        "email": persona.properties['email'],
-                        "telephone": persona.properties['telephone'],
-                        "institute": persona.properties['institute'],
-                        "department": persona.properties['department'],
-                        "jobTitle": persona.properties['jobTitle'],
-                        "specialism": persona.properties['specialism'],
-                        "emailVerified": persona.properties['emailVerified'],
-                        "adminVerified": persona.properties['adminVerified'],
-                        "accountLocked": persona.properties['accountLocked'],
-                        "langKey": "en",
-                        "createdBy": null,
-                        "createdDate": null,
-                        "lastModifiedBy": null,
-                        "lastModifiedDate": null,
-                        "password": persona.properties['password']
-                    }
-                )
+                body: JSON.stringify(userData)
             };
 
             return request(options).catch((reason) => {
@@ -195,8 +205,8 @@ export class AdminConsole {
         });
     }
 
-    public createOrganization(Organization: any) {
-        return this.authenticate().then((body) => {
+    public createOrganization(persona: Persona, Organization: any) {
+        return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
                 url: browser.baseUrl + 'podiumuaa/api/organisations/',
@@ -274,7 +284,7 @@ export class AdminConsole {
     }
 
     getOrgUUID(orgShortName: string) {
-        return this.authenticate().then((body) => {
+        return this.authenticate(PersonaDictionary['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'podiumuaa/api/organisations/',

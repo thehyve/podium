@@ -366,6 +366,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserByUuid(UUID uuid) {
         return userRepository.findOneByDeletedIsFalseAndUuid(uuid).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
@@ -374,6 +375,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
+        entityManager.refresh(user);
         user.getAuthorities().size(); // eagerly load the association
         return user;
     }
@@ -386,6 +388,7 @@ public class UserService {
         User user = null;
         if (optionalUser.isPresent()) {
             user = optionalUser.get();
+            entityManager.refresh(user);
             user.getAuthorities().size(); // eagerly load the association
         }
         return user;
@@ -393,6 +396,7 @@ public class UserService {
 
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {
         return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
