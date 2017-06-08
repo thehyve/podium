@@ -10,6 +10,7 @@ package nl.thehyve.podium.common.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableRequest;
+import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 
 import javax.validation.Valid;
@@ -34,6 +35,8 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     @NotNull
     private RequestStatus status;
+
+    private RequestOutcome outcome;
 
     private List<OrganisationDTO> organisations = new ArrayList<>();
 
@@ -88,6 +91,14 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     public void setStatus(RequestStatus status) {
         this.status = status;
+    }
+
+    public RequestOutcome getOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(RequestOutcome outcome) {
+        this.outcome = outcome;
     }
 
     public List<OrganisationDTO> getOrganisations() {
