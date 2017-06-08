@@ -13,7 +13,6 @@ import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';
-import { RequestMainDetailResolver } from './request-main-detail-resolver.service';
 
 @Component({
     selector: 'pdm-request-main-detail',
@@ -24,7 +23,7 @@ import { RequestMainDetailResolver } from './request-main-detail-resolver.servic
 export class RequestMainDetailComponent implements OnInit {
 
     /**
-     * Setup component as viewchild to access methods inside child.
+     * Setup component as ViewChild to access methods inside child.
      * Used for review and method accessors in sibling components
      */
     @ViewChild(RequestDetailComponent)
@@ -58,6 +57,7 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     private onError(error) {
+        console.log(error);
         this.error = 'ERROR';
         this.success = null;
     }
