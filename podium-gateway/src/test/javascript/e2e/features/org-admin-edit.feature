@@ -4,7 +4,7 @@ Feature: organisation admins can manage organisations in the system (BRPREQ-38)
     Scenario: organisation admins can see their organisation
         Given VarnameBank_Admin goes to the 'organisation configuration' page
         When he sorts by 'Name'
-        Then the overview contains the organisation's 'name, shortName' for the organisations 'XBank, SomeBank, VarnameBank'
+        Then the overview contains the organisation's 'name, shortName' for the organisations 'VarnameBank'
 
     @default
     Scenario Outline: organisation admins can give organisation roles to users

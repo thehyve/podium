@@ -12,7 +12,7 @@ import request = require('request-promise-native')
 import { isUndefined } from 'util';
 import { browser } from 'protractor';
 import { isNullOrUndefined } from 'util';
-import PersonaDictionary = require('../personas/persona-dictionary');
+import initPersonaDictionary = require('../personas/persona-dictionary');
 
 let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
 import { Persona } from '../personas/templates';
@@ -113,7 +113,7 @@ export class AdminConsole {
 
     public checkOrganisation(expectedOrganisation: Organisation, check) {
 
-        return this.authenticate(PersonaDictionary['BBMRI_Admin']).then((body) => {
+        return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'podiumuaa/api/organisations/',
@@ -286,7 +286,7 @@ export class AdminConsole {
     }
 
     getOrgUUID(orgShortName: string) {
-        return this.authenticate(PersonaDictionary['BBMRI_Admin']).then((body) => {
+        return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'podiumuaa/api/organisations/',

@@ -32,7 +32,7 @@ defineSupportCode(function ({ After, Before }) {
         let createOrganisationsCalls = [];
 
         organisations.forEach(function (value) {
-            createOrganisationsCalls.push(adminConsole.createOrganization(
+            createOrganisationsCalls.push(adminConsole.createOrganisation(
                 personaDictionary['BBMRI_Admin'],
                 DataDictionary[value]));
         });
