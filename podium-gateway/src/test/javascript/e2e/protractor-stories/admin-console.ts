@@ -9,14 +9,13 @@
  */
 import request = require('request-promise-native')
 
-import { isUndefined } from 'util';
+import { isUndefined, isNullOrUndefined } from 'util';
 import { browser } from 'protractor';
-import { isNullOrUndefined } from 'util';
+import { Persona } from '../personas/templates';
+import { Organisation, Request } from '../data/templates';
 import initPersonaDictionary = require('../personas/persona-dictionary');
 
 let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
-import { Persona } from '../personas/templates';
-import { Organisation, Request } from '../data/templates';
 
 export class AdminConsole {
     public token: string;

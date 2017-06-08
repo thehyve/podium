@@ -9,7 +9,7 @@
  */
 import { doInOrder } from './util';
 import { Director } from '../protractor-stories/director';
-import { protractor, by } from 'protractor';
+import { protractor, by, browser } from 'protractor';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { isUndefined } from 'util';
 import { Promise } from 'es6-promise';
@@ -19,6 +19,9 @@ let { defineSupportCode } = require('cucumber');
 
 
 defineSupportCode(({ Given, When, Then }) => {
+    let delay = process.env.BROWSERSTACK_DELAY ? process.env.BROWSERSTACK_DELAY : 0;
+
+
     When(/^(.*) adds user '(.*)' with role '(.*)'$/, function (personaName: string, targetNames: string, roleNames: string) {
         let director = this.director as Director;
         let personaNameList = targetNames.split(", ");
@@ -26,7 +29,9 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return director.clickOn("permissions tab").then(() => {
             return doInOrder(personaNameList, (userNames) => {
-                return addRole(director, userNames, director.getData("menuRoleMapping")[roleNameList.pop()]);
+                return browser.sleep(delay).then(() => {
+                    return addRole(director, userNames, director.getData("menuRoleMapping")[roleNameList.pop()]);
+                });
             });
         });
     });
@@ -86,11 +91,9 @@ function checkRole(director: Director, adminConsole: AdminConsole, user: string,
 
 function addRole(director: Director, targetName: string, role: string): Promise<any> {
     return director.enterText("user selection", director.getPersona(targetName)["firstName"], protractor.Key.ENTER).then(() => {
-            return director.getElement("user selection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
-                () => {
-                    return director.clickOn("add")
-                }
-            )
-        }
-    )
+        return director.getElement("user selection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
+            () => {
+                return director.clickOn("add")
+            })
+    })
 }
