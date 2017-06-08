@@ -28,15 +28,15 @@ export const DeliveryStateOptions: any = {
         'Released': {
             'Data': {
                 'label': 'Mark data received',
-                'action': 'received'
+                'action': 'receive'
             },
             'Material': {
                 'label': 'Mark material received',
-                'action': 'received'
+                'action': 'receive'
             },
             'Images': {
                 'label': 'Mark images received',
-                'action': 'received'
+                'action': 'receive'
             }
         }
     },
@@ -93,6 +93,11 @@ export const DeliveryStateOptions: any = {
             'Released': 'local_shipping',
             'Received': 'done',
             'Closed': 'cancel'
+        },
+        'outcome': {
+            'Cancelled': 'cancel',
+            'Received': 'done_all',
+            'Returned': 'keyboard_return'
         }
     }
 

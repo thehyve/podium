@@ -8,7 +8,7 @@
   ~
   -->
 
-<div class="request-action-wrapper" *ngIf="requestDeliveries">
+<div class="request-action-wrapper" *ngIf="hasDeliveries()">
     <h3 jhiTranslate="delivery.title">Delivery</h3>
     <!--<p jhiTranslate="delivery.info">
         Delivery info
@@ -23,33 +23,41 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let delivery of requestDeliveries">
+            <tr *ngFor="let delivery of requestDeliveries"
+                [ngClass]="{
+                    'delivery-received': deliveryIsReceived(delivery),
+                    'delivery-released': deliveryIsReleased(delivery),
+                    'delivery-cancelled': deliveryIsCancelled(delivery)
+                }">
                 <td>
                     <span class="material-icons">{{ iconStateOptions.type[delivery.type] }}</span>
                     <span jhiTranslate="requestType.{{delivery.type}}">Delivery Type</span>
                 </td>
-                <td>
-                    <span class="material-icons">{{ iconStateOptions.status[delivery.status] }}</span>
-                    <span jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery Status</span>
-                </td>
-                <td>
-                    <span *ngIf="delivery.status != deliveryStatusOptions.Closed">
-                    {{ delivery.reference || 'No reference available' }}
-                    </span>
+                <td class="status-cell">
                     <span *ngIf="delivery.status == deliveryStatusOptions.Closed">
-                    {{ delivery.notes || 'No notes available' }}
+                        <span class="material-icons">{{ iconStateOptions.outcome[delivery.outcome] }}</span>
+                        <span jhiTranslate="deliveryOutcome.{{delivery.outcome}}">Delivery outcome</span>
                     </span>
-
+                    <span *ngIf="delivery.status != deliveryStatusOptions.Closed">
+                        <span class="material-icons">{{ iconStateOptions.status[delivery.status] }}</span>
+                        <span jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery status</span>
+                    </span>
                 </td>
                 <td>
-                    
+                    <span>{{ getNotes(delivery)?.summary || 'No notes available' }}</span>
+                    <br />
+                    <span>{{ getNotes(delivery)?.description }}</span>
+                </td>
+                <td>
                     <div class="btn-group pull-right" dropdown
-                         *ngIf="delivery.status != deliveryStatusOptions.Closed && delivery.status != deliveryStatusOptions.Received">
+                         *ngIf="isActionable(delivery)">
                         <button type="button" class="btn btn-outline-primary"
                                 (click)="performAction(primaryStateOptions[delivery.status][delivery.type].action, delivery)">
                             {{ primaryStateOptions[delivery.status][delivery.type].label }}
                         </button>
-                        <button type="button" dropdownToggle class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
+                        <button type="button" dropdownToggle
+                                *ngIf="!isRequester()"
+                                class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
                             <span class="caret"></span>
                             <span class="sr-only">Delivery actions</span>
                         </button>

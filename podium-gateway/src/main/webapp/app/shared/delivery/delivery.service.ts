@@ -13,6 +13,7 @@ import { Observable, Subject } from 'rxjs';
 import { Delivery } from './delivery';
 import { DeliveryReference } from './delivery-reference';
 import { PodiumEventMessage } from '../event/podium-event-message';
+import { DeliveryOutcome } from './delivery-outcome.constants';
 
 @Injectable()
 export class DeliveryService {
@@ -20,11 +21,13 @@ export class DeliveryService {
     private resourceUrl = 'api/requests';
 
     public onDeliveryUpdate: Subject<Delivery> = new Subject();
+    public onDeliveries: Subject<Delivery[]> = new Subject();
 
     constructor(private http: Http) {}
 
     getDeliveries(uuid?: string): Observable<Delivery[]> {
         return this.http.get(`${this.resourceUrl}/${uuid}/deliveries`).map((res: Response) => {
+            this.deliveriesFetchEvent(res.json());
             return res.json();
         });
     }
@@ -52,6 +55,33 @@ export class DeliveryService {
 
     public deliveryUpdateEvent(delivery: Delivery) {
         this.onDeliveryUpdate.next(delivery);
+    }
+
+    public deliveriesFetchEvent(deliveries: Delivery[]) {
+        this.onDeliveries.next(deliveries);
+    }
+
+    /**
+     * Requests can only be finalized when all deliveries have reached an end state (Received or Cancelled).
+     *
+     * @param deliveries The array of the request deliveries.
+     * @returns {boolean} true if all deliveries have reached an end state, else false.
+     */
+    public canFinalizeRequest(deliveries: Delivery[]): boolean {
+        if (!deliveries) {
+            return false;
+        }
+
+        let totalDeliveries = deliveries.length;
+        let numCancelled = deliveries.filter((d) => {
+            return d.outcome === DeliveryOutcome.Cancelled;
+        }).length;
+
+        let numReceived = deliveries.filter((d) => {
+            return d.outcome === DeliveryOutcome.Received;
+        }).length;
+
+        return (numCancelled + numReceived) === totalDeliveries;
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {

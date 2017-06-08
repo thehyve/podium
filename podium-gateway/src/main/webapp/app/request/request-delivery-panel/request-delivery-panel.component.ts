@@ -20,6 +20,8 @@ import { DeliveryStatusUpdateAction } from '../../shared/delivery-update/deliver
 import { DeliveryStatusUpdateDialogComponent } from '../../shared/delivery-update/delivery-update.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeliveryStatus } from '../../shared/delivery/delivery-status.constants';
+import { Response } from '@angular/http';
+import { DeliveryOutcome } from '../../shared/delivery/delivery-outcome.constants';
 
 @Component({
     selector: 'pdm-request-delivery-panel',
@@ -51,6 +53,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     ) {
         jhiLanguageService.addLocation('delivery');
         jhiLanguageService.addLocation('deliveryStatus');
+        jhiLanguageService.addLocation('deliveryOutcome');
         jhiLanguageService.addLocation('requestType');
 
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -90,9 +93,8 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         this.requestDeliveries = res;
     }
 
-    onSuccessUpdate(res: Delivery) {
-        console.log('Success update ', res);
-        this.deliveryService.deliveryUpdateEvent(res);
+    onSuccessUpdate(res: Response) {
+        this.getDeliveries();
     }
 
     releaseType(delivery: Delivery) {
@@ -101,11 +103,105 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
 
     receiveType(delivery: Delivery) {
         this.deliveryService.receiveDelivery(this.request.uuid, delivery.uuid)
-            .subscribe((res) => this.onSuccessUpdate(res.json()));
+            .subscribe((res) => this.onSuccessUpdate(res));
     }
 
     cancelType(delivery: Delivery) {
         this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Cancel);
+    }
+
+    deliveryIsReceived(delivery: Delivery) {
+        return delivery.outcome === DeliveryOutcome.Received;
+    }
+
+    deliveryIsReleased(delivery: Delivery) {
+        return delivery.status === DeliveryStatus.Released;
+    }
+
+    deliveryIsCancelled(delivery: Delivery) {
+        return delivery.outcome === DeliveryOutcome.Cancelled;
+    }
+
+    hasDeliveries(): boolean {
+        return this.requestDeliveries && this.requestDeliveries.length > 0;
+    }
+
+    /**
+     * Get the notes for a delivery.
+     * Depending on the status of the request these are either located in the reference or in a historical event
+     * with the data.targetStatus 'Closed'.
+     *
+     * @param delivery The delivery to fetch the notes for.
+     * @returns {any} An object holding the notes.
+     */
+    getNotes(delivery: Delivery): any {
+
+        /**
+         * When the delivery is cancelled (Closed) return the reason for closing the delivery type.
+         * Otherwise return the reference that was given while Releasing the delivery type.
+         */
+        if (delivery.status === DeliveryStatus.Closed) {
+            switch (delivery.outcome) {
+                case DeliveryOutcome.Cancelled:
+                    let cancelledEvents
+                        = this.getHistoricEventForTargetStatus(delivery, DeliveryStatus.Closed.toString());
+                    if (cancelledEvents) {
+                        return {
+                            'summary': cancelledEvents[cancelledEvents.length - 1].data.messageSummary,
+                            'description': cancelledEvents[cancelledEvents.length - 1].data.messageDescription
+                        };
+                    }
+                    break;
+                case DeliveryOutcome.Received:
+                    return {
+                        'summary': delivery.reference
+                    };
+            }
+        }
+
+        if (delivery.status === DeliveryStatus.Released) {
+            return {
+                'summary': delivery.reference
+            };
+        }
+    }
+
+    getHistoricEventForTargetStatus(delivery: Delivery, targetStatus: string) {
+        return delivery.historicEvents.filter(e => {
+            return e.data.targetStatus === targetStatus;
+        });
+    }
+
+    /**
+     * Check whether a delivery is actionable.
+     * Organisation Coordinators can perform actions on all but Received requests
+     * Requesters can only mark the request as Received after it has been Released.
+     *
+     * @param delivery A delivery
+     * @returns boolean true if a delivery is actionable for the current user
+     */
+    isActionable(delivery: Delivery): boolean {
+
+        // Once a delivery process has been closed it is no longer actionable
+        if (delivery.status === DeliveryStatus.Closed) {
+            return false;
+        }
+
+        // Organisation Coordinator
+        if (this.requestAccessService.isCoordinatorFor(this.request)) {
+            return true;
+        }
+
+        // Requester
+        if (this.requestAccessService.isRequesterOf(this.request)) {
+            return delivery.status === DeliveryStatus.Released;
+        }
+
+        return false;
+    }
+
+    isRequester(): boolean {
+        return this.requestAccessService.isRequesterOf(this.request);
     }
 
     confirmStatusUpdateModal(request: RequestBase, delivery: Delivery, action: DeliveryStatusUpdateAction) {

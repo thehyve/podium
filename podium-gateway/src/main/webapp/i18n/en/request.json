@@ -28,7 +28,8 @@
             "close": "Close request",
             "approve": "Approve",
             "checks": {
-                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified."
+                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
+                "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
             }
         },
         "submit": {

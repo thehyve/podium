@@ -172,13 +172,21 @@
 
                 <!-- Coordinator action to start request delivery -->
                 <div *ngIf="isRequestCoordinator()">
+                    <div class="form-group" *ngIf="!checks.canFinalize">
+                        <span class="material-icons">info_outline</span>
+                        <span jhiTranslate="request.toolbar.checks.canFinalize"
+                            class="check-helper-text">
+                            Please mark all deliveries as Received or Cancelled above prior to finalizing a request.
+                        </span>
+                    </div>
+
                     <div class="float-xs-right">
                         <button type="button" class="btn btn-default test-request-finalize-request-btn"
-                                [disabled]="checks.canFinalize"
-                                tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
-                                [isDisabled]="checks.canFinalize"
+                                [disabled]="!checks.canFinalize"
                                 (click)="finalizeRequest()">
-                            <span jhiTranslate="request.toolbar.finalizeRequest">
+                            <span tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
+                                  [isDisabled]="checks.canFinalize"
+                                  jhiTranslate="request.toolbar.finalizeRequest">
                                 Finalize request
                             </span>
                         </button>

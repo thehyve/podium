@@ -15,6 +15,8 @@ import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-
 import { RequestAccessService } from '../../request-access.service';
 import { RequestService } from '../../request.service';
 import { Subscription } from 'rxjs';
+import { Delivery } from '../../../delivery/delivery';
+import { DeliveryService } from '../../../delivery/delivery.service';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -28,10 +30,13 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     private reviewStatus?: string;
     public requestStatus = RequestStatusOptions;
     public requestReviewStatus = RequestReviewStatusOptions;
-    public checks: any = {
-        validation: false
-    };
     private requestSubscription: Subscription;
+    private deliveriesSubscription: Subscription;
+
+    public checks: any = {
+        validation: false,
+        canFinalize: false
+    };
 
     @Input() form: Form;
     @Input() request: RequestBase;
@@ -54,6 +59,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
+        private deliveryService: DeliveryService,
         private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
@@ -62,6 +68,12 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
             this.request = request;
             this.initializeStatuses();
         });
+
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries) => {
+                this.canFinalizeRequest(deliveries);
+            }
+        );
     }
 
     ngOnInit() {
@@ -72,6 +84,18 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         if (this.requestSubscription) {
             this.requestSubscription.unsubscribe();
         }
+
+        if (this.deliveriesSubscription) {
+            this.deliveriesSubscription.unsubscribe();
+        }
+    }
+
+    canFinalizeRequest(requestDeliveries: Delivery[]) {
+        if (!requestDeliveries) {
+            this.checks.canFinalize = false;
+        }
+
+        this.checks.canFinalize = this.deliveryService.canFinalizeRequest(requestDeliveries);
     }
 
     initializeStatuses() {
