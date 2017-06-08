@@ -479,6 +479,27 @@ public class RequestResource {
     }
 
     /**
+     * POST /requests/:uuid/close : Close a request with uuid.
+     *
+     * @param uuid the uuid of the request to close
+     * @param message the podium event message representation
+     * @return the ResponseEntity with the closed request representation
+     *
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
+     */
+    @PostMapping("/requests/{uuid}/close")
+    @SecuredByRequestOrganisationCoordinator
+    @Timed
+    public ResponseEntity<RequestRepresentation> closeRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
+    ) throws ActionNotAllowed {
+        log.debug("REST request to close request process for : {} ", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestRepresentation requestRepresentation = requestService.closeRequest(user, uuid, message);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
      * SEARCH  /_search/requests?query=:query : search for the request corresponding
      * to the query.
      *

@@ -232,4 +232,15 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Send a request closed notification to the requester.
+     * @param requestUuid the uuid of the request.
+     */
+    @Async
+    public void requestClosedNotificationToRequester(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
+        mailService.sendRequestClosedNotificationToRequester(requester, request);
+    }
 }

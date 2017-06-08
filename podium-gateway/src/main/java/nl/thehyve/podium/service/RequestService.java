@@ -11,12 +11,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
 import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.IdentifiableUser;
-import nl.thehyve.podium.common.enumeration.RequestOutcome;
-import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.enumeration.RequestType;
-import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
-import nl.thehyve.podium.common.enumeration.Status;
+import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
@@ -70,6 +65,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  */
 @Service
 @Transactional
+@Timed
 public class RequestService {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
@@ -446,7 +442,6 @@ public class RequestService {
      * @return the updated draft request
      * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    @Timed
     public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(body.getUuid());
         if (request.getStatus() != RequestStatus.Draft) {
@@ -468,7 +463,6 @@ public class RequestService {
      * @return the updated request
      * @throws ActionNotAllowed if the request is not in review status 'Revision'.
      */
-    @Timed
     public RequestRepresentation updateRequest(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(body.getUuid());
 
@@ -488,7 +482,6 @@ public class RequestService {
      * @return the updated request
      * @throws ActionNotAllowed if the request is not in status 'Revision'.
      */
-    @Timed
     public RequestRepresentation submitRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
@@ -521,7 +514,6 @@ public class RequestService {
      *  @param uuid the uuid of the request
      *  @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    @Timed
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
         checkStatus(request, RequestStatus.Draft);
@@ -540,7 +532,6 @@ public class RequestService {
      * @return the updated request
      * @throws ActionNotAllowed if the request is not in status 'Review' with review status 'Validation'.
      */
-    @Timed
     public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
         RequestReviewStatus sourceReviewStatus = checkReviewStatus(request, RequestReviewStatus.Validation);
@@ -561,7 +552,6 @@ public class RequestService {
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
-    @Timed
     public RequestRepresentation rejectRequest(
         AuthenticatedUser user, UUID uuid, MessageRepresentation message
     ) throws ActionNotAllowed {
@@ -591,7 +581,6 @@ public class RequestService {
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
-    @Timed
     public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
@@ -618,7 +607,6 @@ public class RequestService {
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
-    @Timed
     public RequestRepresentation requestRevision(
         AuthenticatedUser user, UUID uuid, MessageRepresentation message
     ) throws ActionNotAllowed {
@@ -648,7 +636,6 @@ public class RequestService {
      * @return the list of generated requests to organisations.
      * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    @Timed
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
         RequestStatus sourceStatus = checkStatus(request, RequestStatus.Draft);
@@ -718,6 +705,60 @@ public class RequestService {
         deleteRequest(request.getId());
         return result;
     }
+
+    /**
+     * Close a request in status 'Approved' or 'Delivery'. Throws an exception if not all deliveries have been closed
+     * in status 'Delivery'.
+     * If in status 'Approved', the outcome is set to {@link RequestOutcome#Approved}.
+     * If in status 'Delivery', if all deliveries were successful ('Received' or 'Returned'), the outcome is set to {@link RequestOutcome#Delivered};
+     * else if some deliveries were successful, the outcome is set to {@link RequestOutcome#Partially_Delivered}.
+     * @param user the current user.
+     * @param uuid the uuid of the request.
+     * @param message the (optional) message.
+     * @return the updated request.
+     * @throws ActionNotAllowed iff the request is not in status Approved or Delivery or the process is in status Delivery
+     * and not all deliveries have been closed.
+     */
+    public RequestRepresentation closeRequest(
+        AuthenticatedUser user, UUID uuid, MessageRepresentation message
+    ) throws ActionNotAllowed {
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        RequestStatus sourceStatus = request.getStatus();
+        checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
+        RequestOutcome outcome;
+        switch (sourceStatus) {
+            case Approved:
+                outcome = RequestOutcome.Approved;
+                break;
+            case Delivery:
+                if (request.getDeliveryProcesses().stream().anyMatch(deliveryProcess ->
+                    deliveryProcess.getStatus() != DeliveryStatus.Closed)) {
+                    throw new ActionNotAllowed("Not all delivery processes have been closed.");
+                }
+                if (request.getDeliveryProcesses().stream().allMatch(deliveryProcess ->
+                    deliveryProcess.getOutcome() == DeliveryProcessOutcome.Received || deliveryProcess.getOutcome() == DeliveryProcessOutcome.Returned)) {
+                    outcome = RequestOutcome.Delivered;
+                } else if (request.getDeliveryProcesses().stream().anyMatch(deliveryProcess ->
+                    deliveryProcess.getOutcome() == DeliveryProcessOutcome.Received || deliveryProcess.getOutcome() == DeliveryProcessOutcome.Returned)) {
+                    outcome = RequestOutcome.Partially_Delivered;
+                } else {
+                    outcome = RequestOutcome.Cancelled;
+                }
+                break;
+            default:
+                throw ActionNotAllowed.forStatus(sourceStatus);
+        }
+
+        request.setStatus(RequestStatus.Closed);
+        request.setOutcome(outcome);
+        request = save(request);
+        publishStatusUpdate(user, sourceStatus, request, message);
+
+        return requestMapper.extendedRequestToRequestDTO(request);
+    }
+
 
     /**
      * Provide the review feedback for a review round in a request.

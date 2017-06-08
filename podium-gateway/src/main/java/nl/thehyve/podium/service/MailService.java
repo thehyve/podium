@@ -302,4 +302,22 @@ public class MailService {
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
+
+    /**
+     * Send a notification email to the requester that their request has been closed.
+     *
+     * @param requester the requester details
+     * @param request the request
+     */
+    public void sendRequestClosedNotificationToRequester(UserRepresentation requester, RequestRepresentation request) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        String content = templateEngine.process("requesterRequestClosed", context);
+        String subject = messageSource.getMessage("email.requesterRequestClosed.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
 }

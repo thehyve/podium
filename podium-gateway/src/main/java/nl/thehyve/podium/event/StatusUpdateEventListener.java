@@ -62,6 +62,10 @@ public class StatusUpdateEventListener {
             event.getTargetStatus() == DeliveryStatus.Closed) {
             // Send delivery closed email to all organisation coordinators for this delivery
             notificationService.deliveryClosedNotificationToCoordinators(event.getRequestUuid(), event.getDeliveryProcessUuid());
+        } else if ((event.getSourceStatus() == RequestStatus.Approved || event.getSourceStatus() == RequestStatus.Delivery) &&
+            event.getTargetStatus() == RequestStatus.Closed) {
+            // Send request closed email to requester
+            notificationService.requestClosedNotificationToRequester(event.getRequestUuid());
         }
     }
 

@@ -546,8 +546,29 @@ public class DeliveryResourceIntTest {
         Assert.assertNotNull(deliveryRequest);
         Assert.assertEquals(deliveryRequest.getStatus(), RequestStatus.Delivery);
 
+        Thread.sleep(1000);
+
         // One request update, two delivery process updates
         verify(this.auditService, times(3)).publishEvent(any());
+    }
+
+    private void testRelease(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) throws Exception {
+        // Release
+        DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
+        String downloadUrl = "http://example.com/downloadData";
+        reference.setReference(downloadUrl);
+        ResultActions releaseDeliveryResult
+            = performDeliveryAction(coordinator1, DELIVERY_RELEASE, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.POST, reference);
+
+        releaseDeliveryResult
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                DeliveryProcessRepresentation resultDeliveryProcess =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
+                Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
+                Assert.assertEquals(downloadUrl, resultDeliveryProcess.getReference());
+            });
     }
 
     @Test
@@ -556,11 +577,11 @@ public class DeliveryResourceIntTest {
         RequestRepresentation request = getApprovedRequest();
 
         // Setup delivery request
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        request = createDeliveryProcesses(request);
 
         // Fetch delivery processes
         ResultActions deliveryProcessesResult
-            = performProcessAction(coordinator1, ACTION_GET_DELIVERIES, deliveryRequest.getUuid(), HttpMethod.GET, null);
+            = performProcessAction(coordinator1, ACTION_GET_DELIVERIES, request.getUuid(), HttpMethod.GET, null);
 
         final List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
 
@@ -578,22 +599,7 @@ public class DeliveryResourceIntTest {
         Thread.sleep(1000);
         reset(this.auditService);
 
-        // Release
-        DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
-        String downloadUrl = "http://example.com/downloadData";
-        reference.setReference(downloadUrl);
-        ResultActions releaseDeliveryResult
-            = performDeliveryAction(coordinator1, DELIVERY_RELEASE, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.POST, reference);
-
-        releaseDeliveryResult
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                DeliveryProcessRepresentation resultDeliveryProcess =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
-                Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
-                Assert.assertEquals(downloadUrl, resultDeliveryProcess.getReference());
-            });
+        testRelease(request, deliveryProcess);
 
         Thread.sleep(1000);
 
@@ -601,6 +607,23 @@ public class DeliveryResourceIntTest {
         verify(this.mailService, times(1)).sendDeliveryReleasedNotificationToRequester(any(), any(), any());
         // Test status update event
         verify(this.auditService, times(1)).publishEvent(any());
+    }
+
+    private void testReceived(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) throws Exception {
+        // Received
+        ResultActions receivedDeliveryResult
+            = performDeliveryAction(requester, DELIVERY_RECEIVED, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.GET, null);
+
+        receivedDeliveryResult
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                DeliveryProcessRepresentation resultDeliveryProcess =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
+                Assert.assertEquals(DeliveryStatus.Closed, resultDeliveryProcess.getStatus());
+                Assert.assertEquals(DeliveryProcessOutcome.Received, resultDeliveryProcess.getOutcome());
+            });
+
     }
 
     @Test
@@ -611,39 +634,12 @@ public class DeliveryResourceIntTest {
         List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
-        // Release
-        DeliveryReferenceRepresentation reference = new DeliveryReferenceRepresentation();
-        String downloadUrl = "http://example.com/downloadData";
-        reference.setReference(downloadUrl);
-        ResultActions releaseDeliveryResult
-            = performDeliveryAction(coordinator1, DELIVERY_RELEASE, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.POST, reference);
-
-        releaseDeliveryResult
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                DeliveryProcessRepresentation resultDeliveryProcess =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
-                Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
-            });
+        testRelease(request, deliveryProcess);
 
         Thread.sleep(1000);
         reset(this.auditService);
 
-        // Received
-        ResultActions receivedDeliveryResult
-            = performDeliveryAction(requester, DELIVERY_RECEIVED, request.getUuid(), deliveryProcess.getUuid(), HttpMethod.GET, reference);
-
-        receivedDeliveryResult
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                DeliveryProcessRepresentation resultDeliveryProcess =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
-                Assert.assertEquals(DeliveryStatus.Closed, resultDeliveryProcess.getStatus());
-                Assert.assertEquals(DeliveryProcessOutcome.Received, resultDeliveryProcess.getOutcome());
-                Assert.assertEquals(downloadUrl, resultDeliveryProcess.getReference());
-            });
+        testReceived(request, deliveryProcess);
 
         Thread.sleep(1000);
 
@@ -728,6 +724,76 @@ public class DeliveryResourceIntTest {
 
         // Test status update events
         verify(this.auditService, times(2)).publishEvent(any());
+    }
+
+    private void testCloseRequest(RequestRepresentation request, RequestOutcome expectedOutcome) throws Exception {
+        // Close the request.
+        MessageRepresentation message = new MessageRepresentation();
+        message.setSummary("Closed request after delivery. Outcome: " + expectedOutcome.name());
+        ResultActions res
+            = performProcessAction(coordinator1, "close", request.getUuid(), HttpMethod.POST, message);
+
+        res
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result closed request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestStatus.Closed, requestResult.getStatus());
+                Assert.assertEquals(expectedOutcome, requestResult.getOutcome());
+            });
+    }
+
+    @Test
+    public void closeRequestAfterDeliveryCancel() throws Exception {
+        initMocks();
+        RequestRepresentation request = getApprovedRequest();
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+
+        for (DeliveryProcessRepresentation deliveryProcess: deliveryProcesses) {
+            testCancel(request, deliveryProcess);
+        }
+
+        Thread.sleep(1000);
+        reset(this.auditService);
+        reset(this.mailService);
+
+        testCloseRequest(request, RequestOutcome.Cancelled);
+
+        Thread.sleep(1000);
+        // Verify that the requester is notified that the request is closed.
+        verify(this.mailService).sendRequestClosedNotificationToRequester(any(), any());
+        // Test status update events
+        verify(this.auditService, times(1)).publishEvent(any());
+    }
+
+    @Test
+    public void closeRequestAfterDeliveryReceived() throws Exception {
+        initMocks();
+        RequestRepresentation request = getApprovedRequest();
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+
+        for (DeliveryProcessRepresentation deliveryProcess: deliveryProcesses) {
+            testRelease(request, deliveryProcess);
+
+            Thread.sleep(1000);
+
+            testReceived(request, deliveryProcess);
+        }
+
+        Thread.sleep(1000);
+        reset(this.auditService);
+        reset(this.mailService);
+
+        testCloseRequest(request, RequestOutcome.Delivered);
+
+        Thread.sleep(1000);
+        // Verify that the requester is notified that the request is closed.
+        verify(this.mailService).sendRequestClosedNotificationToRequester(any(), any());
+        // Test status update events
+        verify(this.auditService, times(1)).publishEvent(any());
     }
 
 }
