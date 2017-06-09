@@ -7,9 +7,9 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import ProfileForm = require("./modules/profile-form")
+import OrganisationsOverviewCommon = require("./modules/organisations-overview")
 
 
 /*
@@ -32,8 +32,7 @@ class OrganisationsManagementPage {
         this.name = "organisation management";
         this.url = "#/bbmri/organisation";
         this.elements = {
-            "HeaderShortName": { locator: $('th[jhisortby=shortName]') },
-            "HeaderName": { locator: $('th[jhisortby=name]') },
+            ...OrganisationsOverviewCommon(),
         }
     }
 }

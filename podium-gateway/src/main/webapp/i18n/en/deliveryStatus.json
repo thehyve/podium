@@ -1,0 +1,8 @@
+{
+    "deliveryStatus" : {
+        "Preparation": "Preparation",
+        "Released": "Released",
+        "Closed": "Closed",
+        "None": "None"
+    }
+}

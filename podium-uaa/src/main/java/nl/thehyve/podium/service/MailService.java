@@ -22,6 +22,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -93,6 +94,21 @@ public class MailService {
         String content = templateEngine.process("creationEmail", context);
         String subject = messageSource.getMessage("email.verification.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
+    public void sendUserRegisteredEmail(Collection<User> administrators, User registeredUser) {
+        log.debug("Notify BBRMI administrators of registered user: '{}'", registeredUser.getEmail());
+        for (User user: administrators) {
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable("registeredUser", registeredUser);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            String content = templateEngine.process("userRegistered", context);
+            String subject = messageSource.getMessage("email.userRegistered.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
     }
 
     @Async

@@ -55,3 +55,8 @@ export * from './attachment/attachment';
 export * from './attachment/attachment.service';
 export * from './attachment/attachment-type';
 export * from './breadcrumbs/breadcrumbs.module';
+export * from './delivery/delivery';
+export * from './delivery/delivery.service';
+export * from './delivery/delivery-outcome.constants';
+export * from './delivery/delivery-state-options.constants';
+export * from './delivery/delivery-status.constants';

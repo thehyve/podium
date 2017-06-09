@@ -11,6 +11,7 @@ import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ public class DeliveryProcessRepresentation implements Serializable {
 
     private RequestType type;
 
+    @Size(max = 2000)
     private String reference;
 
     private ZonedDateTime createdDate;

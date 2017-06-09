@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.PodiumGatewayApp;
+import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -139,6 +140,7 @@ public class RequestResourceIntTest {
     private static final String ACTION_APPROVE = "approve";
     private static final String ACTION_REQUEST_REVISION = "requestRevision";
     private static final String ACTION_REJECT = "reject";
+    private static final String ACTION_CLOSE = "close";
 
     private static final String mockRequesterUsername = "requester";
     private static UUID mockRequesterUuid = UUID.randomUUID();
@@ -299,6 +301,7 @@ public class RequestResourceIntTest {
 
         // Mock notification call
         doNothing().when(this.mailService).sendSubmissionNotificationToCoordinators(any(), any(), anyListOf(UserRepresentation.class));
+        doNothing().when(this.mailService).sendRequestClosedNotificationToRequester(any(), any());
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());
@@ -785,6 +788,7 @@ public class RequestResourceIntTest {
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
 
                 Assert.assertEquals(ReviewProcessOutcome.Rejected, requestResult.getRequestReview().getDecision());
+                Assert.assertEquals(RequestOutcome.Rejected, requestResult.getOutcome());
             })
             .andExpect(status().isOk());
     }
@@ -850,14 +854,10 @@ public class RequestResourceIntTest {
             });
     }
 
-    @Test
-    public void approveReviewRequest() throws Exception {
-        initMocks();
-        RequestRepresentation requestRepresentation = getSubmittedDraft();
-
+    private void validateRequest(RequestRepresentation request) throws Exception {
         // Send for review
         ResultActions validatedRequest
-            = performProcessAction(coordinator1, ACTION_VALIDATE, requestRepresentation.getUuid(), HttpMethod.GET, null);
+            = performProcessAction(coordinator1, ACTION_VALIDATE, request.getUuid(), HttpMethod.GET, null);
 
         validatedRequest
             .andExpect(status().isOk())
@@ -867,10 +867,12 @@ public class RequestResourceIntTest {
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
             });
+    }
 
+    private void testApproveRequest(RequestRepresentation request) throws Exception {
         // Approve the request.
         ResultActions approvedRequest
-            = performProcessAction(coordinator1, ACTION_APPROVE, requestRepresentation.getUuid(), HttpMethod.GET, null);
+            = performProcessAction(coordinator1, ACTION_APPROVE, request.getUuid(), HttpMethod.GET, null);
 
         approvedRequest
             .andExpect(status().isOk())
@@ -878,8 +880,51 @@ public class RequestResourceIntTest {
                 log.info("Result approved request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestReviewStatus.Closed, requestResult.getRequestReview().getStatus());
                 Assert.assertEquals(ReviewProcessOutcome.Approved, requestResult.getRequestReview().getDecision());
+                Assert.assertEquals(RequestStatus.Approved, requestResult.getStatus());
             });
+    }
+
+    @Test
+    public void approveReviewRequest() throws Exception {
+        initMocks();
+        RequestRepresentation request = getSubmittedDraft();
+
+        validateRequest(request);
+
+        testApproveRequest(request);
+    }
+
+    @Test
+    public void closeApprovedRequest() throws Exception {
+        initMocks();
+        RequestRepresentation request = getSubmittedDraft();
+
+        validateRequest(request);
+
+        testApproveRequest(request);
+
+        // Close the request.
+        MessageRepresentation message = new MessageRepresentation();
+        message.setSummary("Approved, but no delivery");
+        ResultActions res
+            = performProcessAction(coordinator1, ACTION_CLOSE, request.getUuid(), HttpMethod.POST, message);
+
+        res
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result closed request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(RequestStatus.Closed, requestResult.getStatus());
+                Assert.assertEquals(RequestOutcome.Approved, requestResult.getOutcome());
+            });
+
+        Thread.sleep(1000);
+
+        // Verify that the requester is notified that the request is closed.
+        verify(this.mailService).sendRequestClosedNotificationToRequester(any(), any());
     }
 
     @Test

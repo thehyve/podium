@@ -17,15 +17,19 @@
             "validation": "Your request is currently waiting for validation by the organisation coordinator.",
             "review": "Your request has passed the first check and is currently under review.",
             "approved": "Your request has been approved and is pending start of delivery by the organisation coordinator.",
+            "delivery": "Your request is currently in the process of delivery. You will be notified when action is required on your behalf.",
             "sendForReview": "Send for review",
             "saveAndSubmit": "Save and submit",
             "startDelivery": "Start delivery process",
+            "finalizeRequest": "Finalize request",
             "save": "Save",
             "requestRevision": "Request revision",
             "reject": "Reject",
+            "close": "Close request",
             "approve": "Approve",
             "checks": {
-                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified."
+                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
+                "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
             }
         },
         "submit": {
@@ -75,12 +79,25 @@
             "organisations": "Organisations"
         },
         "review": {
-            "summaryTitle": "Review Summary",
+            "title": "Review",
             "date": "Date",
             "reviewerName": "Name",
             "result": "Result",
             "comment": "Comment",
             "noResults": "No active reviews found"
+        },
+        "finalize": {
+            "header": "Finalize request {{ requestId }}",
+            "body": {
+                "header": "Completing this step will result in the closing of the request",
+                "info": "The outcome of the request depends on whether all the requested materials have been received by the researcher.",
+                "full_delivery": "All requested types have been released or received, therefore the request will be marked as 'Delivered'.",
+                "partial_delivery": "Not all requested types have released or received, therefore the request will be marked as 'Partially delivered'.",
+                "no_delivery": "None of the requested types have been released or received, therefore the request will be marked as 'Cancelled'."
+            },
+            "actions": {
+                "submit": "Submit"
+            }
         },
         "delete": {
             "dialog": {
@@ -221,7 +238,6 @@
                             "maxlength": "The principal investigator affiliation cannot be longer than 150 characters."
                         }
                     },
-
                     "searchQuery": {
                         "required": "Search query is required.",
                         "minlength": "Search query has to be at least 1 character long.",

@@ -8,7 +8,7 @@
  *
  */
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
@@ -23,39 +23,72 @@ import { RequestUpdateAction } from '../../../shared/status-update/request-updat
 import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
 import { Principal } from '../../../shared/auth/principal.service';
 import { User } from '../../../shared/user/user.model';
+import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/request-finalize-dialog.component';
+import { Delivery } from '../../../shared/delivery/delivery';
+import { Subscription } from 'rxjs';
+import { DeliveryService } from '../../../shared/delivery/delivery.service';
 
 @Component({
     selector: 'pdm-request-detail',
     templateUrl: './request-detail.component.html'
 })
 
-export class RequestDetailComponent {
+export class RequestDetailComponent implements OnDestroy {
 
     public RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
 
     public request: RequestBase;
     public requestDetails: RequestDetail;
+    public deliveries: Delivery[];
     public isInRevision = false;
     public isUpdating = false;
     public currentUser: User;
 
+    public requestSubscription: Subscription;
+    public deliveriesSubscription: Subscription;
+
     constructor(private requestService: RequestService,
+                private deliveryService: DeliveryService,
                 private requestAccessService: RequestAccessService,
                 private requestFormService: RequestFormService,
                 private modalService: NgbModal,
                 private principal: Principal) {
+
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
 
-        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.setRequest(request);
         });
 
         this.principal.identity().then((account) => {
             this.currentUser = account;
         });
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries) => {
+                this.deliveries = deliveries;
+            }
+        );
     }
 
+    /**
+     * Subscription clean up to prevent memory leaks
+     */
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
+
+        if (this.deliveriesSubscription) {
+            this.deliveriesSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Set the request so we can perform a check whether the request is in Revision.
+     *
+     * @param request the request
+     */
     setRequest(request) {
         this.request = request;
 
@@ -70,6 +103,11 @@ export class RequestDetailComponent {
         }
     }
 
+    /**
+     * Submit the feedback of a reviewer for a request.
+     *
+     * @param requestReviewFeedback the reviewfeedback holding the advice and their findings.
+     */
     submitReview(decision: RequestReviewDecision) {
         let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = this.request;
@@ -85,11 +123,18 @@ export class RequestDetailComponent {
         });
     }
 
+    /**
+     * Send a request back for revision.
+     * A confirmation dialog is opened so the Organisation Coordinator can supply their argumentation.
+     */
     requireRequestRevision() {
         this.isUpdating = true;
         return this.confirmStatusUpdateModal(this.request, RequestUpdateAction.Revision);
     }
 
+    /**
+     * Validate a request and send on for review
+     */
     validateRequest() {
         this.isUpdating = true;
         this.requestService.validateRequest(this.request.uuid)
@@ -99,6 +144,10 @@ export class RequestDetailComponent {
             );
     }
 
+    /**
+     * Check whether the current logged in user is a organisation coordinator for the request.
+     * @returns {boolean} true if the current user is a organisation coordinator for the request.
+     */
     isRequestCoordinator(): boolean {
         return this.requestAccessService.isCoordinatorFor(this.request);
     }
@@ -107,6 +156,9 @@ export class RequestDetailComponent {
         return this.requestAccessService.isReviewerFor(this.request);
     }
 
+    /**
+     * Approve a request
+     */
     approveRequest() {
         this.isUpdating = true;
         this.requestService.approveRequest(this.request.uuid)
@@ -116,11 +168,18 @@ export class RequestDetailComponent {
             );
     }
 
+    /**
+     * Reject a request.
+     * A confirmation modal is shown for the organisation coordinator to provide their findings.
+     */
     rejectRequest() {
         this.isUpdating = true;
         return this.confirmStatusUpdateModal(this.request, RequestUpdateAction.Reject);
     }
 
+    /**
+     * Start the delivery process of a request using its UUID.
+     */
     startRequestDelivery() {
         this.isUpdating = true;
         this.requestService.startRequestDelivery(this.request.uuid)
@@ -130,10 +189,42 @@ export class RequestDetailComponent {
             );
     }
 
+    /**
+     * Finalize the request process
+     */
+    finalizeRequest() {
+        return this.confirmFinalizeRequest(this.request, this.deliveries);
+    }
+
+    /**
+     * Open a modal window for providing feedback details for Rejecting or requesting a revision.
+     *
+     * @param request the request
+     * @param action the specific RequestUpdateAction to apply to the request.
+     */
     confirmStatusUpdateModal(request: RequestBase, action: RequestUpdateAction) {
         let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+            this.isUpdating = false;
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+            this.isUpdating = false;
+        });
+    }
+
+    /**
+     * Open a modal window giving the organisation coordinator a summary of the outcome of the request.
+     *
+     * @param request the request
+     * @param deliveries the deliveries belonging to the request.
+     */
+    confirmFinalizeRequest(request: RequestBase, deliveries: Delivery[]) {
+        let modalRef = this.modalService.open(RequestFinalizeDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = request;
+        modalRef.componentInstance.deliveries = deliveries;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
             this.isUpdating = false;

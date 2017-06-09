@@ -282,6 +282,7 @@ public class MailService {
      * @param organisation the organisation that is was submitted to
      * @param coordinators the list of organisation coordinators.
      */
+    @Async
     public void sendDeliveryReceivedNotificationToCoordinators(
         RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess,
         OrganisationDTO organisation, List<UserRepresentation> coordinators) {
@@ -301,5 +302,48 @@ public class MailService {
             String subject = messageSource.getMessage("email.organisationDeliveryReceived.title", null, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
+    }
+
+    /**
+     * Send a notification email to the requester that their request has been closed.
+     *
+     * @param requester the requester details
+     * @param request the request
+     */
+    @Async
+    public void sendRequestClosedNotificationToRequester(UserRepresentation requester, RequestRepresentation request) {
+        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        Locale locale = Locale.forLanguageTag(requester.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, requester);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        String content = templateEngine.process("requesterRequestClosed", context);
+        String subject = messageSource.getMessage("email.requesterRequestClosed.title", null, locale);
+        sendEmail(requester.getEmail(), subject, content, false, true);
+    }
+
+    /**
+     * Send a notification email to the requester that the delivery has been cancelled.
+     *
+     * @param request the request.
+     * @param deliveryProcess the delivery process.
+     * @param user the requester.
+     */
+    @Async
+    public void sendDeliveryCancelledNotificationToRequester(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess, UserRepresentation user) {
+        log.info("Notifying requester: delivery = {}, requester = {}",
+            deliveryProcess, user);
+        log.info("Mail sender: {} ({})", this.javaMailSender, this.javaMailSender.toString());
+        log.debug("Sending delivery received e-mail to '{}'", user.getEmail());
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable("request", request);
+        context.setVariable("deliveryProcess", deliveryProcess);
+        String content = templateEngine.process("organisationDeliveryCancelled", context);
+        String subject = messageSource.getMessage("email.organisationDeliveryCancelled.title", null, locale);
+        sendEmail(user.getEmail(), subject, content, false, true);
     }
 }

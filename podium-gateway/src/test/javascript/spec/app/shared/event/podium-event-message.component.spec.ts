@@ -22,6 +22,11 @@ import { MockPrincipal } from '../../../helpers/mock-principal.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
 import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
+import { RequestReviewProcess } from '../../../../../../main/webapp/app/shared/request/request-review-process';
+import {
+    RequestReviewStatusOptions,
+    RequestStatusOptions
+} from '../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 
 describe('PodiumEventMessageComponent (templateUrl)', () => {
     let comp: PodiumEventMessageComponent;
@@ -66,6 +71,10 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
         let request = new RequestBase();
         request.requestDetail = new RequestDetail();
         request.historicEvents = [];
+
+        request.status = RequestStatusOptions.Review;
+        request.requestReview = new RequestReviewProcess();
+        request.requestReview.status = RequestReviewStatusOptions.Revision;
 
         revisionEvent.eventDate = new Date();
         revisionEvent.eventType = 'Status_Change';
@@ -117,12 +126,12 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
 
         it('should find the last historic message event on init', () => {
             comp.lastEvent = null;
-            spyOn(comp, 'findLastHistoricMessageEventForCurrentStatus').and.callThrough();
+            spyOn(comp, 'findLastHistoricReviewMessageEventForCurrentStatus').and.callThrough();
             comp.request = request;
 
             fixture.detectChanges(); // initial binding
 
-            expect(comp.findLastHistoricMessageEventForCurrentStatus).toHaveBeenCalled();
+            expect(comp.findLastHistoricReviewMessageEventForCurrentStatus).toHaveBeenCalled();
             expect(comp.lastEvent).toEqual(request.historicEvents[1]);
         });
 

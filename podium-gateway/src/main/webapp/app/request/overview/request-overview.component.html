@@ -17,6 +17,12 @@
                 Submitted
             </span>
         </button>
+        <button class="btn btn-info float-xs-right create-organisation active" (click)="loadMyDeliveryRequests()" >
+            <i class="material-icons">local_shipping</i>
+            <span class="hidden-sm-down">
+                Delivery
+            </span>
+        </button>
         <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
             <i class="material-icons">drafts</i>
             <span class="hidden-sm-down">
@@ -27,6 +33,20 @@
             <i class="material-icons">add_circle_outline</i>
             <span class="hidden-sm-down">
             Create new request
+            </span>
+        </button>
+    </div>
+    <div class="btn-group flex-btn-group-container" *ngIf="isCoordinatorRoute()">
+        <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadCoordinatorReviewRequests()" >
+            <i class="material-icons">assignment_ind</i>
+            <span class="hidden-sm-down">
+                Submitted
+            </span>
+        </button>
+        <button class="btn btn-info float-xs-right create-organisation active" (click)="loadCoordinatorDeliveryRequests()" >
+            <i class="material-icons">local_shipping</i>
+            <span class="hidden-sm-down">
+                Delivery
             </span>
         </button>
     </div>

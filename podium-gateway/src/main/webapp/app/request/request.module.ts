@@ -21,17 +21,19 @@ import {
     RequestDraftModalModalComponent
 } from './overview/delete-request-draft-modal.component';
 import { RequestResolvePagingParams } from './overview/request-overview.route';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewStatusComponent } from '../shared/review-status/review-status.component';
 import { RequestUpdateStatusDialogComponent } from '../shared/status-update/request-update-status-dialog.component';
 import { RequestUpdateReviewDialogComponent } from '../shared/status-update/request-update-review-dialog.component';
 import { RequestMainDetailResolver } from './main-detail/request-main-detail-resolver.service';
+import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-delivery-panel.component';
+import { DeliveryService } from '../shared/delivery/delivery.service';
+import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
+import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-dialog/request-finalize-dialog.component';
 
 @NgModule({
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
-        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
@@ -45,21 +47,28 @@ import { RequestMainDetailResolver } from './main-detail/request-main-detail-res
         RequestProgressBarComponent,
         RequestUpdateStatusDialogComponent,
         RequestUpdateReviewDialogComponent,
-        ReviewStatusComponent
+        ReviewStatusComponent,
+        DeliveryStatusUpdateDialogComponent,
+        RequestDeliveryPanelComponent,
+        RequestFinalizeDialogComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
         RequestDraftModalModalComponent,
         RequestUpdateStatusDialogComponent,
         RequestUpdateReviewDialogComponent,
-        ReviewStatusComponent
+        ReviewStatusComponent,
+        DeliveryStatusUpdateDialogComponent,
+        RequestFinalizeDialogComponent
     ],
     providers: [
         RequestFormService,
         RequestOverviewService,
         RequestResolvePagingParams,
         RequestMainDetailResolver,
+        DeliveryService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumGatewayRequestModule {}
+export class PodiumGatewayRequestModule {
+}

@@ -17,6 +17,8 @@ import { RequestService } from '../../request.service';
 import { Subscription } from 'rxjs';
 import { User } from '../../../user/user.model';
 import { RequestReviewDecision } from '../../request-review-decision';
+import { Delivery } from '../../../delivery/delivery';
+import { DeliveryService } from '../../../delivery/delivery.service';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -30,10 +32,13 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     private reviewStatus?: string;
     public requestStatus = RequestStatusOptions;
     public requestReviewStatus = RequestReviewStatusOptions;
-    public checks: any = {
-        validation: false
-    };
     private requestSubscription: Subscription;
+    private deliveriesSubscription: Subscription;
+
+    public checks: any = {
+        validation: false,
+        canFinalize: false
+    };
 
     @Input() currentUser?: User;
     @Input() form: Form;
@@ -53,15 +58,25 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() markAcceptable = new EventEmitter();
     @Output() markUnacceptable = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
+    @Output() finalizeRequestChange = new EventEmitter();
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestAccessService: RequestAccessService,
-                private requestService: RequestService) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestAccessService: RequestAccessService,
+        private deliveryService: DeliveryService,
+        private requestService: RequestService
+    ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.initializeStatuses();
         });
+
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries) => {
+                this.canFinalizeRequest(deliveries);
+            }
+        );
     }
 
     ngOnInit() {
@@ -72,6 +87,18 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         if (this.requestSubscription) {
             this.requestSubscription.unsubscribe();
         }
+
+        if (this.deliveriesSubscription) {
+            this.deliveriesSubscription.unsubscribe();
+        }
+    }
+
+    canFinalizeRequest(requestDeliveries: Delivery[]) {
+        if (!requestDeliveries) {
+            this.checks.canFinalize = false;
+        }
+
+        this.checks.canFinalize = this.deliveryService.canFinalizeRequest(requestDeliveries);
     }
 
     initializeStatuses() {
@@ -158,5 +185,9 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     startDelivery() {
         this.startDeliveryChange.emit(true);
+    }
+
+    finalizeRequest() {
+        this.finalizeRequestChange.emit(true);
     }
 }

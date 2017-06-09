@@ -80,6 +80,9 @@
                                       *ngIf="isRequestCoordinator() || isRequestReviewer()">
             </pdm-request-review-panel>
 
+            <pdm-request-delivery-panel [request]="request" *ngIf="request">
+            </pdm-request-delivery-panel>
+
             <pdm-request-action-toolbar
                 [currentUser]="currentUser"
                 [request]="request"
@@ -90,7 +93,8 @@
                 (markAcceptable)="submitReview(RequestReviewDecision.Approved)"
                 (markUnacceptable)="submitReview(RequestReviewDecision.Rejected)">
                 (approveRequestChange)="approveRequest()"
-                (startDeliveryChange)="startRequestDelivery()">
+                (startDeliveryChange)="startRequestDelivery()"
+                (finalizeRequestChange)="finalizeRequest()">
             </pdm-request-action-toolbar>
         </div>
 

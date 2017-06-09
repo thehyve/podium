@@ -54,9 +54,24 @@ export class RequestService {
         });
     }
 
+    findMyDeliveryRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Delivery/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+
     findCoordinatorReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findCoordinatorDeliveryRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Delivery/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
@@ -149,6 +164,10 @@ export class RequestService {
 
     startRequestDelivery(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
+    }
+
+    finalizeRequest(uuid: string, message?: PodiumEventMessage) {
+        return this.http.post(`${this.resourceUrl}/${uuid}/close`, message);
     }
 
     search(req?: any): Observable<Response> {
