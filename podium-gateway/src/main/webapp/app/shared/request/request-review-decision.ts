@@ -9,7 +9,7 @@
  */
 
 export enum RequestReviewDecision {
-    Approved,
-    Rejected,
-    None
+    Approved  = <any>'Approved',
+    Rejected  = <any>'Rejected',
+    None  = <any>'None'
 }

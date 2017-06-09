@@ -75,10 +75,13 @@
                 </dd>
             </dl>
 
-            <pdm-request-review-panel [reviewRounds]="request.reviewRounds" *ngIf="isRequestCoordinator()">
+            <pdm-request-review-panel [reviewRounds]="request.reviewRounds"
+                                      [request]="request"
+                                      *ngIf="isRequestCoordinator() || isRequestReviewer()">
             </pdm-request-review-panel>
 
             <pdm-request-action-toolbar
+                [currentUser]="currentUser"
                 [request]="request"
                 [isUpdating]="isUpdating"
                 (rejectChange)="rejectRequest()"

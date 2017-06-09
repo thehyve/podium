@@ -122,17 +122,18 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
             reviewRound2.reviewFeedback = [
                 reviewFeedback2, reviewFeedback3
             ];
+            comp.request = {};
         });
 
         it('should get last review feedback on initialisation', () => {
-            comp.reviewRounds = [];
+            comp.request.reviewRounds = [];
             fixture.detectChanges(); // initial binding
             comp.ngOnInit();
             expect(comp.lastReviewFeedback).toBe(undefined);
         });
 
         it('should get last review feedback on initialisation', () => {
-            comp.reviewRounds = [reviewRound1, reviewRound2];
+            comp.request.reviewRounds = [reviewRound1, reviewRound2];
             comp.ngOnInit();
             expect(comp.lastReviewFeedback.length).toBe(2);
         });

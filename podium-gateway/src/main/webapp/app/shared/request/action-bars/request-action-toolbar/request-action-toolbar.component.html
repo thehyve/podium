@@ -76,7 +76,7 @@
                                 <input type="checkbox"
                                        name="validationCheck"
                                        id="validationCheck"
-                                       [(ngModel)]="checks.validation" />
+                                       [(ngModel)]="checks.validation"/>
                                 <span jhiTranslate="request.toolbar.checks.validation" class="check-helper-text">
                                 I hereby validate this request.
                                 Upon sending for review all organisation reviewers will be notified.
@@ -130,7 +130,7 @@
                 </div>
 
                 <!-- Reviewer actions -->
-                <div *ngIf="isRequestReviewer()">
+                <div *ngIf="isRequestReviewer() && isReviewable()">
                     <!-- Review -->
                     <div class="float-xs-right">
                         <button type="button" class="btn btn-danger" (click)="markRequestUnacceptable()">

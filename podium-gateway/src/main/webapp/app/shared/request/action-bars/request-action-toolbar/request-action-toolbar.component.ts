@@ -15,6 +15,8 @@ import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-
 import { RequestAccessService } from '../../request-access.service';
 import { RequestService } from '../../request.service';
 import { Subscription } from 'rxjs';
+import { User } from '../../../user/user.model';
+import { RequestReviewDecision } from '../../request-review-decision';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -33,6 +35,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     };
     private requestSubscription: Subscription;
 
+    @Input() currentUser: User;
     @Input() form: Form;
     @Input() request: RequestBase;
     @Input() isUpdating: false;
@@ -51,19 +54,18 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() markUnacceptable = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
 
-    constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private requestAccessService: RequestAccessService,
-        private requestService: RequestService
-    ) {
+    constructor(private jhiLanguageService: JhiLanguageService,
+                private requestAccessService: RequestAccessService,
+                private requestService: RequestService) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
+            this.initializeStatuses();
         });
     }
 
     ngOnInit() {
-         this.initializeStatuses();
+        this.initializeStatuses();
     }
 
     ngOnDestroy() {
@@ -99,6 +101,11 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     isRequestingResearcher(): boolean {
         return this.requestAccessService.isRequesterOf(this.request);
+    }
+
+    isReviewable(): boolean {
+        let lastFeedback = this.requestService.getLastReviewFeedbackByUser(this.request, this.currentUser);
+        return lastFeedback.advice === RequestReviewDecision.None;
     }
 
     saveDraft() {

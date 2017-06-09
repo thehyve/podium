@@ -15,6 +15,9 @@ import { RequestReviewDecision } from '../request-review-decision';
 import { RequestService } from '../request.service';
 import { RequestBase } from '../request-base';
 import { Subscription } from 'rxjs';
+import { RequestAccessService } from '../request-access.service';
+import { User } from '../../user/user.model';
+import { Principal } from '../../auth/principal.service';
 
 @Component({
     selector: 'pdm-request-review-panel',
@@ -27,7 +30,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     requestSubscription: Subscription;
 
     @Input()
-    reviewRounds: ReviewRound[];
+    request: RequestBase;
 
     private optionStyles = [
         {style: 'tag-success', advise: RequestReviewDecision.Approved},
@@ -35,12 +38,14 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         {style: 'tag-default', advise: RequestReviewDecision.None},
     ];
 
-    constructor(
-        private requestService: RequestService
-    ) {
+    private currentUser: User;
+
+    constructor(private requestService: RequestService,
+                private principal: Principal,
+                private requestAccessService: RequestAccessService) {
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
-            this.reviewRounds = request.reviewRounds;
-            this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.reviewRounds);
+            this.request = request;
+            this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
         });
     }
 
@@ -51,9 +56,22 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         return foundStyle ? foundStyle.style : 'tag-default';
     }
 
+    isReviewer() {
+        return this.requestAccessService.isReviewerFor(this.request);
+    }
+
     ngOnInit(): void {
-        if (this.reviewRounds.length) {
-            this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.reviewRounds);
+        if (this.request.reviewRounds.length) {
+            if (this.requestAccessService.isReviewerFor(this.request)) {
+                this.principal.identity().then((account) => {
+                    this.currentUser = account;
+                    this.lastReviewFeedback = [
+                        this.requestService.getLastReviewFeedbackByUser(this.request, this.currentUser)
+                    ];
+                });
+            } else {
+                this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
+            }
         }
     }
 

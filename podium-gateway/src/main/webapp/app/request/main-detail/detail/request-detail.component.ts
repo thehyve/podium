@@ -37,8 +37,7 @@ export class RequestDetailComponent {
     public requestDetails: RequestDetail;
     public isInRevision = false;
     public isUpdating = false;
-
-    private currentUser: User;
+    public currentUser: User;
 
     constructor(private requestService: RequestService,
                 private requestAccessService: RequestAccessService,
@@ -78,6 +77,7 @@ export class RequestDetailComponent {
         modalRef.componentInstance.reviewStatus = decision;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
+            this.requestService.requestUpdateEvent(this.request);
             this.isUpdating = false;
         }, (reason) => {
             console.log(`Dismissed ${reason}`);
@@ -101,6 +101,10 @@ export class RequestDetailComponent {
 
     isRequestCoordinator(): boolean {
         return this.requestAccessService.isCoordinatorFor(this.request);
+    }
+
+    isRequestReviewer(): boolean {
+        return this.requestAccessService.isReviewerFor(this.request);
     }
 
     approveRequest() {

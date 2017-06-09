@@ -71,7 +71,9 @@ export class RequestUpdateReviewDialogComponent extends RequestUpdateDialogCompo
      */
     confirmStatusUpdate() {
         this.requestService.submitReview(this.request.uuid, this.composeReviewFeedback())
-            .subscribe((res) => this.onSuccess(res));
-        super.onUnknownStatus();
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onUnknownStatus()
+            );
     }
 }

@@ -195,10 +195,10 @@ export class RequestService {
     }
 
     getLastReviewFeedbackByUser(request: RequestBase, user: User): RequestReviewFeedback {
-        let lastFeedbacks = this.getLastReviewFeedbacks(request.reviewRounds);
+        let lastFeedbackList = this.getLastReviewFeedbacks(request.reviewRounds);
         let lastFeedback: RequestReviewFeedback;
-        if (lastFeedbacks.length) {
-            lastFeedback = lastFeedbacks.find((feedback) => {
+        if (lastFeedbackList.length) {
+            lastFeedback = lastFeedbackList.find((feedback) => {
                  return feedback.reviewer.uuid === user.uuid;
             });
         }
