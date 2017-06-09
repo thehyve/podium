@@ -491,7 +491,7 @@ public class RequestResource {
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> closeRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody(required = false) MessageRepresentation message
     ) throws ActionNotAllowed {
         log.debug("REST request to close request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
