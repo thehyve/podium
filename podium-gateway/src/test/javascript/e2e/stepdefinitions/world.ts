@@ -11,7 +11,7 @@ import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 let { defineSupportCode } = require('cucumber');
 import initPages = require ("../pages/page-dictionary");
-import PersonaDictionary = require("../personas/persona-dictionary")
+import initPersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
 
 /*
@@ -27,9 +27,9 @@ class World {
 
     constructor() {
         let Pages = initPages();
-        let DataDictionary = initDataDictionary;
+        let DataDictionary = initDataDictionary();
 
-        this.director = new Director(__dirname + '/..', Pages, PersonaDictionary, DataDictionary);
+        this.director = new Director(__dirname + '/..', Pages, initPersonaDictionary(), DataDictionary);
         this.adminConsole = new AdminConsole();
     }
 }

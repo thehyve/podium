@@ -7,17 +7,42 @@
  *
  * See the file LICENSE in the root of this repository.
  */
+
+interface Iorganisation {
+    name: string;
+    shortName: string;
+    activated: boolean;
+    requestTypes: string[];
+}
+
 export class Organisation {
-    constructor(public name: string, public properties: { [key: string]: any }) {
+    constructor(public dataID: string, orgData: Iorganisation) {
+        Object.assign(this, orgData)
     }
 }
 
+interface Irequest {
+    title: string;
+    background: string;
+    "research question": string;
+    hypothesis: string;
+    methods: string;
+    "related request number": string;
+    piName: string;
+    piEmail: string;
+    piFunction: string;
+    piAffiliation: string;
+    searchQuery: string;
+    requestTypes: string[];
+}
+
 export class Request {
-    constructor(public name: string, public properties: { [key: string]: any }) {
+    constructor(public dataID: string, requestData: Irequest) {
+        Object.assign(this, requestData)
     }
 }
 
 export class File {
-    constructor(public name: string, public path: string) {
+    constructor(public dataID: string, public path: string) {
     }
 }

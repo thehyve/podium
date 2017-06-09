@@ -9,11 +9,7 @@
  */
 
 export class Persona {
-    public name: string;
-    public properties: { [key: string]: any };
-
-    constructor(name: string, properties: { [key: string]: any }) {
-        this.name = name;
-        this.properties = properties;
+    constructor(public personaID: string, properties: { [key: string]: any }) {
+        Object.assign(this, properties)
     }
 }

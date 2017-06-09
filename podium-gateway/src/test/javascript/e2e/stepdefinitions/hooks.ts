@@ -8,37 +8,40 @@
  * See the file LICENSE in the root of this repository.
  */
 import { AdminConsole } from '../protractor-stories/admin-console';
-import { browser } from 'protractor';
 import { Promise } from 'es6-promise';
-import PersonaDictionary = require("../personas/persona-dictionary")
+import { Persona } from '../personas/templates';
+import { browser } from 'protractor';
+import initPersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ After, Before }) {
 
     function setupUsers(adminConsole: AdminConsole, personas: string[]) {
+        let personaDictionary = initPersonaDictionary();
         let createUserCalls = [];
 
         personas.forEach(function (value) {
-            createUserCalls.push(adminConsole.createUser(PersonaDictionary[value]));
+            createUserCalls.push(adminConsole.createUser(personaDictionary[value]));
         });
         return Promise.all(createUserCalls);
     }
 
-    function setupOrganizations(adminConsole: AdminConsole, organizations: string[]) {
-        let DataDictionary = initDataDictionary;
-        let createOrganizationsCalls = [];
+    function setupOrganisations(adminConsole: AdminConsole, organisations: string[]) {
+        let DataDictionary = initDataDictionary();
+        let personaDictionary = initPersonaDictionary();
+        let createOrganisationsCalls = [];
 
-        organizations.forEach(function (value) {
-            createOrganizationsCalls.push(adminConsole.createOrganization(
-                PersonaDictionary['BBMRI_Admin'],
+        organisations.forEach(function (value) {
+            createOrganisationsCalls.push(adminConsole.createOrganisation(
+                personaDictionary['BBMRI_Admin'],
                 DataDictionary[value]));
         });
-        return Promise.all(createOrganizationsCalls);
+        return Promise.all(createOrganisationsCalls);
     }
 
     function setupRequests(adminConsole: AdminConsole, requests: string[]) {
-        let DataDictionary = initDataDictionary;
+        let DataDictionary = initDataDictionary();
 
         requests.forEach(function (value) {
             adminConsole.createRequest(DataDictionary[value]);
@@ -47,10 +50,11 @@ defineSupportCode(function ({ After, Before }) {
     }
 
     function getPersonaList(personas: string[]) {
+        let personaDictionary = initPersonaDictionary();
         let personaList = [];
         personas.forEach(function (personaName) {
             let name = personaName;
-            personaList.push(PersonaDictionary[name])
+            personaList.push(personaDictionary[name])
         });
         return personaList;
     }
@@ -59,10 +63,10 @@ defineSupportCode(function ({ After, Before }) {
         let personalist = getPersonaList(personas);
         let authorityBatches = {};
 
-        personalist.forEach(function (persona) {
-            persona.properties["authority"].forEach(function (authority) {
+        personalist.forEach(function (persona: Persona) {
+            persona["authority"].forEach(function (authority) {
                 (authorityBatches[authority.orgShortName] = authorityBatches[authority.orgShortName] || {});
-                (authorityBatches[authority.orgShortName][authority.role] = authorityBatches[authority.orgShortName][authority.role] || []).push(persona.properties["login"])
+                (authorityBatches[authority.orgShortName][authority.role] = authorityBatches[authority.orgShortName][authority.role] || []).push(persona["login"])
             })
         });
         return authorityBatches;
@@ -82,21 +86,33 @@ defineSupportCode(function ({ After, Before }) {
         return Promise.all(assignRoleCalls);
     }
 
+    Before(function (scenario): Promise<any> {
+        return browser.get('/').then((): Promise<any> => {
+            return Promise.all([
+                browser.executeScript('localStorage.clear();'),
+                browser.executeScript('sessionStorage.clear();')
+            ])
+        })
+    });
+
     Before({ tags: "@default" }, function (scenario): Promise<any> {
-        let adminConsole = new AdminConsole();
-        let userList = ["BBMRI_Admin", "Dave", "Linda"];
-        let organizations = ["VarnameBank", 'SomeBank', 'XBank'];
+        let adminConsole = this.adminConsole as AdminConsole;
+        let userList = ["BBMRI_Admin", "Dave", "Linda", "VarnameBank_Admin", "blank user"];
+        let organisations = ["VarnameBank", 'SomeBank', 'XBank'];
 
         return adminConsole.cleanDB().then(function () {
             return setupUsers(adminConsole, userList).then(function () {
-                setupOrganizations(adminConsole, organizations).then(function () {
+                setupOrganisations(adminConsole, organisations).then(function () {
                     return setupRoles(adminConsole, userList)
                 })
             })
         });
     });
 
-    Before(function (scenario): Promise<any> {
-        return browser.sleep(2000);
+    Before({ tags: "@request" }, function (scenario): Promise<any> {
+        let adminConsole = this.adminConsole as AdminConsole;
+        let organisations = ["DataBank", 'ImageBank', 'BioBank', 'MultiBank'];
+
+        return setupOrganisations(adminConsole, organisations)
     });
 });

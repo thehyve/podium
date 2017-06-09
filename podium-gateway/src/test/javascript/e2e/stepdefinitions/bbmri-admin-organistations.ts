@@ -7,114 +7,114 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-let { defineSupportCode } = require('cucumber');
+import { Organisation } from '../data/templates';
 import { Promise } from 'es6-promise';
 import { $$ } from 'protractor';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { login, doInOrder, promiseTrue, checkTextElement } from './util';
 import { isUndefined } from 'util';
+let { defineSupportCode } = require('cucumber');
 
 
 defineSupportCode(({ Given, When, Then }) => {
 
-    Then(/^the overview contains the organization's '(.*)' for the organizations '(.*)'$/, function (fieldString, organizationString): Promise<any> {
+    Then(/^the overview contains the organisation's '(.*)' for the organisations '(.*)'$/, function (fieldString, organisationString): Promise<any> {
         let director = this.director as Director;
-        let fields = JSON.parse(fieldString);
-        let organizations = JSON.parse(organizationString);
+        let fields = fieldString.split(", ");
+        let organisations = organisationString.split(", ");
 
-        let organizationsList = director.getListOfData(organizations);
+        let organisationsList: Organisation[] = director.getListOfData(organisations);
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
-            return promiseTrue(count == organizationsList.length, "expected " + organizationsList.length + " organisations but found " + count);
+            return promiseTrue(count == organisationsList.length, "expected " + organisationsList.length + " organisations but found " + count);
         }).then(() => {
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
                     return element.getText().then((text) => {
-                        return Promise.resolve(promiseTrue(text == organizationsList[index].properties[field], field + ": " + text + " did not equal " + organizationsList[index].properties[field]));
+                        return Promise.resolve(promiseTrue(text == organisationsList[index][field], field + ": " + text + " did not equal " + organisationsList[index][field]));
                     })
                 });
             });
         });
     });
 
-    Then(/^organizations are displayed in the following order: '(.*)'$/, function (organizationString): Promise<any> {
+    Then(/^organisations are displayed in the following order: '(.*)'$/, function (organisationString): Promise<any> {
         let director = this.director as Director;
-        let organizations = JSON.parse(organizationString);
-        let organizationsList = director.getListOfData(organizations);
+        let organisations = organisationString.split(", ");
+        let organisationsList: Organisation[] = director.getListOfData(organisations);
 
         let fields = ["shortName"];
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
-            return promiseTrue(count == organizationsList.length, "expected " + organizationsList.length + " organisations but found " + count);
+            return promiseTrue(count == organisationsList.length, "expected " + organisationsList.length + " organisations but found " + count);
         }).then(() => {
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
                     return element.getText().then((text) => {
-                        return Promise.resolve(promiseTrue(text == organizationsList[index].properties[field], field + ": " + text + " did not equal " + organizationsList[index].properties[field]));
+                        return Promise.resolve(promiseTrue(text == organisationsList[index][field], field + ": " + text + " did not equal " + organisationsList[index][field]));
                     })
                 });
             });
         });
     });
 
-    Given(/^(.*) goes to the organization details page for '(.*)'$/, function (personaName, organizationName): Promise<any> {
+    Given(/^(.*) goes to the '(.*)' page for the organisation '(.*)'$/, function (personaName, pageName, orgShortName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
         let persona = director.getPersona(personaName);
 
-
-        return login(director, persona).then(() => {
-            return adminConsole.getOrgUUID(organizationName).then((suffix) => {
-                return director.goToPage('organization details', suffix as string);
+        return login(director, persona).then(function () {
+            return adminConsole.getOrgUUID(orgShortName).then(function (sufix) {
+                return director.goToPage(pageName, sufix as string);
             })
         });
     });
 
-    Then(/^the organization details page contains '(.*)'s data$/, function (organizationShortName): Promise<any> {
+    Then(/^the organisation details page contains '(.*)'s data$/, function (organisationShortName): Promise<any> {
         let director = this.director as Director;
-        let organization = director.getData(organizationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
         let page = director.getCurrentPage();
 
         let promisses = [
-            checkTextElement(page.elements['shortName'].locator, organization.properties['shortName']),
-            checkTextElement(page.elements['name'].locator, organization.properties['name'])
+            checkTextElement(page.elements['shortName'].locator, organisation['shortName']),
+            checkTextElement(page.elements['name'].locator, organisation['name'])
         ];
 
         return Promise.all(promisses)
     });
 
-    When(/^(.*) creates the organization '(.*)'$/, function (personaName, organizationShortName): Promise<any> {
+    When(/^(.*) creates the organisation '(.*)'$/, function (personaName, organisationShortName): Promise<any> {
         let director = this.director as Director;
-        let organization = director.getData(organizationShortName);
-        this.scenarioData = organization; //store it for the next step
+        let organisation: Organisation = director.getData(organisationShortName);
+        this.scenarioData = organisation; //store it for the next step
 
         return Promise.all([
-            director.enterText('shortName', organization.properties['shortName']),
-            director.enterText('name', organization.properties['name'])
+            director.enterText('shortName', organisation['shortName']),
+            director.enterText('name', organisation['name'])
         ]).then(function () {
             return director.clickOn('submitButton');
         })
     });
 
-    Then(/^'(.*)' organization exists$/, function (organizationShortName): Promise<any> {
+    Then(/^'(.*)' organisation exists$/, function (organisationShortName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        let organization = director.getData(organizationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
 
-        return adminConsole.checkOrganization(organization, checkOrg);
+        return adminConsole.checkOrganisation(organisation, checkOrg);
     });
 });
 
-function checkOrg(expected, realData) {
+function checkOrg(expected: Organisation, realData) {
     if (isUndefined(realData)) {
         return false
     }
-    return realData.activated == expected.properties.activated &&
-        realData.name == expected.properties.name &&
-        realData.shortName == expected.properties.shortName
+    return realData.activated == expected["activated"] &&
+        realData.name == expected["name"] &&
+        realData.shortName == expected["shortName"]
 
 }
 

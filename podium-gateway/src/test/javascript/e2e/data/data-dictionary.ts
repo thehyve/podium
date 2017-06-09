@@ -7,53 +7,86 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { Organisation, Request, File } from './templates';
-import { normalize } from 'path';
+import { Organisation, Request } from './templates';
 
-let dataDictionary: { [key: string]: any } = Object.create(null);
-let dataObjects = [
-    new Organisation('SomeBank', {
-        "shortName": "SomeBank",
-        "name": "International bank",
-        "activated": true
-    }),
-    new Organisation("VarnameBank", {
-        "shortName": "VarnameBank",
-        "name": "International variable name bank",
-        "uuid": "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
-        "activated": true
-    }),
-    new Organisation("XBank", {
-        "shortName": "XBank",
-        "name": "Bank",
-        "activated": true
-    }),
-    new Organisation("NewOrg", {
-        "shortName": "NewOrg",
-        "name": "New Organization",
-        "activated": false
-    }),
-    new Request("Request01", {
-        "title": "Request01",
-        "background": "background01",
-        "research question": "research question01",
-        "hypothesis": "hypothesis01",
-        "methods": "methods01",
-        "related request number": "",
-        "piName": "piName01",
-        "piEmail": "piEmail01@localhost",
-        "piFunction": "piFunction01",
-        "piAffiliation": "piAffiliation01",
-        "searchQuery": "searchQuery01",
-        "type Data": true,
-        "type Images": true,
-        "type Material": true,
-    }),
-    new File("example", normalize(__dirname + "/example")),
-];
+function initDataDictionary() {
+    let dataDictionary: { [key: string]: any } = Object.create(null);
+    let dataObjects = [
+        new Organisation('SomeBank', {
+            "shortName": "SomeBank",
+            "name": "International bank",
+            "activated": true,
+            "requestTypes": []
+        }),
+        new Organisation("VarnameBank", {
+            "shortName": "VarnameBank",
+            "name": "International variable name bank",
+            "activated": true,
+            "requestTypes": []
+        }),
+        new Organisation("XBank", {
+            "shortName": "XBank",
+            "name": "Bank",
+            "activated": true,
+            "requestTypes": []
+        }),
+        new Organisation("DataBank", {
+            "shortName": "DataBank",
+            "name": "Data-Bank",
+            "activated": true,
+            "requestTypes": ["Data"]
+        }),
+        new Organisation("ImageBank", {
+            "shortName": "ImageBank",
+            "name": "Image-Bank",
+            "activated": true,
+            "requestTypes": ["Images"]
+        }),
+        new Organisation("BioBank", {
+            "shortName": "BioBank",
+            "name": "Bio-Bank",
+            "activated": true,
+            "requestTypes": ["Material"]
+        }),
+        new Organisation("MultiBank", {
+            "shortName": "MultiBank",
+            "name": "Multi-Bank",
+            "activated": true,
+            "requestTypes": ["Material", "Images", "Data"]
+        }),
+        new Organisation("NewOrg", {
+            "shortName": "NewOrg",
+            "name": "New Organization",
+            "activated": false,
+            "requestTypes": []
+        }),
+        new Request("Request01", {
+            "title": "Request01",
+            "background": "background01",
+            "research question": "research question01",
+            "hypothesis": "hypothesis01",
+            "methods": "methods01",
+            "related request number": "",
+            "piName": "piName01",
+            "piEmail": "piEmail01@localhost",
+            "piFunction": "piFunction01",
+            "piAffiliation": "piAffiliation01",
+            "searchQuery": "searchQuery01",
+            "requestTypes": ["Material", "Images", "Data"]
+        }),
+        {
+            "dataID": "menuRoleMapping",
+            "Organisation administrator": "ROLE_ORGANISATION_ADMIN",
+            "Organisation coordinator": "ROLE_ORGANISATION_COORDINATOR",
+            "Reviewer": "ROLE_REVIEWER",
+        }
+    ];
 
-dataObjects.forEach(function (persona) {
-    dataDictionary[persona.name] = persona;
-});
+    dataObjects.forEach(function (data) {
+        dataDictionary[data.dataID] = data;
+    });
 
-export = dataDictionary;
+    return dataDictionary;
+}
+
+export = initDataDictionary;

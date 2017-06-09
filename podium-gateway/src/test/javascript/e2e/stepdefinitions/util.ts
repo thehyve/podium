@@ -13,8 +13,8 @@ import { Promise } from 'es6-promise';
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');
     return Promise.all([
-        director.enterText('usernameInput', persona.properties['login']),
-        director.enterText('passwordInput', persona.properties['password'])
+        director.enterText('usernameInput', persona['login']),
+        director.enterText('passwordInput', persona['password'])
     ]).then(function () {
         return director.clickOn('submitButton').then(function () {
             return director.waitForPage('Dashboard');
