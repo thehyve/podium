@@ -761,57 +761,69 @@ public class RequestService {
 
 
     /**
-     * Provide the review feedback for a review round in a request.
+     * Save the review feedback for the current review round in a request.
      *
-     * @param user the currently logged in user
-     * @param feedbackRepresentation the feedback supplied by the reviewer
+     * @param user the currently logged in user.
+     * @param requestUuid the uuid of the request the review belongs to.
+     * @param feedbackBody the feedback supplied by the reviewer.
      *
-     * @return ReviewFeedback the updated review feedback
-     * @throws AccessDenied if the currently logged in user is not the owner of the feedback given
-     * @throws ActionNotAllowed when the feedback supplied is not part of the request.
+     * @return ReviewFeedback the updated review feedback.
+     * @throws AccessDenied if the currently logged in user is not the owner of the feedback.
+     * @throws ActionNotAllowed when the request is not in status 'Review', the feedback is not part of the request, or
+     * the feedback has already been saved before.
      */
     @Timed
-    public ReviewFeedback provideReviewFeedback(
+    public RequestRepresentation saveReviewFeedback(
         AuthenticatedUser user,
-        RequestRepresentation requestRepresentation,
-        ReviewFeedbackRepresentation feedbackRepresentation
+        UUID requestUuid,
+        ReviewFeedbackRepresentation feedbackBody
     ) throws ActionNotAllowed {
-        log.debug("Providing review feedback for {}", feedbackRepresentation.getUuid());
+        log.debug("Saving review feedback for {}", feedbackBody.getUuid());
 
-        ReviewFeedback feedback = reviewFeedbackRepository.findOneByUuid(feedbackRepresentation.getUuid());
+        Request request = requestRepository.findOneByUuid(requestUuid);
+        checkStatus(request, RequestStatus.Review);
 
-        if (feedback == null) {
-            throw new ResourceNotFound("Review feedback could not be found for " + feedbackRepresentation.getUuid());
+        final UUID feedbackUuid = feedbackBody.getUuid();
+
+        if (request.getReviewRounds() == null || request.getReviewRounds().isEmpty()) {
+            throw new RuntimeException("No review rounds found for request " + requestUuid.toString());
         }
+        ReviewRound currentReviewRound = request.getReviewRounds().get(request.getReviewRounds().size() - 1);
 
         // Check whether the feedback is part of the request.
-        Optional<ReviewFeedbackRepresentation> optionalFeedback
-            = requestRepresentation.getReviewRounds().stream()
-                .map(ReviewRoundRepresentation::getReviewFeedback)
-                .flatMap(List::stream)
-                .filter(reviewFeedback -> reviewFeedback.getUuid().equals(feedbackRepresentation.getUuid()))
-                .findFirst();
-
-        // When this review feedback is not part of the request
-        if (!optionalFeedback.isPresent()) {
+        if (currentReviewRound.getReviewFeedback().stream().noneMatch(reviewFeedback ->
+            reviewFeedback.getUuid().equals(feedbackUuid))) {
             throw new ActionNotAllowed(
-                String.format("Review feedback (%s) is not part of the request (%s)",
-                    feedbackRepresentation.getUuid(),
-                    requestRepresentation.getUuid())
+                String.format("Review feedback (%s) is not part of the current review round of request (%s)",
+                    feedbackUuid,
+                    request.getUuid())
             );
         }
 
-        if (!user.getUuid().equals(feedback.getUuid())) {
-            log.error("Current user ({}) is not the assignee ({}) of the review feedback ({}).",
-                user.getUuid(), feedback.getReviewer(), feedbackRepresentation.getUuid()
+        ReviewFeedback feedback = reviewFeedbackRepository.findOneByUuid(feedbackUuid);
+        if (feedback == null) {
+            throw new ResourceNotFound("Review feedback could not be found for " + feedbackUuid.toString());
+        }
+        // Check if the current user is the owner of the review feedback
+        if (!user.getUuid().equals(feedback.getReviewer())) {
+            log.error("Current user ({}) is not the owner ({}) of the review feedback ({}).",
+                user.getUuid(), feedback.getReviewer(), feedback.getUuid()
             );
             throw new AccessDenied("Current user is not the review feedback assignee.");
         }
+        // Check if the review feedback has not already been saved before
+        if (feedback.getAdvice() != ReviewProcessOutcome.None) {
+            throw new ActionNotAllowed(
+                String.format("Review feedback (%s) has already been saved.", feedbackUuid)
+            );
+        }
 
-        feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackRepresentation, feedback);
-        reviewFeedbackRepository.save(feedback);
+        feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackBody, feedback);
+        feedback = reviewFeedbackRepository.save(feedback);
         reviewFeedbackSearchRepository.save(feedback);
-        return feedback;
+        entityManager.flush();
+        entityManager.refresh(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     /**

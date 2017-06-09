@@ -21,18 +21,13 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.service.*;
-import nl.thehyve.podium.common.service.dto.PrincipalInvestigatorRepresentation;
-import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -60,7 +55,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,9 +135,12 @@ public class RequestResourceIntTest {
     private static final String ACTION_REQUEST_REVISION = "requestRevision";
     private static final String ACTION_REJECT = "reject";
     private static final String ACTION_CLOSE = "close";
+    private static final String ACTION_SUBMIT_REVIEW_FEEDBACK = "review";
 
     private static final String mockRequesterUsername = "requester";
     private static UUID mockRequesterUuid = UUID.randomUUID();
+
+    private final Map<UUID, UserRepresentation> users = new HashMap<>();
 
     private static Set<String> requesterAuthorities =
         Sets.newSet(AuthorityConstants.RESEARCHER);
@@ -284,20 +281,43 @@ public class RequestResourceIntTest {
         OrganisationDTO organisation2 = createOrganisation(2, organisationUuid2);
         given(this.organisationService.findOrganisationByUuid(eq(organisationUuid2)))
             .willReturn(organisation2);
+        // Mock organisations service for fetching coordinators
+        UserRepresentation coordinatorRepresentation1 = createCoordinator(1, coordinatorUuid1);
+        users.put(coordinatorUuid1, coordinatorRepresentation1);
+        UserRepresentation coordinatorRepresentation2 = createCoordinator(2, coordinatorUuid2);
+        users.put(coordinatorUuid2, coordinatorRepresentation2);
         List<UserRepresentation> coordinators1 = new ArrayList<>();
-        coordinators1.add(createCoordinator(1, coordinatorUuid1));
-        coordinators1.add(createCoordinator(2, coordinatorUuid2));
-        given(this.organisationService.findUsersByRole(eq(organisationUuid1), any()))
+        coordinators1.add(coordinatorRepresentation1);
+        coordinators1.add(coordinatorRepresentation2);
+        given(this.organisationService.findUsersByRole(eq(organisationUuid1), eq(AuthorityConstants.ORGANISATION_COORDINATOR)))
             .willReturn(coordinators1);
         List<UserRepresentation> coordinators2 = new ArrayList<>();
-        coordinators1.add(createCoordinator(2, coordinatorUuid2));
-        given(this.organisationService.findUsersByRole(eq(organisationUuid2), any()))
+        coordinators1.add(coordinatorRepresentation2);
+        given(this.organisationService.findUsersByRole(eq(organisationUuid2), eq(AuthorityConstants.ORGANISATION_COORDINATOR)))
             .willReturn(coordinators2);
+        // Mock organisations service for fetching coordinators
+        UserRepresentation reviewerRepresentation1 = createReviewer(1, reviewerUuid1);
+        users.put(reviewerUuid1, reviewerRepresentation1);
+        UserRepresentation reviewerRepresentation2 = createReviewer(1, reviewerUuid2);
+        users.put(reviewerUuid2, reviewerRepresentation2);
+        List<UserRepresentation> reviewers1 = new ArrayList<>();
+        reviewers1.add(reviewerRepresentation1);
+        reviewers1.add(reviewerRepresentation2);
+        given(this.organisationService.findUsersByRole(eq(organisationUuid1), eq(AuthorityConstants.REVIEWER)))
+            .willReturn(reviewers1);
+        List<UserRepresentation> reviewers2 = new ArrayList<>();
+        reviewers2.add(reviewerRepresentation2);
+        given(this.organisationService.findUsersByRole(eq(organisationUuid2), eq(AuthorityConstants.REVIEWER)))
+            .willReturn(reviewers2);
 
         // Mock Feign client for fetching user information
         UserRepresentation requesterRepresentation = createRequester();
-        given(this.userClientService.findUserByUuid(any()))
-            .willReturn(requesterRepresentation);
+        users.put(mockRequesterUuid, requesterRepresentation);
+
+        for(Map.Entry<UUID, UserRepresentation> entry: users.entrySet()) {
+            given(this.userClientService.findUserByUuid(eq(entry.getKey())))
+                .willReturn(entry.getValue());
+        }
 
         // Mock notification call
         doNothing().when(this.mailService).sendSubmissionNotificationToCoordinators(any(), any(), anyListOf(UserRepresentation.class));
@@ -429,21 +449,22 @@ public class RequestResourceIntTest {
     }
 
     /**
-     *
+     * Performs the action for the given request.
      * @param user The authenticated user performing the action
      * @param action The action to perform
      * @param requestUuid The UUID of the request to perform the action on
      * @param method The HttpMethod required to perform the action
-     * @return
+     * @param body The request body
+     * @return a result object.
      * @throws Exception
      */
     private ResultActions performProcessAction(
-        UserAuthenticationToken user, String action, UUID requestUuid, HttpMethod method, MessageRepresentation message
+        UserAuthenticationToken user, String action, UUID requestUuid, HttpMethod method, Object body
     ) throws Exception {
         return mockMvc.perform(
             getRequest(method,
                 REQUESTS_ROUTE + "/" + requestUuid.toString() + "/" + action,
-                message,
+                body,
                 Collections.emptyMap())
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON)
@@ -854,19 +875,19 @@ public class RequestResourceIntTest {
             });
     }
 
-    private void validateRequest(RequestRepresentation request) throws Exception {
+    private RequestRepresentation validateRequest(RequestRepresentation request) throws Exception {
         // Send for review
-        ResultActions validatedRequest
-            = performProcessAction(coordinator1, ACTION_VALIDATE, request.getUuid(), HttpMethod.GET, null);
-
-        validatedRequest
+        final RequestRepresentation[] res = new RequestRepresentation[1];
+        performProcessAction(coordinator1, ACTION_VALIDATE, request.getUuid(), HttpMethod.GET, null)
             .andExpect(status().isOk())
             .andDo(result -> {
                 log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+                res[0] = requestResult;
             });
+        return res[0];
     }
 
     private void testApproveRequest(RequestRepresentation request) throws Exception {
@@ -891,7 +912,7 @@ public class RequestResourceIntTest {
         initMocks();
         RequestRepresentation request = getSubmittedDraft();
 
-        validateRequest(request);
+        request = validateRequest(request);
 
         testApproveRequest(request);
     }
@@ -901,7 +922,7 @@ public class RequestResourceIntTest {
         initMocks();
         RequestRepresentation request = getSubmittedDraft();
 
-        validateRequest(request);
+        request = validateRequest(request);
 
         testApproveRequest(request);
 
@@ -948,6 +969,109 @@ public class RequestResourceIntTest {
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(RequestReviewStatus.Revision, requestResult.getRequestReview().getStatus());
             });
+    }
+
+    @Test
+    public void submitReviewFeedback() throws Exception {
+        initMocks();
+        RequestRepresentation request = getSubmittedDraft();
+
+        // Send for review
+        request = validateRequest(request);
+
+        Assert.assertThat(request.getReviewRounds(), hasSize(1));
+        ReviewRoundRepresentation reviewRound = request.getReviewRounds().get(0);
+
+        ReviewFeedbackRepresentation reviewFeedback = reviewRound.getReviewFeedback().stream()
+            .filter(feedback -> feedback.getReviewer().getUuid().equals(reviewerUuid1))
+            .findFirst().get();
+
+        // Submit a review
+        ReviewFeedbackRepresentation reviewFeedbackBody = new ReviewFeedbackRepresentation();
+        reviewFeedbackBody.setUuid(reviewFeedback.getUuid());
+        reviewFeedbackBody.setAdvice(ReviewProcessOutcome.Approved);
+        MessageRepresentation approveMessage = new MessageRepresentation();
+        approveMessage.setSummary("Excellent request!");
+        approveMessage.setDescription("I appreciate the request and recommend approval.");
+        reviewFeedbackBody.setMessage(approveMessage);
+
+        performProcessAction(reviewer1, ACTION_SUBMIT_REVIEW_FEEDBACK, request.getUuid(), HttpMethod.PUT, reviewFeedbackBody)
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result of submitting feedback: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                // result still contains one review round
+                Assert.assertThat(requestResult.getReviewRounds(), hasSize(1));
+                // the review round contains the submitted feedback
+                Assert.assertTrue(requestResult.getReviewRounds().get(0).getReviewFeedback().stream().anyMatch(feedback ->
+                    feedback.getUuid().equals(reviewFeedback.getUuid())
+                ));
+                // the submitted feedback has advice value 'Approved'
+                requestResult.getReviewRounds().get(0).getReviewFeedback().stream().forEach(feedback -> {
+                    if (feedback.getUuid().equals(reviewFeedback.getUuid())) {
+                        Assert.assertEquals(ReviewProcessOutcome.Approved, feedback.getAdvice());
+                    }
+                });
+            });
+
+        // Check that resubmitting a review results in an error
+        reviewFeedbackBody.setAdvice(ReviewProcessOutcome.Rejected);
+        MessageRepresentation rejectMessage = new MessageRepresentation();
+        rejectMessage.setSummary("Ridiculous request!");
+        rejectMessage.setDescription("I don't like the request at all and recommend rejection.");
+        reviewFeedbackBody.setMessage(rejectMessage);
+        performProcessAction(reviewer1, ACTION_SUBMIT_REVIEW_FEEDBACK, request.getUuid(), HttpMethod.PUT, reviewFeedbackBody)
+            .andExpect(status().is4xxClientError())
+            .andDo(result ->
+                log.info("Result of resubmitting feedback: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString())
+            );
+
+        // Checking that the review is correctly persisted
+        Request req = requestRepository.findOneByUuid(request.getUuid());
+        Assert.assertThat(req.getReviewRounds(), hasSize(1));
+        // the review round contains the submitted feedback
+        Assert.assertTrue(req.getReviewRounds().get(0).getReviewFeedback().stream().anyMatch(feedback ->
+            feedback.getUuid().equals(reviewFeedback.getUuid())
+        ));
+        // the submitted feedback has advice value 'Approved'
+        req.getReviewRounds().get(0).getReviewFeedback().stream().forEach(feedback -> {
+            if (feedback.getUuid().equals(reviewFeedback.getUuid())) {
+                Assert.assertEquals(ReviewProcessOutcome.Approved, feedback.getAdvice());
+            }
+        });
+    }
+
+    @Test
+    public void submitReviewFeedbackForWrongUser() throws Exception {
+        initMocks();
+        RequestRepresentation request = getSubmittedDraft();
+
+        // Send for review
+        request = validateRequest(request);
+
+        Assert.assertThat(request.getReviewRounds(), hasSize(1));
+        ReviewRoundRepresentation reviewRound = request.getReviewRounds().get(0);
+
+        ReviewFeedbackRepresentation reviewFeedback = reviewRound.getReviewFeedback().stream()
+            .filter(feedback -> feedback.getReviewer().getUuid().equals(reviewerUuid1))
+            .findFirst().get();
+
+        // Submit a review for reviewer 1 by reviewer 2; should fail
+        ReviewFeedbackRepresentation reviewFeedbackBody = new ReviewFeedbackRepresentation();
+        reviewFeedbackBody.setUuid(reviewFeedback.getUuid());
+        reviewFeedbackBody.setAdvice(ReviewProcessOutcome.Approved);
+        MessageRepresentation approveMessage = new MessageRepresentation();
+        approveMessage.setSummary("Excellent request!");
+        approveMessage.setDescription("I appreciate the request and recommend approval.");
+        reviewFeedbackBody.setMessage(approveMessage);
+
+        performProcessAction(reviewer2, ACTION_SUBMIT_REVIEW_FEEDBACK, request.getUuid(), HttpMethod.PUT, reviewFeedbackBody)
+            .andExpect(status().is4xxClientError())
+            .andDo(result -> {
+                log.info("Result of submitting feedback by wrong user: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+            });
+
     }
 
 }
