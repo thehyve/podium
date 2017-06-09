@@ -45,7 +45,7 @@ export class RequestFinalizeDialogComponent implements OnInit {
      * The final request outcome will be set upon closing.
      */
     confirmRequestFinalize() {
-        this.requestService.finalizeRequest(this.request.uuid)
+        this.requestService.closeRequest(this.request.uuid)
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
@@ -64,7 +64,6 @@ export class RequestFinalizeDialogComponent implements OnInit {
         this.requestService.requestUpdateEvent(this.request);
         this.activeModal.close();
     }
-
 
     onError(err: Response) {
         console.log('err when finalizing ', err);
