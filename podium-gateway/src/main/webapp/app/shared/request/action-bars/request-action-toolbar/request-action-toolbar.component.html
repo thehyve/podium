@@ -130,7 +130,7 @@
                 </div>
 
                 <!-- Reviewer actions -->
-                <div *ngIf="isRequestReviewer() && isReviewable()">
+                <div *ngIf="currentUser && isReviewable()">
                     <!-- Review -->
                     <div class="float-xs-right">
                         <button type="button" class="btn btn-danger" (click)="markRequestUnacceptable()">

@@ -105,7 +105,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     isReviewable(): boolean {
         let lastFeedback = this.requestService.getLastReviewFeedbackByUser(this.request, this.currentUser);
-        return lastFeedback.advice === RequestReviewDecision.None;
+        return  this.isRequestReviewer() && (lastFeedback.advice === RequestReviewDecision.None);
     }
 
     saveDraft() {
