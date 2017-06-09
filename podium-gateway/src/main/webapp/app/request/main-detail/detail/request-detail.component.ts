@@ -64,6 +64,9 @@ export class RequestDetailComponent implements OnDestroy {
         );
     }
 
+    /**
+     * Subscription clean up to prevent memory leaks
+     */
     ngOnDestroy() {
         if (this.requestSubscription) {
             this.requestSubscription.unsubscribe();
@@ -74,6 +77,11 @@ export class RequestDetailComponent implements OnDestroy {
         }
     }
 
+    /**
+     * Set the request so we can perform a check whether the request is in Revision.
+     *
+     * @param request the request
+     */
     setRequest(request) {
         this.request = request;
 
@@ -88,6 +96,11 @@ export class RequestDetailComponent implements OnDestroy {
         }
     }
 
+    /**
+     * Submit the feedback of a reviewer for a request.
+     *
+     * @param requestReviewFeedback the reviewfeedback holding the advice and their findings.
+     */
     submitReview(requestReviewFeedback: RequestReviewFeedback) {
         this.isUpdating = true;
         this.requestService.submitReview(this.request.uuid, requestReviewFeedback)
@@ -97,11 +110,18 @@ export class RequestDetailComponent implements OnDestroy {
             );
     }
 
+    /**
+     * Send a request back for revision.
+     * A confirmation dialog is opened so the Organisation Coordinator can supply their argumentation.
+     */
     requireRequestRevision() {
         this.isUpdating = true;
         return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Revision);
     }
 
+    /**
+     * Validate a request and send on for review
+     */
     validateRequest() {
         this.isUpdating = true;
         this.requestService.validateRequest(this.request.uuid)
@@ -111,10 +131,17 @@ export class RequestDetailComponent implements OnDestroy {
             );
     }
 
+    /**
+     * Check whether the current logged in user is a organisation coordinator for the request.
+     * @returns {boolean} true if the current user is a organisation coordinator for the request.
+     */
     isRequestCoordinator(): boolean {
         return this.requestAccessService.isCoordinatorFor(this.request);
     }
 
+    /**
+     * Approve a request
+     */
     approveRequest() {
         this.isUpdating = true;
         this.requestService.approveRequest(this.request.uuid)
@@ -124,11 +151,18 @@ export class RequestDetailComponent implements OnDestroy {
             );
     }
 
+    /**
+     * Reject a request.
+     * A confirmation modal is shown for the organisation coordinator to provide their findings.
+     */
     rejectRequest() {
         this.isUpdating = true;
         return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Reject);
     }
 
+    /**
+     * Start the delivery process of a request using its UUID.
+     */
     startRequestDelivery() {
         this.isUpdating = true;
         this.requestService.startRequestDelivery(this.request.uuid)
@@ -138,10 +172,19 @@ export class RequestDetailComponent implements OnDestroy {
             );
     }
 
-    finalizeRequest(message?: PodiumEventMessage) {
+    /**
+     * Finalize the request process
+     */
+    finalizeRequest() {
         return this.confirmFinalizeRequest(this.request, this.deliveries);
     }
 
+    /**
+     * Open a modal window for providing feedback details for Rejecting or requesting a revision.
+     *
+     * @param request the request
+     * @param action the specific RequestStatusUpdateAction to apply to the request.
+     */
     confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
         let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
@@ -155,9 +198,13 @@ export class RequestDetailComponent implements OnDestroy {
         });
     }
 
+    /**
+     * Open a modal window giving the organisation coordinator a summary of the outcome of the request.
+     *
+     * @param request the request
+     * @param deliveries the deliveries belonging to the request.
+     */
     confirmFinalizeRequest(request: RequestBase, deliveries: Delivery[]) {
-        // Fetch the deliveries for the request.
-
         let modalRef = this.modalService.open(RequestFinalizeDialogComponent, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.deliveries = deliveries;

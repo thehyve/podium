@@ -20,7 +20,6 @@ import { DeliveryStatusUpdateAction } from '../../shared/delivery-update/deliver
 import { DeliveryStatusUpdateDialogComponent } from '../../shared/delivery-update/delivery-update.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeliveryStatus } from '../../shared/delivery/delivery-status.constants';
-import { Response } from '@angular/http';
 import { DeliveryOutcome } from '../../shared/delivery/delivery-outcome.constants';
 
 @Component({
@@ -72,6 +71,9 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Subscription clean up to prevent memory leaks
+     */
     ngOnDestroy() {
         if (this.requestSubscription) {
             this.requestSubscription.unsubscribe();
@@ -82,6 +84,9 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Fetch all deliveries for a request by request UUID.
+     */
     getDeliveries()  {
         this.deliveryService.getDeliveries(this.request.uuid)
             .subscribe(
@@ -89,23 +94,46 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
             );
     }
 
+    /**
+     * Set the deliveries belonging to the request after a successful fetch.
+     * @param res
+     */
     onSuccess(res: Delivery[]) {
         this.requestDeliveries = res;
     }
 
-    onSuccessUpdate(res: Response) {
+    /**
+     * Fetch all the deliveries after a successful update of a delivery.
+     */
+    onSuccessUpdate() {
         this.getDeliveries();
     }
 
+    /**
+     * Mark a delivery as Released.
+     *
+     * @param delivery The delivery to release
+     */
     releaseType(delivery: Delivery) {
         this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Release);
     }
 
+    /**
+     * Mark a delivery as Received.
+     *
+     * @param delivery The delivery to receive
+     */
     receiveType(delivery: Delivery) {
         this.deliveryService.receiveDelivery(this.request.uuid, delivery.uuid)
-            .subscribe((res) => this.onSuccessUpdate(res));
+            .subscribe((res) => this.onSuccessUpdate());
     }
 
+    /**
+     * Mark a delivery as Cancelled.
+     * A modal will be presented to ask for feedback from the organisation coordinator.
+     *
+     * @param delivery The delivery to cancel
+     */
     cancelType(delivery: Delivery) {
         this.confirmStatusUpdateModal(this.request, delivery, DeliveryStatusUpdateAction.Cancel);
     }
@@ -200,8 +228,9 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         return false;
     }
 
-    isRequester(): boolean {
-        return this.requestAccessService.isRequesterOf(this.request);
+    isOnlyRequester(): boolean {
+        return this.requestAccessService.isRequesterOf(this.request) &&
+            !this.requestAccessService.isCoordinatorFor(this.request);
     }
 
     confirmStatusUpdateModal(request: RequestBase, delivery: Delivery, action: DeliveryStatusUpdateAction) {

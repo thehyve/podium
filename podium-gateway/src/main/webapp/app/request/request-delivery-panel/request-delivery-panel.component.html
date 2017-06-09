@@ -56,7 +56,7 @@
                             {{ primaryStateOptions[delivery.status][delivery.type].label }}
                         </button>
                         <button type="button" dropdownToggle
-                                *ngIf="!isRequester()"
+                                *ngIf="!isOnlyRequester()"
                                 class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
                             <span class="caret"></span>
                             <span class="sr-only">Delivery actions</span>

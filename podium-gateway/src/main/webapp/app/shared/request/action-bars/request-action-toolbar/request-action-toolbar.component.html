@@ -103,6 +103,13 @@
                         </div>
                     </div>
 
+                    <!-- Organisation coordinator during revision -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
+                        <div class="alert alert-info" jhiTranslate="request.toolbar.revision">
+                            The request is currently in revision.
+                        </div>
+                    </div>
+
                     <!-- Coordinator during Review -->
                     <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
                         <button type="button" class="btn btn-danger test-reject-request-btn"
@@ -118,13 +125,6 @@
                                     (click)="approveRequest()">
                                 <span jhiTranslate="request.toolbar.approve">Approve</span>
                             </button>
-                        </div>
-                    </div>
-
-                    <!-- Organisation coordinator during revision -->
-                    <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
-                        <div class="alert alert-info" jhiTranslate="request.toolbar.revision">
-                            The request is currently in revision.
                         </div>
                     </div>
                 </div>

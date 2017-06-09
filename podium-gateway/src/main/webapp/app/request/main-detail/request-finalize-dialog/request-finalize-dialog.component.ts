@@ -40,6 +40,10 @@ export class RequestFinalizeDialogComponent implements OnInit {
         this.expectedOutcome = this.deliveryService.getRequestDeliveryOutcome(this.deliveries);
     }
 
+    /**
+     * Finalize a request using its UUID and mark as Closed.
+     * The final request outcome will be set upon closing.
+     */
     confirmRequestFinalize() {
         this.requestService.finalizeRequest(this.request.uuid)
             .subscribe(
@@ -48,6 +52,12 @@ export class RequestFinalizeDialogComponent implements OnInit {
             );
     }
 
+    /**
+     * After successfully finalizing a request emit the final request to the request service
+     * and close the active modal.
+     *
+     * @param res the response holding the request
+     */
     onSuccess(res: Response) {
         console.log('Success finalizing ', res);
         this.request = res.json();
@@ -55,14 +65,22 @@ export class RequestFinalizeDialogComponent implements OnInit {
         this.activeModal.close();
     }
 
+
     onError(err: Response) {
         console.log('err when finalizing ', err);
     }
 
+    /**
+     * Close the active request finalization modal
+     */
     close() {
         this.activeModal.dismiss('closed');
     }
 
+    /**
+     * Get the i18n translation object for the requestId
+     * @returns {string} the formatted object holding the requestId
+     */
     getHeaderTranslation() {
         let requestId = this.request.id;
         return '{requestId: \'' + requestId + '\'}';
