@@ -40,11 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -117,6 +113,11 @@ public class UserService {
             userSearchRepository.save(searchUser);
 
             save(user);
+
+            // Notify BBMRI admin
+            Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+            mailService.sendUserRegisteredEmail(administrators, user);
+
             log.debug("Activated user: {}", user);
         }
 
@@ -159,6 +160,10 @@ public class UserService {
                     SearchUser searchUser = userMapper.userToSearchUser(user);
                     userSearchRepository.save(searchUser);
                     log.debug("Activated user: {}", user);
+
+                    // Notify BBMRI admin
+                    Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+                    mailService.sendUserRegisteredEmail(administrators, user);
                 }
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
@@ -169,7 +174,6 @@ public class UserService {
 
     public Optional<User> requestPasswordReset(String mail) {
         return userRepository.findOneByDeletedIsFalseAndEmail(mail)
-            .filter(User::isActivated)
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
                 user.setResetDate(ZonedDateTime.now());
@@ -373,6 +377,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public List<User> getUsersByAuthority(String authority) {
+        return userRepository.findAllByDeletedIsFalseAndAuthority(authority);
+    }
+
+    @Transactional(readOnly = true)
     public User getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
         entityManager.refresh(user);
@@ -394,6 +403,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {
         return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
             entityManager.refresh(user);
@@ -402,6 +412,7 @@ public class UserService {
         });
     }
 
+    @Transactional(readOnly = true)
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
     }
