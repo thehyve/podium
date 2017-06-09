@@ -10,6 +10,7 @@ package nl.thehyve.podium.domain;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
@@ -55,6 +56,11 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private RequestStatus status;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "outcome", nullable = false)
+    private RequestOutcome outcome = RequestOutcome.None;
 
     @ElementCollection(targetClass = java.util.UUID.class)
     @CollectionTable(
@@ -164,6 +170,14 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setStatus(RequestStatus status) {
         this.status = status;
+    }
+
+    public RequestOutcome getOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(RequestOutcome outcome) {
+        this.outcome = outcome;
     }
 
     public Set<UUID> getOrganisations() {

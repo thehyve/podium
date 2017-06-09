@@ -8,8 +8,8 @@
  *
  */
 
-export enum RequestReviewDecision {
-    Approved = <any>'Approved',
-    Rejected = <any>'Rejected',
-    None = <any>'None'
+export enum DeliveryStatusUpdateAction {
+    Release = <any>'Release',
+    Receive = <any>'Receive',
+    Cancel  = <any>'Cancel',
 }

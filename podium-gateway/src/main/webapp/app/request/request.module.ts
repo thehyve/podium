@@ -23,12 +23,15 @@ import {
 import { RequestResolvePagingParams } from './overview/request-overview.route';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateDialogComponent } from '../shared/status-update/request-status-update.component';
+import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-delivery-panel.component';
+import { DeliveryService } from '../shared/delivery/delivery.service';
+import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
+import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-dialog/request-finalize-dialog.component';
 
 @NgModule({
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
-        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
@@ -40,18 +43,23 @@ import { RequestStatusUpdateDialogComponent } from '../shared/status-update/requ
         RequestDetailComponent,
         RequestActionToolbarComponent,
         RequestProgressBarComponent,
-        RequestStatusUpdateDialogComponent
+        RequestStatusUpdateDialogComponent,
+        DeliveryStatusUpdateDialogComponent,
+        RequestDeliveryPanelComponent,
+        RequestFinalizeDialogComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
         RequestDraftModalModalComponent,
-        RequestStatusUpdateDialogComponent
-
+        RequestStatusUpdateDialogComponent,
+        DeliveryStatusUpdateDialogComponent,
+        RequestFinalizeDialogComponent
     ],
     providers: [
         RequestFormService,
         RequestOverviewService,
-        RequestResolvePagingParams
+        RequestResolvePagingParams,
+        DeliveryService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,0 +1,8 @@
+{
+    "deliveryOutcome" : {
+        "Cancelled": "Cancelled",
+        "Received": "Received",
+        "Returned": "Returned",
+        "None": "None"
+    }
+}

@@ -11,6 +11,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
 import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
@@ -582,6 +583,7 @@ public class RequestService {
         if (request.getRequestReviewProcess().getStatus() == RequestReviewStatus.Closed &&
             request.getRequestReviewProcess().getDecision() == ReviewProcessOutcome.Rejected) {
             request.setStatus(RequestStatus.Closed);
+            request.setOutcome(RequestOutcome.Rejected);
             request = save(request);
             publishStatusUpdate(user, sourceStatus, request, null);
         }
@@ -746,7 +748,7 @@ public class RequestService {
             = requestRepresentation.getReviewRounds().stream()
                 .map(ReviewRoundRepresentation::getReviewFeedback)
                 .flatMap(List::stream)
-                .filter(reviewFeedback -> reviewFeedback.getUuid() == feedbackRepresentation.getUuid())
+                .filter(reviewFeedback -> reviewFeedback.getUuid().equals(feedbackRepresentation.getUuid()))
                 .findFirst();
 
         // When this review feedback is not part of the request
@@ -758,7 +760,7 @@ public class RequestService {
             );
         }
 
-        if (user.getUuid() != feedback.getUuid()) {
+        if (!user.getUuid().equals(feedback.getUuid())) {
             log.error("Current user ({}) is not the assignee ({}) of the review feedback ({}).",
                 user.getUuid(), feedback.getReviewer(), feedbackRepresentation.getUuid()
             );

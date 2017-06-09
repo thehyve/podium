@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.PodiumGatewayApp;
+import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -785,6 +786,7 @@ public class RequestResourceIntTest {
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
 
                 Assert.assertEquals(ReviewProcessOutcome.Rejected, requestResult.getRequestReview().getDecision());
+                Assert.assertEquals(RequestOutcome.Rejected, requestResult.getOutcome());
             })
             .andExpect(status().isOk());
     }

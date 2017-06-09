@@ -38,8 +38,6 @@ public class DeliveryResource {
 
     private final Logger log = LoggerFactory.getLogger(DeliveryResource.class);
 
-    private static final String ENTITY_NAME = "delivery";
-
     @Autowired
     private DeliveryService deliveryService;
 
@@ -155,8 +153,7 @@ public class DeliveryResource {
     @Timed
     public ResponseEntity<DeliveryProcessRepresentation> deliveryReceived(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid,
-        @PathVariable("deliveryProcessUuid") UUID deliveryProcessUuid,
-        @RequestBody @Valid DeliveryReferenceRepresentation reference
+        @PathVariable("deliveryProcessUuid") UUID deliveryProcessUuid
     ) throws ActionNotAllowed {
         log.debug("REST request to mark delivery process as received for request {}, delivery {}", requestUuid, deliveryProcessUuid);
         AuthenticatedUser user = securityService.getCurrentUser();

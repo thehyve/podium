@@ -1,0 +1,46 @@
+{
+    "delivery" : {
+        "title": "Delivery",
+        "info": "Some delivery info",
+        "type": "Type",
+        "status": "Status",
+        "notes": "Notes on delivery",
+        "action": "Action",
+        "actions": {
+            "cancel": "Cancel",
+            "submit": "Submit"
+        },
+        "update": {
+            "form": {
+                "referenceLabel": "Reference",
+                "referencePlaceholder": "Please enter a reference URL or Track & Trace number.",
+                "eventMessageSummaryLabel": "Summary",
+                "eventMessageSummaryPlaceholder": "Shortly describe why this request type is cancelled",
+                "eventMessageDescriptionLabel": "Description",
+                "eventMessageDescriptionPlaceholder": "Additional details with argumentation (optional)"
+            },
+            "Release": {
+                "Data": {
+                    "header": "Release data for request {{requestId}}"
+                },
+                "Images": {
+                    "header": "Release of images for request {{requestId}}"
+                },
+                "Material": {
+                    "header": "Release of material for request {{requestId}}"
+                }
+            },
+            "Cancel": {
+                "Data": {
+                    "header": "Cancel delivery of data for request {{requestId}}"
+                },
+                "Images": {
+                    "header": "Cancel delivery of images for request {{requestId}}"
+                },
+                "Material": {
+                    "header": "Cancel delivery of material for request {{requestId}}"
+                }
+            }
+        }
+    }
+}

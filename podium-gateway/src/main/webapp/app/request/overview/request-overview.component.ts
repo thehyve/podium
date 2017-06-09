@@ -49,6 +49,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     reverse: any;
     links: any;
 
+    // FIXME: Major refactor of overview component.
     constructor(private jhiLanguageService: JhiLanguageService,
                 private requestService: RequestService,
                 private router: Router,
@@ -87,6 +88,10 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     isResearcherRoute(): boolean {
         return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
+    }
+
+    isCoordinatorRoute(): boolean {
+        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR;
     }
 
     ngOnInit(): void {
@@ -141,7 +146,16 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.requestService.findCoordinatorReviewRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available request drafts.')
+                (error) => this.onError('Error loading available coordinator review request.')
+            );
+    }
+
+    loadCoordinatorDeliveryRequests() {
+        this.currentRequestStatus = RequestStatusOptions.Delivery;
+        this.requestService.findCoordinatorDeliveryRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available coordinator delivery request .')
             );
     }
 
@@ -160,6 +174,15 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available submitted requests.')
+            );
+    }
+
+    loadMyDeliveryRequests(): void {
+        this.currentRequestStatus = RequestStatusOptions.Delivery;
+        this.requestService.findMyDeliveryRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available delivery requests.')
             );
     }
 

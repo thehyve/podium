@@ -8,8 +8,15 @@
  *
  */
 
-export enum RequestReviewDecision {
-    Approved = <any>'Approved',
-    Rejected = <any>'Rejected',
-    None = <any>'None'
+package nl.thehyve.podium.common.enumeration;
+
+/**
+ * The RequestOutcome enumeration.
+ */
+public enum RequestOutcome {
+    Delivered,
+    Partially_Delivered,
+    Cancelled,
+    Rejected,
+    None
 }
