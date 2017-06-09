@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
@@ -22,21 +22,30 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
 import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';
 import { PodiumEventMessage } from '../../../shared/event/podium-event-message';
+import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/request-finalize-dialog.component';
+import { Delivery } from '../../../shared/delivery/delivery';
+import { Subscription } from 'rxjs';
+import { DeliveryService } from '../../../shared/delivery/delivery.service';
 
 @Component({
     selector: 'pdm-request-detail',
     templateUrl: './request-detail.component.html'
 })
 
-export class RequestDetailComponent {
+export class RequestDetailComponent implements OnDestroy {
 
     public request: RequestBase;
     public requestDetails: RequestDetail;
+    public deliveries: Delivery[];
     public isInRevision = false;
     public isUpdating = false;
 
+    public requestSubscription: Subscription;
+    public deliveriesSubscription: Subscription;
+
     constructor(
         private requestService: RequestService,
+        private deliveryService: DeliveryService,
         private requestAccessService: RequestAccessService,
         private requestFormService: RequestFormService,
         private modalService: NgbModal
@@ -44,9 +53,25 @@ export class RequestDetailComponent {
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
 
-        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.setRequest(request);
         });
+
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries) => {
+                this.deliveries = deliveries;
+            }
+        );
+    }
+
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
+
+        if (this.deliveriesSubscription) {
+            this.deliveriesSubscription.unsubscribe();
+        }
     }
 
     setRequest(request) {
@@ -114,17 +139,28 @@ export class RequestDetailComponent {
     }
 
     finalizeRequest(message?: PodiumEventMessage) {
-        this.requestService.finalizeRequest(this.request.uuid, message)
-            .subscribe(
-                (res) => this.onSuccess(res),
-                (err) => this.onError(err)
-            );
+        return this.confirmFinalizeRequest(this.request, this.deliveries);
     }
 
     confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
         let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
+        modalRef.result.then(result => {
+            console.log(`Closed with: ${result}`);
+            this.isUpdating = false;
+        }, (reason) => {
+            console.log(`Dismissed ${reason}`);
+            this.isUpdating = false;
+        });
+    }
+
+    confirmFinalizeRequest(request: RequestBase, deliveries: Delivery[]) {
+        // Fetch the deliveries for the request.
+
+        let modalRef = this.modalService.open(RequestFinalizeDialogComponent, { size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = request;
+        modalRef.componentInstance.deliveries = deliveries;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
             this.isUpdating = false;

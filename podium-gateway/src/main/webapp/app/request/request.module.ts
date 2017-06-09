@@ -26,6 +26,7 @@ import { RequestStatusUpdateDialogComponent } from '../shared/status-update/requ
 import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-delivery-panel.component';
 import { DeliveryService } from '../shared/delivery/delivery.service';
 import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
+import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-dialog/request-finalize-dialog.component';
 
 @NgModule({
     imports: [
@@ -44,13 +45,15 @@ import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/d
         RequestProgressBarComponent,
         RequestStatusUpdateDialogComponent,
         DeliveryStatusUpdateDialogComponent,
-        RequestDeliveryPanelComponent
+        RequestDeliveryPanelComponent,
+        RequestFinalizeDialogComponent
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
         RequestDraftModalModalComponent,
         RequestStatusUpdateDialogComponent,
-        DeliveryStatusUpdateDialogComponent
+        DeliveryStatusUpdateDialogComponent,
+        RequestFinalizeDialogComponent
     ],
     providers: [
         RequestFormService,

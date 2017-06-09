@@ -14,6 +14,7 @@ import { Delivery } from './delivery';
 import { DeliveryReference } from './delivery-reference';
 import { PodiumEventMessage } from '../event/podium-event-message';
 import { DeliveryOutcome } from './delivery-outcome.constants';
+import { RequestOutcome } from '../request/request-outcome';
 
 @Injectable()
 export class DeliveryService {
@@ -22,6 +23,12 @@ export class DeliveryService {
 
     public onDeliveryUpdate: Subject<Delivery> = new Subject();
     public onDeliveries: Subject<Delivery[]> = new Subject();
+
+    public static countDeliveriesWithOutcome(deliveries: Delivery[], outcome: DeliveryOutcome): number {
+        return deliveries.filter((d) => {
+            return d.outcome === outcome;
+        }).length;
+    }
 
     constructor(private http: Http) {}
 
@@ -73,16 +80,33 @@ export class DeliveryService {
         }
 
         let totalDeliveries = deliveries.length;
-        let numCancelled = deliveries.filter((d) => {
-            return d.outcome === DeliveryOutcome.Cancelled;
-        }).length;
-
-        let numReceived = deliveries.filter((d) => {
-            return d.outcome === DeliveryOutcome.Received;
-        }).length;
+        let numCancelled = DeliveryService.countDeliveriesWithOutcome(deliveries, DeliveryOutcome.Cancelled);
+        let numReceived = DeliveryService.countDeliveriesWithOutcome(deliveries, DeliveryOutcome.Received);
 
         return (numCancelled + numReceived) === totalDeliveries;
     }
+
+    getRequestDeliveryOutcome(deliveries: Delivery[]): RequestOutcome {
+        if (!deliveries) {
+            return RequestOutcome.None;
+        }
+
+        let totalDeliveries = deliveries.length;
+        let numCancelled = DeliveryService.countDeliveriesWithOutcome(deliveries, DeliveryOutcome.Cancelled);
+        let numReceived = DeliveryService.countDeliveriesWithOutcome(deliveries, DeliveryOutcome.Received);
+
+        if (numReceived === totalDeliveries) {
+            return RequestOutcome.Delivered;
+        } else if (numCancelled === totalDeliveries) {
+            return RequestOutcome.Cancelled;
+        } else if ((numReceived + numCancelled) === totalDeliveries) {
+            return RequestOutcome.Partially_Delivered;
+        }
+
+        return RequestOutcome.None;
+    }
+
+
 
     private createRequestOption(req?: any): BaseRequestOptions {
         let options: BaseRequestOptions = new BaseRequestOptions();

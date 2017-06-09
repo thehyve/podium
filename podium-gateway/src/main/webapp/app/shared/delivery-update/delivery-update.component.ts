@@ -60,7 +60,7 @@ export class DeliveryStatusUpdateDialogComponent {
                 .subscribe((res) => this.onSuccess(res));
         }
 
-        // this.activeModal.dismiss(new Error('Unknown status update action'));
+        this.activeModal.dismiss(new Error('Unknown status update action'));
     }
 
     getHeaderTranslation() {

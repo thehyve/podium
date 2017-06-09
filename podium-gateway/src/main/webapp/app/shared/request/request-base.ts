@@ -15,6 +15,7 @@ import { RequestReviewProcess } from './request-review-process';
 import { PodiumEvent } from '../event/podium-event';
 import { ReviewRound } from './review-round';
 import { User } from '../user/user.model';
+import { RequestOutcome } from './request-outcome';
 
 export class RequestBase implements Request {
 
@@ -23,6 +24,7 @@ export class RequestBase implements Request {
     uuid?: string;
     id?: string;
     status?: RequestStatusOptions;
+    outcome?: RequestOutcome;
     revisionDetail?: RequestDetail = new RequestDetail();
     requestDetail?: RequestDetail = new RequestDetail();
     requestReview?: RequestReviewProcess;

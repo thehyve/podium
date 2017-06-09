@@ -165,7 +165,7 @@ export class RequestService {
     }
 
     finalizeRequest(uuid: string, message?: PodiumEventMessage) {
-        return this.http.post(`${this.resourceUrl}/${uuid}/finalize`, message);
+        return this.http.post(`${this.resourceUrl}/${uuid}/close`, message);
     }
 
     search(req?: any): Observable<Response> {

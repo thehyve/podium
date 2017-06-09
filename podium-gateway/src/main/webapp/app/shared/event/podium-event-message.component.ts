@@ -38,10 +38,10 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
-            this.findLastHistoricMessageEventForCurrentStatus();
+            this.findLastHistoricReviewMessageEventForCurrentStatus();
         });
 
-        this.findLastHistoricMessageEventForCurrentStatus();
+        this.findLastHistoricReviewMessageEventForCurrentStatus();
     }
 
     ngOnDestroy() {
@@ -50,24 +50,29 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
         }
     }
 
-    findLastHistoricMessageEventForCurrentStatus() {
+    findLastHistoricReviewMessageEventForCurrentStatus() {
         let messageEvents = this.request.historicEvents.filter((event) => {
-            return event.data.messageSummary != null && event.data.targetStatus === this.request.status.toString();
+            return event.data.messageSummary != null
+                && event.data.targetStatus === this.request.requestReview.status.toLocaleString();
         });
 
         this.lastEvent = messageEvents[messageEvents.length - 1];
     }
 
     isRevisionEvent(): boolean {
+        if (!this.lastEvent) {
+            return false;
+        }
         let revisionAction = RequestStatusUpdateAction.Revision;
-        let revisionStatus = RequestStatusUpdateAction[revisionAction];
-        return this.lastEvent.data.targetStatus === revisionStatus;
+        return this.lastEvent.data.targetStatus === revisionAction.toLocaleString();
     }
 
     isRejectionEvent(): boolean {
+        if (!this.lastEvent) {
+            return false;
+        }
         let closedAction = RequestStatusOptions.Closed;
-        let closedStatus = RequestStatusOptions[closedAction];
-        return this.lastEvent.data.targetStatus === closedStatus;
+        return this.lastEvent.data.targetStatus === closedAction.toLocaleString();
     }
 
     isRequestOwner(): boolean {
