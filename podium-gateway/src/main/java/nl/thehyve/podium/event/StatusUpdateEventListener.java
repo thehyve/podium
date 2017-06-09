@@ -58,10 +58,9 @@ public class StatusUpdateEventListener {
             event.getTargetStatus() == DeliveryStatus.Released) {
             // Send delivery released email to the requester for this delivery
             notificationService.deliveryReleasedNotificationToRequester(event.getRequestUuid(), event.getDeliveryProcessUuid());
-        } else if (event.getSourceStatus() == DeliveryStatus.Released &&
-            event.getTargetStatus() == DeliveryStatus.Closed) {
-            // Send delivery closed email to all organisation coordinators for this delivery
-            notificationService.deliveryClosedNotificationToCoordinators(event.getRequestUuid(), event.getDeliveryProcessUuid());
+        } else if (event.getTargetStatus() == DeliveryStatus.Closed) {
+            // Send delivery closed email for this delivery
+            notificationService.deliveryClosedNotification(event.getRequestUuid(), event.getDeliveryProcessUuid());
         }
     }
 
