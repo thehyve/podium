@@ -22,6 +22,9 @@ import { RequestService } from '../../../../../../../main/webapp/app/shared/requ
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { PodiumEventMessage } from '../../../../../../../main/webapp/app/shared/event/podium-event-message';
+import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
+import { AccountService } from '../../../../../../../main/webapp/app/shared/auth/account.service';
+import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
 
 describe('RequestReviewPanelComponent (templateUrl)', () => {
 
@@ -37,6 +40,9 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
                 MockBackend,
                 BaseRequestOptions,
                 RequestService,
+                Principal,
+                AccountService,
+                RequestAccessService,
                 {
                     provide: Http,
                     useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
