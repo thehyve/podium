@@ -35,7 +35,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     };
     private requestSubscription: Subscription;
 
-    @Input() currentUser: User;
+    @Input() currentUser?: User;
     @Input() form: Form;
     @Input() request: RequestBase;
     @Input() isUpdating: false;
