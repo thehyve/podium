@@ -273,6 +273,7 @@ public class DeliveryResourceIntTest {
         doNothing().when(this.mailService).sendSubmissionNotificationToCoordinators(any(), any(), anyListOf(UserRepresentation.class));
         doNothing().when(this.mailService).sendDeliveryReleasedNotificationToRequester(any(), any(), any());
         doNothing().when(this.mailService).sendDeliveryReceivedNotificationToCoordinators(any(), any(), any(), anyListOf(UserRepresentation.class));
+        doNothing().when(this.mailService).sendDeliveryCancelledNotificationToRequester(any(), any(), any(UserRepresentation.class));
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());
@@ -691,6 +692,9 @@ public class DeliveryResourceIntTest {
 
         // Test status update events
         verify(this.auditService, times(1)).publishEvent(any());
+
+        // Test if requester has been notified
+        verify(this.mailService, times(1)).sendDeliveryCancelledNotificationToRequester(any(), any(), any(UserRepresentation.class));
     }
 
     @Test
@@ -724,6 +728,9 @@ public class DeliveryResourceIntTest {
 
         // Test status update events
         verify(this.auditService, times(2)).publishEvent(any());
+
+        // Test if requester has been notified
+        verify(this.mailService, times(1)).sendDeliveryCancelledNotificationToRequester(any(), any(), any(UserRepresentation.class));
     }
 
     private void testCloseRequest(RequestRepresentation request, RequestOutcome expectedOutcome) throws Exception {

@@ -208,27 +208,51 @@ public class NotificationService {
     }
 
     /**
-     * Send a notification to the organisation coordinators if the outcome of the
-     * delivery is that it has been received.
-     * @param requestUuid the uuid of the request the delivery belongs to.
-     * @param deliveryProcessUuid the uuid of the delivery.
+     * Send a notification to the organisation coordinators that the
+     * delivery has been received.
+     * @param request the request the delivery belongs to.
+     * @param deliveryProcess the delivery.
      */
-    @Async
-    public void deliveryClosedNotificationToCoordinators(UUID requestUuid, UUID deliveryProcessUuid) {
-        DeliveryProcessRepresentation deliveryProcess =
-            deliveryService.getDeliveryForRequestByUuid(requestUuid, deliveryProcessUuid);
-        if (deliveryProcess.getOutcome() != DeliveryProcessOutcome.Received) {
-            log.debug("Outcome of the delivery process is {}. Not sending a notification to coordinators.",
-                deliveryProcess.getOutcome());
-            return;
-        }
-        RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+    private void deliveryReceivedNotificationToCoordinators(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) {
+        for (OrganisationDTO organisation: request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
             mailService.sendDeliveryReceivedNotificationToCoordinators(request, deliveryProcess, organisation, coordinators);
+        }
+    }
+
+    /**
+     * Send a notification to the requester that the
+     * delivery has been cancelled.
+     * @param request the request the delivery belongs to.
+     * @param deliveryProcess the delivery.
+     */
+    private void deliveryCancelledNotificationToRequester(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) {
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
+        mailService.sendDeliveryCancelledNotificationToRequester(request, deliveryProcess, requester);
+    }
+
+    /**
+     * Send a notification to the organisation coordinators if the outcome of the
+     * delivery is that it has been received; send a notification to the requester if
+     * the outcome is that is has been cancelled.
+     * @param requestUuid the uuid of the request the delivery belongs to.
+     * @param deliveryProcessUuid the uuid of the delivery.
+     */
+    @Async
+    public void deliveryClosedNotification(UUID requestUuid, UUID deliveryProcessUuid) {
+        DeliveryProcessRepresentation deliveryProcess =
+            deliveryService.getDeliveryForRequestByUuid(requestUuid, deliveryProcessUuid);
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        if (deliveryProcess.getOutcome() == DeliveryProcessOutcome.Received) {
+            // Notify coordinators of received delivery
+            deliveryReceivedNotificationToCoordinators(request, deliveryProcess);
+        } else if (deliveryProcess.getOutcome() == DeliveryProcessOutcome.Cancelled) {
+            // Notify requester of cancelled delivery
+            deliveryCancelledNotificationToRequester(request, deliveryProcess);
         }
     }
 
