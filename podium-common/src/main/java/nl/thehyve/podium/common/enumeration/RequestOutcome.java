@@ -17,6 +17,7 @@ public enum RequestOutcome {
     Delivered,
     Partially_Delivered,
     Cancelled,
+    Approved,
     Rejected,
     None
 }
