@@ -7,14 +7,11 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http';
-
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
-
 import { Organisation } from './organisation.model';
 import { OrganisationPopupService } from './organisation-popup.service';
 import { OrganisationService } from './organisation.service';
@@ -52,20 +49,20 @@ export class OrganisationDialogComponent implements OnInit {
         if (this.organisation.uuid) {
             this.organisationService.update(this.organisation)
                 .subscribe(
-                    (res: Organisation) => this.onSaveSuccess(res),
+                    (res: Response) => this.onSaveSuccess(res),
                     (res: Response) => this.onSaveError(res.json()));
         } else {
             this.organisationService.create(this.organisation)
                 .subscribe(
-                    (res: Organisation) => this.onSaveSuccess(res),
+                    (res: Response) => this.onSaveSuccess(res),
                     (res: Response) => this.onSaveError(res.json()));
         }
     }
 
-    private onSaveSuccess (result: Organisation) {
+    private onSaveSuccess (result: Response) {
         this.eventManager.broadcast({ name: 'organisationListModification', content: 'OK'});
         this.isSaving = false;
-        this.activeModal.dismiss(result);
+        this.activeModal.dismiss(new Organisation(result));
         this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 

@@ -8,41 +8,193 @@
   ~
   -->
 
-<div class="request-action-toolbar" *ngIf="request">
-    <!-- Draft / Submit -->
-    <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
-        <button type="button" class="btn btn-danger" (click)="resetForm()">Clear</button>
-        <div class="float-xs-right">
-            <button type="button" class="btn btn-primary" (click)="saveDraft()">Save draft</button>
-            <button type="submit" class="btn btn-success" [disabled]="!form.form.valid"
-                    (click)="submitDraft()">Submit</button>
-        </div>
-    </div>
-
-    <!-- Validate in request details -->
-    <div class="action-container"  *ngIf="isStatus(requestStatus.Review)">
-
-        <div *ngIf="isReviewStatus(requestReviewStatus.Validation)">
-            <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
-            <div class="float-xs-right">
-                <button type="button" class="btn btn-default" (click)="requireRevision()">Request revision</button>
-                <button type="submit" class="btn btn-primary"
-                    (click)="validateRequest()">Validate</button>
+<div class="request-action-wrapper request-action-toolbar" *ngIf="request">
+    <form>
+        <fieldset [disabled]="isUpdating">
+            <!-- Draft / Submit -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Draft)">
+                <button type="button" class="btn btn-danger" id="reset-form-btn" (click)="resetForm()">
+                    <span jhiTranslate="request.toolbar.reset">Reset</span>
+                </button>
+                <div class="float-xs-right">
+                    <button type="button" class="btn btn-primary" id="save-draft-btn" (click)="saveDraft()">
+                        <span jhiTranslate="request.toolbar.saveDraft">Save draft</span>
+                    </button>
+                    <button type="submit" class="btn btn-success" id="submit-draft-btn"
+                            [disabled]="!form.form.valid" (click)="submitDraft()">
+                        <span jhiTranslate="request.toolbar.submit">Submit</span>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
-            <button type="button" class="btn btn-danger" (click)="rejectRequest()">Reject</button>
-            <div class="float-xs-right">
-                <button type="button" class="btn btn-default" (click)="assignReview()">Assign review</button>
-                <button type="submit" class="btn btn-primary"
-                    (click)="validateRequest()">Validate</button>
+
+            <!-- Review -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Review)">
+
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+
+                    <!-- Validation -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Validation)">
+                        <div class="alert alert-info" jhiTranslate="request.toolbar.validation">
+                            Your request is currently waiting for validation by the organisation coordinator.
+                        </div>
+                    </div>
+
+                    <!-- Review -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
+                        <div class="alert alert-info" jhiTranslate="request.toolbar.review">
+                            Your request has passed the first check and is currently under review.
+                        </div>
+                    </div>
+
+                    <!-- Revision -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
+                        <button type="button" class="btn btn-default" id="cancel-btn" (click)="cancel()">
+                            <span jhiTranslate="request.toolbar.cancel">Cancel</span>
+                        </button>
+                        <div class="float-xs-right">
+                            <button type="button" class="btn btn-primary" id="save-request-btn"
+                                    (click)="saveRequest()">
+                                <span jhiTranslate="request.toolbar.save">Save</span>
+                            </button>
+                            <button type="submit" class="btn btn-success" id="submit-request-btn"
+                                    (click)="submitRequest()">
+                                <span jhiTranslate="request.toolbar.saveAndSubmit">Save and submit</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coordinator actions -->
+                <div *ngIf="isRequestCoordinator()">
+                    <!-- Validation -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Validation)">
+
+                        <!-- Additional actions -->
+                        <div class="form-group">
+                            <label for="validationCheck">
+                                <input type="checkbox"
+                                       name="validationCheck"
+                                       id="validationCheck"
+                                       [(ngModel)]="checks.validation" />
+                                <span jhiTranslate="request.toolbar.checks.validation" class="check-helper-text">
+                                I hereby validate this request.
+                                Upon sending for review all organisation reviewers will be notified.
+                            </span>
+                            </label>
+                        </div>
+
+                        <!-- State actions -->
+                        <button type="button" class="btn btn-danger test-reject-request-btn"
+                                (click)="rejectRequest()">
+                            <span jhiTranslate="request.toolbar.reject">Reject</span>
+                        </button>
+                        <div class="float-xs-right">
+                            <button type="button" class="btn btn-default test-request-revision-btn"
+                                    (click)="requireRevision()">
+                                <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
+                            </button>
+                            <button type="submit" class="btn btn-success" id="validate-request-btn"
+                                    (click)="validateRequest()" [disabled]="!checks.validation">
+                            <span jhiTranslate="request.toolbar.sendForReview"
+                                  tooltip="Please validate the request by checking the box above."
+                                  [isDisabled]="checks.validation">Send for review</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Organisation coordinator during revision -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
+                        <div class="alert alert-info" jhiTranslate="request.toolbar.revision">
+                            The request is currently in revision.
+                        </div>
+                    </div>
+
+                    <!-- Coordinator during Review -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
+                        <button type="button" class="btn btn-danger test-reject-request-btn"
+                                (click)="rejectRequest()">
+                            <span jhiTranslate="request.toolbar.reject">Reject</span>
+                        </button>
+                        <div class="float-xs-right">
+                            <button type="button" class="btn btn-default test-request-revision-btn"
+                                    (click)="requireRevision()">
+                                <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
+                            </button>
+                            <button type="button" class="btn btn-success" id="approve-request-btn"
+                                    (click)="approveRequest()">
+                                <span jhiTranslate="request.toolbar.approve">Approve</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviewer actions -->
+                <div *ngIf="isRequestReviewer()">
+                    <!-- Review -->
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-primary" (click)="submitReview()">Submit review</button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-    </div>
+            <!-- Approved -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Approved)">
 
-    <!-- Review -->
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+                    <div class="alert alert-info" jhiTranslate="request.toolbar.approved">
+                        Your request has been approved and is pending start of delivery by the organisation coordinator.
+                    </div>
+                </div>
 
+                <!-- Coordinator action to start request delivery -->
+                <div *ngIf="isRequestCoordinator()">
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-default test-request-start-delivery-btn"
+                                (click)="startDelivery()">
+                            <span jhiTranslate="request.toolbar.startDelivery">Start delivery process</span>
+                        </button>
+                    </div>
+                </div>
 
-    <!-- Delivery-->
+            </div>
+
+            <!-- Delivery -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Delivery)">
+
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+                    <div class="alert alert-info" jhiTranslate="request.toolbar.delivery">
+                        Your request is currently in the process of delivery. You will be notified when action is required on your behalf.
+                    </div>
+                </div>
+
+                <!-- Coordinator action to start request delivery -->
+                <div *ngIf="isRequestCoordinator()">
+                    <div class="form-group" *ngIf="!checks.canFinalize">
+                        <span class="material-icons">info_outline</span>
+                        <span jhiTranslate="request.toolbar.checks.canFinalize"
+                            class="check-helper-text">
+                            Please mark all deliveries as Received or Cancelled above prior to finalizing a request.
+                        </span>
+                    </div>
+
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-default test-request-finalize-request-btn"
+                                [disabled]="!checks.canFinalize"
+                                (click)="finalizeRequest()">
+                            <span tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
+                                  [isDisabled]="checks.canFinalize"
+                                  jhiTranslate="request.toolbar.finalizeRequest">
+                                Finalize request
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+    </form>
+
 </div>

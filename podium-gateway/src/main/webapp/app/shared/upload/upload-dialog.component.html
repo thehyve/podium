@@ -113,9 +113,11 @@
 
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
-        <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="upload.dialog.action.cancel">Cancel</span>
+        <span class="material-icons">cancel</span>&nbsp;
+        <span jhiTranslate="upload.dialog.action.cancel">Cancel</span>
     </button>
     <button type="submit" [disabled]="isUploading || hasUploadedFiles" (click)="confirm()" class="btn btn-primary">
-        <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="upload.dialog.action.confirm">Confirm</span>
+        <span class="material-icons">save</span>&nbsp;
+        <span jhiTranslate="upload.dialog.action.confirm">Confirm</span>
     </button>
 </div>

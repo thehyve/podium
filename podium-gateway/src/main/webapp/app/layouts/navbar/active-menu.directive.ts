@@ -7,8 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Directive, OnInit, ElementRef, Renderer, Input} from '@angular/core';
+import { Directive, OnInit, ElementRef, Renderer, Input } from '@angular/core';
 import { TranslateService, LangChangeEvent } from 'ng2-translate';
 
 @Directive({

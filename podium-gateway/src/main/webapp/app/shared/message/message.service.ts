@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Message } from './message.model';
 import { Injectable } from '@angular/core';
 

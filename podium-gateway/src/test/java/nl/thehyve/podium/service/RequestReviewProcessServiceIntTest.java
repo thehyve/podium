@@ -8,28 +8,26 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.RequestReviewProcess;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-
-
 import java.util.UUID;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Service tests for the {@link RequestReviewProcessService}.
@@ -39,7 +37,7 @@ import static org.mockito.Mockito.*;
 @Transactional
 public class RequestReviewProcessServiceIntTest {
 
-    @Inject
+    @Autowired
     RequestReviewProcessService requestReviewProcessService;
 
     private UUID testUuid = UUID.randomUUID();
@@ -60,44 +58,44 @@ public class RequestReviewProcessServiceIntTest {
     }
 
     @Test
-    public void testToReviewAfterValidation() throws ActionNotAllowedInStatus {
+    public void testToReviewAfterValidation() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Review, requestReviewProcess.getStatus());
     }
 
     @Test
-    public void testToRevisionAfterValidation() throws ActionNotAllowedInStatus {
+    public void testToRevisionAfterValidation() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.requestRevision(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Revision, requestReviewProcess.getStatus());
     }
 
     @Test
-    public void testRejectAfterValidation() throws ActionNotAllowedInStatus {
+    public void testRejectAfterValidation() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.reject(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Closed, requestReviewProcess.getStatus());
-        Assert.assertEquals(DecisionOutcome.Rejected, requestReviewProcess.getDecision());
+        Assert.assertEquals(ReviewProcessOutcome.Rejected, requestReviewProcess.getDecision());
     }
 
-    @Test(expected = ActionNotAllowedInStatus.class)
-    public void testApproveAfterValidationNotAllowed() throws ActionNotAllowedInStatus {
+    @Test(expected = ActionNotAllowed.class)
+    public void testApproveAfterValidationNotAllowed() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcessService.approve(authenticatedUser, requestReviewProcess);
     }
 
     @Test
-    public void testRejectAfterReview() throws ActionNotAllowedInStatus {
+    public void testRejectAfterReview() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
         requestReviewProcess = requestReviewProcessService.reject(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Closed, requestReviewProcess.getStatus());
-        Assert.assertEquals(DecisionOutcome.Rejected, requestReviewProcess.getDecision());
+        Assert.assertEquals(ReviewProcessOutcome.Rejected, requestReviewProcess.getDecision());
     }
 
     @Test
-    public void testRevisionAfterReview() throws ActionNotAllowedInStatus {
+    public void testRevisionAfterReview() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
         requestReviewProcess = requestReviewProcessService.requestRevision(authenticatedUser, requestReviewProcess);
@@ -105,7 +103,7 @@ public class RequestReviewProcessServiceIntTest {
     }
 
     @Test
-    public void testValidationAfterRevision() throws ActionNotAllowedInStatus {
+    public void testValidationAfterRevision() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.requestRevision(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Revision, requestReviewProcess.getStatus());
@@ -113,27 +111,27 @@ public class RequestReviewProcessServiceIntTest {
         Assert.assertEquals(RequestReviewStatus.Validation, requestReviewProcess.getStatus());
     }
 
-    @Test(expected = ActionNotAllowedInStatus.class)
-    public void testRevisionAfterRevisionNotAllowed() throws ActionNotAllowedInStatus {
+    @Test(expected = ActionNotAllowed.class)
+    public void testRevisionAfterRevisionNotAllowed() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.requestRevision(authenticatedUser, requestReviewProcess);
         requestReviewProcessService.requestRevision(authenticatedUser, requestReviewProcess);
     }
 
-    @Test(expected = ActionNotAllowedInStatus.class)
-    public void testReviewAfterRevisionNotAllowed() throws ActionNotAllowedInStatus {
+    @Test(expected = ActionNotAllowed.class)
+    public void testReviewAfterRevisionNotAllowed() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.requestRevision(authenticatedUser, requestReviewProcess);
         requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
     }
 
     @Test
-    public void testApproveAfterReview() throws ActionNotAllowedInStatus {
+    public void testApproveAfterReview() throws ActionNotAllowed {
         RequestReviewProcess requestReviewProcess = requestReviewProcessService.start(authenticatedUser);
         requestReviewProcess = requestReviewProcessService.submitForReview(authenticatedUser, requestReviewProcess);
         requestReviewProcess = requestReviewProcessService.approve(authenticatedUser, requestReviewProcess);
         Assert.assertEquals(RequestReviewStatus.Closed, requestReviewProcess.getStatus());
-        Assert.assertEquals(DecisionOutcome.Approved, requestReviewProcess.getDecision());
+        Assert.assertEquals(ReviewProcessOutcome.Approved, requestReviewProcess.getDecision());
     }
 
 }

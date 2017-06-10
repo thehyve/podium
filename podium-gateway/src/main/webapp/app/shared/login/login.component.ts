@@ -7,12 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, AfterViewInit, Renderer, ElementRef } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { JhiLanguageService, EventManager } from 'ng-jhipster';
-
 import { LoginService } from '../login/login.service';
 import { StateStorageService } from '../auth/state-storage.service';
 

@@ -7,11 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injector } from '@angular/core';
 import { Http, XHRBackend, RequestOptions } from '@angular/http';
 import { EventManager, InterceptableHttp } from 'ng-jhipster';
-
 import { AuthInterceptor } from './auth.interceptor';
 import { LocalStorageService, SessionStorageService } from 'ng2-webstorage';
 import { AuthExpiredInterceptor } from './auth-expired.interceptor';

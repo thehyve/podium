@@ -11,13 +11,14 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.*;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Authenticate a user from the database.
@@ -27,7 +28,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     private final Logger log = LoggerFactory.getLogger(UserDetailsService.class);
 
-    @Inject
+    @Autowired
     private UserService userService;
 
     @Override

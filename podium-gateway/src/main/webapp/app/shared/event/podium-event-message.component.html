@@ -1,0 +1,30 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="podium-event-message-wrapper" *ngIf="isRequestOwner()">
+    <div *ngIf="lastEvent && (isRevisionEvent() || isRejectionEvent())" class="alert"
+         [ngClass]="{'alert-info': isRevisionEvent(), 'alert-danger': isRejectionEvent()}">
+            <span class="material-icons" *ngIf="isRevisionEvent()">
+                edit
+            </span>
+            <span class="material-icons" *ngIf="isRejectionEvent()">
+                warning
+            </span>
+        <div class="message-text-container">
+            <strong>Summary:</strong>
+            <span>
+                {{ lastEvent.data.messageSummary }}
+            </span>
+            <br />
+            {{ lastEvent.data.messageDescription }}
+        </div>
+
+    </div>
+</div>

@@ -7,11 +7,14 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.UserRepository;
@@ -21,6 +24,7 @@ import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.representation.TestRoleRepresentation;
+import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +32,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.EntityManager;
 
 /**
- * Service class for managing users.
+ * Service class for clearing database for testing purposes.
  */
 @Profile({"dev", "test"})
 @Service
@@ -41,32 +49,35 @@ public class TestService {
 
     private final Logger log = LoggerFactory.getLogger(TestService.class);
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
 
-    @Inject
+    @Autowired
     private UserSearchRepository userSearchRepository;
 
-    @Inject
+    @Autowired
     private UserService userService;
 
-    @Inject
+    @Autowired
     private RoleRepository roleRepository;
 
-    @Inject
+    @Autowired
     private RoleSearchRepository roleSearchRepository;
 
-    @Inject
+    @Autowired
     RoleService roleService;
 
-    @Inject
+    @Autowired
     private OrganisationRepository organisationRepository;
 
-    @Inject
+    @Autowired
     private OrganisationSearchRepository organisationSearchRepository;
 
-    @Inject
+    @Autowired
     OrganisationService organisationService;
+
+    @Autowired
+    EntityManager entityManager;
 
     @Autowired
     UserMapper userMapper;
@@ -95,6 +106,15 @@ public class TestService {
         for(User user: userRepository.findAll()) {
             if (!specialUsers.contains(user.getLogin())) {
                 users.add(user);
+                log.info("Scheduling user for deletion: {}", user.getLogin());
+                // delete user from associated (non-organisational) roles
+                if (user.getRoles() != null) {
+                    for(Role role: user.getRoles()) {
+                        log.info("Removing user {} from role {}", user.getLogin(), role.getAuthority());
+                        role.getUsers().remove(user);
+                        entityManager.persist(role);
+                    }
+                }
             }
         }
 
@@ -111,7 +131,6 @@ public class TestService {
      * Assigns users to a role. The role is fetched based on the organisation UUID and the authority.
      * @param roleData representation containing organisation UUID, authority and a set of user UUIDs.
      */
-    @Profile({"dev", "test"})
     public void assignUsersToRole(TestRoleRepresentation roleData) {
         log.info("Assign to role: ({}, {})", roleData.getAuthority(), roleData.getOrganisation());
         log.info("Assign users  : {}", roleData.getUsers() == null ? null : Arrays.toString(roleData.getUsers().toArray()));
@@ -130,6 +149,7 @@ public class TestService {
                 roleData.getAuthority(), roleData.getOrganisation());
             throw new ResourceNotFound(message);
         }
+        entityManager.refresh(role);
         Set<User> users = new HashSet<>();
         if (roleData.getUsers() != null) {
             for (String userLogin : roleData.getUsers()) {
@@ -137,7 +157,85 @@ public class TestService {
             }
         }
         role.setUsers(users);
-        roleService.save(role);
+        entityManager.persist(role);
+        entityManager.flush();
+
+        // Refresh associated users (because of caching)
+        for(User user: role.getUsers()) {
+            entityManager.refresh(user);
+        }
     }
+
+    /**
+     * Create organisation for testing purposes with provided name.
+     * @param organisationName the name of the organisation.
+     * @return the created entity.
+     */
+    public Organisation createOrganisation(String organisationName) {
+        Set<RequestType> requestTypes = new HashSet<>();
+        requestTypes.add(RequestType.Data);
+
+        Organisation organisation = new Organisation();
+        organisation.setName(organisationName);
+        organisation.setShortName(organisationName);
+        organisation.setRequestTypes(requestTypes);
+        organisation.setActivated(true);
+        organisation = organisationService.save(organisation);
+        entityManager.persist(organisation);
+        for(Role role: organisation.getRoles()) {
+            entityManager.persist(role);
+        }
+        entityManager.flush();
+        return organisation;
+    }
+
+    /**
+     * Create user for testing purposes with provided name, authority and list of organisations for which the
+     * user should have that authority.
+     * @param name the username.
+     * @param authority the authority the user should have.
+     * @param organisations the (possibly empty) list of organisations for which the user should have that authority.
+     * @return the created entity.
+     */
+    public User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
+        log.info("Creating user {}", name);
+        ManagedUserVM userVM = new ManagedUserVM();
+        userVM.setLogin("test_" + name);
+        userVM.setEmail("test_" + name + "@localhost");
+        userVM.setFirstName("test_firstname_"+name);
+        userVM.setLastName("test_lastname_"+name);
+        userVM.setPassword("Password123!");
+        User user = userService.createUser(userVM);
+        if (organisations.length > 0) {
+            for (Organisation organisation: organisations) {
+                log.info("Assigning role {} for organisation {}", authority, organisation.getName());
+                Role role = roleService.findRoleByOrganisationAndAuthorityName(organisation, authority);
+                assert (role != null);
+                user.getRoles().add(role);
+                user = userService.save(user);
+            }
+        } else if (authority != null) {
+            log.info("Assigning role {}", authority);
+            Role role = roleService.findRoleByAuthorityName(authority);
+            assert (role != null);
+            user.getRoles().add(role);
+            user = userService.save(user);
+        }
+        entityManager.persist(user);
+        entityManager.flush();
+        {
+            log.info("Checking user {}", name);
+            // some sanity checks
+            User user1 = entityManager.find(User.class, user.getId());
+            assert (user1 != null);
+            if (authority != null) {
+                assert (!user1.getAuthorities().isEmpty());
+                UserAuthenticationToken token = new UserAuthenticationToken(user1);
+                assert (!token.getAuthorities().isEmpty());
+            }
+        }
+        return user;
+    }
+
 
 }

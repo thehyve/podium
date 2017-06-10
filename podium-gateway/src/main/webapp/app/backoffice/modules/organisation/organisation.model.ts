@@ -7,11 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestType } from '../../../shared/request/request-type';
 import { Role } from '../../../shared/role/role.model';
 
-export class Organisation {
+export interface IOrganisation {
+    hasRequestTypes(requestTypes: RequestType[]): boolean;
+}
+
+export class Organisation implements IOrganisation {
 
     public id?: number;
     uuid?: string;
@@ -26,4 +29,17 @@ export class Organisation {
         jsonResponse ? Object.assign(this, jsonResponse) : this;
     }
 
+    hasRequestTypes(requestTypes) {
+
+        let found = false;
+
+        for (let requestType of requestTypes) {
+            if (this.requestTypes.indexOf(requestType) >= 0) {
+                found = true;
+                break;
+            }
+        }
+
+        return found;
+    }
 }

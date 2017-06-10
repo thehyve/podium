@@ -36,6 +36,8 @@ spring:
         exclude: org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration, org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration
     jackson:
         serialization.write_dates_as_timestamps: false
+    cache:
+        type: none
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:h2:mem:podiumGateway;DB_CLOSE_DELAY=-1
@@ -46,7 +48,7 @@ spring:
         database-platform: nl.thehyve.podium.domain.util.FixedH2Dialect
         database: H2
         open-in-view: false
-        show-sql: true
+        show-sql: false
         hibernate:
             ddl-auto: none
             naming:
@@ -74,6 +76,8 @@ spring:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+                cluster.routing.allocation.disk.watermark.high: 99%
+
     mail:
         host: localhost
     mvc:

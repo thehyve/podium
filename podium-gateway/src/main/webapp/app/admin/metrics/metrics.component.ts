@@ -7,11 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { PdmMetricsMonitoringModalComponent } from './metrics-modal.component';
 import { PdmMetricsService } from './metrics.service';
 

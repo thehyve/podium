@@ -21,6 +21,8 @@ eureka:
     instance:
         appname: podiumGateway
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
+        lease-renewal-interval-in-seconds: 5
+        lease-expiration-duration-in-seconds: 10
         status-page-url-path: ${management.context-path}/info
         health-check-url-path: ${management.context-path}/health
         metadata-map:
@@ -30,10 +32,14 @@ eureka:
 ribbon:
     eureka:
         enabled: true
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
+
 zuul:
     host:
-        connect-timeout-millis: 5000
-        socket-timeout-millis: 10000
+        max-total-connections: 1000
+        max-per-route-connections: 100
+    semaphore:
+        max-semaphores: 500
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
@@ -47,7 +53,7 @@ hystrix:
 management:
     context-path: /management
     security:
-        roles: ADMIN
+        roles: PODIUM_ADMIN
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -76,6 +82,10 @@ spring:
             token-service-id: podiumuaa
             client-id: internal
             client-secret: internal
+    data:
+        elasticsearch:
+            properties:
+                cluster.routing.allocation.disk.watermark.high: 99%
 
 security:
     basic:
@@ -88,6 +98,11 @@ server:
     session:
         cookie:
             http-only: true
+
+hazelcast:
+    phone:
+        home:
+            enabled: false
 
 # ===================================================================
 # Podium specific properties

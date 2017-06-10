@@ -24,4 +24,11 @@
     <include file="./changelog/20170301063637_added_entity_PrincipalInvestigator.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170314124429_add_request_review_process.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170314143552_added_flowable.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170502164153_remove_parentRequest_Request.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170508092645_add_revisionDetail_Request.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170504145800_reorganise_events.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170515094712_add_reviewRound_reviewFeedback.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170529164404_add_delivery_process.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170601205912_update_reviewFeedback.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170607155820_added_request_outcome.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -10,12 +10,14 @@
 
 <div class="row">
     <div class="container-fluid">
-        <div class="col-md-6 offset-md-3 card-container">
+        <div class="col-md-12 col-sm-12 col-lg-10 col-xl-8 offset-lg-1 offset-xl-2 card-container">
             <h2>
                 <span jhiTranslate="request.detail.pageTitle">Request</span>
             </h2>
 
             <pdm-request-progress-bar *ngIf="request" [request]="request"></pdm-request-progress-bar>
+
+            <pdm-event-message-component *ngIf="request" [request]="request"></pdm-event-message-component>
 
             <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>

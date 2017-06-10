@@ -27,4 +27,5 @@
     <include file="./changelog/20170227173401_added_sequences.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170403162001_added_organisation_request_types.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170404150743_remove_user_authorities.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170504145800_reorganise_events.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

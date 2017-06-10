@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
-import { Routes, CanActivate } from '@angular/router';
-
+import { Routes } from '@angular/router';
 import {
     verifyRoute,
     passwordRoute,

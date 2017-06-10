@@ -4,6 +4,7 @@
 # Functions
 #-------------------------------------------------------------------------------
 launchCurlOrProtractor() {
+    browserName="$1"
     retryCount=1
     maxRetry=10
     httpUrl="http://localhost:8080"
@@ -34,7 +35,11 @@ launchCurlOrProtractor() {
         result=0
         if [[ -f "tsconfig.json" ]]; then
           cd "$PODIUM_BASE"/podium-gateway
-          yarn run e2e
+          if [ "$browserName" == "chrome" ]; then
+            yarn run e2e
+          else
+            yarn run "e2e:${browserName}"
+          fi
         fi
         result=$?
         [ $result -eq 0 ] && break
@@ -71,22 +76,18 @@ if [ "$RUN_PODIUM" == 1 ]; then
     cd "$PODIUM_BASE"/podium-uaa
     java -jar podium-uaa.war \
         --server.port="$PODIUM_UAA_RUN_PORT" \
-        --spring.profiles.active="$PROFILE" \
-        --logging.level.nl.thehyve.podium.sample=ERROR \
-        --logging.level.nl.thehyve.podium.travis=ERROR &
-    sleep 80
+        --spring.profiles.active="$PROFILE",test &
+    sleep 120
 
     cd "$PODIUM_BASE"/podium-gateway
     java -jar podium-gateway.war \
-        --spring.profiles.active="$PROFILE" \
-        --logging.level.nl.thehyve.podium.sample=ERROR \
-        --logging.level.nl.thehyve.podium.travis=ERROR &
-    sleep 40
+        --spring.profiles.active="$PROFILE",test &
+    sleep 100
 
     #-------------------------------------------------------------------------------
     # Once everything is started, run the tests
     #-------------------------------------------------------------------------------
     if [ "$PROTRACTOR" == 1 ]; then
-        launchCurlOrProtractor
+        launchCurlOrProtractor "${BROWSER_NAME}"
     fi
 fi

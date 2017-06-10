@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Authority } from './authority';
 
 const authorityNames: { [token: string]: string; } = {
@@ -43,6 +42,12 @@ function convertToAuthorityMap(authorities: ReadonlyArray<Authority>): { [token:
         }
     }
     return result;
+}
+
+export enum OrganisationAuthorityOptions {
+    ROLE_ORGANISATION_ADMIN         = <any>'ROLE_ORGANISATION_ADMIN',
+    ROLE_ORGANISATION_COORDINATOR   = <any>'ROLE_ORGANISATION_COORDINATOR',
+    ROLE_REVIEWER                   = <any>'ROLE_REVIEWER'
 }
 
 export const AUTHORITIES: ReadonlyArray<Authority> = convertNamesToAuthorities(authorityNames);

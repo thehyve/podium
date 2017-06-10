@@ -1,0 +1,34 @@
+<div class="request-action-wrapper">
+    <h3 jhiTranslate="request.review.title">Review</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th jhiTranslate="request.review.reviewerName">Name</th>
+            <th jhiTranslate="request.review.date">Date</th>
+            <th jhiTranslate="request.review.result">Result</th>
+            <th jhiTranslate="request.review.comment">Comment</th>
+        </tr>
+        </thead>
+        <tbody *ngIf="lastReviewFeedback">
+        <tr *ngFor="let feedback of lastReviewFeedback">
+            <th scope="row">{{feedback.reviewer.firstName}} {{feedback.reviewer.lastName}}</th>
+            <td>{{feedback.date | date:'short'}}</td>
+            <td>
+                <span class="tag" [ngClass]="toggleAdviseStyle(feedback.advice)">{{feedback.advice}}</span>
+            </td>
+            <td>
+                <small>{{feedback.summary}}</small>
+            </td>
+        </tr>
+        </tbody>
+        <tbody *ngIf="!lastReviewFeedback">
+        <tr>
+            <td colspan="4" class="no-results transparent-bg">
+                <div class="alert alert-info">
+                    <span jhiTranslate="request.review.noResults">No active reviews found</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

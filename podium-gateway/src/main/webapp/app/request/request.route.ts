@@ -7,14 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Routes } from '@angular/router';
-
 import { UserRouteAccessService } from '../shared';
-
 import { requestFormRoute } from './';
 import { requestFormEditRoute } from './form/request-form-edit.route';
-import { requestOverviewRoute } from './overview/request-overview.route';
+import {
+    requestOverviewRoute, organisationRequestOverviewRoute,
+    reviewerRequestOverviewRoute
+} from './overview/request-overview.route';
 import { requestMainDetailRoute } from './main-detail/request-main-detail.route';
 
 let defaultRoute = {
@@ -27,6 +27,8 @@ let REQUEST_ROUTES = [
     requestFormRoute,
     requestFormEditRoute,
     requestOverviewRoute,
+    reviewerRequestOverviewRoute,
+    organisationRequestOverviewRoute,
     requestMainDetailRoute,
     defaultRoute
 ];

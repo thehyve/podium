@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
@@ -34,11 +33,11 @@ describe('RoleAssignComponent', () => {
     let roleService: RoleService;
     let mockPrincipal: any;
 
-    let dummyOrganisation: Organisation = {
-        id: 6,
+    let dummyOrganisation = new Organisation({
+        id: 90,
         name: 'dummy',
         uuid: 'dummy-orgnisation-uuid'
-    };
+    });
 
     let dummyBbmriAdmin: User = {
         id: 1,

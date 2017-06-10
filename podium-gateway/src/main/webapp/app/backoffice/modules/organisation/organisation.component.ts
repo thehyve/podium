@@ -7,13 +7,11 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { EventManager, ParseLinks, PaginationUtil, JhiLanguageService, AlertService } from 'ng-jhipster';
-
 import { Organisation } from './organisation.model';
 import { OrganisationService } from './organisation.service';
 import { ITEMS_PER_PAGE, Principal } from '../../../shared';
@@ -156,7 +154,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
 
     toggleActivated (organisation) {
         organisation.activated = !organisation.activated;
-        this.organisationService.activate(organisation.id, organisation.activated).subscribe(
+        this.organisationService.activate(organisation.uuid, organisation.activated).subscribe(
             (res: Response) => {
                 if (res.status === 200) {
                     this.error = null;

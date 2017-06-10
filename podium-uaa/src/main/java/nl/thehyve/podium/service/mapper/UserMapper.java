@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service.mapper;
 
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.search.SearchUser;
@@ -14,8 +15,11 @@ import nl.thehyve.podium.service.decorators.UserMapperDecorator;
 import nl.thehyve.podium.service.util.UuidMapper;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import org.mapstruct.*;
+import org.mapstruct.DecoratedWith;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -53,6 +57,18 @@ public interface UserMapper {
     User userDTOToUser(UserRepresentation userDTO);
 
     List<User> userDTOsToUsers(List<UserRepresentation> userDTOs);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "login", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "emailVerified", ignore = true)
+    @Mapping(target = "adminVerified", ignore = true)
+    @Mapping(target = "accountLocked", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    // Copy user properties, except login, password, email, activated.
+    User safeUpdateUserWithUserDTO(UserRepresentation userDTO, @MappingTarget User user);
 
     // Decorated is used to generate the fullname for the searchuser
     SearchUser userToSearchUser(User user);

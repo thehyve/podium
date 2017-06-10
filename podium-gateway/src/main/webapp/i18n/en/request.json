@@ -8,9 +8,53 @@
             "edit": "Edit",
             "delete": "Delete"
         },
+        "toolbar": {
+            "cancel": "Cancel",
+            "saveDraft": "Save draft",
+            "submit": "Submit",
+            "reset": "Reset",
+            "revision": "The request is currently in revision.",
+            "validation": "Your request is currently waiting for validation by the organisation coordinator.",
+            "review": "Your request has passed the first check and is currently under review.",
+            "approved": "Your request has been approved and is pending start of delivery by the organisation coordinator.",
+            "delivery": "Your request is currently in the process of delivery. You will be notified when action is required on your behalf.",
+            "sendForReview": "Send for review",
+            "saveAndSubmit": "Save and submit",
+            "startDelivery": "Start delivery process",
+            "finalizeRequest": "Finalize request",
+            "save": "Save",
+            "requestRevision": "Request revision",
+            "reject": "Reject",
+            "close": "Close request",
+            "approve": "Approve",
+            "checks": {
+                "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
+                "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
+            }
+        },
         "submit": {
             "title": "Confirm request submission",
             "question": "Are you sure you want to submit this request?"
+        },
+        "statusupdate": {
+            "Revision": {
+                "title": "Send request for revision",
+                "question": "Are you sure you would like to send this request back for revision?"
+            },
+            "Reject": {
+                "title": "Permanently reject a request",
+                "question": "Are you sure you would to reject this request?"
+            },
+            "form": {
+                "summary": {
+                    "label": "Summary",
+                    "placeholder": "A summary of your message to the requester"
+                },
+                "description": {
+                    "label": "Description",
+                    "placeholder": "Details of your message"
+                }
+            }
         },
         "detail": {
             "pageTitle": "Request Details",
@@ -22,9 +66,43 @@
             "relatedRequestNumber": "Related Request Number",
             "principalInvestigator": "Principal Investigator",
             "searchQuery": "Search Query",
-            "isCombined": "Combined Request",
+            "isCombined": "Linked Request",
             "requestTypes": "Request Types",
             "organisations": "Organisations"
+        },
+        "review": {
+            "title": "Review",
+            "date": "Date",
+            "reviewerName": "Name",
+            "result": "Result",
+            "comment": "Comment",
+            "noResults": "No active reviews found"
+        },
+        "finalize": {
+            "header": "Finalize request {{ requestId }}",
+            "body": {
+                "header": "Completing this step will result in the closing of the request",
+                "info": "The outcome of the request depends on whether all the requested materials have been received by the researcher.",
+                "full_delivery": "All requested types have been released or received, therefore the request will be marked as 'Delivered'.",
+                "partial_delivery": "Not all requested types have released or received, therefore the request will be marked as 'Partially delivered'.",
+                "no_delivery": "None of the requested types have been released or received, therefore the request will be marked as 'Cancelled'."
+            },
+            "actions": {
+                "submit": "Submit"
+            }
+        },
+        "delete": {
+            "dialog": {
+                "title": "Confirm deletion of request draft",
+                "question": "Are you sure you would like to delete this request draft?",
+                "cancel": "Cancel",
+                "confirm": "Delete draft"
+            }
+        },
+        "overview": {
+            "pageHeaderResearcher": "My requests",
+            "pageHeaderCoordinator": "Organisation requests",
+            "pageHeaderReviewer": "My reviews"
         },
         "form": {
             "header": {
@@ -40,6 +118,14 @@
             "title": {
                 "label": "Title",
                 "placeholder": "Request title"
+            },
+            "requestType": {
+                "label": "Request Type(s)*",
+                "footnote": "* Changing this value will clear organisation selection."
+            },
+            "isLinked": {
+                "label": "Linked Request",
+                "placeHolder": "Is a linked request"
             },
             "background": {
                 "label": "Background",
@@ -87,7 +173,7 @@
 
             "messages": {
                 "success": "Changes are saved.",
-                "error": "Saving draft failed.",
+                "error": "Saving failed.",
                 "validate": {
                     "title": {
                         "required": "A title is required.",
@@ -144,7 +230,6 @@
                             "maxlength": "The principal investigator affiliation cannot be longer than 150 characters."
                         }
                     },
-
                     "searchQuery": {
                         "required": "Search query is required.",
                         "minlength": "Search query has to be at least 1 character long.",
@@ -155,11 +240,11 @@
                     },
                     "requestType": {
                         "required": "Request type is required",
-                        "minlength": "Select atleast 1 request type"
+                        "minlength": "Select at least 1 request type"
                     },
                     "organisation": {
                         "required": "Organisation is required",
-                        "minlength": "Select atleast 1 organisation"
+                        "minlength": "Select at least 1 organisation"
                     }
                 }
             }

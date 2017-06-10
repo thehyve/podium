@@ -7,12 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
-
-import { Account, LoginModalService, Principal } from '../shared';
+import { Account, Principal } from '../shared';
 import { Router } from '@angular/router';
 
 @Component({

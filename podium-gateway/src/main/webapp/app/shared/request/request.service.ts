@@ -7,19 +7,21 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-
+import { Observable, BehaviorSubject, Subject } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
+import { RequestReviewFeedback } from './request-review-feedback';
+import { PodiumEventMessage } from '../event/podium-event-message';
 
 @Injectable()
 export class RequestService {
 
     private resourceUrl = 'api/requests';
     private resourceSearchUrl = 'api/_search/requests';
+
+    public onRequestUpdate: Subject<RequestBase> = new Subject();
 
     constructor(private http: Http) { }
 
@@ -29,9 +31,10 @@ export class RequestService {
         });
     }
 
-    findDrafts(): Observable<RequestBase[]> {
-        return this.http.get(`${this.resourceUrl}/drafts`).map((res: Response) => {
-            return res.json();
+    findDrafts(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
+            return res;
         });
     }
 
@@ -42,9 +45,39 @@ export class RequestService {
         });
     }
 
-    findSubmittedRequests(): Observable<RequestBase[]> {
-        return this.http.get(`${this.resourceUrl}/status/Review`).map((res: Response) => {
-            return res.json();
+    findMyReviewRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findMyDeliveryRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Delivery/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+
+    findCoordinatorReviewRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findCoordinatorDeliveryRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Delivery/coordinator`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findAllReviewerRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/reviewer`, options).map((res: Response) => {
+            return res;
         });
     }
 
@@ -61,6 +94,32 @@ export class RequestService {
         });
     }
 
+    /**
+     * Save the revision details during a revision phase
+     *
+     * @param requestBase the request to save
+     * @returns {Observable<Response>}
+     */
+    saveRequestRevision(requestBase: RequestBase): Observable<Response> {
+        let requestCopy: RequestBase = Object.assign({}, requestBase);
+        return this.http.put(`${this.resourceUrl}`, requestCopy).map((response: Response) => {
+            return response.json();
+        });
+    }
+
+    submitRequestRevision(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/submit`).map((response: Response) => {
+            return response.json();
+        });
+    }
+
+    findSubmittedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
     findDraftByUuid(uuid: string): Observable<RequestDetail> {
         return this.http.get(`${this.resourceUrl}/drafts/${uuid}`).map((res: Response) => {
             return res.json();
@@ -73,13 +132,49 @@ export class RequestService {
         });
     }
 
-    delete(uuid: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${uuid}`);
+    deleteDraft(uuid: string): Observable<Response> {
+        return this.http.delete(`${this.resourceUrl}/drafts/${uuid}`);
+    }
+
+    /**
+     * Process functions
+     */
+    validateRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/validate`);
+    }
+
+    requestRevision(uuid: string, message: PodiumEventMessage): Observable<Response> {
+        return this.http.post(`${this.resourceUrl}/${uuid}/requestRevision`, message);
+    }
+
+    approveRequest(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/approve`);
+    }
+
+    submitReview(uuid: string, reviewFeedback: RequestReviewFeedback) {
+        let feedbackCopy: RequestReviewFeedback = Object.assign({}, reviewFeedback);
+        return this.http.post(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
+    }
+
+    rejectRequest(uuid: string, message: PodiumEventMessage): Observable<Response> {
+        return this.http.post(`${this.resourceUrl}/${uuid}/reject`, message);
+    }
+
+    startRequestDelivery(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
+    }
+
+    finalizeRequest(uuid: string, message?: PodiumEventMessage) {
+        return this.http.post(`${this.resourceUrl}/${uuid}/close`, message);
     }
 
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);
+    }
+
+    public requestUpdateEvent(requestBase: RequestBase) {
+        this.onRequestUpdate.next(requestBase);
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {

@@ -7,13 +7,15 @@
 
 package nl.thehyve.podium.web.rest;
 
+import nl.thehyve.podium.common.config.DefaultProfileUtil;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.security.annotations.Public;
-import nl.thehyve.podium.config.DefaultProfileUtil;
-import nl.thehyve.podium.config.PodiumProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,10 +28,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class ProfileInfoResource {
 
-    @Inject
+    @Autowired
     private Environment env;
 
-    @Inject
+    @Autowired
     private PodiumProperties podiumProperties;
 
     @GetMapping("/profile-info")

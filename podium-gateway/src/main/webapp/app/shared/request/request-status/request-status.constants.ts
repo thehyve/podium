@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { RequestStatus } from './request-status';
 
 const requestStatusesOpts: { [status: string]: any; } = {
@@ -23,13 +22,17 @@ const requestStatusesOpts: { [status: string]: any; } = {
         name: 'Review',
         order: 3
     },
-    'Delivery': {
-        name: 'Delivery',
+    'Approved': {
+        name: 'Approved',
         order: 4
     },
-    'Return' : {
-        name: 'Return',
+    'Delivery': {
+        name: 'Delivery',
         order: 5
+    },
+    'Finished' : {
+        name: 'Finished',
+        order: 6
     }
 };
 
@@ -41,7 +44,16 @@ const requestReviewStatusesOpts: { [status: string]: any; } = {
     'Review': {
         name: 'Review',
         order: 3
-    }
+    },
+    // Highlight item 2 in progress bar when in revision
+    'Revision': {
+        name: 'Revision',
+        order: 2
+    },
+    'Closed': {
+        name: 'Closed',
+        order: -1
+    },
 };
 
 function convertNamesToRequestStatuses(names: { [status: string]: any; }): Array<RequestStatus> {
@@ -65,22 +77,25 @@ function convertToRequestStatusMap(requestStatuses: ReadonlyArray<RequestStatus>
 }
 
 export enum RequestStatusOptions {
-    Draft,
-    Review,
-    Delivery
+    Draft       = <any>'Draft',
+    Review      = <any>'Review',
+    Approved    = <any>'Approved',
+    Delivery    = <any>'Delivery',
+    Closed      = <any>'Closed',
+    None        = <any>'None',
 }
 
 export enum RequestReviewStatusOptions {
-    Revision,
-    Validation,
-    Review,
-    Closed,
-    None
+    Revision    = <any>'Revision',
+    Validation  = <any>'Validation',
+    Review      = <any>'Review',
+    Closed      = <any>'Closed',
+    None        = <any>'None'
 }
 
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
 
-export const REQUEST_REVIEW_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
+export const REQUEST_REVIEW_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestReviewStatusesOpts);
 
 export const REQUEST_STATUSES_MAP: { [token: string]: RequestStatus; } = convertToRequestStatusMap(REQUEST_STATUSES);
 

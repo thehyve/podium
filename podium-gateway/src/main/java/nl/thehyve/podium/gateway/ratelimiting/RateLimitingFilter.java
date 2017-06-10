@@ -9,8 +9,8 @@ package nl.thehyve.podium.gateway.ratelimiting;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import nl.thehyve.podium.config.PodiumProperties;
-import nl.thehyve.podium.security.SecurityUtils;
+import nl.thehyve.podium.common.service.SecurityService;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -85,7 +85,7 @@ public class RateLimitingFilter extends ZuulFilter {
      * The ID that will identify the limit: the user login or the user IP address.
      */
     private String getId(HttpServletRequest httpServletRequest) {
-        String login = SecurityUtils.getCurrentUserLogin();
+        String login = SecurityService.getCurrentUserLogin();
         if (login != null) {
             return login;
         } else {

@@ -7,20 +7,30 @@
 
 package nl.thehyve.podium.domain;
 
+import nl.thehyve.podium.common.enumeration.RequestType;
+import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Cache;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-
-import nl.thehyve.podium.common.enumeration.RequestType;
 
 /**
  * A RequestDetail.
@@ -64,7 +74,7 @@ public class RequestDetail implements Serializable {
     @Column(name = "related_request_number", length = 50)
     private String relatedRequestNumber;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "principal_investigator")
     private PrincipalInvestigator principalInvestigator;
 

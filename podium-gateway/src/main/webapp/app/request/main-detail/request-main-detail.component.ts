@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
@@ -40,6 +39,10 @@ export class RequestMainDetailComponent implements OnInit {
         private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request']);
+
+        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.request = request;
+        });
     }
 
     ngOnInit() {

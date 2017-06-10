@@ -13,7 +13,6 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +29,6 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Service tests for the {@link OrganisationClientService}.
@@ -54,9 +52,6 @@ public class OrganisationServiceIntTest {
 
     @Autowired
     private OrganisationClientService organisationService;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private LoadBalancerClient loadBalancer;
@@ -102,6 +97,8 @@ public class OrganisationServiceIntTest {
 
         List<OrganisationDTO> organisations = organisationService.findAllOrganisations();
         assertThat(organisations).isNotEmpty();
+
+        verify(1, getRequestedFor(urlEqualTo("/api/organisations/all")));
     }
 
 }

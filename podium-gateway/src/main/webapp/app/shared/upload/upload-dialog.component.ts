@@ -7,13 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
-
 import { UploadPopupService } from './upload-dialog.service';
 import { FileUploader } from 'ng2-file-upload';
 

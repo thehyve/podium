@@ -19,7 +19,7 @@
         list-style-type: none;
         float: left;
         position: relative;
-        width: 20%;
+        width: 16%;
         font-size: 12px;
         text-transform: uppercase;
         text-align: center;
@@ -71,5 +71,10 @@
 
     li.active:before {
         box-shadow: rgba(93, 191, 78, 0.7) 0 0 3px 2px
+    }
+
+    li.closed:before, li.closed:after {
+        background: #d22a00;
+        color: white;
     }
 }

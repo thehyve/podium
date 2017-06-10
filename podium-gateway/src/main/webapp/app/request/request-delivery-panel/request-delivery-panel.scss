@@ -1,0 +1,50 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
+.delivery-overview {
+    td {
+        vertical-align: middle;
+
+        .material-icons {
+            margin: 10px 10px 14px 5px;
+        }
+    }
+
+    tr {
+        font-weight: 500;
+
+        &.delivery-received {
+            .status-cell {
+                color: rgba(92, 184, 92, 1);
+            }
+        }
+
+        &.delivery-released {
+            .status-cell {
+                color: rgba(2, 117, 216, 1);
+            }
+        }
+
+        &.delivery-cancelled {
+            .status-cell {
+                color: rgba(204, 48, 44, 1);
+            }
+        }
+    }
+
+    .btn {
+        font-weight: 600;
+    }
+
+    .btn-group {
+        display: flex;
+    }
+}
+

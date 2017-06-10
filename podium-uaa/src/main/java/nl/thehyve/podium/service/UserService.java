@@ -8,19 +8,19 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.config.UaaProperties;
 import nl.thehyve.podium.domain.Role;
+import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.security.SecurityService;
-import nl.thehyve.podium.config.UaaProperties;
-import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.VerificationKeyExpired;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
-import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.search.SearchUser;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
@@ -38,6 +38,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,6 +79,9 @@ public class UserService {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
+    @Autowired
+    private EntityManager entityManager;
+
     /**
      * Activate a user by a given key.
      * If the activation key has expired return null
@@ -109,6 +113,11 @@ public class UserService {
             userSearchRepository.save(searchUser);
 
             save(user);
+
+            // Notify BBMRI admin
+            Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+            mailService.sendUserRegisteredEmail(administrators, user);
+
             log.debug("Activated user: {}", user);
         }
 
@@ -151,6 +160,10 @@ public class UserService {
                     SearchUser searchUser = userMapper.userToSearchUser(user);
                     userSearchRepository.save(searchUser);
                     log.debug("Activated user: {}", user);
+
+                    // Notify BBMRI admin
+                    Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+                    mailService.sendUserRegisteredEmail(administrators, user);
                 }
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
@@ -161,34 +174,11 @@ public class UserService {
 
     public Optional<User> requestPasswordReset(String mail) {
         return userRepository.findOneByDeletedIsFalseAndEmail(mail)
-            .filter(User::isActivated)
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
                 user.setResetDate(ZonedDateTime.now());
                 return user;
             });
-    }
-
-    /**
-     * Copy user properties, except login, password, email, activated.
-     * @param source
-     * @param target
-     */
-    private void copyProperties(UserRepresentation source, User target) {
-        target.setFirstName(source.getFirstName());
-        target.setLastName(source.getLastName());
-        target.setLangKey(source.getLangKey());
-        // update language key if set in source, or set default if not set in target.
-        if (source.getLangKey() != null) {
-            target.setLangKey(source.getLangKey());
-        } else if (target.getLangKey() == null) {
-            target.setLangKey("en"); // default language
-        }
-        target.setTelephone(source.getTelephone());
-        target.setInstitute(source.getInstitute());
-        target.setDepartment(source.getDepartment());
-        target.setJobTitle(source.getJobTitle());
-        target.setSpecialism(source.getSpecialism());
     }
 
     /**
@@ -232,7 +222,7 @@ public class UserService {
         newUser.setEmail(managedUserVM.getEmail());
         String encryptedPassword = passwordEncoder.encode(managedUserVM.getPassword());
         newUser.setPassword(encryptedPassword);
-        copyProperties(managedUserVM, newUser);
+        newUser = userMapper.safeUpdateUserWithUserDTO(managedUserVM, newUser);
         // new user is not active
         newUser.setEmailVerified(false);
         newUser.setAdminVerified(false);
@@ -255,7 +245,7 @@ public class UserService {
         User user = new User();
         user.setLogin(userData.getLogin());
         user.setEmail(userData.getEmail());
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         if (userData.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
             userData.getAuthorities().forEach( authority -> {
@@ -294,7 +284,7 @@ public class UserService {
         }
         User user = userOptional.get();
         checkForExistingLoginAndEmail(userData, user.getId());
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         user = save(user);
 
         SearchUser searchUser = userMapper.userToSearchUser(user);
@@ -327,7 +317,7 @@ public class UserService {
             }
         });
 
-        copyProperties(userData, user);
+        user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         save(user);
         log.debug("Changed Information for User: {}", user);
     }
@@ -371,6 +361,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneByDeletedIsFalseAndLogin(login).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
@@ -379,14 +370,21 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserByUuid(UUID uuid) {
         return userRepository.findOneByDeletedIsFalseAndUuid(uuid).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
     }
 
     @Transactional(readOnly = true)
+    public List<User> getUsersByAuthority(String authority) {
+        return userRepository.findAllByDeletedIsFalseAndAuthority(authority);
+    }
+
+    @Transactional(readOnly = true)
     public User getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
+        entityManager.refresh(user);
         user.getAuthorities().size(); // eagerly load the association
         return user;
     }
@@ -399,18 +397,22 @@ public class UserService {
         User user = null;
         if (optionalUser.isPresent()) {
             user = optionalUser.get();
+            entityManager.refresh(user);
             user.getAuthorities().size(); // eagerly load the association
         }
         return user;
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {
         return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
     }
 
+    @Transactional(readOnly = true)
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
     }

@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { FormControl } from '@angular/forms';
 import { EmailValidatorDirective } from '../../../../../../main/webapp/app/shared/validators/email-validator.directive';
 

@@ -10,7 +10,7 @@
 
 <div class="row" *ngIf="organisation">
     <div class="container-fluid">
-        <div class="col-md-6 offset-md-3 card-container">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-8 offset-xl-2 card-container">
             <h2>
                 <span jhiTranslate="podiumGatewayApp.organisation.detail.title">Organisation</span>
             </h2>
@@ -98,17 +98,17 @@
 
                             <div class="action-footer-container">
                                 <button type="button" class="btn btn-default" routerLink="../">
-                                    <span class="fa fa-ban"></span>&nbsp;
+                                    <span class="material-icons">cancel</span>&nbsp;
                                     <span jhiTranslate="entity.action.cancel">Cancel</span>
                                 </button>
                                 <button type="submit" [disabled]="editForm.form.invalid || isSaving"
                                         *ngIf="!organisation.uuid" class="btn btn-primary float-xs-right">
-                                    <span class="fa fa-save"></span>&nbsp;
+                                    <span class="material-icons">save</span>&nbsp;
                                     <span jhiTranslate="entity.action.create">Create</span>
                                 </button>
                                 <button type="submit" [disabled]="editForm.form.invalid || isSaving"
                                         *ngIf="organisation.uuid" class="btn btn-primary float-xs-right">
-                                    <span class="fa fa-save"></span>&nbsp;
+                                    <span class="material-icons">save</span>&nbsp;
                                     <span jhiTranslate="entity.action.save">Save</span>
                                 </button>
                             </div>

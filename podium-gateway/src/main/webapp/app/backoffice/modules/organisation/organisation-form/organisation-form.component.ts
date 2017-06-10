@@ -7,10 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { EventManager, JhiLanguageService, AlertService } from 'ng-jhipster';
-
 import { Organisation } from '../organisation.model';
 import { OrganisationService } from '../organisation.service';
 import { Principal } from '../../../../shared';

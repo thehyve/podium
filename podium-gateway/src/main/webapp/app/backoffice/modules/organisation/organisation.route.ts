@@ -7,16 +7,12 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-
 import { UserRouteAccessService } from '../../../shared';
 import { PaginationUtil } from 'ng-jhipster';
-
 import { OrganisationComponent } from './organisation.component';
 import { OrganisationDetailComponent } from './organisation-detail.component';
-import { OrganisationPopupComponent } from './organisation-dialog.component';
 import { OrganisationDeletePopupComponent } from './organisation-delete-dialog.component';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 
@@ -74,7 +70,7 @@ export const organisationRoute: Routes = [
         path: 'detail/:uuid',
         component: OrganisationDetailComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'podiumGatewayApp.organisation.home.title',
             breadcrumb: 'organisation details'
         },

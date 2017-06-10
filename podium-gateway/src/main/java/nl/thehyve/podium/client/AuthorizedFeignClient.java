@@ -4,7 +4,11 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.cloud.netflix.feign.FeignClientsConfiguration;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -22,6 +26,7 @@ public @interface AuthorizedFeignClient {
      * make up the client, for instance {@link feign.codec.Decoder},
      * {@link feign.codec.Encoder}, {@link feign.Contract}.
      *
+     * @return the configuration classes
      * @see FeignClientsConfiguration for the defaults
      */
     @AliasFor(annotation = FeignClient.class, attribute = "configuration")
@@ -29,23 +34,27 @@ public @interface AuthorizedFeignClient {
 
     /**
      * An absolute URL or resolvable hostname (the protocol is optional).
+     * @return the url
      */
     String url() default "";
 
     /**
      * Whether 404s should be decoded instead of throwing FeignExceptions.
+     * @return whether 404s should be decoded
      */
     boolean decode404() default false;
 
     /**
      * Fallback class for the specified Feign client interface. The fallback class must
      * implement the interface annotated by this annotation and be a valid Spring bean.
+     * @return the fallback class
      */
     Class<?> fallback() default void.class;
 
     /**
      * Path prefix to be used by all method-level mappings. Can be used with or without
      * <code>@RibbonClient</code>.
+     * @return the path prefix
      */
     String path() default "";
 }

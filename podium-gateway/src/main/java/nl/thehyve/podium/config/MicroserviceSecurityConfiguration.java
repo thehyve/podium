@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.security.CustomAccessTokenConverter;
 import nl.thehyve.podium.security.CustomAuthenticationProvider;
@@ -32,7 +33,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
 import java.util.Map;
 
 @Configuration
@@ -43,16 +43,13 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
 
     private final Logger log = LoggerFactory.getLogger(MicroserviceSecurityConfiguration.class);
 
-    private final PodiumProperties podiumProperties;
+    @Autowired
+    private PodiumProperties podiumProperties;
 
-    private final DiscoveryClient discoveryClient;
+    @Autowired
+    private DiscoveryClient discoveryClient;
 
-    @Inject
-    public MicroserviceSecurityConfiguration(PodiumProperties podiumProperties,
-            DiscoveryClient discoveryClient) {
-
-        this.podiumProperties = podiumProperties;
-        this.discoveryClient = discoveryClient;
+    public MicroserviceSecurityConfiguration() {
     }
 
     @Bean

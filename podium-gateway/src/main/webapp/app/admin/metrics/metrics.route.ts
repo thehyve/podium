@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { PdmMetricsMonitoringComponent } from './metrics.component';
 
 export const metricsRoute: Route = {

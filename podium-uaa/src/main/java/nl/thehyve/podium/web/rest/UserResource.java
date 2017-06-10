@@ -7,25 +7,25 @@
 
 package nl.thehyve.podium.web.rest;
 
+import com.codahale.metrics.annotation.Timed;
+import io.swagger.annotations.ApiParam;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.config.Constants;
-import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
+import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.MailService;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
+import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +34,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * REST controller for managing users.
@@ -186,7 +196,7 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK) and with body the "login" user, or with status 404 (Not Found)
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @GetMapping("/users/{login:" + PodiumConstants.LOGIN_REGEX + "}")
     @Timed
     public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
@@ -222,7 +232,7 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @DeleteMapping("/users/{login:" + PodiumConstants.LOGIN_REGEX + "}")
     @Timed
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);

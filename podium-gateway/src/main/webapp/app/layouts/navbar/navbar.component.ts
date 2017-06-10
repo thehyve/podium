@@ -7,15 +7,12 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
 import { ProfileService } from '../profiles/profile.service';
-import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from '../../shared';
-
+import { JhiLanguageHelper, Principal, LoginService } from '../../shared';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
 
 @Component({

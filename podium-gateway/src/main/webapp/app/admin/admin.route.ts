@@ -7,19 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Routes } from '@angular/router';
-
-import {
-    auditsRoute,
-    configurationRoute,
-    docsRoute,
-    healthRoute,
-    logsRoute,
-    metricsRoute,
-    gatewayRoute
-} from './';
-
+import { auditsRoute, configurationRoute, docsRoute, healthRoute, logsRoute, metricsRoute, gatewayRoute } from './';
 import { UserRouteAccessService } from '../shared';
 import { elasticsearchRoute } from './elasticsearch/elasticsearch.route';
 

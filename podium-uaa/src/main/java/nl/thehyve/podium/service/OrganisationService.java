@@ -7,29 +7,32 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Authority;
-import nl.thehyve.podium.domain.Role;
-import nl.thehyve.podium.common.exceptions.ResourceNotFound;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.domain.Organisation;
+import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
-import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Organisation.
@@ -146,16 +149,31 @@ public class OrganisationService {
     }
 
     /**
-     * Get active organisations by request type
+     * Get active organisations.
      *
      * @param pageable the pagination information
      * @return list of entities
      */
     @Transactional(readOnly = true)
     public Page<OrganisationDTO> findAllAvailable(Pageable pageable) {
-        log.debug("Request to get active organisations by request type(s)");
-        Page<Organisation> result  = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
-        return  result.map(organisationMapper::organisationToOrganisationDTO);
+        log.debug("Request to get all active organisations");
+        Page<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
+        return result.map(organisationMapper::organisationToOrganisationDTO);
+    }
+
+    /**
+     * Get active organisations by their UUIDs.
+     *
+     * @param organisationUuids the UUIDs of the organisations to fetch.
+     * @param pageable the pagination information
+     * @return list of entities
+     */
+    @Transactional(readOnly = true)
+    public Page<OrganisationDTO> findAvailableOrganisationsByUuids(Collection<UUID> organisationUuids, Pageable pageable) {
+        log.debug("Request to get active organisations by their UUIDs");
+        Page<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalseAndUuidIn(
+            organisationUuids, pageable);
+        return result.map(organisationMapper::organisationToOrganisationDTO);
     }
 
     /**
@@ -211,20 +229,20 @@ public class OrganisationService {
     /**
      * (De-)activate the organisation
      *
-     *  @param id The id of the organisation to be activated.
+     *  @param uuid The uuid of the organisation to be activated.
      *  @param activated Boolean indicating if the organisation is to be activated or not.
      *
      *  @return OrganisationDTO of the updated Organisation
      */
-    public OrganisationDTO activation(Long id, boolean activated) {
-        Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
+    public OrganisationDTO activation(UUID uuid, boolean activated) {
+        Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
 
         if (organisation == null) {
-            throw new ResourceNotFound(String.format("Organisation not found with id: %d", id));
+            throw new ResourceNotFound(String.format("Organisation not found with uuid: %s", uuid));
         }
 
         organisation.setActivated(activated);
-        save(organisation);
+        organisation = save(organisation);
         return organisationMapper.organisationToOrganisationDTO(organisation);
     }
 

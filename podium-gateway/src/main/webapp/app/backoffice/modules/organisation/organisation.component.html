@@ -13,7 +13,7 @@
         <button class="btn btn-primary float-xs-right create-organisation"
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                 [routerLink]="['./new']">
-            <span class="fa fa-plus"></span>
+            <span class="material-icons">add_circle_outline</span>
             <span class="hidden-sm-down" jhiTranslate="podiumGatewayApp.organisation.home.createLabel">
             Create new Organisation
             </span>
@@ -24,21 +24,21 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-8 no-padding-right">
-                    <div class="input-group pull-right">
-                        <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
-                               name="currentSearch"
-                               placeholder="{{ 'podiumGatewayApp.organisation.home.search' | translate }}">
-                        <span class="input-group-btn width-min">
-                            <button class="btn btn-info" (click)="search(currentSearch)">
-                                <span class="fa fa-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" *ngIf="currentSearch">
-                            <button class="btn btn-info" (click)="clear()">
-                                <span class="fa fa-trash-o"></span>
-                            </button>
-                        </span>
-                    </div>
+                <div class="input-group pull-right">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
+                           name="currentSearch"
+                           placeholder="{{ 'podiumGatewayApp.organisation.home.search' | translate }}">
+                    <span class="input-group-btn width-min">
+                        <button class="btn btn-info" (click)="search(currentSearch)">
+                            <span class="material-icons">search</span>
+                        </button>
+                    </span>
+                    <span class="input-group-btn width-min" *ngIf="currentSearch">
+                        <button class="btn btn-info" (click)="clear()">
+                            <span class="material-icons">clear</span>
+                        </button>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -47,10 +47,14 @@
         <table class="table table-striped">
             <thead>
 				<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-					<th jhiSortBy="shortName"><span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
-						<span class="fa fa-sort"></span></th>
-					<th jhiSortBy="name"><span jhiTranslate="podiumGatewayApp.organisation.name">Name</span> <span
-						class="fa fa-sort"></span></th>
+					<th jhiSortBy="shortName">
+                        <span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
+					<th jhiSortBy="name">
+                        <span jhiTranslate="podiumGatewayApp.organisation.name">Name</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
 					<th></th>
 				</tr>
             </thead>
@@ -62,21 +66,21 @@
                     </div>
                 </td>
             </tr>
-            <tr *ngFor="let organisation of organisations ;trackBy: trackUuid">
-                <td><a [routerLink]="['./detail', organisation.uuid ]">{{organisation.shortName}}</a></td>
-                <td>{{organisation.name}}</td>
+            <tr *ngFor="let organisation of organisations; trackBy: trackUuid">
+                <td class="test-shortName">{{organisation.shortName}}</td>
+                <td class="test-name">{{organisation.name}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['./detail', organisation.uuid ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <span class="material-icons">assignment</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['./edit', organisation.uuid ]"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <span class="material-icons">edit</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="button" class="btn btn-sm"
@@ -97,7 +101,7 @@
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ organisation.uuid + '/delete'} }]"
                                 replaceUrl="true"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <span class="material-icons">remove_circle_outline</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

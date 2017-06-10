@@ -16,7 +16,9 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.service.*;
+import nl.thehyve.podium.service.OrganisationService;
+import nl.thehyve.podium.service.TestService;
+import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.representation.TestRoleRepresentation;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
@@ -25,7 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -105,6 +111,7 @@ public class TestResource {
         organisation.setName(organisationData.getName());
         organisation.setShortName(organisationData.getShortName());
         organisation.setActivated(organisationData.getActivated());
+        organisation.setRequestTypes(organisationData.getRequestTypes());
         organisation = organisationService.save(organisation);
 
         OrganisationDTO result = new OrganisationDTO();
@@ -113,6 +120,7 @@ public class TestResource {
         result.setName(organisation.getName());
         result.setShortName(organisation.getShortName());
         result.setActivated(organisation.isActivated());
+        result.setRequestTypes(organisation.getRequestTypes());
         return ResponseEntity.created(new URI("/api/organisations/" + organisation.getId()))
             .body(result);
     }
@@ -123,6 +131,7 @@ public class TestResource {
      * (if applicable) the organisation UUID.
      *
      * @param roleData the role identifiers and the set of user uuids.
+     * @return status code {@link HttpStatus#CREATED}.
      */
     @PostMapping("roles/assign")
     @Timed

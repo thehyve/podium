@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Route } from '@angular/router';
-
 import { UserRouteAccessService } from '../../shared';
 import { VerifyComponent } from './verify.component';
 

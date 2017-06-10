@@ -7,12 +7,12 @@
 
 package nl.thehyve.podium.service;
 
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.domain.User;
-
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
-import javax.inject.Inject;
 import javax.mail.internet.MimeMessage;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -40,16 +40,16 @@ public class MailService {
 
     private static final String BASE_URL = "baseUrl";
 
-    @Inject
+    @Autowired
     private PodiumProperties podiumProperties;
 
-    @Inject
+    @Autowired
     private JavaMailSenderImpl javaMailSender;
 
-    @Inject
+    @Autowired
     private MessageSource messageSource;
 
-    @Inject
+    @Autowired
     private SpringTemplateEngine templateEngine;
 
     @Async
@@ -94,6 +94,21 @@ public class MailService {
         String content = templateEngine.process("creationEmail", context);
         String subject = messageSource.getMessage("email.verification.title", null, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
+    public void sendUserRegisteredEmail(Collection<User> administrators, User registeredUser) {
+        log.debug("Notify BBRMI administrators of registered user: '{}'", registeredUser.getEmail());
+        for (User user: administrators) {
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable("registeredUser", registeredUser);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            String content = templateEngine.process("userRegistered", context);
+            String subject = messageSource.getMessage("email.userRegistered.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
     }
 
     @Async

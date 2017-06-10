@@ -4,16 +4,14 @@
  * you may not use this file except in compliance with the License.
  * See the file LICENSE in the root of this repository.
  */
-
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-
-import {RequestService} from '../../shared/request/request.service';
-import {RequestBase} from '../../shared/request/request-base';
-import {MessageService} from '../../shared/message/message.service';
-import {Message} from '../../shared/message/message.model';
+import { RequestService } from '../../shared/request/request.service';
+import { RequestBase } from '../../shared/request/request-base';
+import { MessageService } from '../../shared/message/message.service';
+import { Message } from '../../shared/message/message.model';
 
 @Component({
     selector: 'request-form-submit-dialog',
@@ -41,7 +39,9 @@ export class RequestFormSubmitDialogComponent {
         let submittedTitle = `The request has been successfully submitted.`;
         let submittedMessage = `<ul>`;
         for (let req of requests) {
-            submittedMessage += `<li>Request ${req.requestDetail.title} for organisation ${req.organisations}.</li>`;
+            for (let organisation of req.organisations) {
+                submittedMessage += `<li>Request for organisation ${organisation.name}.</li>`;
+            }
         }
         submittedMessage += `</ul>`;
         this.messageService.store(new Message(submittedTitle, submittedMessage));

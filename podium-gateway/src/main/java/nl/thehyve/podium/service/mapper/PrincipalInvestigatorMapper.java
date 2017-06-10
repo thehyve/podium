@@ -8,27 +8,37 @@
 package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.PrincipalInvestigator;
-import nl.thehyve.podium.service.representation.PrincipalInvestigatorRepresentation;
+import nl.thehyve.podium.common.service.dto.PrincipalInvestigatorRepresentation;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-import org.mapstruct.*;
 import java.util.List;
 
 /**
- * Mapper for the entity PrincipalInvestigator and its DTO PrincipalInvestigatorDTO.
+ * Mapper for the entity PrincipalInvestigator and its DTO PrincipalInvestigatorRepresentation.
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface PrincipalInvestigatorMapper {
 
     PrincipalInvestigatorRepresentation principalInvestigatorToPrincipalInvestigatorDTO(PrincipalInvestigator principalInvestigator);
 
-    List<PrincipalInvestigatorRepresentation> principalInvestigatorsToPrincipalInvestigatorDTOs(List<PrincipalInvestigator> principalInvestigators);
+    List<PrincipalInvestigatorRepresentation> principalInvestigatorsToPrincipalInvestigatorDTOs(
+        List<PrincipalInvestigator> principalInvestigators
+    );
 
-    PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigatorDTO);
+    PrincipalInvestigator principalInvestigatorDTOToPrincipalInvestigator(
+        PrincipalInvestigatorRepresentation principalInvestigatorDTO
+    );
 
-    List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs);
+    List<PrincipalInvestigator> principalInvestigatorDTOsToPrincipalInvestigators(
+        List<PrincipalInvestigatorRepresentation> principalInvestigatorDTOs
+    );
 
-    PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation
-                                                                                    principalInvestigatorRepresentation, @MappingTarget PrincipalInvestigator principalInvestigator);
+    PrincipalInvestigator updatePrincipalInvestigatorDTOToPrincipalInvestigator(
+        PrincipalInvestigatorRepresentation principalInvestigatorRepresentation,
+        @MappingTarget PrincipalInvestigator principalInvestigator
+    );
 
     @Mapping(target = "id", ignore = true)
     PrincipalInvestigator clone(PrincipalInvestigator principalInvestigator);

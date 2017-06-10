@@ -7,9 +7,8 @@
 
 package nl.thehyve.podium.client;
 
-import io.github.jhipster.security.uaa.LoadBalancedResourceDetails;
-
 import feign.RequestInterceptor;
+import io.github.jhipster.security.uaa.LoadBalancedResourceDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequest
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 
 import javax.enterprise.context.RequestScoped;

@@ -11,7 +11,7 @@
 package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.RequestReviewProcess;
-import nl.thehyve.podium.service.representation.RequestReviewRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestReviewRepresentation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

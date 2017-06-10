@@ -7,8 +7,9 @@
 
 package nl.thehyve.podium.web.rest;
 
-import nl.thehyve.podium.config.DefaultProfileUtil;
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.security.annotations.Public;
+import nl.thehyve.podium.common.config.DefaultProfileUtil;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ public class ProfileInfoResource {
     }
 
     @GetMapping("/profile-info")
+    @Public
     public ProfileInfoVM getActiveProfiles() {
         String[] activeProfiles = DefaultProfileUtil.getActiveProfiles(env);
         return new ProfileInfoVM(activeProfiles, getRibbonEnv(activeProfiles));

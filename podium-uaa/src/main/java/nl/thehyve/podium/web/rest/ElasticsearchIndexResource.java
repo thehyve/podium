@@ -17,7 +17,7 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
-import nl.thehyve.podium.security.SecurityService;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.ElasticsearchIndexService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -27,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;

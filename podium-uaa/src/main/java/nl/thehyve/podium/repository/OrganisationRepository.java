@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -33,5 +34,7 @@ public interface OrganisationRepository extends JpaRepository<Organisation,Long>
     Organisation findByShortNameAndDeletedFalse(String shortName);
 
     Page<Organisation> findAllByActivatedTrueAndDeletedFalse(Pageable pageable);
+
+    Page<Organisation> findAllByActivatedTrueAndDeletedFalseAndUuidIn(Collection<UUID> organisationUuids, Pageable pageable);
 
 }

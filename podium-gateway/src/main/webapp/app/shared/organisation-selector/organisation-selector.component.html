@@ -7,7 +7,7 @@
   ~ See the file LICENSE in the root of this repository.
   ~
   -->
-<select id="organisations" name="organisations" class="form-control" [(ngModel)]="selectedOrganisations" (change)
+<select id="organisations" name="organisations" class="form-control" [(ngModel)]="selectedOrganisationUuids" (change)
     ="onChange()" required multiple>
     <option *ngFor="let organisationOption of organisationOptions" [value]="organisationOption.uuid">
         {{organisationOption.name}}

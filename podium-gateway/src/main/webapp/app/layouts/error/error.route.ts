@@ -7,9 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { Routes } from '@angular/router';
-
 import { UserRouteAccessService } from '../../shared';
 import { ErrorComponent } from './error.component';
 

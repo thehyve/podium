@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.config;
 
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.CustomUserAuthenticationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import java.security.KeyPair;
 
@@ -42,7 +42,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
     @EnableResourceServer
     public static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-        @Inject
+        @Autowired
         TokenStore tokenStore;
 
         @Override
@@ -81,7 +81,7 @@ public class UaaConfiguration extends AuthorizationServerConfigurerAdapter {
         }
     }
 
-    @Inject
+    @Autowired
     private PodiumProperties podiumProperties;
 
     @Override

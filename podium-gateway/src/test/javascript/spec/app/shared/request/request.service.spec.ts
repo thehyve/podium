@@ -7,7 +7,6 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { async, inject, TestBed } from '@angular/core/testing';
 import { BaseRequestOptions, Http, HttpModule, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
@@ -46,6 +45,11 @@ describe('RequestService (Mocked)', () => {
             "status" : "Review",
         } ];
 
+        let args = {
+            page: 0,
+            size: 10,
+        };
+
         it('should parse response', async(inject(
             [RequestService, MockBackend], (service, mockBackend) => {
 
@@ -53,10 +57,10 @@ describe('RequestService (Mocked)', () => {
                     conn.mockRespond(new Response(new ResponseOptions({ body: JSON.stringify(mockResponse) })));
                 });
 
-                const result = service.findSubmittedRequests();
+                const result = service.findMyReviewRequests(args);
 
                 result.subscribe(res => {
-                    expect(res).toEqual([{
+                    expect(res.json()).toEqual([{
                         "id" : 999,
                         "uuid" : "xxx",
                         "requester" : "xxx",

@@ -8,15 +8,16 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.AuthorityRepository;
-import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.service.mapper.UserMapper;
+import nl.thehyve.podium.web.rest.vm.KeyAndPasswordVM;
 import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +34,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -78,7 +79,11 @@ public class AccountResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendVerificationEmail((User) anyObject());
+        doNothing().when(mockMailService).sendVerificationEmail(any(User.class));
+        doNothing().when(mockMailService).sendPasswordResetMail(any(User.class));
+        doNothing().when(mockMailService).sendUserRegisteredEmail(anyCollectionOf(User.class), any(User.class));
+
+        ReflectionTestUtils.setField(userService, "mailService", mockMailService);
 
         AccountResource accountResource = new AccountResource();
         ReflectionTestUtils.setField(accountResource, "userService", userService);
@@ -183,6 +188,10 @@ public class AccountResourceIntTest {
 
         Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isTrue();
+
+        Thread.sleep(1000);
+
+        verify(mockMailService).sendVerificationEmail(any(User.class));
     }
 
     @Test
@@ -415,6 +424,10 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
+        Thread.sleep(1000);
+        verify(mockMailService).sendVerificationEmail(any(User.class));
+        reset(mockMailService);
+
         userService.getUserWithAuthoritiesByLogin("badguy")
             .map(user -> {
                 assertThat(user.getActivationKey() != null);
@@ -428,6 +441,64 @@ public class AccountResourceIntTest {
                 return user;
             });
 
+        Thread.sleep(1000);
+        verify(mockMailService).sendUserRegisteredEmail(anyCollectionOf(User.class), any(User.class));
+    }
+
+    @Test
+    @Transactional
+    public void testVerifyUserByResetLink() throws Exception {
+        ManagedUserVM validUser = new ManagedUserVM();
+        setMandatoryFields(validUser);
+        validUser.setId(null);
+        validUser.setLogin("badguy");
+        validUser.setPassword(VALID_PASSWORD);
+        validUser.setFirstName("Bad");
+        validUser.setLastName("Guy");
+        validUser.setEmail("badguy@example.com");
+        validUser.setLangKey("en");
+        validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.PODIUM_ADMIN)));
+
+        restMvc.perform(
+            post("/api/register")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(validUser)))
+            .andExpect(status().isCreated());
+
+        Thread.sleep(1000);
+        verify(mockMailService).sendVerificationEmail(any(User.class));
+        reset(mockMailService);
+
+        restMvc.perform(
+            post("/api/account/reset_password/init")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content("badguy@example.com"))
+            .andExpect(status().isOk());
+
+        Thread.sleep(1000);
+        verify(mockMailService).sendPasswordResetMail(any(User.class));
+        reset(mockMailService);
+
+        userService.getUserWithAuthoritiesByLogin("badguy")
+            .map(user -> {
+                assertThat(user.getResetKey() != null);
+
+                try {
+                    KeyAndPasswordVM keyAndPasswordVM = new KeyAndPasswordVM();
+                    keyAndPasswordVM.setKey(user.getResetKey());
+                    keyAndPasswordVM.setNewPassword(VALID_PASSWORD);
+                    restMvc.perform(
+                        post("/api/account/reset_password/finish")
+                            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                            .content(TestUtil.convertObjectToJsonBytes(keyAndPasswordVM)))
+                        .andExpect(status().isOk());
+                } catch (Exception ex) { }
+
+                return user;
+            });
+
+        Thread.sleep(1000);
+        verify(mockMailService).sendUserRegisteredEmail(anyCollectionOf(User.class), any(User.class));
     }
 
     @Test

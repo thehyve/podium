@@ -7,12 +7,14 @@
 
 package nl.thehyve.podium.config.apidoc;
 
-import nl.thehyve.podium.common.config.Constants;
-import nl.thehyve.podium.config.PodiumProperties;
-
+import nl.thehyve.podium.common.config.PodiumConstants;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import springfox.documentation.service.ApiInfo;
@@ -33,7 +35,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @Configuration
 @EnableSwagger2
 @Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)
-@Profile(Constants.SPRING_PROFILE_SWAGGER)
+@Profile(PodiumConstants.SPRING_PROFILE_SWAGGER)
 public class SwaggerConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(SwaggerConfiguration.class);

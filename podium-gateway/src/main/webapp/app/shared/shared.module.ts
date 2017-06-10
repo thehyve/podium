@@ -7,13 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
-
 import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { SessionStorageService } from 'ng2-webstorage';
-
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
@@ -39,6 +36,9 @@ import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
+import { RequestAccessService } from './request/request-access.service';
+import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
+import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 
 @NgModule({
     imports: [
@@ -49,12 +49,13 @@ import { OrganisationSelectorComponent } from './organisation-selector/organisat
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        RequestReviewPanelComponent,
         EmailValidatorDirective,
+        PodiumEventMessageComponent,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
         HasAnyAuthorityDirective,
-        OrganisationSelectorComponent,
         EnumKeysPipe
     ],
     providers: [],
@@ -65,6 +66,8 @@ import { OrganisationSelectorComponent } from './organisation-selector/organisat
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        RequestReviewPanelComponent,
+        PodiumEventMessageComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
@@ -95,6 +98,7 @@ export class PodiumGatewaySharedModule {
                 UserService,
                 AttachmentService,
                 RequestService,
+                RequestAccessService,
                 DatePipe
             ]
         };

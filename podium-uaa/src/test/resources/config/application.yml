@@ -22,6 +22,8 @@ spring:
         name: podiumUaa
     jackson:
         serialization.write_dates_as_timestamps: false
+    cache:
+        type: none
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaa
@@ -50,6 +52,7 @@ spring:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+                cluster.routing.allocation.disk.watermark.high: 99%
     mail:
         host: localhost
     mvc:

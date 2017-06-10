@@ -10,18 +10,25 @@ package nl.thehyve.podium.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
-import nl.thehyve.podium.repository.RoleRepository;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -168,16 +175,9 @@ public class Role implements Serializable, IdentifiableOrganisation {
     public String toString() {
         return "Role{" +
             "id=" + id +
+            ", users=" + users +
+            ", organisation=" + organisation +
+            ", authority=" + authority +
             '}';
-    }
-
-    // FIXME: Replace with mapper
-    public RoleRepresentation toRepresentation() {
-        RoleRepresentation role = new RoleRepresentation();
-        role.setId(this.getId());
-        role.setOrganisation(this.getOrganisation() != null ? this.getOrganisation().getUuid() : null);
-        role.setAuthority(this.getAuthority().getName());
-        role.setUsers(this.getUsers().stream().map(User::getUuid).collect(Collectors.toSet()));
-        return role;
     }
 }

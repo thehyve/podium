@@ -7,15 +7,22 @@
 
 package nl.thehyve.podium.domain;
 
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -49,7 +56,7 @@ public class RequestReviewProcess extends AbstractAuditingEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "decision", nullable = false)
-    private DecisionOutcome decision = DecisionOutcome.None;
+    private ReviewProcessOutcome decision = ReviewProcessOutcome.None;
 
     public Long getId() {
         return id;
@@ -75,11 +82,11 @@ public class RequestReviewProcess extends AbstractAuditingEntity {
         this.status = status;
     }
 
-    public DecisionOutcome getDecision() {
+    public ReviewProcessOutcome getDecision() {
         return decision;
     }
 
-    public void setDecision(DecisionOutcome decision) {
+    public void setDecision(ReviewProcessOutcome decision) {
         this.decision = decision;
     }
 
