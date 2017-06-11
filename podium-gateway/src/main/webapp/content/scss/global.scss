@@ -435,3 +435,118 @@ typeahead-container {
 .request-action-wrapper {
     margin-top: 50px;
 }
+
+#wrapper {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+
+    .sidebar-toggle-btn {
+        margin-left: 0;
+    }
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+
+    .sidebar-toggle-btn {
+        margin-left: -70px;
+
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+}
+
+#sidebar-wrapper {
+    position: absolute;
+    left: 250px;
+    width: 0;
+    height: calc(100% - 102px);
+    margin-left: -250px;
+    overflow-y: auto;
+    background: transparent;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+
+    border-right: 1px solid rgba(0, 0, 0, 0.098);
+    overflow-x: hidden;
+}
+
+#wrapper .sidebar-toggle-btn {
+    border-radius: 5px;
+    height: 30px;
+    width: 30px;
+    position: relative;
+    background-color: rgb(1, 104, 150);
+    user-select: none;
+
+    .material-icons {
+        line-height: 32px;
+        font-size: 28px;
+        font-weight: 600;
+        color: rgb(250, 250, 250);
+    }
+
+    &:hover {
+        cursor: pointer;
+        box-shadow: 0 0 2px 1px rgb(29, 90, 130);
+    }
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px;
+
+    h2 {
+        margin-top: -30px;
+        margin-left: 45px!important;
+    }
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+
+    h2 {
+        margin-left: 0!important;
+    }
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 0;
+    }
+
+    #wrapper.toggled {
+        padding-left: 250px;
+    }
+
+    #sidebar-wrapper {
+        width: 0;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 250px;
+    }
+
+    #page-content-wrapper {
+        padding: 20px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}

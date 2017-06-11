@@ -9,54 +9,24 @@
   -->
 
 <!-- Request status sidebar -->
-<div>
-    <div class="status-sidebar-container">
-        <pdm-request-status-sidebar></pdm-request-status-sidebar>
+<div id="wrapper" [ngClass]="{'toggled': toggledSidebar}">
+    <div id="sidebar-wrapper">
+        <pdm-request-status-sidebar
+            [userGroupAuthority]="userGroupAuthority"
+            [pageParams]="getPageParams.bind(this)"
+        ></pdm-request-status-sidebar>
     </div>
-    <div class="request-overview-container content-wrapper">
+    <div id="page-content-wrapper">
 
-        <h2><span jhiTranslate="{{pageHeader}}">My requests</span>
+        <div class="sidebar-toggle-btn"
+             tooltip="Toggle sidebar"
+             placement="right"
+             (click)="toggleSidebar()">
+            <span class="material-icons">keyboard_arrow_right</span>
+        </div>
 
-            <div class="btn-group flex-btn-group-container" *ngIf="isResearcherRoute()">
-                <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadMyReviewRequests()" >
-                    <i class="material-icons">assignment_ind</i>
-                    <span class="hidden-sm-down">
-                Submitted
-            </span>
-                </button>
-                <button class="btn btn-info float-xs-right create-organisation active" (click)="loadMyDeliveryRequests()" >
-                    <i class="material-icons">local_shipping</i>
-                    <span class="hidden-sm-down">
-                Delivery
-            </span>
-                </button>
-                <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
-                    <i class="material-icons">drafts</i>
-                    <span class="hidden-sm-down">
-                Drafts
-            </span>
-                </button>
-                <button class="btn btn-primary float-xs-right create-organisation" (click)="createNewRequest()">
-                    <i class="material-icons">add_circle_outline</i>
-                    <span class="hidden-sm-down">
-            Create new request
-            </span>
-                </button>
-            </div>
-            <div class="btn-group flex-btn-group-container" *ngIf="isCoordinatorRoute()">
-                <button class="btn btn-warning float-xs-right create-organisation active" (click)="loadCoordinatorReviewRequests()" >
-                    <i class="material-icons">assignment_ind</i>
-                    <span class="hidden-sm-down">
-                Submitted
-            </span>
-                </button>
-                <button class="btn btn-info float-xs-right create-organisation active" (click)="loadCoordinatorDeliveryRequests()" >
-                    <i class="material-icons">local_shipping</i>
-                    <span class="hidden-sm-down">
-                Delivery
-            </span>
-                </button>
-            </div>
+        <h2>
+            <span jhiTranslate="{{pageHeader}}">My requests</span>
         </h2>
 
         <jhi-alert></jhi-alert>
@@ -65,7 +35,7 @@
         <div class="table-responsive" *ngIf="availableRequests">
             <table class="table table-striped">
                 <thead>
-                    <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+                    <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transitionRequests.bind(this)">
                         <th jhiSortBy="id">
                             <span>Request id</span>
                             <span class="fa fa-sort"></span>
@@ -90,10 +60,6 @@
                         </th>
                         <th jhiSortBy="createdDate">
                             <span>Date created</span>
-                            <span class="fa fa-sort"></span>
-                        </th>
-                        <th jhiSortBy="lastModifiedDate">
-                            <span>Last modified</span>
                             <span class="fa fa-sort"></span>
                         </th>
                         <th></th>
@@ -127,10 +93,7 @@
                             {{request.requestDetail.principalInvestigator.name || '-'}}
                         </td>
                         <td>
-                            {{request.createdDate | date:'short' }}
-                        </td>
-                        <td>
-                            {{request.lastModifiedDate | date:'short' }}
+                            {{request.createdDate | date:'shortDate' }}
                         </td>
                         <td class="text-xs-right">
                             <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
@@ -162,7 +125,7 @@
             </table>
             <div class="text-xs-center" *ngIf="availableRequests && availableRequests.length">
                 <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page, loadRequests.bind(this))"></ngb-pagination>
             </div>
         </div>
     </div>

@@ -19,7 +19,7 @@ import { RequestBase } from '../../shared/request/request-base';
     selector: 'pdm-delete-request-draft-modal',
     templateUrl: './delete-request-draft-modal.component.html'
 })
-export class RequestDraftModalModalComponent {
+export class RequestDraftDeleteModalComponent {
 
     request: RequestBase;
 

@@ -45,9 +45,8 @@ export class RequestStatusUpdateDialogComponent implements OnInit {
     }
 
     /**
-     * Confirm and submit a status update with a message
-     *
-     * returns an unsubscribed observable with the action
+     * Confirm and submit a status update with a message.
+     * The modal dismisses on an unknown RequestStatusUpdateAction
      */
     confirmStatusUpdate() {
         if (this.statusUpdateAction === RequestStatusUpdateAction.Reject) {

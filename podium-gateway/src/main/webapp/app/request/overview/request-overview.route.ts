@@ -12,7 +12,7 @@ import { UserRouteAccessService } from '../../shared/auth/user-route-access-serv
 import { RequestOverviewComponent } from './request-overview.component';
 import { PaginationUtil } from 'ng-jhipster';
 import { Injectable } from '@angular/core';
-import { requestOverviewPaths } from './request-overview.constants';
+import { RequestOverviewPath } from './request-overview.constants';
 
 @Injectable()
 export class RequestResolvePagingParams implements Resolve<any> {
@@ -31,7 +31,7 @@ export class RequestResolvePagingParams implements Resolve<any> {
 }
 
 export const requestOverviewRoute: Route = {
-    path: requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER,
+    path: RequestOverviewPath.REQUEST_OVERVIEW_RESEARCHER,
     component: RequestOverviewComponent,
     resolve: {
         'pagingParams': RequestResolvePagingParams
@@ -46,7 +46,7 @@ export const requestOverviewRoute: Route = {
 };
 
 export const organisationRequestOverviewRoute: Route = {
-    path: requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR,
+    path: RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR,
     component: RequestOverviewComponent,
     resolve: {
         'pagingParams': RequestResolvePagingParams
@@ -61,7 +61,7 @@ export const organisationRequestOverviewRoute: Route = {
 };
 
 export const reviewerRequestOverviewRoute: Route = {
-    path: requestOverviewPaths.REQUEST_OVERVIEW_REVIEWER,
+    path: RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER,
     component: RequestOverviewComponent,
     resolve: {
         'pagingParams': RequestResolvePagingParams

@@ -14,6 +14,9 @@ import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
 import { RequestReviewFeedback } from './request-review-feedback';
 import { PodiumEventMessage } from '../event/podium-event-message';
+import { RequestStatus } from './request-status/request-status';
+import { RequestStatusOptions } from './request-status/request-status.constants';
+import { UserGroupAuthority } from '../authority/authority.constants';
 
 @Injectable()
 export class RequestService {
@@ -58,7 +61,6 @@ export class RequestService {
             return res;
         });
     }
-
 
     findCoordinatorReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);

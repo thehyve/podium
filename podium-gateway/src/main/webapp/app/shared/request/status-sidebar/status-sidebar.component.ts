@@ -8,8 +8,13 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
+import { RequestStatusSidebarOptions, StatusSidebarOptionsCollection, StatusSidebarOption } from './status-sidebar-options';
+import { OverviewService } from '../../overview/overview.service';
+import { UserGroupAuthority } from '../../authority/authority.constants';
+import { StatusType, RequestStatusOptions } from '../request-status/request-status.constants';
+import { Response } from '@angular/http';
 
 @Component({
     selector: 'pdm-request-status-sidebar',
@@ -19,11 +24,39 @@ import { JhiLanguageService } from 'ng-jhipster';
 
 export class RequestStatusSidebarComponent implements OnInit {
 
-    constructor(private jhiLanguageService: JhiLanguageService) {
-        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
+    public statusSidebarOptions = StatusSidebarOptionsCollection;
+    public activeStatus: StatusType;
+
+    @Input()
+    public userGroupAuthority: UserGroupAuthority;
+
+    @Input()
+    public pageParams: Function;
+
+    public counts = {};
+
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private overviewService: OverviewService
+    ) {
+        this.jhiLanguageService.addLocation('requestSidebar');
     }
 
     ngOnInit() {
+        this.activeStatus = this.overviewService.activeStatus || RequestStatusOptions.Review;
+        this.fetchRequestsFor(this.activeStatus);
+    }
 
+    fetchRequestsFor(option: StatusType) {
+        this.overviewService
+            .findRequestsForOverview(this.pageParams(), option, this.userGroupAuthority)
+            .subscribe((res: Response) => {
+                this.overviewService.overviewUpdateEvent(res);
+                this.activeStatus = this.overviewService.activeStatus;
+            });
+    }
+
+    isActiveElement(status: StatusType): boolean {
+        return this.activeStatus === status;
     }
 }

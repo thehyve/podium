@@ -7,7 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, InjectionToken } from '@angular/core';
+import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
+import { OverviewService } from '../../shared/overview/overview.service';
 import { JhiLanguageService, EventManager, ParseLinks } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
@@ -18,92 +20,109 @@ import { RequestFormService } from '../form/request-form.service';
 import { Subscription } from 'rxjs';
 import { RequestStatusOptions } from '../../shared/request/request-status/request-status.constants';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { RequestDraftModalModalComponent } from './delete-request-draft-modal.component';
-import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
-import { requestOverviewPaths } from './request-overview.constants';
+import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
+import { RequestOverviewPath } from './request-overview.constants';
+import { Response, Http } from '@angular/http';
+import { Overview } from '../../shared/overview/overview';
+import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
+import { UserGroupAuthority } from '../../shared/authority/authority.constants';
 
+let overviewConfig: OverviewServiceConfig = {
+    resourceUrl: 'api/requests',
+    resourceSearchUrl: 'api/_search/requests'
+};
+
+/**
+ * Request overview component.
+ * Uses its own configured instance of the OverviewService
+ */
 @Component({
     selector: 'pdm-request-overview',
-    templateUrl: './request-overview.component.html'
+    templateUrl: './request-overview.component.html',
+    providers: [
+        {
+            provide: OverviewService,
+            useFactory: (http: Http) => {
+                return new OverviewService(http, overviewConfig);
+            },
+            deps: [
+                Http
+            ]
+        }
+    ]
 })
+export class RequestOverviewComponent extends Overview implements OnInit, OnDestroy {
 
-export class RequestOverviewComponent implements OnInit, OnDestroy {
-
-    private currentUser: User;
+    @ViewChild(RequestStatusSidebarComponent)
+    private requestSidebarComponent: RequestStatusSidebarComponent;
 
     availableRequests: RequestBase[];
     error: string;
     success: string;
     eventSubscriber: Subscription;
+    requestsSubscription: Subscription;
     currentRequestStatus: RequestStatusOptions;
-    totalItems: any;
-    routeData: any;
     routePath: any;
-    currentSearch: any;
-    queryCount: any;
-    itemsPerPage: any;
-    page: any;
-    pageHeader: string;
-    predicate: any;
-    previousPage: any;
-    reverse: any;
-    links: any;
+    toggledSidebar = true; // open by default
+    userGroupAuthority: UserGroupAuthority;
 
     // FIXME: Major refactor of overview component.
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestService: RequestService,
-                private router: Router,
-                private parseLinks: ParseLinks,
-                private requestFormService: RequestFormService,
-                private eventManager: EventManager,
-                private principal: Principal,
-                private modalService: NgbModal,
-                private activatedRoute: ActivatedRoute
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestService: RequestService,
+        private parseLinks: ParseLinks,
+        private requestFormService: RequestFormService,
+        private eventManager: EventManager,
+        private modalService: NgbModal,
+        private overviewService: OverviewService,
+        protected router: Router,
+        protected activatedRoute: ActivatedRoute
     ) {
-        this.itemsPerPage = ITEMS_PER_PAGE;
-        this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.pageHeader = data['pageHeader'];
-            this.page = data['pagingParams'].page;
-            this.previousPage = data['pagingParams'].page;
-            this.reverse = data['pagingParams'].ascending;
-            this.predicate = data['pagingParams'].predicate;
-        });
-        this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
+        super(router, activatedRoute);
+
         this.jhiLanguageService.setLocations(['request']);
         this.routePath = this.activatedRoute.snapshot.url[0].path;
-    }
 
-    getPageParams(): any {
-        let params: any = {
-            size: this.itemsPerPage,
-            sort: this.sort()
-        };
-        if (this.currentSearch) {
-            params.query = this.currentSearch;
-        } else {
-            params.page = this.page - 1;
-        }
-        return params;
-    };
-
-    isResearcherRoute(): boolean {
-        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
-    }
-
-    isCoordinatorRoute(): boolean {
-        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR;
+        this.requestsSubscription = this.overviewService.onOverviewUpdate.subscribe(
+            (res: Response) => this.processAvailableRequests(res.json(), res.headers),
+            (err): any => this.onError(err)
+        );
     }
 
     ngOnInit(): void {
         this.currentRequestStatus = RequestStatusOptions.Review; // begin with submitted requests
-        this.principal.identity().then((account) => {
-            this.currentUser = account;
-            this.loadRequests();
-        });
+
+        console.log('Route ', this.routePath);
+
+        switch (this.routePath) {
+            case RequestOverviewPath.REQUEST_OVERVIEW_RESEARCHER:
+                console.log('Match 1');
+                this.userGroupAuthority = UserGroupAuthority.Requester;
+                break;
+            case RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR:
+                console.log('Match 2');
+                this.userGroupAuthority = UserGroupAuthority.Coordinator;
+                break;
+            case RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER:
+                console.log('Match 3');
+                this.userGroupAuthority = UserGroupAuthority.Reviewer;
+                break;
+            default:
+                console.log('No match ', this.routePath);
+        }
+
+        // this.requestSidebarComponent.userGroupAuthority =
         this.registerChangeInRequests();
     }
 
+    /**
+     * Subscription clean up to prevent memory leaks
+     */
     ngOnDestroy() {
+        if (this.requestsSubscription) {
+            this.requestsSubscription.unsubscribe();
+        }
+
         if (this.eventSubscriber) {
             this.eventManager.destroy(this.eventSubscriber);
         }
@@ -114,12 +133,13 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadRequests() {
+        console.log('this.cur ', this.currentRequestStatus);
         if (this.currentRequestStatus === RequestStatusOptions.Draft) {
             this.loadDrafts();
         } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
-            if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR) {
+            if (this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR) {
                 this.loadCoordinatorReviewRequests();
-            } else if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_REVIEWER) {
+            } else if (this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER) {
                 this.loadAllReviewerRequests();
             } else {
                 this.loadMyReviewRequests();
@@ -186,21 +206,13 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             );
     }
 
-    sort() {
-        let result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'id') {
-            result.push('id');
-        }
-        return result;
-    }
-
     editRequest(request) {
         this.requestFormService.request = request;
         this.router.navigate(['./requests/edit']);
     }
 
     deleteDraft(request) {
-        const modalRef = this.modalService.open(RequestDraftModalModalComponent);
+        const modalRef = this.modalService.open(RequestDraftDeleteModalComponent);
         modalRef.componentInstance.request = request;
         modalRef.result.then((result) => {
             console.log(`Closed ${result}`);
@@ -220,28 +232,19 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.availableRequests = requests;
     }
 
-    loadPage(page: number) {
+    loadPage(page: number, callback: Function) {
         if (page !== this.previousPage) {
             this.previousPage = page;
-            this.transition();
+            callback();
         }
     }
 
-    transition() {
-        // Transition with queryParams
-        this.router.navigate([this.getNavUrlForRouter(this.router)], {
-            queryParams: {
-                page: this.page,
-                size: this.itemsPerPage,
-                search: this.currentSearch,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-            }
-        });
-        this.loadRequests();
+    toggleSidebar() {
+        this.toggledSidebar = !this.toggledSidebar;
     }
 
-    private getNavUrlForRouter(router: Router) {
-        return this.router.url.split(/\?/)[0];
+    transitionRequests() {
+        return this.transition(this.loadRequests.bind(this));
     }
 
     private onSuccess(result) {
