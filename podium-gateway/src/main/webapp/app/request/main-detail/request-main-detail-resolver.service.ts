@@ -13,21 +13,22 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@a
 import { RequestService } from '../../shared/request/request.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestDetail } from '../../shared/request/request-detail';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class RequestMainDetailResolver implements Resolve<RequestBase> {
+export class RequestDetailResolver implements Resolve<RequestBase> {
     constructor(private requestService: RequestService, private router: Router) {}
 
-    resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<RequestDetail> {
+    resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RequestDetail> {
         let uuid = route.params['uuid'];
         return this.requestService.findByUuid(uuid)
-            .toPromise()
-            .then( requestDetail => {
+            .map(requestDetail => {
                 if (requestDetail) {
                     return requestDetail;
                 } else {
                     return null;
                 }
-            });
+            })
+            .first();
     }
 }

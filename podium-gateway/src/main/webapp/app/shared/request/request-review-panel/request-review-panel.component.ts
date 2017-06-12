@@ -40,9 +40,11 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
 
     private currentUser: User;
 
-    constructor(private requestService: RequestService,
-                private principal: Principal,
-                private requestAccessService: RequestAccessService) {
+    constructor(
+        private requestService: RequestService,
+        private principal: Principal,
+        private requestAccessService: RequestAccessService
+    ) {
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);

@@ -23,7 +23,7 @@ import {
 import { RequestResolvePagingParams } from './overview/request-overview.route';
 import { RequestUpdateStatusDialogComponent } from '../shared/status-update/request-update-status-dialog.component';
 import { RequestUpdateReviewDialogComponent } from '../shared/status-update/request-update-review-dialog.component';
-import { RequestMainDetailResolver } from './main-detail/request-main-detail-resolver.service';
+import { RequestDetailResolver } from './main-detail/request-main-detail-resolver.service';
 import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-delivery-panel.component';
 import { DeliveryService } from '../shared/delivery/delivery.service';
 import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
@@ -64,7 +64,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         RequestFormService,
         RequestOverviewService,
         RequestResolvePagingParams,
-        RequestMainDetailResolver,
+        RequestDetailResolver,
         DeliveryService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
