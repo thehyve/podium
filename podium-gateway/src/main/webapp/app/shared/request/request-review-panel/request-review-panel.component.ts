@@ -9,14 +9,12 @@
  */
 
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { ReviewRound } from '../review-round';
 import { RequestReviewFeedback } from '../request-review-feedback';
 import { RequestReviewDecision } from '../request-review-decision';
 import { RequestService } from '../request.service';
 import { RequestBase } from '../request-base';
 import { Subscription } from 'rxjs';
 import { RequestAccessService } from '../request-access.service';
-import { User } from '../../user/user.model';
 import { Principal } from '../../auth/principal.service';
 
 @Component({
@@ -37,8 +35,6 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         {style: 'tag-danger', advise: RequestReviewDecision.Rejected},
         {style: 'tag-default', advise: RequestReviewDecision.None},
     ];
-
-    private currentUser: User;
 
     constructor(
         private requestService: RequestService,
@@ -62,9 +58,8 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         if (this.request.reviewRounds.length) {
             if (this.requestAccessService.isReviewerFor(this.request)) {
                 this.principal.identity().then((account) => {
-                    this.currentUser = account;
                     this.lastReviewFeedback = [
-                        this.requestService.getLastReviewFeedbackByUser(this.request, this.currentUser)
+                        this.requestService.getLastReviewFeedbackByUser(this.request, account)
                     ];
                 });
             } else {
