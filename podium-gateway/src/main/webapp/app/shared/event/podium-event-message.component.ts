@@ -15,7 +15,7 @@ import { PodiumEvent } from './podium-event';
 import { RequestAccessService } from '../request/request-access.service';
 import { RequestStatusOptions } from '../request/request-status/request-status.constants';
 import { Subscription } from 'rxjs';
-import { RequestUpdateAction } from '../status-update/request-update-action';
+import { RequestStatusUpdateAction } from '../status-update/request-update-action';
 
 @Component({
     selector: 'pdm-event-message-component',
@@ -63,7 +63,7 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
         if (!this.lastEvent) {
             return false;
         }
-        let revisionAction = RequestUpdateAction.Revision;
+        let revisionAction = RequestStatusUpdateAction.Revision;
         return this.lastEvent.data.targetStatus === revisionAction.toLocaleString();
     }
 

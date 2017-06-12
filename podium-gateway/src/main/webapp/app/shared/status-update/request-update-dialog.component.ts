@@ -14,7 +14,7 @@ import { RequestService } from '../request/request.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestBase } from '../request/request-base';
 import { Response } from '@angular/http';
-import { RequestUpdateAction } from './request-update-action';
+import { RequestStatusUpdateAction } from './request-update-action';
 import { RequestReviewDecision } from '../request/request-review-decision';
 
 @Component({
@@ -56,7 +56,7 @@ export class RequestUpdateDialogComponent {
             headerStyle: 'revision-header',
             buttonStyle: 'btn-default'
         };
-        if (status === RequestUpdateAction[RequestUpdateAction.Reject] ||
+        if (status === RequestStatusUpdateAction[RequestStatusUpdateAction.Reject] ||
             status === RequestReviewDecision[RequestReviewDecision.Rejected]) {
             style.headerStyle = 'reject-header';
             style.buttonStyle = 'btn-danger';

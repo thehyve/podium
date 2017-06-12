@@ -19,7 +19,7 @@ import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
-import { RequestUpdateAction } from '../../../shared/status-update/request-update-action';
+import { RequestStatusUpdateAction } from '../../../shared/status-update/request-update-action';
 import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
 import { Principal } from '../../../shared/auth/principal.service';
 import { User } from '../../../shared/user/user.model';
@@ -132,7 +132,7 @@ export class RequestDetailComponent implements OnDestroy {
      */
     requireRequestRevision() {
         this.isUpdating = true;
-        return this.confirmStatusUpdateModal(this.request, RequestUpdateAction.Revision);
+        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Revision);
     }
 
     /**
@@ -177,7 +177,7 @@ export class RequestDetailComponent implements OnDestroy {
      */
     rejectRequest() {
         this.isUpdating = true;
-        return this.confirmStatusUpdateModal(this.request, RequestUpdateAction.Reject);
+        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Reject);
     }
 
     /**
@@ -203,9 +203,9 @@ export class RequestDetailComponent implements OnDestroy {
      * Open a modal window for providing feedback details for Rejecting or requesting a revision.
      *
      * @param request the request
-     * @param action the specific RequestUpdateAction to apply to the request.
+     * @param action the specific RequestStatusUpdateAction to apply to the request.
      */
-    confirmStatusUpdateModal(request: RequestBase, action: RequestUpdateAction) {
+    confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
         let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;

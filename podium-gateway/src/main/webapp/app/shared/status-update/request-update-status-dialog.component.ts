@@ -14,7 +14,7 @@ import { RequestService } from '../request';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PodiumEventMessage } from '../event/podium-event-message';
 import { RequestUpdateDialogComponent } from './request-update-dialog.component';
-import { RequestUpdateAction } from './request-update-action';
+import { RequestStatusUpdateAction } from './request-update-action';
 
 @Component({
     templateUrl: './request-update-dialog.component.html',
@@ -22,7 +22,7 @@ import { RequestUpdateAction } from './request-update-action';
 })
 
 export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogComponent implements OnInit {
-    statusUpdateAction: RequestUpdateAction;
+    statusUpdateAction: RequestStatusUpdateAction;
     panelStyles: any;
     status: string;
     public message: PodiumEventMessage = new PodiumEventMessage();
@@ -36,7 +36,7 @@ export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogCompo
     }
 
     ngOnInit() {
-        this.status = RequestUpdateAction[this.statusUpdateAction];
+        this.status = RequestStatusUpdateAction[this.statusUpdateAction];
         this.panelStyles = this.applyStyles(this.statusUpdateAction);
     }
 
@@ -49,12 +49,12 @@ export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogCompo
      * returns an unsubscribed observable with the action
      */
     confirmStatusUpdate() {
-        if (this.statusUpdateAction === RequestUpdateAction.Reject) {
+        if (this.statusUpdateAction === RequestStatusUpdateAction.Reject) {
             this.requestService.rejectRequest(this.request.uuid, this.message)
                 .subscribe((res) => this.onSuccess(res));
         }
 
-        if (this.statusUpdateAction === RequestUpdateAction.Revision) {
+        if (this.statusUpdateAction === RequestStatusUpdateAction.Revision) {
             this.requestService.requestRevision(this.request.uuid, this.message)
                 .subscribe((res) => this.onSuccess(res));
         }

@@ -8,7 +8,7 @@
  *
  */
 
-export enum RequestUpdateAction {
+export enum RequestStatusUpdateAction {
     Reject      = <any>'Reject',
     Revision    = <any>'Revision',
     Close       = <any>'Close',
