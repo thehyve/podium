@@ -71,13 +71,6 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
             this.getDeliveries();
     }
 
-    private isOnDelivery() {
-        return  this.request.status === RequestStatusOptions.Delivery ||
-                this.request.outcome === RequestOutcome.Delivered ||
-                this.request.outcome === RequestOutcome.Partially_Delivered ||
-                this.request.outcome === RequestOutcome.Cancelled;
-    }
-
     /**
      * Subscription clean up to prevent memory leaks
      */
@@ -91,15 +84,31 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         }
     }
 
+
+    /**
+     *  Check if deliveries exists in a request by checking if request status in on Delivery or request outcome is
+     *  Delivered, Partially_Delivered or Cancelled.
+     * @param request
+     * @returns {boolean}
+     */
+    private deliveriesExistIn(request): boolean {
+        return  request.status === RequestStatusOptions.Delivery ||
+                request.outcome === RequestOutcome.Delivered ||
+                request.outcome === RequestOutcome.Partially_Delivered ||
+                request.outcome === RequestOutcome.Cancelled;
+    }
+
     /**
      * Fetch all deliveries for a request by request UUID.
      */
     getDeliveries()  {
-        if (this.request !== null && this.isOnDelivery()) {
-            this.deliveryService.getDeliveries(this.request.uuid)
-                .subscribe(
-                    (res) => this.onSuccess(res)
-                );
+        if (this.request !== null) {
+            if (this.deliveriesExistIn(this.request)) {
+                this.deliveryService.getDeliveries(this.request.uuid)
+                    .subscribe(
+                        (res) => this.onSuccess(res)
+                    );
+            }
         }
     }
 
