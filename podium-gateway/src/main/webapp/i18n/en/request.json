@@ -48,11 +48,11 @@
                 "question": "Are you sure you want to reject this request?"
             },
             "Approved": {
-                "title": "Mark request as acceptable",
+                "title": "Review request as approved",
                 "question": "Are you sure you advise to accept this request?"
             },
             "Rejected": {
-                "title": "Mark request as unacceptable",
+                "title": "Review request as rejected",
                 "question": "Are you sure you advise to reject this request?"
             },
             "form": {
