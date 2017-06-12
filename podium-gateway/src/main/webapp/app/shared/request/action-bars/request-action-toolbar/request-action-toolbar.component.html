@@ -133,11 +133,11 @@
                 <div *ngIf="isReviewable()">
                     <!-- Review -->
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-danger" (click)="reviewRejected()">
-                            <span jhiTranslate="request.toolbar.reject">Reject</span>
+                        <button type="button" class="btn btn-outline-danger" (click)="reviewRejected()">
+                            <span jhiTranslate="request.toolbar.adviseReject">Advise Reject</span>
                         </button>
-                        <button type="button" class="btn btn-success" (click)="reviewApproved()">
-                            <span jhiTranslate="request.toolbar.approve">Approve</span>
+                        <button type="button" class="btn btn-outline-success" (click)="reviewApproved()">
+                            <span jhiTranslate="request.toolbar.adviseApprove">Advise Approve</span>
                         </button>
                     </div>
                 </div>

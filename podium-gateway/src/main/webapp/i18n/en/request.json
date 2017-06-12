@@ -27,6 +27,8 @@
             "reject": "Reject",
             "close": "Close request",
             "approve": "Approve",
+            "adviseApprove": "Advise approve",
+            "adviseReject": "Advise reject",
             "checks": {
                 "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
                 "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
@@ -47,11 +49,11 @@
             },
             "Approved": {
                 "title": "Mark request as acceptable",
-                "question": "Are you sure you want to mark this request as acceptable?"
+                "question": "Are you sure you advise to accept this request?"
             },
             "Rejected": {
                 "title": "Mark request as unacceptable",
-                "question": "Are you sure you want to mark this request as unacceptable?"
+                "question": "Are you sure you advise to reject this request?"
             },
             "form": {
                 "summary": {
