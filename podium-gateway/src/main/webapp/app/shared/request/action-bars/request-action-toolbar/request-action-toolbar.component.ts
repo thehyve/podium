@@ -15,8 +15,6 @@ import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-
 import { RequestAccessService } from '../../request-access.service';
 import { RequestService } from '../../request.service';
 import { Subscription } from 'rxjs';
-import { User } from '../../../user/user.model';
-import { RequestReviewDecision } from '../../request-review-decision';
 import { Delivery } from '../../../delivery/delivery';
 import { DeliveryService } from '../../../delivery/delivery.service';
 
@@ -40,7 +38,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         canFinalize: false
     };
 
-    @Input() currentUser?: User;
     @Input() form: Form;
     @Input() request: RequestBase;
     @Input() isUpdating: false;
@@ -55,8 +52,8 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() submitRequestChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
-    @Output() markAcceptable = new EventEmitter();
-    @Output() markUnacceptable = new EventEmitter();
+    @Output() reviewAdviseApproved = new EventEmitter();
+    @Output() reviewAdviseRejected = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
     @Output() finalizeRequestChange = new EventEmitter();
 
@@ -131,8 +128,8 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     }
 
     isReviewable(): boolean {
-        let lastFeedback = this.requestService.getLastReviewFeedbackByUser(this.request, this.currentUser);
-        return  this.isRequestReviewer() && (lastFeedback.advice === RequestReviewDecision.None);
+        let lastFeedbacks = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
+        return this.requestAccessService.isReviewable(lastFeedbacks);
     }
 
     saveDraft() {
@@ -175,12 +172,12 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         this.submitRequestChange.emit(true);
     }
 
-    markRequestAcceptable() {
-        this.markAcceptable.emit(true);
+    reviewApproved() {
+        this.reviewAdviseApproved.emit(true);
     }
 
-    markRequestUnacceptable() {
-        this.markUnacceptable.emit(true);
+    reviewRejected() {
+        this.reviewAdviseRejected.emit(true);
     }
 
     startDelivery() {

@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
+import { AlertService, JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
@@ -33,11 +33,13 @@ export class RequestMainDetailComponent implements OnInit {
     public error: any;
     public success: any;
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private route: ActivatedRoute,
-                private requestService: RequestService) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private route: ActivatedRoute,
+        private requestService: RequestService,
+        private alertService: AlertService
+    ) {
         this.jhiLanguageService.setLocations(['request']);
-
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });
@@ -57,8 +59,7 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     private onError(error) {
-        console.log(error);
-        this.error = 'ERROR';
+        this.alertService.error(error.error, error.message, null);
         this.success = null;
     }
 }

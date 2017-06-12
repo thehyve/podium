@@ -27,6 +27,7 @@ import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/reque
 import { Delivery } from '../../../shared/delivery/delivery';
 import { Subscription } from 'rxjs';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
+import { AlertService } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -47,12 +48,15 @@ export class RequestDetailComponent implements OnDestroy {
     public requestSubscription: Subscription;
     public deliveriesSubscription: Subscription;
 
-    constructor(private requestService: RequestService,
-                private deliveryService: DeliveryService,
-                private requestAccessService: RequestAccessService,
-                private requestFormService: RequestFormService,
-                private modalService: NgbModal,
-                private principal: Principal) {
+    constructor(
+        private requestService: RequestService,
+        private deliveryService: DeliveryService,
+        private requestAccessService: RequestAccessService,
+        private requestFormService: RequestFormService,
+        private modalService: NgbModal,
+        private principal: Principal,
+        private alertService: AlertService
+    ) {
 
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
@@ -114,11 +118,10 @@ export class RequestDetailComponent implements OnDestroy {
         modalRef.componentInstance.currentUser = this.currentUser;
         modalRef.componentInstance.reviewStatus = decision;
         modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
             this.requestService.requestUpdateEvent(this.request);
             this.isUpdating = false;
         }, (reason) => {
-            console.log(`Dismissed ${reason}`);
+            this.onError(reason);
             this.isUpdating = false;
         });
     }
@@ -222,7 +225,7 @@ export class RequestDetailComponent implements OnDestroy {
      * @param deliveries the deliveries belonging to the request.
      */
     confirmFinalizeRequest(request: RequestBase, deliveries: Delivery[]) {
-        let modalRef = this.modalService.open(RequestFinalizeDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestFinalizeDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.deliveries = deliveries;
         modalRef.result.then(result => {
@@ -248,16 +251,14 @@ export class RequestDetailComponent implements OnDestroy {
     }
 
     onSuccess(response: Response) {
-        console.log('success ', response);
         this.request = response.json();
         this.isUpdating = false;
-
         this.requestService.requestUpdateEvent(this.request);
     }
 
-    onError(err) {
-        console.log('error ', err);
+    onError(error) {
         this.isUpdating = false;
+        this.alertService.error(error.error, error.message, null);
     }
 
 }

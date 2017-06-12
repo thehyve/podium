@@ -56,10 +56,6 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         return foundStyle ? foundStyle.style : 'tag-default';
     }
 
-    isReviewer() {
-        return this.requestAccessService.isReviewerFor(this.request);
-    }
-
     ngOnInit(): void {
         if (this.request.reviewRounds.length) {
             if (this.requestAccessService.isReviewerFor(this.request)) {

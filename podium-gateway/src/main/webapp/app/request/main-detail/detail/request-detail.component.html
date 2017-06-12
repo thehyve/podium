@@ -84,14 +84,13 @@
             </pdm-request-delivery-panel>
 
             <pdm-request-action-toolbar
-                [currentUser]="currentUser"
                 [request]="request"
                 [isUpdating]="isUpdating"
                 (rejectChange)="rejectRequest()"
                 (requireRevisionChange)="requireRequestRevision()"
                 (validateRequestChange)="validateRequest()"
-                (markAcceptable)="submitReview(RequestReviewDecision.Approved)"
-                (markUnacceptable)="submitReview(RequestReviewDecision.Rejected)">
+                (reviewAdviseApproved)="submitReview(RequestReviewDecision.Approved)"
+                (reviewAdviseRejected)="submitReview(RequestReviewDecision.Rejected)">
                 (approveRequestChange)="approveRequest()"
                 (startDeliveryChange)="startRequestDelivery()"
                 (finalizeRequestChange)="finalizeRequest()">

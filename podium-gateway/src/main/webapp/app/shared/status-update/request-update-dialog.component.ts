@@ -24,9 +24,11 @@ export class RequestUpdateDialogComponent {
     request: RequestBase;
     status: string;
 
-    constructor(protected jhiLanguageService: JhiLanguageService,
-                protected requestService: RequestService,
-                protected activeModal: NgbActiveModal) {
+    constructor(
+        protected jhiLanguageService: JhiLanguageService,
+        protected requestService: RequestService,
+        protected activeModal: NgbActiveModal
+    ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
     }
 

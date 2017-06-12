@@ -130,13 +130,13 @@
                 </div>
 
                 <!-- Reviewer actions -->
-                <div *ngIf="currentUser && isReviewable()">
+                <div *ngIf="isReviewable()">
                     <!-- Review -->
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-danger" (click)="markRequestUnacceptable()">
+                        <button type="button" class="btn btn-danger" (click)="reviewRejected()">
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
-                        <button type="button" class="btn btn-success" (click)="markRequestAcceptable()">
+                        <button type="button" class="btn btn-success" (click)="reviewApproved()">
                             <span jhiTranslate="request.toolbar.approve">Approve</span>
                         </button>
                     </div>

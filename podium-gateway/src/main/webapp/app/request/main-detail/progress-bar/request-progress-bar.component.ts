@@ -40,9 +40,11 @@ export class RequestProgressBarComponent implements OnDestroy {
 
     requestSubscription: Subscription;
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestAccessService: RequestAccessService,
-                private requestService: RequestService) {
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestAccessService: RequestAccessService,
+        private requestService: RequestService
+    ) {
         jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
