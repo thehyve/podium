@@ -21,7 +21,6 @@ import {
     RequestDraftModalModalComponent
 } from './overview/delete-request-draft-modal.component';
 import { RequestResolvePagingParams } from './overview/request-overview.route';
-import { ReviewStatusComponent } from '../shared/review-status/review-status.component';
 import { RequestUpdateStatusDialogComponent } from '../shared/status-update/request-update-status-dialog.component';
 import { RequestUpdateReviewDialogComponent } from '../shared/status-update/request-update-review-dialog.component';
 import { RequestMainDetailResolver } from './main-detail/request-main-detail-resolver.service';
@@ -29,6 +28,7 @@ import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-
 import { DeliveryService } from '../shared/delivery/delivery.service';
 import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
 import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-dialog/request-finalize-dialog.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
@@ -48,7 +48,6 @@ import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-d
         RequestProgressBarComponent,
         RequestUpdateStatusDialogComponent,
         RequestUpdateReviewDialogComponent,
-        ReviewStatusComponent,
         DeliveryStatusUpdateDialogComponent,
         RequestDeliveryPanelComponent,
         RequestFinalizeDialogComponent
@@ -58,7 +57,6 @@ import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-d
         RequestDraftModalModalComponent,
         RequestUpdateStatusDialogComponent,
         RequestUpdateReviewDialogComponent,
-        ReviewStatusComponent,
         DeliveryStatusUpdateDialogComponent,
         RequestFinalizeDialogComponent
     ],
