@@ -13,7 +13,7 @@ package nl.thehyve.podium.common.enumeration;
 /**
  * The RequestOutcome enumeration.
  */
-public enum RequestOutcome {
+public enum RequestOutcome implements Classifier {
     Delivered,
     Partially_Delivered,
     Cancelled,

@@ -5,13 +5,7 @@ import java.util.Arrays;
 /**
  * Indicates a type as a status type, which should be an enum.
  */
-public interface Status {
-
-    /**
-     * The name of the enum value.
-     * @return the name of the enum value.
-     */
-    String name();
+public interface Status extends Classifier {
 
     /**
      * Checks if the current status is in the list of allowed statuses.
