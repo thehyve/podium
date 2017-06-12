@@ -21,6 +21,8 @@ import { DeliveryStatusUpdateDialogComponent } from '../../shared/delivery-updat
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeliveryStatus } from '../../shared/delivery/delivery-status.constants';
 import { DeliveryOutcome } from '../../shared/delivery/delivery-outcome.constants';
+import { RequestStatusOptions } from '../../shared/request/request-status/request-status.constants';
+import { RequestOutcome } from '../../shared/request/request-outcome';
 
 @Component({
     selector: 'pdm-request-delivery-panel',
@@ -66,9 +68,16 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        if (this.request != null) {
+        if (this.request != null && this.isOnDelivery()) {
             this.getDeliveries();
         }
+    }
+
+    private isOnDelivery() {
+        return  this.request.status === RequestStatusOptions.Delivery ||
+                this.request.outcome === RequestOutcome.Delivered ||
+                this.request.outcome === RequestOutcome.Partially_Delivered ||
+                this.request.outcome === RequestOutcome.Cancelled;
     }
 
     /**
@@ -249,7 +258,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     }
 
     performAction(action: string, delivery: Delivery) {
-        switch(action) {
+        switch (action) {
             case 'release':
                 this.releaseType(delivery);
                 break;
