@@ -34,6 +34,7 @@ import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-d
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
+        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [

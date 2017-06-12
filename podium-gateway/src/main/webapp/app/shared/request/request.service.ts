@@ -166,7 +166,7 @@ export class RequestService {
         return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
     }
 
-    finalizeRequest(uuid: string, message?: PodiumEventMessage) {
+    closeRequest(uuid: string, message?: PodiumEventMessage) {
         return this.http.post(`${this.resourceUrl}/${uuid}/close`, message);
     }
 
