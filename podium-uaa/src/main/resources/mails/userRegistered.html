@@ -32,8 +32,8 @@
 			    Please follow this link to go to the user management page:
             </span>
             <br />
-            <a th:href="@{|${baseUrl}/#/admin/user-management|}">
-                <span th:text="@{|${baseUrl}/#/admin/user-management|}"></span>
+            <a th:href="@{|${baseUrl}/#/admin/user-management/(popup:detail/${registeredUser.getUsername()}/edit)|}">
+                <span th:text="@{|${baseUrl}/#/admin/user-management/(popup:detail/${registeredUser.getUsername()}/edit)|}"></span>
             </a>
 		</p>
 
