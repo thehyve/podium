@@ -14,6 +14,8 @@ import { RequestService } from '../request/request.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestBase } from '../request/request-base';
 import { Response } from '@angular/http';
+import { RequestUpdateAction } from './request-update-action';
+import { RequestReviewDecision } from '../request/request-review-decision';
 
 @Component({
 
@@ -22,7 +24,6 @@ import { Response } from '@angular/http';
 export class RequestUpdateDialogComponent {
 
     request: RequestBase;
-    status: string;
 
     constructor(
         protected jhiLanguageService: JhiLanguageService,
@@ -33,7 +34,7 @@ export class RequestUpdateDialogComponent {
     }
 
     close() {
-        this.activeModal.dismiss('closed');
+        this.activeModal.close('closed');
     }
 
     onError(err: string) {
@@ -48,5 +49,18 @@ export class RequestUpdateDialogComponent {
 
     onUnknownStatus() {
         this.activeModal.dismiss(new Error('Unknown status update action'));
+    }
+
+    applyStyles(status: any) {
+        let style = {
+            headerStyle: 'revision-header',
+            buttonStyle: 'btn-default'
+        };
+        if (status === RequestUpdateAction[RequestUpdateAction.Reject] ||
+            status === RequestReviewDecision[RequestReviewDecision.Rejected]) {
+            style.headerStyle = 'reject-header';
+            style.buttonStyle = 'btn-danger';
+        }
+        return style;
     }
 }

@@ -8,9 +8,9 @@
   ~
   -->
 
-<div class="request-status-update-container">
+<div class="request-status-update-container" *ngIf="panelStyles">
     <form #statusUpdateForm="ngForm" class="form" role="form" (ngSubmit)="confirmStatusUpdate()">
-        <div class="modal-header" [ngClass]="headerStyle">
+        <div class="modal-header" [ngClass]="panelStyles.headerStyle">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                     (click)="close()">&times;
             </button>
@@ -51,7 +51,7 @@
                 <span jhiTranslate="request.action.cancel">Cancel</span>
             </button>
             <button type="submit" [disabled]="!statusUpdateForm.form.valid" class="btn"
-                    [ngClass]="buttonStyle">
+                    [ngClass]="panelStyles.buttonStyle">
                 <span class="material-icons">send</span>&nbsp;
                 <span jhiTranslate="request.action.submit"
                       tooltip="Please provide at least a summary of your message."

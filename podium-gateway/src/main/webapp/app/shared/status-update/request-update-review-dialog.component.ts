@@ -26,9 +26,8 @@ import { User } from '../user/user.model';
 export class RequestUpdateReviewDialogComponent extends RequestUpdateDialogComponent implements OnInit {
     reviewStatus: RequestReviewDecision;
     currentUser: User;
-    headerStyle: string;
-    buttonStyle: string;
     status: string;
+    panelStyles: any;
     public message: PodiumEventMessage = new PodiumEventMessage();
 
     constructor(protected jhiLanguageService: JhiLanguageService,
@@ -38,18 +37,8 @@ export class RequestUpdateReviewDialogComponent extends RequestUpdateDialogCompo
     }
 
     ngOnInit() {
-        this.applyStyles();
-    }
-
-    applyStyles() {
         this.status = RequestReviewDecision[this.reviewStatus];
-        if (this.status === RequestReviewDecision[RequestReviewDecision.Rejected]) {
-            this.headerStyle = 'reject-header';
-            this.buttonStyle = 'btn-danger';
-        } else {
-            this.headerStyle = 'approve-header';
-            this.buttonStyle = 'btn-success';
-        }
+        this.panelStyles = this.applyStyles(RequestReviewDecision[this.reviewStatus]);
     }
 
     close() {

@@ -23,30 +23,21 @@ import { RequestUpdateAction } from './request-update-action';
 
 export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogComponent implements OnInit {
     statusUpdateAction: RequestUpdateAction;
-    headerStyle: string;
-    buttonStyle: string;
+    panelStyles: any;
     status: string;
     public message: PodiumEventMessage = new PodiumEventMessage();
 
-    constructor(protected jhiLanguageService: JhiLanguageService,
-                protected requestService: RequestService,
-                protected activeModal: NgbActiveModal) {
+    constructor(
+        protected jhiLanguageService: JhiLanguageService,
+        protected requestService: RequestService,
+        protected activeModal: NgbActiveModal
+    ) {
         super(jhiLanguageService, requestService, activeModal);
     }
 
     ngOnInit() {
-        this.applyStyles();
-    }
-
-    applyStyles() {
         this.status = RequestUpdateAction[this.statusUpdateAction];
-        if (this.status === RequestUpdateAction[RequestUpdateAction.Reject]) {
-            this.headerStyle = 'reject-header';
-            this.buttonStyle = 'btn-danger';
-        } else {
-            this.headerStyle = 'revision-header';
-            this.buttonStyle = 'btn-default';
-        }
+        this.panelStyles = this.applyStyles(this.statusUpdateAction);
     }
 
     close() {
@@ -61,7 +52,6 @@ export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogCompo
         if (this.statusUpdateAction === RequestUpdateAction.Reject) {
             this.requestService.rejectRequest(this.request.uuid, this.message)
                 .subscribe((res) => this.onSuccess(res));
-
         }
 
         if (this.statusUpdateAction === RequestUpdateAction.Revision) {
