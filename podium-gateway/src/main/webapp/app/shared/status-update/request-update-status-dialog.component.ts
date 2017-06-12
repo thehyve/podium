@@ -7,53 +7,51 @@
  * See the file LICENSE in the root of this repository.
  *
  */
+
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-import { RequestStatusUpdateAction } from './request-status-update-action';
-import { PodiumEventMessage } from '../event/podium-event-message';
-import { RequestBase, RequestService } from '../request';
-import { Response } from '@angular/http';
+import { RequestService } from '../request';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { PodiumEventMessage } from '../event/podium-event-message';
+import { RequestUpdateDialogComponent } from './request-update-dialog.component';
+import { RequestStatusUpdateAction } from './request-update-action';
 
 @Component({
-    selector: 'pdm-request-status-update',
-    templateUrl: './request-status-update.component.html',
-    styleUrls: ['request-status-update.scss']
+    templateUrl: './request-update-dialog.component.html',
+    styleUrls: ['request-update-dialog.scss']
 })
 
-export class RequestStatusUpdateDialogComponent implements OnInit {
-
-    request: RequestBase;
+export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogComponent implements OnInit {
     statusUpdateAction: RequestStatusUpdateAction;
+    panelStyles: any;
     status: string;
-    message: PodiumEventMessage = new PodiumEventMessage();
+    public message: PodiumEventMessage = new PodiumEventMessage();
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private requestService: RequestService,
-        private activeModal: NgbActiveModal
+        protected jhiLanguageService: JhiLanguageService,
+        protected requestService: RequestService,
+        protected activeModal: NgbActiveModal
     ) {
-        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
+        super(jhiLanguageService, requestService, activeModal);
     }
 
     ngOnInit() {
         this.status = RequestStatusUpdateAction[this.statusUpdateAction];
+        this.panelStyles = this.applyStyles(this.statusUpdateAction);
     }
 
     close() {
-        this.activeModal.dismiss('closed');
+        super.close();
     }
 
     /**
      * Confirm and submit a status update with a message
-     *
      * returns an unsubscribed observable with the action
      */
     confirmStatusUpdate() {
         if (this.statusUpdateAction === RequestStatusUpdateAction.Reject) {
             this.requestService.rejectRequest(this.request.uuid, this.message)
                 .subscribe((res) => this.onSuccess(res));
-
         }
 
         if (this.statusUpdateAction === RequestStatusUpdateAction.Revision) {
@@ -61,12 +59,6 @@ export class RequestStatusUpdateDialogComponent implements OnInit {
                 .subscribe((res) => this.onSuccess(res));
         }
 
-        this.activeModal.dismiss(new Error('Unknown status update action'));
-    }
-
-    onSuccess(res: Response) {
-        this.request = res.json();
-        this.requestService.requestUpdateEvent(this.request);
-        this.activeModal.close();
+        super.onUnknownStatus();
     }
 }

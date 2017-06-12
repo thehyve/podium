@@ -21,6 +21,8 @@ import { DeliveryStatusUpdateDialogComponent } from '../../shared/delivery-updat
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeliveryStatus } from '../../shared/delivery/delivery-status.constants';
 import { DeliveryOutcome } from '../../shared/delivery/delivery-outcome.constants';
+import { RequestStatusOptions } from '../../shared/request/request-status/request-status.constants';
+import { RequestOutcome } from '../../shared/request/request-outcome';
 
 @Component({
     selector: 'pdm-request-delivery-panel',
@@ -66,9 +68,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        if (this.request != null) {
             this.getDeliveries();
-        }
     }
 
     /**
@@ -84,14 +84,32 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         }
     }
 
+
+    /**
+     *  Check if deliveries exists in a request by checking if request status in on Delivery or request outcome is
+     *  Delivered, Partially_Delivered or Cancelled.
+     * @param request
+     * @returns {boolean}
+     */
+    private deliveriesExistIn(request): boolean {
+        return  request.status === RequestStatusOptions.Delivery ||
+                request.outcome === RequestOutcome.Delivered ||
+                request.outcome === RequestOutcome.Partially_Delivered ||
+                request.outcome === RequestOutcome.Cancelled;
+    }
+
     /**
      * Fetch all deliveries for a request by request UUID.
      */
     getDeliveries()  {
-        this.deliveryService.getDeliveries(this.request.uuid)
-            .subscribe(
-                (res) => this.onSuccess(res)
-            );
+        if (this.request !== null) {
+            if (this.deliveriesExistIn(this.request)) {
+                this.deliveryService.getDeliveries(this.request.uuid)
+                    .subscribe(
+                        (res) => this.onSuccess(res)
+                    );
+            }
+        }
     }
 
     /**
@@ -249,7 +267,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     }
 
     performAction(action: string, delivery: Delivery) {
-        switch(action) {
+        switch (action) {
             case 'release':
                 this.releaseType(delivery);
                 break;

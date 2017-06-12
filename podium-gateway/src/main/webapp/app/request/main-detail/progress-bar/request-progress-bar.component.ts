@@ -11,20 +11,18 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../../shared/request/request-base';
 import {
-    RequestStatus,
+    RequestStatusOptions,
+    RequestReviewStatusOptions,
     REQUEST_STATUSES,
     REQUEST_STATUSES_MAP,
     REQUEST_REVIEW_STATUSES,
     REQUEST_REVIEW_STATUSES_MAP
-} from '../../../shared/request/request-status';
-import {
-    RequestStatusOptions,
-    RequestReviewStatusOptions
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 import { Subscription } from 'rxjs';
+import { RequestStatus } from '../../../shared/request/request-status/request-status';
 
 @Component({
     selector: 'pdm-request-progress-bar',

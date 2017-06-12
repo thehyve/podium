@@ -27,6 +27,8 @@
             "reject": "Reject",
             "close": "Close request",
             "approve": "Approve",
+            "adviseApprove": "Advise approve",
+            "adviseReject": "Advise reject",
             "checks": {
                 "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
                 "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
@@ -39,11 +41,19 @@
         "statusupdate": {
             "Revision": {
                 "title": "Send request for revision",
-                "question": "Are you sure you would like to send this request back for revision?"
+                "question": "Are you sure you want to send this request back for revision?"
             },
             "Reject": {
                 "title": "Permanently reject a request",
-                "question": "Are you sure you would to reject this request?"
+                "question": "Are you sure you want to reject this request?"
+            },
+            "Approved": {
+                "title": "Review request as approved",
+                "question": "Are you sure you advise to accept this request?"
+            },
+            "Rejected": {
+                "title": "Review request as rejected",
+                "question": "Are you sure you advise to reject this request?"
             },
             "form": {
                 "summary": {
@@ -66,7 +76,7 @@
             "relatedRequestNumber": "Related Request Number",
             "principalInvestigator": "Principal Investigator",
             "searchQuery": "Search Query",
-            "isCombined": "Linked Request",
+            "isLinked": "Linked Request",
             "requestTypes": "Request Types",
             "organisations": "Organisations"
         },

@@ -25,6 +25,10 @@
             background-color: #e5e5e5;
         }
 
+        &.approve-header {
+            background-color: darkgreen;
+        }
+
         &.reject-header {
             background-color: rgba(204, 48, 44, 1);
             color: white;
