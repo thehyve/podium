@@ -70,7 +70,7 @@ export class OverviewService {
         switch (userGroup) {
             case UserGroupAuthority.Requester:
                 console.log('Blah 2');
-                requestsUrl = `${this.resourceUrl}/status/${requestStatus}/${UserGroupAuthority.Requester}`;
+                requestsUrl = `${this.resourceUrl}/status/${requestStatus}/${UserGroupAuthority.Requester}/`;
                 break;
             case UserGroupAuthority.Coordinator:
                 console.log('Blah 3');
@@ -104,7 +104,7 @@ export class OverviewService {
             }
             params.set('query', req.query);
 
-            options.search = params;
+            options.params = params;
         }
         return options;
     }

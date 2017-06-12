@@ -13,7 +13,6 @@ import { OverviewService } from '../../shared/overview/overview.service';
 import { JhiLanguageService, EventManager, ParseLinks } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
-import { User } from '../../shared/user/user.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Principal } from '../../shared';
 import { RequestFormService } from '../form/request-form.service';

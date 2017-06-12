@@ -3,9 +3,11 @@
         "status": {
             "All": "All requests",
             "Drafts": "Drafts",
-            "Requires revision": "Revision",
-            "In review": "Review",
-            "In delivery": "Delivery",
+            "Validation": "Validation",
+            "Review": "In review",
+            "Revision": "Revision",
+            "Approved": "Approved",
+            "Delivery": "In delivery",
             "Delivered": "Delivered",
             "Rejected": "Rejected",
             "Cancelled": "Cancelled"
