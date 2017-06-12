@@ -68,9 +68,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        if (this.request != null && this.isOnDelivery()) {
             this.getDeliveries();
-        }
     }
 
     private isOnDelivery() {
@@ -97,10 +95,12 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
      * Fetch all deliveries for a request by request UUID.
      */
     getDeliveries()  {
-        this.deliveryService.getDeliveries(this.request.uuid)
-            .subscribe(
-                (res) => this.onSuccess(res)
-            );
+        if (this.request !== null && this.isOnDelivery()) {
+            this.deliveryService.getDeliveries(this.request.uuid)
+                .subscribe(
+                    (res) => this.onSuccess(res)
+                );
+        }
     }
 
     /**
