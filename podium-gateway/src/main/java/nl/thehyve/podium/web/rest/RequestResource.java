@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -455,27 +456,28 @@ public class RequestResource {
     }
 
     /**
-     * PUT /requests/:uuid/review : Submit review feedback for a request in review
+     * PUT /requests/:uuid/review : Submit review feedback for a request in review status.
      *
-     * @param uuid the uuid of the request to provide the review feedback for
-     * @param feedback the review feedback representation holding the advice and optional message
+     * @param uuid the uuid of the request to provide the review feedback for.
+     * @param feedback the review feedback representation holding the advice and optional message.
      *
-     * @throws ActionNotAllowed
+     * @throws AccessDenied if the current user is not the owner of the feedback.
+     * @throws ActionNotAllowed when the request is not in status 'Review', the feedback is not part of the request, or
+     * the feedback has already been saved before.
      */
     @PutMapping("/requests/{uuid}/review")
     @SecuredByRequestOrganisationReviewer
     @Timed
-    public ResponseEntity<RequestRepresentation> reviewRequest(
+    public ResponseEntity<RequestRepresentation> submitReviewFeedback(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid,
         @RequestBody ReviewFeedbackRepresentation feedback
     ) throws ActionNotAllowed {
         log.debug("REST request to provide review feedback advice for request : {}", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
 
-        RequestRepresentation requestRepresentation = requestService.findRequest(uuid);
-        requestService.provideReviewFeedback(user, requestRepresentation, feedback);
+        RequestRepresentation request = requestService.saveReviewFeedback(user, uuid, feedback);
 
-        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+        return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
     /**
@@ -491,7 +493,7 @@ public class RequestResource {
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> closeRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody(required = false) MessageRepresentation message
     ) throws ActionNotAllowed {
         log.debug("REST request to close request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
