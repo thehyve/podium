@@ -8,27 +8,38 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Sets;
+import nl.thehyve.podium.client.OrganisationClient;
 import nl.thehyve.podium.common.IdentifiableUser;
-import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.event.EventType;
+import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
+import nl.thehyve.podium.common.service.dto.ReviewRoundRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
+import nl.thehyve.podium.domain.ReviewFeedback;
+import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.RequestRepository;
+import nl.thehyve.podium.repository.ReviewFeedbackRepository;
+import nl.thehyve.podium.repository.ReviewRoundRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
+import nl.thehyve.podium.repository.search.ReviewFeedbackSearchRepository;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.service.mapper.ReviewFeedbackMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +65,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
  */
 @Service
 @Transactional
+@Timed
 public class RequestService {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
@@ -68,10 +80,22 @@ public class RequestService {
     private RequestDetailMapper requestDetailMapper;
 
     @Autowired
+    private ReviewFeedbackMapper reviewFeedbackMapper;
+
+    @Autowired
     private RequestSearchRepository requestSearchRepository;
 
     @Autowired
+    private ReviewFeedbackRepository reviewFeedbackRepository;
+
+    @Autowired
+    private ReviewFeedbackSearchRepository reviewFeedbackSearchRepository;
+
+    @Autowired
     private RequestReviewProcessService requestReviewProcessService;
+
+    @Autowired
+    private ReviewRoundService reviewRoundService;
 
     @Autowired
     private OrganisationClientService organisationClientService;
@@ -92,28 +116,9 @@ public class RequestService {
     }
 
 
-    private static PodiumEvent convert(StatusUpdateEvent event) {
-        PodiumEvent podiumEvent = new PodiumEvent();
-        podiumEvent.setPrincipal(event.getUsername());
-        podiumEvent.setEventType(EventType.Status_Change);
-        podiumEvent.setEventDate(event.getEventDate());
-        Map<String,String> data = new HashMap<>();
-        data.put("requestUuid", event.getRequestUuid().toString());
-        data.put("sourceStatus", event.getSourceStatus().toString());
-        data.put("targetStatus", event.getTargetStatus().toString());
-
-        if (event.getMessage() != null) {
-            data.put("messageSummary", event.getMessage().getSummary());
-            data.put("messageDescription", event.getMessage().getDescription());
-        }
-
-        podiumEvent.setData(data);
-        return podiumEvent;
-    }
-
     @Transactional
     private void persistAndPublishEvent(Request request, StatusUpdateEvent event) {
-        PodiumEvent historicEvent = convert(event);
+        PodiumEvent historicEvent = new PodiumEvent(event);
         entityManager.persist(historicEvent);
         request.addHistoricEvent(historicEvent);
         entityManager.persist(request);
@@ -121,19 +126,17 @@ public class RequestService {
         publisher.publishEvent(event);
     }
 
-    private void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, MessageRepresentation message) {
+    protected void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, MessageRepresentation message) {
         StatusUpdateEvent event =
-            new StatusUpdateEvent(user, sourceStatus, request.getStatus(), request.getUuid(), message);
-        persistAndPublishEvent(request, event);
-
-    }
-
-    private void publishStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
-        StatusUpdateEvent event =
-            new StatusUpdateEvent(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
+            new StatusUpdateEvent<>(user, sourceStatus, request.getStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
     }
 
+    protected void publishReviewStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
+        StatusUpdateEvent event =
+            new StatusUpdateEvent<>(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
+        persistAndPublishEvent(request, event);
+    }
 
     /**
      * Save a request.
@@ -262,44 +265,34 @@ public class RequestService {
     }
 
     /**
-     * Checks if the status has the required status.
+     * Checks if the request has any of the allowed statuses
      * @param request the request object.
-     * @param status the required status.
-     * @throws ActionNotAllowedInStatus iff the request does not have the required status.
+     * @param allowedStatuses the allowed statuses.
+     * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
      */
-    private void checkStatus(Request request, RequestStatus status) throws ActionNotAllowedInStatus {
-        if (request.getStatus() != status) {
-            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+    private static RequestStatus checkStatus(Request request, RequestStatus ... allowedStatuses) throws ActionNotAllowed {
+        if (!Status.isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
+            throw ActionNotAllowed.forStatus(request.getStatus());
         }
+        return request.getStatus();
     }
 
     /**
-     * Checks if the status has one of the required review statuses.
+     * Checks if the request has one of the allowed review statuses.
      * @param request the request object.
-     * @param statuses the required review statuses.
-     * @throws ActionNotAllowedInStatus iff the request is not in a review status or does not have one of the
-     * required review statuses.
+     * @param allowedStatuses the allowed review statuses.
+     * @throws ActionNotAllowed iff the request is not in a review status or does not have any of the
+     * allowed review statuses.
      */
-    private void checkReviewStatus(Request request, Collection<RequestReviewStatus> statuses) throws ActionNotAllowedInStatus {
+    private static RequestReviewStatus checkReviewStatus(Request request, RequestReviewStatus ... allowedStatuses) throws ActionNotAllowed {
         if (request.getStatus() != RequestStatus.Review) {
-            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+            throw ActionNotAllowed.forStatus(request.getStatus());
         }
-        for (RequestReviewStatus status: statuses) {
-            if (request.getRequestReviewProcess().getStatus() == status) {
-                return;
-            }
+        RequestReviewStatus currentReviewStatus = request.getRequestReviewProcess().getStatus();
+        if (!Status.isCurrentStatusAllowed(currentReviewStatus, allowedStatuses)) {
+            throw ActionNotAllowed.forStatus(currentReviewStatus);
         }
-        throw ActionNotAllowedInStatus.forStatus(request.getRequestReviewProcess().getStatus());
-    }
-
-    /**
-     * Checks if the status has the required review status.
-     * @param request the request object.
-     * @param status the required review status.
-     * @throws ActionNotAllowedInStatus iff the request is not in a review status or does not have the required review status.
-     */
-    private void checkReviewStatus(Request request, RequestReviewStatus status) throws ActionNotAllowedInStatus {
-        checkReviewStatus(request, Collections.singleton(status));
+        return currentReviewStatus;
     }
 
     /**
@@ -316,7 +309,7 @@ public class RequestService {
         log.debug("Request to get all organisation requests for an organisation for a reviewer");
         checkOrganisationAccess(user, organisationUuid, AuthorityConstants.REVIEWER);
         Page<Request> result = requestRepository.findAllByRequestReviewStatusAndOrganisations(RequestReviewStatus.Review, Collections.singleton(organisationUuid), pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::extendedRequestToRequestDTO);
     }
 
     /**
@@ -447,17 +440,14 @@ public class RequestService {
      * @param user the current user
      * @param body the updated properties.
      * @return the updated draft request
-     * @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
+     * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    @Timed
-    public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
+    public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(body.getUuid());
         if (request.getStatus() != RequestStatus.Draft) {
-            throw ActionNotAllowedInStatus.forStatus(request.getStatus());
+            throw ActionNotAllowed.forStatus(request.getStatus());
         }
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
-        }
+
         request = requestMapper.updateRequestDTOToRequest(body, request);
         save(request);
         return requestMapper.requestToRequestDTO(request);
@@ -471,18 +461,12 @@ public class RequestService {
      * @param user the current user
      * @param body the updated properties.
      * @return the updated request
-     * @throws ActionNotAllowedInStatus if the request is not in review status 'Revision'.
+     * @throws ActionNotAllowed if the request is not in review status 'Revision'.
      */
-    @Timed
-    public RequestRepresentation updateRequest(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowedInStatus {
+    public RequestRepresentation updateRequest(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(body.getUuid());
 
         checkReviewStatus(request, RequestReviewStatus.Revision);
-
-        // FIXME: [AOP] Only requester should be able to perform an update to the request.
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request " + request.getUuid().toString());
-        }
 
         requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
 
@@ -496,18 +480,12 @@ public class RequestService {
      * @param user the current user, submitting the request
      * @param uuid the uuid of the request
      * @return the updated request
-     * @throws ActionNotAllowedInStatus if the request is not in status 'Revision'.
+     * @throws ActionNotAllowed if the request is not in status 'Revision'.
      */
-    @Timed
-    public RequestRepresentation submitRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public RequestRepresentation submitRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
         checkReviewStatus(request, RequestReviewStatus.Revision);
-
-        // Is the current user the owner of the request
-        if (!request.getRequester().equals(user.getUserUuid())) {
-            throw new AccessDenied("Access denied to request.");
-        }
 
         // Update the request details with the updated revision details
         request.setRequestDetail(request.getRevisionDetail());
@@ -519,7 +497,7 @@ public class RequestService {
         request = requestRepository.findOneByUuid(uuid);
         RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
 
-        publishStatusUpdate(user, RequestReviewStatus.Revision, request, null);
+        publishReviewStatusUpdate(user, RequestReviewStatus.Revision, request, null);
 
         return requestRepresentation;
     }
@@ -534,10 +512,9 @@ public class RequestService {
      *
      *  @param user the current user
      *  @param uuid the uuid of the request
-     *  @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
+     *  @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    @Timed
-    public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
         checkStatus(request, RequestStatus.Draft);
         if (!request.getRequester().equals(user.getUserUuid())) {
@@ -553,72 +530,100 @@ public class RequestService {
      * @param user the current user, validating the request
      * @param uuid the uuid of the request
      * @return the updated request
-     * @throws ActionNotAllowedInStatus if the request is not in status 'Review' with review status 'Validation'.
+     * @throws ActionNotAllowed if the request is not in status 'Review' with review status 'Validation'.
      */
-    @Timed
-    public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        checkReviewStatus(request, RequestReviewStatus.Validation);
+        RequestReviewStatus sourceReviewStatus = checkReviewStatus(request, RequestReviewStatus.Validation);
         checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         log.debug("Submitting request for review: {}", uuid);
         requestReviewProcessService.submitForReview(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, RequestReviewStatus.Validation, request, null);
-        return requestMapper.requestToRequestDTO(request);
+
+        // Once successfully started initiate review round and review feedback processes.
+        ReviewRound reviewRound = reviewRoundService.createReviewRoundForRequest(request);
+        request.getReviewRounds().add(reviewRound);
+
+        requestRepository.save(request);
+
+        publishReviewStatusUpdate(user, sourceReviewStatus, request, null);
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
-    @Timed
     public RequestRepresentation rejectRequest(
         AuthenticatedUser user, UUID uuid, MessageRepresentation message
-    ) throws ActionNotAllowedInStatus {
+    ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        checkReviewStatus(request, Arrays.asList(RequestReviewStatus.Validation, RequestReviewStatus.Review));
+        RequestStatus sourceStatus = checkStatus(request, RequestStatus.Review);
+        RequestReviewStatus sourceReviewStatus = checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
         checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
-
-        RequestReviewStatus sourceReviewStatus = request.getRequestReviewProcess().getStatus();
 
         // Reject the request
         requestReviewProcessService.reject(user, request.getRequestReviewProcess());
 
+        // Finalize a potentially available review round
+        reviewRoundService.finalizeReviewRoundForRequest(request);
+
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, sourceReviewStatus, request, message);
+        publishReviewStatusUpdate(user, sourceReviewStatus, request, message);
+
+        if (request.getRequestReviewProcess().getStatus() == RequestReviewStatus.Closed &&
+            request.getRequestReviewProcess().getDecision() == ReviewProcessOutcome.Rejected) {
+            request.setStatus(RequestStatus.Closed);
+            request.setOutcome(RequestOutcome.Rejected);
+            request = save(request);
+            publishStatusUpdate(user, sourceStatus, request, null);
+        }
+
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
-    @Timed
-    public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        checkReviewStatus(request, RequestReviewStatus.Review);
+        RequestStatus sourceStatus = checkStatus(request, RequestStatus.Review);
+        RequestReviewStatus sourceReviewStatus = checkReviewStatus(request, RequestReviewStatus.Review);
         checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         // Approve the request
         requestReviewProcessService.approve(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, RequestReviewStatus.Review, request, null);
+        publishReviewStatusUpdate(user, sourceReviewStatus, request, null);
+
+        if (request.getRequestReviewProcess().getStatus() == RequestReviewStatus.Closed &&
+            request.getRequestReviewProcess().getDecision() == ReviewProcessOutcome.Approved) {
+            request.setStatus(RequestStatus.Approved);
+            request = save(request);
+            publishStatusUpdate(user, sourceStatus, request, null);
+        }
+
+        // Finalize a potentially available review round
+        reviewRoundService.finalizeReviewRoundForRequest(request);
+
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
-    @Timed
     public RequestRepresentation requestRevision(
         AuthenticatedUser user, UUID uuid, MessageRepresentation message
-    ) throws ActionNotAllowedInStatus {
+    ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        checkReviewStatus(request, Arrays.asList(RequestReviewStatus.Validation, RequestReviewStatus.Review));
+        RequestReviewStatus sourceReviewStatus = checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
         checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
-
-        RequestReviewStatus sourceReviewStatus = request.getRequestReviewProcess().getStatus();
 
         // Request revision by the requester
         requestReviewProcessService.requestRevision(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        publishStatusUpdate(user, sourceReviewStatus, request, message);
+
+        // Finalize a potentially available review round
+        reviewRoundService.finalizeReviewRoundForRequest(request);
+
+        publishReviewStatusUpdate(user, sourceReviewStatus, request, message);
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 
@@ -629,12 +634,11 @@ public class RequestService {
      * @param user the current user, submitting the request
      * @param uuid the uuid of the draft request
      * @return the list of generated requests to organisations.
-     * @throws ActionNotAllowedInStatus if the request is not in status 'Draft'.
+     * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    @Timed
-    public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowedInStatus {
+    public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        checkStatus(request, RequestStatus.Draft);
+        RequestStatus sourceStatus = checkStatus(request, RequestStatus.Draft);
         if (!request.getRequester().equals(user.getUserUuid())) {
             throw new AccessDenied("Access denied to request.");
         }
@@ -657,12 +661,29 @@ public class RequestService {
         // TODO: Aggregate mails for multiple organisations per user.
 
         for (UUID organisationUuid: request.getOrganisations()) {
-            // TODO: validate request type of the request with the supported request types of the organisation.
             Request organisationRequest = requestMapper.clone(request);
 
             // Create organisation revision details
             RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());
             organisationRequest.setRevisionDetail(revisionDetail);
+
+            try {
+                Set<RequestType> selectedRequestTypes = organisationRequest.getRequestDetail().getRequestType();
+
+                // Fetch the organisation object and filter the organisation supported request types.
+                OrganisationDTO organisationDTO = organisationClientService.findOrganisationByUuid(organisationUuid);
+                Set<RequestType> organisationRequestTypes = organisationDTO.getRequestTypes();
+
+                Set<RequestType> organisationSupportedRequestTypes
+                    = Sets.intersection(selectedRequestTypes, organisationRequestTypes);
+
+                // Set the by the organisation supported request types for this request.
+                organisationRequest.getRequestDetail().setRequestType(organisationSupportedRequestTypes);
+                organisationRequest.getRevisionDetail().setRequestType(organisationSupportedRequestTypes);
+            } catch (Exception e) {
+                log.error("Error fetching organisation", e);
+                throw new ServiceNotAvailable("Could not fetch organisation", e);
+            }
 
             organisationRequest.setOrganisations(
                 new HashSet<>(Collections.singleton(organisationUuid)));
@@ -671,7 +692,7 @@ public class RequestService {
                 requestReviewProcessService.start(user));
             organisationRequest = save(organisationRequest);
 
-            publishStatusUpdate(user, RequestStatus.Draft, organisationRequest, null);
+            publishStatusUpdate(user, sourceStatus, organisationRequest, null);
 
             organisationRequests.add(organisationRequest);
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
@@ -683,6 +704,126 @@ public class RequestService {
         log.debug("Deleting draft request.");
         deleteRequest(request.getId());
         return result;
+    }
+
+    /**
+     * Close a request in status 'Approved' or 'Delivery'. Throws an exception if not all deliveries have been closed
+     * in status 'Delivery'.
+     * If in status 'Approved', the outcome is set to {@link RequestOutcome#Approved}.
+     * If in status 'Delivery', if all deliveries were successful ('Received' or 'Returned'), the outcome is set to {@link RequestOutcome#Delivered};
+     * else if some deliveries were successful, the outcome is set to {@link RequestOutcome#Partially_Delivered}.
+     * @param user the current user.
+     * @param uuid the uuid of the request.
+     * @param message the (optional) message.
+     * @return the updated request.
+     * @throws ActionNotAllowed iff the request is not in status Approved or Delivery or the process is in status Delivery
+     * and not all deliveries have been closed.
+     */
+    public RequestRepresentation closeRequest(
+        AuthenticatedUser user, UUID uuid, MessageRepresentation message
+    ) throws ActionNotAllowed {
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        RequestStatus sourceStatus = request.getStatus();
+        checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
+        RequestOutcome outcome;
+        switch (sourceStatus) {
+            case Approved:
+                outcome = RequestOutcome.Approved;
+                break;
+            case Delivery:
+                if (request.getDeliveryProcesses().stream().anyMatch(deliveryProcess ->
+                    deliveryProcess.getStatus() != DeliveryStatus.Closed)) {
+                    throw new ActionNotAllowed("Not all delivery processes have been closed.");
+                }
+                if (request.getDeliveryProcesses().stream().allMatch(deliveryProcess ->
+                    deliveryProcess.getOutcome() == DeliveryProcessOutcome.Received || deliveryProcess.getOutcome() == DeliveryProcessOutcome.Returned)) {
+                    outcome = RequestOutcome.Delivered;
+                } else if (request.getDeliveryProcesses().stream().anyMatch(deliveryProcess ->
+                    deliveryProcess.getOutcome() == DeliveryProcessOutcome.Received || deliveryProcess.getOutcome() == DeliveryProcessOutcome.Returned)) {
+                    outcome = RequestOutcome.Partially_Delivered;
+                } else {
+                    outcome = RequestOutcome.Cancelled;
+                }
+                break;
+            default:
+                throw ActionNotAllowed.forStatus(sourceStatus);
+        }
+
+        request.setStatus(RequestStatus.Closed);
+        request.setOutcome(outcome);
+        request = save(request);
+        publishStatusUpdate(user, sourceStatus, request, message);
+
+        return requestMapper.extendedRequestToRequestDTO(request);
+    }
+
+
+    /**
+     * Save the review feedback for the current review round in a request.
+     *
+     * @param user the currently logged in user.
+     * @param requestUuid the uuid of the request the review belongs to.
+     * @param feedbackBody the feedback supplied by the reviewer.
+     *
+     * @return ReviewFeedback the updated review feedback.
+     * @throws AccessDenied if the currently logged in user is not the owner of the feedback.
+     * @throws ActionNotAllowed when the request is not in status 'Review', the feedback is not part of the request, or
+     * the feedback has already been saved before.
+     */
+    @Timed
+    public RequestRepresentation saveReviewFeedback(
+        AuthenticatedUser user,
+        UUID requestUuid,
+        ReviewFeedbackRepresentation feedbackBody
+    ) throws ActionNotAllowed {
+        log.debug("Saving review feedback for {}", feedbackBody.getUuid());
+
+        Request request = requestRepository.findOneByUuid(requestUuid);
+        checkStatus(request, RequestStatus.Review);
+
+        final UUID feedbackUuid = feedbackBody.getUuid();
+
+        if (request.getReviewRounds() == null || request.getReviewRounds().isEmpty()) {
+            throw new RuntimeException("No review rounds found for request " + requestUuid.toString());
+        }
+        ReviewRound currentReviewRound = request.getReviewRounds().get(request.getReviewRounds().size() - 1);
+
+        // Check whether the feedback is part of the request.
+        if (currentReviewRound.getReviewFeedback().stream().noneMatch(reviewFeedback ->
+            reviewFeedback.getUuid().equals(feedbackUuid))) {
+            throw new ActionNotAllowed(
+                String.format("Review feedback (%s) is not part of the current review round of request (%s)",
+                    feedbackUuid,
+                    request.getUuid())
+            );
+        }
+
+        ReviewFeedback feedback = reviewFeedbackRepository.findOneByUuid(feedbackUuid);
+        if (feedback == null) {
+            throw new ResourceNotFound("Review feedback could not be found for " + feedbackUuid.toString());
+        }
+        // Check if the current user is the owner of the review feedback
+        if (!user.getUuid().equals(feedback.getReviewer())) {
+            log.error("Current user ({}) is not the owner ({}) of the review feedback ({}).",
+                user.getUuid(), feedback.getReviewer(), feedback.getUuid()
+            );
+            throw new AccessDenied("Current user is not the review feedback assignee.");
+        }
+        // Check if the review feedback has not already been saved before
+        if (feedback.getAdvice() != ReviewProcessOutcome.None) {
+            throw new ActionNotAllowed(
+                String.format("Review feedback (%s) has already been saved.", feedbackUuid)
+            );
+        }
+
+        feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackBody, feedback);
+        feedback = reviewFeedbackRepository.save(feedback);
+        reviewFeedbackSearchRepository.save(feedback);
+        entityManager.flush();
+        entityManager.refresh(request);
+        return requestMapper.extendedRequestToRequestDTO(request);
     }
 
     /**

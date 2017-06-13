@@ -10,6 +10,7 @@ package nl.thehyve.podium.domain;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
@@ -56,6 +57,11 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Column(name = "status", nullable = false)
     private RequestStatus status;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "outcome", nullable = false)
+    private RequestOutcome outcome = RequestOutcome.None;
+
     @ElementCollection(targetClass = java.util.UUID.class)
     @CollectionTable(
         name="request_organisations",
@@ -75,6 +81,16 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @OneToOne
     @JoinColumn(unique = true, name = "request_review_process")
     private RequestReviewProcess requestReviewProcess;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OrderColumn(name="delivery_process_order")
+    @JoinTable(name = "request_delivery_processes",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="delivery_process_id", referencedColumnName="id"))
+    private List<DeliveryProcess> deliveryProcesses;
 
     @Column(nullable = false)
     private UUID requester;
@@ -156,6 +172,14 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         this.status = status;
     }
 
+    public RequestOutcome getOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(RequestOutcome outcome) {
+        this.outcome = outcome;
+    }
+
     public Set<UUID> getOrganisations() {
         return organisations;
     }
@@ -207,6 +231,19 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
 
     public void setRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
         this.requestReviewProcess = requestReviewProcess;
+    }
+
+    public List<DeliveryProcess> getDeliveryProcesses() {
+        return deliveryProcesses;
+    }
+
+    public Request addDeliveryProcess(DeliveryProcess deliveryProcess) {
+        this.deliveryProcesses.add(deliveryProcess);
+        return this;
+    }
+
+    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
+        this.deliveryProcesses = deliveryProcesses;
     }
 
     public Set<Attachment> getAttachments() {

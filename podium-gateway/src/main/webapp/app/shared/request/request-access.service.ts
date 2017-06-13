@@ -14,6 +14,8 @@ import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';
 import { RequestStatusOptions, RequestReviewStatusOptions } from './request-status/request-status.constants';
+import { RequestReviewFeedback } from './request-review-feedback';
+import { RequestReviewDecision } from './request-review-decision';
 
 @Injectable()
 export class RequestAccessService {
@@ -59,7 +61,7 @@ export class RequestAccessService {
             return false;
         }
 
-        let requiredAuthority = OrganisationAuthorityOptions.ROLE_ORGANISATION_REVIEWER;
+        let requiredAuthority = OrganisationAuthorityOptions.ROLE_REVIEWER;
         let requiredPermission = OrganisationAuthorityOptions[requiredAuthority];
         return this.hasPermissionInAnyOrganisation(request, requiredPermission);
     }
@@ -105,5 +107,25 @@ export class RequestAccessService {
             });
 
         return permittedOrganisations.length > 0;
+    }
+
+    public isReviewable(lastFeedbacks: RequestReviewFeedback[]): boolean {
+        let lastFeedback: RequestReviewFeedback;
+
+        if (!this.currentUser || !lastFeedbacks) {
+            return false;
+        }
+
+        // get current reviewer feedback
+        lastFeedback = lastFeedbacks.find((feedback) => {
+            return feedback.reviewer.uuid === this.currentUser.uuid;
+        });
+
+        if (lastFeedback) {
+            // check if advice has not been given
+            return lastFeedback.advice === RequestReviewDecision.None;
+        } else {
+            return false;
+        }
     }
 }

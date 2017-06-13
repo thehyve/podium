@@ -7,148 +7,103 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {$$} from "protractor";
-import {Director} from "../protractor-stories/director";
-import {login} from "./util";
-import {isUndefined} from "util";
+import { Persona } from '../personas/templates';
+import { Promise } from 'es6-promise';
+import { $$ } from 'protractor';
+import { Director } from '../protractor-stories/director';
+import { login, promiseTrue, doInOrder, checkTextElement } from './util';
+let { defineSupportCode } = require('cucumber');
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
+defineSupportCode(({ Given, When, Then }) => {
 
-    this.Then(/^the overview contains the user's '(.*)' for the users '(.*)'$/, function (fieldString, userString, callback) {
-            let director = this.director as Director;
+    Then(/^the overview contains the user's '(.*)' for the users '(.*)'$/, function (fieldString, userString): Promise<any> {
+        let director = this.director as Director;
 
-            let checksFinished = 0;
-            let fields = JSON.parse(fieldString);
-            let users = JSON.parse(userString);
+        let fields = fieldString.split(", ");
+        let users = userString.split(", ");
 
-            let personas = director.getListOfPersonas(users);
+        let personas: Persona[] = director.getListOfPersonas(users);
 
-            fields.forEach(function (field) {
-                $$('.test-' + field).count().then(function (count) {
-                    if (count == personas.length) {
-
-                        $$('.test-' + field).each(function (element, index) {
-                            return checkField(element, index, field, personas, callback);
-                        }).then(function () {
-                            checksFinished++;
-                            if (checksFinished == fields.length) {
-                                callback()
-                            }
-                        }, callback)
-                    } else {
-                        callback("there are " + count + " elements for fields: " + '.' + field + " expected: " + personas.length)
-                    }
-                })
+        return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
+            return promiseTrue(count == personas.length, "expected " + personas.length + " fields for " + fields[0] + " but found " + count);
+        }).then(() => {
+            return doInOrder(fields, (field) => {
+                return $$('.test-' + field).each((element, index) => {
+                    return checkField(element, field, personas[index]);
+                });
             });
-        }
-    );
+        });
+    });
 
-    function checkField(element, index, field, personas, callback) {
-        if (isUndefined(personas[index])) {
-            callback("there is no persona for the user at (null based) index " + index);
-        }
-
+    function checkField(element, field, persona: Persona): Promise<any> {
         if (['emailVerified', 'adminVerified'].indexOf(field) > -1) {
             element = element.$('span');
         }
 
         switch (field) {
-            case 'authority':{
-                let userAutorities = [];
-
-                //TODO: untested, should work
-                personas[index].properties[field].forEach(function (Autority) {
-                    userAutorities.push(Autority["role"]);
-                });
-
-                return element.$$('div').each(function (element) {
-                    return element.$('span').getText().then(function (text) {
-                        if (userAutorities.indexOf(text) < 0) {
-                            callback("'" + text + "' is not equal to [" + personas[index].properties[field] + "]");
-                        }
-                    })
-
-                });
-            }
             case 'emailVerified': {
-                let text = personas[index].properties[field] ? "Email verified" : "Email unverified";
+                let text = persona[field] ? "Email verified" : "Email unverified";
 
-                return checkTextElement(element, text, callback);
+                return checkTextElement(element, text);
             }
             case 'adminVerified': {
-                let text = personas[index].properties[field] ? "Account verified" : "Account unverified";
+                let text = persona[field] ? "Account verified" : "Account unverified";
 
-                return checkTextElement(element, text, callback);
+                return checkTextElement(element, text);
             }
             default: {
-                return checkTextElement(element, personas[index].properties[field], callback);
+                return checkTextElement(element, persona[field]);
             }
         }
     }
 
 
-    this.When(/^(.*) sorts by '(.*)'$/, function (personaName, sortingType, callback) {
+    When(/^(.*) sorts by '(.*)'$/, function (personaName, sortingType): Promise<any> {
         let director = this.director as Director;
-        let persona = director.getPersona(personaName);
 
         if (sortingType != 'Nothing') {
-            director.clickOn('Header' + sortingType).then(callback, callback);
-        } else {
-            callback()
+            return director.clickOn('Header' + sortingType)
         }
     });
 
-    this.Then(/^users are displayed in the following order: '(.*)'$/, function (userString, callback) {
+    Then(/^users are displayed in the following order: '(.*)'$/, function (userString): Promise<any> {
         let director = this.director as Director;
-        let users = JSON.parse(userString);
-        let personas = director.getListOfPersonas(users);
-        let field = "login";
+        let users = userString.split(", ");
+        let personas: Persona[] = director.getListOfPersonas(users);
+        let fields = ["login"];
 
-        $$('.test-' + field).count().then(function (count) {
-            if (count == personas.length) {
-                $$('.test-' + field).each(function (element, index) {
-
-                    return checkField(element, index, field, personas, callback);
-                }).then(callback, callback);
-            } else {
-                callback("there are " + count + " elements for fields: " + '.' + field + " expected: " + personas.length)
-            }
-        })
+        return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
+            return promiseTrue(count == personas.length, "expected " + personas.length + " fields for " + fields[0] + " but found " + count);
+        }).then(() => {
+            return doInOrder(fields, (field) => {
+                return $$('.test-' + field).each((element, index) => {
+                    return checkField(element, field, personas[index]);
+                });
+            });
+        });
     });
 
-    this.Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName, callback) {
+    Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName): Promise<any> {
         let director = this.director as Director;
-        let sufix = director.getPersona(targetUserName).properties["userName"];
-        let persona = director.getPersona(personaName);
+        let suffix = director.getPersona(targetUserName)["login"];
+        let persona: Persona = director.getPersona(personaName);
 
-        login(director, persona).then(function () {
-            director.goToPage(pageName, sufix).then(callback, callback);
-        }, callback);
+        return login(director, persona).then(() => {
+            return director.goToPage(pageName, suffix);
+        });
     });
 
-    this.Then(/^the user details page contains '(.*)'s data$/, function (personaName, callback) {
+    Then(/^the user details page contains '(.*)'s data$/, function (personaName) {
         let director = this.director as Director;
-        let persona = director.getPersona(personaName);
+        let persona: Persona = director.getPersona(personaName);
         let page = director.getCurrentPage();
 
         let promisses = [
-            checkTextElement(page.elements['login'].locator, persona.properties['userName'], callback),
-            checkTextElement(page.elements['firstName'].locator, persona.properties['firstName'], callback),
-            checkTextElement(page.elements['lastName'].locator, persona.properties['lastName'], callback),
+            checkTextElement(page.elements['login'].locator, persona['login']),
+            checkTextElement(page.elements['firstName'].locator, persona['firstName']),
+            checkTextElement(page.elements['lastName'].locator, persona['lastName']),
         ];
 
-        Promise.all(promisses).then(function () {
-            callback()
-        }, callback)
+        return Promise.all(promisses);
     });
-}
-
-function checkTextElement(element, expectedText, callback) {
-
-    return element.getText().then(function (text) {
-        if (text != expectedText) {
-            callback(text + " is not equal to " + expectedText);
-        }
-    }, callback)
-}
+});

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,6 +28,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByDeletedIsFalseAndEmailVerifiedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
 
+    @Query(value = "select distinct user from User user" +
+        " left join fetch user.roles r" +
+        " left join fetch r.authority a" +
+        " where user.deleted = false and a.name = :authority")
+    List<User> findAllByDeletedIsFalseAndAuthority(@Param("authority") String authority);
+
     Optional<User> findOneByDeletedIsFalseAndResetKey(String resetKey);
 
     Optional<User> findOneByDeletedIsFalseAndEmail(String email);
@@ -36,7 +43,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByDeletedIsFalseAndUuid(UUID uuid);
 
     @Query(value = "select distinct user from User user left join fetch user.roles r left join fetch r.authority where user.deleted = false",
-        countQuery = "select count(user) from User user where user.deleted = false")
+        countQuery = "select count(user) from User user where user.deleted = false and not user.login = 'system'")
     Page<User> findAllWithAuthorities(Pageable pageable);
 
 }

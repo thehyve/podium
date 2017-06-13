@@ -7,21 +7,24 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable, BehaviorSubject, Subject } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
 import { RequestReviewFeedback } from './request-review-feedback';
 import { PodiumEventMessage } from '../event/podium-event-message';
+import { User } from '../user/user.model';
+import { ReviewRound } from './review-round';
 
 @Injectable()
 export class RequestService {
 
+    // FIX ME Please refactor me.
     private resourceUrl = 'api/requests';
     private resourceSearchUrl = 'api/_search/requests';
 
-    public onRequestUpdate: EventEmitter<RequestBase> = new EventEmitter<RequestBase>(false);
+    public onRequestUpdate: Subject<RequestBase> = new Subject();
 
     constructor(private http: Http) { }
 
@@ -52,9 +55,38 @@ export class RequestService {
         });
     }
 
+    findMyApprovedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Approved/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findMyDeliveryRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Delivery/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+
     findCoordinatorReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findCoordinatorApprovedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Approved/coordinator`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findCoordinatorDeliveryRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Delivery/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
@@ -138,11 +170,19 @@ export class RequestService {
 
     submitReview(uuid: string, reviewFeedback: RequestReviewFeedback) {
         let feedbackCopy: RequestReviewFeedback = Object.assign({}, reviewFeedback);
-        return this.http.post(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
+        return this.http.put(`${this.resourceUrl}/${uuid}/review`, feedbackCopy);
     }
 
     rejectRequest(uuid: string, message: PodiumEventMessage): Observable<Response> {
         return this.http.post(`${this.resourceUrl}/${uuid}/reject`, message);
+    }
+
+    startRequestDelivery(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
+    }
+
+    closeRequest(uuid: string, message?: PodiumEventMessage) {
+        return this.http.post(`${this.resourceUrl}/${uuid}/close`, message);
     }
 
     search(req?: any): Observable<Response> {
@@ -151,7 +191,7 @@ export class RequestService {
     }
 
     public requestUpdateEvent(requestBase: RequestBase) {
-        this.onRequestUpdate.emit(requestBase);
+        this.onRequestUpdate.next(requestBase);
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {
@@ -168,5 +208,34 @@ export class RequestService {
             options.search = params;
         }
         return options;
+    }
+
+    getLastReviewFeedbacks(reviewRounds: ReviewRound[]): RequestReviewFeedback[] {
+        // get the latest start date of review rounds
+        let lastReviewRoundDate = new Date(Math.max.apply(null, reviewRounds.map((reviewRound) => {
+            return new Date(reviewRound.startDate);
+        })));
+
+        // get the latest round
+        let lastReviewRound = reviewRounds.find((reviewRound) => {
+            return new Date(reviewRound.startDate).getTime() === lastReviewRoundDate.getTime();
+        });
+
+        // return feedback of last review round
+        if (lastReviewRound && lastReviewRound.endDate == null) {
+            return lastReviewRound.reviewFeedback;
+        }
+        return null;
+    }
+
+    getLastReviewFeedbackByUser(request: RequestBase, user: User): RequestReviewFeedback {
+        let lastFeedbackList = this.getLastReviewFeedbacks(request.reviewRounds);
+        let lastFeedback: RequestReviewFeedback;
+        if (lastFeedbackList) {
+            lastFeedback = lastFeedbackList.find((feedback) => {
+                 return feedback.reviewer.uuid === user.uuid;
+            });
+        }
+        return lastFeedback;
     }
 }

@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.domain.Organisation;
@@ -127,12 +128,17 @@ public class TestResourceIntTest {
         userData.setLangKey("en");
         userData.setAdminVerified(true);
         userData.setEmailVerified(true);
-        //userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.BBMRI_ADMIN)));
+        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.BBMRI_ADMIN)));
 
         mockMvc.perform(post("/api/test/users")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isCreated());
+
+        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin("bbmri_admin");
+        assertThat(userOptional.isPresent()).isTrue();
+        User user = userOptional.get();
+        assertThat(user.getAuthorityNames()).containsExactly(AuthorityConstants.BBMRI_ADMIN);
     }
 
     @Test
@@ -151,6 +157,7 @@ public class TestResourceIntTest {
         organisationData.setName("Test organisation");
         organisationData.setShortName("Test");
         organisationData.setActivated(true);
+        organisationData.setRequestTypes(new HashSet<RequestType>(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material)));
 
         final OrganisationDTO[] organisation = new OrganisationDTO[1];
 
@@ -174,6 +181,7 @@ public class TestResourceIntTest {
         Organisation organisation = organisationService.findByUuid(newOrganisation.getUuid());
         assertThat(organisation).isNotNull();
         assertThat(organisation.isActivated());
+        assertThat(organisation.getRequestTypes().containsAll(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material)));
     }
 
     @Test

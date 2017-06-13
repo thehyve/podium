@@ -37,6 +37,7 @@ import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 import { RequestAccessService } from './request/request-access.service';
+import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 
 @NgModule({
@@ -48,6 +49,7 @@ import { PodiumEventMessageComponent } from './event/podium-event-message.compon
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        RequestReviewPanelComponent,
         EmailValidatorDirective,
         PodiumEventMessageComponent,
         PasswordValidatorDirective,
@@ -64,6 +66,7 @@ import { PodiumEventMessageComponent } from './event/podium-event-message.compon
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        RequestReviewPanelComponent,
         PodiumEventMessageComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,

@@ -28,4 +28,8 @@
     <include file="./changelog/20170508092645_add_revisionDetail_Request.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170504145800_reorganise_events.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170515094712_add_reviewRound_reviewFeedback.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170529164404_add_delivery_process.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170601205912_update_reviewFeedback.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170607155820_added_request_outcome.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170609105528_update_reviewFeedback_reviewer.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

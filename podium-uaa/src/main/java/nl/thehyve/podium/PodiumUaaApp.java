@@ -7,9 +7,9 @@
 
 package nl.thehyve.podium;
 
-import nl.thehyve.podium.common.config.Constants;
-import nl.thehyve.podium.config.DefaultProfileUtil;
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.DefaultProfileUtil;
+import nl.thehyve.podium.common.config.PodiumConstants;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.config.UaaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,11 +49,11 @@ public class PodiumUaaApp {
     public void initApplication() {
         log.info("Running with Spring profile(s) : {}", Arrays.toString(env.getActiveProfiles()));
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        if (activeProfiles.contains(Constants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(Constants.SPRING_PROFILE_PRODUCTION)) {
+        if (activeProfiles.contains(PodiumConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(PodiumConstants.SPRING_PROFILE_PRODUCTION)) {
             log.error("You have misconfigured your application! It should not run " +
                 "with both the 'dev' and 'prod' profiles at the same time.");
         }
-        if (activeProfiles.contains(Constants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(Constants.SPRING_PROFILE_CLOUD)) {
+        if (activeProfiles.contains(PodiumConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(PodiumConstants.SPRING_PROFILE_CLOUD)) {
             log.error("You have misconfigured your application! It should not" +
                 "run with both the 'dev' and 'cloud' profiles at the same time.");
         }

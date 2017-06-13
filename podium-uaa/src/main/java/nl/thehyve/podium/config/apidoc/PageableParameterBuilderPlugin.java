@@ -10,7 +10,7 @@ package nl.thehyve.podium.config.apidoc;
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Function;
-import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -34,7 +34,7 @@ import static springfox.documentation.spi.schema.contexts.ModelContext.inputPara
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
-@Profile(Constants.SPRING_PROFILE_SWAGGER)
+@Profile(PodiumConstants.SPRING_PROFILE_SWAGGER)
 public class PageableParameterBuilderPlugin implements ParameterBuilderPlugin {
     private final TypeNameExtractor nameExtractor;
     private final TypeResolver resolver;

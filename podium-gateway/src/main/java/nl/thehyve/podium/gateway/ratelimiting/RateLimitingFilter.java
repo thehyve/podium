@@ -10,7 +10,7 @@ package nl.thehyve.podium.gateway.ratelimiting;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import nl.thehyve.podium.common.service.SecurityService;
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

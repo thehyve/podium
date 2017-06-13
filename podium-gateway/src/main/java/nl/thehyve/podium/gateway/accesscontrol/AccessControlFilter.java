@@ -9,7 +9,7 @@ package nl.thehyve.podium.gateway.accesscontrol;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import nl.thehyve.podium.config.PodiumProperties;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.filters.Route;

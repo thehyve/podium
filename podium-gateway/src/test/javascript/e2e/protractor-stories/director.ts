@@ -12,8 +12,11 @@ import { Promise } from 'es6-promise';
 import { isUndefined } from 'util';
 
 export interface Persona {
-    name: string;
-    properties: {[key: string]: any};
+    personaID: string;
+}
+
+export interface Data {
+    dataID: string;
 }
 
 export interface Page {
@@ -21,7 +24,7 @@ export interface Page {
     url: string;
     at?(): Promise<boolean>;
     ignoreSynchronization?: boolean;
-    elements: {[name: string]: Interactable};
+    elements: { [name: string]: Interactable };
 }
 
 export interface Interactable {
@@ -39,19 +42,16 @@ export class Director {
     private searchDir: string;
     private currentPage: Page;
     private currentPersona: Persona;
-    private pageDictionary: {[key: string]: Page};
-    private personaDictionary: {[key: string]: Persona};
-    private dataDictionary = {};
+    private pageDictionary: { [key: string]: Page };
+    private personaDictionary: { [key: string]: Persona };
+    private dataDictionary: { [key: string]: Data };
 
 
-    constructor(searchDir: string, PageDictionary: {[key: string]: Page}, personaDictionary: {[key: string]: Persona}, dataDictionary?) {
+    constructor(searchDir: string, PageDictionary: { [key: string]: Page }, personaDictionary: { [key: string]: Persona }, dataDictionary?) {
         this.searchDir = searchDir;
         this.pageDictionary = PageDictionary;
         this.personaDictionary = personaDictionary;
         this.dataDictionary = dataDictionary;
-        browser.get('/');
-        browser.executeScript('localStorage.clear();');
-        browser.executeScript('sessionStorage.clear();');
     }
 
     fatalError(message: string) {
@@ -78,19 +78,19 @@ export class Director {
         return this.currentPersona = this.personaDictionary[personaName];
     }
 
-    public getPersona(personaName: string) {
+    public getPersona(personaName: string): Persona {
         if (personaName != "he" && personaName != "she") {
             this.setCurrentPersonaTo(personaName);
         }
         return this.currentPersona;
     }
 
-    public getListOfPersonas(personaNames: string[]) {
+    public getListOfPersonas(personaNames: string[]): Persona[] {
         let that = this;
         let result = new Array(personaNames.length);
 
         personaNames.forEach(function (personaName, index) {
-            if (isUndefined(that.personaDictionary[personaName])){
+            if (isUndefined(that.personaDictionary[personaName])) {
                 that.fatalError('The persona: ' + personaName + ' does not exist.\n check your personaDictionary to see the available personas');
             }
             result[index] = that.personaDictionary[personaName];
@@ -99,9 +99,9 @@ export class Director {
         return result;
     }
 
-    public getData(dataID: string){
+    public getData(dataID: string) {
         let that = this;
-        if (isUndefined(that.dataDictionary[dataID])){
+        if (isUndefined(that.dataDictionary[dataID])) {
             that.fatalError('The data: ' + dataID + ' does not exist.\n check your dataDictionary to see the available data');
         }
         return that.dataDictionary[dataID];
@@ -127,7 +127,7 @@ export class Director {
 
     public at(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        // browser.waitForAngular('make sure the page is loaded before doing a check');
+        browser.waitForAngular('make sure the page is loaded before doing a check');
         return Promise.resolve(page.at()).then(function (v) {
             return new Promise(function (resolve, reject) {
                 if (v) {
@@ -140,7 +140,7 @@ export class Director {
         });
     };
 
-    public getElement(elementName: string) {
+    public getElement(elementName: string): Interactable {
         let element = this.getCurrentPage().elements[elementName];
         if (isUndefined(element)) {
             this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + elementName + '.\n');
@@ -154,20 +154,24 @@ export class Director {
         }
     }
 
-    public clickOn(elementName: string) {
+    public clickOn(elementName: string): Promise<any> {
         let element = this.getElement(elementName);
         this.handleDestination(element);
         return element.locator.click()
     }
 
-    public enterText(fieldName: string, text: string) {
+    public enterText(fieldName: string, text: string, specialKey?: string) {
         if (isUndefined(this.getCurrentPage().elements[fieldName])) {
             this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + fieldName + '.\n');
         }
         return Promise.all([
             this.getCurrentPage().elements[fieldName].locator.clear(),
             this.getCurrentPage().elements[fieldName].locator.sendKeys(text)
-        ])
+        ]).then(() => {
+            if (!isUndefined(specialKey)) {
+                return this.getCurrentPage().elements[fieldName].locator.sendKeys(specialKey);
+            }
+        })
     }
 
     public waitForPage(pageName: string) {
@@ -178,5 +182,12 @@ export class Director {
         }, function (err) {
             throw 'Page: ' + pageName + ' did not appear fast enough.\n error: ' + err;
         })
+    }
+
+    public uploadFile(elementName: string, fileName: string, uploadTimer?: number) {
+        let element = this.getElement(elementName);
+        let file = this.getData(fileName);
+
+        return element.locator.sendKeys(file["path"]).then(() => browser.sleep((uploadTimer || 1000)))
     }
 }

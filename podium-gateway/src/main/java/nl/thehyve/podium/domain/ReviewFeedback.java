@@ -10,7 +10,7 @@
 
 package nl.thehyve.podium.domain;
 
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -53,12 +54,16 @@ public class ReviewFeedback implements Serializable {
     @Column(name = "review_feedback_id")
     private Long id;
 
+    @Column(unique = true, nullable = false)
+    private UUID uuid;
+
+    @Column(name = "reviewer", nullable = false)
     private UUID reviewer;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "advice", nullable = false)
-    private DecisionOutcome advice = DecisionOutcome.None;
+    private ReviewProcessOutcome advice = ReviewProcessOutcome.None;
 
     private ZonedDateTime date;
 
@@ -75,6 +80,28 @@ public class ReviewFeedback implements Serializable {
         this.id = id;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    /**
+     * Only the database can return the UUID from the stored entity
+     * Pre-persist will add a {@link UUID} to the entity
+     * This setter is only added to satisfy mapstruct e.g.
+     *
+     * @param uuid is ignored.
+     */
+    public void setUuid(UUID uuid) {
+        // pass
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+    }
+
     public UUID getReviewer() {
         return reviewer;
     }
@@ -83,11 +110,11 @@ public class ReviewFeedback implements Serializable {
         this.reviewer = reviewer;
     }
 
-    public DecisionOutcome getAdvice() {
+    public ReviewProcessOutcome getAdvice() {
         return advice;
     }
 
-    public void setAdvice(DecisionOutcome advice) {
+    public void setAdvice(ReviewProcessOutcome advice) {
         this.advice = advice;
     }
 

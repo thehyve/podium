@@ -9,15 +9,17 @@
  */
 
 import { RequestReviewDecision } from './request-review-decision';
+import { User } from '../user/user.model';
+import { PodiumEventMessage } from '../event/podium-event-message';
 
 export class RequestReviewFeedback {
 
     id?: string;
+    uuid?: string;
+    reviewer?: User;
     advice?: RequestReviewDecision;
-    reviewer?: string;
     date?: Date;
-    summary?: string;
-    description?: string;
+    message?: PodiumEventMessage;
 
     constructor() {
     }

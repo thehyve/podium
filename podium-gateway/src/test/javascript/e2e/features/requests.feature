@@ -1,4 +1,4 @@
-Feature: The main function of podium is for researchers to make requests to organizations (BRPREQ-121)
+Feature: The main function of podium is for researchers to make requests to organisations (BRPREQ-121)
 
 #    Scenario: A researcher is able to create a request
 #        Given Simone goes to the 'new requests' page

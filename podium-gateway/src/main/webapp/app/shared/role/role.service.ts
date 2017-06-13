@@ -51,7 +51,6 @@ export class RoleService {
         ;
     }
 
-
     private createRequestOption(req?: any): BaseRequestOptions {
         let options: BaseRequestOptions = new BaseRequestOptions();
         if (req) {

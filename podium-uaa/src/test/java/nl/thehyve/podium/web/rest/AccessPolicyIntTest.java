@@ -8,12 +8,10 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
-import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
-import nl.thehyve.podium.common.test.AbstractAccessPolicyIntTest;
+import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.common.test.Action;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
@@ -21,9 +19,9 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
+import nl.thehyve.podium.service.TestService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.RoleMapper;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +42,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +56,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @RunWith(SpringRunner.class)
 @ContextConfiguration
 @SpringBootTest(classes = PodiumUaaApp.class)
-public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
+public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
 
     private Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
 
@@ -71,6 +68,9 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private TestService testService;
 
     @Autowired
     private RoleMapper roleMapper;
@@ -99,26 +99,9 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
     private Organisation organisationA;
     private Organisation organisationB;
 
-    private Organisation createOrganisation(String organisationName) {
-        Set<RequestType> requestTypes = new HashSet<>();
-        requestTypes.add(RequestType.Data);
-
-        Organisation organisation = new Organisation();
-        organisation.setName(organisationName);
-        organisation.setShortName(organisationName);
-        organisation.setRequestTypes(requestTypes);
-        organisation = organisationService.save(organisation);
-        entityManager.persist(organisation);
-        for(Role role: organisation.getRoles()) {
-            entityManager.persist(role);
-        }
-        entityManager.flush();
-        return organisation;
-    }
-
     private void createOrganisations() {
-        organisationA = createOrganisation("A");
-        organisationB = createOrganisation("B");
+        organisationA = testService.createOrganisation("A");
+        organisationB = testService.createOrganisation("B");
     }
 
     private User podiumAdmin;
@@ -137,60 +120,20 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
     private User anonymous;
     private Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
 
-    private User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
-        log.info("Creating user {}", name);
-        ManagedUserVM userVM = new ManagedUserVM();
-        userVM.setLogin("test_" + name);
-        userVM.setEmail("test_" + name + "@localhost");
-        userVM.setFirstName("test_firstname_"+name);
-        userVM.setLastName("test_lastname_"+name);
-        userVM.setPassword("Password123!");
-        User user = userService.createUser(userVM);
-        if (organisations.length > 0) {
-            for (Organisation organisation: organisations) {
-                log.info("Assigning role {} for organisation {}", authority, organisation.getName());
-                Role role = roleService.findRoleByOrganisationAndAuthorityName(organisation, authority);
-                assert (role != null);
-                user.getRoles().add(role);
-                user = userService.save(user);
-            }
-        } else if (authority != null) {
-            log.info("Assigning role {}", authority);
-            Role role = roleService.findRoleByAuthorityName(authority);
-            assert (role != null);
-            user.getRoles().add(role);
-            user = userService.save(user);
-        }
-        entityManager.persist(user);
-        entityManager.flush();
-        {
-            log.info("Checking user {}", name);
-            // some sanity checks
-            User user1 = entityManager.find(User.class, user.getId());
-            assert (user1 != null);
-            if (authority != null) {
-                assert (!user1.getAuthorities().isEmpty());
-                UserAuthenticationToken token = new UserAuthenticationToken(user1);
-                assert (!token.getAuthorities().isEmpty());
-            }
-        }
-        return user;
-    }
-
     private void createUsers() throws UserAccountException {
-        podiumAdmin = createUser("podiumAdmin", AuthorityConstants.PODIUM_ADMIN);
-        bbmriAdmin = createUser("bbmriAdmin", AuthorityConstants.BBMRI_ADMIN);
-        adminOrganisationA = createUser("adminOrganisationA", AuthorityConstants.ORGANISATION_ADMIN, organisationA);
-        adminOrganisationB = createUser("adminOrganisationB", AuthorityConstants.ORGANISATION_ADMIN, organisationB);
-        adminOrganisationAandB = createUser("adminOrganisationAandB", AuthorityConstants.ORGANISATION_ADMIN, organisationA, organisationB);
-        coordinatorOrganisationA = createUser("coordinatorOrganisationA", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA);
-        coordinatorOrganisationB = createUser("coordinatorOrganisationB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationB);
-        coordinatorOrganisationAandB= createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
-        reviewerAandB = createUser("reviewerAandB", AuthorityConstants.REVIEWER, organisationA, organisationB);
-        reviewerA = createUser("reviewerA", AuthorityConstants.REVIEWER, organisationA);
-        researcher = createUser("researcher", AuthorityConstants.RESEARCHER);
-        testUser1 = createUser("testUser1", AuthorityConstants.RESEARCHER);
-        testUser2 = createUser("testUser2", AuthorityConstants.RESEARCHER);
+        podiumAdmin = testService.createUser("podiumAdmin", AuthorityConstants.PODIUM_ADMIN);
+        bbmriAdmin = testService.createUser("bbmriAdmin", AuthorityConstants.BBMRI_ADMIN);
+        adminOrganisationA = testService.createUser("adminOrganisationA", AuthorityConstants.ORGANISATION_ADMIN, organisationA);
+        adminOrganisationB = testService.createUser("adminOrganisationB", AuthorityConstants.ORGANISATION_ADMIN, organisationB);
+        adminOrganisationAandB = testService.createUser("adminOrganisationAandB", AuthorityConstants.ORGANISATION_ADMIN, organisationA, organisationB);
+        coordinatorOrganisationA = testService.createUser("coordinatorOrganisationA", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA);
+        coordinatorOrganisationB = testService.createUser("coordinatorOrganisationB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationB);
+        coordinatorOrganisationAandB= testService.createUser("coordinatorOrganisationAandB", AuthorityConstants.ORGANISATION_COORDINATOR, organisationA, organisationB);
+        reviewerAandB = testService.createUser("reviewerAandB", AuthorityConstants.REVIEWER, organisationA, organisationB);
+        reviewerA = testService.createUser("reviewerA", AuthorityConstants.REVIEWER, organisationA);
+        researcher = testService.createUser("researcher", AuthorityConstants.RESEARCHER);
+        testUser1 = testService.createUser("testUser1", AuthorityConstants.RESEARCHER);
+        testUser2 = testService.createUser("testUser2", AuthorityConstants.RESEARCHER);
         anonymous = null;
         allUsers.addAll(Arrays.asList(
             podiumAdmin,
@@ -240,6 +183,27 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
 
     private void createActions() {
         // Roles
+
+        // GET /roles
+        actions.add(newAction()
+            .setUrl(ROLE_ROUTE)
+            .allow(podiumAdmin, bbmriAdmin));
+        // GET /roles/organisation/{uuid}
+        actions.add(newAction()
+            .setUrl(format(ROLE_ROUTE, "/organisation/%s", organisationA.getUuid()))
+            .allow(podiumAdmin, bbmriAdmin,
+                adminOrganisationA, adminOrganisationAandB,
+                coordinatorOrganisationA, coordinatorOrganisationAandB,
+                reviewerA, reviewerAandB));
+        // GET /roles/{id}
+        actions.add(newAction()
+            .setUrl(format(ROLE_ROUTE, "/%d", reviewerBRole.getId()))
+            .allow(podiumAdmin, bbmriAdmin));
+        // GET /_search/roles
+        actions.add(newAction()
+            .setUrl(ROLE_SEARCH_ROUTE)
+            .set("query", "admin")
+            .allow(podiumAdmin, bbmriAdmin));
         // POST /roles. Not allowed!
         actions.add(newAction()
             .setUrl(ROLE_ROUTE).setMethod(HttpMethod.POST)
@@ -266,26 +230,6 @@ public class AccessPolicyIntTest extends AbstractAccessPolicyIntTest {
             .setMethod(HttpMethod.PUT)
             .body(editedReviewerARole)
             .allow(podiumAdmin, bbmriAdmin, adminOrganisationA, adminOrganisationAandB));
-        // GET /roles
-        actions.add(newAction()
-            .setUrl(ROLE_ROUTE)
-            .allow(podiumAdmin, bbmriAdmin));
-        // GET /roles/organisation/{uuid}
-        actions.add(newAction()
-            .setUrl(format(ROLE_ROUTE, "/organisation/%s", organisationA.getUuid()))
-            .allow(podiumAdmin, bbmriAdmin,
-                adminOrganisationA, adminOrganisationAandB,
-                coordinatorOrganisationA, coordinatorOrganisationAandB,
-                reviewerA, reviewerAandB));
-        // GET /roles/{id}
-        actions.add(newAction()
-            .setUrl(format(ROLE_ROUTE, "/%d", reviewerBRole.getId()))
-            .allow(podiumAdmin, bbmriAdmin));
-        // GET /_search/roles
-        actions.add(newAction()
-            .setUrl(ROLE_SEARCH_ROUTE)
-            .set("query", "admin")
-            .allow(podiumAdmin, bbmriAdmin));
     }
 
     private void setupData() throws UserAccountException {

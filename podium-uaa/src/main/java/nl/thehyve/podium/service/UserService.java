@@ -38,12 +38,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -82,6 +79,9 @@ public class UserService {
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
 
+    @Autowired
+    private EntityManager entityManager;
+
     /**
      * Activate a user by a given key.
      * If the activation key has expired return null
@@ -109,10 +109,12 @@ public class UserService {
             user.setActivationKey(null);
             user.setActivationKeyDate(null);
 
-            SearchUser searchUser = userMapper.userToSearchUser(user);
-            userSearchRepository.save(searchUser);
-
             save(user);
+
+            // Notify BBMRI admin
+            Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+            mailService.sendUserRegisteredEmail(administrators, user);
+
             log.debug("Activated user: {}", user);
         }
 
@@ -155,6 +157,10 @@ public class UserService {
                     SearchUser searchUser = userMapper.userToSearchUser(user);
                     userSearchRepository.save(searchUser);
                     log.debug("Activated user: {}", user);
+
+                    // Notify BBMRI admin
+                    Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+                    mailService.sendUserRegisteredEmail(administrators, user);
                 }
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
@@ -165,7 +171,6 @@ public class UserService {
 
     public Optional<User> requestPasswordReset(String mail) {
         return userRepository.findOneByDeletedIsFalseAndEmail(mail)
-            .filter(User::isActivated)
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
                 user.setResetDate(ZonedDateTime.now());
@@ -225,9 +230,6 @@ public class UserService {
         newUser.setRoles(roles);
         save(newUser);
 
-        SearchUser searchUser = userMapper.userToSearchUser(newUser);
-        userSearchRepository.save(searchUser);
-
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -256,9 +258,6 @@ public class UserService {
         user.setAdminVerified(true);
         save(user);
 
-        SearchUser searchUser = userMapper.userToSearchUser(user);
-        userSearchRepository.save(searchUser);
-
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -279,8 +278,6 @@ public class UserService {
         user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         user = save(user);
 
-        SearchUser searchUser = userMapper.userToSearchUser(user);
-        userSearchRepository.save(searchUser);
         log.debug("Changed Information for User: {}", user);
         return userMapper.userToUserDTO(user);
     }
@@ -336,16 +333,22 @@ public class UserService {
         return save(user);
     }
 
+    /**
+     * Save or update the user entity in the db as well as the searchUser in Elasticsearch
+     *
+     * @param user the user to save or update
+     * @return User the saved user
+     */
     public User save(User user) {
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+        SearchUser searchUser = userMapper.userToSearchUser(updatedUser);
+        userSearchRepository.save(searchUser);
+        return updatedUser;
     }
 
     public void delete(User user) {
         user.setDeleted(true);
         save(user);
-
-        SearchUser searchUser = userMapper.userToSearchUser(user);
-        userSearchRepository.save(searchUser);
 
         log.debug("Deleted User: {}", user);
     }
@@ -353,6 +356,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneByDeletedIsFalseAndLogin(login).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
@@ -361,14 +365,21 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserByUuid(UUID uuid) {
         return userRepository.findOneByDeletedIsFalseAndUuid(uuid).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
     }
 
     @Transactional(readOnly = true)
+    public List<User> getUsersByAuthority(String authority) {
+        return userRepository.findAllByDeletedIsFalseAndAuthority(authority);
+    }
+
+    @Transactional(readOnly = true)
     public User getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
+        entityManager.refresh(user);
         user.getAuthorities().size(); // eagerly load the association
         return user;
     }
@@ -381,18 +392,22 @@ public class UserService {
         User user = null;
         if (optionalUser.isPresent()) {
             user = optionalUser.get();
+            entityManager.refresh(user);
             user.getAuthorities().size(); // eagerly load the association
         }
         return user;
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {
         return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
     }
 
+    @Transactional(readOnly = true)
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAllWithAuthorities(pageable);
     }

@@ -7,22 +7,22 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../../shared/request/request-base';
 import {
-    RequestStatus,
+    RequestStatusOptions,
+    RequestReviewStatusOptions,
     REQUEST_STATUSES,
     REQUEST_STATUSES_MAP,
     REQUEST_REVIEW_STATUSES,
     REQUEST_REVIEW_STATUSES_MAP
-} from '../../../shared/request/request-status';
-import {
-    RequestStatusOptions,
-    RequestReviewStatusOptions
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestService } from '../../../shared/request/request.service';
+import { Subscription } from 'rxjs';
+import { RequestStatus } from '../../../shared/request/request-status/request-status';
+import { RequestOutcome } from '../../../shared/request/request-outcome';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -30,27 +30,37 @@ import { RequestService } from '../../../shared/request/request.service';
     styleUrls: ['request-progress-bar.scss']
 })
 
-export class RequestProgressBarComponent {
+export class RequestProgressBarComponent implements OnDestroy {
+
     @Input() request: RequestBase;
     requestStatusOptions: ReadonlyArray<RequestStatus>;
     requestStatusMap: { [token: string]: RequestStatus; };
     requestReviewStatusOptions: ReadonlyArray<RequestStatus>;
     requestReviewStatusMap: { [token: string]: RequestStatus; };
 
+    requestSubscription: Subscription;
+
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService
     ) {
-        jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
         this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
         this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
 
-        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+        this.jhiLanguageService.addLocation('requestOutcome');
+
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });
+    }
+
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
     }
 
     /**
@@ -78,14 +88,28 @@ export class RequestProgressBarComponent {
     }
 
     /**
-     * Check whether the request is closed
-     * All closed states return an order of -1
+     * Check whether the request is Closed
      *
      * @param request the current request
+     * @param currentOrder order of the status being processed
      * @returns {boolean} true if the request status is closed
      */
-    isClosed(request: RequestBase): boolean {
-        return this.getRequestStatusOrder(request) === -1;
+    isClosed(request: RequestBase, currentOrder: number): boolean {
+        if (request.status !== RequestStatusOptions.Closed) {
+            return false;
+        }
+
+        let requestOrder = this.getRequestStatusOrder(request);
+
+        return requestOrder === currentOrder;
+    }
+
+    isPartiallyDelivered(request: RequestBase) {
+        return request.outcome === RequestOutcome.Partially_Delivered;
+    }
+
+    isCancelled(request: RequestBase) {
+        return request.outcome === RequestOutcome.Cancelled;
     }
 
     isRevisionStatus(request: RequestBase): boolean {
@@ -103,13 +127,37 @@ export class RequestProgressBarComponent {
     getRequestStatusOrder(request: RequestBase): number {
         let reqStatus = request.status;
         let reviewStatus = RequestStatusOptions.Review;
-        if (reqStatus.toString() === RequestStatusOptions[reviewStatus]) {
+        if (reqStatus === reviewStatus) {
             let reqReviewStatus: RequestReviewStatusOptions = request.requestReview.status;
             // Return requestReviewStatusOrder
-            return this.requestReviewStatusMap[reqReviewStatus].order;
+            if (this.requestReviewStatusMap.hasOwnProperty(reqReviewStatus)) {
+                return this.requestReviewStatusMap[reqReviewStatus].order;
+            }
         } else {
             // Not Review status - return requestStatusOrder
-            return this.requestStatusMap[reqStatus].order;
+            if (this.requestStatusMap.hasOwnProperty(reqStatus)) {
+                return this.requestStatusMap[reqStatus].order;
+            }
         }
+
+        if (reqStatus === RequestStatusOptions.Closed) {
+            switch (request.outcome) {
+                case RequestOutcome.Rejected:
+                    return 3; // Review element should be selected
+                case RequestOutcome.Approved:
+                    return 4;
+                case RequestOutcome.Cancelled:
+                    return 6;
+                case RequestOutcome.Partially_Delivered:
+                    return 6;
+                case RequestOutcome.Delivered:
+                    return 6;
+                default:
+                    return 0;
+            }
+        }
+
+
+        return 0;
     }
 }

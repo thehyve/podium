@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.config.apidoc;
 
-import nl.thehyve.podium.config.PodiumConstants;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
