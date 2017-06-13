@@ -50,15 +50,16 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     links: any;
 
     // FIXME: Major refactor of overview component.
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestService: RequestService,
-                private router: Router,
-                private parseLinks: ParseLinks,
-                private requestFormService: RequestFormService,
-                private eventManager: EventManager,
-                private principal: Principal,
-                private modalService: NgbModal,
-                private activatedRoute: ActivatedRoute
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestService: RequestService,
+        private router: Router,
+        private parseLinks: ParseLinks,
+        private requestFormService: RequestFormService,
+        private eventManager: EventManager,
+        private principal: Principal,
+        private modalService: NgbModal,
+        private activatedRoute: ActivatedRoute
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
@@ -133,6 +134,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadAllReviewerRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findAllReviewerRequests(this.getPageParams())
             .subscribe(
@@ -142,6 +144,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadCoordinatorReviewRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findCoordinatorReviewRequests(this.getPageParams())
             .subscribe(
@@ -151,6 +154,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadCoordinatorApprovedRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Approved);
         this.currentRequestStatus = RequestStatusOptions.Approved;
         this.requestService.findCoordinatorApprovedRequests(this.getPageParams())
             .subscribe(
@@ -160,6 +164,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadCoordinatorDeliveryRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Delivery);
         this.currentRequestStatus = RequestStatusOptions.Delivery;
         this.requestService.findCoordinatorDeliveryRequests(this.getPageParams())
             .subscribe(
@@ -169,6 +174,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadDrafts() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Draft);
         this.currentRequestStatus = RequestStatusOptions.Draft;
         this.requestService.findDrafts(this.getPageParams())
             .subscribe(
@@ -178,6 +184,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadMyReviewRequests(): void {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findMyReviewRequests(this.getPageParams())
             .subscribe(
@@ -187,6 +194,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadMyApprovedRequests(): void {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Approved);
         this.currentRequestStatus = RequestStatusOptions.Approved;
         this.requestService.findMyApprovedRequests(this.getPageParams())
             .subscribe(
@@ -196,6 +204,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadMyDeliveryRequests(): void {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Delivery);
         this.currentRequestStatus = RequestStatusOptions.Delivery;
         this.requestService.findMyDeliveryRequests(this.getPageParams())
             .subscribe(
@@ -210,6 +219,14 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             result.push('id');
         }
         return result;
+    }
+
+    resetPaginationParamsOnStatusChange(newStatus: RequestStatusOptions) {
+        if (this.currentRequestStatus !== newStatus) {
+            this.page = 1;
+            this.reverse = true;
+            this.itemsPerPage = ITEMS_PER_PAGE;
+        }
     }
 
     editRequest(request) {
