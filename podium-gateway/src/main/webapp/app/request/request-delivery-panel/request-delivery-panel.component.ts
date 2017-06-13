@@ -52,10 +52,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
         private requestService: RequestService,
         private deliveryService: DeliveryService
     ) {
-        jhiLanguageService.addLocation('delivery');
-        jhiLanguageService.addLocation('deliveryStatus');
-        jhiLanguageService.addLocation('deliveryOutcome');
-        jhiLanguageService.addLocation('requestType');
+        jhiLanguageService.setLocations(['request', 'requestStatus', 'delivery', 'deliveryStatus', 'deliveryOutcome', 'requestType']);
 
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
@@ -68,7 +65,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-            this.getDeliveries();
+        this.getDeliveries();
     }
 
     /**
@@ -117,6 +114,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
      * @param res
      */
     onSuccess(res: Delivery[]) {
+        this.deliveryService.deliveriesFetchEvent(res);
         this.requestDeliveries = res;
     }
 
@@ -262,6 +260,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
             }
             this.isUpdating = false;
         }, (reason) => {
+            console.error('Err on delivery update: ', reason);
             this.isUpdating = false;
         });
     }

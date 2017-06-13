@@ -55,6 +55,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() reviewAdviseApproved = new EventEmitter();
     @Output() reviewAdviseRejected = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
+    @Output() closeRequestChange = new EventEmitter();
     @Output() finalizeRequestChange = new EventEmitter();
 
     constructor(
@@ -182,6 +183,10 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     startDelivery() {
         this.startDeliveryChange.emit(true);
+    }
+
+    closeRequest() {
+        this.closeRequestChange.emit(true);
     }
 
     finalizeRequest() {

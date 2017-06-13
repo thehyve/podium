@@ -10,7 +10,7 @@
 
 export enum RequestOutcome {
     Delivered           = <any>'Delivered',
-    Partially_Delivered = <any>'Partially Delivered',
+    Partially_Delivered = <any>'Partially_Delivered',
     Cancelled           = <any>'Cancelled',
     Rejected            = <any>'Rejected',
     Approved            = <any>'Approved',

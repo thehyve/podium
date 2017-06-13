@@ -109,9 +109,6 @@ public class UserService {
             user.setActivationKey(null);
             user.setActivationKeyDate(null);
 
-            SearchUser searchUser = userMapper.userToSearchUser(user);
-            userSearchRepository.save(searchUser);
-
             save(user);
 
             // Notify BBMRI admin
@@ -233,9 +230,6 @@ public class UserService {
         newUser.setRoles(roles);
         save(newUser);
 
-        SearchUser searchUser = userMapper.userToSearchUser(newUser);
-        userSearchRepository.save(searchUser);
-
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
@@ -264,9 +258,6 @@ public class UserService {
         user.setAdminVerified(true);
         save(user);
 
-        SearchUser searchUser = userMapper.userToSearchUser(user);
-        userSearchRepository.save(searchUser);
-
         log.debug("Created Information for User: {}", user);
         return user;
     }
@@ -287,8 +278,6 @@ public class UserService {
         user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         user = save(user);
 
-        SearchUser searchUser = userMapper.userToSearchUser(user);
-        userSearchRepository.save(searchUser);
         log.debug("Changed Information for User: {}", user);
         return userMapper.userToUserDTO(user);
     }
@@ -344,16 +333,22 @@ public class UserService {
         return save(user);
     }
 
+    /**
+     * Save or update the user entity in the db as well as the searchUser in Elasticsearch
+     *
+     * @param user the user to save or update
+     * @return User the saved user
+     */
     public User save(User user) {
-        return userRepository.save(user);
+        User updatedUser = userRepository.save(user);
+        SearchUser searchUser = userMapper.userToSearchUser(updatedUser);
+        userSearchRepository.save(searchUser);
+        return updatedUser;
     }
 
     public void delete(User user) {
         user.setDeleted(true);
         save(user);
-
-        SearchUser searchUser = userMapper.userToSearchUser(user);
-        userSearchRepository.save(searchUser);
 
         log.debug("Deleted User: {}", user);
     }

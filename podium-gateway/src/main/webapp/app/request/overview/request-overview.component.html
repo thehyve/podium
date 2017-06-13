@@ -23,6 +23,12 @@
                 Delivery
             </span>
         </button>
+        <button class="btn btn-primary float-xs-right create-organisation active" (click)="loadMyApprovedRequests()" >
+            <i class="material-icons">thumb_up</i>
+            <span class="hidden-sm-down">
+                Approved
+            </span>
+        </button>
         <button class="btn btn-success float-xs-right create-organisation" (click)="loadDrafts()">
             <i class="material-icons">drafts</i>
             <span class="hidden-sm-down">
@@ -43,7 +49,13 @@
                 Submitted
             </span>
         </button>
-        <button class="btn btn-info float-xs-right create-organisation active" (click)="loadCoordinatorDeliveryRequests()" >
+        <button class="btn btn-info float-xs-right create-organisation active" (click)="loadCoordinatorApprovedRequests()" >
+            <i class="material-icons">thumb_up</i>
+            <span class="hidden-sm-down">
+                Approved
+            </span>
+        </button>
+        <button class="btn btn-primary float-xs-right create-organisation active" (click)="loadCoordinatorDeliveryRequests()" >
             <i class="material-icons">local_shipping</i>
             <span class="hidden-sm-down">
                 Delivery

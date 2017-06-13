@@ -150,6 +150,15 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             );
     }
 
+    loadCoordinatorApprovedRequests() {
+        this.currentRequestStatus = RequestStatusOptions.Approved;
+        this.requestService.findCoordinatorApprovedRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available coordinator review request.')
+            );
+    }
+
     loadCoordinatorDeliveryRequests() {
         this.currentRequestStatus = RequestStatusOptions.Delivery;
         this.requestService.findCoordinatorDeliveryRequests(this.getPageParams())
@@ -171,6 +180,15 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     loadMyReviewRequests(): void {
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findMyReviewRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available submitted requests.')
+            );
+    }
+
+    loadMyApprovedRequests(): void {
+        this.currentRequestStatus = RequestStatusOptions.Approved;
+        this.requestService.findMyApprovedRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available submitted requests.')

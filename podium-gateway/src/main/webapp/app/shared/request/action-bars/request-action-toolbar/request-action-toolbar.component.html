@@ -155,6 +155,12 @@
 
                 <!-- Coordinator action to start request delivery -->
                 <div *ngIf="isRequestCoordinator()">
+
+                    <button type="button" class="btn btn-danger test-close-request-btn"
+                            (click)="closeRequest()">
+                        <span jhiTranslate="request.toolbar.close">Close</span>
+                    </button>
+
                     <div class="float-xs-right">
                         <button type="button" class="btn btn-default test-request-start-delivery-btn"
                                 (click)="startDelivery()">
