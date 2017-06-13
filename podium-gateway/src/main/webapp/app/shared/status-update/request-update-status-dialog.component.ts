@@ -45,6 +45,14 @@ export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogCompo
     }
 
     /**
+     * Check if status update action is set or not.
+     * @returns true if exists, false if doesn't.
+     */
+    statusUpdateActionExists(): boolean {
+        return !!this.statusUpdateAction;
+    }
+
+    /**
      * Confirm and submit a status update with a message
      * returns an unsubscribed observable with the action
      */

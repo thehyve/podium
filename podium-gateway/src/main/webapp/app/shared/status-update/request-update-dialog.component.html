@@ -29,7 +29,7 @@
                        jhiTranslate="request.statusupdate.form.summary.label">Summary</label>
 
                 <input type="text" class="form-control" name="messageSummary" id="messageSummary"
-                       [required]="statusUpdateAction" minlength="1" maxlength="50" #messageSummary="ngModel"
+                       [required]="statusUpdateActionExists" minlength="1" maxlength="50" #messageSummary="ngModel"
                        autocomplete="off" placeholder="{{'request.statusupdate.form.summary.placeholder' | translate}}"
                        [(ngModel)]="message.summary"/>
             </div>
