@@ -9,6 +9,8 @@
  */
 import { Director, Persona } from '../protractor-stories/director';
 import { Promise } from 'es6-promise';
+import { browser } from 'protractor';
+import { Request } from '../data/templates';
 
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');

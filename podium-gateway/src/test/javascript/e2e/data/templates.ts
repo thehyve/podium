@@ -34,6 +34,8 @@ interface Irequest {
     piAffiliation: string;
     searchQuery: string;
     requestTypes: string[];
+    organisations: string[];
+    combinedRequest?: boolean;
 }
 
 export class Request {

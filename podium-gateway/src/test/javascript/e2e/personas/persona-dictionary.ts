@@ -156,6 +156,64 @@ function initPersonaDictionary() {
             "adminVerified": true,
             "accountLocked": false
         }),
+        new Persona('Request_Coordinator', {
+            "login": "coordinator",
+            "password": "coordinator123!",
+            "firstName": "coordinator",
+            "lastName": "multi",
+            "email": "coordinator@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief coordinator",
+            "specialism": "Other",
+            "Other specialism": "some specialism",
+            "authority": [{
+                orgShortName: "DataBank",
+                role: "ROLE_ORGANISATION_COORDINATOR"
+            }, {
+                orgShortName: "ImageBank",
+                role: "ROLE_ORGANISATION_COORDINATOR"
+            }, {
+                orgShortName: "BioBank",
+                role: "ROLE_ORGANISATION_COORDINATOR"
+            }, {
+                orgShortName: "MultiBank",
+                role: "ROLE_ORGANISATION_COORDINATOR"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
+        }),
+        new Persona('Request_Reviewer', {
+            "login": "Reviewer",
+            "password": "Reviewer123!",
+            "firstName": "Reviewer",
+            "lastName": "multi",
+            "email": "Reviewer@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief Reviewer",
+            "specialism": "Other",
+            "Other specialism": "some specialism",
+            "authority": [{
+                orgShortName: "DataBank",
+                role: "ROLE_REVIEWER"
+            }, {
+                orgShortName: "ImageBank",
+                role: "ROLE_REVIEWER"
+            }, {
+                orgShortName: "BioBank",
+                role: "ROLE_REVIEWER"
+            }, {
+                orgShortName: "MultiBank",
+                role: "ROLE_REVIEWER"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
+        }),
         new Persona('blank user', {
             "login": "blank-user",
             "password": "2piYJ4G{MokC",

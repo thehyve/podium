@@ -16,58 +16,58 @@
             <dl>
                 <dt><span jhiTranslate="request.detail.title">Title</span></dt>
                 <dd>
-                    <strong><span>{{requestDetails.title}}</span></strong>
+                    <strong><span class="test-title">{{requestDetails.title}}</span></strong>
                 </dd>
                 <dt><span jhiTranslate="request.detail.organisation">Organisation</span></dt>
                 <dd>
-                    <span *ngFor="let organisation of request.organisations">
+                    <span class="test-organisations" *ngFor="let organisation of request.organisations">
                         {{ organisation.name | capitalize }}
                     </span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.requestTypes">Request Types</span></dt>
                 <dd>
                     <ul>
-                        <li *ngFor="let requestType of requestDetails.requestType">
+                        <li class="test-requestTypes" *ngFor="let requestType of requestDetails.requestType">
                             {{ requestType | capitalize }}
                         </li>
                     </ul>
                 </dd>
                 <dt><span jhiTranslate="request.detail.isLinked">Linked Request</span></dt>
                 <dd>
-                    <strong><span>{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
+                    <strong><span class="test-combinedRequest">{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
                 </dd>
                 <dt><span jhiTranslate="request.detail.searchQuery">Search Query</span></dt>
                 <dd>
-                    <span>{{requestDetails.searchQuery}}</span>
+                    <span class="test-searchQuery">{{requestDetails.searchQuery}}</span>
                 </dd>
 
                 <dt><span jhiTranslate="request.detail.background">Background</span></dt>
                 <dd>
-                    <span>{{requestDetails.background}}</span>
+                    <span class="test-background">{{requestDetails.background}}</span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.researchQuestion">Research Question</span></dt>
                 <dd>
-                    <span>{{requestDetails.researchQuestion}}</span>
+                    <span class="test-researchQuestion">{{requestDetails.researchQuestion}}</span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.hypothesis">Hypothesis</span></dt>
                 <dd>
-                    <span>{{requestDetails.hypothesis}}</span>
+                    <span class="test-hypothesis">{{requestDetails.hypothesis}}</span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.methods">Methods</span></dt>
                 <dd>
-                    <span>{{requestDetails.methods}}</span>
+                    <span class="test-methods">{{requestDetails.methods}}</span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.relatedRequestNumber">Related Request Number</span></dt>
                 <dd>
-                    <span>{{requestDetails.relatedRequestNumber || '-'}}</span>
+                    <span class="test-relatedRequestNumber">{{requestDetails.relatedRequestNumber || '-'}}</span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.principalInvestigator">Principal Investigator</span></dt>
                 <dd>
                     <address>
-                        <strong class="small">{{ requestDetails.principalInvestigator.name}}</strong><br/>
-                        <strong class="small">{{ requestDetails.principalInvestigator.email}}</strong><br/>
-                        <strong class="small">{{ requestDetails.principalInvestigator.jobTitle}}</strong><br/>
-                        <strong class="small">{{ requestDetails.principalInvestigator.affiliation}}</strong><br/>
+                        <strong class="small test-piName">{{ requestDetails.principalInvestigator.name}}</strong><br/>
+                        <strong class="small test-piEmail">{{ requestDetails.principalInvestigator.email}}</strong><br/>
+                        <strong class="small test-piFunction">{{ requestDetails.principalInvestigator.jobTitle}}</strong><br/>
+                        <strong class="small test-piAffiliation">{{ requestDetails.principalInvestigator.affiliation}}</strong><br/>
                     </address>
                 </dd>
             </dl>
