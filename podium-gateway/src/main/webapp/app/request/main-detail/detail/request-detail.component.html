@@ -90,7 +90,8 @@
                 (requireRevisionChange)="requireRequestRevision()"
                 (validateRequestChange)="validateRequest()"
                 (reviewAdviseApproved)="submitReview(RequestReviewDecision.Approved)"
-                (reviewAdviseRejected)="submitReview(RequestReviewDecision.Rejected)">
+                (reviewAdviseRejected)="submitReview(RequestReviewDecision.Rejected)"
+                (closeRequestChange)="closeRequest()"
                 (approveRequestChange)="approveRequest()"
                 (startDeliveryChange)="startRequestDelivery()"
                 (finalizeRequestChange)="finalizeRequest()">

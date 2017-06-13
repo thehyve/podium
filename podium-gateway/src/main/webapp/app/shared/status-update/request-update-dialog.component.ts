@@ -61,6 +61,12 @@ export class RequestUpdateDialogComponent {
             style.headerStyle = 'reject-header';
             style.buttonStyle = 'btn-danger';
         }
+
+        if (status === RequestStatusUpdateAction[RequestStatusUpdateAction.Close]) {
+            style.headerStyle = 'close-header';
+            style.buttonStyle = 'btn-danger';
+        }
+
         return style;
     }
 }

@@ -55,6 +55,10 @@
                 "title": "Review request as rejected",
                 "question": "Are you sure you advise to reject this request?"
             },
+            "Close": {
+                "title": "Permanently close the request",
+                "question": "Are you sure you would like to close this request?"
+            },
             "form": {
                 "summary": {
                     "label": "Summary",

@@ -172,6 +172,15 @@ export class RequestDetailComponent implements OnDestroy {
     }
 
     /**
+     * Close a request.
+     * A confirmation modal is shown for the organisation coordinator to provide the reason for closing the request.
+     */
+    closeRequest() {
+        this.isUpdating = true;
+        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Close);
+    }
+
+    /**
      * Reject a request.
      * A confirmation modal is shown for the organisation coordinator to provide their findings.
      */
