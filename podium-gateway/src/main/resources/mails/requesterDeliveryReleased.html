@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.requesterDeliveryReleased.title(${deliveryProcess.getType()}, ${request.organisations.get(0).getShortName()})}">BBMRI Podium Request Portal &ndash; [Type] released by [organisation short name]</title>
+        <title th:text="#{email.requesterDeliveryReleased.title(${deliveryProcess.getType()}, ${request.getOrganisations().get(0).getShortName()})}">BBMRI Podium Request Portal &ndash; [Type] released by [organisation short name]</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -20,17 +20,17 @@
         </p>
         <div th:switch="${deliveryProcess.getType().name()}">
             <p th:case="'Data'">
-            <span th:text="#{email.requesterDeliveryReleased.dataReleased(${request.organisations.get(0).getName()})}">
+            <span th:text="#{email.requesterDeliveryReleased.dataReleased(${request.getOrganisations().get(0).getName()})}">
                 The data you have requested has been released by [organisation name]. Information about this release is available in the BBMRI Request portal. Please confirm when you have received what you have requested.
             </span>
             </p>
             <p th:case="'Images'">
-            <span th:text="#{email.requesterDeliveryReleased.imagesReleased(${request.organisations.get(0).getName()})}">
+            <span th:text="#{email.requesterDeliveryReleased.imagesReleased(${request.getOrganisations().get(0).getName()})}">
                 The images you have requested have been released by [organisation name]. Information about this release is available in the BBMRI Request portal. Please confirm when you have received what you have requested.
             </span>
             </p>
             <p th:case="'Material'">
-            <span th:text="#{email.requesterDeliveryReleased.materialReleased(${request.organisations.get(0).getName()})}">
+            <span th:text="#{email.requesterDeliveryReleased.materialReleased(${request.getOrganisations().get(0).getName()})}">
                 The material you have requested has been released by [organisation name]. Information about this release is available in the BBMRI Request portal. Please confirm when you have received what you have requested.
             </span>
             </p>
