@@ -20,6 +20,7 @@ import { ReviewRound } from './review-round';
 @Injectable()
 export class RequestService {
 
+    // FIX ME Please refactor me.
     private resourceUrl = 'api/requests';
     private resourceSearchUrl = 'api/_search/requests';
 
@@ -54,6 +55,13 @@ export class RequestService {
         });
     }
 
+    findMyApprovedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Approved/requester`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
     findMyDeliveryRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Delivery/requester`, options).map((res: Response) => {
@@ -65,6 +73,13 @@ export class RequestService {
     findCoordinatorReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    findCoordinatorApprovedRequests(req?: any): Observable<Response> {
+        let options = this.createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/status/Approved/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
