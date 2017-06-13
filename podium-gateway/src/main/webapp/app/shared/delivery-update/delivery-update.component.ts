@@ -50,13 +50,12 @@ export class DeliveryStatusUpdateDialogComponent {
      */
     confirmStatusUpdate() {
         if (this.statusUpdateAction === DeliveryStatusUpdateAction.Release) {
-            this.deliveryService.releaseDelivery(this.request.uuid, this.delivery.uuid, this.releaseMessage)
+            return this.deliveryService.releaseDelivery(this.request.uuid, this.delivery.uuid, this.releaseMessage)
                 .subscribe((res) => this.onSuccess(res));
-
         }
 
         if (this.statusUpdateAction === DeliveryStatusUpdateAction.Cancel) {
-            this.deliveryService.cancelDelivery(this.request.uuid, this.delivery.uuid, this.cancelledMessage)
+            return this.deliveryService.cancelDelivery(this.request.uuid, this.delivery.uuid, this.cancelledMessage)
                 .subscribe((res) => this.onSuccess(res));
         }
 
@@ -79,7 +78,6 @@ export class DeliveryStatusUpdateDialogComponent {
     }
 
     onSuccess(res: Response) {
-        // this.deliveryService.deliveryUpdateEvent(res);
         this.activeModal.close(true);
     }
 }
