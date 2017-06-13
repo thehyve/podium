@@ -50,9 +50,10 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() submitDraftChange = new EventEmitter();
     @Output() approveRequestChange = new EventEmitter();
     @Output() submitRequestChange = new EventEmitter();
-    @Output() submitReviewChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
+    @Output() reviewAdviseApproved = new EventEmitter();
+    @Output() reviewAdviseRejected = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
     @Output() finalizeRequestChange = new EventEmitter();
 
@@ -63,7 +64,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
-
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.initializeStatuses();
@@ -127,6 +127,11 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         return this.requestAccessService.isRequesterOf(this.request);
     }
 
+    isReviewable(): boolean {
+        let lastFeedbacks = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
+        return this.requestAccessService.isReviewable(lastFeedbacks);
+    }
+
     saveDraft() {
         this.saveDraftChange.emit(true);
     }
@@ -167,8 +172,12 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         this.submitRequestChange.emit(true);
     }
 
-    submitReview() {
-        this.submitReviewChange.emit(true);
+    reviewApproved() {
+        this.reviewAdviseApproved.emit(true);
+    }
+
+    reviewRejected() {
+        this.reviewAdviseRejected.emit(true);
     }
 
     startDelivery() {

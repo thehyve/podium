@@ -2,7 +2,7 @@
     "requestSidebar" : {
         "status": {
             "All": "All requests",
-            "Drafts": "Drafts",
+            "Draft": "Draft",
             "Validation": "Validation",
             "Review": "In review",
             "Revision": "Revision",

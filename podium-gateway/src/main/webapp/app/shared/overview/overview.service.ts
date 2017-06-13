@@ -25,7 +25,7 @@ export class OverviewService {
     resourceUrl: string;
     resourceSearchUrl: string;
 
-    activeStatus: StatusType;
+    activeStatus: StatusSidebarOption;
 
     public onOverviewUpdate: Subject<Response> = new Subject();
 
@@ -44,7 +44,7 @@ export class OverviewService {
 
     findRequestsForOverview(
         requestOptions: any,
-        requestStatus: StatusType,
+        requestStatus: StatusSidebarOption,
         userGroup: UserGroupAuthority
     ): Observable<Response> {
         let options = this.createRequestOption(requestOptions);
@@ -60,7 +60,7 @@ export class OverviewService {
         }
 
         // When we have to filter for Drafts
-        if (requestStatus === RequestStatusOptions.Draft && UserGroupAuthority.Requester) {
+        if (requestStatus === StatusSidebarOption.Draft && UserGroupAuthority.Requester) {
             console.log('Blah 1');
             return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
                 return res;

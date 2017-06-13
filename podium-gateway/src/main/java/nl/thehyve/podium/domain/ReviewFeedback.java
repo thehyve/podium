@@ -57,6 +57,7 @@ public class ReviewFeedback implements Serializable {
     @Column(unique = true, nullable = false)
     private UUID uuid;
 
+    @Column(name = "reviewer", nullable = false)
     private UUID reviewer;
 
     @NotNull

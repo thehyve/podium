@@ -7,9 +7,19 @@
 
 package nl.thehyve.podium.common.enumeration;
 
-public enum DeliveryProcessOutcome implements Classifier {
+/**
+ * The OverviewStatus enumeration, used to filter requests by status.
+ */
+public enum OverviewStatus {
+    All,
+    Draft,
+    Validation,
+    Review,
+    Revision,
+    Approved,
+    Delivery,
+    Delivered,
+    Partially_Delivered,
     Cancelled,
-    Received,
-    Returned,
-    None
+    Rejected
 }

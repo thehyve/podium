@@ -8,24 +8,26 @@
  *
  */
 
-import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
-import { RequestReviewFeedback } from '../../../shared/request/request-review-feedback';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestReviewStatusOptions } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
-import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { RequestStatusUpdateAction } from '../../../shared/status-update/request-status-update-action';
-import { RequestStatusUpdateDialogComponent } from '../../../shared/status-update/request-status-update.component';
-import { PodiumEventMessage } from '../../../shared/event/podium-event-message';
+import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
+import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
+import { RequestStatusUpdateAction } from '../../../shared/status-update/request-update-action';
+import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
+import { Principal } from '../../../shared/auth/principal.service';
+import { User } from '../../../shared/user/user.model';
 import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/request-finalize-dialog.component';
 import { Delivery } from '../../../shared/delivery/delivery';
 import { Subscription } from 'rxjs';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
+import { AlertService } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -34,11 +36,14 @@ import { DeliveryService } from '../../../shared/delivery/delivery.service';
 
 export class RequestDetailComponent implements OnDestroy {
 
+    public RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
+
     public request: RequestBase;
     public requestDetails: RequestDetail;
     public deliveries: Delivery[];
     public isInRevision = false;
     public isUpdating = false;
+    public currentUser: User;
 
     public requestSubscription: Subscription;
     public deliveriesSubscription: Subscription;
@@ -48,8 +53,11 @@ export class RequestDetailComponent implements OnDestroy {
         private deliveryService: DeliveryService,
         private requestAccessService: RequestAccessService,
         private requestFormService: RequestFormService,
-        private modalService: NgbModal
+        private modalService: NgbModal,
+        private principal: Principal,
+        private alertService: AlertService
     ) {
+
         // Forcefully reload logged in user
         this.requestAccessService.loadCurrentUser(true);
 
@@ -57,6 +65,9 @@ export class RequestDetailComponent implements OnDestroy {
             this.setRequest(request);
         });
 
+        this.principal.identity().then((account) => {
+            this.currentUser = account;
+        });
         this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
             (deliveries) => {
                 this.deliveries = deliveries;
@@ -101,13 +112,18 @@ export class RequestDetailComponent implements OnDestroy {
      *
      * @param requestReviewFeedback the reviewfeedback holding the advice and their findings.
      */
-    submitReview(requestReviewFeedback: RequestReviewFeedback) {
-        this.isUpdating = true;
-        this.requestService.submitReview(this.request.uuid, requestReviewFeedback)
-            .subscribe(
-                (res) => this.onSuccess(res.json()),
-                (err) => this.onError(err)
-            );
+    submitReview(decision: RequestReviewDecision) {
+        let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
+        modalRef.componentInstance.request = this.request;
+        modalRef.componentInstance.currentUser = this.currentUser;
+        modalRef.componentInstance.reviewStatus = decision;
+        modalRef.result.then(result => {
+            this.requestService.requestUpdateEvent(this.request);
+            this.isUpdating = false;
+        }, (reason) => {
+            this.onError(reason);
+            this.isUpdating = false;
+        });
     }
 
     /**
@@ -137,6 +153,10 @@ export class RequestDetailComponent implements OnDestroy {
      */
     isRequestCoordinator(): boolean {
         return this.requestAccessService.isCoordinatorFor(this.request);
+    }
+
+    isRequestReviewer(): boolean {
+        return this.requestAccessService.isReviewerFor(this.request);
     }
 
     /**
@@ -186,7 +206,7 @@ export class RequestDetailComponent implements OnDestroy {
      * @param action the specific RequestStatusUpdateAction to apply to the request.
      */
     confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {
-        let modalRef = this.modalService.open(RequestStatusUpdateDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
         modalRef.result.then(result => {
@@ -205,7 +225,7 @@ export class RequestDetailComponent implements OnDestroy {
      * @param deliveries the deliveries belonging to the request.
      */
     confirmFinalizeRequest(request: RequestBase, deliveries: Delivery[]) {
-        let modalRef = this.modalService.open(RequestFinalizeDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestFinalizeDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.deliveries = deliveries;
         modalRef.result.then(result => {
@@ -231,16 +251,14 @@ export class RequestDetailComponent implements OnDestroy {
     }
 
     onSuccess(response: Response) {
-        console.log('success ', response);
         this.request = response.json();
         this.isUpdating = false;
-
         this.requestService.requestUpdateEvent(this.request);
     }
 
-    onError(err) {
-        console.log('error ', err);
+    onError(error) {
         this.isUpdating = false;
+        this.alertService.error(error.error, error.message, null);
     }
 
 }

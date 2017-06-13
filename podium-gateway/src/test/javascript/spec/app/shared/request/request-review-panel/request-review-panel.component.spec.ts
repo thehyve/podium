@@ -21,6 +21,10 @@ import { ReviewRound } from '../../../../../../../main/webapp/app/shared/request
 import { RequestService } from '../../../../../../../main/webapp/app/shared/request/request.service';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions, Http } from '@angular/http';
+import { PodiumEventMessage } from '../../../../../../../main/webapp/app/shared/event/podium-event-message';
+import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
+import { AccountService } from '../../../../../../../main/webapp/app/shared/auth/account.service';
+import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
 
 describe('RequestReviewPanelComponent (templateUrl)', () => {
 
@@ -36,6 +40,9 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
                 MockBackend,
                 BaseRequestOptions,
                 RequestService,
+                Principal,
+                AccountService,
+                RequestAccessService,
                 {
                     provide: Http,
                     useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
@@ -68,6 +75,9 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
         let reviewFeedback1 = new RequestReviewFeedback();
         let reviewFeedback2 = new RequestReviewFeedback();
         let reviewFeedback3 = new RequestReviewFeedback();
+        let msg1 = new PodiumEventMessage();
+        let msg2 = new PodiumEventMessage();
+        let msg3 = new PodiumEventMessage();
         let dummyUser = new User();
 
         beforeEach(() => {
@@ -75,26 +85,31 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
             dummyUser.firstName = 'Foo';
             dummyUser.lastName = 'Bar';
 
+            msg1.summary = 'summary1';
+            msg1.description = 'desc1';
+            msg2.summary = 'summary2';
+            msg2.description = 'desc2';
+            msg3.summary = 'summary3';
+            msg3.description = 'desc3';
+
             reviewFeedback1.id = '01';
             reviewFeedback1.reviewer = dummyUser;
             reviewFeedback1.advice = RequestReviewDecision.Approved;
             reviewFeedback1.date = new Date();
-            reviewFeedback1.description = 'This is description';
-            reviewFeedback1.summary = 'This is summary';
+            reviewFeedback1.message  = msg1;
+
 
             reviewFeedback2.id = '02';
             reviewFeedback2.reviewer = dummyUser;
             reviewFeedback2.advice = RequestReviewDecision.Rejected;
             reviewFeedback2.date = new Date();
-            reviewFeedback2.description = 'This is description';
-            reviewFeedback2.summary = 'This is summary';
+            reviewFeedback1.message  = msg2;
 
             reviewFeedback3.id = '03';
             reviewFeedback3.reviewer = dummyUser;
             reviewFeedback3.advice = RequestReviewDecision.None;
             reviewFeedback3.date = new Date();
-            reviewFeedback3.description = '';
-            reviewFeedback3.summary = '';
+            reviewFeedback1.message  = msg3;
 
             reviewRound1.id = 'round-1';
             reviewRound1.initiatedBy = dummyUser;
@@ -113,17 +128,18 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
             reviewRound2.reviewFeedback = [
                 reviewFeedback2, reviewFeedback3
             ];
+            comp.request = {};
         });
 
         it('should get last review feedback on initialisation', () => {
-            comp.reviewRounds = [];
+            comp.request.reviewRounds = [];
             fixture.detectChanges(); // initial binding
             comp.ngOnInit();
             expect(comp.lastReviewFeedback).toBe(undefined);
         });
 
         it('should get last review feedback on initialisation', () => {
-            comp.reviewRounds = [reviewRound1, reviewRound2];
+            comp.request.reviewRounds = [reviewRound1, reviewRound2];
             comp.ngOnInit();
             expect(comp.lastReviewFeedback.length).toBe(2);
         });
@@ -139,7 +155,7 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
         it('should give success style when advise is approved', () => {
             let _adviseStyle = comp.toggleAdviseStyle(RequestReviewDecision.Approved);
             expect(_adviseStyle).toEqual('tag-success');
-        })
+        });
 
     });
 

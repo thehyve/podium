@@ -13,8 +13,8 @@
 
     <ul class="status-list">
         <li class="status-item" *ngFor="let status of statusSidebarOptions"
-            [ngClass]="{'active': isActiveElement(status.action)}"
-            (click)="fetchRequestsFor(status.action)">
+            [ngClass]="{'active': isActiveElement(status.option)}"
+            (click)="fetchRequestsFor(status.option)">
                 <i class="material-icons">{{ status.icon }}</i>
                 <span jhiTranslate="requestSidebar.status.{{ status.option }}">
                     {{ status.option }}

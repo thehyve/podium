@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
+import { AlertService, JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
@@ -23,7 +23,7 @@ import { RequestDetailComponent } from './detail/request-detail.component';
 export class RequestMainDetailComponent implements OnInit {
 
     /**
-     * Setup component as viewchild to access methods inside child.
+     * Setup component as ViewChild to access methods inside child.
      * Used for review and method accessors in sibling components
      */
     @ViewChild(RequestDetailComponent)
@@ -36,29 +36,21 @@ export class RequestMainDetailComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private route: ActivatedRoute,
-        private requestService: RequestService
+        private requestService: RequestService,
+        private alertService: AlertService
     ) {
         this.jhiLanguageService.setLocations(['request']);
-
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });
     }
 
     ngOnInit() {
-
-        /**
-         * Resolve request
-         */
-        this.route.params.subscribe(params => {
-            let uuid = params['uuid'];
-            if (uuid) {
-                this.requestService.findByUuid(uuid).subscribe(
-                    (request) => this.onSuccess(request),
-                    (res) => this.onError(res)
-                );
-            }
-        });
+        this.route.data
+            .subscribe((data: { request: RequestBase }) => {
+                this.request = data.request;
+                this.onSuccess(data.request);
+            }, err => this.onError(err));
     }
 
     private onSuccess(request: RequestBase) {
@@ -67,7 +59,7 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     private onError(error) {
-        this.error =  'ERROR';
+        this.alertService.error(error.error, error.message, null);
         this.success = null;
     }
 }

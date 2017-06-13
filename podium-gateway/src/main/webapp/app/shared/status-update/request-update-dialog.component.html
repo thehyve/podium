@@ -8,11 +8,12 @@
   ~
   -->
 
-<div class="request-status-update-container">
+<div class="request-status-update-container" *ngIf="panelStyles">
     <form #statusUpdateForm="ngForm" class="form" role="form" (ngSubmit)="confirmStatusUpdate()">
-        <div class="modal-header" [ngClass]="{'reject-header': status == 'Reject', 'revision-header': status == 'Revision'}">
+        <div class="modal-header" [ngClass]="panelStyles.headerStyle">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                    (click)="close()">&times;</button>
+                    (click)="close()">&times;
+            </button>
             <h4 class="modal-title">
                 <span class="material-icons">warning</span>&nbsp;
                 <span jhiTranslate="request.statusupdate.{{status}}.question">
@@ -30,14 +31,15 @@
                 <input type="text" class="form-control" name="messageSummary" id="messageSummary"
                        required minlength="1" maxlength="50" #messageSummary="ngModel"
                        autocomplete="off" placeholder="{{'request.statusupdate.form.summary.placeholder' | translate}}"
-                       [(ngModel)]="message.summary" />
+                       [(ngModel)]="message.summary"/>
             </div>
             <div class="form-group">
                 <label for="messageDescription"
                        jhiTranslate="request.statusupdate.form.description.label">Description</label>
 
                 <textarea type="text" class="form-control" name="messageDescription" id="messageDescription"
-                          autocomplete="off" placeholder="{{'request.statusupdate.form.description.placeholder' | translate}}"
+                          autocomplete="off"
+                          placeholder="{{'request.statusupdate.form.description.placeholder' | translate}}"
                           minlength="1" maxlength="500" rows="4" #messageDescription="ngModel"
                           [(ngModel)]="message.description">
                     </textarea>
@@ -49,7 +51,7 @@
                 <span jhiTranslate="request.action.cancel">Cancel</span>
             </button>
             <button type="submit" [disabled]="!statusUpdateForm.form.valid" class="btn"
-                    [ngClass]="{'btn-danger': status == 'Reject', 'btn-default': status == 'Revision'}">
+                    [ngClass]="panelStyles.buttonStyle">
                 <span class="material-icons">send</span>&nbsp;
                 <span jhiTranslate="request.action.submit"
                       tooltip="Please provide at least a summary of your message."

@@ -12,7 +12,7 @@ import { RequestStatusOptions, RequestReviewStatusOptions } from '../request-sta
 
 export enum StatusSidebarOption {
     'All'           = <any>'All',
-    'Drafts'        = <any>'Drafts',
+    'Draft'         = <any>'Draft',
     'Validation'    = <any>'Validation',
     'Revision'      = <any>'Revision',
     'Review'        = <any>'Review',
@@ -26,37 +26,30 @@ export enum StatusSidebarOption {
 export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     'All': {
         'option': StatusSidebarOption.All,
-        'action': RequestStatusOptions.Draft,
         'icon': 'assignment'
     },
-    'Drafts': {
-        'option': StatusSidebarOption.Drafts,
-        'action': RequestStatusOptions.Draft,
+    'Draft': {
+        'option': StatusSidebarOption.Draft,
         'icon': 'drafts'
     },
     'Validation': {
         'option': StatusSidebarOption.Validation,
-        'action': RequestReviewStatusOptions.Revision,
         'icon': 'visibility'
     },
     'Revision': {
         'option': StatusSidebarOption.Revision,
-        'action': RequestReviewStatusOptions.Revision,
         'icon': 'redo'
     },
     'Review': {
         'option': StatusSidebarOption.Review,
-        'action': RequestReviewStatusOptions.Review,
         'icon': 'assignment_ind'
     },
     'Approved': {
         'option': StatusSidebarOption.Approved,
-        'action': RequestStatusOptions.Approved,
         'icon': 'thumb_up'
     },
     'Delivery': {
         'option': StatusSidebarOption.Delivery,
-        'action': RequestStatusOptions.Delivery,
         'icon': 'local_shipping'
     },
     'Delivered': {

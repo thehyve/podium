@@ -25,7 +25,7 @@ import { Response } from '@angular/http';
 export class RequestStatusSidebarComponent implements OnInit {
 
     public statusSidebarOptions = StatusSidebarOptionsCollection;
-    public activeStatus: StatusType;
+    public activeStatus: StatusSidebarOption;
 
     @Input()
     public userGroupAuthority: UserGroupAuthority;
@@ -43,11 +43,11 @@ export class RequestStatusSidebarComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.activeStatus = this.overviewService.activeStatus || RequestStatusOptions.Review;
+        this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.Review;
         this.fetchRequestsFor(this.activeStatus);
     }
 
-    fetchRequestsFor(option: StatusType) {
+    fetchRequestsFor(option: StatusSidebarOption) {
         this.overviewService
             .findRequestsForOverview(this.pageParams(), option, this.userGroupAuthority)
             .subscribe((res: Response) => {
@@ -56,7 +56,7 @@ export class RequestStatusSidebarComponent implements OnInit {
             });
     }
 
-    isActiveElement(status: StatusType): boolean {
+    isActiveElement(status: StatusSidebarOption): boolean {
         return this.activeStatus === status;
     }
 }
