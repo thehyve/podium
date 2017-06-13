@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.requesterDeliveryCancelled.title(${deliveryProcess.getType()}, ${request.organisations.get(0).getName()})}">BBMRI Podium Request Portal &ndash; [Type] cancelled by [organisation]</title>
+        <title th:text="#{email.requesterDeliveryCancelled.title(${deliveryProcess.getType()}, ${request.getOrganisations().get(0).getName()})}">BBMRI Podium Request Portal &ndash; [Type] cancelled by [organisation]</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -20,17 +20,17 @@
         </p>
         <div th:switch="${deliveryProcess.getType().name()}">
             <p th:case="'Data'">
-            <span th:text="#{email.requesterDeliveryCancelled.dataCancelled(${request.organisations.get(0).getName()})}">
+            <span th:text="#{email.requesterDeliveryCancelled.dataCancelled(${request.getOrganisations().get(0).getName()})}">
                 The delivery of data has been cancelled by [organisation]. Information about the cancellation is available in the BBMRI Request portal.
             </span>
             </p>
             <p th:case="'Images'">
-            <span th:text="#{email.requesterDeliveryCancelled.imagesCancelled(${request.organisations.get(0).getName()})}">
+            <span th:text="#{email.requesterDeliveryCancelled.imagesCancelled(${request.getOrganisations().get(0).getName()})}">
                 The delivery of data has been cancelled by [organisation]. Information about the cancellation is available in the BBMRI Request portal.
             </span>
             </p>
             <p th:case="'Material'">
-            <span th:text="#{email.requesterDeliveryCancelled.materialCancelled(${request.organisations.get(0).getName()})}">
+            <span th:text="#{email.requesterDeliveryCancelled.materialCancelled(${request.getOrganisations().get(0).getName()})}">
                 The delivery of data has been cancelled by [organisation]. Information about the cancellation is available in the BBMRI Request portal.
             </span>
             </p>
@@ -41,8 +41,8 @@
                 To view the delivery details, please use the link below.
             </span>
             <br />
-            <a th:href="@{|${baseUrl}/#/requests/detail/${request.getUuid()}/deliveries/${deliveryProcess.getUuid()}|}">
-                <span th:text="@{|${baseUrl}/#/requests/detail/${request.getUuid()}/deliveries/${deliveryProcess.getUuid()}|}"></span>
+            <a th:href="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}">
+                <span th:text="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}"></span>
             </a>
         </p>
 

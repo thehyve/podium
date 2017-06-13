@@ -210,7 +210,8 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryReleased", context);
-        String subject = messageSource.getMessage("email.requesterDeliveryReleased.title", null, locale);
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getShortName()};
+        String subject = messageSource.getMessage("email.requesterDeliveryReleased.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -239,7 +240,8 @@ public class MailService extends AbstractMailService {
             context.setVariable("deliveryProcess", deliveryProcess);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationDeliveryReceived", context);
-            String subject = messageSource.getMessage("email.organisationDeliveryReceived.title", null, locale);
+            String[] args = new String[] {deliveryProcess.getType().name()};
+            String subject = messageSource.getMessage("email.organisationDeliveryReceived.title", args, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -259,7 +261,8 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestClosed", context);
-        String subject = messageSource.getMessage("email.requesterRequestClosed.title", null, locale);
+        String[] args = new String[] {request.getOrganisations().get(0).getShortName()};
+        String subject = messageSource.getMessage("email.requesterRequestClosed.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -282,7 +285,8 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("organisationDeliveryCancelled", context);
-        String subject = messageSource.getMessage("email.organisationDeliveryCancelled.title", null, locale);
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getShortName()};
+        String subject = messageSource.getMessage("email.organisationDeliveryCancelled.title", args, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
