@@ -86,11 +86,11 @@ describe('Component Tests', () => {
 
         describe('ngOnInit()', () => {
             beforeEach(() => {
-                spyOn(comp, 'registerChangeInRequests');
+                spyOn(comp, 'registerChanges');
             });
             it('should load submitted requests and register change in requests', () => {
                 comp.ngOnInit();
-                expect(comp.registerChangeInRequests).toHaveBeenCalled();
+                expect(comp.registerChanges).toHaveBeenCalled();
             });
         });
 

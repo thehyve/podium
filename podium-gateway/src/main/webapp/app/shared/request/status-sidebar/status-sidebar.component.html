@@ -14,13 +14,13 @@
     <ul class="status-list">
         <li class="status-item" *ngFor="let status of statusSidebarOptions"
             [ngClass]="{'active': isActiveElement(status.option)}"
-            (click)="fetchRequestsFor(status.option)">
+            (click)="updateOverviewForStatus(status.option)">
                 <i class="material-icons">{{ status.icon }}</i>
                 <span jhiTranslate="requestSidebar.status.{{ status.option }}">
                     {{ status.option }}
                 </span>
                 <span class="tag tag-default float-xs-right">
-                    {{ counts[status.option] || '-' }}
+                    {{ counts[status.option] || '0' }}
                 </span>
         </li>
     </ul>

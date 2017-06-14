@@ -44,12 +44,12 @@
                             <span>Title</span>
                             <span class="fa fa-sort"></span>
                         </th>
-                        <th jhiSortBy="status">
+                        <th jhiSortBy="status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
                             <span>Status</span>
                             <span class="fa fa-sort"></span>
                         </th>
                         <th><span>Request type</span></th>
-                        <th><span>Organisations</span></th>
+                        <th><span>Organisation(s)</span></th>
                         <th jhiSortBy="requestDetail.requester.firstName" *ngIf="!isResearcherRoute()">
                             <span>Requester</span>
                             <span class="fa fa-sort"></span>
@@ -73,16 +73,19 @@
                         <td>
                             {{request.requestDetail.title || '-'}}
                         </td>
-                        <td>
+                        <td *ngIf="isActiveStatus(statusSidebarOptions.All)">
                             {{request.status}} {{ request.status == 'Review' ? '(' + request.requestReview.status + ')' : '' }}
                         </td>
                         <td>
-                            <ul>
-                                <li *ngFor="let requestTypes of request.requestDetail.requestType">{{requestTypes}}</li>
+                            <ul class="overview-list-cell">
+                                <li *ngFor="let requestType of request.requestDetail.requestType">
+                                    <span class="material-icons">{{ getIconForRequestType(requestType)}}</span>
+                                    {{requestType}}
+                                </li>
                             </ul>
                         </td>
                         <td>
-                            <ul>
+                            <ul class="overview-list-cell" [ngClass]="{'draft-request': request.status == 'Draft'}">
                                 <li *ngFor="let organisation of request.organisations">{{organisation.name}}</li>
                             </ul>
                         </td>
@@ -125,7 +128,7 @@
             </table>
             <div class="text-xs-center" *ngIf="availableRequests && availableRequests.length">
                 <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page, loadRequests.bind(this))"></ngb-pagination>
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page, transitionRequests.bind(this))"></ngb-pagination>
             </div>
         </div>
     </div>

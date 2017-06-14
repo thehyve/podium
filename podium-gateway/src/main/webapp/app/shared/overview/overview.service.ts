@@ -25,8 +25,7 @@ export class OverviewService {
     resourceUrl: string;
     resourceSearchUrl: string;
 
-    activeStatus: StatusSidebarOption;
-
+    public activeStatus: StatusSidebarOption;
     public onOverviewUpdate: Subject<Response> = new Subject();
 
     constructor(
@@ -34,7 +33,6 @@ export class OverviewService {
         @Optional() config: OverviewServiceConfig
     ) {
         if (config) {
-            console.log('Doing config ', config);
             this.resourceUrl = config.resourceUrl;
             this.resourceSearchUrl = config.resourceSearchUrl;
         } else {
@@ -50,18 +48,14 @@ export class OverviewService {
         let options = this.createRequestOption(requestOptions);
         let requestsUrl;
 
-        console.log('REQ opts ', requestOptions);
-        console.log('Request status', requestStatus);
-        console.log('User group ', userGroup);
-
         if (!requestStatus || !userGroup) {
-            console.log('Blah 0 ', requestStatus, userGroup);
             return;
         }
 
+        this.activeStatus = requestStatus;
+
         // When we have to filter for Drafts
         if (requestStatus === StatusSidebarOption.Draft && UserGroupAuthority.Requester) {
-            console.log('Blah 1');
             return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
                 return res;
             });
@@ -69,26 +63,25 @@ export class OverviewService {
 
         switch (userGroup) {
             case UserGroupAuthority.Requester:
-                console.log('Blah 2');
                 requestsUrl = `${this.resourceUrl}/status/${requestStatus}/${UserGroupAuthority.Requester}/`;
                 break;
             case UserGroupAuthority.Coordinator:
-                console.log('Blah 3');
                 requestsUrl = `${this.resourceUrl}/status/${requestStatus}/${UserGroupAuthority.Coordinator}`;
                 break;
             case UserGroupAuthority.Reviewer:
-                console.log('Blah 4');
                 requestsUrl = `${this.resourceUrl}/reviewer`;
                 break;
             default:
-                console.log('Blah 5');
                 return;
         }
-        console.log('Blah 6');
-
-        this.activeStatus = requestStatus;
 
         return this.http.get(requestsUrl, options).map((res: Response) => {
+            return res;
+        });
+    }
+
+    getRequestCountsForUserGroupAuthority(userGroupAuthority: UserGroupAuthority): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/counts/${userGroupAuthority}`).map((res: Response) => {
             return res;
         });
     }

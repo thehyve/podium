@@ -12,12 +12,10 @@ import { OverviewServiceConfig } from '../../shared/overview/overview.service.co
 import { OverviewService } from '../../shared/overview/overview.service';
 import { JhiLanguageService, EventManager, ParseLinks } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
-import { RequestService } from '../../shared/request/request.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Principal } from '../../shared';
 import { RequestFormService } from '../form/request-form.service';
 import { Subscription } from 'rxjs';
-import { RequestStatusOptions } from '../../shared/request/request-status/request-status.constants';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
 import { RequestOverviewPath } from './request-overview.constants';
@@ -25,6 +23,10 @@ import { Response, Http } from '@angular/http';
 import { Overview } from '../../shared/overview/overview';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
 import { UserGroupAuthority } from '../../shared/authority/authority.constants';
+import {
+    StatusSidebarOption, RequestStatusSidebarOptions
+} from '../../shared/request/status-sidebar/status-sidebar-options';
+import { RequestType } from '../../shared/request/request-type';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
@@ -38,6 +40,7 @@ let overviewConfig: OverviewServiceConfig = {
 @Component({
     selector: 'pdm-request-overview',
     templateUrl: './request-overview.component.html',
+    styleUrls: ['request-overview.scss'],
     providers: [
         {
             provide: OverviewService,
@@ -59,16 +62,16 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     error: string;
     success: string;
     eventSubscriber: Subscription;
-    requestsSubscription: Subscription;
-    currentRequestStatus: RequestStatusOptions;
+    overviewSubscription: Subscription;
+    sidebarSubscription: Subscription;
+    activeStatus: StatusSidebarOption;
     routePath: any;
-    toggledSidebar = true; // open by default
+    toggledSidebar = true; // open sidebar by default
     userGroupAuthority: UserGroupAuthority;
+    statusSidebarOptions = RequestStatusSidebarOptions;
 
-    // FIXME: Major refactor of overview component.
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private requestService: RequestService,
         private parseLinks: ParseLinks,
         private requestFormService: RequestFormService,
         private eventManager: EventManager,
@@ -82,44 +85,44 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.jhiLanguageService.setLocations(['request']);
         this.routePath = this.activatedRoute.snapshot.url[0].path;
 
-        this.requestsSubscription = this.overviewService.onOverviewUpdate.subscribe(
+        this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.All;
+
+        this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
             (res: Response) => this.processAvailableRequests(res.json(), res.headers),
             (err): any => this.onError(err)
         );
     }
 
     ngOnInit(): void {
-        this.currentRequestStatus = RequestStatusOptions.Review; // begin with submitted requests
-
-        console.log('Route ', this.routePath);
-
         switch (this.routePath) {
             case RequestOverviewPath.REQUEST_OVERVIEW_RESEARCHER:
-                console.log('Match 1');
                 this.userGroupAuthority = UserGroupAuthority.Requester;
                 break;
             case RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR:
-                console.log('Match 2');
                 this.userGroupAuthority = UserGroupAuthority.Coordinator;
                 break;
             case RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER:
-                console.log('Match 3');
                 this.userGroupAuthority = UserGroupAuthority.Reviewer;
                 break;
             default:
-                console.log('No match ', this.routePath);
+                console.error('No user group authority', this.routePath);
         }
 
-        // this.requestSidebarComponent.userGroupAuthority =
-        this.registerChangeInRequests();
+        this.registerChanges();
+
+        this.fetchRequestsFor(this.activeStatus);
     }
 
     /**
      * Subscription clean up to prevent memory leaks
      */
     ngOnDestroy() {
-        if (this.requestsSubscription) {
-            this.requestsSubscription.unsubscribe();
+        if (this.overviewSubscription) {
+            this.overviewSubscription.unsubscribe();
+        }
+
+        if (this.sidebarSubscription) {
+            this.sidebarSubscription.unsubscribe();
         }
 
         if (this.eventSubscriber) {
@@ -127,82 +130,20 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         }
     }
 
-    registerChangeInRequests() {
-        this.eventSubscriber = this.eventManager.subscribe('requestListModification', (response) => this.loadRequests());
-    }
+    registerChanges() {
+        this.eventSubscriber = this.eventManager
+            .subscribe('requestListModification',
+                (response) => this.fetchRequestsFor(this.activeStatus));
 
-    loadRequests() {
-        console.log('this.cur ', this.currentRequestStatus);
-        if (this.currentRequestStatus === RequestStatusOptions.Draft) {
-            this.loadDrafts();
-        } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
-            if (this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR) {
-                this.loadCoordinatorReviewRequests();
-            } else if (this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER) {
-                this.loadAllReviewerRequests();
-            } else {
-                this.loadMyReviewRequests();
-            }
-        }
+
+        this.sidebarSubscription = this.requestSidebarComponent.onStatusChange.subscribe(
+            (newStatus) => this.fetchRequestsFor(newStatus)
+        );
     }
 
     createNewRequest() {
         this.requestFormService.request = null;
         this.router.navigate(['./requests/new']);
-    }
-
-    loadAllReviewerRequests() {
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findAllReviewerRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available request drafts.')
-            );
-    }
-
-    loadCoordinatorReviewRequests() {
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findCoordinatorReviewRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available coordinator review request.')
-            );
-    }
-
-    loadCoordinatorDeliveryRequests() {
-        this.currentRequestStatus = RequestStatusOptions.Delivery;
-        this.requestService.findCoordinatorDeliveryRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available coordinator delivery request .')
-            );
-    }
-
-    loadDrafts() {
-        this.currentRequestStatus = RequestStatusOptions.Draft;
-        this.requestService.findDrafts(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available request drafts.')
-            );
-    }
-
-    loadMyReviewRequests(): void {
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findMyReviewRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available submitted requests.')
-            );
-    }
-
-    loadMyDeliveryRequests(): void {
-        this.currentRequestStatus = RequestStatusOptions.Delivery;
-        this.requestService.findMyDeliveryRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available delivery requests.')
-            );
     }
 
     editRequest(request) {
@@ -231,19 +172,52 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.availableRequests = requests;
     }
 
-    loadPage(page: number, callback: Function) {
-        if (page !== this.previousPage) {
-            this.previousPage = page;
-            callback();
+    transitionRequests() {
+        this.transition();
+        this.fetchRequestsFor(this.activeStatus);
+    }
+
+    fetchRequestsFor(option?: StatusSidebarOption) {
+        if (!option) {
+            option = this.overviewService.activeStatus;
         }
+
+        // Reset pagingParams when new status is selected
+        if (option !== this.overviewService.activeStatus) {
+            this.resetPagingParams();
+        }
+
+        this.overviewService
+            .findRequestsForOverview(this.getPageParams(), option, this.userGroupAuthority)
+            .subscribe((res: Response) => {
+                this.overviewService.overviewUpdateEvent(res);
+                this.activeStatus = this.overviewService.activeStatus;
+            });
     }
 
     toggleSidebar() {
         this.toggledSidebar = !this.toggledSidebar;
     }
 
-    transitionRequests() {
-        return this.transition(this.loadRequests.bind(this));
+    getIconForRequestType(requestType: RequestType) {
+        if (!requestType) {
+            return null;
+        }
+
+        switch (requestType) {
+            case RequestType.Data:
+                return 'dns';
+            case RequestType.Images:
+                return 'image';
+            case RequestType.Material:
+                return 'blur_on';
+            default:
+                return '';
+        }
+    }
+
+    isActiveStatus(activeStatus: typeof RequestStatusSidebarOptions): boolean {
+        return this.activeStatus === activeStatus.option;
     }
 
     private onSuccess(result) {

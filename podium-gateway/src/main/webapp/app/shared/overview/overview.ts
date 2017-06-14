@@ -24,7 +24,7 @@ export abstract class Overview {
     protected pageHeader: string;
     protected predicate: any;
     protected previousPage: any;
-    protected reverse: any;
+    protected reverse: any = false;
     protected totalItems: any;
     protected links: any;
     protected routePath: any;
@@ -42,6 +42,7 @@ export abstract class Overview {
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
         });
+
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
     }
 
@@ -52,11 +53,7 @@ export abstract class Overview {
      * @returns {string[]}
      */
     protected sort() {
-        let result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'id') {
-            result.push('id');
-        }
-        return result;
+        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
     /**
@@ -77,8 +74,9 @@ export abstract class Overview {
         return params;
     };
 
-    protected transition(callback: Function) {
+    protected transition() {
         // Transition with queryParams
+        // Update the URL with the new parameters
         this.router.navigate([this.getNavUrlForRouter(this.router)], {
             queryParams: {
                 page: this.page,
@@ -87,8 +85,21 @@ export abstract class Overview {
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
             }
         });
+    }
 
-        callback();
+    protected loadPage(page: number, callback: Function) {
+        if (page !== this.previousPage) {
+            this.previousPage = page;
+            callback();
+        }
+    }
+
+    protected resetPagingParams() {
+        this.page = 1;
+        this.predicate = 'createdDate';
+        this.reverse = false;
+        this.previousPage = null;
+        this.itemsPerPage = ITEMS_PER_PAGE;
     }
 
     protected isResearcherRoute(): boolean {

@@ -15,6 +15,7 @@ import { OverviewService } from '../../overview/overview.service';
 import { UserGroupAuthority } from '../../authority/authority.constants';
 import { StatusType, RequestStatusOptions } from '../request-status/request-status.constants';
 import { Response } from '@angular/http';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-request-status-sidebar',
@@ -25,6 +26,11 @@ import { Response } from '@angular/http';
 export class RequestStatusSidebarComponent implements OnInit {
 
     public statusSidebarOptions = StatusSidebarOptionsCollection;
+
+    public onStatusChange: Subject<StatusSidebarOption> = new Subject();
+
+    public overviewSubscription: Subscription;
+
     public activeStatus: StatusSidebarOption;
 
     @Input()
@@ -43,20 +49,31 @@ export class RequestStatusSidebarComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.Review;
-        this.fetchRequestsFor(this.activeStatus);
+        this.activeStatus = this.overviewService.activeStatus;
+        // this.updateOverviewForStatus(this.activeStatus);
+
+        this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
+            () => {
+                this.activeStatus = this.overviewService.activeStatus;
+            }
+        );
+
+        this.fetchCounts();
     }
 
-    fetchRequestsFor(option: StatusSidebarOption) {
-        this.overviewService
-            .findRequestsForOverview(this.pageParams(), option, this.userGroupAuthority)
-            .subscribe((res: Response) => {
-                this.overviewService.overviewUpdateEvent(res);
-                this.activeStatus = this.overviewService.activeStatus;
-            });
+    updateOverviewForStatus(overviewStatus: StatusSidebarOption) {
+        this.onStatusChange.next(overviewStatus);
     }
 
     isActiveElement(status: StatusSidebarOption): boolean {
         return this.activeStatus === status;
+    }
+
+    fetchCounts() {
+        this.overviewService.getRequestCountsForUserGroupAuthority(this.userGroupAuthority)
+            .subscribe((res: Response) => {
+                console.log('Counts rest for ', this.userGroupAuthority, res.json());
+                this.counts = res.json();
+            });
     }
 }

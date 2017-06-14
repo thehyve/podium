@@ -8,19 +8,18 @@
  *
  */
 
-import { RequestStatusOptions, RequestReviewStatusOptions } from '../request-status/request-status.constants';
-
 export enum StatusSidebarOption {
-    'All'           = <any>'All',
-    'Draft'         = <any>'Draft',
-    'Validation'    = <any>'Validation',
-    'Revision'      = <any>'Revision',
-    'Review'        = <any>'Review',
-    'Approved'      = <any>'Approved',
-    'Delivery'      = <any>'Delivery',
-    'Delivered'     = <any>'Delivered',
-    'Rejected'      = <any>'Rejected',
-    'Cancelled'     = <any>'Cancelled'
+    'All'                   = <any>'All',
+    'Draft'                 = <any>'Draft',
+    'Validation'            = <any>'Validation',
+    'Revision'              = <any>'Revision',
+    'Review'                = <any>'Review',
+    'Approved'              = <any>'Approved',
+    'Delivery'              = <any>'Delivery',
+    'Partially_Delivered'    = <any>'Partially_Delivered',
+    'Delivered'             = <any>'Delivered',
+    'Rejected'              = <any>'Rejected',
+    'Cancelled'             = <any>'Cancelled'
 }
 
 export const RequestStatusSidebarOptions: { [option: string]: any; } = {
@@ -51,6 +50,10 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     'Delivery': {
         'option': StatusSidebarOption.Delivery,
         'icon': 'local_shipping'
+    },
+    'Partially_Delivered': {
+        'option': StatusSidebarOption.Partially_Delivered,
+        'icon': 'inbox'
     },
     'Delivered': {
         'option': StatusSidebarOption.Delivered,
