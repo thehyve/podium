@@ -7,130 +7,115 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import {$$} from "protractor";
-import {Director} from "../protractor-stories/director";
-import {AdminConsole} from "../protractor-stories/admin-console";
-import {login} from "./util";
-import {isUndefined} from "util";
+import { Organisation } from '../data/templates';
+import { Promise } from 'es6-promise';
+import { $$ } from 'protractor';
+import { Director } from '../protractor-stories/director';
+import { AdminConsole } from '../protractor-stories/admin-console';
+import { login, doInOrder, promiseTrue, checkTextElement } from './util';
+import { isUndefined } from 'util';
+let { defineSupportCode } = require('cucumber');
 
 
-export = function () {
-    this.setDefaultTimeout(30 * 1000); //max time before callback
+defineSupportCode(({ Given, When, Then }) => {
 
-    this.Then(/^the overview contains the organization's '(.*)' for the organizations '(.*)'$/, function (fieldString, organizationString, callback) {
-            let director = this.director as Director;
-
-            let checksFinished = 0;
-            let fields = JSON.parse(fieldString);
-            let organizations = JSON.parse(organizationString);
-
-            let organizationsList = director.getListOfData(organizations);
-
-            fields.forEach(function (field) {
-                $$('.test-' + field).each(function (element, index) {
-                    return checkField(element, index, field, organizationsList, callback);
-                }).then(function () {
-                    checksFinished++;
-                    if (checksFinished == fields.length) {
-                        callback()
-                    }
-                }, callback)
-            })
-        }
-    );
-
-    this.Then(/^organizations are displayed in the following order: '(.*)'$/, function (organizationString, callback) {
+    Then(/^the overview contains the organisation's '(.*)' for the organisations '(.*)'$/, function (fieldString, organisationString): Promise<any> {
         let director = this.director as Director;
-        let organizations = JSON.parse(organizationString);
-        let organizationsList = director.getListOfData(organizations);
+        let fields = fieldString.split(", ");
+        let organisations = organisationString.split(", ");
 
-        let field = "shortName";
+        let organisationsList: Organisation[] = director.getListOfData(organisations);
 
-        $$('.test-' + field).count().then(function (count) {
-            if (count == organizations.length){
-                $$('.test-' + field).each(function (element, index) {
-                    return checkField(element, index, field, organizationsList, callback);
-                }).then(callback, callback)
-            } else {
-                callback("there are "+count+" elements for field: " + '.' + field + " expected: " + organizations.length)
-            }
+        return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
+            return promiseTrue(count == organisationsList.length, "expected " + organisationsList.length + " organisations but found " + count);
+        }).then(() => {
+            return doInOrder(fields, (field) => {
+                return $$('.test-' + field).each((element, index) => {
+                    return element.getText().then((text) => {
+                        return Promise.resolve(promiseTrue(text == organisationsList[index][field], field + ": " + text + " did not equal " + organisationsList[index][field]));
+                    })
+                });
+            });
         });
-
-
     });
 
-    this.Given(/^(.*) goes to the organization details page for '(.*)'$/, function (personaName, organizationName, callback) {
+    Then(/^organisations are displayed in the following order: '(.*)'$/, function (organisationString): Promise<any> {
+        let director = this.director as Director;
+        let organisations = organisationString.split(", ");
+        let organisationsList: Organisation[] = director.getListOfData(organisations);
+
+        let fields = ["shortName"];
+
+        return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
+            return promiseTrue(count == organisationsList.length, "expected " + organisationsList.length + " organisations but found " + count);
+        }).then(() => {
+            return doInOrder(fields, (field) => {
+                return $$('.test-' + field).each((element, index) => {
+                    return element.getText().then((text) => {
+                        return Promise.resolve(promiseTrue(text == organisationsList[index][field], field + ": " + text + " did not equal " + organisationsList[index][field]));
+                    })
+                });
+            });
+        });
+    });
+
+    Given(/^(.*) goes to the '(.*)' page for the organisation '(.*)'$/, function (personaName, pageName, orgShortName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
         let persona = director.getPersona(personaName);
 
-
-
-        login(director, persona).then(function () {
-            adminConsole.getOrgUUID(organizationName).then(function (sufix) {
-                director.goToPage('organization details', sufix as string).then(callback, callback);
+        return login(director, persona).then(function () {
+            return adminConsole.getOrgUUID(orgShortName).then(function (sufix) {
+                return director.goToPage(pageName, sufix as string);
             })
-        }, callback);
+        });
     });
 
-    this.Then(/^the organization details page contains '(.*)'s data$/, function (organizationShortName, callback) {
+    Then(/^the organisation details page contains '(.*)'s data$/, function (organisationShortName): Promise<any> {
         let director = this.director as Director;
-        let organization = director.getData(organizationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
         let page = director.getCurrentPage();
 
         let promisses = [
-            checkTextElement(page.elements['shortName'].locator, organization.properties['shortName'], callback),
-            checkTextElement(page.elements['name'].locator, organization.properties['name'], callback)
+            checkTextElement(page.elements['shortName'].locator, organisation['shortName']),
+            checkTextElement(page.elements['name'].locator, organisation['name'])
         ];
 
-        Promise.all(promisses).then(function () {
-            callback()
-        }, callback)
+        return Promise.all(promisses)
     });
 
-    this.When(/^(.*) creates the organization '(.*)'$/, function (personaName, organizationShortName, callback) {
+    When(/^(.*) creates the organisation '(.*)'$/, function (personaName, organisationShortName): Promise<any> {
         let director = this.director as Director;
-        let organization = director.getData(organizationShortName);
-        this.scenarioData = organization; //store it for the next step
+        let organisation: Organisation = director.getData(organisationShortName);
+        this.scenarioData = organisation; //store it for the next step
 
-        Promise.all([
-            director.enterText('shortName', organization.properties['shortName']),
-            director.enterText('name', organization.properties['name'])
+        return Promise.all([
+            director.enterText('shortName', organisation['shortName']),
+            director.enterText('name', organisation['name'])
         ]).then(function () {
-            return director.clickOn('submitButton').then(callback, callback);
+            return director.clickOn('submitButton');
         })
     });
 
-    this.Then(/^'(.*)' organization exists$/, function (organizationShortName, callback) {
+    Then(/^'(.*)' organisation exists$/, function (organisationShortName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        let organization = director.getData(organizationShortName);
+        let organisation: Organisation = director.getData(organisationShortName);
 
-        adminConsole.checkOrganization(organization, checkOrg, callback)
+        return adminConsole.checkOrganisation(organisation, checkOrg);
     });
-}
+});
 
-function checkOrg(expected, realData) {
+function checkOrg(expected: Organisation, realData) {
     if (isUndefined(realData)) {
         return false
     }
-    return realData.activated == expected.properties.activated &&
-        realData.name == expected.properties.name &&
-        realData.shortName == expected.properties.shortName
+    return realData.activated == expected["activated"] &&
+        realData.name == expected["name"] &&
+        realData.shortName == expected["shortName"]
 
 }
 
-function checkField(element, index, field, organizations, callback) {
-    return checkTextElement(element, organizations[index].properties[field], callback);
-}
 
-function checkTextElement(element, expectedText, callback) {
-
-    return element.getText().then(function (text) {
-        if (text != expectedText) {
-            callback(text + " is not equal to " + expectedText);
-        }
-    })
-}

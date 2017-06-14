@@ -1,0 +1,10 @@
+{
+    "requestOutcome" : {
+        "Delivered": "Delivered",
+        "Partially_Delivered": "Partially Delivered",
+        "Cancelled": "Cancelled",
+        "Rejected": "Rejected",
+        "Approved": "Approved",
+        "None": "Unknown"
+    }
+}

@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium;
 
-import nl.thehyve.podium.config.DefaultProfileUtil;
+import nl.thehyve.podium.common.config.DefaultProfileUtil;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 

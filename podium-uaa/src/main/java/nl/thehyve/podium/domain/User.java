@@ -8,7 +8,7 @@
 package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import org.hibernate.annotations.BatchSize;
@@ -73,7 +73,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private UUID uuid;
 
     @NotNull
-    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Pattern(regexp = PodiumConstants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
     private String login;

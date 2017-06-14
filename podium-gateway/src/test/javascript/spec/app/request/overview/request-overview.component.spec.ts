@@ -59,7 +59,7 @@ describe('Component Tests', () => {
                     {
                         provide: ActivatedRoute,
                         useValue: {
-                            'data': Observable.from([{
+                            data: Observable.from([{
                                 'pagingParams': {},
                             }]),
                             snapshot: {

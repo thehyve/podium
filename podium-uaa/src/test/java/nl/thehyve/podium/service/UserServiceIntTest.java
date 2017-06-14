@@ -68,15 +68,6 @@ public class UserServiceIntTest {
     }
 
     @Test
-    public void assertThatOnlyActivatedUserCanRequestPasswordReset() throws UserAccountException {
-        ManagedUserVM testUserData = createTestUser();
-        User user = userService.createUser(testUserData);
-        Optional<User> maybeUser = userService.requestPasswordReset(testUserData.getEmail());
-        assertThat(maybeUser.isPresent()).isFalse();
-        userRepository.delete(user);
-    }
-
-    @Test
     public void assertThatResetKeyMustNotBeOlderThan24Hours() throws UserAccountException {
         ManagedUserVM testUserData = createTestUser();
         User user = userService.createUser(testUserData);

@@ -111,6 +111,7 @@ public class TestResource {
         organisation.setName(organisationData.getName());
         organisation.setShortName(organisationData.getShortName());
         organisation.setActivated(organisationData.getActivated());
+        organisation.setRequestTypes(organisationData.getRequestTypes());
         organisation = organisationService.save(organisation);
 
         OrganisationDTO result = new OrganisationDTO();
@@ -119,6 +120,7 @@ public class TestResource {
         result.setName(organisation.getName());
         result.setShortName(organisation.getShortName());
         result.setActivated(organisation.isActivated());
+        result.setRequestTypes(organisation.getRequestTypes());
         return ResponseEntity.created(new URI("/api/organisations/" + organisation.getId()))
             .body(result);
     }
@@ -129,6 +131,7 @@ public class TestResource {
      * (if applicable) the organisation UUID.
      *
      * @param roleData the role identifiers and the set of user uuids.
+     * @return status code {@link HttpStatus#CREATED}.
      */
     @PostMapping("roles/assign")
     @Timed

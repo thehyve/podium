@@ -10,16 +10,19 @@
 
 package nl.thehyve.podium.common.service.dto;
 
-import nl.thehyve.podium.common.enumeration.DecisionOutcome;
+import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 public class ReviewFeedbackRepresentation {
     private Long id;
 
+    private UUID uuid;
+
     private UserRepresentation reviewer;
 
-    private DecisionOutcome advice;
+    private ReviewProcessOutcome advice;
 
     private ZonedDateTime date;
 
@@ -33,6 +36,14 @@ public class ReviewFeedbackRepresentation {
         this.id = id;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public UserRepresentation getReviewer() {
         return reviewer;
     }
@@ -41,11 +52,11 @@ public class ReviewFeedbackRepresentation {
         this.reviewer = reviewer;
     }
 
-    public DecisionOutcome getAdvice() {
+    public ReviewProcessOutcome getAdvice() {
         return advice;
     }
 
-    public void setAdvice(DecisionOutcome advice) {
+    public void setAdvice(ReviewProcessOutcome advice) {
         this.advice = advice;
     }
 

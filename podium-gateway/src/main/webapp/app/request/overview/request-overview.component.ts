@@ -24,8 +24,7 @@ import { requestOverviewPaths } from './request-overview.constants';
 
 @Component({
     selector: 'pdm-request-overview',
-    templateUrl: './request-overview.component.html',
-    styleUrls: ['request-overview.scss']
+    templateUrl: './request-overview.component.html'
 })
 
 export class RequestOverviewComponent implements OnInit, OnDestroy {
@@ -50,15 +49,17 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     reverse: any;
     links: any;
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private requestService: RequestService,
-                private router: Router,
-                private parseLinks: ParseLinks,
-                private requestFormService: RequestFormService,
-                private eventManager: EventManager,
-                private principal: Principal,
-                private modalService: NgbModal,
-                private activatedRoute: ActivatedRoute
+    // FIXME: Major refactor of overview component.
+    constructor(
+        private jhiLanguageService: JhiLanguageService,
+        private requestService: RequestService,
+        private router: Router,
+        private parseLinks: ParseLinks,
+        private requestFormService: RequestFormService,
+        private eventManager: EventManager,
+        private principal: Principal,
+        private modalService: NgbModal,
+        private activatedRoute: ActivatedRoute
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe(data => {
@@ -90,6 +91,10 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
     }
 
+    isCoordinatorRoute(): boolean {
+        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR;
+    }
+
     ngOnInit(): void {
         this.currentRequestStatus = RequestStatusOptions.Review; // begin with submitted requests
         this.principal.identity().then((account) => {
@@ -100,7 +105,9 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
+        if (this.eventSubscriber) {
+            this.eventManager.destroy(this.eventSubscriber);
+        }
     }
 
     registerChangeInRequests() {
@@ -127,6 +134,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadAllReviewerRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findAllReviewerRequests(this.getPageParams())
             .subscribe(
@@ -136,15 +144,37 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadCoordinatorReviewRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findCoordinatorReviewRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available request drafts.')
+                (error) => this.onError('Error loading available coordinator review request.')
+            );
+    }
+
+    loadCoordinatorApprovedRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Approved);
+        this.currentRequestStatus = RequestStatusOptions.Approved;
+        this.requestService.findCoordinatorApprovedRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available coordinator review request.')
+            );
+    }
+
+    loadCoordinatorDeliveryRequests() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Delivery);
+        this.currentRequestStatus = RequestStatusOptions.Delivery;
+        this.requestService.findCoordinatorDeliveryRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available coordinator delivery request .')
             );
     }
 
     loadDrafts() {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Draft);
         this.currentRequestStatus = RequestStatusOptions.Draft;
         this.requestService.findDrafts(this.getPageParams())
             .subscribe(
@@ -154,11 +184,32 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     loadMyReviewRequests(): void {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
         this.currentRequestStatus = RequestStatusOptions.Review;
         this.requestService.findMyReviewRequests(this.getPageParams())
             .subscribe(
                 (res) => this.processAvailableRequests(res.json(), res.headers),
                 (error) => this.onError('Error loading available submitted requests.')
+            );
+    }
+
+    loadMyApprovedRequests(): void {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Approved);
+        this.currentRequestStatus = RequestStatusOptions.Approved;
+        this.requestService.findMyApprovedRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available submitted requests.')
+            );
+    }
+
+    loadMyDeliveryRequests(): void {
+        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Delivery);
+        this.currentRequestStatus = RequestStatusOptions.Delivery;
+        this.requestService.findMyDeliveryRequests(this.getPageParams())
+            .subscribe(
+                (res) => this.processAvailableRequests(res.json(), res.headers),
+                (error) => this.onError('Error loading available delivery requests.')
             );
     }
 
@@ -168,6 +219,14 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             result.push('id');
         }
         return result;
+    }
+
+    resetPaginationParamsOnStatusChange(newStatus: RequestStatusOptions) {
+        if (this.currentRequestStatus !== newStatus) {
+            this.page = 1;
+            this.reverse = true;
+            this.itemsPerPage = ITEMS_PER_PAGE;
+        }
     }
 
     editRequest(request) {

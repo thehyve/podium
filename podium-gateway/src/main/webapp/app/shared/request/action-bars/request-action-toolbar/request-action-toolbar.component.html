@@ -8,8 +8,7 @@
   ~
   -->
 
-<div class="request-action-toolbar" *ngIf="request">
-
+<div class="request-action-wrapper request-action-toolbar" *ngIf="request">
     <form>
         <fieldset [disabled]="isUpdating">
             <!-- Draft / Submit -->
@@ -50,7 +49,7 @@
 
                     <!-- Revision -->
                     <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
-                        <button type="button" class="btn btn-outline-default" id="cancel-btn" (click)="cancel()">
+                        <button type="button" class="btn btn-default" id="cancel-btn" (click)="cancel()">
                             <span jhiTranslate="request.toolbar.cancel">Cancel</span>
                         </button>
                         <div class="float-xs-right">
@@ -77,7 +76,7 @@
                                 <input type="checkbox"
                                        name="validationCheck"
                                        id="validationCheck"
-                                       [(ngModel)]="checks.validation" />
+                                       [(ngModel)]="checks.validation"/>
                                 <span jhiTranslate="request.toolbar.checks.validation" class="check-helper-text">
                                 I hereby validate this request.
                                 Upon sending for review all organisation reviewers will be notified.
@@ -104,6 +103,13 @@
                         </div>
                     </div>
 
+                    <!-- Organisation coordinator during revision -->
+                    <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
+                        <div class="alert alert-info" jhiTranslate="request.toolbar.revision">
+                            The request is currently in revision.
+                        </div>
+                    </div>
+
                     <!-- Coordinator during Review -->
                     <div *ngIf="isReviewStatus(requestReviewStatus.Review)">
                         <button type="button" class="btn btn-danger test-reject-request-btn"
@@ -121,20 +127,80 @@
                             </button>
                         </div>
                     </div>
-
-                    <!-- Organisation coordinator during revision -->
-                    <div *ngIf="isReviewStatus(requestReviewStatus.Revision)">
-                        <div class="alert alert-info" jhiTranslate="request.toolbar.revision">
-                            The request is currently in revision.
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Reviewer actions -->
-                <div *ngIf="isRequestReviewer()">
+                <div *ngIf="isReviewable()">
                     <!-- Review -->
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-outline-primary" (click)="submitReview()">Submit review</button>
+                        <button type="button" class="btn btn-outline-danger" (click)="reviewRejected()">
+                            <span jhiTranslate="request.toolbar.adviseReject">Advise Reject</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-success" (click)="reviewApproved()">
+                            <span jhiTranslate="request.toolbar.adviseApprove">Advise Approve</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approved -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Approved)">
+
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+                    <div class="alert alert-info" jhiTranslate="request.toolbar.approved">
+                        Your request has been approved and is pending start of delivery by the organisation coordinator.
+                    </div>
+                </div>
+
+                <!-- Coordinator action to start request delivery -->
+                <div *ngIf="isRequestCoordinator()">
+
+                    <button type="button" class="btn btn-danger test-close-request-btn"
+                            (click)="closeRequest()">
+                        <span jhiTranslate="request.toolbar.close">Close</span>
+                    </button>
+
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-default test-request-start-delivery-btn"
+                                (click)="startDelivery()">
+                            <span jhiTranslate="request.toolbar.startDelivery">Start delivery process</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Delivery -->
+            <div class="action-container" *ngIf="isStatus(requestStatus.Delivery)">
+
+                <!-- Researcher actions -->
+                <div *ngIf="isRequestingResearcher()">
+                    <div class="alert alert-info" jhiTranslate="request.toolbar.delivery">
+                        Your request is currently in the process of delivery. You will be notified when action is required on your behalf.
+                    </div>
+                </div>
+
+                <!-- Coordinator action to start request delivery -->
+                <div *ngIf="isRequestCoordinator()">
+                    <div class="form-group" *ngIf="!checks.canFinalize">
+                        <span class="material-icons">info_outline</span>
+                        <span jhiTranslate="request.toolbar.checks.canFinalize"
+                            class="check-helper-text">
+                            Please mark all deliveries as Received or Cancelled above prior to finalizing a request.
+                        </span>
+                    </div>
+
+                    <div class="float-xs-right">
+                        <button type="button" class="btn btn-default test-request-finalize-request-btn"
+                                [disabled]="!checks.canFinalize"
+                                (click)="finalizeRequest()">
+                            <span tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
+                                  [isDisabled]="checks.canFinalize"
+                                  jhiTranslate="request.toolbar.finalizeRequest">
+                                Finalize request
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

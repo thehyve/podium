@@ -19,7 +19,7 @@
         list-style-type: none;
         float: left;
         position: relative;
-        width: 20%;
+        width: 16%;
         font-size: 12px;
         text-transform: uppercase;
         text-align: center;
@@ -69,12 +69,42 @@
             color: white;
     }
 
-    li.active:before {
+    li.active:not(.closed):before {
         box-shadow: rgba(93, 191, 78, 0.7) 0 0 3px 2px
     }
 
-    li.closed:before, li.closed:after {
-        background: #d22a00;
-        color: white;
+    /* Terminal node (when active node is representing a closed status */
+    li:not(:last-child).active {
+        &.closed:before {
+            font-family: 'Material Icons';
+            content: '\E5CD';
+            font-size: 18px;
+            background-color: rgb(235, 164, 23);
+            box-shadow: rgba(235, 164, 23, 0.7) 0 0 3px 2px
+        }
+    }
+
+    li:last-child {
+
+        &.delivered:before {
+            font-size: 18px;
+            font-family: 'Material Icons';
+            content: '\E877';
+        }
+
+        &.partial:before {
+            font-size: 18px;
+            font-family: 'Material Icons';
+            content: '\E876';
+            background-color: rgb(235, 164, 23);
+        }
+
+        &.cancelled:before {
+            font-size: 18px;
+            font-family: 'Material Icons';
+            content: '\E5CD';
+            background-color: rgb(210, 42, 0);
+        }
+
     }
 }

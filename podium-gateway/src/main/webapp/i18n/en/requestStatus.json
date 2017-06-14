@@ -4,8 +4,9 @@
         "Submit": "Submitted",
         "Validation": "Validation",
         "Review": "Review",
+        "Approved": "Approved",
         "Delivery": "Delivery",
-        "Return": "Return",
+        "Finished": "Finished",
         "Revision": "Revision"
     }
 }

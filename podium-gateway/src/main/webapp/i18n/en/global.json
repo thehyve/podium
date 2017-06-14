@@ -127,7 +127,8 @@
         },
         "ribbon": {
             "dev":"Development"
-        }
+        },
+        "item-count": "Showing {{first}} - {{second}} of {{total}} items."
     },
     "entity": {
         "action": {
@@ -169,6 +170,7 @@
     "error": {
         "server.not.reachable": "Server not reachable",
         "url.not.found": "Not found",
+        "503": "Service not available",
         "NotNull": "Field {{ fieldName }} cannot be empty!",
         "Size": "Field {{ fieldName }} does not meet min/max size requirements!",
         "userexists": "Login name already used!",

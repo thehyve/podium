@@ -7,13 +7,16 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Form } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-status/request-status.constants';
 import { RequestAccessService } from '../../request-access.service';
 import { RequestService } from '../../request.service';
+import { Subscription } from 'rxjs';
+import { Delivery } from '../../../delivery/delivery';
+import { DeliveryService } from '../../../delivery/delivery.service';
 
 @Component({
     selector: 'pdm-request-action-toolbar',
@@ -21,14 +24,18 @@ import { RequestService } from '../../request.service';
     styleUrls: ['request-action-toolbar.scss']
 })
 
-export class RequestActionToolbarComponent implements OnInit {
+export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     private status: string;
     private reviewStatus?: string;
     public requestStatus = RequestStatusOptions;
     public requestReviewStatus = RequestReviewStatusOptions;
+    private requestSubscription: Subscription;
+    private deliveriesSubscription: Subscription;
+
     public checks: any = {
-        validation: false
+        validation: false,
+        canFinalize: false
     };
 
     @Input() form: Form;
@@ -43,25 +50,53 @@ export class RequestActionToolbarComponent implements OnInit {
     @Output() submitDraftChange = new EventEmitter();
     @Output() approveRequestChange = new EventEmitter();
     @Output() submitRequestChange = new EventEmitter();
-    @Output() submitReviewChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
+    @Output() reviewAdviseApproved = new EventEmitter();
+    @Output() reviewAdviseRejected = new EventEmitter();
+    @Output() startDeliveryChange = new EventEmitter();
+    @Output() closeRequestChange = new EventEmitter();
+    @Output() finalizeRequestChange = new EventEmitter();
 
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
+        private deliveryService: DeliveryService,
         private requestService: RequestService
     ) {
         this.jhiLanguageService.setLocations(['request', 'requestStatus']);
-
-        this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.initializeStatuses();
         });
+
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries) => {
+                this.canFinalizeRequest(deliveries);
+            }
+        );
     }
 
     ngOnInit() {
         this.initializeStatuses();
+    }
+
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
+
+        if (this.deliveriesSubscription) {
+            this.deliveriesSubscription.unsubscribe();
+        }
+    }
+
+    canFinalizeRequest(requestDeliveries: Delivery[]) {
+        if (!requestDeliveries) {
+            this.checks.canFinalize = false;
+        }
+
+        this.checks.canFinalize = this.deliveryService.canFinalizeRequest(requestDeliveries);
     }
 
     initializeStatuses() {
@@ -91,6 +126,11 @@ export class RequestActionToolbarComponent implements OnInit {
 
     isRequestingResearcher(): boolean {
         return this.requestAccessService.isRequesterOf(this.request);
+    }
+
+    isReviewable(): boolean {
+        let lastFeedbacks = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
+        return this.requestAccessService.isReviewable(lastFeedbacks);
     }
 
     saveDraft() {
@@ -133,7 +173,23 @@ export class RequestActionToolbarComponent implements OnInit {
         this.submitRequestChange.emit(true);
     }
 
-    submitReview() {
-        this.submitReviewChange.emit(true);
+    reviewApproved() {
+        this.reviewAdviseApproved.emit(true);
+    }
+
+    reviewRejected() {
+        this.reviewAdviseRejected.emit(true);
+    }
+
+    startDelivery() {
+        this.startDeliveryChange.emit(true);
+    }
+
+    closeRequest() {
+        this.closeRequestChange.emit(true);
+    }
+
+    finalizeRequest() {
+        this.finalizeRequestChange.emit(true);
     }
 }

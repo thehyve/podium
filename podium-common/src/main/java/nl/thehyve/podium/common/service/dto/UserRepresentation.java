@@ -9,7 +9,7 @@ package nl.thehyve.podium.common.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.thehyve.podium.common.IdentifiableUser;
-import nl.thehyve.podium.common.config.Constants;
+import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.validation.Required;
 import org.hibernate.validator.constraints.Email;
 
@@ -20,14 +20,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static nl.thehyve.podium.common.config.Constants.DEFAULT_LOCALE;
+import static nl.thehyve.podium.common.config.PodiumConstants.DEFAULT_LOCALE;
 
 /**
  * A DTO representing a user, with his authorities.
  */
 public class UserRepresentation implements IdentifiableUser {
 
-    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Pattern(regexp = PodiumConstants.LOGIN_REGEX)
     @Size(max = 50)
     @Required
     private String login;
