@@ -49,9 +49,9 @@ class ReviseRequestsPage {
             "Images": { locator: $('input[value=Images]') },
             "Material": { locator: $('input[value=Material]') },
             "organisations": { locator: $('#organisations') },
-            "clear": { locator: $('#test-clear-draft') },
-            "save": { locator: $('#test-save-draft') },
-            "submit": { locator: $('#test-submit-request') },
+            "cancel": { locator: $('#cancel-btn') },
+            "save": { locator: $('#save-request-btn') },
+            "submit": { locator: $('#submit-request-btn') },
         }
     }
 }
