@@ -225,7 +225,8 @@ export class AdminConsole {
                 method: 'POST',
                 url: browser.baseUrl + 'api/requests/' + draft['uuid'] + '/' + action,
                 headers: {
-                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'content-type': 'application/json'
                 },
                 body: JSON.stringify(note)
             };

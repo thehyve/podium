@@ -12,7 +12,7 @@ import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
 import { doInOrder, promiseTrue, login, checkTextElement } from './util';
 import { Organisation, Request } from '../data/templates';
-import { browser, $$ } from 'protractor';
+import { $$, browser } from 'protractor';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -103,8 +103,6 @@ defineSupportCode(({ Given, When, Then }) => {
         let request = director.getData(requestName);
         let organisation = director.getData(orgShortName);
 
-
-
         let promisses = [
             checkTextElement(page.elements['title'].locator, request['title']),
             checkTextElement(page.elements['searchQuery'].locator, request['searchQuery']),
@@ -123,13 +121,30 @@ defineSupportCode(({ Given, When, Then }) => {
         return Promise.all(promisses);
     });
 
-    function checkRequestTypes(requestTypes: string[], elements){
+    function checkRequestTypes(requestTypes: string[], elements) {
         return Promise.resolve(elements.count()).then((count) => {
             return promiseTrue(count == requestTypes.length, "expected " + requestTypes.length + " requestTypes but found " + count);
-        }).then(()=>{
-            return elements.each((element)=>{
+        }).then(() => {
+            return elements.each((element) => {
                 return element.getText().then(function (type) {
-                    return promiseTrue(requestTypes.indexOf(type) > -1 , type + " is not part of " + requestTypes);
+                    return promiseTrue(requestTypes.indexOf(type) > -1, type + " is not part of " + requestTypes);
+                })
+            })
+        })
+    }
+
+    function checkOrganisations(organisations: string[], elements, director: Director) {
+        organisations = director.getListOfData(organisations);
+        let orgNames = organisations.map((org)=>{
+            return org['name']
+        });
+
+        return Promise.resolve(elements.count()).then((count) => {
+            return promiseTrue(count == organisations.length, "expected " + organisations.length + " requestTypes but found " + count);
+        }).then(() => {
+            return elements.each((element) => {
+                return element.getText().then(function (orgName) {
+                    return promiseTrue(orgNames.indexOf(orgName) > -1, orgName + " is not part of " + orgNames);
                 })
             })
         })
@@ -142,44 +157,72 @@ defineSupportCode(({ Given, When, Then }) => {
         let requestNamesList = requestNames.trim().split(", ");
         let requestNamesListAltOrder = altOrder.trim().split(", ");
 
-
         let requests: Request[] = director.getListOfData(requestNamesList);
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
             return promiseTrue(count == requests.length, "expected " + requests.length + " fields for " + fields[0] + " but found " + count);
         }).then(() => {
-            console.log('order');
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
-                    return checkField(element, field, requests[index]);
+                    return checkField(element, field, requests[index], director);
                 });
             });
-        }).then(()=>{}, ()=>{//this is a hack for different orders created by multi organisation requests.
+        }).then(() => {
+        }, () => {//this is a hack for different orders created by multi organisation requests.
             let requests: Request[] = director.getListOfData(requestNamesListAltOrder);
-            console.log('alt order');
+            fields = fieldNames.split(", ");
             return doInOrder(fields, (field) => {
                 return $$('.test-' + field).each((element, index) => {
-                    return checkField(element, field, requests[index]);
+                    return checkField(element, field, requests[index], director);
                 });
             });
         });
     });
 
-    function checkField(element, field, request: Request): Promise<any> {
+    function checkField(element, field, request: Request, director: Director): Promise<any> {
         if (['requestTypes', 'organisations'].indexOf(field) > -1) {
             element = element.$$('li');
         }
 
         switch (field) {
             case 'requestTypes': {
-                return checkRequestTypes(request['requestTypes'], element)
+                return checkRequestTypes(request['requestTypes'], element);
             }
             case 'organisations': {
-                return promiseTrue(true, '')
+                return checkOrganisations(request['organisations'], element, director);
             }
             default: {
                 return checkTextElement(element, request[field]);
             }
         }
     }
+
+    Given(/^'(.*)' needs revision$/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = director.getData(requestName); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'Review', 'requester', director.getData('Request02'), director.getData(director.getData('Request02')['organisations'][0])['name']).then((request) => {
+            return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
+                "summary": "sum",
+                "description": "des"
+            });
+        })
+    });
+
+    When(/^(.*) revises and '(.*)s' the request$/, function (personaName, action) {
+        let director = this.director as Director;
+        let persona = director.getPersona(personaName);
+        let request: Request = this.scenarioData
+
+        return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
+            "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
+            request[key] = request[key] + ' revision';
+            return director.enterText(key, request[key]);
+        }).then(() => {
+            return director.clickOn(action)
+        }, ()=>{
+            return browser.sleep(10000);
+        })
+    });
 });
