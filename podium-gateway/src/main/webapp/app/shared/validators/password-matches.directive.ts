@@ -33,13 +33,13 @@ export class PasswordMatchesDirective implements Validator {
 
     subscribed = false;
 
-    @Input() passwordMatches: FormControl;
+    @Input() pdmPasswordMatches: FormControl;
 
     validate(c: FormControl) {
         if (!this.subscribed) {
             // Subscribing to changes to the password control
             this.subscribed = true;
-            this.passwordMatches.valueChanges.subscribe(() => {
+            this.pdmPasswordMatches.valueChanges.subscribe(() => {
                 c.updateValueAndValidity();
             });
         }
@@ -48,11 +48,11 @@ export class PasswordMatchesDirective implements Validator {
         if (value === undefined || value === null || value.length === 0) {
             return null;
         }
-        if (this.passwordMatches.value === value) {
+        if (this.pdmPasswordMatches.value === value) {
             return null;
         }
         return {
-            passwordMatches: {
+            pdmPasswordMatches: {
                 valid: false
             }
         };

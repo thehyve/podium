@@ -20,17 +20,17 @@ import { NG_VALIDATORS, ValidatorFn, Validator, FormControl } from '@angular/for
 export class WordLengthValidatorDirective implements Validator {
     validator: ValidatorFn;
 
-    @Input() wordLengthValidator: number;
+    @Input() pdmWordLengthValidator: number;
 
    constructor() {
     }
 
     validate(c: FormControl) {
-       if (!c.value || c.value.split(' ').length <= this.wordLengthValidator) {
+       if (!c.value || c.value.split(' ').length <= this.pdmWordLengthValidator) {
             return null;
        } else {
            return {
-               wordLengthValidator: {
+               pdmWordLengthValidator: {
                    valid: false
                }
            };
