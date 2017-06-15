@@ -15,7 +15,7 @@ import { NG_VALIDATORS, Validator, FormControl } from '@angular/forms';
  *  <input type="password" id="password" name="password" #password="ngModel"
  *      [(ngModel)]="registerAccount.password">
  *  <input type="password" id="confirmPassword" name="confirmPassword" #confirmPasswordInput="ngModel"
- *      [(ngModel)]="confirmPassword" [passwordMatches]="password">
+ *      [(ngModel)]="confirmPassword" [pdmPasswordMatches]="password">
  *  <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
  *      <small *ngIf="confirmPasswordInput.errors.passwordMatches">
  *          The passwords do not match.
@@ -24,14 +24,14 @@ import { NG_VALIDATORS, Validator, FormControl } from '@angular/forms';
  * }
  */
 @Directive({
-    selector: '[passwordMatches][formControlName],[passwordMatches][formControl],[passwordMatches][ngModel]',
+    selector: '[pdmPasswordMatches][formControlName],[pdmPasswordMatches][formControl],[pdmPasswordMatches][ngModel]',
     providers: [
         {provide: NG_VALIDATORS, useExisting: PasswordMatchesDirective, multi: true}
     ]
 })
 export class PasswordMatchesDirective implements Validator {
 
-    subscribed: boolean = false;
+    subscribed = false;
 
     @Input() passwordMatches: FormControl;
 

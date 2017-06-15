@@ -22,11 +22,10 @@ export class PdmHealthCheckComponent implements OnInit {
     updatingHealth: boolean;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
         private healthService: PdmHealthService
     ) {
-        this.jhiLanguageService.setLocations(['health']);
+
 
     }
 

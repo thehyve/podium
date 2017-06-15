@@ -16,11 +16,13 @@ import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { PodiumUploadModule } from './upload/upload.module';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
 import { TabsModule } from 'ng2-bootstrap/tabs';
-import { UiSwitchModule } from 'angular2-ui-switch'
+import { UiSwitchModule } from 'angular2-ui-switch';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
+        NgbModule.forRoot(),
         NgJhipsterModule.forRoot({
             i18nEnabled: true,
             defaultI18nLang: 'en'
@@ -32,6 +34,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
         BsDropdownModule.forRoot()
     ],
     exports: [
+        NgbModule,
         FormsModule,
         HttpModule,
         CommonModule,

@@ -7,27 +7,26 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
+import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { PasswordResetInit } from './password-reset-init.service';
 
 @Component({
-    selector: 'jhi-password-reset-init',
+    selector: 'pdm-password-reset-init',
     templateUrl: './password-reset-init.component.html'
 })
-export class PasswordResetInitComponent implements OnInit {
+export class PasswordResetInitComponent implements OnInit, AfterViewInit {
     error: string;
     errorEmailNotExists: string;
     resetAccount: any;
     success: string;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private passwordResetInit: PasswordResetInit,
         private elementRef: ElementRef,
         private renderer: Renderer
     ) {
-        this.jhiLanguageService.setLocations(['reset']);
+
     }
 
     ngOnInit() {

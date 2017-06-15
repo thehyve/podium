@@ -11,7 +11,7 @@ import { Directive, Input } from '@angular/core';
 import { NG_VALIDATORS, ValidatorFn, Validator, FormControl } from '@angular/forms';
 
 @Directive({
-    selector: '[wordLengthValidator][ngModel]',
+    selector: '[pdmWordLengthValidator][ngModel]',
     providers: [
         {provide: NG_VALIDATORS, useExisting: WordLengthValidatorDirective, multi: true}
     ]

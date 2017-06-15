@@ -144,7 +144,7 @@
                     <label for="background" jhiTranslate="request.form.background.label">Background</label>
                     <textarea type="text" class="form-control" name="background" id="background" #background="ngModel"
                               autocomplete="off" placeholder="{{'request.form.background.placeholder' | translate}}"
-                              required minlength="1" maxlength="2000" rows="5" [wordLengthValidator]="750"
+                              required minlength="1" maxlength="2000" rows="5" [pdmWordLengthValidator]="750"
                               [(ngModel)]="requestDetail.background">
                 </textarea>
 
@@ -175,7 +175,7 @@
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
                               required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
-                              [wordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
+                              [pdmWordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
                     </textarea>
 
                     <div *ngIf="researchQuestion.dirty && researchQuestion.invalid">
@@ -205,7 +205,7 @@
                     <textarea type="text" class="form-control" name="hypothesis" id="hypothesis"
                               autocomplete="off" placeholder="{{'request.form.hypothesis.placeholder' | translate}}"
                               required minlength="1" maxlength="5000" rows="7" #hypothesis="ngModel"
-                              [(ngModel)]="requestDetail.hypothesis" [wordLengthValidator]="300">
+                              [(ngModel)]="requestDetail.hypothesis" [pdmWordLengthValidator]="300">
                 </textarea>
 
                     <div *ngIf="hypothesis.dirty && hypothesis.invalid">
@@ -235,7 +235,7 @@
                     <textarea type="text" class="form-control" name="methods" id="methods"
                               autocomplete="off" placeholder="{{'request.form.methods.placeholder' | translate}}"
                               required minlength="1" maxlength="10000" rows="7" #methods="ngModel"
-                              [(ngModel)]="requestDetail.methods" [wordLengthValidator]="500">
+                              [(ngModel)]="requestDetail.methods" [pdmWordLengthValidator]="500">
                 </textarea>
 
                     <div *ngIf="methods.dirty && methods.invalid">
@@ -321,7 +321,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off"  #piEmail="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.email.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.email" emailValidator>
+                                   [(ngModel)]="requestDetail.principalInvestigator.email" pdmEmailValidator>
 
                             <div *ngIf="piEmail.dirty && piEmail.invalid">
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.required"

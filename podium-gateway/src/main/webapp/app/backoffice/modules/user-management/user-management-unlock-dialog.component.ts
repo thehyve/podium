@@ -16,7 +16,7 @@ import { User } from '../../../shared/user/user.model';
 import { UserModalService } from './user-modal.service';
 
 @Component({
-    selector: 'jhi-user-mgmt-unlock-dialog',
+    selector: 'pdm-user-mgmt-unlock-dialog',
     templateUrl: './user-management-unlock-dialog.component.html'
 })
 export class UserMgmtUnlockDialogComponent {
@@ -24,13 +24,12 @@ export class UserMgmtUnlockDialogComponent {
     user: User;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private userService: UserService,
         public activeModal: NgbActiveModal,
         private eventManager: EventManager,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['user-management']);
+
     }
 
     clear () {
@@ -50,7 +49,7 @@ export class UserMgmtUnlockDialogComponent {
 }
 
 @Component({
-    selector: 'jhi-user-unlock-dialog',
+    selector: 'pdm-user-unlock-dialog',
     template: ''
 })
 export class UserUnlockDialogComponent implements OnInit, OnDestroy {

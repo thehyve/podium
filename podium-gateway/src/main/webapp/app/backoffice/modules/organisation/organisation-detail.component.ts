@@ -14,7 +14,7 @@ import { Organisation } from './organisation.model';
 import { OrganisationService } from './organisation.service';
 
 @Component({
-    selector: 'jhi-organisation-detail',
+    selector: 'pdm-organisation-detail',
     templateUrl: './organisation-detail.component.html',
     providers: [OrganisationService]
 })
@@ -24,11 +24,10 @@ export class OrganisationDetailComponent implements OnInit, OnDestroy {
     private subscription: any;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private organisationService: OrganisationService,
         private route: ActivatedRoute
     ) {
-        this.jhiLanguageService.setLocations(['organisation']);
+
     }
 
     ngOnInit() {

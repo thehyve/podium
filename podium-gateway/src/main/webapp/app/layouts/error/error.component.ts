@@ -21,7 +21,7 @@ export class ErrorComponent implements OnInit {
     constructor(
         private jhiLanguageService: JhiLanguageService
     ) {
-        this.jhiLanguageService.setLocations(['error']);
+
     }
 
     ngOnInit() {

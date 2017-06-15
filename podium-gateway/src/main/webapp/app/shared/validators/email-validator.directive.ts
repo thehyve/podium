@@ -33,7 +33,7 @@ function validateEmailFactory(): ValidatorFn {
 }
 
 @Directive({
-    selector: '[emailValidator][ngModel]',
+    selector: '[pdmEmailValidator][ngModel]',
     providers: [
         { provide: NG_VALIDATORS, useExisting: EmailValidatorDirective, multi: true }
     ]

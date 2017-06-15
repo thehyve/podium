@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { JhiLanguageService, EventManager, ParseLinks } from 'ng-jhipster';
+import { EventManager, ParseLinks } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
 import { User } from '../../shared/user/user.model';
@@ -51,7 +51,6 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
 
     // FIXME: Major refactor of overview component.
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestService: RequestService,
         private router: Router,
         private parseLinks: ParseLinks,
@@ -70,7 +69,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
             this.predicate = data['pagingParams'].predicate;
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
-        this.jhiLanguageService.setLocations(['request']);
+
         this.routePath = this.activatedRoute.snapshot.url[0].path;
     }
 

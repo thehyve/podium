@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 import { LANGUAGES } from './language.constants';
 
 @Injectable()

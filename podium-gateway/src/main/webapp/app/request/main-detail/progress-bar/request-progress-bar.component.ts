@@ -41,7 +41,6 @@ export class RequestProgressBarComponent implements OnDestroy {
     requestSubscription: Subscription;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService
     ) {
@@ -49,8 +48,6 @@ export class RequestProgressBarComponent implements OnDestroy {
         this.requestStatusMap = REQUEST_STATUSES_MAP;
         this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
         this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
-
-        this.jhiLanguageService.addLocation('requestOutcome');
 
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;

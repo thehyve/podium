@@ -34,12 +34,11 @@ export class RequestMainDetailComponent implements OnInit {
     public success: any;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private route: ActivatedRoute,
         private requestService: RequestService,
         private alertService: AlertService
     ) {
-        this.jhiLanguageService.setLocations(['request']);
+
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });

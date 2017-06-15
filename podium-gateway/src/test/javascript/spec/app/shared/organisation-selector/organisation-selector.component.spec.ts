@@ -11,7 +11,7 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { OrganisationSelectorComponent } from '../../../../../../main/webapp/app/shared/organisation-selector/organisation-selector.component';
 import { JhiLanguageService } from 'ng-jhipster';
-import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translate';
+import { TranslateService, TranslateLoader, TranslateParser } from '@ngx-translate/core';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
@@ -19,6 +19,7 @@ import { EventEmitter } from '@angular/core';
 import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
 import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
 import { RequestType } from '../../../../../../main/webapp/app/shared/request/request-type';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('OrganisationSelectorComponent (templateUrl)', () => {
 
@@ -28,6 +29,10 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                FormsModule,
+                PodiumTestModule
+            ],
             providers: [
                 BaseRequestOptions,
                 MockBackend,
@@ -36,25 +41,10 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
                 TranslateLoader,
                 TranslateParser,
                 OrganisationService,
-                {
-                    provide: Http,
-                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backendInstance, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
-                },
-                {
-                    provide: JhiLanguageService,
-                    useClass: MockLanguageService
-                },
             ],
-            imports: [FormsModule],
             declarations: [OrganisationSelectorComponent], // declare the test component
-        }).overrideComponent(OrganisationSelectorComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
+        }).overrideTemplate(OrganisationSelectorComponent, '')
+            .compileComponents();
     }));
 
     // synchronous beforeEach

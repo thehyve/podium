@@ -27,6 +27,7 @@ import {
     RequestReviewStatusOptions,
     RequestStatusOptions
 } from '../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('PodiumEventMessageComponent (templateUrl)', () => {
     let comp: PodiumEventMessageComponent;
@@ -37,6 +38,7 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [PodiumTestModule],
             providers: [
                 BaseRequestOptions,
                 MockBackend,
@@ -47,22 +49,11 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
                 {
                     provide: Principal,
                     useClass: MockPrincipal
-                },
-                {
-                    provide: Http,
-                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backendInstance, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
                 }
             ],
             declarations: [PodiumEventMessageComponent], // declare the test component
-        }).overrideComponent(PodiumEventMessageComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
-
+        }).overrideTemplate(PodiumEventMessageComponent, '')
+            .compileComponents();
     }));
 
     let getDummyRequest = (): RequestBase => {

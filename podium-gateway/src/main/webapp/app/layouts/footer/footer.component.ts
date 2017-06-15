@@ -10,7 +10,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'podium-footer',
+    selector: 'pdm-footer',
     templateUrl: './footer.component.html',
     styleUrls: ['./footer.scss']
 })

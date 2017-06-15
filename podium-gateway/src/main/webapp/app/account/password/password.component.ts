@@ -13,7 +13,7 @@ import { Principal } from '../../shared';
 import { Password } from './password.service';
 
 @Component({
-    selector: 'jhi-password',
+    selector: 'pdm-password',
     templateUrl: './password.component.html'
 })
 export class PasswordComponent implements OnInit {
@@ -25,11 +25,10 @@ export class PasswordComponent implements OnInit {
     confirmPassword: string;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private passwordService: Password,
         private principal: Principal
     ) {
-        this.jhiLanguageService.setLocations(['password']);
+
     }
 
     ngOnInit () {

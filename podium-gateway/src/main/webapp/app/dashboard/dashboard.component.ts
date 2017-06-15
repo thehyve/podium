@@ -13,7 +13,7 @@ import { User } from '../shared/user/user.model';
 import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
-    selector: 'dashboard',
+    selector: 'pdm-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: [
         'dashboard.scss'
@@ -24,10 +24,9 @@ export class DashboardComponent implements OnInit {
     user: User;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private principal: Principal
     ) {
-        this.jhiLanguageService.setLocations(['dashboard']);
+
     }
 
     ngOnInit() {
