@@ -24,7 +24,7 @@ module.exports = {
             '@angular/platform-browser-dynamic',
             '@angular/router',
             '@ng-bootstrap/ng-bootstrap',
-            'angular2-cookie',
+            'ngx-cookie',
             'angular2-infinite-scroll',
             'jquery',
             'ng-jhipster',

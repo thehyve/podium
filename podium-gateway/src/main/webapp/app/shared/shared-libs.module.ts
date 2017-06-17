@@ -19,6 +19,7 @@ import { TabsModule } from 'ng2-bootstrap/tabs';
 import { UiSwitchModule } from 'angular2-ui-switch';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CookieModule } from 'ngx-cookie';
 
 @NgModule({
     imports: [
@@ -31,7 +32,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
         UiSwitchModule,
-        BsDropdownModule.forRoot()
+        BsDropdownModule.forRoot(),
+        CookieModule.forRoot()
     ],
     exports: [
         NgbModule,
