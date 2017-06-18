@@ -77,6 +77,7 @@ describe('Component Tests', () => {
             tick();
 
             expect(service.save).toHaveBeenCalledWith({
+                specialism: '',
                 password: 'password',
                 langKey: 'en'
             });

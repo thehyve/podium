@@ -10,7 +10,6 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
-import { TranslateService, TranslateLoader, TranslateParser } from '@ngx-translate/core';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
@@ -85,9 +84,6 @@ describe('RoleAssignComponent', () => {
                 BaseRequestOptions,
                 MockBackend,
                 JhiLanguageService,
-                TranslateService,
-                TranslateLoader,
-                TranslateParser,
                 UserService,
                 {
                     provide: Http,
