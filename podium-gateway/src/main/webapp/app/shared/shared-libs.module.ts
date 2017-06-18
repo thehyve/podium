@@ -12,16 +12,16 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
 import { CommonModule } from '@angular/common';
 import { NgJhipsterModule } from 'ng-jhipster';
-import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { PodiumUploadModule } from './upload/upload.module';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
 import { TabsModule } from 'ng2-bootstrap/tabs';
-import { UiSwitchModule } from 'angular2-ui-switch';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieModule } from 'ngx-cookie';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { UiSwitchModule } from 'ngx-ui-switch/src';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, 'i18n/', '.json');
