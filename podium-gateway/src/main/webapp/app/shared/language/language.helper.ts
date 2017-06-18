@@ -15,8 +15,10 @@ import { LANGUAGES } from './language.constants';
 @Injectable()
 export class JhiLanguageHelper {
 
-    constructor (private translateService: TranslateService, private titleService: Title ) {
-        this.init();
+    constructor (
+        private translateService: TranslateService,
+        private titleService: Title
+    ) {
     }
 
     getAll(): Promise<any> {
@@ -39,8 +41,5 @@ export class JhiLanguageHelper {
         this.translateService.get(titleKey || 'global.title').subscribe(title => {
             this.titleService.setTitle(title);
         });
-    }
-
-    private init () {
     }
 }

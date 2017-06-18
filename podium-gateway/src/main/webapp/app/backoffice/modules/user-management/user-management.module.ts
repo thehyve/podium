@@ -26,9 +26,11 @@ import {
 import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
 import { UserMgmtRoutingModule } from './user-management.routing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
+        TranslateModule.forChild({}),
         PodiumGatewayAdminModule,
         PodiumGatewaySharedModule,
         UserMgmtRoutingModule,
@@ -57,7 +59,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
-        RouterModule
+        RouterModule,
+        TranslateModule
     ]
 })
 export class PodiumGatewayUserMgmtModule {}
