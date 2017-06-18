@@ -18,7 +18,7 @@ import { User } from '../../../shared/user/user.model';
 import { ITEMS_PER_PAGE } from '../../../shared/constants/pagination.constants';
 
 @Component({
-    selector: 'jhi-user-mgmt',
+    selector: 'pdm-user-mgmt',
     templateUrl: './user-management.component.html'
 })
 export class UserMgmtComponent implements OnInit, OnDestroy {
@@ -38,7 +38,6 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
     reverse: any;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private userService: UserService,
         private parseLinks: ParseLinks,
         private alertService: AlertService,
@@ -56,7 +55,7 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
             this.reverse = data['pagingParams'].ascending;
             this.predicate = data['pagingParams'].predicate;
         });
-        this.jhiLanguageService.setLocations(['user-management']);
+
     }
 
     ngOnInit() {

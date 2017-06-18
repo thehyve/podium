@@ -15,6 +15,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { PdmHealthCheckComponent } from '../../../../../../main/webapp/app/admin/health/health.component';
 import { PdmHealthService } from '../../../../../../main/webapp/app/admin/health/health.service';
+import { PodiumTestModule } from '../../../test.module';
 
 
 describe('Component Tests', () => {
@@ -27,34 +28,19 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
+                imports: [PodiumTestModule],
                 declarations: [PdmHealthCheckComponent],
                 providers: [
                     MockBackend,
                     BaseRequestOptions,
-                    {
-                        provide: Http,
-                        useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backendInstance, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
-                    },
                     PdmHealthService,
-                    {
-                        provide: JhiLanguageService,
-                        useClass: MockLanguageService
-                    },
                     {
                         provide: NgbModal,
                         useValue: null
                     }
                 ]
-            })
-            .overrideComponent(PdmHealthCheckComponent, {
-                set: {
-                    template: ''
-                }
-            })
-            .compileComponents();
+            }).overrideTemplate(PdmHealthCheckComponent, '')
+                .compileComponents();
         }));
 
         beforeEach(() => {

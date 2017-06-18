@@ -25,6 +25,7 @@ import { PodiumEventMessage } from '../../../../../../../main/webapp/app/shared/
 import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
 import { AccountService } from '../../../../../../../main/webapp/app/shared/auth/account.service';
 import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
+import { PodiumTestModule } from '../../../../test.module';
 
 describe('RequestReviewPanelComponent (templateUrl)', () => {
 
@@ -36,29 +37,21 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                FormsModule,
+                PodiumTestModule
+            ],
             providers: [
                 MockBackend,
                 BaseRequestOptions,
                 RequestService,
                 Principal,
                 AccountService,
-                RequestAccessService,
-                {
-                    provide: Http,
-                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backendInstance, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
-                }
+                RequestAccessService
             ],
-            imports: [FormsModule],
             declarations: [RequestReviewPanelComponent], // declare the test component
-        }).overrideComponent(RequestReviewPanelComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
-
+        }).overrideTemplate(RequestReviewPanelComponent, '')
+            .compileComponents();
     }));
 
     // synchronous beforeEach

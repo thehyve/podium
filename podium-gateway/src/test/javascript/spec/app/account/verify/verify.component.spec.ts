@@ -17,6 +17,7 @@ import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { MockActivatedRoute, MockRouter } from '../../../helpers/mock-route.service';
 import { Verify } from '../../../../../../main/webapp/app/account/verify/verify.service';
 import { VerifyComponent } from '../../../../../../main/webapp/app/account/verify/verify.component';
+import { PodiumTestModule } from '../../../test.module';
 
 
 describe('Component Tests', () => {
@@ -27,21 +28,11 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
+                imports: [PodiumTestModule],
                 declarations: [VerifyComponent],
                 providers: [MockBackend,
                     Verify,
                     BaseRequestOptions,
-                    {
-                        provide: Http,
-                        useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backendInstance, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
-                    },
-                    {
-                        provide: JhiLanguageService,
-                        useClass: MockLanguageService
-                    },
                     {
                         provide: ActivatedRoute,
                         useValue: new MockActivatedRoute({'key': 'ABC123'})
@@ -51,11 +42,8 @@ describe('Component Tests', () => {
                         useValue: new MockRouter()
                     }
                 ]
-            }).overrideComponent(VerifyComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(VerifyComponent, '')
+                .compileComponents();
         }));
 
         beforeEach(() => {

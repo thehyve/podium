@@ -16,7 +16,7 @@ export class OrganisationUser {
     public previousAuthority: string;
     public authority: string = undefined;
     public isSaved: boolean;
-    public isDirty: boolean = false;
+    public isDirty = false;
     public searchTerm: string;
     public dataSource: Observable<any>;
 

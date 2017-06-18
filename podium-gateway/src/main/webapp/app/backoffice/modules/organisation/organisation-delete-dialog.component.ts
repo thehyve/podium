@@ -16,7 +16,7 @@ import { OrganisationPopupService } from './organisation-popup.service';
 import { OrganisationService } from './organisation.service';
 
 @Component({
-    selector: 'jhi-organisation-delete-dialog',
+    selector: 'pdm-organisation-delete-dialog',
     templateUrl: './organisation-delete-dialog.component.html'
 })
 export class OrganisationDeleteDialogComponent {
@@ -24,13 +24,12 @@ export class OrganisationDeleteDialogComponent {
     organisation: Organisation;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private organisationService: OrganisationService,
         public activeModal: NgbActiveModal,
         private eventManager: EventManager,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['organisation']);
+
     }
 
     clear () {
@@ -51,7 +50,7 @@ export class OrganisationDeleteDialogComponent {
 }
 
 @Component({
-    selector: 'jhi-organisation-delete-popup',
+    selector: 'pdm-organisation-delete-popup',
     template: ''
 })
 export class OrganisationDeletePopupComponent implements OnInit, OnDestroy {

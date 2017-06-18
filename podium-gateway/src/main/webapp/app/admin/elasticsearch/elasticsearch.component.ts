@@ -20,10 +20,9 @@ export class PdmElasticsearchComponent {
     processingIndex: boolean;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal
     ) {
-        this.jhiLanguageService.setLocations(['elasticsearch']);
+
     }
 
     confirmReindexing() {

@@ -13,7 +13,7 @@ import { JhiLanguageHelper } from '../../shared';
 import { Principal } from '../../shared/auth/principal.service';
 
 @Component({
-    selector: 'podium-main',
+    selector: 'pdm-main',
     templateUrl: './main.component.html'
 })
 export class PdmMainComponent implements OnInit {

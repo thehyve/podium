@@ -34,7 +34,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
-        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [

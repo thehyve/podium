@@ -17,6 +17,7 @@ import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { SettingsComponent } from '../../../../../../main/webapp/app/account/settings/settings.component';
 import { MockAccountService } from '../../../helpers/mock-account.service';
 import { MockPrincipal } from '../../../helpers/mock-principal.service';
+import { PodiumTestModule } from '../../../test.module';
 
 
 describe('Component Tests', () => {
@@ -30,6 +31,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
+                imports: [PodiumTestModule],
                 declarations: [SettingsComponent],
                 providers: [
                     MockBackend,
@@ -45,24 +47,10 @@ describe('Component Tests', () => {
                     {
                         provide: JhiLanguageHelper,
                         useValue: null
-                    },
-                    {
-                        provide: JhiLanguageService,
-                        useClass: MockLanguageService
-                    },
-                    {
-                        provide: Http,
-                        useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backendInstance, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
                     }
                 ]
-            }).overrideComponent(SettingsComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(SettingsComponent, '')
+                .compileComponents();
         }));
 
         beforeEach(() => {

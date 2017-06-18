@@ -30,7 +30,7 @@ export class RequestUpdateDialogComponent {
         protected requestService: RequestService,
         protected activeModal: NgbActiveModal
     ) {
-        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
+
     }
 
     close() {

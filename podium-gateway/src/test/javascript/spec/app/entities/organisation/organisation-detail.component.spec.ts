@@ -22,6 +22,7 @@ import {
     OrganisationService,
     OrganisationDetailComponent
 } from '../../../../../../main/webapp/app/backoffice/modules/organisation';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('Component Tests', () => {
 
@@ -32,6 +33,7 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
+                imports: [PodiumTestModule],
                 declarations: [OrganisationDetailComponent],
                 providers: [
                     MockBackend,
@@ -43,30 +45,17 @@ describe('Component Tests', () => {
                         provide: ActivatedRoute,
                         useValue: new MockActivatedRoute({uuid: '123'})
                     },
-                    {
-                        provide: Http,
-                        useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backendInstance, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
-                    },
-                    {
-                        provide: JhiLanguageService,
-                        useClass: MockLanguageService
-                    },
                     OrganisationService
                 ]
-            }).overrideComponent(OrganisationDetailComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents()
-                .then(() => {
-                    fixture = TestBed.createComponent(OrganisationDetailComponent);
-                    comp = fixture.componentInstance;
-                    service = fixture.debugElement.injector.get(OrganisationService);
-                });
-        }));
+            }).overrideTemplate(OrganisationDetailComponent, '')
+                .compileComponents();
+            }));
+
+        beforeEach(() => {
+            fixture = TestBed.createComponent(OrganisationDetailComponent);
+            comp = fixture.componentInstance;
+            service = fixture.debugElement.injector.get(OrganisationService);
+        });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {

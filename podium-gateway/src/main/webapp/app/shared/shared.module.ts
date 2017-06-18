@@ -9,7 +9,6 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { SessionStorageService } from 'ng2-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
@@ -84,7 +83,6 @@ export class PodiumGatewaySharedModule {
         return {
             ngModule: PodiumGatewaySharedModule,
             providers: [
-                CookieService,
                 LoginService,
                 LoginModalService,
                 MessageService,

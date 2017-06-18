@@ -12,7 +12,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
 
 @Component({
-    selector: 'jhi-settings',
+    selector: 'pdm-settings',
     templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
@@ -27,7 +27,6 @@ export class SettingsComponent implements OnInit {
         private languageService: JhiLanguageService,
         private languageHelper: JhiLanguageHelper
     ) {
-        this.languageService.setLocations(['settings']);
     }
 
     ngOnInit () {

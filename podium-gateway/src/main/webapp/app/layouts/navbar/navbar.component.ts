@@ -41,7 +41,6 @@ export class NavbarComponent implements OnInit {
     ) {
         this.version = DEBUG_INFO_ENABLED ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
-        this.languageService.addLocation('global');
     }
 
     ngOnInit() {

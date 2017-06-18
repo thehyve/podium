@@ -13,7 +13,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { Verify } from './verify.service';
 
 @Component({
-    selector: 'jhi-verify',
+    selector: 'pdm-verify',
     templateUrl: './verify.component.html'
 })
 export class VerifyComponent implements OnInit {
@@ -25,12 +25,11 @@ export class VerifyComponent implements OnInit {
     verifyKey: string;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private verify: Verify,
         private route: ActivatedRoute,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['verify']);
+
     }
 
     ngOnInit () {

@@ -32,13 +32,11 @@ export class AuditsComponent implements OnInit {
     datePipe: DatePipe;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private auditsService: AuditsService,
         private parseLinks: ParseLinks,
         @Inject(LOCALE_ID) private locale: string,
         private paginationConfig: PaginationConfig
     ) {
-        this.jhiLanguageService.setLocations(['audits']);
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.page = 1;
         this.reverse = false;

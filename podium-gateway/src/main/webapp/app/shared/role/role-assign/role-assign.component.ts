@@ -45,14 +45,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     @Input() organisation;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private roleService: RoleService,
         private userService: UserService,
         private alertService: AlertService,
         private principal: Principal,
         private eventManager: EventManager
     ) {
-        this.jhiLanguageService.setLocations(['organisation', 'role']);
+
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
         this.authorityOptions = ORGANISATION_AUTHORITIES;
         this.users = {};
