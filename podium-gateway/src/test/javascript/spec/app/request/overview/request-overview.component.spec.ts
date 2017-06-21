@@ -63,7 +63,7 @@ describe('Component Tests', () => {
                                 'pagingParams': {},
                             }]),
                             snapshot: {
-                                url: [{path: '/foo'}],
+                                url: [{path: 'my-requests'}],
                                 params: {},
                             }
                         },
