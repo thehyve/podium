@@ -78,6 +78,12 @@ export class RequestStatusSidebarComponent implements OnInit {
             });
     }
 
+    /**
+     * Determine if the a StatusSidebarOption should be included in the view based on the current UserGroupAuthority
+     *
+     * @param requiredUserGroups All UserGroupAuthority options in which the status should be included.
+     * @returns {boolean} true if the view is for the correct current UserGroupAuthority
+     */
     includeAsOption(requiredUserGroups: UserGroupAuthority[]) {
         return requiredUserGroups.indexOf(this.userGroupAuthority) > -1;
     }

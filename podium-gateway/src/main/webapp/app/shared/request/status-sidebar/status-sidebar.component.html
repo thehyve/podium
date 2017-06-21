@@ -22,7 +22,13 @@
                 *ngIf="includeAsOption(status.includeFor)"
                 [ngClass]="{'active': isActiveElement(status.option)}"
                 (click)="updateOverviewForStatus(status.option)">
-                <i class="material-icons">{{ status.icon }}</i>
+                <i class="material-icons"
+                   tooltip="{{status.option}}"
+                   placement="right"
+                   container="body"
+                   [isDisabled]="toggled">
+                     {{ status.icon }}
+                </i>
                 <span jhiTranslate="requestSidebar.status.{{ status.option }}">
                     {{ status.option }}
                 </span>
