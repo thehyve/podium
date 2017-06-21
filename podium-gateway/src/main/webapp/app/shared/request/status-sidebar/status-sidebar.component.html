@@ -9,12 +9,19 @@
   -->
 
 <div class="sidebar-nav">
-    <p class="status-header">Requests</p>
+    <p class="status-header">
+        <span *ngIf="toggled">
+            Requests
+        </span>
+        &nbsp;
+    </p>
 
     <ul class="status-list">
-        <li class="status-item" *ngFor="let status of statusSidebarOptions"
-            [ngClass]="{'active': isActiveElement(status.option)}"
-            (click)="updateOverviewForStatus(status.option)">
+        <ng-container *ngFor="let status of statusSidebarOptions">
+            <li class="status-item"
+                *ngIf="includeAsOption(status.includeFor)"
+                [ngClass]="{'active': isActiveElement(status.option)}"
+                (click)="updateOverviewForStatus(status.option)">
                 <i class="material-icons">{{ status.icon }}</i>
                 <span jhiTranslate="requestSidebar.status.{{ status.option }}">
                     {{ status.option }}
@@ -22,6 +29,8 @@
                 <span class="tag tag-default float-xs-right">
                     {{ counts[status.option] || '0' }}
                 </span>
-        </li>
+            </li>
+        </ng-container>
+
     </ul>
 </div>

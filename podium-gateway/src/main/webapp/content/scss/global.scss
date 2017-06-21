@@ -464,8 +464,8 @@ typeahead-container {
 #sidebar-wrapper {
     position: absolute;
     left: 250px;
-    width: 0;
-    height: calc(100% - 102px);
+    width: 55px;
+    height: calc(100% - 121px);
     margin-left: -250px;
     overflow-y: auto;
     background: transparent;
@@ -473,18 +473,25 @@ typeahead-container {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
-
     border-right: 1px solid rgba(0, 0, 0, 0.098);
     overflow-x: hidden;
+
+    z-index: 10;
+
+    .status-item {
+        padding-left: 15px;
+    }
 }
 
 #wrapper .sidebar-toggle-btn {
     border-radius: 5px;
     height: 30px;
     width: 30px;
+    margin-left: -64px;
     position: relative;
     background-color: rgb(1, 104, 150);
     user-select: none;
+    z-index: 15;
 
     .material-icons {
         line-height: 32px;
@@ -506,17 +513,17 @@ typeahead-container {
 #page-content-wrapper {
     width: 100%;
     position: absolute;
-    padding: 15px;
+    padding: 20px 20px 20px 75px;
 
     h2 {
         margin-top: -30px;
-        margin-left: 45px!important;
     }
 }
 
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
     margin-right: -250px;
+    padding: 20px;
 
     h2 {
         margin-left: 0!important;
@@ -533,7 +540,7 @@ typeahead-container {
     }
 
     #sidebar-wrapper {
-        width: 0;
+        width: 55px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
@@ -541,7 +548,6 @@ typeahead-container {
     }
 
     #page-content-wrapper {
-        padding: 20px;
         position: relative;
     }
 

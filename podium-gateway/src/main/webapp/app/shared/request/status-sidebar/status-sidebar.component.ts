@@ -39,6 +39,9 @@ export class RequestStatusSidebarComponent implements OnInit {
     @Input()
     public pageParams: Function;
 
+    @Input()
+    public toggled: boolean;
+
     public counts = {};
 
     constructor(
@@ -50,7 +53,6 @@ export class RequestStatusSidebarComponent implements OnInit {
 
     ngOnInit() {
         this.activeStatus = this.overviewService.activeStatus;
-        // this.updateOverviewForStatus(this.activeStatus);
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
             () => {
@@ -72,8 +74,11 @@ export class RequestStatusSidebarComponent implements OnInit {
     fetchCounts() {
         this.overviewService.getRequestCountsForUserGroupAuthority(this.userGroupAuthority)
             .subscribe((res: Response) => {
-                console.log('Counts rest for ', this.userGroupAuthority, res.json());
                 this.counts = res.json();
             });
+    }
+
+    includeAsOption(requiredUserGroups: UserGroupAuthority[]) {
+        return requiredUserGroups.indexOf(this.userGroupAuthority) > -1;
     }
 }

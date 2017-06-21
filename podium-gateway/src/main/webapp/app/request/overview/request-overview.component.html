@@ -12,6 +12,7 @@
 <div id="wrapper" [ngClass]="{'toggled': toggledSidebar}">
     <div id="sidebar-wrapper">
         <pdm-request-status-sidebar
+            [toggled]="toggledSidebar"
             [userGroupAuthority]="userGroupAuthority"
             [pageParams]="getPageParams.bind(this)"
         ></pdm-request-status-sidebar>

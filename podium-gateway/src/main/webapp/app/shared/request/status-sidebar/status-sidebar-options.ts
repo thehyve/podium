@@ -8,6 +8,8 @@
  *
  */
 
+import { RequestOverviewPath } from '../../../request/overview/request-overview.constants';
+import { UserGroupAuthority } from '../../authority/authority.constants';
 export enum StatusSidebarOption {
     'All'                   = <any>'All',
     'Draft'                 = <any>'Draft',
@@ -25,46 +27,91 @@ export enum StatusSidebarOption {
 export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     'All': {
         'option': StatusSidebarOption.All,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+            UserGroupAuthority.Reviewer
+        ],
         'icon': 'assignment'
     },
     'Draft': {
         'option': StatusSidebarOption.Draft,
+        'includeFor': [
+            UserGroupAuthority.Requester
+        ],
         'icon': 'drafts'
     },
     'Validation': {
         'option': StatusSidebarOption.Validation,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'visibility'
     },
     'Revision': {
         'option': StatusSidebarOption.Revision,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'redo'
     },
     'Review': {
         'option': StatusSidebarOption.Review,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+            UserGroupAuthority.Reviewer
+        ],
         'icon': 'assignment_ind'
     },
     'Approved': {
         'option': StatusSidebarOption.Approved,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'thumb_up'
     },
     'Delivery': {
         'option': StatusSidebarOption.Delivery,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'local_shipping'
     },
     'Partially_Delivered': {
         'option': StatusSidebarOption.Partially_Delivered,
-        'icon': 'inbox'
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
+        'icon': 'space_bar'
     },
     'Delivered': {
         'option': StatusSidebarOption.Delivered,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'inbox'
     },
     'Rejected': {
         'option': StatusSidebarOption.Rejected,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'highlight_off'
     },
     'Cancelled': {
         'option': StatusSidebarOption.Cancelled,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
         'icon': 'cancel'
     },
 };
