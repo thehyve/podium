@@ -10,14 +10,16 @@
 
 <div class="sidebar-nav">
     <p class="status-header">
-        <span *ngIf="toggled">
-            Requests
-        </span>
         &nbsp;
     </p>
 
     <ul class="status-list">
         <ng-container *ngFor="let status of statusSidebarOptions">
+            <li class="status-group" *ngIf="isFirstInGroup(status)" [ngClass]="{'collapsed-group': !toggled}">
+                <span *ngIf="toggled">
+                    {{ status.group }}
+                </span>
+            </li>
             <li class="status-item"
                 *ngIf="includeAsOption(status.includeFor)"
                 [ngClass]="{'active': isActiveElement(status.option)}"

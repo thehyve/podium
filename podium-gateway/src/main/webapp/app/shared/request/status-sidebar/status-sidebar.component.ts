@@ -87,4 +87,8 @@ export class RequestStatusSidebarComponent implements OnInit {
     includeAsOption(requiredUserGroups: UserGroupAuthority[]) {
         return requiredUserGroups.indexOf(this.userGroupAuthority) > -1;
     }
+
+    isFirstInGroup(overviewStatus: typeof RequestStatusSidebarOptions) {
+        return overviewStatus.groupOrder === 1;
+    }
 }

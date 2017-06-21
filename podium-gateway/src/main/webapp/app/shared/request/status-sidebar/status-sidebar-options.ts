@@ -43,6 +43,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Validation': {
         'option': StatusSidebarOption.Validation,
+        'group': 'Review',
+        'groupOrder': 1,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -51,6 +53,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Revision': {
         'option': StatusSidebarOption.Revision,
+        'group': 'Review',
+        'groupOrder': 2,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -59,6 +63,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Review': {
         'option': StatusSidebarOption.Review,
+        'group': 'Review',
+        'groupOrder': 3,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -68,6 +74,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Approved': {
         'option': StatusSidebarOption.Approved,
+        'group': 'Approved',
+        'groupOrder': 1,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -76,6 +84,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Delivery': {
         'option': StatusSidebarOption.Delivery,
+        'group': 'Delivery',
+        'groupOrder': 1,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -84,6 +94,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Partially_Delivered': {
         'option': StatusSidebarOption.Partially_Delivered,
+        'group': 'Closed',
+        'groupOrder': 1,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -92,6 +104,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Delivered': {
         'option': StatusSidebarOption.Delivered,
+        'group': 'Closed',
+        'groupOrder': 2,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -100,6 +114,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Rejected': {
         'option': StatusSidebarOption.Rejected,
+        'group': 'Closed',
+        'groupOrder': 3,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -108,6 +124,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
     'Cancelled': {
         'option': StatusSidebarOption.Cancelled,
+        'group': 'Closed',
+        'groupOrder': 4,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
