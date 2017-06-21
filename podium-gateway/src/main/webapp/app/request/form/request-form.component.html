@@ -8,7 +8,7 @@
   ~
   -->
 
-<div class="row" *ngIf="requestBase">
+<div class="content-wrapper" *ngIf="requestBase">
     <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
         <h1 *ngIf="requestBase.status == 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
         <h1 *ngIf="requestBase.status != 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
