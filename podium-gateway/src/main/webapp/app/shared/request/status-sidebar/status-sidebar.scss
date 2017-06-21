@@ -72,6 +72,11 @@ $separator-border: 1px solid rgba(0, 0, 0, 0.098);
             border-bottom: $separator-border;
             background-color: rgba(0, 0, 0, 0.05);
 
+            -webkit-transition: padding 0.5s ease;
+            -moz-transition: padding 0.5s ease;
+            -o-transition: padding 0.5s ease;
+            transition: padding 0.5s ease;
+
             &.collapsed-group {
                 border-top: $separator-border;
                 padding: 1px;
