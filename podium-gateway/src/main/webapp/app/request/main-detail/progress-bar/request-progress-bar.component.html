@@ -13,7 +13,9 @@
         <li [ngClass]="{
                 'completed': isCompleted(request, requestStatus.order),
                 'active': isActive(request, requestStatus.order),
-                'closed': isTerminatedReview(request)
+                'closed': isClosed(request, requestStatus.order),
+                'partial': isPartiallyDelivered(request),
+                'cancelled': isCancelled(request)
             }"
             *ngFor="let requestStatus of requestStatusOptions">
             <span [ngSwitch]="isRevisionStatus(request) && requestStatus.name == 'Validation'">

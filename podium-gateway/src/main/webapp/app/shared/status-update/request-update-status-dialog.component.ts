@@ -50,12 +50,17 @@ export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogCompo
      */
     confirmStatusUpdate() {
         if (this.statusUpdateAction === RequestStatusUpdateAction.Reject) {
-            this.requestService.rejectRequest(this.request.uuid, this.message)
+            return this.requestService.rejectRequest(this.request.uuid, this.message)
+                .subscribe((res) => this.onSuccess(res));
+        }
+
+        if (this.statusUpdateAction === RequestStatusUpdateAction.Close) {
+            return this.requestService.closeRequest(this.request.uuid, this.message)
                 .subscribe((res) => this.onSuccess(res));
         }
 
         if (this.statusUpdateAction === RequestStatusUpdateAction.Revision) {
-            this.requestService.requestRevision(this.request.uuid, this.message)
+            return this.requestService.requestRevision(this.request.uuid, this.message)
                 .subscribe((res) => this.onSuccess(res));
         }
 

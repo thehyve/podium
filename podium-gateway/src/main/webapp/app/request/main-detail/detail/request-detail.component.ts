@@ -67,7 +67,9 @@ export class RequestDetailComponent implements OnDestroy {
 
         this.principal.identity().then((account) => {
             this.currentUser = account;
+            this.checkIsInRevision(this.request);
         });
+
         this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
             (deliveries) => {
                 this.deliveries = deliveries;
@@ -100,10 +102,19 @@ export class RequestDetailComponent implements OnDestroy {
             this.requestDetails = request.requestDetail;
             this.isInRevision = false;
 
-            if (this.isRevisionStatusForRequester(request)) {
-                this.isInRevision = true;
-                this.requestFormService.request = request;
-            }
+            this.checkIsInRevision(request);
+        }
+    }
+
+    /**
+     * Check whether the request is in Revision.
+     *
+     * @param request the request
+     */
+    private checkIsInRevision(request) {
+        if (this.isRevisionStatusForRequester(request)) {
+            this.isInRevision = true;
+            this.requestFormService.request = request;
         }
     }
 
@@ -169,6 +180,15 @@ export class RequestDetailComponent implements OnDestroy {
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
             );
+    }
+
+    /**
+     * Close a request.
+     * A confirmation modal is shown for the organisation coordinator to provide the reason for closing the request.
+     */
+    closeRequest() {
+        this.isUpdating = true;
+        return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Close);
     }
 
     /**

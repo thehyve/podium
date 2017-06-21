@@ -82,8 +82,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     ) {
         super(router, activatedRoute);
 
-        this.jhiLanguageService.setLocations(['request']);
-        this.routePath = this.activatedRoute.snapshot.url[0].path;
+        this.jhiLanguageService.addLocation('request');
 
         this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.All;
 

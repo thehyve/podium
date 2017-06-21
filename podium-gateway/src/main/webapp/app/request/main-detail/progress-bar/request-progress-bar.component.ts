@@ -20,9 +20,9 @@ import {
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestService } from '../../../shared/request/request.service';
-import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 import { Subscription } from 'rxjs';
 import { RequestStatus } from '../../../shared/request/request-status/request-status';
+import { RequestOutcome } from '../../../shared/request/request-outcome';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -45,11 +45,12 @@ export class RequestProgressBarComponent implements OnDestroy {
         private requestAccessService: RequestAccessService,
         private requestService: RequestService
     ) {
-        jhiLanguageService.setLocations(['request', 'requestStatus']);
         this.requestStatusOptions = REQUEST_STATUSES;
         this.requestStatusMap = REQUEST_STATUSES_MAP;
         this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
         this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
+
+        this.jhiLanguageService.addLocation('requestOutcome');
 
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
@@ -87,15 +88,28 @@ export class RequestProgressBarComponent implements OnDestroy {
     }
 
     /**
-     * Check whether the request is terminated
-     * All closed states return an order of -1
+     * Check whether the request is Closed
      *
      * @param request the current request
+     * @param currentOrder order of the status being processed
      * @returns {boolean} true if the request status is closed
      */
-    isTerminatedReview(request: RequestBase): boolean {
-        return this.getRequestStatusOrder(request) === -1 &&
-            request.requestReview.decision === RequestReviewDecision.Rejected;
+    isClosed(request: RequestBase, currentOrder: number): boolean {
+        if (request.status !== RequestStatusOptions.Closed) {
+            return false;
+        }
+
+        let requestOrder = this.getRequestStatusOrder(request);
+
+        return requestOrder === currentOrder;
+    }
+
+    isPartiallyDelivered(request: RequestBase) {
+        return request.outcome === RequestOutcome.Partially_Delivered;
+    }
+
+    isCancelled(request: RequestBase) {
+        return request.outcome === RequestOutcome.Cancelled;
     }
 
     isRevisionStatus(request: RequestBase): boolean {
@@ -113,7 +127,7 @@ export class RequestProgressBarComponent implements OnDestroy {
     getRequestStatusOrder(request: RequestBase): number {
         let reqStatus = request.status;
         let reviewStatus = RequestStatusOptions.Review;
-        if (reqStatus.toString() === RequestStatusOptions[reviewStatus]) {
+        if (reqStatus === reviewStatus) {
             let reqReviewStatus: RequestReviewStatusOptions = request.requestReview.status;
             // Return requestReviewStatusOrder
             if (this.requestReviewStatusMap.hasOwnProperty(reqReviewStatus)) {
@@ -125,6 +139,24 @@ export class RequestProgressBarComponent implements OnDestroy {
                 return this.requestStatusMap[reqStatus].order;
             }
         }
+
+        if (reqStatus === RequestStatusOptions.Closed) {
+            switch (request.outcome) {
+                case RequestOutcome.Rejected:
+                    return 3; // Review element should be selected
+                case RequestOutcome.Approved:
+                    return 4;
+                case RequestOutcome.Cancelled:
+                    return 6;
+                case RequestOutcome.Partially_Delivered:
+                    return 6;
+                case RequestOutcome.Delivered:
+                    return 6;
+                default:
+                    return 0;
+            }
+        }
+
 
         return 0;
     }

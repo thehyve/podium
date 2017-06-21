@@ -28,6 +28,7 @@ import {
     RequestStatusOptions,
 } from '../../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
+import { RequestOutcome } from '../../../../../../../main/webapp/app/shared/request/request-outcome';
 
 describe('RequestProgressBarComponent', () => {
     let comp: RequestProgressBarComponent;
@@ -74,7 +75,8 @@ describe('RequestProgressBarComponent', () => {
 
     let getDummyRequestWithStatus = (
         status: RequestStatusOptions = RequestStatusOptions.None,
-        reviewStatus?: RequestReviewStatusOptions
+        reviewStatus?: RequestReviewStatusOptions,
+        outcome?: RequestOutcome
     ): RequestBase => {
         // Only interested in the statuses of the request and its processes
         let request = new RequestBase();
@@ -83,6 +85,10 @@ describe('RequestProgressBarComponent', () => {
         if (reviewStatus != null) {
             request.requestReview = new RequestReviewProcess();
             request.requestReview.status = reviewStatus;
+        }
+
+        if (outcome != null) {
+            request.outcome = outcome;
         }
 
         return request;
@@ -141,21 +147,12 @@ describe('RequestProgressBarComponent', () => {
             expect(isCompleted).toBeFalsy();
         });
 
-        // isTerminatedReview
-        it('should be able to indicate that a request has been terminated', () => {
-            let request = getDummyRequestWithStatus(RequestStatusOptions.Review, RequestReviewStatusOptions.Closed);
-            // The review decision should be Rejected in order to be a valid terminated request
-            request.requestReview.decision = RequestReviewDecision.Rejected;
-            let terminatedRequest = comp.isTerminatedReview(request);
-            expect(terminatedRequest).toBeTruthy();
-        });
+        // isClosed
+        it('should be able to indicate that a request has been terminated after Approval and highlight the current step', () => {
+            let request = getDummyRequestWithStatus(RequestStatusOptions.Closed, null, RequestOutcome.Approved);
 
-        it('should be able to indicate that a closed request has not been terminated', () => {
-            let request = getDummyRequestWithStatus(RequestStatusOptions.Review, RequestReviewStatusOptions.Closed);
-            // The review decision should be Rejected in order to be a valid terminated request
-            request.requestReview.decision = RequestReviewDecision.Approved;
-            let approvedRequest = comp.isTerminatedReview(request);
-            expect(approvedRequest).toBeFalsy();
+            let approvedClosedRequest = comp.isClosed(request, 4);
+            expect(approvedClosedRequest).toBeTruthy();
         });
 
         // isRevisionStatus
