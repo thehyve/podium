@@ -6,7 +6,8 @@
             "cancel": "Cancel",
             "details": "Details",
             "edit": "Edit",
-            "delete": "Delete"
+            "delete": "Delete",
+            "new": "New request"
         },
         "toolbar": {
             "cancel": "Cancel",

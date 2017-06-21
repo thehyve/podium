@@ -28,6 +28,11 @@
 
         <h2>
             <span jhiTranslate="{{pageHeader}}">My requests</span>
+            <button type="button"
+                    class="btn btn-outline-primary new-request pull-right" (click)="createNewRequest()">
+                <i class="material-icons">add_circle_outline</i>
+                <span jhiTranslate="request.action.new">New request</span>
+            </button>
         </h2>
 
         <jhi-alert></jhi-alert>
