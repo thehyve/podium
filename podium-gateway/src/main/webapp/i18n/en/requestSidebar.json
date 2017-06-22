@@ -11,7 +11,8 @@
             "Partially_Delivered": "Partially delivered",
             "Delivered": "Delivered",
             "Rejected": "Rejected",
-            "Cancelled": "Cancelled"
+            "Cancelled": "Cancelled",
+            "Closed_Approved": "Closed after approval"
         }
 
     }

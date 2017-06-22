@@ -18,10 +18,11 @@ export enum StatusSidebarOption {
     'Review'                = <any>'Review',
     'Approved'              = <any>'Approved',
     'Delivery'              = <any>'Delivery',
-    'Partially_Delivered'    = <any>'Partially_Delivered',
+    'Partially_Delivered'   = <any>'Partially_Delivered',
     'Delivered'             = <any>'Delivered',
     'Rejected'              = <any>'Rejected',
-    'Cancelled'             = <any>'Cancelled'
+    'Cancelled'             = <any>'Cancelled',
+    'Closed_Approved'       = <any>'Closed_Approved'
 }
 
 export const RequestStatusSidebarOptions: { [option: string]: any; } = {
@@ -131,6 +132,16 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
             UserGroupAuthority.Coordinator,
         ],
         'icon': 'cancel'
+    },
+    'Closed_Approved': {
+        'option': StatusSidebarOption.Closed_Approved,
+        'group': 'Closed',
+        'groupOrder': 5,
+        'includeFor': [
+            UserGroupAuthority.Requester,
+            UserGroupAuthority.Coordinator,
+        ],
+        'icon': 'thumbs_up_down'
     },
 };
 
