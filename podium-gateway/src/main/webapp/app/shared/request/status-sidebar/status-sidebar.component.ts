@@ -45,10 +45,8 @@ export class RequestStatusSidebarComponent implements OnInit {
     public counts = {};
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private overviewService: OverviewService
     ) {
-        this.jhiLanguageService.addLocation('requestSidebar');
     }
 
     ngOnInit() {

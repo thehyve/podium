@@ -26,6 +26,7 @@ import {
     StatusSidebarOption, RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
 import { RequestType } from '../../shared/request/request-type';
+import { EventManager, ParseLinks } from 'ng-jhipster';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
@@ -72,6 +73,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     constructor(
         private requestFormService: RequestFormService,
         private eventManager: EventManager,
+        private parseLinks: ParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
