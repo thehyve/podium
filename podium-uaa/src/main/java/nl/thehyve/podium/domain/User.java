@@ -8,6 +8,10 @@
 package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -52,6 +56,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "podium_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Data
 public class User extends AbstractAuditingEntity implements AuthenticatedUser, UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -70,6 +75,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @NotNull
@@ -133,18 +139,22 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private ZonedDateTime resetDate = null;
 
     @Column(name="deleted")
+    @Getter(AccessLevel.NONE)
     private boolean deleted = false;
 
     @Column(name="email_verified")
+    @Getter(AccessLevel.NONE)
     private boolean emailVerified = false;
 
     @Column(name="admin_verified")
+    @Getter(AccessLevel.NONE)
     private boolean adminVerified = false;
 
     @Column(name="failed_login_attempts")
     private int failedLoginAttempts = 0;
 
     @Column(name="account_locked")
+    @Getter(AccessLevel.NONE)
     private boolean accountLocked = false;
 
     @Column(name = "account_lock_date", nullable = true)
@@ -159,18 +169,6 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
     private Set<Role> roles = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
 
     public UUID getUserUuid() { return getUuid(); }
 
@@ -189,17 +187,9 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
         }
     }
 
-    public String getLogin() {
-        return login;
-    }
-
     // Lowercase the login before saving it in database
     public void setLogin(String login) {
         this.login = login.toLowerCase(Locale.ENGLISH);
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -234,141 +224,25 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
             .collect(Collectors.toSet());
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         // Lowercase e-mail address before saving
         this.email = email.toLowerCase(Locale.ENGLISH);
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getInstitute() {
-        return institute;
-    }
-
-    public void setInstitute(String institute) {
-        this.institute = institute;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
-    public String getSpecialism() {
-        return specialism;
-    }
-
-    public void setSpecialism(String specialism) {
-        this.specialism = specialism;
     }
 
     public boolean isActivated() {
         return emailVerified && adminVerified;
     }
 
-    public String getActivationKey() {
-        return activationKey;
-    }
-
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
-    }
-
-    public String getResetKey() {
-        return resetKey;
-    }
-
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
-    }
-
-    public ZonedDateTime getResetDate() {
-       return resetDate;
-    }
-
-    public void setResetDate(ZonedDateTime resetDate) {
-       this.resetDate = resetDate;
-    }
-
-    public String getLangKey() {
-        return langKey;
-    }
-
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
-    }
-
-    public ZonedDateTime getActivationKeyDate() {
-        return activationKeyDate;
-    }
-
-    public void setActivationKeyDate(ZonedDateTime activationKeyDate) {
-        this.activationKeyDate = activationKeyDate;
-    }
-
     public boolean isDeleted() {
         return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public boolean isEmailVerified() {
         return emailVerified;
     }
 
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
     public boolean isAdminVerified() {
         return adminVerified;
-    }
-
-    public void setAdminVerified(boolean adminVerified) {
-        this.adminVerified = adminVerified;
     }
 
     public int getFailedLoginAttempts() {
@@ -385,18 +259,6 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
 
     public boolean isAccountLocked() {
         return accountLocked;
-    }
-
-    public void setAccountLocked(boolean accountLocked) {
-        this.accountLocked = accountLocked;
-    }
-
-    public ZonedDateTime getAccountLockDate() {
-        return accountLockDate;
-    }
-
-    public void setAccountLockDate(ZonedDateTime accountLockDate) {
-        this.accountLockDate = accountLockDate;
     }
 
     public Set<GrantedAuthority> getAuthorities() {
@@ -423,10 +285,6 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
         }
         return result;
     }
-
-    public Set<Role> getRoles() { return roles; }
-
-    public void setRoles(Set<Role> roles) { this.roles = roles; }
 
     @Override
     public boolean equals(Object o) {

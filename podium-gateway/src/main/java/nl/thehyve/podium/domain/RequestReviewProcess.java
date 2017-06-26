@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.Data;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -30,6 +31,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "request_review_process")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "requestreviewprocess")
+@Data
 public class RequestReviewProcess extends AbstractAuditingEntity {
 
     @Id
@@ -57,37 +59,5 @@ public class RequestReviewProcess extends AbstractAuditingEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "decision", nullable = false)
     private ReviewProcessOutcome decision = ReviewProcessOutcome.None;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
-
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    public RequestReviewStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestReviewStatus status) {
-        this.status = status;
-    }
-
-    public ReviewProcessOutcome getDecision() {
-        return decision;
-    }
-
-    public void setDecision(ReviewProcessOutcome decision) {
-        this.decision = decision;
-    }
 
 }

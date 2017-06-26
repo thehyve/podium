@@ -7,6 +7,9 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
@@ -29,6 +32,7 @@ import java.util.UUID;
 @Table(name = "delivery_process")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "deliveryprocess")
+@Data
 public class DeliveryProcess extends AbstractAuditingEntity {
 
     @Id
@@ -45,6 +49,7 @@ public class DeliveryProcess extends AbstractAuditingEntity {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @Column(name = "process_instance_id", nullable = false)
@@ -78,18 +83,6 @@ public class DeliveryProcess extends AbstractAuditingEntity {
         inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     /**
      * Only the database can return the UUID from the stored entity
      * Pre-persist will add a {@link UUID} to the entity
@@ -108,57 +101,9 @@ public class DeliveryProcess extends AbstractAuditingEntity {
         }
     }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
-
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    public DeliveryStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DeliveryStatus status) {
-        this.status = status;
-    }
-
-    public DeliveryProcessOutcome getOutcome() {
-        return outcome;
-    }
-
-    public void setOutcome(DeliveryProcessOutcome outcome) {
-        this.outcome = outcome;
-    }
-
-    public RequestType getType() {
-        return type;
-    }
-
-    public void setType(RequestType type) {
-        this.type = type;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public List<PodiumEvent> getHistoricEvents() {
-        return historicEvents;
-    }
-
     public DeliveryProcess addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
-    }
-
-    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
-        this.historicEvents = historicEvents;
     }
 
 }

@@ -22,6 +22,7 @@ import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -39,11 +40,13 @@ import java.util.List;
 public interface RequestMapper {
 
     @DefaultRequest
-    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(source = "requestReviewProcess", target = "requestReview")
-    @Mapping(target = "requester", qualifiedBy = DefaultUser.class)
-    @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
+    @Mappings({
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(source = "requestReviewProcess", target = "requestReview"),
+        @Mapping(target = "requester", qualifiedBy = DefaultUser.class),
+        @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
+    })
     RequestRepresentation requestToRequestDTO(Request request);
 
     @DefaultRequest
@@ -51,21 +54,27 @@ public interface RequestMapper {
     List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
     @DefaultRequest
-    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(target = "historicEvents", ignore = true)
+    @Mappings({
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(target = "historicEvents", ignore = true)
+    })
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
-    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(target = "historicEvents", ignore = true)
+    @Mappings({
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(target = "historicEvents", ignore = true)
+    })
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
-    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone")
-    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "uuid", ignore = true)
-    @Mapping(target = "historicEvents", ignore = true)
+    @Mappings({
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone"),
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "uuid", ignore = true),
+        @Mapping(target = "historicEvents", ignore = true)
+    })
     Request clone(Request request);
 
     @DefaultRequest
@@ -73,11 +82,13 @@ public interface RequestMapper {
     List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     @ExtendedRequest
-    @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class)
-    @Mapping(source = "requestReviewProcess", target = "requestReview")
-    @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class)
-    @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
+    @Mappings({
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
+        @Mapping(source = "requestReviewProcess", target = "requestReview"),
+        @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class),
+        @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
+    })
     RequestRepresentation extendedRequestToRequestDTO(Request request);
 
     @ExtendedRequest

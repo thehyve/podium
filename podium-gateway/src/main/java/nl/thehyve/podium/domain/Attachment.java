@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.Data;
 import nl.thehyve.podium.common.enumeration.AttachmentType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -36,6 +37,7 @@ import java.util.UUID;
 @Table(name = "attachment")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "attachment")
+@Data
 public class Attachment implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -80,29 +82,9 @@ public class Attachment implements Serializable {
     @ManyToOne
     private Request request;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public Attachment name(String name) {
         this.name = name;
         return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public Attachment description(String description) {
@@ -110,25 +92,9 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
     public Attachment filename(String filename) {
         this.filename = filename;
         return this;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public AttachmentType getType() {
-        return type;
     }
 
     public Attachment type(AttachmentType type) {
@@ -136,25 +102,9 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setType(AttachmentType type) {
-        this.type = type;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
     public Attachment date(LocalDate date) {
         this.date = date;
         return this;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public String getMimeType() {
-        return mimeType;
     }
 
     public Attachment mimeType(String mimeType) {
@@ -162,29 +112,9 @@ public class Attachment implements Serializable {
         return this;
     }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
-
-    public UUID getUploader() {
-        return uploader;
-    }
-
     public Attachment uploader(UUID user) {
         this.uploader = user;
         return this;
-    }
-
-    public void setUploader(UUID user) {
-        this.uploader = user;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Request request) {
-        this.request = request;
     }
 
     @Override

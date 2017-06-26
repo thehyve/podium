@@ -14,6 +14,7 @@ import nl.thehyve.podium.domain.RequestReviewProcess;
 import nl.thehyve.podium.common.service.dto.RequestReviewRepresentation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 /**
  * Created by bernd on 18/04/2017.
@@ -21,7 +22,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface RequestReviewProcessMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "processInstanceId", ignore = true)
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "processInstanceId", ignore = true)
+    })
     RequestReviewRepresentation requestReviewProcessToRequestReviewProcessDTO(RequestReviewProcess requestReviewProcess);
 }

@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.common.service.dto;
 
+import lombok.Data;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 
@@ -16,6 +17,7 @@ import java.io.Serializable;
  * Representation class for instances of the request review process,
  * defined as a BPMN 2.0 process.
  */
+@Data
 public class RequestReviewRepresentation implements Serializable {
 
     private Long id;
@@ -25,41 +27,5 @@ public class RequestReviewRepresentation implements Serializable {
     private RequestReviewStatus status = RequestReviewStatus.None;
 
     private ReviewProcessOutcome decision = ReviewProcessOutcome.None;
-
-    public RequestReviewRepresentation() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
-
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    public RequestReviewStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestReviewStatus status) {
-        this.status = status;
-    }
-
-    public ReviewProcessOutcome getDecision() {
-        return decision;
-    }
-
-    public void setDecision(ReviewProcessOutcome decision) {
-        this.decision = decision;
-    }
 
 }

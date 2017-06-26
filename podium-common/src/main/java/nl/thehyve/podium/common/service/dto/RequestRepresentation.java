@@ -9,6 +9,7 @@ package nl.thehyve.podium.common.service.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
@@ -25,6 +26,7 @@ import java.util.UUID;
 /**
  * A DTO for the Request entity.
  */
+@Data
 public class RequestRepresentation implements IdentifiableRequest, Serializable {
 
     private Long id;
@@ -53,18 +55,6 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private List<PodiumEventRepresentation> historicEvents;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     private List<ReviewRoundRepresentation> reviewRounds;
 
     @Override
@@ -73,126 +63,4 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public UserRepresentation getRequester() {
-        return requester;
-    }
-
-    public void setRequester(UserRepresentation requester) {
-        this.requester = requester;
-    }
-
-    public RequestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
-    public RequestOutcome getOutcome() {
-        return outcome;
-    }
-
-    public void setOutcome(RequestOutcome outcome) {
-        this.outcome = outcome;
-    }
-
-    public List<OrganisationDTO> getOrganisations() {
-        return organisations;
-    }
-
-    public void setOrganisations(List<OrganisationDTO> organisations) {
-        this.organisations = organisations;
-    }
-
-    public RequestDetailRepresentation getRevisionDetail() { return revisionDetail; }
-
-    public void setRevisionDetail(RequestDetailRepresentation revisionDetail) { this.revisionDetail = revisionDetail; }
-
-    public RequestDetailRepresentation getRequestDetail() {
-        return requestDetail;
-    }
-
-    public void setRequestDetail(RequestDetailRepresentation requestDetail) {
-        this.requestDetail = requestDetail;
-    }
-
-    public RequestReviewRepresentation getRequestReview() { return requestReview; }
-
-    public void setRequestReview(RequestReviewRepresentation requestReview) { this.requestReview = requestReview; }
-
-    public ZonedDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public List<PodiumEventRepresentation> getHistoricEvents() {
-        return historicEvents;
-    }
-
-    public void setHistoricEvents(List<PodiumEventRepresentation> historicEvents) {
-        this.historicEvents = historicEvents;
-    }
-
-    public List<ReviewRoundRepresentation> getReviewRounds() {
-        return reviewRounds;
-    }
-
-    public void setReviewRounds(List<ReviewRoundRepresentation> reviewRounds) {
-        this.reviewRounds = reviewRounds;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        RequestRepresentation requestDTO = (RequestRepresentation) o;
-
-        if ( ! Objects.equals(id, requestDTO.id)) { return false; }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "RequestRepresentation{" +
-            "id=" + id +
-            ", uuid=" + uuid +
-            ", requester=" + requester +
-            ", status=" + status +
-            ", organisations=" + organisations +
-            ", requestReview=" + requestReview +
-            ", revisionDetail=" + revisionDetail +
-            ", requestDetail=" + requestDetail +
-            ", createdDate=" + createdDate +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", historicEvents=" + historicEvents +
-            ", reviewRounds=" + reviewRounds +
-            '}';
-    }
 }
