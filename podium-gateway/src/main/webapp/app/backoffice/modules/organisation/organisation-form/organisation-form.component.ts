@@ -32,7 +32,6 @@ export class OrganisationFormComponent implements OnInit {
     requestTypes: any = RequestType;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private organisationService: OrganisationService,
         private alertService: AlertService,
         private principal: Principal,
@@ -40,7 +39,7 @@ export class OrganisationFormComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['organisation']);
+
     }
 
     ngOnInit() {

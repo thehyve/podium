@@ -59,12 +59,11 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() finalizeRequestChange = new EventEmitter();
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
         private deliveryService: DeliveryService,
         private requestService: RequestService
     ) {
-        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
+
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.initializeStatuses();

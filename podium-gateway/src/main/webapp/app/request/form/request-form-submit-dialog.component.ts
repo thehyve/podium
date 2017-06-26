@@ -14,7 +14,7 @@ import { MessageService } from '../../shared/message/message.service';
 import { Message } from '../../shared/message/message.model';
 
 @Component({
-    selector: 'request-form-submit-dialog',
+    selector: 'pdm-request-form-submit-dialog',
     templateUrl: './request-form-submit-dialog.component.html'
 })
 export class RequestFormSubmitDialogComponent {
@@ -22,13 +22,12 @@ export class RequestFormSubmitDialogComponent {
     request: RequestBase;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
         private router: Router,
         private messageService: MessageService
     ) {
-        this.jhiLanguageService.setLocations(['request']);
+
     }
 
     clear () {

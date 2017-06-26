@@ -10,7 +10,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, InjectionToken } from '@angular/core';
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
 import { OverviewService } from '../../shared/overview/overview.service';
-import { JhiLanguageService, EventManager, ParseLinks } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Principal } from '../../shared';
@@ -27,6 +26,7 @@ import {
     StatusSidebarOption, RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
 import { RequestType } from '../../shared/request/request-type';
+import { EventManager, ParseLinks } from 'ng-jhipster';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
@@ -71,18 +71,15 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     statusSidebarOptions = RequestStatusSidebarOptions;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private parseLinks: ParseLinks,
         private requestFormService: RequestFormService,
         private eventManager: EventManager,
+        private parseLinks: ParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
         protected activatedRoute: ActivatedRoute
     ) {
         super(router, activatedRoute);
-
-        this.jhiLanguageService.addLocation('request');
 
         this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.All;
 

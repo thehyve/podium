@@ -11,24 +11,23 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { SpecialismComponent } from '../../../../../../main/webapp/app/shared/specialism/specialism.component';
 import { FormsModule } from '@angular/forms';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('SpecialismComponent (templateUrl)', () => {
 
     let comp: SpecialismComponent;
     let fixture: ComponentFixture<SpecialismComponent>;
-    let de: DebugElement;
-    let el: HTMLElement;
 
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [ FormsModule ],
+            imports: [
+                FormsModule,
+                PodiumTestModule
+            ],
             declarations: [SpecialismComponent], // declare the test component
-        }).overrideComponent(SpecialismComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
+        }).overrideTemplate(SpecialismComponent, '')
+            .compileComponents();
     }));
 
     // synchronous beforeEach

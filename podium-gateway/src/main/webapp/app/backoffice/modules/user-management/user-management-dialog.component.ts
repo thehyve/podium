@@ -15,7 +15,7 @@ import { UserModalService } from './user-modal.service';
 import { JhiLanguageHelper, User, UserService } from '../../../shared';
 
 @Component({
-    selector: 'jhi-user-mgmt-dialog',
+    selector: 'pdm-user-mgmt-dialog',
     templateUrl: './user-management-dialog.component.html'
 })
 export class UserMgmtDialogComponent implements OnInit {
@@ -28,7 +28,6 @@ export class UserMgmtDialogComponent implements OnInit {
     constructor (
         public activeModal: NgbActiveModal,
         private languageHelper: JhiLanguageHelper,
-        private jhiLanguageService: JhiLanguageService,
         private userService: UserService,
         private eventManager: EventManager,
         private router: Router
@@ -40,7 +39,7 @@ export class UserMgmtDialogComponent implements OnInit {
         this.languageHelper.getAll().then((languages) => {
             this.languages = languages;
         });
-        this.jhiLanguageService.setLocations(['user-management']);
+
     }
 
     clear() {
@@ -70,7 +69,7 @@ export class UserMgmtDialogComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-user-dialog',
+    selector: 'pdm-user-dialog',
     template: ''
 })
 export class UserDialogComponent implements OnInit, OnDestroy {

@@ -23,10 +23,9 @@ export class PdmGatewayComponent implements OnInit {
     updatingRoutes: Boolean;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private gatewayRoutesService: GatewayRoutesService
     ) {
-        this.jhiLanguageService.setLocations(['gateway']);
+
     }
 
     ngOnInit () {

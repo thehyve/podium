@@ -46,14 +46,11 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
     public isUpdating = false;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
         private deliveryService: DeliveryService
     ) {
-        jhiLanguageService.setLocations(['request', 'requestStatus', 'delivery', 'deliveryStatus', 'deliveryOutcome', 'requestType']);
-
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.getDeliveries();

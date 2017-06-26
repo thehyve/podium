@@ -60,7 +60,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     attachments: Attachment[];
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestFormService: RequestFormService,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
@@ -72,7 +71,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         private organisationService: OrganisationService,
         private modalService: NgbModal
     ) {
-        this.jhiLanguageService.setLocations(['request']);
+
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);

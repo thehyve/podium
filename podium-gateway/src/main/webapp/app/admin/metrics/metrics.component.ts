@@ -21,16 +21,15 @@ export class PdmMetricsMonitoringComponent implements OnInit {
     metrics: any = {};
     cachesStats: any = {};
     servicesStats: any = {};
-    updatingMetrics: boolean = true;
+    updatingMetrics = true;
     JCACHE_KEY: string ;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private modalService: NgbModal,
         private metricsService: PdmMetricsService
     ) {
         this.JCACHE_KEY = 'jcache.statistics';
-        this.jhiLanguageService.setLocations(['metrics']);
+
     }
 
     ngOnInit() {

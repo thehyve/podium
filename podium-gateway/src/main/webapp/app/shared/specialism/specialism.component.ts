@@ -7,15 +7,15 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, AfterContentInit } from '@angular/core';
 
 @Component({
-    selector: 'podium-specialism',
+    selector: 'pdm-specialism',
     templateUrl: './specialism.component.html',
     styleUrls: ['./specialism.scss']
 })
 
-export class SpecialismComponent implements OnInit {
+export class SpecialismComponent implements OnInit, AfterContentInit {
 
     specialismValue: string;
     specialismOptions: any;

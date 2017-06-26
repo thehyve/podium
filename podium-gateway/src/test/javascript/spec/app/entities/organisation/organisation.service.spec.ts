@@ -12,23 +12,17 @@ import { BaseRequestOptions, Http, HttpModule, Response, ResponseOptions } from 
 import { MockBackend } from '@angular/http/testing';
 import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
 import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
+import { PodiumTestModule } from '../../../test.module';
 
 
 describe('OrganisationService (Mocked)', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [PodiumTestModule],
             providers: [
                 OrganisationService,
                 MockBackend,
-                BaseRequestOptions,
-                {
-                    provide: Http,
-                    useFactory: (backend, options) => new Http(backend, options),
-                    deps: [MockBackend, BaseRequestOptions]
-                }
-            ],
-            imports: [
-                HttpModule
+                BaseRequestOptions
             ]
         });
     });

@@ -14,7 +14,7 @@ import { Account, Principal } from '../shared';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'podium-home',
+    selector: 'pdm-home',
     templateUrl: './home.component.html',
     styleUrls: [
         'home.scss'
@@ -26,12 +26,11 @@ export class HomeComponent implements OnInit {
     modalRef: NgbModalRef;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private principal: Principal,
         private eventManager: EventManager,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['home']);
+
     }
 
     ngOnInit() {

@@ -40,7 +40,6 @@ export class OrganisationComponent implements OnInit, OnDestroy {
     reverse: any;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private organisationService: OrganisationService,
         private parseLinks: ParseLinks,
         private alertService: AlertService,
@@ -59,7 +58,7 @@ export class OrganisationComponent implements OnInit, OnDestroy {
              this.predicate = data['pagingParams'].predicate;
         });
         this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
-        this.jhiLanguageService.setLocations(['organisation']);
+
     }
 
     loadAll() {

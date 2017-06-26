@@ -26,13 +26,12 @@ export class UploadDialogComponent implements OnInit {
     authorities: any[];
     isUploading: boolean;
 
-    public hasDropzoneOver: boolean = false;
+    public hasDropzoneOver = false;
+    public hasUploadedFiles = false;
     public uploader: FileUploader = new FileUploader({ url: URL });
 
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiLanguageService: JhiLanguageService,
-        private alertService: AlertService,
         private eventManager: EventManager,
         private router: Router
     ) {

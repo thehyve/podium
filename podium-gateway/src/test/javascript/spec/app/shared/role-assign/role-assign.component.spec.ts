@@ -10,7 +10,6 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
-import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translate';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
@@ -25,6 +24,7 @@ import { MockPrincipal } from '../../../helpers/mock-principal.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { MockEventManager } from '../../../helpers/mock-event-manager.service';
 import { Observable } from 'rxjs';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('RoleAssignComponent', () => {
 
@@ -76,13 +76,14 @@ describe('RoleAssignComponent', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [
+                FormsModule,
+                PodiumTestModule
+            ],
             providers: [
                 BaseRequestOptions,
                 MockBackend,
                 JhiLanguageService,
-                TranslateService,
-                TranslateLoader,
-                TranslateParser,
                 UserService,
                 {
                     provide: Http,
@@ -112,13 +113,9 @@ describe('RoleAssignComponent', () => {
                     useClass: MockEventManager
                 }
             ],
-            imports: [FormsModule],
             declarations: [RoleAssignComponent],
-        }).overrideComponent(RoleAssignComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
+        }).overrideTemplate(RoleAssignComponent, '')
+            .compileComponents();
     }));
 
     // synchronous beforeEach

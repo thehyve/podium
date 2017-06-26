@@ -104,7 +104,7 @@ export class OrganisationService {
         let temp = [];
         for (let selectedOrganisation of uuids) {
             let found = allOrganisations.find((organisation) => {
-                return selectedOrganisation.uuid == organisation.uuid;
+                return selectedOrganisation.uuid === organisation.uuid;
             });
             if (found) {
                 temp.push(found);

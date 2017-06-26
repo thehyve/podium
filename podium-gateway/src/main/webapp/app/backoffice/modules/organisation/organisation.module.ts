@@ -29,10 +29,19 @@ import { OrganisationFormComponent } from './organisation-form/organisation-form
 import { RoleAssignComponent } from '../../../shared/role/role-assign/role-assign.component';
 import { RoleService } from '../../../shared/role/role.service';
 import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
-
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { Http } from '@angular/http';
+import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
 
 @NgModule({
     imports: [
+        TranslateModule.forChild({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [Http]
+            }
+        }),
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
@@ -66,7 +75,8 @@ import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
-        RouterModule
+        RouterModule,
+        TranslateModule
     ]
 })
 export class PodiumGatewayOrganisationModule {}

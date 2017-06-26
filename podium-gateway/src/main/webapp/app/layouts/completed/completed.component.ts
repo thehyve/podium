@@ -20,10 +20,9 @@ export class CompletedComponent implements OnInit {
     completedTitle: string;
     completedContent: string;
 
-    constructor(private jhiLanguageService: JhiLanguageService,
-                private messageService: MessageService) {
-        this.jhiLanguageService.setLocations(['completed']);
-    }
+    constructor(
+        private messageService: MessageService
+    ) {}
 
     ngOnInit() {
         let _message: Message = this.messageService.get();

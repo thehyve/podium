@@ -16,7 +16,7 @@ import { Organisation } from './organisation.model';
 import { OrganisationPopupService } from './organisation-popup.service';
 import { OrganisationService } from './organisation.service';
 @Component({
-    selector: 'jhi-organisation-dialog',
+    selector: 'pdm-organisation-dialog',
     templateUrl: './organisation-dialog.component.html'
 })
 export class OrganisationDialogComponent implements OnInit {
@@ -26,13 +26,12 @@ export class OrganisationDialogComponent implements OnInit {
     isSaving: boolean;
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiLanguageService: JhiLanguageService,
         private alertService: AlertService,
         private organisationService: OrganisationService,
         private eventManager: EventManager,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['organisation']);
+
     }
 
     ngOnInit() {
@@ -77,7 +76,7 @@ export class OrganisationDialogComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-organisation-popup',
+    selector: 'pdm-organisation-popup',
     template: ''
 })
 export class OrganisationPopupComponent implements OnInit, OnDestroy {

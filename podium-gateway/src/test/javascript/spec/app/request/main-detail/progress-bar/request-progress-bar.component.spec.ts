@@ -12,7 +12,7 @@ import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing'
 import { DebugElement } from '@angular/core';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { TranslateService, TranslateLoader, TranslateParser } from 'ng2-translate';
+import { TranslateService, TranslateLoader, TranslateParser } from '@ngx-translate/core';
 import { RequestProgressBarComponent }
     from '../../../../../../../main/webapp/app/request/main-detail/progress-bar/request-progress-bar.component';
 import { JhiLanguageService } from 'ng-jhipster';
@@ -29,6 +29,7 @@ import {
 } from '../../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
 import { RequestOutcome } from '../../../../../../../main/webapp/app/shared/request/request-outcome';
+import { PodiumTestModule } from '../../../../test.module';
 
 describe('RequestProgressBarComponent', () => {
     let comp: RequestProgressBarComponent;
@@ -39,38 +40,20 @@ describe('RequestProgressBarComponent', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [PodiumTestModule],
             providers: [
                 BaseRequestOptions,
                 MockBackend,
-                JhiLanguageService,
-                TranslateService,
-                TranslateLoader,
-                TranslateParser,
                 RequestService,
                 RequestAccessService,
                 {
-                    provide: JhiLanguageService,
-                    useClass: MockLanguageService
-                },
-                {
                     provide: Principal,
                     useClass: MockPrincipal
-                },
-                {
-                    provide: Http,
-                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backendInstance, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
                 }
             ],
             declarations: [RequestProgressBarComponent], // declare the test component
-        }).overrideComponent(RequestProgressBarComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
-
+        }).overrideTemplate(RequestProgressBarComponent, '')
+            .compileComponents();
     }));
 
     let getDummyRequestWithStatus = (
