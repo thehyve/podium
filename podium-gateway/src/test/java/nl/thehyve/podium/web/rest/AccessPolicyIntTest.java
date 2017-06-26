@@ -66,6 +66,9 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     private TestService testService;
 
     @Autowired
+    private DraftService draftService;
+
+    @Autowired
     private RequestService requestService;
 
     @Autowired
@@ -224,7 +227,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     private RequestRepresentation draftRequest1;
 
     private void createRequests() {
-        draftRequest1 = requestService.createDraft(researcher);
+        draftRequest1 = draftService.createDraft(researcher);
     }
 
     public static final String REQUEST_ROUTE = "/api/requests";

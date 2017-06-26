@@ -1,0 +1,103 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
+$background: #353d47;
+$color: rgb(250, 250, 250);
+$separator-border: 1px solid rgba(0, 0, 0, 0.098);
+
+/* Sidebar Styles */
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+
+    .status-header {
+        text-transform: uppercase;
+        padding: 25px 0 0 25px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 45px;
+    }
+
+    .status-list {
+        list-style-type: none;
+        padding-left: 0;
+
+        .status-item:first-child {
+            border-top: $separator-border;
+        }
+
+        .status-item {
+            padding: 12px 5px 12px 30px;
+            font-size: 14px;
+            font-weight: 400;
+
+            border-bottom: $separator-border;
+
+            .material-icons {
+                margin-right: 10px;
+            }
+
+            .tag {
+                margin: 3px 15px 0 0;
+                font-size: 14px;
+            }
+
+            &.active,
+            &:hover {
+                color: $color;
+                background: $background;
+                cursor: pointer;
+            }
+
+            &:active,
+            &:focus {
+                text-decoration: none;
+            }
+        }
+
+        .status-group {
+            text-transform: uppercase;
+            padding: 10px 10px 10px 15px;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: $separator-border;
+            background-color: rgba(0, 0, 0, 0.05);
+
+            -webkit-transition: padding 0.5s ease-out;
+            -moz-transition: padding 0.5s ease-out;
+            -o-transition: padding 0.5s ease-out;
+            transition: padding 0.5s ease-out;
+
+            &.collapsed-group {
+                border-top: $separator-border;
+                padding: 1px;
+            }
+        }
+    }
+
+    .sidebar-brand {
+        height: 65px;
+        font-size: 18px;
+        line-height: 60px;
+
+        a {
+            color: #999999;
+
+            &:hover {
+                color: #fff;
+                background: none;
+            }
+        }
+    }
+
+}
+

@@ -10,5 +10,5 @@
 
 export * from './request-overview.component';
 export * from './request-overview.route';
-export * from './request-overview.service';
 export * from './delete-request-draft-modal.component';
+export * from './request-overview.constants';

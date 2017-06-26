@@ -7,13 +7,11 @@
  * See the file LICENSE in the root of this repository.
  *
  */
+
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 
 @Injectable()
-export class RequestOverviewService {
-
-    constructor(private http: Http) {
-
-    }
+export class OverviewServiceConfig {
+    resourceUrl: string;
+    resourceSearchUrl: string;
 }

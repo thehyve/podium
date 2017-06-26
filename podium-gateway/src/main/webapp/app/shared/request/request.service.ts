@@ -69,7 +69,6 @@ export class RequestService {
         });
     }
 
-
     findCoordinatorReviewRequests(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
