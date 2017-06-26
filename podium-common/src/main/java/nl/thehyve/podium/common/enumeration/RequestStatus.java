@@ -15,5 +15,6 @@ public enum RequestStatus implements Status {
     Review,
     Approved,
     Delivery,
-    Closed
+    Closed,
+    None
 }

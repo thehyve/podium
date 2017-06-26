@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.common.enumeration;
 
-public enum ReviewProcessOutcome {
+public enum ReviewProcessOutcome implements Classifier {
     Approved,
     Rejected,
     None

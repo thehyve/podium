@@ -53,7 +53,7 @@ const requestReviewStatusesOpts: { [status: string]: any; } = {
     'Closed': {
         name: 'Closed',
         order: -1
-    },
+    }
 };
 
 function convertNamesToRequestStatuses(names: { [status: string]: any; }): Array<RequestStatus> {
@@ -92,6 +92,8 @@ export enum RequestReviewStatusOptions {
     Closed      = <any>'Closed',
     None        = <any>'None'
 }
+
+export type StatusType = RequestStatusOptions | RequestReviewStatusOptions;
 
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
 

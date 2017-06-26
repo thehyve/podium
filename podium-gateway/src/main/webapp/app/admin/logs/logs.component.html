@@ -8,7 +8,7 @@
   ~
   -->
 
-<div class="table-responsive" *ngIf="loggers">
+<div class="content-wrapper table-responsive" *ngIf="loggers">
     <h2 jhiTranslate="logs.title">Logs</h2>
 
     <p jhiTranslate="logs.nbloggers" translateValues="{total: '{{ loggers.length }}'}">There are {{ loggers.length }} loggers.</p>

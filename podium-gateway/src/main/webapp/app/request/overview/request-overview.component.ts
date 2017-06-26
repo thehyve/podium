@@ -7,226 +7,142 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, InjectionToken } from '@angular/core';
+import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
+import { OverviewService } from '../../shared/overview/overview.service';
 import { JhiLanguageService, EventManager, ParseLinks } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
-import { RequestService } from '../../shared/request/request.service';
-import { User } from '../../shared/user/user.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Principal } from '../../shared';
 import { RequestFormService } from '../form/request-form.service';
 import { Subscription } from 'rxjs';
-import { RequestStatusOptions } from '../../shared/request/request-status/request-status.constants';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { RequestDraftModalModalComponent } from './delete-request-draft-modal.component';
-import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
-import { requestOverviewPaths } from './request-overview.constants';
+import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
+import { RequestOverviewPath } from './request-overview.constants';
+import { Response, Http } from '@angular/http';
+import { Overview } from '../../shared/overview/overview';
+import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
+import { UserGroupAuthority } from '../../shared/authority/authority.constants';
+import {
+    StatusSidebarOption, RequestStatusSidebarOptions
+} from '../../shared/request/status-sidebar/status-sidebar-options';
+import { RequestType } from '../../shared/request/request-type';
 
+let overviewConfig: OverviewServiceConfig = {
+    resourceUrl: 'api/requests',
+    resourceSearchUrl: 'api/_search/requests'
+};
+
+/**
+ * Request overview component.
+ * Uses its own configured instance of the OverviewService
+ */
 @Component({
     selector: 'pdm-request-overview',
-    templateUrl: './request-overview.component.html'
+    templateUrl: './request-overview.component.html',
+    styleUrls: ['request-overview.scss'],
+    providers: [
+        {
+            provide: OverviewService,
+            useFactory: (http: Http) => {
+                return new OverviewService(http, overviewConfig);
+            },
+            deps: [
+                Http
+            ]
+        }
+    ]
 })
+export class RequestOverviewComponent extends Overview implements OnInit, OnDestroy {
 
-export class RequestOverviewComponent implements OnInit, OnDestroy {
-
-    private currentUser: User;
+    @ViewChild(RequestStatusSidebarComponent)
+    private requestSidebarComponent: RequestStatusSidebarComponent;
 
     availableRequests: RequestBase[];
     error: string;
     success: string;
     eventSubscriber: Subscription;
-    currentRequestStatus: RequestStatusOptions;
-    totalItems: any;
-    routeData: any;
+    overviewSubscription: Subscription;
+    sidebarSubscription: Subscription;
+    activeStatus: StatusSidebarOption;
     routePath: any;
-    currentSearch: any;
-    queryCount: any;
-    itemsPerPage: any;
-    page: any;
-    pageHeader: string;
-    predicate: any;
-    previousPage: any;
-    reverse: any;
-    links: any;
+    toggledSidebar = true; // open sidebar by default
+    userGroupAuthority: UserGroupAuthority;
+    statusSidebarOptions = RequestStatusSidebarOptions;
 
-    // FIXME: Major refactor of overview component.
     constructor(
         private jhiLanguageService: JhiLanguageService,
-        private requestService: RequestService,
-        private router: Router,
         private parseLinks: ParseLinks,
         private requestFormService: RequestFormService,
         private eventManager: EventManager,
-        private principal: Principal,
         private modalService: NgbModal,
-        private activatedRoute: ActivatedRoute
+        private overviewService: OverviewService,
+        protected router: Router,
+        protected activatedRoute: ActivatedRoute
     ) {
-        this.itemsPerPage = ITEMS_PER_PAGE;
-        this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.pageHeader = data['pageHeader'];
-            this.page = data['pagingParams'].page;
-            this.previousPage = data['pagingParams'].page;
-            this.reverse = data['pagingParams'].ascending;
-            this.predicate = data['pagingParams'].predicate;
-        });
-        this.currentSearch = activatedRoute.snapshot.params['search'] ? activatedRoute.snapshot.params['search'] : '';
-        this.jhiLanguageService.setLocations(['request']);
-        this.routePath = this.activatedRoute.snapshot.url[0].path;
-    }
+        super(router, activatedRoute);
 
-    getPageParams(): any {
-        let params: any = {
-            size: this.itemsPerPage,
-            sort: this.sort()
-        };
-        if (this.currentSearch) {
-            params.query = this.currentSearch;
-        } else {
-            params.page = this.page - 1;
-        }
-        return params;
-    };
+        this.jhiLanguageService.addLocation('request');
 
-    isResearcherRoute(): boolean {
-        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_RESEARCHER;
-    }
+        this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.All;
 
-    isCoordinatorRoute(): boolean {
-        return this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR;
+        this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
+            (res: Response) => this.processAvailableRequests(res.json(), res.headers),
+            (err): any => this.onError(err)
+        );
     }
 
     ngOnInit(): void {
-        this.currentRequestStatus = RequestStatusOptions.Review; // begin with submitted requests
-        this.principal.identity().then((account) => {
-            this.currentUser = account;
-            this.loadRequests();
-        });
-        this.registerChangeInRequests();
+        switch (this.routePath) {
+            case RequestOverviewPath.REQUEST_OVERVIEW_RESEARCHER:
+                this.userGroupAuthority = UserGroupAuthority.Requester;
+                break;
+            case RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR:
+                this.userGroupAuthority = UserGroupAuthority.Coordinator;
+                break;
+            case RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER:
+                this.userGroupAuthority = UserGroupAuthority.Reviewer;
+                break;
+            default:
+                console.error('No user group authority', this.routePath);
+        }
+
+        this.registerChanges();
+
+        this.fetchRequestsFor(this.activeStatus);
     }
 
+    /**
+     * Subscription clean up to prevent memory leaks
+     */
     ngOnDestroy() {
+        if (this.overviewSubscription) {
+            this.overviewSubscription.unsubscribe();
+        }
+
+        if (this.sidebarSubscription) {
+            this.sidebarSubscription.unsubscribe();
+        }
+
         if (this.eventSubscriber) {
             this.eventManager.destroy(this.eventSubscriber);
         }
     }
 
-    registerChangeInRequests() {
-        this.eventSubscriber = this.eventManager.subscribe('requestListModification', (response) => this.loadRequests());
-    }
+    registerChanges() {
+        this.eventSubscriber = this.eventManager
+            .subscribe('requestListModification',
+                (response) => this.fetchRequestsFor(this.activeStatus));
 
-    loadRequests() {
-        if (this.currentRequestStatus === RequestStatusOptions.Draft) {
-            this.loadDrafts();
-        } else if (this.currentRequestStatus === RequestStatusOptions.Review) {
-            if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_COORDINATOR) {
-                this.loadCoordinatorReviewRequests();
-            } else if (this.routePath === requestOverviewPaths.REQUEST_OVERVIEW_REVIEWER) {
-                this.loadAllReviewerRequests();
-            } else {
-                this.loadMyReviewRequests();
-            }
-        }
+
+        this.sidebarSubscription = this.requestSidebarComponent.onStatusChange.subscribe(
+            (newStatus) => this.fetchRequestsFor(newStatus)
+        );
     }
 
     createNewRequest() {
         this.requestFormService.request = null;
         this.router.navigate(['./requests/new']);
-    }
-
-    loadAllReviewerRequests() {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findAllReviewerRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available request drafts.')
-            );
-    }
-
-    loadCoordinatorReviewRequests() {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findCoordinatorReviewRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available coordinator review request.')
-            );
-    }
-
-    loadCoordinatorApprovedRequests() {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Approved);
-        this.currentRequestStatus = RequestStatusOptions.Approved;
-        this.requestService.findCoordinatorApprovedRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available coordinator review request.')
-            );
-    }
-
-    loadCoordinatorDeliveryRequests() {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Delivery);
-        this.currentRequestStatus = RequestStatusOptions.Delivery;
-        this.requestService.findCoordinatorDeliveryRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available coordinator delivery request .')
-            );
-    }
-
-    loadDrafts() {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Draft);
-        this.currentRequestStatus = RequestStatusOptions.Draft;
-        this.requestService.findDrafts(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available request drafts.')
-            );
-    }
-
-    loadMyReviewRequests(): void {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Review);
-        this.currentRequestStatus = RequestStatusOptions.Review;
-        this.requestService.findMyReviewRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available submitted requests.')
-            );
-    }
-
-    loadMyApprovedRequests(): void {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Approved);
-        this.currentRequestStatus = RequestStatusOptions.Approved;
-        this.requestService.findMyApprovedRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available submitted requests.')
-            );
-    }
-
-    loadMyDeliveryRequests(): void {
-        this.resetPaginationParamsOnStatusChange(RequestStatusOptions.Delivery);
-        this.currentRequestStatus = RequestStatusOptions.Delivery;
-        this.requestService.findMyDeliveryRequests(this.getPageParams())
-            .subscribe(
-                (res) => this.processAvailableRequests(res.json(), res.headers),
-                (error) => this.onError('Error loading available delivery requests.')
-            );
-    }
-
-    sort() {
-        let result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'id') {
-            result.push('id');
-        }
-        return result;
-    }
-
-    resetPaginationParamsOnStatusChange(newStatus: RequestStatusOptions) {
-        if (this.currentRequestStatus !== newStatus) {
-            this.page = 1;
-            this.reverse = true;
-            this.itemsPerPage = ITEMS_PER_PAGE;
-        }
     }
 
     editRequest(request) {
@@ -235,7 +151,7 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
     }
 
     deleteDraft(request) {
-        const modalRef = this.modalService.open(RequestDraftModalModalComponent);
+        const modalRef = this.modalService.open(RequestDraftDeleteModalComponent);
         modalRef.componentInstance.request = request;
         modalRef.result.then((result) => {
             console.log(`Closed ${result}`);
@@ -255,28 +171,52 @@ export class RequestOverviewComponent implements OnInit, OnDestroy {
         this.availableRequests = requests;
     }
 
-    loadPage(page: number) {
-        if (page !== this.previousPage) {
-            this.previousPage = page;
-            this.transition();
+    transitionRequests() {
+        this.transition();
+        this.fetchRequestsFor(this.activeStatus);
+    }
+
+    fetchRequestsFor(option?: StatusSidebarOption) {
+        if (!option) {
+            option = this.overviewService.activeStatus;
+        }
+
+        // Reset pagingParams when new status is selected
+        if (option !== this.overviewService.activeStatus) {
+            this.resetPagingParams();
+        }
+
+        this.overviewService
+            .findRequestsForOverview(this.getPageParams(), option, this.userGroupAuthority)
+            .subscribe((res: Response) => {
+                this.overviewService.overviewUpdateEvent(res);
+                this.activeStatus = this.overviewService.activeStatus;
+            });
+    }
+
+    toggleSidebar() {
+        this.toggledSidebar = !this.toggledSidebar;
+    }
+
+    getIconForRequestType(requestType: RequestType) {
+        if (!requestType) {
+            return null;
+        }
+
+        switch (requestType) {
+            case RequestType.Data:
+                return 'dns';
+            case RequestType.Images:
+                return 'image';
+            case RequestType.Material:
+                return 'blur_on';
+            default:
+                return '';
         }
     }
 
-    transition() {
-        // Transition with queryParams
-        this.router.navigate([this.getNavUrlForRouter(this.router)], {
-            queryParams: {
-                page: this.page,
-                size: this.itemsPerPage,
-                search: this.currentSearch,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-            }
-        });
-        this.loadRequests();
-    }
-
-    private getNavUrlForRouter(router: Router) {
-        return this.router.url.split(/\?/)[0];
+    isActiveStatus(activeStatus: typeof RequestStatusSidebarOptions): boolean {
+        return this.activeStatus === activeStatus.option;
     }
 
     private onSuccess(result) {
