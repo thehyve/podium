@@ -413,6 +413,19 @@ public class UserService {
     }
 
     /**
+     * Fetch users that are associated with an organisation role for any of the organisations
+     * with uuid in organisationUuids.
+     *
+     * @param pageable pagination information.
+     * @param organisationUuids the uuids of the organisations to fetch the users for.
+     * @return a page with users.
+     */
+    @Transactional(readOnly = true)
+    public Page<User> getUsersForOrganisations(Pageable pageable, UUID ... organisationUuids) {
+        return userRepository.findAllByOrganisations(Arrays.asList(organisationUuids), pageable);
+    }
+
+    /**
      * Search for the organisation corresponding to the query.
      *
      *  @param query the query of the search

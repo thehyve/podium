@@ -15,6 +15,7 @@ import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.repository.RequestRepository;
+import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import org.slf4j.Logger;
@@ -94,8 +95,8 @@ public class DraftService {
     public RequestRepresentation updateDraft(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(body.getUuid());
 
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkStatus(request, RequestStatus.Draft);
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
 
         request = requestMapper.updateRequestDTOToRequest(body, request);
         requestRepository.save(request);
@@ -115,8 +116,8 @@ public class DraftService {
     public RequestRepresentation updateRevision(IdentifiableUser user, RequestRepresentation body) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(body.getUuid());
 
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
 
         requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
 
@@ -137,8 +138,8 @@ public class DraftService {
         Request request = requestRepository.findOneByUuid(uuid);
 
         log.debug("Access and status checks...");
-        AccessCheckHelper.checkRequester(user, request);
-        RequestStatus sourceStatus = AccessCheckHelper.checkStatus(request, RequestStatus.Draft);
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestStatus sourceStatus = RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
 
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
 

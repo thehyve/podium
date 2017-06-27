@@ -15,6 +15,7 @@ import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
@@ -22,6 +23,7 @@ import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.SummaryEntry;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
+import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
@@ -248,8 +250,8 @@ public class RequestService {
         Request request = requestRepository.findOneByUuid(uuid);
 
         log.debug("Access and status checks...");
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
 
         log.debug("Validate new request data.");
         request.setRequestDetail(request.getRevisionDetail());
@@ -479,8 +481,8 @@ public class RequestService {
      */
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkStatus(request, RequestStatus.Draft);
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
         log.debug("Request to delete Request : {}", uuid);
         deleteRequest(request.getId());
     }
