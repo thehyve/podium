@@ -7,12 +7,11 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, OnDestroy, ViewChild, InjectionToken } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
 import { OverviewService } from '../../shared/overview/overview.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Principal } from '../../shared';
 import { RequestFormService } from '../form/request-form.service';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -193,6 +192,10 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     toggleSidebar() {
         this.toggledSidebar = !this.toggledSidebar;
+    }
+
+    getIconForLinkedRequest(isLinked: boolean) {
+        return isLinked ? 'link' : '';
     }
 
     getIconForRequestType(requestType: RequestType) {
