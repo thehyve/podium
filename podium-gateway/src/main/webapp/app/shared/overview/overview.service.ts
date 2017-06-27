@@ -81,6 +81,32 @@ export class OverviewService {
         });
     }
 
+    /**
+     * Fetch organisations using pagination and search parameters
+     *
+     * @param requestOptions search parameters
+     * @returns {Observable<Response>} the response
+     */
+    findOrganisationsForOverview(
+        requestOptions: any
+    ): Observable<Response> {
+        let options = this.createRequestOption(requestOptions);
+        return this.http.get(`${this.resourceUrl}/admin`, options);
+    }
+
+    /**
+     * Fetch users using pagination and search parameters
+     *
+     * @param requestOptions search parameters
+     * @returns {Observable<Response>} the response
+     */
+    findUsersForOverview(
+        requestOptions: any
+    ): Observable<Response> {
+        let options = this.createRequestOption(requestOptions);
+        return this.http.get(`${this.resourceUrl}`, options);
+    }
+
     getRequestCountsForUserGroupAuthority(userGroupAuthority: UserGroupAuthority): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/counts/${userGroupAuthority}`).map((res: Response) => {
             return res;
