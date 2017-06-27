@@ -33,7 +33,9 @@ export abstract class Overview {
         protected router: Router,
         protected activatedRoute: ActivatedRoute
     ) {
-        this.routePath = this.activatedRoute.snapshot.url[0].path;
+        if (this.activatedRoute.snapshot.url.length) {
+            this.routePath = this.activatedRoute.snapshot.url[0].path;
+        }
 
         this.activatedRoute.data.subscribe(data => {
             this.pageHeader = data['pageHeader'];
@@ -66,17 +68,21 @@ export abstract class Overview {
             size: this.itemsPerPage,
             sort: this.sort()
         };
+
         if (this.currentSearch) {
             params.query = this.currentSearch;
-        } else {
-            params.page = this.page - 1;
         }
+
+        params.page = this.page > 0 ? this.page - 1 : 0;
+
         return params;
     };
 
     protected transition() {
         // Transition with queryParams
         // Update the URL with the new parameters
+        let params = this.getPageParams();
+
         this.router.navigate([this.getNavUrlForRouter(this.router)], {
             queryParams: {
                 page: this.page,
@@ -102,6 +108,35 @@ export abstract class Overview {
         this.itemsPerPage = ITEMS_PER_PAGE;
     }
 
+    protected search (query, callback) {
+        if (!query) {
+            return this.clear(callback);
+        }
+        this.page = 0;
+        this.currentSearch = query;
+
+        // Transition with matrix params
+        this.router.navigate([this.getNavUrlForRouter(this.router),
+            {
+                search: this.currentSearch,
+                page: this.page,
+                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+            }]);
+
+        // reload resource
+        callback();
+    }
+
+    protected clear(callback: Function) {
+        this.page = 0;
+        this.currentSearch = '';
+        this.router.navigate([this.getNavUrlForRouter(this.router), {
+            page: this.page,
+            sort: [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')]
+        }]);
+        callback();
+    }
+
     protected isResearcherRoute(): boolean {
         return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_RESEARCHER;
     }
@@ -110,7 +145,11 @@ export abstract class Overview {
         return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR;
     }
 
-    private getNavUrlForRouter(router: Router) {
-        return this.router.url.split(/\?/)[0];
+    protected isReviewerRoute(): boolean {
+        return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER;
+    }
+
+    protected getNavUrlForRouter(router: Router) {
+        return this.router.url.split(/\?/)[0].split(/;/)[0] + '/';
     }
 }

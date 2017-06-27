@@ -41,20 +41,7 @@ export class UserService {
     }
 
     query(req?: any): Observable<Response> {
-        let params: URLSearchParams = new URLSearchParams();
-        if (req) {
-            params.set('page', req.page);
-            params.set('size', req.size);
-            if (req.sort) {
-                params.paramsMap.set('sort', req.sort);
-            }
-            params.set('filter', req.filter);
-        }
-
-        let options = {
-            search: params
-        };
-
+        let options = this.createRequestOption(req);
         return this.http.get(this.resourceUrl, options);
     }
 
