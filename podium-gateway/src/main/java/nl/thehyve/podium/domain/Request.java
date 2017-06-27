@@ -41,6 +41,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_seq_gen")
     @GenericGenerator(
         name = "request_seq_gen",
@@ -128,6 +129,15 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
         inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
     private List<ReviewRound> reviewRounds;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "request_related_requests",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="related_request_id", referencedColumnName="id"))
+    private Set<Request> relatedRequests = new HashSet<>();
 
     @Override
     public UUID getRequestUuid() {

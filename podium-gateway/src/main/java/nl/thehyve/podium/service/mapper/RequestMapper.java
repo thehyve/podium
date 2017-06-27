@@ -9,15 +9,7 @@ package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
-import nl.thehyve.podium.service.util.DefaultOrganisation;
-import nl.thehyve.podium.service.util.DefaultRequest;
-import nl.thehyve.podium.service.util.DefaultRequestDetail;
-import nl.thehyve.podium.service.util.DefaultUser;
-import nl.thehyve.podium.service.util.ExtendedOrganisation;
-import nl.thehyve.podium.service.util.ExtendedRequest;
-import nl.thehyve.podium.service.util.ExtendedUser;
-import nl.thehyve.podium.service.util.OrganisationMapperHelper;
-import nl.thehyve.podium.service.util.UserMapperHelper;
+import nl.thehyve.podium.service.util.*;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -45,7 +37,8 @@ public interface RequestMapper {
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "requestReviewProcess", target = "requestReview"),
         @Mapping(target = "requester", qualifiedBy = DefaultUser.class),
-        @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
+        @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class),
+        @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class)
     })
     RequestRepresentation requestToRequestDTO(Request request);
 
@@ -57,14 +50,16 @@ public interface RequestMapper {
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(target = "historicEvents", ignore = true)
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
     })
     Request requestDTOToRequest(RequestRepresentation requestDTO);
 
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(target = "historicEvents", ignore = true)
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
     })
     Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
@@ -73,7 +68,8 @@ public interface RequestMapper {
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone"),
         @Mapping(target = "id", ignore = true),
         @Mapping(target = "uuid", ignore = true),
-        @Mapping(target = "historicEvents", ignore = true)
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
     })
     Request clone(Request request);
 
@@ -87,6 +83,7 @@ public interface RequestMapper {
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "requestReviewProcess", target = "requestReview"),
         @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class),
+        @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class),
         @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
     })
     RequestRepresentation extendedRequestToRequestDTO(Request request);
@@ -94,4 +91,21 @@ public interface RequestMapper {
     @ExtendedRequest
     @IterableMapping(qualifiedBy = ExtendedRequest.class)
     List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
+
+    @MinimalRequest
+    @Mappings({
+        @Mapping(target = "requestDetail", ignore = true),
+        @Mapping(target = "revisionDetail", ignore = true),
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class),
+        @Mapping(target = "relatedRequests", ignore = true),
+        @Mapping(target = "requester", ignore = true)
+    })
+    RequestRepresentation minimalRequestToRequestDTO(Request request);
+
+    @MinimalRequest
+    @IterableMapping(qualifiedBy = MinimalRequest.class)
+    List<RequestRepresentation> minimalRequestsToRequestDTOs(List<Request> requests);
+
 }

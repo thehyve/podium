@@ -24,11 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing request drafts.
@@ -63,6 +65,9 @@ public class DraftService {
 
     @Autowired
     private StatusUpdateEventService statusUpdateEventService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * Create a new draft request.
@@ -180,8 +185,7 @@ public class DraftService {
 
         log.debug("Submitting request : {}", uuid);
 
-        List<Request> organisationRequests = new ArrayList<>();
-        // TODO: Aggregate mails for multiple organisations per user.
+        final List<Request> organisationRequests = new ArrayList<>();
 
         for (UUID organisationUuid: request.getOrganisations()) {
             Request organisationRequest = requestMapper.clone(request);
@@ -215,10 +219,31 @@ public class DraftService {
                 requestReviewProcessService.start(user));
             organisationRequest = requestRepository.save(organisationRequest);
 
-            statusUpdateEventService.publishStatusUpdate(user, sourceStatus, organisationRequest, null);
-
             organisationRequests.add(organisationRequest);
+
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
+        }
+        entityManager.flush();
+
+        for (Request organisationRequest: organisationRequests) {
+            entityManager.refresh(organisationRequest);
+        }
+
+        // Setting links to related requests in every request
+        for (Request organisationRequest: organisationRequests) {
+            log.debug("Saving related requests for request {}", organisationRequest.getUuid());
+            Set<Request> relatedRequests = new HashSet<>(organisationRequests.stream().filter(req ->
+                req != organisationRequest
+            ).collect(Collectors.toSet()));
+            organisationRequest.setRelatedRequests(relatedRequests);
+            entityManager.persist(organisationRequest);
+        }
+        entityManager.flush();
+        log.debug("Done saving related requests.");
+
+        // Publish status update event for every generated request
+        for (Request organisationRequest: organisationRequests) {
+            statusUpdateEventService.publishStatusUpdate(user, sourceStatus, organisationRequest, null);
         }
 
         List<RequestRepresentation> result = requestMapper.extendedRequestsToRequestDTOs(organisationRequests);
