@@ -14,15 +14,14 @@ import { OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
-import { DateUtils, DataUtils, JhiLanguageService } from 'ng-jhipster';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
+import { DateUtils, DataUtils } from 'ng-jhipster';
 import { MockActivatedRoute } from '../../../helpers/mock-route.service';
 import {
-    Organisation,
-    OrganisationService,
     OrganisationDetailComponent
 } from '../../../../../../main/webapp/app/backoffice/modules/organisation';
 import { PodiumTestModule } from '../../../test.module';
+import { OrganisationService } from '../../../../../../main/webapp/app/shared/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/shared/organisation/organisation.model';
 
 describe('Component Tests', () => {
 

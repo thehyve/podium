@@ -18,6 +18,7 @@ import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
 import { StatusSidebarOption } from '../request/status-sidebar/status-sidebar-options';
+import { HttpHelper } from '../util/http-helper';
 
 @Injectable()
 export class OverviewService {
@@ -45,7 +46,7 @@ export class OverviewService {
         requestStatus: StatusSidebarOption,
         userGroup: UserGroupAuthority
     ): Observable<Response> {
-        let options = this.createRequestOption(requestOptions);
+        let options = HttpHelper.createRequestOption(requestOptions);
         let requestsUrl;
 
         if (!requestStatus || !userGroup) {
@@ -84,22 +85,6 @@ export class OverviewService {
         return this.http.get(`${this.resourceUrl}/counts/${userGroupAuthority}`).map((res: Response) => {
             return res;
         });
-    }
-
-    private createRequestOption(req?: any): BaseRequestOptions {
-        let options: BaseRequestOptions = new BaseRequestOptions();
-        if (req) {
-            let params: URLSearchParams = new URLSearchParams();
-            params.set('page', req.page);
-            params.set('size', req.size);
-            if (req.sort) {
-                params.paramsMap.set('sort', req.sort);
-            }
-            params.set('query', req.query);
-
-            options.params = params;
-        }
-        return options;
     }
 
     public overviewUpdateEvent(response: Response) {

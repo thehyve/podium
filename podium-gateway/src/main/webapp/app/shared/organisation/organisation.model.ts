@@ -7,9 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { RequestType } from '../../../shared/request/request-type';
-import { Role } from '../../../shared/role/role.model';
 
+import { Role } from '../role/role.model';
 export interface IOrganisation {
     hasRequestTypes(requestTypes: RequestType[]): boolean;
 }
@@ -30,7 +29,6 @@ export class Organisation implements IOrganisation {
     }
 
     hasRequestTypes(requestTypes) {
-
         let found = false;
 
         for (let requestType of requestTypes) {

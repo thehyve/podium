@@ -11,8 +11,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
-import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
-import { organisationRoute } from '../../backoffice/modules/organisation/organisation.route';
+import { OrganisationService } from '../organisation/organisation.service';
 
 @Component({
     selector: 'pdm-organisation-selector',
