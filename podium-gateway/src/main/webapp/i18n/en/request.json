@@ -140,7 +140,9 @@
             },
             "isLinked": {
                 "label": "Linked Request",
-                "placeHolder": "Is a linked request"
+                "placeHolder": "Is a linked request",
+                "yes": "Yes",
+                "no": "No"
             },
             "background": {
                 "label": "Background",
