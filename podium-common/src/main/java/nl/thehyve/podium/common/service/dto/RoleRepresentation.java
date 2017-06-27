@@ -8,11 +8,13 @@
 package nl.thehyve.podium.common.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 
 import java.util.Set;
 import java.util.UUID;
 
+@Data
 public class RoleRepresentation implements IdentifiableOrganisation {
 
     private Long id;
@@ -23,41 +25,9 @@ public class RoleRepresentation implements IdentifiableOrganisation {
 
     private Set<UUID> users;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getOrganisation() {
-        return organisation;
-    }
-
     @JsonIgnore
     public UUID getOrganisationUuid() {
-        return getOrganisation();
-    }
-
-    public void setOrganisation(UUID organisation) {
-        this.organisation = organisation;
-    }
-
-    public String getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    public Set<UUID> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<UUID> users) {
-        this.users = users;
+        return this.organisation;
     }
 
     public RoleRepresentation() {

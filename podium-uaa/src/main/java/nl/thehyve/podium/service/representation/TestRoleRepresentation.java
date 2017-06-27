@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service.representation;
 
+import lombok.Data;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * and organisation short name instead of uuid.
  * For testing purposes.
  */
+@Data
 public class TestRoleRepresentation {
 
     private Long id;
@@ -34,38 +36,6 @@ public class TestRoleRepresentation {
      * Set of user logins.
      */
     private Set<String> users;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrganisation() {
-        return organisation;
-    }
-
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
-    }
-
-    public String getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    public Set<String> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<String> users) {
-        this.users = users;
-    }
 
     public TestRoleRepresentation() {
     }

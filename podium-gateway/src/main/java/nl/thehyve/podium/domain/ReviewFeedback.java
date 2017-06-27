@@ -10,6 +10,9 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,6 +40,7 @@ import java.util.UUID;
 @Table(name = "review_feedback")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "review_feedback")
+@Data
 public class ReviewFeedback implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -55,6 +59,7 @@ public class ReviewFeedback implements Serializable {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @Column(name = "reviewer", nullable = false)
@@ -72,18 +77,6 @@ public class ReviewFeedback implements Serializable {
     @Lob
     private String description;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     /**
      * Only the database can return the UUID from the stored entity
      * Pre-persist will add a {@link UUID} to the entity
@@ -100,46 +93,6 @@ public class ReviewFeedback implements Serializable {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
         }
-    }
-
-    public UUID getReviewer() {
-        return reviewer;
-    }
-
-    public void setReviewer(UUID reviewer) {
-        this.reviewer = reviewer;
-    }
-
-    public ReviewProcessOutcome getAdvice() {
-        return advice;
-    }
-
-    public void setAdvice(ReviewProcessOutcome advice) {
-        this.advice = advice;
-    }
-
-    public ZonedDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(ZonedDateTime date) {
-        this.date = date;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

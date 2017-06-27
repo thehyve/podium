@@ -8,6 +8,7 @@
 package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import org.hibernate.annotations.Cache;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 @Table(name = "podium_role")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "role")
+@Data
 public class Role implements Serializable, IdentifiableOrganisation {
 
     private static final long serialVersionUID = 1L;
@@ -85,18 +87,6 @@ public class Role implements Serializable, IdentifiableOrganisation {
         this.authority = authority;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
     public Role users(Set<User> users) {
         this.users = users;
         return this;
@@ -112,14 +102,6 @@ public class Role implements Serializable, IdentifiableOrganisation {
         this.users.remove(user);
         user.getRoles().remove(this);
         return this;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Organisation getOrganisation() {
-        return organisation;
     }
 
     public UUID getOrganisationUuid() {
@@ -138,17 +120,9 @@ public class Role implements Serializable, IdentifiableOrganisation {
         this.organisation = organisation;
     }
 
-    public Authority getAuthority() {
-        return authority;
-    }
-
     public Role authority(Authority authority) {
         this.authority = authority;
         return this;
-    }
-
-    public void setAuthority(Authority authority) {
-        this.authority = authority;
     }
 
     @Override

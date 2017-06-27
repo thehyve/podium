@@ -7,6 +7,7 @@
 package nl.thehyve.podium.common.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.validation.Required;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * A RequestDetailRepresentation.
  */
+@Data
 public class RequestDetailRepresentation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -77,25 +79,9 @@ public class RequestDetailRepresentation implements Serializable {
         return this;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBackground() {
-        return background;
-    }
-
     public RequestDetailRepresentation background(String background) {
         this.background = background;
         return this;
-    }
-
-    public void setBackground(String background) {
-        this.background = background;
-    }
-
-    public String getResearchQuestion() {
-        return researchQuestion;
     }
 
     public RequestDetailRepresentation researchQuestion(String researchQuestion) {
@@ -103,38 +89,14 @@ public class RequestDetailRepresentation implements Serializable {
         return this;
     }
 
-    public void setResearchQuestion(String researchQuestion) {
-        this.researchQuestion = researchQuestion;
-    }
-
-    public String getHypothesis() {
-        return hypothesis;
-    }
-
     public RequestDetailRepresentation hypothesis(String hypothesis) {
         this.hypothesis = hypothesis;
         return this;
     }
 
-    public void setHypothesis(String hypothesis) {
-        this.hypothesis = hypothesis;
-    }
-
-    public String getMethods() {
-        return methods;
-    }
-
     public RequestDetailRepresentation methods(String methods) {
         this.methods = methods;
         return this;
-    }
-
-    public void setMethods(String methods) {
-        this.methods = methods;
-    }
-
-    public String getRelatedRequestNumber() {
-        return relatedRequestNumber;
     }
 
     public RequestDetailRepresentation relatedRequestNumber(String relatedRequestNumber) {
@@ -146,29 +108,9 @@ public class RequestDetailRepresentation implements Serializable {
         this.relatedRequestNumber = relatedRequestNumber;
     }
 
-    public PrincipalInvestigatorRepresentation getPrincipalInvestigator() {
-        return principalInvestigator;
-    }
-
-    public void setPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigator) {
-        this.principalInvestigator = principalInvestigator;
-    }
-
-    public Boolean getCombinedRequest() {
-        return combinedRequest;
-    }
-
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
     public RequestDetailRepresentation searchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
         return this;
-    }
-
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
     }
 
     @JsonIgnore
@@ -176,56 +118,8 @@ public class RequestDetailRepresentation implements Serializable {
         return String.join(", ", requestType.stream().map(RequestType::name).collect(Collectors.toList()));
     }
 
-    public Set<RequestType> getRequestType() { return requestType; }
-
-    public void setRequestType(Set<RequestType> requestType) { this.requestType = requestType; }
-
-    public Boolean isCombinedRequest() {
-        return combinedRequest;
-    }
-
     public RequestDetailRepresentation combinedRequest(Boolean combinedRequest) {
         this.combinedRequest = combinedRequest;
         return this;
-    }
-
-    public void setCombinedRequest(Boolean combinedRequest) {
-        this.combinedRequest = combinedRequest;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        RequestDetailRepresentation requestDetail = (RequestDetailRepresentation) o;
-        if (requestDetail.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, requestDetail.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "RequestDetailRepresentation{" +
-            "id=" + id +
-            ", title='" + title + "'" +
-            ", background='" + background + "'" +
-            ", researchQuestion='" + researchQuestion + "'" +
-            ", hypothesis='" + hypothesis + "'" +
-            ", methods='" + methods + "'" +
-            ", relatedRequestNumber='" + relatedRequestNumber + "'" +
-            ", searchQuery='" + searchQuery + "'" +
-            ", requestType='" + requestType + "'" +
-            ", combinedRequest='" + combinedRequest + "'" +
-            '}';
     }
 }

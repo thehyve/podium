@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
@@ -29,6 +30,7 @@ import java.util.Objects;
 @Table(name = "principal_investigator")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "principalinvestigator")
+@Data
 public class PrincipalInvestigator implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,14 +60,6 @@ public class PrincipalInvestigator implements Serializable {
     @Column(name = "affiliation", length = 150)
     private String affiliation;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -75,47 +69,14 @@ public class PrincipalInvestigator implements Serializable {
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public PrincipalInvestigator email(String email) {
         this.email = email;
         return this;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-
     public PrincipalInvestigator jobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
         return this;
-    }
-
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
-    }
-
-    public String getAffiliation() {
-        return affiliation;
-    }
-
-    public PrincipalInvestigator affiliation(String affiliation) {
-        this.affiliation = affiliation;
-        return this;
-    }
-
-    public void setAffiliation(String affiliation) {
-        this.affiliation = affiliation;
     }
 
     @Override

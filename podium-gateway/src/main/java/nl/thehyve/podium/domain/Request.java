@@ -7,6 +7,9 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
@@ -32,6 +35,7 @@ import java.util.*;
 @Table(name = "request")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "request")
+@Data
 public class Request extends AbstractAuditingEntity implements Serializable, IdentifiableUser, IdentifiableRequest {
 
     private static final long serialVersionUID = 1L;
@@ -50,6 +54,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @NotNull
@@ -124,18 +129,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
     private List<ReviewRound> reviewRounds;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     @Override
     public UUID getRequestUuid() {
         return uuid;
@@ -159,29 +152,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         }
     }
 
-    public RequestStatus getStatus() {
-        return status;
-    }
-
     public Request status(RequestStatus status) {
         this.status = status;
         return this;
-    }
-
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
-    public RequestOutcome getOutcome() {
-        return outcome;
-    }
-
-    public void setOutcome(RequestOutcome outcome) {
-        this.outcome = outcome;
-    }
-
-    public Set<UUID> getOrganisations() {
-        return organisations;
     }
 
     public Request organisations(Set<UUID> organisations) {
@@ -189,52 +162,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return this;
     }
 
-    public Request addOrganisations(UUID organisation) {
-        this.organisations.add(organisation);
-        return this;
-    }
-
-    public Request removeOrganisations(UUID organisation) {
-        this.organisations.remove(organisation);
-        return this;
-    }
-
-    public void setOrganisations(Set<UUID> organisations) {
-        this.organisations = organisations;
-    }
-
-    public RequestDetail getRevisionDetail() { return revisionDetail; }
-
-    public void setRevisionDetail(RequestDetail revisionDetail) { this.revisionDetail = revisionDetail; }
-
-    public Request revisionDetail(RequestDetail revisionDetail) {
-        this.revisionDetail = revisionDetail;
-        return this;
-    }
-
-    public RequestDetail getRequestDetail() {
-        return requestDetail;
-    }
-
     public Request requestDetail(RequestDetail requestDetail) {
         this.requestDetail = requestDetail;
         return this;
-    }
-
-    public void setRequestDetail(RequestDetail requestDetail) {
-        this.requestDetail = requestDetail;
-    }
-
-    public RequestReviewProcess getRequestReviewProcess() {
-        return requestReviewProcess;
-    }
-
-    public void setRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
-        this.requestReviewProcess = requestReviewProcess;
-    }
-
-    public List<DeliveryProcess> getDeliveryProcesses() {
-        return deliveryProcesses;
     }
 
     public Request addDeliveryProcess(DeliveryProcess deliveryProcess) {
@@ -242,60 +172,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return this;
     }
 
-    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
-        this.deliveryProcesses = deliveryProcesses;
-    }
-
-    public Set<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public Request attachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-        return this;
-    }
-
-    public Request addAttachments(Attachment attachment) {
-        this.attachments.add(attachment);
-        return this;
-    }
-
-    public Request removeAttachments(Attachment attachment) {
-        this.attachments.remove(attachment);
-        return this;
-    }
-
-    public void setAttachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
-    public UUID getRequester() {
-        return requester;
-    }
-
-    public void setRequester(UUID requester) {
-        this.requester = requester;
-    }
-
-    public List<PodiumEvent> getHistoricEvents() {
-        return historicEvents;
-    }
-
     public Request addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
-    }
-
-    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
-        this.historicEvents = historicEvents;
-    }
-
-    public List<ReviewRound> getReviewRounds() {
-        return reviewRounds;
-    }
-
-    public void setReviewRounds(List<ReviewRound> reviewRounds) {
-        this.reviewRounds = reviewRounds;
     }
 
     @Override

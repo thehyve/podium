@@ -14,6 +14,7 @@ import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
 public interface RequestDetailMapper {
@@ -25,8 +26,10 @@ public interface RequestDetailMapper {
     RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 
     @DefaultRequestDetail
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+    })
     RequestDetail clone(RequestDetail requestDetail);
 
     /**
@@ -36,10 +39,12 @@ public interface RequestDetailMapper {
      * @return the mapping target
      */
     @SafeRequestDetail
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "requestType", ignore = true)
-    @Mapping(target = "combinedRequest", ignore = true)
-    @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "requestType", ignore = true),
+        @Mapping(target = "combinedRequest", ignore = true),
+        @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+    })
     RequestDetail processingRequestDetailDtoToRequestDetail(
         RequestDetailRepresentation requestDetailRepresentation, @MappingTarget RequestDetail requestDetail
     );

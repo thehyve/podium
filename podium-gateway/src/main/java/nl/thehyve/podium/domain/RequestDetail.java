@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.Data;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -39,6 +40,7 @@ import java.util.Set;
 @Table(name = "request_detail")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "requestdetail")
+@Data
 public class RequestDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -92,29 +94,9 @@ public class RequestDetail implements Serializable {
     @Column(name = "combined_request")
     private Boolean combinedRequest;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public RequestDetail title(String title) {
         this.title = title;
         return this;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBackground() {
-        return background;
     }
 
     public RequestDetail background(String background) {
@@ -122,25 +104,9 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setBackground(String background) {
-        this.background = background;
-    }
-
-    public String getResearchQuestion() {
-        return researchQuestion;
-    }
-
     public RequestDetail researchQuestion(String researchQuestion) {
         this.researchQuestion = researchQuestion;
         return this;
-    }
-
-    public void setResearchQuestion(String researchQuestion) {
-        this.researchQuestion = researchQuestion;
-    }
-
-    public String getHypothesis() {
-        return hypothesis;
     }
 
     public RequestDetail hypothesis(String hypothesis) {
@@ -148,25 +114,9 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setHypothesis(String hypothesis) {
-        this.hypothesis = hypothesis;
-    }
-
-    public String getMethods() {
-        return methods;
-    }
-
     public RequestDetail methods(String methods) {
         this.methods = methods;
         return this;
-    }
-
-    public void setMethods(String methods) {
-        this.methods = methods;
-    }
-
-    public String getRelatedRequestNumber() {
-        return relatedRequestNumber;
     }
 
     public RequestDetail relatedRequestNumber(String relatedRequestNumber) {
@@ -174,50 +124,14 @@ public class RequestDetail implements Serializable {
         return this;
     }
 
-    public void setRelatedRequestNumber(String relatedRequestNumber) {
-        this.relatedRequestNumber = relatedRequestNumber;
-    }
-
-    public PrincipalInvestigator getPrincipalInvestigator() {
-        return principalInvestigator;
-    }
-
-    public void setPrincipalInvestigator(PrincipalInvestigator principalInvestigator) {
-        this.principalInvestigator = principalInvestigator;
-    }
-
-    public Boolean getCombinedRequest() {
-        return combinedRequest;
-    }
-
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
     public RequestDetail searchQuery(String searchQuery) {
         this.searchQuery = searchQuery;
         return this;
     }
 
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
-    }
-
-    public Set<RequestType> getRequestType() { return requestType; }
-
-    public void setRequestType(Set<RequestType> requestType) { this.requestType = requestType; }
-
-    public Boolean isCombinedRequest() {
-        return combinedRequest;
-    }
-
     public RequestDetail combinedRequest(Boolean combinedRequest) {
         this.combinedRequest = combinedRequest;
         return this;
-    }
-
-    public void setCombinedRequest(Boolean combinedRequest) {
-        this.combinedRequest = combinedRequest;
     }
 
     @Override

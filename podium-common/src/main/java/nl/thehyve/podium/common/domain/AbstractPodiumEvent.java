@@ -8,6 +8,7 @@
 package nl.thehyve.podium.common.domain;
 
 
+import lombok.Data;
 import nl.thehyve.podium.common.event.EventType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -23,6 +24,7 @@ import java.util.Map;
  * Application events to be stored in the database. E.g., status updates.
  */
 @MappedSuperclass
+@Data
 public abstract class AbstractPodiumEvent implements Serializable {
 
     @Id
@@ -55,44 +57,4 @@ public abstract class AbstractPodiumEvent implements Serializable {
     @Column(name = "value")
     @CollectionTable(name = "podium_event_data", joinColumns=@JoinColumn(name="event_id"))
     private Map<String, String> data = new HashMap<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(String principal) {
-        this.principal = principal;
-    }
-
-    public Date getEventDate() {
-        return eventDate;
-    }
-
-    public void setEventDate(Date eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public EventType getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
-    }
-
-    public Map<String, String> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, String> data) {
-        this.data = data;
-    }
 }

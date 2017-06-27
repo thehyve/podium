@@ -10,20 +10,15 @@
 
 package nl.thehyve.podium.common.service.dto;
 
+import lombok.Data;
+
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Data
 public class MessageRepresentation implements Serializable {
 
     @Size(max = 255)
     String summary;
     String description;
-
-    public String getSummary() { return summary; }
-
-    public void setSummary(String summary) { this.summary = summary; }
-
-    public String getDescription() { return description; }
-
-    public void setDescription(String description) { this.description = description; }
 }
