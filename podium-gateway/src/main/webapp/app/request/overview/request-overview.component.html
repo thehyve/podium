@@ -39,12 +39,12 @@
 
         <br/>
         <div class="table-responsive" *ngIf="availableRequests">
-            <table class="table table-striped">
+            <table class="table table-striped">'
                 <thead>
                     <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse"
                          [callback]="transitionRequests.bind(this)">
                         <th jhiSortBy="requestDetail.requester.firstName">
-                            <span class="material-icons  md-18" alt="Linked requests">link</span>
+                            <span class="material-icons  md-18">link</span>
                         </th>
                         <th jhiSortBy="id">
                             <span>Request id</span>
@@ -94,7 +94,9 @@
                         <td>
                             <ul class="overview-list-cell">
                                 <li *ngFor="let requestType of request.requestDetail.requestType">
-                                    <span class="material-icons md-18">{{ getIconForRequestType(requestType)}}</span>
+                                    <span class="material-icons md-18" >
+                                        {{ getIconForRequestType(requestType)}}
+                                    </span>
                                     {{requestType}}
                                 </li>
                             </ul>
