@@ -90,7 +90,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let organisation = director.getData(orgShortName);
 
         return login(director, persona).then(() => {
-            return adminConsole.getRequest(persona, 'Review', 'requester', director.getData(requestName), organisation['name']).then((sufix) => {
+            return adminConsole.getRequest(persona, 'All', 'requester', director.getData(requestName), organisation['name']).then((sufix) => {
                 return director.goToPage(pageName, sufix['uuid'] as string)
             })
         });
@@ -202,7 +202,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = director.getData(requestName); //store for next step
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'Review', 'requester', director.getData('Request02'), director.getData(director.getData('Request02')['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData('Request02')['organisations'][0])['name']).then((request) => {
             return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
                 "summary": "sum",
                 "description": "des"
