@@ -43,7 +43,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     ) {
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
-            this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
+            this.setRequestReviewFeedback();
         });
     }
 
@@ -55,6 +55,16 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.setRequestReviewFeedback();
+    }
+
+    ngOnDestroy() {
+        if (this.requestSubscription) {
+            this.requestSubscription.unsubscribe();
+        }
+    }
+
+    setRequestReviewFeedback() {
         if (this.request.reviewRounds.length) {
             if (this.requestAccessService.isReviewerFor(this.request)) {
                 this.principal.identity().then((account) => {
@@ -65,12 +75,6 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
             } else {
                 this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
             }
-        }
-    }
-
-    ngOnDestroy() {
-        if (this.requestSubscription) {
-            this.requestSubscription.unsubscribe();
         }
     }
 }
