@@ -41,7 +41,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_seq_gen")
     @GenericGenerator(
         name = "request_seq_gen",

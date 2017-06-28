@@ -15,6 +15,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -29,7 +30,14 @@ import java.util.List;
     PodiumEventMapper.class,
     ReviewRoundMapper.class
 })
-public interface RequestMapper {
+public abstract class RequestMapper {
+
+    @Autowired
+    private RequestDetailMapper requestDetailMapper;
+
+
+    @Autowired
+    private OrganisationMapperHelper organisationMapperHelper;
 
     @DefaultRequest
     @Mappings({
@@ -40,11 +48,11 @@ public interface RequestMapper {
         @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class),
         @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class)
     })
-    RequestRepresentation requestToRequestDTO(Request request);
+    public abstract RequestRepresentation requestToRequestDTO(Request request);
 
     @DefaultRequest
     @IterableMapping(qualifiedBy = DefaultRequest.class)
-    List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
+    public abstract List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
     @DefaultRequest
     @Mappings({
@@ -53,7 +61,7 @@ public interface RequestMapper {
         @Mapping(target = "historicEvents", ignore = true),
         @Mapping(target = "relatedRequests", ignore = true)
     })
-    Request requestDTOToRequest(RequestRepresentation requestDTO);
+    public abstract Request requestDTOToRequest(RequestRepresentation requestDTO);
 
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
@@ -61,7 +69,7 @@ public interface RequestMapper {
         @Mapping(target = "historicEvents", ignore = true),
         @Mapping(target = "relatedRequests", ignore = true)
     })
-    Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
+    public abstract Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),
@@ -71,11 +79,11 @@ public interface RequestMapper {
         @Mapping(target = "historicEvents", ignore = true),
         @Mapping(target = "relatedRequests", ignore = true)
     })
-    Request clone(Request request);
+    public abstract Request clone(Request request);
 
     @DefaultRequest
     @IterableMapping(qualifiedBy = DefaultRequest.class)
-    List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
+    public abstract List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     @ExtendedRequest
     @Mappings({
@@ -86,26 +94,26 @@ public interface RequestMapper {
         @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class),
         @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
     })
-    RequestRepresentation extendedRequestToRequestDTO(Request request);
+    public abstract RequestRepresentation extendedRequestToRequestDTO(Request request);
 
     @ExtendedRequest
     @IterableMapping(qualifiedBy = ExtendedRequest.class)
-    List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
+    public abstract List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
 
     @MinimalRequest
-    @Mappings({
-        @Mapping(target = "requestDetail", ignore = true),
-        @Mapping(target = "revisionDetail", ignore = true),
-        @Mapping(target = "id", ignore = true),
-        @Mapping(target = "historicEvents", ignore = true),
-        @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class),
-        @Mapping(target = "relatedRequests", ignore = true),
-        @Mapping(target = "requester", ignore = true)
-    })
-    RequestRepresentation minimalRequestToRequestDTO(Request request);
+    public RequestRepresentation minimalRequestToRequestDTO(Request request) {
+        if ( request == null ) {
+            return null;
+        }
+        RequestRepresentation requestRepresentation = new RequestRepresentation();
+        requestRepresentation.setUuid(request.getUuid());
+        requestRepresentation.setRequestDetail(requestDetailMapper.mapRequestTypeOnly(request.getRequestDetail()));
+        requestRepresentation.setOrganisations(organisationMapperHelper.uuidsToExtendedOrganisationDTOs(request.getOrganisations()));
+        return requestRepresentation;
+    }
 
     @MinimalRequest
     @IterableMapping(qualifiedBy = MinimalRequest.class)
-    List<RequestRepresentation> minimalRequestsToRequestDTOs(List<Request> requests);
+    public abstract List<RequestRepresentation> minimalRequestsToRequestDTOs(List<Request> requests);
 
 }

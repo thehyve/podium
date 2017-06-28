@@ -90,7 +90,7 @@ export class OverviewService {
     findOrganisationsForOverview(
         requestOptions: any
     ): Observable<Response> {
-        let options = this.createRequestOption(requestOptions);
+        let options = HttpHelper.createRequestOption(requestOptions);
         return this.http.get(`${this.resourceUrl}/admin`, options);
     }
 
@@ -103,7 +103,7 @@ export class OverviewService {
     findUsersForOverview(
         requestOptions: any
     ): Observable<Response> {
-        let options = this.createRequestOption(requestOptions);
+        let options = HttpHelper.createRequestOption(requestOptions);
         return this.http.get(`${this.resourceUrl}`, options);
     }
 
