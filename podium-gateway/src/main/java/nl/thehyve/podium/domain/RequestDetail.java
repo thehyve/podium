@@ -92,7 +92,7 @@ public class RequestDetail implements Serializable {
     private Set<RequestType> requestType;
 
     @Column(name = "combined_request")
-    private Boolean combinedRequest;
+    private Boolean combinedRequest = false;
 
     public RequestDetail title(String title) {
         this.title = title;
