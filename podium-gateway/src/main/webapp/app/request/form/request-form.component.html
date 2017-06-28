@@ -99,11 +99,11 @@
                     <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
                     <div class="checkbox-group">
                         <input type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
-                               required [disabled]="!hasSelectedMultipleOrganisations()">
+                               required [disabled]="!hasSelectedMultipleOrganisations() || isInRevision">
                         <span jhiTranslate="request.form.isLinked.yes">Yes</span>
                         &nbsp;
                         <input type="radio" [value]="false" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
-                               required [disabled]="!hasSelectedMultipleOrganisations()">
+                               required [disabled]="!hasSelectedMultipleOrganisations() || isInRevision">
                         <span jhiTranslate="request.form.isLinked.no">No</span>
                     </div>
                 </div>
