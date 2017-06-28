@@ -101,6 +101,11 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
             });
     }
 
+    transitionUsers() {
+        this.transition();
+        this.fetchUsers();
+    }
+
     fetchUsers() {
         this.overviewService.findUsersForOverview(this.getPageParams())
             .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
