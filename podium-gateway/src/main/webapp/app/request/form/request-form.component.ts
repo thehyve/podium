@@ -7,9 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService, EventManager } from 'ng-jhipster';
+import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
@@ -108,6 +108,10 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
             );
     }
 
+    hasSelectedMultipleOrganisations() {
+        return this.requestBase.organisations.length > 1;
+    }
+
     initializeBaseRequest() {
         this.requestService.createDraft()
             .subscribe(
@@ -122,8 +126,11 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
             );
     }
 
-    updateRequestOrganisations(event: Organisation[]) {
-        this.requestBase.organisations = event;
+    updateRequestOrganisations(organisations: Organisation[]) {
+        this.requestBase.organisations = organisations;
+        if (!this.hasSelectedMultipleOrganisations()) {
+            this.requestDetail.combinedRequest = false;
+        }
     }
 
     selectRequest(requestBase: RequestBase) {
