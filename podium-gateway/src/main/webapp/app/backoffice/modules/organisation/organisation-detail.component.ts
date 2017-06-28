@@ -9,9 +9,8 @@
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { Organisation } from './organisation.model';
-import { OrganisationService } from './organisation.service';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
+import { Organisation } from '../../../shared/organisation/organisation.model';
 
 @Component({
     selector: 'pdm-organisation-detail',

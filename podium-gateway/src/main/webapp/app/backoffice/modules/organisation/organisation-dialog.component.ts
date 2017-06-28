@@ -11,10 +11,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Response } from '@angular/http';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
-import { Organisation } from './organisation.model';
+import { EventManager, AlertService } from 'ng-jhipster';
 import { OrganisationPopupService } from './organisation-popup.service';
-import { OrganisationService } from './organisation.service';
+import { Organisation } from '../../../shared/organisation/organisation.model';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
+
 @Component({
     selector: 'pdm-organisation-dialog',
     templateUrl: './organisation-dialog.component.html'

@@ -17,7 +17,6 @@ import {
     OrganisationDeleteDialogComponent,
     OrganisationPopupComponent,
     OrganisationDeletePopupComponent,
-    OrganisationService,
     OrganisationResolvePagingParams
 } from './';
 import { OrganisationRoutingModule } from './organisation.routing';
@@ -32,6 +31,7 @@ import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
 import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
 
 @NgModule({
     imports: [

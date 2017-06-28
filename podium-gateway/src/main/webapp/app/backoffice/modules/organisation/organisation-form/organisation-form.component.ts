@@ -8,14 +8,14 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { EventManager, JhiLanguageService, AlertService } from 'ng-jhipster';
-import { Organisation } from '../organisation.model';
-import { OrganisationService } from '../organisation.service';
+import { EventManager, AlertService } from 'ng-jhipster';
 import { Principal } from '../../../../shared';
 import { User } from '../../../../shared/user/user.model';
 import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestType } from '../../../../shared/request/request-type';
+import { Organisation } from '../../../../shared/organisation/organisation.model';
+import { OrganisationService } from '../../../../shared/organisation/organisation.service';
 
 @Component({
     selector: 'pdm-organisation-form',

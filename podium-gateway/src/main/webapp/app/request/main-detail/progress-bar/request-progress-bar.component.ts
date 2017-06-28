@@ -41,7 +41,6 @@ export class RequestProgressBarComponent implements OnDestroy {
     requestSubscription: Subscription;
 
     constructor(
-        private requestAccessService: RequestAccessService,
         private requestService: RequestService
     ) {
         this.requestStatusOptions = REQUEST_STATUSES;
@@ -110,7 +109,7 @@ export class RequestProgressBarComponent implements OnDestroy {
     }
 
     isRevisionStatus(request: RequestBase): boolean {
-        return this.requestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
+        return RequestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
     }
 
     /**

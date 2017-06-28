@@ -105,22 +105,4 @@ export class DeliveryService {
 
         return RequestOutcome.None;
     }
-
-
-
-    private createRequestOption(req?: any): BaseRequestOptions {
-        let options: BaseRequestOptions = new BaseRequestOptions();
-        if (req) {
-            let params: URLSearchParams = new URLSearchParams();
-            params.set('page', req.page);
-            params.set('size', req.size);
-            if (req.sort) {
-                params.paramsMap.set('sort', req.sort);
-            }
-            params.set('query', req.query);
-
-            options.search = params;
-        }
-        return options;
-    }
 }

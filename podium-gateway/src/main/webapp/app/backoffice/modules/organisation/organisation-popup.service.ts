@@ -9,8 +9,9 @@
  */
 import { Injectable, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { Organisation } from './organisation.model';
-import { OrganisationService } from './organisation.service';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
+import { Organisation } from '../../../shared/organisation/organisation.model';
+
 @Injectable()
 export class OrganisationPopupService {
     private isOpen = false;

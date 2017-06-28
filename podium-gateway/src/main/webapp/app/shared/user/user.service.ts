@@ -11,6 +11,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './user.model';
+import { HttpHelper } from '../util/http-helper';
 
 @Injectable()
 export class UserService {
@@ -41,39 +42,21 @@ export class UserService {
     }
 
     query(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(this.resourceUrl, options);
     }
 
     search(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
     }
 
     suggest(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceSuggestUrl}`, options).map((res: Response) => res.json());
     }
 
     delete(login: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${login}`);
     }
-
-    private createRequestOption(req?: any): BaseRequestOptions {
-        let options: BaseRequestOptions = new BaseRequestOptions();
-        if (req) {
-            let params: URLSearchParams = new URLSearchParams();
-            params.set('page', req.page);
-            params.set('size', req.size);
-            if (req.sort) {
-                params.paramsMap.set('sort', req.sort);
-            }
-            params.set('query', req.query);
-
-            options.search = params;
-        }
-
-        return options;
-    }
-
 }

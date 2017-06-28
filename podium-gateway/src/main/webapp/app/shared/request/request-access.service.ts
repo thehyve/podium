@@ -22,6 +22,36 @@ export class RequestAccessService {
 
     private currentUser: User;
 
+    /**
+     * Check whether a request has a specific status.
+     * @param request the request
+     * @param status the status
+     * @returns {boolean} true if the request has the status
+     */
+    public static isRequestStatus(request: RequestBase, status: RequestStatusOptions): boolean {
+        let requiredStatus = RequestStatusOptions[status];
+        let requestStatus = request.status.toString();
+        return requestStatus === requiredStatus;
+    }
+
+    /**
+     * Check whether a request review has a specific status.
+     * @param request the request
+     * @param status the review status
+     * @returns {boolean} true if the request review has the status
+     */
+    public static isRequestReviewStatus(request: RequestBase, reviewStatus: RequestReviewStatusOptions): boolean {
+        let requiredStatus = RequestReviewStatusOptions[reviewStatus];
+        let requestReview = request.requestReview;
+
+        if (!requestReview) {
+            return false;
+        }
+
+        let requestReviewStatus = requestReview.status.toString();
+        return requestReviewStatus === requiredStatus;
+    }
+
     constructor(
         private principal: Principal
     ) {
@@ -77,24 +107,6 @@ export class RequestAccessService {
         }
 
         return this.currentUser.uuid === request.requester.uuid;
-    }
-
-    public isRequestStatus(request: RequestBase, status: RequestStatusOptions): boolean {
-        let requiredStatus = RequestStatusOptions[status];
-        let requestStatus = request.status.toString();
-        return requestStatus === requiredStatus;
-    }
-
-    public isRequestReviewStatus(request: RequestBase, reviewStatus: RequestReviewStatusOptions): boolean {
-        let requiredStatus = RequestReviewStatusOptions[reviewStatus];
-        let requestReview = request.requestReview;
-
-        if (!requestReview) {
-            return false;
-        }
-
-        let requestReviewStatus = requestReview.status.toString();
-        return requestReviewStatus === requiredStatus;
     }
 
     private hasPermissionInAnyOrganisation(request: RequestBase, requiredPermission: string): boolean {

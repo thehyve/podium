@@ -13,7 +13,6 @@ import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
 import { RoleAssignComponent } from '../../../../../../main/webapp/app/shared/role/role-assign/role-assign.component';
 import { RoleService } from '../../../../../../main/webapp/app/shared/role/role.service';
 import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
@@ -25,6 +24,7 @@ import { Principal } from '../../../../../../main/webapp/app/shared/auth/princip
 import { MockEventManager } from '../../../helpers/mock-event-manager.service';
 import { Observable } from 'rxjs';
 import { PodiumTestModule } from '../../../test.module';
+import { Organisation } from '../../../../../../main/webapp/app/shared/organisation/organisation.model';
 
 describe('RoleAssignComponent', () => {
 

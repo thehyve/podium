@@ -142,11 +142,11 @@ describe('RequestProgressBarComponent', () => {
         it('should be able to indicate that a request is in Revision', inject([RequestAccessService],
             ((requestAccessService: RequestAccessService) => {
                 let request = getDummyRequestWithStatus(RequestStatusOptions.Review, RequestReviewStatusOptions.Revision);
-                spyOn(requestAccessService, 'isRequestReviewStatus').and.returnValue(true);
+                spyOn(RequestAccessService, 'isRequestReviewStatus').and.returnValue(true);
 
                 let revisionRequest = comp.isRevisionStatus(request);
 
-                expect(requestAccessService.isRequestReviewStatus)
+                expect(RequestAccessService.isRequestReviewStatus)
                     .toHaveBeenCalledWith(request, RequestReviewStatusOptions.Revision);
                 expect(revisionRequest).toBeTruthy();
             })
@@ -155,11 +155,11 @@ describe('RequestProgressBarComponent', () => {
         it('should be able to indicate that a request is not in Revision', inject([RequestAccessService],
             ((requestAccessService: RequestAccessService) => {
                 let request = getDummyRequestWithStatus(RequestStatusOptions.Review, RequestReviewStatusOptions.Review);
-                spyOn(requestAccessService, 'isRequestReviewStatus').and.returnValue(false);
+                spyOn(RequestAccessService, 'isRequestReviewStatus').and.returnValue(false);
 
                 let reviewRequest = comp.isRevisionStatus(request);
 
-                expect(requestAccessService.isRequestReviewStatus)
+                expect(RequestAccessService.isRequestReviewStatus)
                     .toHaveBeenCalledWith(request, RequestReviewStatusOptions.Revision);
                 expect(reviewRequest).toBeFalsy();
             })

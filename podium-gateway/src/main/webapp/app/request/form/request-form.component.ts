@@ -24,11 +24,11 @@ import {
 } from '../../shared';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
-import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 import { RequestAccessService } from '../../shared/request/request-access.service';
 import { RequestReviewStatusOptions } from '../../shared/request/request-status/request-status.constants';
+import { OrganisationService } from '../../shared/organisation/organisation.service';
+import { Organisation } from '../../shared/organisation/organisation.model';
 
 @Component({
     selector: 'pdm-request-form',
@@ -64,15 +64,12 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
         private attachmentService: AttachmentService,
-        private route: ActivatedRoute,
         private router: Router,
         private principal: Principal,
         private eventManager: EventManager,
         private organisationService: OrganisationService,
         private modalService: NgbModal
     ) {
-
-
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
         });
@@ -134,7 +131,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.requestBase.organisations = requestBase.organisations || [];
 
         // If the request is in revision use the revisionDetail
-        if (this.requestAccessService.isRequestReviewStatus(requestBase, RequestReviewStatusOptions.Revision)) {
+        if (RequestAccessService.isRequestReviewStatus(requestBase, RequestReviewStatusOptions.Revision)) {
             // Remember the revision ID
             this.revisionId = requestBase.revisionDetail.id;
             this.requestDetail = requestBase.revisionDetail;

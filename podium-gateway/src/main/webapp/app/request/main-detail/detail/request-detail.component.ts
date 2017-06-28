@@ -264,7 +264,7 @@ export class RequestDetailComponent implements OnDestroy {
      * @returns {boolean} true if the user owns the request and it is in revision
      */
     isRevisionStatusForRequester(request: RequestBase): boolean {
-        let revisionStatus = this.requestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
+        let revisionStatus = RequestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
         let isRequester = this.requestAccessService.isRequesterOf(request);
 
         return revisionStatus && isRequester;
