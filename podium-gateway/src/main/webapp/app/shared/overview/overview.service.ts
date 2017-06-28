@@ -9,11 +9,7 @@
  */
 
 import { Injectable, Optional } from '@angular/core';
-import { Http, BaseRequestOptions, URLSearchParams, Response } from '@angular/http';
-import {
-    RequestStatusOptions, RequestReviewStatusOptions,
-    StatusType
-} from '../request/request-status/request-status.constants';
+import { Http, Response } from '@angular/http';
 import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
@@ -90,7 +86,7 @@ export class OverviewService {
     findOrganisationsForOverview(
         requestOptions: any
     ): Observable<Response> {
-        let options = this.createRequestOption(requestOptions);
+        let options = HttpHelper.createRequestOption(requestOptions);
         return this.http.get(`${this.resourceUrl}/admin`, options);
     }
 
@@ -103,7 +99,7 @@ export class OverviewService {
     findUsersForOverview(
         requestOptions: any
     ): Observable<Response> {
-        let options = this.createRequestOption(requestOptions);
+        let options = HttpHelper.createRequestOption(requestOptions);
         return this.http.get(`${this.resourceUrl}`, options);
     }
 
