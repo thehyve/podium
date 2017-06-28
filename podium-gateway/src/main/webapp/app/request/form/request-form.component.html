@@ -78,20 +78,6 @@
                         organisation selection.</small>
                 </div>
 
-                <!-- Linked Request-->
-                <div class="form-group">
-                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
-                    <div class="checkbox-group">
-                        <input type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
-                               required>
-                        <span jhiTranslate="request.form.isLinked.yes">Yes</span>
-                        &nbsp;
-                        <input type="radio" [value]="false" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
-                               required>
-                        <span jhiTranslate="request.form.isLinked.no">No</span>
-                    </div>
-                </div>
-
                 <!-- Organisations -->
                 <div class="form-group" *ngIf="!isInRevision">
                     <label>Organisations</label>
@@ -106,7 +92,20 @@
                     <ul>
                         <li *ngFor="let organisation of requestBase.organisations">{{organisation.name}}</li>
                     </ul>
+                </div>
 
+                <!-- Linked Request-->
+                <div class="form-group">
+                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
+                    <div class="checkbox-group">
+                        <input type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
+                               required [disabled]="!hasSelectedMultipleOrganisations()">
+                        <span jhiTranslate="request.form.isLinked.yes">Yes</span>
+                        &nbsp;
+                        <input type="radio" [value]="false" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
+                               required [disabled]="!hasSelectedMultipleOrganisations()">
+                        <span jhiTranslate="request.form.isLinked.no">No</span>
+                    </div>
                 </div>
 
                 <!-- Search Query -->
