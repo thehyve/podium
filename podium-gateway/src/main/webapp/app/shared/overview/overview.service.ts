@@ -9,11 +9,7 @@
  */
 
 import { Injectable, Optional } from '@angular/core';
-import { Http, BaseRequestOptions, URLSearchParams, Response } from '@angular/http';
-import {
-    RequestStatusOptions, RequestReviewStatusOptions,
-    StatusType
-} from '../request/request-status/request-status.constants';
+import { Http, Response } from '@angular/http';
 import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
