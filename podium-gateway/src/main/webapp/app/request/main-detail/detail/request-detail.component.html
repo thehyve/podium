@@ -98,8 +98,8 @@
             </pdm-request-action-toolbar>
         </div>
 
-        <div *ngSwitchCase="true">
-            <pdm-request-form
+        <div>
+            <pdm-request-form *ngSwitchCase="true"
                 [isInRevision]="isInRevision">
             </pdm-request-form>
         </div>
