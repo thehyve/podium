@@ -170,6 +170,10 @@ export class RequestDetailComponent implements OnDestroy {
         return this.requestAccessService.isReviewerFor(this.request);
     }
 
+    isRequestingResearcher(): boolean {
+        return this.requestAccessService.isRequesterOf(this.request);
+    }
+
     /**
      * Approve a request
      */
