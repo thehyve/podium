@@ -10,7 +10,7 @@
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
-import { doInOrder, promiseTrue, login, checkTextElement } from './util';
+import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute } from './util';
 import { Organisation, Request } from '../data/templates';
 import { $$ } from 'protractor';
 let { defineSupportCode } = require('cucumber');
@@ -85,14 +85,13 @@ defineSupportCode(({ Given, When, Then }) => {
     Given(/^(.*) goes to the '(.*)' page for the request '(.*)' submitted to '(.*)'$/, function (personaName, pageName, requestName, orgShortName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
-
+        let request = director.getData(requestName)
         let persona = director.getPersona(personaName);
         let organisation = director.getData(orgShortName);
-
-        persona['authority'][orgShortName]
+        this.scenarioData = request; //store for next step
 
         return login(director, persona).then(() => {
-            return adminConsole.getRequest(persona, 'All', 'requester', director.getData(requestName), organisation['name']).then((sufix) => {
+            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), request, organisation['name']).then((sufix) => {
                 return director.goToPage(pageName, sufix['uuid'] as string)
             })
         });
@@ -214,7 +213,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = JSON.parse(JSON.stringify(director.getData(requestName))); //store for next step
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData('Request02')['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
             return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
                 "summary": "sum",
                 "description": "des"
@@ -240,7 +239,10 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        return adminConsole.getRequest(director.getPersona('he'), requestState, 'requester', this.scenarioData, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
+        let persona = director.getPersona('he');
+        let orgShortName = this.scenarioData['organisations'][0];
+
+        return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
             return promiseTrue(body['requestReview']['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
         })
     });
@@ -275,6 +277,15 @@ defineSupportCode(({ Given, When, Then }) => {
         })
 
     });
+
+    When(/^(.*) sends the request for review$/, function (personaName) {
+        let director = this.director as Director;
+
+        return director.clickOn('validationCheck').then(() => {
+            return director.clickOn('validate')
+        })
+    });
+
 });
 
 function alphabetically(a, b) {

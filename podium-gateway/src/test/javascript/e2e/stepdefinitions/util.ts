@@ -46,3 +46,17 @@ export function checkTextElement(element, expectedText): Promise<any> {
         return promiseTrue(text == expectedText, text + " is not equal to " + expectedText);
     })
 }
+
+export function roleToRoute(persona: Persona, orgShortName: string): string {
+    let role = persona['authority'].filter((value) => {
+        return value["orgShortName"] == orgShortName
+    })[0]['role'];
+
+    if (role = 'ROLE_ORGANISATION_COORDINATOR') {
+        role = 'coordinator'
+    } else {
+        role = 'requester'
+    }
+
+    return role;
+}

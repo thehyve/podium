@@ -7,9 +7,10 @@ Feature: Organization coordinators can manage requests for their organization (B
         When he sorts by 'Title'
         Then the overview contains the request's 'title, status, requestTypes, organisations, requesterName, piName' for the requests 'Request02'
 
-#    @default
-#    @request
-#    Scenario: BRPREQ-27, As an organisation coordinator I want to send a request to review
-#        Given Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
-#        When he sends the request to review
-#        Then the request is in Review with state 'Validation'
+    @default
+    @request
+    Scenario: BRPREQ-27, As an organisation coordinator I want to send a request to review
+        Given Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he sends the request for review
+        Then the request is in 'Review'
+

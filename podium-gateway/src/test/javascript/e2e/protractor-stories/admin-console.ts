@@ -177,7 +177,7 @@ export class AdminConsole {
      */
     public getRequest(persona: Persona, status: string, role: string, draft: Request, organisationName: string) {
         return this.getRequests(persona, status, role).then((drafts) => {
-            return drafts.filter(function (value) {
+            return drafts.filter((value) => {
                 return value["requestDetail"]["title"] == draft["title"] && value['organisations'][0]['name'] == organisationName;
             })[0];
         });

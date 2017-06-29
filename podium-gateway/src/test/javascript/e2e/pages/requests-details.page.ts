@@ -46,6 +46,10 @@ class RequestDetails {
             "piEmail": { locator: $('.test-piEmail') },
             "piFunction": { locator: $('.test-piFunction') },
             "piAffiliation": { locator: $('.test-piAffiliation') },
+            "validationCheck": { locator: $('#validationCheck') },
+            "validate": { locator: $('#validate-request-btn') },
+            "reject": { locator: $('.test-reject-request-btn') },
+            "revision": { locator: $('.test-request-revision-btn') },
         }
     }
 }
