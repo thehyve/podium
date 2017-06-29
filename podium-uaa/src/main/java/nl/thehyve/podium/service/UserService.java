@@ -23,7 +23,7 @@ import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.util.RandomUtil;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.elasticsearch.action.suggest.SuggestResponse;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
@@ -210,16 +210,16 @@ public class UserService {
         }
     }
 
-    public User registerUser(ManagedUserVM managedUserVM) throws UserAccountException {
-        checkForExistingLoginAndEmail(managedUserVM, null);
+    public User registerUser(ManagedUserRepresentation managedUserRepresentation) throws UserAccountException {
+        checkForExistingLoginAndEmail(managedUserRepresentation, null);
         User newUser = new User();
         Role role = roleService.findRoleByAuthorityName(AuthorityConstants.RESEARCHER);
         Set<Role> roles = new HashSet<>();
-        newUser.setLogin(managedUserVM.getLogin());
-        newUser.setEmail(managedUserVM.getEmail());
-        String encryptedPassword = passwordEncoder.encode(managedUserVM.getPassword());
+        newUser.setLogin(managedUserRepresentation.getLogin());
+        newUser.setEmail(managedUserRepresentation.getEmail());
+        String encryptedPassword = passwordEncoder.encode(managedUserRepresentation.getPassword());
         newUser.setPassword(encryptedPassword);
-        newUser = userMapper.safeUpdateUserWithUserDTO(managedUserVM, newUser);
+        newUser = userMapper.safeUpdateUserWithUserDTO(managedUserRepresentation, newUser);
         // new user is not active
         newUser.setEmailVerified(false);
         newUser.setAdminVerified(false);

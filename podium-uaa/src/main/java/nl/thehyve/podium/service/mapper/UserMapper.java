@@ -13,7 +13,7 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.decorators.UserMapperDecorator;
 import nl.thehyve.podium.service.util.UuidMapper;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.IterableMapping;
@@ -38,10 +38,10 @@ public interface UserMapper {
     UserRepresentation userToUserDTO(User user);
 
     @Mapping(target = "password", ignore = true)
-    ManagedUserVM userToManagedUserVM(User user);
+    ManagedUserRepresentation userToManagedUserVM(User user);
 
-    @IterableMapping(elementTargetType = ManagedUserVM.class)
-    List<ManagedUserVM> usersToManagedUserVMs(List<User> user);
+    @IterableMapping(elementTargetType = ManagedUserRepresentation.class)
+    List<ManagedUserRepresentation> usersToManagedUserVMs(List<User> user);
 
     @IterableMapping(elementTargetType = UserRepresentation.class)
     List<UserRepresentation> usersToUserDTOs(List<User> users);

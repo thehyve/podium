@@ -10,7 +10,7 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.util.UuidMapper;
@@ -22,20 +22,20 @@ import org.mapstruct.Mappings;
 import java.util.List;
 
 /**
- * Mapper for the entity Organisation and its OrganisationDTO.
+ * Mapper for the entity Organisation and its OrganisationRepresentation.
  */
 @Mapper(componentModel = "spring", uses = { UuidMapper.class })
 public interface OrganisationMapper {
-    OrganisationDTO organisationToOrganisationDTO(Organisation organisation);
+    OrganisationRepresentation organisationToOrganisationDTO(Organisation organisation);
 
-    List<OrganisationDTO> organisationsToOrganisationDTOs(List<Organisation> organisations);
+    List<OrganisationRepresentation> organisationsToOrganisationDTOs(List<Organisation> organisations);
 
     @Mappings({
         @Mapping(target = "uuid", ignore = true),
         @Mapping(target = "deleted", ignore = true),
         @Mapping(target = "activated", defaultValue = "false")
     })
-    Organisation createOrganisationFromOrganisationDTO(OrganisationDTO organisationDTO);
+    Organisation createOrganisationFromOrganisationDTO(OrganisationRepresentation organisationRepresentation);
 
     @Mappings({
         @Mapping(target = "uuid", ignore = true),
@@ -43,11 +43,11 @@ public interface OrganisationMapper {
         @Mapping(target = "activated", defaultValue = "false")
     })
     Organisation updateOrganisationFromOrganisationDTO(
-        OrganisationDTO organisationDTO,
+        OrganisationRepresentation organisationRepresentation,
         @MappingTarget Organisation organisation
     );
 
-    List<Organisation> createOrganisationsFromOrganisationDTOs(List<OrganisationDTO> organisationDTOs);
+    List<Organisation> createOrganisationsFromOrganisationDTOs(List<OrganisationRepresentation> organisationRepresentations);
 
     SearchOrganisation organisationToSearchOrganisation(Organisation organisation);
 

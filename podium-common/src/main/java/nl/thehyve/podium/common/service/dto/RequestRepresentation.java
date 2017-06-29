@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -40,7 +39,7 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private RequestOutcome outcome;
 
-    private List<OrganisationDTO> organisations = new ArrayList<>();
+    private List<OrganisationRepresentation> organisations = new ArrayList<>();
 
     private RequestReviewRepresentation requestReview;
 

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
@@ -22,8 +22,8 @@ import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.TestService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.TestRoleRepresentation;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.service.dto.TestRoleRepresentation;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +97,7 @@ public class TestResourceIntTest {
     }
 
     private void createJoe() throws Exception {
-        ManagedUserVM userData = new ManagedUserVM();
+        ManagedUserRepresentation userData = new ManagedUserRepresentation();
         AccountResourceIntTest.setMandatoryFields(userData);
         userData.setId(null);
         userData.setLogin("joe");
@@ -117,7 +117,7 @@ public class TestResourceIntTest {
     }
 
     private void createBbmriAdmin() throws Exception {
-        ManagedUserVM userData = new ManagedUserVM();
+        ManagedUserRepresentation userData = new ManagedUserRepresentation();
         AccountResourceIntTest.setMandatoryFields(userData);
         userData.setId(null);
         userData.setLogin("bbmri_admin");
@@ -152,14 +152,14 @@ public class TestResourceIntTest {
         assertThat(user.isEmailVerified());
     }
 
-    private OrganisationDTO createTestOrganisation() throws Exception {
-        OrganisationDTO organisationData = new OrganisationDTO();
+    private OrganisationRepresentation createTestOrganisation() throws Exception {
+        OrganisationRepresentation organisationData = new OrganisationRepresentation();
         organisationData.setName("Test organisation");
         organisationData.setShortName("Test");
         organisationData.setActivated(true);
         organisationData.setRequestTypes(new HashSet<RequestType>(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material)));
 
-        final OrganisationDTO[] organisation = new OrganisationDTO[1];
+        final OrganisationRepresentation[] organisation = new OrganisationRepresentation[1];
 
         mockMvc.perform(post("/api/test/organisations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -167,8 +167,8 @@ public class TestResourceIntTest {
             .andExpect(status().isCreated())
             .andDo(result -> {
                 log.info("Response: {}", result.getResponse().getContentAsString());
-                OrganisationDTO data =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), OrganisationDTO.class);
+                OrganisationRepresentation data =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), OrganisationRepresentation.class);
                 organisation[0] = data;
             });
         return organisation[0];
@@ -177,7 +177,7 @@ public class TestResourceIntTest {
     @Test
     @Transactional
     public void testCreateActivatedOrganisation() throws Exception {
-        OrganisationDTO newOrganisation = createTestOrganisation();
+        OrganisationRepresentation newOrganisation = createTestOrganisation();
         Organisation organisation = organisationService.findByUuid(newOrganisation.getUuid());
         assertThat(organisation).isNotNull();
         assertThat(organisation.isActivated());
@@ -187,7 +187,7 @@ public class TestResourceIntTest {
     @Test
     @Transactional
     public void testAssignUserToRole() throws Exception {
-        OrganisationDTO testOrganisation = createTestOrganisation();
+        OrganisationRepresentation testOrganisation = createTestOrganisation();
 
         Organisation organisation = organisationService.findByUuid(testOrganisation.getUuid());
         Role role = roleService.findRoleByOrganisationAndAuthorityName(
