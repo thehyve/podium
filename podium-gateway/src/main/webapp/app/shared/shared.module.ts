@@ -38,7 +38,7 @@ import { OrganisationSelectorComponent } from './organisation-selector/organisat
 import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
-import { PodiumNotificationComponent } from './notification/notification.component';
+import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
 
 @NgModule({
     imports: [
@@ -52,7 +52,7 @@ import { PodiumNotificationComponent } from './notification/notification.compone
         RequestReviewPanelComponent,
         EmailValidatorDirective,
         PodiumEventMessageComponent,
-        PodiumNotificationComponent,
+        LinkedRequestNotificationComponent,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
@@ -69,7 +69,7 @@ import { PodiumNotificationComponent } from './notification/notification.compone
         OrganisationSelectorComponent,
         RequestReviewPanelComponent,
         PodiumEventMessageComponent,
-        PodiumNotificationComponent,
+        LinkedRequestNotificationComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,

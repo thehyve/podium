@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AlertService, JhiLanguageService } from 'ng-jhipster';
+import { AlertService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';

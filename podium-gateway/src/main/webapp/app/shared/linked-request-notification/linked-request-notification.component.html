@@ -8,12 +8,14 @@
   ~
   -->
 
-<div class="podium-event-message-wrapper">
+<div class="notification-wrapper">
     <div class="alert alert-warning">
         <span class="material-icons">link</span>
         <div class="message-text-container">
-            <h6>Linked request</h6>
-            Some content will be here. This is supposed to be not more than two sentences.
+            <h6 jhiTranslate="request.linkedRequest.title"></h6>
+            <div *ngIf="isRequester()" jhiTranslate="request.linkedRequest.researcher"></div>
+            <div *ngIf="isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.organisationCoordinator"></div>
+            <div *ngIf="isReviewer()" jhiTranslate="request.linkedRequest.reviewer"></div>
         </div>
     </div>
 </div>
