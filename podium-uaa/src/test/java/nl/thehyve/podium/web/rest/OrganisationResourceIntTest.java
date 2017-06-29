@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
@@ -91,8 +91,8 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private TypeReference<List<OrganisationDTO>> listTypeReference =
-        new TypeReference<List<OrganisationDTO>>(){};
+    private TypeReference<List<OrganisationRepresentation>> listTypeReference =
+        new TypeReference<List<OrganisationRepresentation>>(){};
 
     @Before
     public void setup() {
@@ -105,10 +105,10 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
     private Organisation organisationA;
     private Organisation organisationB;
 
-    private OrganisationDTO organisationDTO;
+    private OrganisationRepresentation organisationRepresentation;
 
-    private OrganisationDTO createOrganisationDTO() {
-        OrganisationDTO organisation = new OrganisationDTO();
+    private OrganisationRepresentation createOrganisationDTO() {
+        OrganisationRepresentation organisation = new OrganisationRepresentation();
         organisation.setName("ABC");
         organisation.setShortName("AB");
         Set<RequestType> requestTypes = new HashSet<>();
@@ -121,7 +121,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
     private void createOrganisations() {
         organisationA = testService.createOrganisation(DEFAULT_NAME);
         organisationB = testService.createOrganisation("B");
-        organisationDTO = createOrganisationDTO();
+        organisationRepresentation = createOrganisationDTO();
     }
 
     private User podiumAdmin;
@@ -160,7 +160,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(post("/api/organisations")
             .with(token(bbmriAdmin))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationRepresentation)))
             .andExpect(status().isCreated());
 
         // Validate the Organisation in the database
@@ -213,14 +213,14 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
         int databaseSizeBeforeTest = organisationRepository.findAll().size();
         // set the field null
-        organisationDTO.setName(null);
+        organisationRepresentation.setName(null);
 
         // Create the Organisation, which fails.
 
         mockMvc.perform(post("/api/organisations")
             .with(token(bbmriAdmin))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationRepresentation)))
             .andExpect(status().isBadRequest());
 
         List<Organisation> organisationList = organisationRepository.findAll();
@@ -234,14 +234,14 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
         int databaseSizeBeforeTest = organisationRepository.findAll().size();
         // set the field null
-        organisationDTO.setShortName(null);
+        organisationRepresentation.setShortName(null);
 
         // Create the Organisation, which fails.
 
         mockMvc.perform(post("/api/organisations")
             .with(token(bbmriAdmin))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationRepresentation)))
             .andExpect(status().isBadRequest());
 
         List<Organisation> organisationList = organisationRepository.findAll();
@@ -274,7 +274,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andDo(result -> {
-                List<OrganisationDTO> organisations =
+                List<OrganisationRepresentation> organisations =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
                 Assert.assertEquals(1, organisations.size());
             })
@@ -294,7 +294,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andDo(result -> {
-                List<OrganisationDTO> organisations =
+                List<OrganisationRepresentation> organisations =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
                 Assert.assertEquals(2, organisations.size());
             })
@@ -338,14 +338,14 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         int databaseSizeBeforeUpdate = organisationRepository.findAll().size();
 
         // Update the organisation
-        organisationDTO.setId(organisationA.getId());
-        organisationDTO.setName(UPDATED_NAME);
-        organisationDTO.setShortName(UPDATED_SHORT_NAME);
+        organisationRepresentation.setId(organisationA.getId());
+        organisationRepresentation.setName(UPDATED_NAME);
+        organisationRepresentation.setShortName(UPDATED_SHORT_NAME);
 
         mockMvc.perform(put("/api/organisations")
             .with(token(bbmriAdmin))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationRepresentation)))
             .andExpect(status().isOk());
 
         // Validate the Organisation in the database
@@ -372,7 +372,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(put("/api/organisations")
             .with(token(bbmriAdmin))
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(organisationDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(organisationRepresentation)))
             .andExpect(status().isNotFound());
 
         // Validate the Organisation in the database

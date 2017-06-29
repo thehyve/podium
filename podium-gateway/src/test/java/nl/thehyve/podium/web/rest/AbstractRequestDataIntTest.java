@@ -128,8 +128,8 @@ public abstract class AbstractRequestDataIntTest {
 
     final Map<UUID, UserRepresentation> users = new HashMap<>();
 
-    OrganisationDTO createOrganisation(int i, UUID uuid) {
-        OrganisationDTO organisation = new OrganisationDTO();
+    OrganisationRepresentation createOrganisation(int i, UUID uuid) {
+        OrganisationRepresentation organisation = new OrganisationRepresentation();
         organisation.setUuid(uuid);
         organisation.setName("Test organisation " + i);
         organisation.setShortName("Test" + i);
@@ -253,10 +253,10 @@ public abstract class AbstractRequestDataIntTest {
 
     void initMocks() throws URISyntaxException {
         // Mock organisation service for fetching organisation info through Feign
-        OrganisationDTO organisation1 = createOrganisation(1, organisationUuid1);
+        OrganisationRepresentation organisation1 = createOrganisation(1, organisationUuid1);
         given(this.organisationService.findOrganisationByUuid(eq(organisationUuid1)))
             .willReturn(organisation1);
-        OrganisationDTO organisation2 = createOrganisation(2, organisationUuid2);
+        OrganisationRepresentation organisation2 = createOrganisation(2, organisationUuid2);
         given(this.organisationService.findOrganisationByUuid(eq(organisationUuid2)))
             .willReturn(organisation2);
 
@@ -469,7 +469,7 @@ public abstract class AbstractRequestDataIntTest {
         // Set organisations
         int i = 1;
         for (UUID uuid : organisations) {
-            OrganisationDTO organisation = createOrganisation(i, uuid);
+            OrganisationRepresentation organisation = createOrganisation(i, uuid);
             request.getOrganisations().add(organisation);
             i++;
         }

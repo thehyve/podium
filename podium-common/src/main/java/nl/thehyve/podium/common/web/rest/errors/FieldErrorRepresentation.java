@@ -5,11 +5,11 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.errors;
+package nl.thehyve.podium.common.web.rest.errors;
 
 import java.io.Serializable;
 
-public class FieldErrorVM implements Serializable {
+public class FieldErrorRepresentation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,7 +19,7 @@ public class FieldErrorVM implements Serializable {
 
     private final String message;
 
-    public FieldErrorVM(String dto, String field, String message) {
+    public FieldErrorRepresentation(String dto, String field, String message) {
         this.objectName = dto;
         this.field = field;
         this.message = message;

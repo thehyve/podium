@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.errors;
+package nl.thehyve.podium.common.web.rest.errors;
 
 /**
  * Custom, parameterized exception, which can be translated on the client side.
@@ -34,8 +34,8 @@ public class CustomParameterizedException extends RuntimeException {
         this.params = params;
     }
 
-    public ParameterizedErrorVM getErrorVM() {
-        return new ParameterizedErrorVM(message, params);
+    public ParameterizedErrorRepresentation getErrorVM() {
+        return new ParameterizedErrorRepresentation(message, params);
     }
 
 }

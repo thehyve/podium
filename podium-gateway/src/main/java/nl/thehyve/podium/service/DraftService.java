@@ -9,7 +9,7 @@ import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
@@ -160,8 +160,8 @@ public class DraftService {
                 Set<RequestType> selectedRequestTypes = organisationRequest.getRequestDetail().getRequestType();
 
                 // Fetch the organisation object and filter the organisation supported request types.
-                OrganisationDTO organisationDTO = organisationClientService.findOrganisationByUuid(organisationUuid);
-                Set<RequestType> organisationRequestTypes = organisationDTO.getRequestTypes();
+                OrganisationRepresentation organisationRepresentation = organisationClientService.findOrganisationByUuid(organisationUuid);
+                Set<RequestType> organisationRequestTypes = organisationRepresentation.getRequestTypes();
 
                 Set<RequestType> organisationSupportedRequestTypes
                     = Sets.intersection(selectedRequestTypes, organisationRequestTypes);

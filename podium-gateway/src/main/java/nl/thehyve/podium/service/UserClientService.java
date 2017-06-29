@@ -9,10 +9,7 @@ package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
 import feign.FeignException;
-import nl.thehyve.podium.client.InternalRoleClient;
 import nl.thehyve.podium.client.InternalUserClient;
-import nl.thehyve.podium.client.OrganisationClient;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.UUID;
 
 @Service

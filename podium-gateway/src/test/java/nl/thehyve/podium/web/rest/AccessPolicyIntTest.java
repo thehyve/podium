@@ -15,7 +15,7 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.common.test.Action;
@@ -119,16 +119,16 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     }
 
 
-    private OrganisationDTO organisationA;
-    private OrganisationDTO organisationB;
-    private List<OrganisationDTO> organisations = new ArrayList<>();
+    private OrganisationRepresentation organisationA;
+    private OrganisationRepresentation organisationB;
+    private List<OrganisationRepresentation> organisations = new ArrayList<>();
     private Map<UUID, Map<String, Set<UUID>>> organisationRoles = new HashMap<>();
 
-    private static OrganisationDTO createOrganisation(String organisationName, UUID organisationUuid) {
+    private static OrganisationRepresentation createOrganisation(String organisationName, UUID organisationUuid) {
         Set<RequestType> requestTypes = new HashSet<>();
         requestTypes.add(RequestType.Data);
 
-        OrganisationDTO organisation = new OrganisationDTO();
+        OrganisationRepresentation organisation = new OrganisationRepresentation();
         organisation.setUuid(organisationUuid);
         organisation.setName(organisationName);
         organisation.setShortName(organisationName);
@@ -140,7 +140,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         organisationA = createOrganisation("A", UUID.randomUUID());
         organisationB = createOrganisation("B", UUID.randomUUID());
         organisations.addAll(Arrays.asList(organisationA, organisationB));
-        for (OrganisationDTO organisation: organisations) {
+        for (OrganisationRepresentation organisation: organisations) {
             Map<String, Set<UUID>> roles = new HashMap<>();
             roles.put(AuthorityConstants.ORGANISATION_ADMIN, new HashSet<>());
             roles.put(AuthorityConstants.ORGANISATION_COORDINATOR, new HashSet<>());
@@ -167,7 +167,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     private Map<String, SerialisedUser> userStore = new HashMap<>();
     private Map<UUID, UserRepresentation> userInfo = new HashMap<>();
 
-    private AuthenticatedUser createUser(String name, String authority, OrganisationDTO ... organisations) {
+    private AuthenticatedUser createUser(String name, String authority, OrganisationRepresentation... organisations) {
         log.info("Creating user {}", name);
         UUID userUuid = UUID.randomUUID();
         UserRepresentation userDetails = new UserRepresentation();
@@ -180,7 +180,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         Set<String> authorities = new HashSet<>();
         Map<UUID, Collection<String>> roles = new HashMap<>();
         if (organisations.length > 0) {
-            for (OrganisationDTO organisation: organisations) {
+            for (OrganisationRepresentation organisation: organisations) {
                 log.info("Assigning role {} for organisation {}", authority, organisation.getName());
                 organisationRoles.get(organisation.getUuid()).get(authority).add(userUuid);
                 roles.put(organisation.getUuid(), Sets.newSet(authority));
@@ -277,7 +277,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
 
     private void initMocks() throws URISyntaxException {
         // Mock Feign client for organisations
-        for(OrganisationDTO organisation: organisations) {
+        for(OrganisationRepresentation organisation: organisations) {
             given(this.organisationService.findOrganisationByUuid(eq(organisation.getUuid())))
                 .willReturn(organisation);
         }

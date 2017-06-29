@@ -10,7 +10,7 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
@@ -19,8 +19,8 @@ import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.TestService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.representation.TestRoleRepresentation;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.service.dto.TestRoleRepresentation;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class TestResource {
      */
     @PostMapping("users")
     @Timed
-    public ResponseEntity<?> createUser(@Valid @RequestBody ManagedUserVM userData) throws URISyntaxException, UserAccountException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody ManagedUserRepresentation userData) throws URISyntaxException, UserAccountException {
         log.debug("REST request to save test User : {}", userData);
 
         try {
@@ -102,7 +102,7 @@ public class TestResource {
      */
     @PostMapping("organisations")
     @Timed
-    public ResponseEntity<OrganisationDTO> createOrganisation(@Valid @RequestBody OrganisationDTO organisationData) throws URISyntaxException {
+    public ResponseEntity<OrganisationRepresentation> createOrganisation(@Valid @RequestBody OrganisationRepresentation organisationData) throws URISyntaxException {
         log.debug("REST request to save test Organisation : {}", organisationData);
         if (organisationData.getId() != null) {
             return ResponseEntity.badRequest().body(null);
@@ -114,7 +114,7 @@ public class TestResource {
         organisation.setRequestTypes(organisationData.getRequestTypes());
         organisation = organisationService.save(organisation);
 
-        OrganisationDTO result = new OrganisationDTO();
+        OrganisationRepresentation result = new OrganisationRepresentation();
         result.setId(organisation.getId());
         result.setUuid(organisation.getUuid());
         result.setName(organisation.getName());

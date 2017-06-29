@@ -9,7 +9,7 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
@@ -70,11 +70,11 @@ public class OrganisationService {
     /**
      * Create an organisation
      *
-     * @param organisationDTO the organisation to create
+     * @param organisationRepresentation the organisation to create
      * @return the created organisation
      */
-    public OrganisationDTO create(OrganisationDTO organisationDTO) {
-        Organisation organisation = organisationMapper.createOrganisationFromOrganisationDTO(organisationDTO);
+    public OrganisationRepresentation create(OrganisationRepresentation organisationRepresentation) {
+        Organisation organisation = organisationMapper.createOrganisationFromOrganisationDTO(organisationRepresentation);
         organisation = save(organisation);
 
         return organisationMapper.organisationToOrganisationDTO(organisation);
@@ -83,17 +83,17 @@ public class OrganisationService {
     /**
      * Update an organisation
      *
-     * @param organisationDTO The organisation to update
+     * @param organisationRepresentation The organisation to update
      * @return the updated organisation
      */
-    public OrganisationDTO update(OrganisationDTO organisationDTO) {
+    public OrganisationRepresentation update(OrganisationRepresentation organisationRepresentation) {
 
-        Organisation organisation = findOne(organisationDTO.getId());
+        Organisation organisation = findOne(organisationRepresentation.getId());
         if (organisation == null) {
-            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisationDTO.getId()));
+            throw new ResourceNotFound(String.format("Organisation not found with id: %d", organisationRepresentation.getId()));
         }
 
-        organisation = organisationMapper.updateOrganisationFromOrganisationDTO(organisationDTO, organisation);
+        organisation = organisationMapper.updateOrganisationFromOrganisationDTO(organisationRepresentation, organisation);
 
         save(organisation);
 
@@ -142,7 +142,7 @@ public class OrganisationService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<OrganisationDTO> findAll(Pageable pageable) {
+    public Page<OrganisationRepresentation> findAll(Pageable pageable) {
         log.debug("Request to get all Organisations");
         Page<Organisation> result = organisationRepository.findAllByDeletedFalse(pageable);
         return result.map(organisationMapper::organisationToOrganisationDTO);
@@ -155,7 +155,7 @@ public class OrganisationService {
      * @return list of entities
      */
     @Transactional(readOnly = true)
-    public Page<OrganisationDTO> findAllAvailable(Pageable pageable) {
+    public Page<OrganisationRepresentation> findAllAvailable(Pageable pageable) {
         log.debug("Request to get all active organisations");
         Page<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
         return result.map(organisationMapper::organisationToOrganisationDTO);
@@ -169,7 +169,7 @@ public class OrganisationService {
      * @return list of entities
      */
     @Transactional(readOnly = true)
-    public Page<OrganisationDTO> findAvailableOrganisationsByUuids(Collection<UUID> organisationUuids, Pageable pageable) {
+    public Page<OrganisationRepresentation> findAvailableOrganisationsByUuids(Collection<UUID> organisationUuids, Pageable pageable) {
         log.debug("Request to get active organisations by their UUIDs");
         Page<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalseAndUuidIn(
             organisationUuids, pageable);
@@ -183,7 +183,7 @@ public class OrganisationService {
      * @return the entity DTO
      */
     @Transactional(readOnly = true)
-    public OrganisationDTO findOneDTO(Long id) {
+    public OrganisationRepresentation findOneDTO(Long id) {
         log.debug("Request to get Organisation DTO: {}", id);
         Organisation organisation = organisationRepository.findByIdAndDeletedFalse(id);
         return organisationMapper.organisationToOrganisationDTO(organisation);
@@ -208,7 +208,7 @@ public class OrganisationService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public OrganisationDTO findDTOByUuid(UUID uuid) {
+    public OrganisationRepresentation findDTOByUuid(UUID uuid) {
         log.debug("Request to get Organisation : {}", uuid);
         Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
         return organisationMapper.organisationToOrganisationDTO(organisation);
@@ -232,9 +232,9 @@ public class OrganisationService {
      *  @param uuid The uuid of the organisation to be activated.
      *  @param activated Boolean indicating if the organisation is to be activated or not.
      *
-     *  @return OrganisationDTO of the updated Organisation
+     *  @return OrganisationRepresentation of the updated Organisation
      */
-    public OrganisationDTO activation(UUID uuid, boolean activated) {
+    public OrganisationRepresentation activation(UUID uuid, boolean activated) {
         Organisation organisation = organisationRepository.findByUuidAndDeletedFalse(uuid);
 
         if (organisation == null) {
