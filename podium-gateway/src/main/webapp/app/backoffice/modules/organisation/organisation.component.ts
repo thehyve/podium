@@ -12,12 +12,12 @@ import { Response, Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { EventManager, ParseLinks } from 'ng-jhipster';
-import { Organisation } from '../../../shared/organisation/organisation.model';
-import { OrganisationService } from '../../../shared/organisation/organisation.service';
 import { Principal } from '../../../shared';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
 import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
+import { Organisation } from '../../../shared/organisation/organisation.model';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'podiumuaa/api/organisations',

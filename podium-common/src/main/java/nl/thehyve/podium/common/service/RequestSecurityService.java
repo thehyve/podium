@@ -8,7 +8,7 @@
 package nl.thehyve.podium.common.service;
 
 import nl.thehyve.podium.common.resource.InternalRequestResource;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class RequestSecurityService {
             if (response.getStatusCode() != HttpStatus.OK) {
                 log.error("Could not fetch request with uuid {}. Status code: {}", requestUuid, response.getStatusCode());
             }
-            for(OrganisationDTO organisation: response.getBody().getOrganisations()) {
+            for(OrganisationRepresentation organisation: response.getBody().getOrganisations()) {
                 if (securityService.isCurrentUserInOrganisationRole(organisation.getUuid(), authority)) {
                     return true;
                 }

@@ -5,20 +5,20 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.errors;
+package nl.thehyve.podium.common.web.rest.errors;
 
 import java.io.Serializable;
 
 /**
  * View Model for sending a parameterized error message.
  */
-public class ParameterizedErrorVM implements Serializable {
+public class ParameterizedErrorRepresentation implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final String message;
     private final String[] params;
 
-    public ParameterizedErrorVM(String message, String... params) {
+    public ParameterizedErrorRepresentation(String message, String... params) {
         this.message = message;
         this.params = params;
     }

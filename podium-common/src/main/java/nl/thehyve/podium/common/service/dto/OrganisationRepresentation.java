@@ -24,7 +24,7 @@ import java.util.UUID;
  * A DTO for the Organisation entity.
  */
 @Data
-public class OrganisationDTO implements IdentifiableOrganisation, Serializable {
+public class OrganisationRepresentation implements IdentifiableOrganisation, Serializable {
 
     private Long id;
 

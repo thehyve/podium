@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.vm;
+package nl.thehyve.podium.web.rest.dto;
 
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.validation.ValidPassword;
@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.
  */
-public class ManagedUserVM extends UserRepresentation {
+public class ManagedUserRepresentation extends UserRepresentation {
 
     private Long id;
 
@@ -30,7 +30,7 @@ public class ManagedUserVM extends UserRepresentation {
     @ValidPassword
     private String password;
 
-    public ManagedUserVM() {
+    public ManagedUserRepresentation() {
     }
 
     public Long getId() {
@@ -83,7 +83,7 @@ public class ManagedUserVM extends UserRepresentation {
 
     @Override
     public String toString() {
-        return "ManagedUserVM{" +
+        return "ManagedUserRepresentation{" +
             "id=" + id +
             ", createdBy=" + createdBy +
             ", createdDate=" + createdDate +

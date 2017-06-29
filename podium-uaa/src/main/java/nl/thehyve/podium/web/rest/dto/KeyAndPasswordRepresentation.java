@@ -5,21 +5,21 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.vm;
+package nl.thehyve.podium.web.rest.dto;
 
 import nl.thehyve.podium.validation.ValidPassword;
 
 /**
  * View Model object for storing the user's key and password.
  */
-public class KeyAndPasswordVM {
+public class KeyAndPasswordRepresentation {
 
     private String key;
 
     @ValidPassword
     private String newPassword;
 
-    public KeyAndPasswordVM() {
+    public KeyAndPasswordRepresentation() {
     }
 
     public String getKey() {

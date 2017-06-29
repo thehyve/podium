@@ -23,9 +23,9 @@ import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +138,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users")
     @Timed
-    public ResponseEntity<ManagedUserVM> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
+    public ResponseEntity<ManagedUserRepresentation> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to update User : {}", userData);
         userService.updateUser(userData);
         Optional<User> userOptional =  userService.getUserByUuid(userData.getUuid());
@@ -158,7 +158,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users/uuid/{uuid}/unlock")
     @Timed
-    public ResponseEntity<ManagedUserVM> unlockUser(@PathVariable UUID uuid) {
+    public ResponseEntity<ManagedUserRepresentation> unlockUser(@PathVariable UUID uuid) {
         log.debug("REST request to unlock User : {}", uuid);
         Optional<User> userOptional = userService.getUserByUuid(uuid);
         if (!userOptional.isPresent()) {
@@ -181,12 +181,12 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users")
     @Timed
-    public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ManagedUserRepresentation>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userService.getUsers(pageable);
-        List<ManagedUserVM> managedUserVMs = userMapper.usersToManagedUserVMs(page.getContent());
+        List<ManagedUserRepresentation> managedUserRepresentations = userMapper.usersToManagedUserVMs(page.getContent());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
-        return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
+        return new ResponseEntity<>(managedUserRepresentations, headers, HttpStatus.OK);
     }
 
     /**
@@ -198,7 +198,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/users/{login:" + PodiumConstants.LOGIN_REGEX + "}")
     @Timed
-    public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
+    public ResponseEntity<ManagedUserRepresentation> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
         if (userOptional.isPresent()) {
@@ -216,7 +216,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users/uuid/{uuid}")
     @Timed
-    public ResponseEntity<ManagedUserVM> getUserByUuid(@PathVariable UUID uuid) {
+    public ResponseEntity<ManagedUserRepresentation> getUserByUuid(@PathVariable UUID uuid) {
         log.debug("REST request to get User : {}", uuid);
         Optional<User> userOptional = userService.getUserByUuid(uuid);
         if (userOptional.isPresent()) {

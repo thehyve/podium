@@ -14,7 +14,7 @@ import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -179,7 +179,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                     int j = i == 0 ? 1 : 0;
                     RequestRepresentation other = twoOrganisationsRequests.get(j);
                     Assert.assertThat(other.getOrganisations(), hasSize(1));
-                    OrganisationDTO otherOrganisation = other.getOrganisations().get(0);
+                    OrganisationRepresentation otherOrganisation = other.getOrganisations().get(0);
                     Assert.assertThat(req.getRelatedRequests(), hasSize(1));
                     Assert.assertThat(req.getRelatedRequests(), hasItem(
                         allOf(
@@ -421,8 +421,8 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
         setRequestData(request);
 
-        List<OrganisationDTO> organisations = new ArrayList<>();
-        OrganisationDTO organisation = new OrganisationDTO();
+        List<OrganisationRepresentation> organisations = new ArrayList<>();
+        OrganisationRepresentation organisation = new OrganisationRepresentation();
         organisation.setUuid(organisationUuid1);
         organisations.add(organisation);
         request.setOrganisations(organisations);

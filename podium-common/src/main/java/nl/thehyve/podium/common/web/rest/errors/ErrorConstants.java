@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.errors;
+package nl.thehyve.podium.common.web.rest.errors;
 
 public final class ErrorConstants {
 

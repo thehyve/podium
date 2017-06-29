@@ -58,7 +58,7 @@
                                 <span jhiTranslate="request.toolbar.save">Save</span>
                             </button>
                             <button type="submit" class="btn btn-success" id="submit-request-btn"
-                                    (click)="submitRequest()">
+                                    [disabled]="!form.form.valid" (click)="submitRequest()">
                                 <span jhiTranslate="request.toolbar.saveAndSubmit">Save and submit</span>
                             </button>
                         </div>

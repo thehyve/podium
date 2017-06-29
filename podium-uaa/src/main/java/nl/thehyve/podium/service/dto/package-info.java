@@ -6,6 +6,6 @@
  */
 
 /**
- * View Models used by Spring MVC REST controllers.
+ * Data Transfer Objects.
  */
-package nl.thehyve.podium.web.rest.vm;
+package nl.thehyve.podium.service.dto;

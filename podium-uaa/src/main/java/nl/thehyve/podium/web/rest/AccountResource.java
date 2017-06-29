@@ -20,8 +20,8 @@ import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.validation.PasswordValidator;
-import nl.thehyve.podium.web.rest.vm.KeyAndPasswordVM;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.KeyAndPasswordRepresentation;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class AccountResource {
     /**
      * POST  /register : register the user.
      *
-     * @param managedUserVM the managed user View Model
+     * @param managedUserRepresentation the managed user View Model
      * @throws UserAccountException Exception thrown when a user login is already in use.
      * @return the ResponseEntity with status 201 (Created) if the user is registered or 400 (Bad Request) if the login or e-mail is already in use
      */
@@ -69,17 +69,17 @@ public class AccountResource {
     @PostMapping(path = "/register",
                     produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
-    public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) throws UserAccountException {
+    public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserRepresentation managedUserRepresentation) throws UserAccountException {
         HttpHeaders textPlainHeaders = new HttpHeaders();
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
         try {
-            User user = userService.registerUser(managedUserVM);
+            User user = userService.registerUser(managedUserRepresentation);
             mailService.sendVerificationEmail(user);
         } catch(EmailAddressAlreadyInUse e) {
-            Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(managedUserVM.getEmail());
+            Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(managedUserRepresentation.getEmail());
             userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
         } catch (LoginAlreadyInUse e) {
-            log.error("Login already in use: {}", managedUserVM.getLogin());
+            log.error("Login already in use: {}", managedUserRepresentation.getLogin());
             throw e;
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -213,7 +213,7 @@ public class AccountResource {
     @PostMapping(path = "/account/reset_password/finish",
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
-    public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
+    public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordRepresentation keyAndPassword) {
         return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
               .map(user -> new ResponseEntity<String>(HttpStatus.OK))
               .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
