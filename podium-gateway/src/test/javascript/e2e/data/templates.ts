@@ -36,6 +36,8 @@ interface Irequest {
     requestTypes: string[];
     organisations: string[];
     combinedRequest?: boolean;
+    status?: string;
+    requesterName?: string; //default user that creates this request
 }
 
 export class Request {

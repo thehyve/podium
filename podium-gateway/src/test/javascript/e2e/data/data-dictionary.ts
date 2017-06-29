@@ -90,7 +90,8 @@ function initDataDictionary() {
             "searchQuery": "searchQuery01",
             "requestTypes": ["Material"],
             "organisations": ["BioBank"],
-            "combinedRequest": null
+            "combinedRequest": null,
+            "status": 'Review (Validation)',
         }),
         new Request("Request01-b", {
             "title": "Request01",
@@ -106,7 +107,8 @@ function initDataDictionary() {
             "searchQuery": "searchQuery01",
             "requestTypes": ["Material", "Images", "Data"],
             "organisations": ["MultiBank"],
-            "combinedRequest": null
+            "combinedRequest": null,
+            "status": 'Review (Validation)',
         }),
         new Request("Request02", {
             "title": "Request02",
@@ -122,7 +124,9 @@ function initDataDictionary() {
             "searchQuery": "searchQuery02",
             "requestTypes": ["Data"],
             "organisations": ["DataBank"],
-            "combinedRequest": null
+            "combinedRequest": null,
+            "status": 'Review (Validation)',
+            "requesterName": 'Linda New bee',
         }),
         new Request("Draft01", {
             "title": "Draft01",
@@ -138,7 +142,8 @@ function initDataDictionary() {
             "searchQuery": "searchQuery01",
             "requestTypes": ["Material", "Images", "Data"],
             "organisations": ["BioBank", "MultiBank"],
-            "combinedRequest": null
+            "combinedRequest": null,
+            "status": 'Draft',
         }),
         new Request("Draft02", {
             "title": "Draft02",
@@ -154,7 +159,8 @@ function initDataDictionary() {
             "searchQuery": "searchQuery02",
             "requestTypes": ["Data"],
             "organisations": ["DataBank"],
-            "combinedRequest": null
+            "combinedRequest": null,
+            "status": 'Draft',
         }),
         {
             "dataID": "menuRoleMapping",

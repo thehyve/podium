@@ -156,6 +156,26 @@ function initPersonaDictionary() {
             "adminVerified": true,
             "accountLocked": false
         }),
+        new Persona('Databank_Coordinator', {
+            "login": "databank-coordinator",
+            "password": "coordinator123!",
+            "firstName": "coordinator",
+            "lastName": "multi",
+            "email": "databank-coordinator@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief coordinator",
+            "specialism": "Other",
+            "Other specialism": "some specialism",
+            "authority": [{
+                orgShortName: "DataBank",
+                role: "ROLE_ORGANISATION_COORDINATOR"
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
+        }),
         new Persona('Request_Coordinator', {
             "login": "coordinator",
             "password": "coordinator123!",

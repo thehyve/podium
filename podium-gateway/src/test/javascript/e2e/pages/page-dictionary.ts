@@ -24,6 +24,7 @@ import NewRequestsPage = require("./new-requests.page")
 import RequestsManagement = require("./requests-management.page")
 import RequestsDetails = require("./requests-details.page")
 import ReviseRequests = require("./revise-requests.page")
+import OrganisationRequestsManagement = require("./requests-management-org.page")
 
 
 /*
@@ -49,6 +50,7 @@ function initPages() {
     PageDictionary['request overview'] = new RequestsManagement();
     PageDictionary['request details'] = new RequestsDetails();
     PageDictionary['revise requests'] = new ReviseRequests();
+    PageDictionary['organisation request overview'] = new OrganisationRequestsManagement();
 
     return PageDictionary;
 }

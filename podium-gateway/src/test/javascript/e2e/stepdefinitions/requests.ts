@@ -12,7 +12,7 @@ import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
 import { doInOrder, promiseTrue, login, checkTextElement } from './util';
 import { Organisation, Request } from '../data/templates';
-import { $$, browser } from 'protractor';
+import { $$ } from 'protractor';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -89,13 +89,14 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona(personaName);
         let organisation = director.getData(orgShortName);
 
+        persona['authority'][orgShortName]
+
         return login(director, persona).then(() => {
             return adminConsole.getRequest(persona, 'All', 'requester', director.getData(requestName), organisation['name']).then((sufix) => {
                 return director.goToPage(pageName, sufix['uuid'] as string)
             })
         });
     });
-
 
     Then(/^the request details for '(.*)' submitted to '(.*)' are shown$/, function (requestName, orgShortName): Promise<any> {
         let director = this.director as Director;
@@ -126,7 +127,7 @@ defineSupportCode(({ Given, When, Then }) => {
             return promiseTrue(count == requestTypes.length, "expected " + requestTypes.length + " requestTypes but found " + count);
         }).then(() => {
             return elements.each((element) => {
-                return element.getText().then(function (type) {
+                return element.$('.test-requestType-text').getText().then(function (type) {
                     return promiseTrue(requestTypes.indexOf(type) > -1, type + " is not part of " + requestTypes);
                 })
             })
@@ -135,7 +136,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
     function checkOrganisations(organisations: string[], elements, director: Director) {
         organisations = director.getListOfData(organisations);
-        let orgNames = organisations.map((org)=>{
+        let orgNames = organisations.map((org) => {
             return org['name']
         });
 
@@ -155,29 +156,40 @@ defineSupportCode(({ Given, When, Then }) => {
 
         let fields = fieldNames.split(", ");
         let requestNamesList = requestNames.trim().split(", ");
-        let requestNamesListAltOrder = altOrder.trim().split(", ");
+        let requestNamesListAltOrder = [];
+        if (altOrder.trim() != '') {
+            requestNamesListAltOrder = altOrder.trim().split(", ");
+        }
 
         let requests: Request[] = director.getListOfData(requestNamesList);
 
         return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
             return promiseTrue(count == requests.length, "expected " + requests.length + " fields for " + fields[0] + " but found " + count);
         }).then(() => {
-            return doInOrder(fields, (field) => {
-                return $$('.test-' + field).each((element, index) => {
-                    return checkField(element, field, requests[index], director);
-                });
-            });
+            return checkTable(fields, requests, director);
         }).then(() => {
-        }, () => {//this is a hack for different orders created by multi organisation requests.
+        }, (error) => {
+            if (requestNamesListAltOrder.length == 0) {
+                return Promise.reject(error);
+            }
+
             let requests: Request[] = director.getListOfData(requestNamesListAltOrder);
             fields = fieldNames.split(", ");
-            return doInOrder(fields, (field) => {
+            return checkTable(fields, requests, director);
+        })
+    });
+
+    function checkTable(fields: any[]|string[], requests: Request[], director: Director) {
+        return doInOrder(fields, (field) => {
+            return $$('.test-' + field).isPresent().then((present) => {
+                return promiseTrue(present, 'field ' + '.test-' + field + ' could not be found')
+            }).then(() => {
                 return $$('.test-' + field).each((element, index) => {
                     return checkField(element, field, requests[index], director);
                 });
             });
-        });
-    });
+        })
+    }
 
     function checkField(element, field, request: Request, director: Director): Promise<any> {
         if (['requestTypes', 'organisations'].indexOf(field) > -1) {
@@ -200,7 +212,7 @@ defineSupportCode(({ Given, When, Then }) => {
     Given(/^'(.*)' needs revision$/, function (requestName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
-        this.scenarioData = director.getData(requestName); //store for next step
+        this.scenarioData = JSON.parse(JSON.stringify(director.getData(requestName))); //store for next step
 
         return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData('Request02')['organisations'][0])['name']).then((request) => {
             return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
@@ -210,10 +222,10 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    When(/^(.*) revises and '(.*)s' the request$/, function (personaName, action) {
+    When(/^(.*) revises and '(.*)s' the request$/, function (personaName, action): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
-        let request: Request = this.scenarioData
+        let request: Request = this.scenarioData;
 
         return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
             "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
@@ -221,8 +233,52 @@ defineSupportCode(({ Given, When, Then }) => {
             return director.enterText(key, request[key]);
         }).then(() => {
             return director.clickOn(action)
-        }, ()=>{
-            return browser.sleep(10000);
         })
     });
+
+    Then(/^the request is in '(.*)'$/, function (requestState): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        return adminConsole.getRequest(director.getPersona('he'), requestState, 'requester', this.scenarioData, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
+            return promiseTrue(body['requestReview']['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
+        })
+    });
+
+    Then(/^the revision for '(.*)' is saved$/, function (requestName): Promise<any> {
+
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let persona = director.getPersona('he');
+        let request = director.getData(requestName);
+
+        return adminConsole.getRequest(director.getPersona('he'), 'Revision', 'requester', request, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
+
+            let revisedRequest = this.scenarioData;
+            let revisionDetail = body['revisionDetail'];
+
+            return Promise.all([
+                promiseTrue(revisionDetail['title'] == revisedRequest['title'], 'title'),
+                promiseTrue(revisionDetail['searchQuery'] == revisedRequest['searchQuery'], 'searchQuery'),
+                promiseTrue(revisionDetail['background'] == revisedRequest['background'], 'background'),
+                promiseTrue(revisionDetail['researchQuestion'] == revisedRequest['research question'], 'research question'),
+                promiseTrue(revisionDetail['hypothesis'] == revisedRequest['hypothesis'], 'hypothesis'),
+                promiseTrue(revisionDetail['methods'] == revisedRequest['methods'], 'methods'),
+                promiseTrue(revisionDetail['principalInvestigator']['name'] == revisedRequest['piName'], 'piName ' + revisionDetail['piName'] + ' ' + revisedRequest['piName']),
+                promiseTrue(revisionDetail['principalInvestigator']['email'] == revisedRequest['piEmail'], 'piEmail'),
+                promiseTrue(revisionDetail['principalInvestigator']['jobTitle'] == revisedRequest['piFunction'], 'piFunction'),
+                promiseTrue(revisionDetail['principalInvestigator']['affiliation'] == revisedRequest['piAffiliation'], 'piAffiliation'),
+                promiseTrue(body['organisations'][0]['name'] == director.getData(revisedRequest['organisations'][0])['name'], 'organisations'),
+                promiseTrue(JSON.stringify(revisionDetail['requestType'].sort(alphabetically)) == JSON.stringify(revisedRequest['requestTypes'].sort(alphabetically)), 'requestTypes')
+            ])
+        })
+
+    });
 });
+
+function alphabetically(a, b) {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+}

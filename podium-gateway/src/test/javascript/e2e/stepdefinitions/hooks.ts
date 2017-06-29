@@ -118,7 +118,7 @@ defineSupportCode(function ({ After, Before }) {
 
     Before({ tags: "@request" }, function (scenario): Promise<any> {
         let adminConsole = this.adminConsole as AdminConsole;
-        let userList = ['Request_Coordinator', 'Request_Reviewer'];
+        let userList = ['Request_Coordinator', 'Request_Reviewer', 'Databank_Coordinator'];
         let organisations = ['DataBank', 'ImageBank', 'BioBank', 'MultiBank'];
         let requests = ['Request01', 'Request02'];
         let drafts = ['Draft01', 'Draft02'];

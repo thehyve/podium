@@ -16,7 +16,7 @@ import RequestOverviewCommon = require("./modules/request-overview")
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class RequestsManagementPage {
+class OrganisationRequestsManagementPage {
     public name: string;
     public url: string;
     public elements: { [name: string]: Interactable };
@@ -29,12 +29,12 @@ class RequestsManagementPage {
     }
 
     constructor() {
-        this.name = "request management";
-        this.url = "#/requests/my-requests";
+        this.name = "organisation request management";
+        this.url = "#/requests/my-organisations";
         this.elements = {
             ...RequestOverviewCommon(),
         }
     }
 }
 
-export = RequestsManagementPage;
+export = OrganisationRequestsManagementPage;

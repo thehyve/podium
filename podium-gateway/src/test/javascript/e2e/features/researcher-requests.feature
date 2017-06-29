@@ -1,4 +1,4 @@
-Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-58)
+Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, RPREQ-3, BRPREQ-58)
 
     @default
     @request
@@ -25,7 +25,7 @@ Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-58)
     Scenario: BRPREQ-3, As a researcher I want to see an overview of my requests
         Given Linda goes to the 'request overview' page
         When she sorts by 'Title'
-        Then the overview contains the request's 'title, status, requestTypes, organisations' for the requests 'Request01-a, Request01-b, Request02' Request01-b, Request01-a, Request02
+        Then the overview contains the request's 'title, status, requestTypes, organisations' for the requests 'Draft01, Draft02, Request01-a, Request01-b, Request02' Draft01, Draft02, Request01-b, Request01-a, Request02
 
     @default
     @request
@@ -33,11 +33,12 @@ Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-58)
         Given 'Request02' needs revision
         And Linda goes to the 'revise requests' page for the request 'Request02' submitted to 'DataBank'
         When Linda revises and 'submits' the request
-        Then the request is in the 'Review' state
+        Then the request is in 'Validation'
 
-#    @default
-#    @request
-#    Scenario: BRPREQ-58, As a researcher I want to save intermediate changes revision is required
-#        Given 'Request02' needs revision
-#        When Linda revises and saves 'Request02'
-#        Then the changes are saved
+    @default
+    @request
+    Scenario: BRPREQ-58, As a researcher I want to save intermediate changes revision is required
+        Given 'Request02' needs revision
+        And Linda goes to the 'revise requests' page for the request 'Request02' submitted to 'DataBank'
+        When Linda revises and 'saves' the request
+        Then the revision for 'Request02' is saved

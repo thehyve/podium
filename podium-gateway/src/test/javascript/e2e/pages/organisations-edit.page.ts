@@ -36,7 +36,7 @@ class UserDetails {
             "permissions tab": { locator: $('.nav-tabs').$$('.nav-link').get(1) },
             "user selection": { locator: $('.user-select-input.ng-valid') },
             "authority selection": { locator: $('.field_authority_user') },
-            "add": { locator: $('.role-option.success') },
+            "add": { locator: $('.test-add') },
             "name input": { locator: $('#field_name') },
             "short name inout": { locator: $('#field_shortName') },
             "Data": { locator: $('input[value=Data]') },

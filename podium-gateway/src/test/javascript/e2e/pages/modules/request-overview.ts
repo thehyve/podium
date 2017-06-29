@@ -7,7 +7,6 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-
 import { $ } from 'protractor';
 import { Interactable } from '../../protractor-stories/director';
 

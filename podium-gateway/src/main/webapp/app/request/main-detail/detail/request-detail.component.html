@@ -28,7 +28,7 @@
                 <dd>
                     <ul>
                         <li class="test-requestTypes" *ngFor="let requestType of requestDetails.requestType">
-                            {{ requestType | capitalize }}
+                            <span class="test-requestType-text">{{ requestType | capitalize }}</span>
                         </li>
                     </ul>
                 </dd>

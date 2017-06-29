@@ -14,9 +14,9 @@ Feature: organisation admins can manage organisations in the system (BRPREQ-38)
 
         Examples:
             | user                               | role                                                           |
-            | blank user                         | Organisation administrator                                     |
-            | blank user                         | Organisation coordinator                                       |
-            | blank user                         | Reviewer                                                       |
+#            | blank user                         | Organisation administrator                                     |
+#            | blank user                         | Organisation coordinator                                       |
+#            | blank user                         | Reviewer                                                       |
             | blank user, blank user, blank user | Organisation administrator, Organisation coordinator, Reviewer |
 
     @default
@@ -27,9 +27,9 @@ Feature: organisation admins can manage organisations in the system (BRPREQ-38)
 
         Examples:
             | types                  |
-            | Data                   |
-            | Images                 |
-            | Material               |
+#            | Data                   |
+#            | Images                 |
+#            | Material               |
             | Data, Images, Material |
 
 #    @default @org-users
