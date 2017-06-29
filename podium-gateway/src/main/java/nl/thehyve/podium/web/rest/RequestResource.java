@@ -266,7 +266,7 @@ public class RequestResource {
     ) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
-        RequestRepresentation request = draftService.submitRevision(user, uuid);
+        RequestRepresentation request = requestService.submitRevision(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
 

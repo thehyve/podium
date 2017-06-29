@@ -7,7 +7,6 @@ import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
-import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.OrganisationDTO;
@@ -25,10 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,35 +125,6 @@ public class DraftService {
     }
 
     /**
-     * Submit the request by uuid.
-     *
-     * @param user the current user, submitting the request
-     * @param uuid the uuid of the request
-     * @return the updated request
-     * @throws ActionNotAllowed if the request is not in status 'Revision'.
-     */
-    public RequestRepresentation submitRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
-        Request request = requestRepository.findOneByUuid(uuid);
-
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
-
-        // Update the request details with the updated revision details
-        request.setRequestDetail(request.getRevisionDetail());
-        requestRepository.save(request);
-
-        // Submit the request for validation by the organisation coordinator
-        requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
-
-        request = requestRepository.findOneByUuid(uuid);
-        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
-
-        statusUpdateEventService.publishReviewStatusUpdate(user, RequestReviewStatus.Revision, request, null);
-
-        return requestRepresentation;
-    }
-
-    /**
      * Submit the draft request by uuid.
      * Generates requests for the organisations specified in the draft.
      *
@@ -169,20 +135,15 @@ public class DraftService {
      */
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
+
+        log.debug("Access and status checks...");
         AccessCheckHelper.checkRequester(user, request);
         RequestStatus sourceStatus = AccessCheckHelper.checkStatus(request, RequestStatus.Draft);
 
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
-        log.debug("Validating request data.");
-        {
-            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-            Validator validator = factory.getValidator();
 
-            Set<ConstraintViolation<RequestRepresentation>> requestConstraintViolations = validator.validate(requestData);
-            if (!requestConstraintViolations.isEmpty()) {
-                throw new InvalidRequest("Invalid request", requestConstraintViolations);
-            }
-        }
+        log.debug("Validating request data.");
+        RequestService.validateRequest(requestData);
 
         log.debug("Submitting request : {}", uuid);
 
