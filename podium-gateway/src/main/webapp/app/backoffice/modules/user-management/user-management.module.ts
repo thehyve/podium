@@ -41,8 +41,7 @@ import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
         }),
         PodiumGatewayAdminModule,
         PodiumGatewaySharedModule,
-        UserMgmtRoutingModule,
-        NgbModule
+        UserMgmtRoutingModule
     ],
     declarations: [
         UserMgmtComponent,

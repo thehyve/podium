@@ -62,7 +62,6 @@ public class RequestService {
     @Autowired
     private StatusUpdateEventService statusUpdateEventService;
 
-
     @PostConstruct
     private void init() {
         notificationService.setRequestService(this);
@@ -222,7 +221,7 @@ public class RequestService {
 
 
     /**
-     *  Get the request
+     *  Get a request by UUID
      *
      *  @param requestUuid the uuid of the request
      *  @return the entity
@@ -239,7 +238,7 @@ public class RequestService {
     }
 
     /**
-     *  Get the request
+     *  Get a request by UUID
      *
      *  @param requestUuid the uuid of the request
      *  @return the entity

@@ -13,6 +13,7 @@ import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
 import { UserModalService } from './user-modal.service';
 import { JhiLanguageHelper, User, UserService } from '../../../shared';
+import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
 
 @Component({
     selector: 'pdm-user-mgmt-dialog',
@@ -24,12 +25,14 @@ export class UserMgmtDialogComponent implements OnInit {
     languages: any[];
     authorities: any[];
     isSaving: Boolean;
+    userAuthorityMap;
 
     constructor (
         public activeModal: NgbActiveModal,
         private languageHelper: JhiLanguageHelper,
         private userService: UserService,
         private eventManager: EventManager,
+        private activatedRoute: ActivatedRoute,
         private router: Router
     ) {}
 
@@ -40,19 +43,25 @@ export class UserMgmtDialogComponent implements OnInit {
             this.languages = languages;
         });
 
+        this.userAuthorityMap = AUTHORITIES_MAP;
     }
 
     clear() {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([this.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     save() {
         this.isSaving = true;
         if (this.user.id) {
-            this.userService.update(this.user).subscribe(response => this.onSaveSuccess(response), () => this.onSaveError());
+            this.userService.update(this.user).subscribe(
+                (response) => this.onSaveSuccess(response),
+                () => this.onSaveError()
+            );
         } else {
-            this.userService.create(this.user).subscribe(response => this.onSaveSuccess(response), () => this.onSaveError());
+            this.userService.create(this.user).subscribe(
+                (response) => this.onSaveSuccess(response),
+                () => this.onSaveError());
         }
     }
 
@@ -60,11 +69,15 @@ export class UserMgmtDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: 'userListModification', content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(result);
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([this.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     private onSaveError() {
         this.isSaving = false;
+    }
+
+    protected getNavUrlForRouterPopup(router: Router) {
+        return this.router.url.split(/\(/)[0];
     }
 }
 
