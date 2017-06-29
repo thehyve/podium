@@ -129,9 +129,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
-        return director.at("completed").then(() => {
-            return adminConsole.checkUser(director.getPersona("he"), checkNewUser);
-        });
+        return adminConsole.checkUser(director.getPersona("he"), checkNewUser);
     });
 
     When(/^(.*) attempts to login incorrectly '(\d+)' times$/, function (personaName, attempts): Promise<any> {

@@ -229,7 +229,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
             "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
-            request[key] = request[key] + ' revision';
+            request[key] = request[key] + 'revision';
             return director.enterText(key, request[key]);
         }).then(() => {
             return director.clickOn(action)
