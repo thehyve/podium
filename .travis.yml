@@ -50,7 +50,7 @@ before_install:
 install:
   - mvn install -DskipTests -q
   - pushd podium-gateway
-  - yarn install
+  - travis_retry yarn install
   - yarn link
   - popd
 script:
