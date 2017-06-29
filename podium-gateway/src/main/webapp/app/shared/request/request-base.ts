@@ -31,6 +31,7 @@ export class RequestBase implements Request {
     reviewRounds?: ReviewRound[];
     organisations?: Organisation[] = [];
     historicEvents?: PodiumEvent[];
+    relatedRequests?: RequestBase[] = [];
 
     requester?: User;
 

@@ -83,7 +83,8 @@
             "searchQuery": "Search Query",
             "isLinked": "Linked Request",
             "requestTypes": "Request Types",
-            "organisations": "Organisations"
+            "organisations": "Organisations",
+            "organisation": "Organisation"
         },
         "review": {
             "title": "Review",
@@ -118,6 +119,12 @@
             "pageHeaderResearcher": "My requests",
             "pageHeaderCoordinator": "Organisation requests",
             "pageHeaderReviewer": "My reviews"
+        },
+        "relatedRequests": "Related requests",
+        "relatedRequest": {
+            "id": "Id",
+            "organisation": "Organisation",
+            "type": "Type"
         },
         "form": {
             "header": {

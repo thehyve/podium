@@ -9,20 +9,13 @@ package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
-import nl.thehyve.podium.service.util.DefaultOrganisation;
-import nl.thehyve.podium.service.util.DefaultRequest;
-import nl.thehyve.podium.service.util.DefaultRequestDetail;
-import nl.thehyve.podium.service.util.DefaultUser;
-import nl.thehyve.podium.service.util.ExtendedOrganisation;
-import nl.thehyve.podium.service.util.ExtendedRequest;
-import nl.thehyve.podium.service.util.ExtendedUser;
-import nl.thehyve.podium.service.util.OrganisationMapperHelper;
-import nl.thehyve.podium.service.util.UserMapperHelper;
+import nl.thehyve.podium.service.util.*;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -37,7 +30,14 @@ import java.util.List;
     PodiumEventMapper.class,
     ReviewRoundMapper.class
 })
-public interface RequestMapper {
+public abstract class RequestMapper {
+
+    @Autowired
+    private RequestDetailMapper requestDetailMapper;
+
+
+    @Autowired
+    private OrganisationMapperHelper organisationMapperHelper;
 
     @DefaultRequest
     @Mappings({
@@ -45,41 +45,45 @@ public interface RequestMapper {
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "requestReviewProcess", target = "requestReview"),
         @Mapping(target = "requester", qualifiedBy = DefaultUser.class),
-        @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class)
+        @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class),
+        @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class)
     })
-    RequestRepresentation requestToRequestDTO(Request request);
+    public abstract RequestRepresentation requestToRequestDTO(Request request);
 
     @DefaultRequest
     @IterableMapping(qualifiedBy = DefaultRequest.class)
-    List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
+    public abstract List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
 
     @DefaultRequest
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(target = "historicEvents", ignore = true)
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
     })
-    Request requestDTOToRequest(RequestRepresentation requestDTO);
+    public abstract Request requestDTOToRequest(RequestRepresentation requestDTO);
 
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(target = "historicEvents", ignore = true)
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
     })
-    Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
+    public abstract Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
 
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone"),
         @Mapping(target = "id", ignore = true),
         @Mapping(target = "uuid", ignore = true),
-        @Mapping(target = "historicEvents", ignore = true)
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
     })
-    Request clone(Request request);
+    public abstract Request clone(Request request);
 
     @DefaultRequest
     @IterableMapping(qualifiedBy = DefaultRequest.class)
-    List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
+    public abstract List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
 
     @ExtendedRequest
     @Mappings({
@@ -87,11 +91,29 @@ public interface RequestMapper {
         @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
         @Mapping(source = "requestReviewProcess", target = "requestReview"),
         @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class),
+        @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class),
         @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
     })
-    RequestRepresentation extendedRequestToRequestDTO(Request request);
+    public abstract RequestRepresentation extendedRequestToRequestDTO(Request request);
 
     @ExtendedRequest
     @IterableMapping(qualifiedBy = ExtendedRequest.class)
-    List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
+    public abstract List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
+
+    @MinimalRequest
+    public RequestRepresentation minimalRequestToRequestDTO(Request request) {
+        if ( request == null ) {
+            return null;
+        }
+        RequestRepresentation requestRepresentation = new RequestRepresentation();
+        requestRepresentation.setUuid(request.getUuid());
+        requestRepresentation.setRequestDetail(requestDetailMapper.mapRequestTypeOnly(request.getRequestDetail()));
+        requestRepresentation.setOrganisations(organisationMapperHelper.uuidsToExtendedOrganisationDTOs(request.getOrganisations()));
+        return requestRepresentation;
+    }
+
+    @MinimalRequest
+    @IterableMapping(qualifiedBy = MinimalRequest.class)
+    public abstract List<RequestRepresentation> minimalRequestsToRequestDTOs(List<Request> requests);
+
 }
