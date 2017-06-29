@@ -251,12 +251,13 @@ public class RequestService {
         AccessCheckHelper.checkRequester(user, request);
         AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
 
-        log.debug("Validating request data.");
+        log.debug("Validate new request data.");
+        request.setRequestDetail(request.getRevisionDetail());
+
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
         validateRequest(requestData);
 
         // Update the request details with the updated revision details
-        request.setRequestDetail(request.getRevisionDetail());
         requestRepository.save(request);
 
         // Submit the request for validation by the organisation coordinator
