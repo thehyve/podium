@@ -45,8 +45,7 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
-        TypeaheadModule,
-        NgbModule
+        TypeaheadModule
     ],
     declarations: [
         OrganisationComponent,

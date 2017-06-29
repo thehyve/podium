@@ -34,7 +34,7 @@ export class OrganisationDeleteDialogComponent {
 
     clear () {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([this.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     confirmDelete (id: number) {
@@ -43,9 +43,13 @@ export class OrganisationDeleteDialogComponent {
                 name: 'organisationListModification',
                 content: 'Deleted an organisation'
             });
-            this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+            this.router.navigate([this.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
             this.activeModal.dismiss(true);
         });
+    }
+
+    private getNavUrlForRouterPopup(router: Router) {
+        return this.router.url.split(/\(/)[0];
     }
 }
 
