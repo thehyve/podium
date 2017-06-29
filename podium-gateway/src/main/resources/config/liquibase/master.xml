@@ -32,4 +32,5 @@
     <include file="./changelog/20170601205912_update_reviewFeedback.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170607155820_added_request_outcome.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170609105528_update_reviewFeedback_reviewer.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170627122125_add_related_requests.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

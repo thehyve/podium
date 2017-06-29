@@ -7,7 +7,6 @@ import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
-import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
@@ -24,11 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.persistence.EntityManager;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing request drafts.
@@ -63,6 +60,9 @@ public class DraftService {
 
     @Autowired
     private StatusUpdateEventService statusUpdateEventService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * Create a new draft request.
@@ -125,35 +125,6 @@ public class DraftService {
     }
 
     /**
-     * Submit the request by uuid.
-     *
-     * @param user the current user, submitting the request
-     * @param uuid the uuid of the request
-     * @return the updated request
-     * @throws ActionNotAllowed if the request is not in status 'Revision'.
-     */
-    public RequestRepresentation submitRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
-        Request request = requestRepository.findOneByUuid(uuid);
-
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
-
-        // Update the request details with the updated revision details
-        request.setRequestDetail(request.getRevisionDetail());
-        requestRepository.save(request);
-
-        // Submit the request for validation by the organisation coordinator
-        requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
-
-        request = requestRepository.findOneByUuid(uuid);
-        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
-
-        statusUpdateEventService.publishReviewStatusUpdate(user, RequestReviewStatus.Revision, request, null);
-
-        return requestRepresentation;
-    }
-
-    /**
      * Submit the draft request by uuid.
      * Generates requests for the organisations specified in the draft.
      *
@@ -164,25 +135,19 @@ public class DraftService {
      */
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
+
+        log.debug("Access and status checks...");
         AccessCheckHelper.checkRequester(user, request);
         RequestStatus sourceStatus = AccessCheckHelper.checkStatus(request, RequestStatus.Draft);
 
         RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
-        log.debug("Validating request data.");
-        {
-            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-            Validator validator = factory.getValidator();
 
-            Set<ConstraintViolation<RequestRepresentation>> requestConstraintViolations = validator.validate(requestData);
-            if (!requestConstraintViolations.isEmpty()) {
-                throw new InvalidRequest("Invalid request", requestConstraintViolations);
-            }
-        }
+        log.debug("Validating request data.");
+        RequestService.validateRequest(requestData);
 
         log.debug("Submitting request : {}", uuid);
 
-        List<Request> organisationRequests = new ArrayList<>();
-        // TODO: Aggregate mails for multiple organisations per user.
+        final List<Request> organisationRequests = new ArrayList<>();
 
         for (UUID organisationUuid: request.getOrganisations()) {
             Request organisationRequest = requestMapper.clone(request);
@@ -216,10 +181,31 @@ public class DraftService {
                 requestReviewProcessService.start(user));
             organisationRequest = requestRepository.save(organisationRequest);
 
-            statusUpdateEventService.publishStatusUpdate(user, sourceStatus, organisationRequest, null);
-
             organisationRequests.add(organisationRequest);
+
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
+        }
+        entityManager.flush();
+
+        for (Request organisationRequest: organisationRequests) {
+            entityManager.refresh(organisationRequest);
+        }
+
+        // Setting links to related requests in every request
+        for (Request organisationRequest: organisationRequests) {
+            log.debug("Saving related requests for request {}", organisationRequest.getUuid());
+            Set<Request> relatedRequests = new HashSet<>(organisationRequests.stream().filter(req ->
+                req != organisationRequest
+            ).collect(Collectors.toSet()));
+            organisationRequest.setRelatedRequests(relatedRequests);
+            entityManager.persist(organisationRequest);
+        }
+        entityManager.flush();
+        log.debug("Done saving related requests.");
+
+        // Publish status update event for every generated request
+        for (Request organisationRequest: organisationRequests) {
+            statusUpdateEventService.publishStatusUpdate(user, sourceStatus, organisationRequest, null);
         }
 
         List<RequestRepresentation> result = requestMapper.extendedRequestsToRequestDTOs(organisationRequests);

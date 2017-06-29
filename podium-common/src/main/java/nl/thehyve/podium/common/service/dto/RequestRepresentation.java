@@ -18,9 +18,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * A DTO for the Request entity.
@@ -55,6 +53,8 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     private List<PodiumEventRepresentation> historicEvents;
 
     private List<ReviewRoundRepresentation> reviewRounds;
+
+    private Set<RequestRepresentation> relatedRequests;
 
     @Override
     @JsonIgnore

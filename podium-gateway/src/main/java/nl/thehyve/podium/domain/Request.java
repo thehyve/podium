@@ -129,6 +129,15 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
     private List<ReviewRound> reviewRounds;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "request_related_requests",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="related_request_id", referencedColumnName="id"))
+    private Set<Request> relatedRequests = new HashSet<>();
+
     @Override
     public UUID getRequestUuid() {
         return uuid;

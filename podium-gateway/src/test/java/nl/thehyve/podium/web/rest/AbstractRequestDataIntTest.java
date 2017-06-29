@@ -116,6 +116,7 @@ public abstract class AbstractRequestDataIntTest {
     final String DELIVERY_CANCEL = "cancel";
     final String ACTION_SUBMIT_REVIEW_FEEDBACK = "review";
 
+    final String TEST_TWO_ORGANISATIONS_TITLE = "Test request to two organisations";
 
     static final String mockRequesterUsername = "requester";
     static UUID mockRequesterUuid = UUID.randomUUID();
@@ -396,6 +397,7 @@ public abstract class AbstractRequestDataIntTest {
         // Initialize draft with two organisations
         RequestRepresentation requestTwoOrganisation = newDraft(requester);
         setRequestData(requestTwoOrganisation);
+        requestTwoOrganisation.getRequestDetail().setTitle(TEST_TWO_ORGANISATIONS_TITLE);
 
         submitDraftToOrganisations(requestTwoOrganisation, Arrays.asList(organisationUuid1, organisationUuid2));
 
