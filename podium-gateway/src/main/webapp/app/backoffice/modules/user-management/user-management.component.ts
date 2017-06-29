@@ -18,6 +18,7 @@ import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
 import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
 import { Subscription } from 'rxjs';
+import { UserGroupAuthority } from '../../../shared/authority/authority.constants';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'podiumuaa/api/users',
@@ -47,6 +48,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     success: any;
     overviewSubscription: Subscription;
     eventSubscription: Subscription;
+    userGroupAuthority: UserGroupAuthority;
 
     constructor(
         private userService: UserService,
@@ -66,6 +68,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.userGroupAuthority = this.activatedRoute.snapshot.data['userAuthorityGroup'];
         this.principal.identity().then((account) => {
             this.currentAccount = account;
             this.fetchUsers();
@@ -107,7 +110,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     fetchUsers() {
-        this.overviewService.findUsersForOverview(this.getPageParams())
+        this.overviewService.findUsersForOverview(this.userGroupAuthority, this.getPageParams())
             .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
     }
 
