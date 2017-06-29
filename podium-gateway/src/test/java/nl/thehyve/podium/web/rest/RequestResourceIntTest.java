@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
@@ -145,6 +146,57 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 Assert.assertEquals(1, reqObj.getHistoricEvents().size());
             }
         });
+    }
+
+    @Test
+    public void requestsContainRelatedRequestData() throws Exception {
+        initMocks();
+        initFetchTests();
+
+        // Fetch requests with status 'Validation'
+        mockMvc.perform(
+            getRequest(HttpMethod.GET,
+                REQUESTS_ROUTE + "/status/Validation/requester",
+                null,
+                Collections.emptyMap())
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+
+                List<RequestRepresentation> twoOrganisationsRequests = requests.stream()
+                    .filter(req -> req.getRequestDetail().getTitle().equals(TEST_TWO_ORGANISATIONS_TITLE))
+                    .collect(Collectors.toList());
+
+                Assert.assertEquals(2, twoOrganisationsRequests.size());
+                // Test if each of the two requests contains a link to the other.
+                int i = 0;
+                for(RequestRepresentation req: twoOrganisationsRequests) {
+                    int j = i == 0 ? 1 : 0;
+                    RequestRepresentation other = twoOrganisationsRequests.get(j);
+                    Assert.assertThat(other.getOrganisations(), hasSize(1));
+                    OrganisationDTO otherOrganisation = other.getOrganisations().get(0);
+                    Assert.assertThat(req.getRelatedRequests(), hasSize(1));
+                    Assert.assertThat(req.getRelatedRequests(), hasItem(
+                        allOf(
+                            hasProperty("uuid", equalTo(other.getUuid())),
+                            hasProperty("requestDetail",
+                                hasProperty("requestType", equalTo(other.getRequestDetail().getRequestType()))),
+                            hasProperty("organisations", hasItem(
+                                allOf(
+                                    hasProperty("uuid", equalTo(otherOrganisation.getUuid())),
+                                    hasProperty("name", equalTo(otherOrganisation.getName()))
+                                )
+                            ))
+                        )
+                    ));
+                    i++;
+                }
+            });
     }
 
     @Test

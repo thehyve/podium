@@ -7,30 +7,43 @@
 
 package nl.thehyve.podium.service.mapper;
 
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
 import nl.thehyve.podium.service.util.DefaultRequestDetail;
+import nl.thehyve.podium.service.util.MinimalRequest;
 import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 
+import java.util.HashSet;
+
 @Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
-public interface RequestDetailMapper {
+public abstract class RequestDetailMapper {
 
     @DefaultRequestDetail
-    RequestDetailRepresentation requestDetailToRequestDetailRepresentation(RequestDetail requestDetail);
+    public abstract RequestDetailRepresentation requestDetailToRequestDetailRepresentation(RequestDetail requestDetail);
+
+    @MinimalRequest
+    public RequestDetailRepresentation mapRequestTypeOnly(RequestDetail requestDetail) {
+        RequestDetailRepresentation result = new RequestDetailRepresentation();
+        if (requestDetail.getRequestType() != null) {
+            result.setRequestType(new HashSet<>(requestDetail.getRequestType()));
+        }
+        return result;
+    }
 
     @DefaultRequestDetail
-    RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
+    public abstract RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 
     @DefaultRequestDetail
     @Mappings({
         @Mapping(target = "id", ignore = true),
         @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
     })
-    RequestDetail clone(RequestDetail requestDetail);
+    public abstract RequestDetail clone(RequestDetail requestDetail);
 
     /**
      * Safely transform requestDetail representation to a requestDetail entity
@@ -45,7 +58,7 @@ public interface RequestDetailMapper {
         @Mapping(target = "combinedRequest", ignore = true),
         @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
     })
-    RequestDetail processingRequestDetailDtoToRequestDetail(
+    public abstract RequestDetail processingRequestDetailDtoToRequestDetail(
         RequestDetailRepresentation requestDetailRepresentation, @MappingTarget RequestDetail requestDetail
     );
 }
