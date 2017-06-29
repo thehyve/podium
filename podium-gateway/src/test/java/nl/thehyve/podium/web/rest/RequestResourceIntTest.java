@@ -179,7 +179,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                     int j = i == 0 ? 1 : 0;
                     RequestRepresentation other = twoOrganisationsRequests.get(j);
                     Assert.assertThat(other.getOrganisations(), hasSize(1));
-                    OrganisationDTO otherOrganisation = other.getOrganisations().get(0);
+                    OrganisationRepresentation otherOrganisation = other.getOrganisations().get(0);
                     Assert.assertThat(req.getRelatedRequests(), hasSize(1));
                     Assert.assertThat(req.getRelatedRequests(), hasItem(
                         allOf(
