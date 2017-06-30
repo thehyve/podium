@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.organisationRequestReview.title}">BBMRI Podium Request Portal &ndash; new request available for review</title>
+        <title th:text="#{email.reviewerRequestReview.title}">BBMRI Podium Request Portal &ndash; new request available for review</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -19,12 +19,12 @@
             Dear
         </p>
 
-        <p th:text="#{email.organisationRequestReview.text1(${organisation.getName()}, ${request.getId()})}">
+        <p th:text="#{email.reviewerRequestReview.text1(${organisation.getName()}, ${request.getId().toString()})}">
             A new request to organisation [organisation name] with request number [request number] is ready to be reviewed by you.
         </p>
 
         <p>
-            <span th:text="#{email.organisationRequestReview.text2}">
+            <span th:text="#{email.reviewerRequestReview.text2}">
                 To review the request, please use the link below.
             </span>
             <br />

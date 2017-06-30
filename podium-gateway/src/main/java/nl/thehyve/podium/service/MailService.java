@@ -165,7 +165,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestApproved", context);
-        String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        String subject = messageSource.getMessage("email.requesterRequestApproved.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -210,7 +210,7 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryReleased", context);
-        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getShortName()};
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
         String subject = messageSource.getMessage("email.requesterDeliveryReleased.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
@@ -261,7 +261,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestClosed", context);
-        String[] args = new String[] {request.getOrganisations().get(0).getShortName()};
+        String[] args = new String[] {request.getOrganisations().get(0).getName()};
         String subject = messageSource.getMessage("email.requesterRequestClosed.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
@@ -284,9 +284,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
-        String content = templateEngine.process("organisationDeliveryCancelled", context);
-        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getShortName()};
-        String subject = messageSource.getMessage("email.organisationDeliveryCancelled.title", args, locale);
+        String content = templateEngine.process("requesterDeliveryCancelled", context);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
