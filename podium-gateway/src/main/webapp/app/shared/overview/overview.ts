@@ -11,6 +11,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from '../constants/pagination.constants';
 import { RequestOverviewPath } from '../../request/overview/request-overview.constants';
+import { RouterHelper } from '../util/router-helper';
 
 /**
  * A class to govern all functionality for overview components
@@ -83,7 +84,7 @@ export abstract class Overview {
         // Update the URL with the new parameters
         let params = this.getPageParams();
 
-        this.router.navigate([this.getNavUrlForRouter(this.router)], {
+        this.router.navigate([RouterHelper.getNavUrlForRouter(this.router)], {
             queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -116,7 +117,7 @@ export abstract class Overview {
         this.currentSearch = query;
 
         // Transition with matrix params
-        this.router.navigate([this.getNavUrlForRouter(this.router),
+        this.router.navigate([RouterHelper.getNavUrlForRouter(this.router),
             {
                 search: this.currentSearch,
                 page: this.page,
@@ -130,7 +131,7 @@ export abstract class Overview {
     protected clear(callback: Function) {
         this.page = 0;
         this.currentSearch = '';
-        this.router.navigate([this.getNavUrlForRouter(this.router), {
+        this.router.navigate([RouterHelper.getNavUrlForRouter(this.router), {
             page: this.page,
             sort: [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')]
         }]);
@@ -147,9 +148,5 @@ export abstract class Overview {
 
     protected isReviewerRoute(): boolean {
         return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER;
-    }
-
-    protected getNavUrlForRouter(router: Router) {
-        return this.router.url.split(/\?/)[0].split(/;/)[0] + '/';
     }
 }

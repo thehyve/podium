@@ -28,7 +28,7 @@
 
         <h2>
             <span jhiTranslate="{{pageHeader}}">My requests</span>
-            <button type="button"
+            <button type="button" *ngIf="isResearcherRoute()"
                     class="btn btn-outline-primary new-request pull-right" (click)="createNewRequest()">
                 <i class="material-icons">add_circle_outline</i>
                 <span jhiTranslate="request.action.new">New request</span>
@@ -60,9 +60,8 @@
                         </th>
                         <th><span>Request type</span></th>
                         <th><span>Organisation(s)</span></th>
-                        <th jhiSortBy="requestDetail.requester.firstName" *ngIf="!isResearcherRoute()">
+                        <th *ngIf="!isResearcherRoute()">
                             <span>Requester</span>
-                            <span class="fa fa-sort"></span>
                         </th>
                         <th jhiSortBy="requestDetail.principalInvestigator.name" *ngIf="!isResearcherRoute()">
                             <span>Principal investigator</span>

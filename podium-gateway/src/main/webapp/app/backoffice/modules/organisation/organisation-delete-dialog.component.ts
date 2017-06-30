@@ -14,6 +14,7 @@ import { EventManager } from 'ng-jhipster';
 import { OrganisationPopupService } from './organisation-popup.service';
 import { Organisation } from '../../../shared/organisation/organisation.model';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
+import { RouterHelper } from '../../../shared/util/router-helper';
 
 @Component({
     selector: 'pdm-organisation-delete-dialog',
@@ -34,7 +35,7 @@ export class OrganisationDeleteDialogComponent {
 
     clear () {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     confirmDelete (id: number) {
@@ -43,7 +44,7 @@ export class OrganisationDeleteDialogComponent {
                 name: 'organisationListModification',
                 content: 'Deleted an organisation'
             });
-            this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+            this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
             this.activeModal.dismiss(true);
         });
     }

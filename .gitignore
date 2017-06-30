@@ -19,6 +19,7 @@ npm-debug.log.*
 #####################
 podium-gateway/src/main/webapp/app/**/*.js
 podium-gateway/src/main/webapp/app/**/*.js.map
+podium-gateway/src/test/javascript/spec/**/*.js
 podium-gateway/data
 podium-uaa/data
 

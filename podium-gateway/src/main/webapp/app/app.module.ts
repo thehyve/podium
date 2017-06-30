@@ -32,7 +32,6 @@ import { OrganisationService } from './shared/organisation/organisation.service'
 
 @NgModule({
     imports: [
-        NgbModule.forRoot(),
         TypeaheadModule.forRoot(),
         BreadcrumbsModule.forRoot(),
         BrowserModule,
@@ -68,6 +67,6 @@ import { OrganisationService } from './shared/organisation/organisation.service'
         RoleService
     ],
     bootstrap: [ PdmMainComponent ],
-    exports: [NgbModule]
+    exports: []
 })
 export class PodiumGatewayAppModule {}

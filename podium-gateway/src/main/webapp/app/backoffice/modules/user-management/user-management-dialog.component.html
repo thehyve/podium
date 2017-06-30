@@ -163,6 +163,13 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label>Current authorities</label>
+            <div *ngFor="let authority of user.authorities">
+                <span class="tag tag-info">{{ userAuthorityMap[authority].name }}</span>
+            </div>
+        </div>
+
         <div class="form-check">
             <label class="form-check-label" for="adminVerified">
                 <input class="form-check-input" [disabled]="user.id === null || !user.emailVerified" type="checkbox" id="adminVerified" name="adminVerified" [(ngModel)]="user.adminVerified">

@@ -11,7 +11,6 @@ import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes, CanActivate } from '@angular/router';
 import { PaginationUtil } from 'ng-jhipster';
 import { UserMgmtComponent } from './user-management.component';
-import { UserMgmtDetailComponent } from './user-management-detail.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
@@ -36,7 +35,7 @@ export class UserResolvePagingParams implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
       let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-      let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
+      let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'createdDate,asc';
       return {
           page: this.paginationUtil.parsePage(page),
           predicate: this.paginationUtil.parsePredicate(sort),
@@ -96,16 +95,6 @@ export const userMgmtRoute: Routes = [
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'userManagement.home.title',
             breadcrumb: 'user management overview'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'detail/:login',
-        component: UserMgmtDetailComponent,
-        data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'userManagement.home.title',
-            breadcrumb: 'user details'
         },
         canActivate: [UserRouteAccessService]
     },

@@ -87,7 +87,9 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     registerChangeInUsers() {
-        this.eventSubscription = this.eventManager.subscribe('userListModification', this.fetchUsers());
+        this.eventSubscription = this.eventManager.subscribe('userListModification', () => {
+            this.fetchUsers();
+        });
     }
 
     unlock (user) {
