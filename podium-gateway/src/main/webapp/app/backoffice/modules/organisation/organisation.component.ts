@@ -88,7 +88,9 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     }
 
     registerChangeInOrganisations() {
-        this.eventSubscriber = this.eventManager.subscribe('organisationListModification', this.fetchOrganisations());
+        this.eventSubscriber = this.eventManager.subscribe('organisationListModification', () => {
+            this.fetchOrganisations();
+        });
     }
 
     fetchOrganisations() {
