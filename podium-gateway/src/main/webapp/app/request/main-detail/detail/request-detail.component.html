@@ -70,36 +70,38 @@
                 </dd>
             </dl>
 
-            <h3 jhiTranslate="request.relatedRequests">Related requests</h3>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th jhiTranslate="request.relatedRequest.organisation">Organisation</th>
-                    <th jhiTranslate="request.relatedRequest.type">Type</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let relatedRequest of request.relatedRequests">
-                    <td>
-                        <a *ngIf="isRequestingResearcher()" [routerLink]="['/requests/detail', relatedRequest.uuid]">
+            <div *ngIf="hasRelatedRequests()">
+                <h3 jhiTranslate="request.relatedRequests">Related requests</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th jhiTranslate="request.relatedRequest.organisation">Organisation</th>
+                            <th jhiTranslate="request.relatedRequest.type">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let relatedRequest of request.relatedRequests">
+                            <td>
+                                <a *ngIf="isRequestingResearcher()" [routerLink]="['/requests/detail', relatedRequest.uuid]">
                         <span *ngFor="let organisation of relatedRequest.organisations">
                             {{ organisation.name | capitalize }}
                         </span>
-                        </a>
-                        <span *ngIf="!isRequestingResearcher()">
+                                </a>
+                                <span *ngIf="!isRequestingResearcher()">
                         <span *ngFor="let organisation of relatedRequest.organisations">
                             {{ organisation.name | capitalize }}
                         </span>
                         </span>
-                    </td>
-                    <td>
-                        <li *ngFor="let requestType of relatedRequest.requestDetail.requestType">
-                            {{ requestType | capitalize }}
-                        </li>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                            </td>
+                            <td>
+                                <li *ngFor="let requestType of relatedRequest.requestDetail.requestType">
+                                    {{ requestType | capitalize }}
+                                </li>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <pdm-request-review-panel [reviewRounds]="request.reviewRounds"
                                       [request]="request"

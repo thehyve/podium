@@ -274,6 +274,14 @@ export class RequestDetailComponent implements OnDestroy {
         return revisionStatus && isRequester;
     }
 
+    /**
+     * Check whether the request has related requests
+     * @returns true if the request has related requests
+     */
+    hasRelatedRequests(): boolean {
+        return this.request.relatedRequests && this.request.relatedRequests.length > 0;
+    }
+
     onSuccess(response: Response) {
         this.request = response.json();
         this.isUpdating = false;
