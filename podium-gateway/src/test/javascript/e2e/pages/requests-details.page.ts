@@ -50,6 +50,10 @@ class RequestDetails {
             "validate": { locator: $('#validate-request-btn') },
             "reject": { locator: $('.test-reject-request-btn') },
             "revision": { locator: $('.test-request-revision-btn') },
+            "messageSummary": { locator: $('#messageSummary') },
+            "messageDescription": { locator: $('#messageDescription') },
+            "cancel": { locator: $('.test-cancel-btn') },
+            "submit": { locator: $('.test-submit-btn') },
         }
     }
 }

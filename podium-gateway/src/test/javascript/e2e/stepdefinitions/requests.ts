@@ -10,7 +10,7 @@
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
-import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData } from './util';
+import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData, countIs } from './util';
 import { Organisation, Request } from '../data/templates';
 import { $$, browser } from 'protractor';
 let { defineSupportCode } = require('cucumber');
@@ -58,9 +58,7 @@ defineSupportCode(({ Given, When, Then }) => {
             orgNames.push(org["name"]);
         });
 
-        return Promise.resolve(director.getElement("organisations").locator.$$('option').count()).then((count) => {
-            return promiseTrue(count == orgNames.length, "expected " + orgNames.length + " organisations but found " + count);
-        }).then(() => {
+        return countIs(director.getElement("organisations").locator.$$('option'), orgNames.length).then(() => {
             return director.getElement("organisations").locator.$$('option').each((element) => {
                 return element.getText().then((text) => {
                     return promiseTrue(orgNames.some((item) => {
@@ -122,9 +120,7 @@ defineSupportCode(({ Given, When, Then }) => {
     });
 
     function checkRequestTypes(requestTypes: string[], elements) {
-        return Promise.resolve(elements.count()).then((count) => {
-            return promiseTrue(count == requestTypes.length, "expected " + requestTypes.length + " requestTypes but found " + count);
-        }).then(() => {
+        return countIs(elements, requestTypes.length).then(() => {
             return elements.each((element) => {
                 return element.$('.test-requestType-text').getText().then(function (type) {
                     return promiseTrue(requestTypes.indexOf(type) > -1, type + " is not part of " + requestTypes);
@@ -139,9 +135,7 @@ defineSupportCode(({ Given, When, Then }) => {
             return org['name']
         });
 
-        return Promise.resolve(elements.count()).then((count) => {
-            return promiseTrue(count == organisations.length, "expected " + organisations.length + " requestTypes but found " + count);
-        }).then(() => {
+        return countIs(elements, organisations.length).then(() => {
             return elements.each((element) => {
                 return element.getText().then(function (orgName) {
                     return promiseTrue(orgNames.indexOf(orgName) > -1, orgName + " is not part of " + orgNames);
@@ -162,9 +156,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         let requests: Request[] = director.getListOfData(requestNamesList);
 
-        return Promise.resolve($$('.test-' + fields[0]).count()).then((count) => {
-            return promiseTrue(count == requests.length, "expected " + requests.length + " fields for " + fields[0] + " but found " + count);
-        }).then(() => {
+        return countIs($$('.test-' + fields[0]), requests.length).then(() => {
             return checkTable(fields, requests, director);
         }).then(() => {
         }, (error) => {
@@ -249,6 +241,20 @@ defineSupportCode(({ Given, When, Then }) => {
         });
     });
 
+    Then(/^the request is Rejected$/, function (): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let persona = director.getPersona('he');
+        let orgShortName = this.scenarioData['organisations'][0];
+
+        return browser.sleep(1000).then(() => {
+            return adminConsole.getRequest(persona, 'Rejected', roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return promiseTrue(body['requestReview']['status'] == 'Closed', 'request ' + body['requestDetail']['title'] + ' is not ' + 'Closed')
+            })
+        });
+    });
+
     Then(/^the revision for '(.*)' is saved$/, function (requestName): Promise<any> {
 
         let director = this.director as Director;
@@ -279,7 +285,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
     });
 
-    When(/^(.*) sends the request for review$/, function (personaName) {
+    When(/^(.*) sends the request for review$/, function (personaName): Promise<any> {
         let director = this.director as Director;
 
         return director.clickOn('validationCheck').then(() => {
@@ -287,6 +293,38 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
+    When(/^(.*) rejects the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('reject').then(() => {
+            return Promise.all([
+                director.enterText('messageSummary', 'rejected messageSummary'),
+                director.enterText('messageDescription', 'rejected messageDescription')
+            ]).then(() => {
+                return director.clickOn('submit')
+            })
+        })
+    });
+
+    When(/^(.*) sends the request back for revision$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('revision').then(() => {
+            return Promise.all([
+                director.enterText('messageSummary', 'rejected messageSummary'),
+                director.enterText('messageDescription', 'rejected messageDescription')
+            ]).then(() => {
+                return director.clickOn('submit')
+            })
+        })
+    });
+
+    Then('the request cannot be edited', function (): Promise<any> {
+        return Promise.all([
+            countIs($$('textarea'), 0),
+            countIs($$('input'), 1) //only a checkbox for validationCheck
+        ])
+    });
 });
 
 function alphabetically(a, b) {

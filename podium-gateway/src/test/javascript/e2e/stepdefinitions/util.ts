@@ -13,6 +13,7 @@ import {
     UserGroupAuthority,
     OrganisationAuthorityOptions
 } from '../../../../main/webapp/app/shared/authority/authority.constants';
+import { ElementArrayFinder } from 'protractor';
 
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');
@@ -76,4 +77,10 @@ export function roleToRoute(persona: Persona, orgShortName: string): string {
 
 export function copyData(data) {
     return JSON.parse(JSON.stringify(data));
+}
+
+export function countIs(elementArray: ElementArrayFinder, expectedCount: number): Promise<any> {
+    return elementArray.count().then((count) => {
+        return promiseTrue(count == expectedCount, "expected: " + expectedCount + " elements but found: " + count);
+    })
 }

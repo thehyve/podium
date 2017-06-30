@@ -1,4 +1,4 @@
-Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, RPREQ-3, BRPREQ-58)
+Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-3, BRPREQ-58)
 
     @default
     @request
