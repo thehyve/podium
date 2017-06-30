@@ -26,7 +26,7 @@ function initDataDictionary() {
         }),
         new Organisation("XBank", {
             "shortName": "XBank",
-            "name": "Bank",
+            "name": "Bank", //difference is for overview sorting cases
             "activated": true,
             "requestTypes": []
         }),

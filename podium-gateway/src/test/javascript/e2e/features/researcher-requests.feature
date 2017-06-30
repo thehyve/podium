@@ -9,9 +9,9 @@ Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, RPREQ-3, BRPREQ-58)
 
         Examples:
             | requestTypes           | organisations                           |
-#            | Data                   | DataBank, MultiBank                     |
-#            | Images                 | ImageBank, MultiBank                    |
-#            | Material               | BioBank, MultiBank                      |
+            | Data                   | DataBank, MultiBank                     |
+            | Images                 | ImageBank, MultiBank                    |
+            | Material               | BioBank, MultiBank                      |
             | Data, Images, Material | DataBank, ImageBank, BioBank, MultiBank |
 
     @default

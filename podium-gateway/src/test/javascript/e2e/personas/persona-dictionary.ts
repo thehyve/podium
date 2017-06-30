@@ -8,6 +8,7 @@
  * See the file LICENSE in the root of this repository.
  */
 import { Persona } from './templates';
+import { OrganisationAuthorityOptions } from '../../../../main/webapp/app/shared/authority/authority.constants';
 
 /*
  * pages must be added to this dictionary for the director class to find them.
@@ -150,7 +151,7 @@ function initPersonaDictionary() {
             "Other specialism": "Other specialism",
             "authority": [{
                 orgShortName: "VarnameBank",
-                role: "ROLE_ORGANISATION_ADMIN"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_ADMIN
             }],
             "emailVerified": true,
             "adminVerified": true,
@@ -170,7 +171,7 @@ function initPersonaDictionary() {
             "Other specialism": "some specialism",
             "authority": [{
                 orgShortName: "DataBank",
-                role: "ROLE_ORGANISATION_COORDINATOR"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
             }],
             "emailVerified": true,
             "adminVerified": true,
@@ -190,16 +191,16 @@ function initPersonaDictionary() {
             "Other specialism": "some specialism",
             "authority": [{
                 orgShortName: "DataBank",
-                role: "ROLE_ORGANISATION_COORDINATOR"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
             }, {
                 orgShortName: "ImageBank",
-                role: "ROLE_ORGANISATION_COORDINATOR"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
             }, {
                 orgShortName: "BioBank",
-                role: "ROLE_ORGANISATION_COORDINATOR"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
             }, {
                 orgShortName: "MultiBank",
-                role: "ROLE_ORGANISATION_COORDINATOR"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
             }],
             "emailVerified": true,
             "adminVerified": true,
@@ -219,16 +220,16 @@ function initPersonaDictionary() {
             "Other specialism": "some specialism",
             "authority": [{
                 orgShortName: "DataBank",
-                role: "ROLE_REVIEWER"
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
             }, {
                 orgShortName: "ImageBank",
-                role: "ROLE_REVIEWER"
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
             }, {
                 orgShortName: "BioBank",
-                role: "ROLE_REVIEWER"
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
             }, {
                 orgShortName: "MultiBank",
-                role: "ROLE_REVIEWER"
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
             }],
             "emailVerified": true,
             "adminVerified": true,

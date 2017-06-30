@@ -474,7 +474,7 @@ export class AdminConsole {
 
     public constructRequest(persona: Persona, draft, request: Request) {
         return this.getAccount(persona).then((requester) => {
-            // draft['requester'] = requester;
+            draft['requester'] = requester;
             return this.getAvailableOrganisations(persona).then((availableOrganisations: {}[]) => {
                 return availableOrganisations.filter((org) => {
                     return request['organisations'].indexOf(org['shortName']) > -1;
@@ -489,20 +489,23 @@ export class AdminConsole {
 }
 
 function setRequestDetails(draft, request: Request) {
-    draft['requestDetail']['title'] = request['title'];
-    draft['requestDetail']['background'] = request['background'];
-    draft['requestDetail']['researchQuestion'] = request['research question'];
-    draft['requestDetail']['hypothesis'] = request['hypothesis'];
-    draft['requestDetail']['methods'] = request['methods'];
-    draft['requestDetail']['relatedRequestNumber'] = request['related request number'];
-    draft['requestDetail']['searchQuery'] = request['searchQuery'];
-    draft['requestDetail']['requestType'] = request['requestTypes'];
-    draft['requestDetail']['combinedRequest'] = request['combinedRequest'];
+    let requestDetails = draft['requestDetail'];
+    let principalInvestigator = requestDetails['principalInvestigator'];
+
+    requestDetails['title'] = request['title'];
+    requestDetails['background'] = request['background'];
+    requestDetails['researchQuestion'] = request['research question'];
+    requestDetails['hypothesis'] = request['hypothesis'];
+    requestDetails['methods'] = request['methods'];
+    requestDetails['relatedRequestNumber'] = request['related request number'];
+    requestDetails['searchQuery'] = request['searchQuery'];
+    requestDetails['requestType'] = request['requestTypes'];
+    requestDetails['combinedRequest'] = request['combinedRequest'];
     //principal Investigator
-    draft['requestDetail']['principalInvestigator']['name'] = request['piName'];
-    draft['requestDetail']['principalInvestigator']['email'] = request['piEmail'];
-    draft['requestDetail']['principalInvestigator']['jobTitle'] = request['piFunction'];
-    draft['requestDetail']['principalInvestigator']['affiliation'] = request['piAffiliation'];
+    principalInvestigator['name'] = request['piName'];
+    principalInvestigator['email'] = request['piEmail'];
+    principalInvestigator['jobTitle'] = request['piFunction'];
+    principalInvestigator['affiliation'] = request['piAffiliation'];
 }
 
 function parseJSON(string: string) {

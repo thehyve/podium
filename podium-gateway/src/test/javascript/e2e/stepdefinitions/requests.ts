@@ -10,9 +10,9 @@
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
-import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute } from './util';
+import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData } from './util';
 import { Organisation, Request } from '../data/templates';
-import { $$ } from 'protractor';
+import { $$, browser } from 'protractor';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -88,7 +88,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let request = director.getData(requestName)
         let persona = director.getPersona(personaName);
         let organisation = director.getData(orgShortName);
-        this.scenarioData = request; //store for next step
+        this.scenarioData = copyData(request); //store for next step
 
         return login(director, persona).then(() => {
             return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), request, organisation['name']).then((sufix) => {
@@ -211,7 +211,7 @@ defineSupportCode(({ Given, When, Then }) => {
     Given(/^'(.*)' needs revision$/, function (requestName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
-        this.scenarioData = JSON.parse(JSON.stringify(director.getData(requestName))); //store for next step
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
 
         return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
             return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
@@ -242,9 +242,11 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona('he');
         let orgShortName = this.scenarioData['organisations'][0];
 
-        return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
-            return promiseTrue(body['requestReview']['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
-        })
+        return browser.sleep(1000).then(() => {
+            return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return promiseTrue(body['requestReview']['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
+            })
+        });
     });
 
     Then(/^the revision for '(.*)' is saved$/, function (requestName): Promise<any> {
@@ -255,8 +257,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona('he');
         let request = director.getData(requestName);
 
-        return adminConsole.getRequest(director.getPersona('he'), 'Revision', 'requester', request, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
-
+        return adminConsole.getRequest(persona, 'Revision', 'requester', request, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
             let revisedRequest = this.scenarioData;
             let revisionDetail = body['revisionDetail'];
 
