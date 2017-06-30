@@ -1,4 +1,4 @@
-Feature: Organization coordinators can manage requests for their organization (BRPREQ-23, BRPREQ-158)
+Feature: Organization coordinators can manage requests for their organization (BRPREQ-23, BRPREQ-158, BRPREQ-56)
 
     @default
     @request
@@ -12,24 +12,49 @@ Feature: Organization coordinators can manage requests for their organization (B
     Scenario: BRPREQ-27, As an organisation coordinator I want to send a request to review
         Given Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         When he sends the request for review
-        Then the request is in 'Review'
+        Then the request is in Review with status 'Review'
 
     @default
     @request
     Scenario: BRPREQ-158, As an organisation coordinator I want to reject a request
         Given Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         When he rejects the request
-        Then the request is Rejected
+        Then the request is closed with outcome 'Rejected'
 
     @default
     @request
     Scenario: BRPREQ-158, As an organisation coordinator I want to send a request back for revision
         Given Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         When he sends the request back for revision
-        Then the request is in 'Revision'
+        Then the request is in Review with status 'Revision'
 
     @default
     @request
     Scenario: BRPREQ-158 As an organisation coordinator I want to have a request details page
         Given Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         Then the request cannot be edited
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to reject a request that is in Review
+        Given 'Request02' needs review
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he rejects the request
+        Then the request is closed with outcome 'Rejected'
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to send a request back for revision that is in Review
+        Given 'Request02' needs review
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he sends the request back for revision
+        Then the request is in Review with status 'Revision'
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to Approve a request that is in Review
+        Given 'Request02' needs review
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he approves the request
+        Then the request has the status 'Approved'
+

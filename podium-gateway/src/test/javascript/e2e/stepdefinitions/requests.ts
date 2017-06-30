@@ -213,6 +213,16 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
+    Given(/^'(.*)' needs review$/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request);
+        })
+    });
+
     When(/^(.*) revises and '(.*)s' the request$/, function (personaName, action): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
@@ -227,7 +237,21 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    Then(/^the request is in '(.*)'$/, function (requestState): Promise<any> {
+    Then(/^the request is in Review with status '(.*)'$/, function (requestState): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let persona = director.getPersona('he');
+        let orgShortName = this.scenarioData['organisations'][0];
+
+        return browser.sleep(1000).then(() => {
+            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return promiseTrue((body['status'] == 'Review') && (body['requestReview']['status'] == requestState), 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
+            })
+        });
+    });
+
+    Then(/^the request has the status '(.*)'$/, function (requestState): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -236,12 +260,12 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return browser.sleep(1000).then(() => {
             return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
-                return promiseTrue(body['requestReview']['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
+                return promiseTrue(body['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
             })
         });
     });
 
-    Then(/^the request is Rejected$/, function (): Promise<any> {
+    Then(/^the request is closed with outcome '(.*)'$/, function (outCome): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -249,8 +273,8 @@ defineSupportCode(({ Given, When, Then }) => {
         let orgShortName = this.scenarioData['organisations'][0];
 
         return browser.sleep(1000).then(() => {
-            return adminConsole.getRequest(persona, 'Rejected', roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
-                return promiseTrue(body['requestReview']['status'] == 'Closed', 'request ' + body['requestDetail']['title'] + ' is not ' + 'Closed')
+            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return promiseTrue((body['status'] == 'Closed') && body['outcome'] == outCome, 'request ' + body['requestDetail']['title'] + ' is not ' + 'Closed')
             })
         });
     });
@@ -291,6 +315,24 @@ defineSupportCode(({ Given, When, Then }) => {
         return director.clickOn('validationCheck').then(() => {
             return director.clickOn('validate')
         })
+    });
+
+    When(/^(.*) approves the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('approve')
+    });
+
+    When(/^(.*) closes the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('close')
+    });
+
+    When(/^(.*) starts delivery on the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('startDelivery')
     });
 
     When(/^(.*) rejects the request$/, function (personaName): Promise<any> {
