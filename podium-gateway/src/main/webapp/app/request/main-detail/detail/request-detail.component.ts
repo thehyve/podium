@@ -282,6 +282,10 @@ export class RequestDetailComponent implements OnDestroy {
         return this.request.relatedRequests && this.request.relatedRequests.length > 0;
     }
 
+    hasReviewRounds(): boolean {
+        return this.request.reviewRounds && this.request.reviewRounds.length > 0;
+    }
+
     onSuccess(response: Response) {
         this.request = response.json();
         this.isUpdating = false;

@@ -70,7 +70,7 @@
                 </dd>
             </dl>
 
-            <div *ngIf="hasRelatedRequests()">
+            <div *ngIf="hasRelatedRequests()" class="request-action-wrapper">
                 <h3 jhiTranslate="request.relatedRequests">Related requests</h3>
                 <table class="table">
                     <thead>
@@ -105,7 +105,7 @@
 
             <pdm-request-review-panel [reviewRounds]="request.reviewRounds"
                                       [request]="request"
-                                      *ngIf="isRequestCoordinator() || isRequestReviewer()">
+                                      *ngIf="hasReviewRounds() && (isRequestCoordinator() || isRequestReviewer())">
             </pdm-request-review-panel>
 
             <pdm-request-delivery-panel [request]="request" *ngIf="request">
