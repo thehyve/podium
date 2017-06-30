@@ -14,6 +14,7 @@ import { EventManager, JhiLanguageService } from 'ng-jhipster';
 import { UserModalService } from './user-modal.service';
 import { JhiLanguageHelper, User, UserService } from '../../../shared';
 import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
+import { RouterHelper } from '../../../shared/util/router-helper';
 
 @Component({
     selector: 'pdm-user-mgmt-dialog',
@@ -32,7 +33,6 @@ export class UserMgmtDialogComponent implements OnInit {
         private languageHelper: JhiLanguageHelper,
         private userService: UserService,
         private eventManager: EventManager,
-        private activatedRoute: ActivatedRoute,
         private router: Router
     ) {}
 
@@ -48,7 +48,7 @@ export class UserMgmtDialogComponent implements OnInit {
 
     clear() {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([this.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
+        this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     save() {
@@ -69,15 +69,11 @@ export class UserMgmtDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: 'userListModification', content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(result);
-        this.router.navigate([this.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
+        this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    protected getNavUrlForRouterPopup(router: Router) {
-        return this.router.url.split(/\(/)[0];
     }
 }
 
