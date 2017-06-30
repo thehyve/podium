@@ -29,9 +29,9 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     Request findOneByUuid(UUID requestUuid);
 
-    @Query("select distinct r from Request r" +
-        " join r.organisations o" +
-        " where o in :organisations")
+    @Query(value = "select r from Request r where r.id" +
+        " in (select r.id from Request r join r.organisations o" +
+        " where o in :organisations)")
     Page<Request> findAllByOrganisations(
         @Param("organisations") Set<UUID> organisations,
         Pageable pageable);
@@ -45,11 +45,11 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
         @Param("status") RequestStatus status,
         Pageable pageable);
 
-    @Query("select distinct r from Request r" +
-        " join r.organisations o" +
+    @Query(value = "select r from Request r where r.id" +
+        " in (select r.id from Request r join r.organisations o" +
         " where r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Review" +
         " and r.requestReviewProcess.status = :requestReviewStatus" +
-        " and o in :organisations")
+        " and o in :organisations)")
     Page<Request> findAllByOrganisationsAndRequestReviewStatus(
         @Param("organisations") Set<UUID> organisations,
         @Param("requestReviewStatus") RequestReviewStatus requestReviewStatus,

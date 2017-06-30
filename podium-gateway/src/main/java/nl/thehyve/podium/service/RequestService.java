@@ -218,8 +218,6 @@ public class RequestService {
         return getCountsForOrganisations(organisationUuids);
     }
 
-
-
     /**
      *  Get a request by UUID
      *
