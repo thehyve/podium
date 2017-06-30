@@ -285,6 +285,8 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryCancelled", context);
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
+        String subject = messageSource.getMessage("email.requesterDeliveryCancelled.title", args, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
