@@ -10,9 +10,7 @@
 
 <div *ngIf="requestDetails">
     <div [ngSwitch]="isInRevision">
-
         <div *ngSwitchCase="false">
-
             <dl>
                 <dt><span jhiTranslate="request.detail.title">Title</span></dt>
                 <dd>
@@ -126,10 +124,6 @@
             </pdm-request-action-toolbar>
         </div>
 
-        <div>
-            <pdm-request-form *ngSwitchCase="true"
-                [isInRevision]="isInRevision">
-            </pdm-request-form>
-        </div>
+        <pdm-request-form *ngSwitchCase="true" [isInRevision]="isInRevision"></pdm-request-form>
     </div>
 </div>

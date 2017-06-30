@@ -275,9 +275,9 @@
         },
         "linkedRequest": {
             "title": "Linked request",
-            "researcher": "Linked request message for researcher.",
-            "organisationCoordinator": "Linked request message for org coor.",
-            "reviewer": "Linked request message for reviewer."
+            "researcher": "This is a linked request composed of different data types from different organizations from the same patient selection.",
+            "organisationCoordinator": "This is a linked request, the other organization(s) have also received a request, please contact the other collaborating organization(s) to discuss the handling of the request.",
+            "reviewer": ""
         }
 
     }
