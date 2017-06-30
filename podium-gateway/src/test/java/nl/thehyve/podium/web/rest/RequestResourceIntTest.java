@@ -141,7 +141,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
             Assert.assertEquals(1, requests.size());
             for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
                 Request reqObj = requestRepository.findOneByUuid(req.getUuid());
                 Assert.assertEquals(1, reqObj.getHistoricEvents().size());
             }
@@ -220,7 +220,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
             Assert.assertEquals(3, requests.size());
             for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
             }
         });
     }
@@ -279,7 +279,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
             Assert.assertEquals(1, requests.size());
             for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
             }
         });
 
@@ -299,7 +299,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
             Assert.assertEquals(3, requests.size());
             for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
             }
         });
 
@@ -319,7 +319,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
             Assert.assertEquals(2, requests.size());
             for(RequestRepresentation req: requests) {
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
+                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
             }
         });
     }
@@ -409,8 +409,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
             Assert.assertEquals(1, requests.size());
             for(RequestRepresentation req: requests) {
                 Assert.assertEquals(requestUuid, req.getUuid());
-                Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                Assert.assertEquals(RequestReviewStatus.Review, req.getRequestReview().getStatus());
+                Assert.assertEquals(OverviewStatus.Review, req.getStatus());
             }
         });
     }
@@ -466,9 +465,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result rejected request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-
-                Assert.assertEquals(ReviewProcessOutcome.Rejected, requestResult.getRequestReview().getDecision());
-                Assert.assertEquals(RequestOutcome.Rejected, requestResult.getOutcome());
+                Assert.assertEquals(OverviewStatus.Rejected, requestResult.getStatus());
             })
             .andExpect(status().isOk());
     }
@@ -489,7 +486,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+                Assert.assertEquals(OverviewStatus.Review, requestResult.getStatus());
             });
 
         MessageRepresentation rejectionMessage = new MessageRepresentation();
@@ -506,7 +503,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
 
-                Assert.assertEquals(ReviewProcessOutcome.Rejected, requestResult.getRequestReview().getDecision());
+                Assert.assertEquals(OverviewStatus.Rejected, requestResult.getStatus());
             });
     }
 
@@ -526,11 +523,11 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+                Assert.assertEquals(OverviewStatus.Review, requestResult.getStatus());
 
                 // Expect one review round to have been created
-                Assert.assertEquals(requestResult.getReviewRounds().size(), 1);
-                Assert.assertNull(requestResult.getReviewRounds().get(0).getEndDate());
+                Assert.assertNotNull(requestResult.getReviewRound());
+                Assert.assertNull(requestResult.getReviewRound().getEndDate());
             });
     }
 
@@ -565,8 +562,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result closed request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestStatus.Closed, requestResult.getStatus());
-                Assert.assertEquals(RequestOutcome.Approved, requestResult.getOutcome());
+                Assert.assertEquals(OverviewStatus.Closed_Approved, requestResult.getStatus());
             });
 
         Thread.sleep(1000);
@@ -594,7 +590,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result revised request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestReviewStatus.Revision, requestResult.getRequestReview().getStatus());
+                Assert.assertEquals(OverviewStatus.Revision, requestResult.getStatus());
             });
     }
 
@@ -606,8 +602,8 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         // Send for review
         request = validateRequest(request, coordinator1);
 
-        Assert.assertThat(request.getReviewRounds(), hasSize(1));
-        ReviewRoundRepresentation reviewRound = request.getReviewRounds().get(0);
+        Assert.assertNotNull(request.getReviewRound());
+        ReviewRoundRepresentation reviewRound = request.getReviewRound();
 
         ReviewFeedbackRepresentation reviewFeedback = reviewRound.getReviewFeedback().stream()
             .filter(feedback -> feedback.getReviewer().getUuid().equals(reviewerUuid1))
@@ -629,13 +625,13 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 // result still contains one review round
-                Assert.assertThat(requestResult.getReviewRounds(), hasSize(1));
+                Assert.assertNotNull(requestResult.getReviewRound());
                 // the review round contains the submitted feedback
-                Assert.assertTrue(requestResult.getReviewRounds().get(0).getReviewFeedback().stream().anyMatch(feedback ->
+                Assert.assertTrue(requestResult.getReviewRound().getReviewFeedback().stream().anyMatch(feedback ->
                     feedback.getUuid().equals(reviewFeedback.getUuid())
                 ));
                 // the submitted feedback has advice value 'Approved'
-                requestResult.getReviewRounds().get(0).getReviewFeedback().stream().forEach(feedback -> {
+                requestResult.getReviewRound().getReviewFeedback().stream().forEach(feedback -> {
                     if (feedback.getUuid().equals(reviewFeedback.getUuid())) {
                         Assert.assertEquals(ReviewProcessOutcome.Approved, feedback.getAdvice());
                     }
@@ -677,8 +673,8 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         // Send for review
         request = validateRequest(request, coordinator1);
 
-        Assert.assertThat(request.getReviewRounds(), hasSize(1));
-        ReviewRoundRepresentation reviewRound = request.getReviewRounds().get(0);
+        Assert.assertNotNull(request.getReviewRound());
+        ReviewRoundRepresentation reviewRound = request.getReviewRound();
 
         ReviewFeedbackRepresentation reviewFeedback = reviewRound.getReviewFeedback().stream()
             .filter(feedback -> feedback.getReviewer().getUuid().equals(reviewerUuid1))

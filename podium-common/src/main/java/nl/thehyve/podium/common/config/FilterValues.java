@@ -64,6 +64,7 @@ public class FilterValues {
         statusFilters.put(OverviewStatus.Partially_Delivered,   new FilterValues(RequestOutcome.Partially_Delivered));
         statusFilters.put(OverviewStatus.Rejected,              new FilterValues(RequestOutcome.Rejected));
         statusFilters.put(OverviewStatus.Cancelled,             new FilterValues(RequestOutcome.Cancelled));
+        statusFilters.put(OverviewStatus.Closed_Approved,       new FilterValues(RequestOutcome.Approved));
     }
 
     public static FilterValues forStatus(OverviewStatus status) {

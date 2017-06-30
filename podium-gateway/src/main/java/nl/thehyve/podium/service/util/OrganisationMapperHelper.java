@@ -27,34 +27,34 @@ public class OrganisationMapperHelper {
     @Autowired
     OrganisationClientService organisationClientService;
 
-    public UUID organisationDTOtoUUID(OrganisationRepresentation organisationRepresentation) {
+    public static UUID organisationDTOtoUUID(OrganisationRepresentation organisationRepresentation) {
         return organisationRepresentation.getUuid();
     }
 
-    public List<UUID> organisationDTOsToUuids(List<OrganisationRepresentation> organisationRepresentations) {
-        return organisationRepresentations.stream().map(this::organisationDTOtoUUID).collect(Collectors.toList());
+    public static List<UUID> organisationDTOsToUuids(List<OrganisationRepresentation> organisationRepresentations) {
+        return organisationRepresentations.stream().map(OrganisationMapperHelper::organisationDTOtoUUID).collect(Collectors.toList());
     }
 
-    @DefaultOrganisation
-    @IterableMapping(qualifiedBy = DefaultOrganisation.class)
+    @MinimalMapper
+    @IterableMapping(qualifiedBy = MinimalMapper.class)
     public List<OrganisationRepresentation> uuidsToDefaultOrganisationDTOs(Set<UUID> uuids) {
         return uuids.stream().map(this::uuidToOrganisationDTO).collect(Collectors.toList());
     }
 
-    @ExtendedOrganisation
-    @IterableMapping(qualifiedBy = ExtendedOrganisation.class)
+    @DefaultMapper
+    @IterableMapping(qualifiedBy = DefaultMapper.class)
     public List<OrganisationRepresentation> uuidsToExtendedOrganisationDTOs(Set<UUID> uuids) {
         return uuids.stream().map(this::uuidToRemoteOrganisationDTO).collect(Collectors.toList());
     }
 
-    @DefaultOrganisation
+    @MinimalMapper
     OrganisationRepresentation uuidToOrganisationDTO(UUID uuid) {
         OrganisationRepresentation organisationRepresentation = new OrganisationRepresentation();
         organisationRepresentation.setUuid(uuid);
         return organisationRepresentation;
     }
 
-    @ExtendedOrganisation
+    @DefaultMapper
     OrganisationRepresentation uuidToRemoteOrganisationDTO(UUID uuid) {
         if (uuid == null) {
             return null;

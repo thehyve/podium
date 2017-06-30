@@ -17,7 +17,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Mapper annotation indicating the mapping that
+ * only includes minimal uuid, name and type information.
+ */
 @Qualifier
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface ExtendedRequest {}
+public @interface MinimalMapper {}

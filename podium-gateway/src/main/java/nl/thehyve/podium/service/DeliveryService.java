@@ -8,10 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
-import nl.thehyve.podium.common.enumeration.DeliveryStatus;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.enumeration.RequestType;
+import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -120,8 +117,10 @@ public class DeliveryService {
      */
     public RequestRepresentation startDelivery(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        RequestStatus sourceStatus = RequestAccessCheckHelper.checkStatus(request, RequestStatus.Approved);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Approved);
+        OverviewStatus sourceStatus = request.getOverviewStatus();
         List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
+        log.warn("START DELIVERY: #requestTypes: {}", request.getRequestDetail().getRequestType().size());
         for(RequestType type: request.getRequestDetail().getRequestType()) {
             DeliveryProcess deliveryProcess = deliveryProcessService.start(user, type);
             request.addDeliveryProcess(deliveryProcess);
@@ -131,7 +130,7 @@ public class DeliveryService {
         request.setStatus(RequestStatus.Delivery);
         request = requestRepository.save(request);
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, null);
-        return requestMapper.extendedRequestToRequestDTO(request);
+        return requestMapper.detailsRequestToRequestDTO(request);
     }
 
     /**

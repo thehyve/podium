@@ -1,8 +1,7 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
-import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
@@ -43,15 +42,9 @@ class StatusUpdateEventService {
         publisher.publishEvent(event);
     }
 
-    void publishStatusUpdate(AuthenticatedUser user, RequestStatus sourceStatus, Request request, MessageRepresentation message) {
+    void publishStatusUpdate(AuthenticatedUser user, OverviewStatus sourceStatus, Request request, MessageRepresentation message) {
         StatusUpdateEvent event =
-            new StatusUpdateEvent<>(user, sourceStatus, request.getStatus(), request.getUuid(), message);
-        persistAndPublishEvent(request, event);
-    }
-
-    void publishReviewStatusUpdate(AuthenticatedUser user, RequestReviewStatus sourceStatus, Request request, MessageRepresentation message) {
-        StatusUpdateEvent event =
-            new StatusUpdateEvent<>(user, sourceStatus, request.getRequestReviewProcess().getStatus(), request.getUuid(), message);
+            new StatusUpdateEvent<>(user, sourceStatus, request.getOverviewStatus(), request.getUuid(), message);
         persistAndPublishEvent(request, event);
     }
 

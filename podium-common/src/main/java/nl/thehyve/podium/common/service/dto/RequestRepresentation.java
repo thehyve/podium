@@ -11,6 +11,7 @@ package nl.thehyve.podium.common.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableRequest;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 
@@ -32,10 +33,7 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private UserRepresentation requester;
 
-    @NotNull
-    private RequestStatus status;
-
-    private RequestOutcome outcome;
+    private OverviewStatus status;
 
     private List<OrganisationRepresentation> organisations = new ArrayList<>();
 
@@ -50,9 +48,9 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private ZonedDateTime lastModifiedDate;
 
-    private List<PodiumEventRepresentation> historicEvents;
+    private PodiumEventRepresentation latestEvent;
 
-    private List<ReviewRoundRepresentation> reviewRounds;
+    private ReviewRoundRepresentation reviewRound;
 
     private Set<RequestRepresentation> relatedRequests;
 

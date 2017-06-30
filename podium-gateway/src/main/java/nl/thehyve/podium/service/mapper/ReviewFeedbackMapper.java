@@ -12,9 +12,8 @@ package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
 import nl.thehyve.podium.domain.ReviewFeedback;
-import nl.thehyve.podium.service.util.ExtendedUser;
+import nl.thehyve.podium.service.util.DefaultMapper;
 import nl.thehyve.podium.service.util.UserMapperHelper;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -36,7 +35,7 @@ public interface ReviewFeedbackMapper {
     @Mappings({
         @Mapping(source = "summary", target = "message.summary"),
         @Mapping(source = "description", target = "message.description"),
-        @Mapping(target = "reviewer", qualifiedBy = ExtendedUser.class)
+        @Mapping(target = "reviewer", qualifiedBy = DefaultMapper.class)
     })
     ReviewFeedbackRepresentation reviewFeedbackToReviewFeedbackRepresentation(ReviewFeedback reviewFeedback);
 

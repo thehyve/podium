@@ -13,7 +13,9 @@ import lombok.Setter;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestOutcome;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
@@ -66,6 +68,12 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Enumerated(EnumType.STRING)
     @Column(name = "outcome", nullable = false)
     private RequestOutcome outcome = RequestOutcome.None;
+
+    @Transient
+    public OverviewStatus getOverviewStatus() {
+        RequestReviewStatus reviewStatus = requestReviewProcess == null ? null : requestReviewProcess.getStatus();
+        return OverviewStatus.forStatus(status, reviewStatus, outcome);
+    }
 
     @ElementCollection(targetClass = java.util.UUID.class)
     @CollectionTable(

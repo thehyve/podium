@@ -7,11 +7,10 @@
 
 package nl.thehyve.podium.service.mapper;
 
-import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.domain.RequestDetail;
 import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
-import nl.thehyve.podium.service.util.DefaultRequestDetail;
-import nl.thehyve.podium.service.util.MinimalRequest;
+import nl.thehyve.podium.service.util.DefaultMapper;
+import nl.thehyve.podium.service.util.MinimalMapper;
 import nl.thehyve.podium.service.util.SafeRequestDetail;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,10 +22,10 @@ import java.util.HashSet;
 @Mapper(componentModel = "spring", uses = { PrincipalInvestigatorMapper.class })
 public abstract class RequestDetailMapper {
 
-    @DefaultRequestDetail
+    @DefaultMapper
     public abstract RequestDetailRepresentation requestDetailToRequestDetailRepresentation(RequestDetail requestDetail);
 
-    @MinimalRequest
+    @MinimalMapper
     public RequestDetailRepresentation mapRequestTypeOnly(RequestDetail requestDetail) {
         RequestDetailRepresentation result = new RequestDetailRepresentation();
         if (requestDetail.getRequestType() != null) {
@@ -35,10 +34,10 @@ public abstract class RequestDetailMapper {
         return result;
     }
 
-    @DefaultRequestDetail
+    @DefaultMapper
     public abstract RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 
-    @DefaultRequestDetail
+    @DefaultMapper
     @Mappings({
         @Mapping(target = "id", ignore = true),
         @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
