@@ -21,6 +21,10 @@ import OrganisationsDetailsPage = require("./organisations-details.page")
 import OrganisationsEditPage = require("./organisations-edit.page")
 import CreateOrganisationPage = require("./create-organisation.page")
 import NewRequestsPage = require("./new-requests.page")
+import RequestsManagement = require("./requests-management.page")
+import RequestsDetails = require("./requests-details.page")
+import ReviseRequests = require("./revise-requests.page")
+import OrganisationRequestsManagement = require("./requests-management-org.page")
 
 
 /*
@@ -43,6 +47,10 @@ function initPages() {
     PageDictionary['organisation edit'] = new OrganisationsEditPage();
     PageDictionary['create organisation'] = new CreateOrganisationPage();
     PageDictionary['new requests'] = new NewRequestsPage();
+    PageDictionary['request overview'] = new RequestsManagement();
+    PageDictionary['request details'] = new RequestsDetails();
+    PageDictionary['revise requests'] = new ReviseRequests();
+    PageDictionary['organisation request overview'] = new OrganisationRequestsManagement();
 
     return PageDictionary;
 }

@@ -14,11 +14,8 @@ Feature: bbmri admins can create and manage organisations in the system (BRPREQ-
 
         Examples:
             | sortBy    | organisationOrder            |
-#            | Nothing   | VarnameBank, SomeBank, XBank |
             | Name      | XBank, SomeBank, VarnameBank |
             | ShortName | SomeBank, VarnameBank, XBank |
-#            | adminNames       |                   |
-#            | coordinatorNames |                   |
 
     @default
     Scenario: An organisation has a details page
