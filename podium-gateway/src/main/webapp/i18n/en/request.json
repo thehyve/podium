@@ -277,7 +277,7 @@
             "title": "Linked request",
             "researcher": "This is a linked request composed of different data types from different organizations from the same patient selection.",
             "organisationCoordinator": "This is a linked request, the other organization(s) have also received a request, please contact the other collaborating organization(s) to discuss the handling of the request.",
-            "reviewer": ""
+            "reviewer": "This is a linked request composed of different data types from different organizations from the same patient selection."
         }
 
     }
