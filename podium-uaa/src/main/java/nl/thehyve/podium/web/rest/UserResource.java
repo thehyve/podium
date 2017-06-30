@@ -11,14 +11,17 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
+import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
@@ -87,10 +90,10 @@ public class UserResource {
     private UserService userService;
 
     @Autowired
-    private UserSearchRepository userSearchRepository;
+    private UserMapper userMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private SecurityService securityService;
 
     /**
      * POST  /users  : Creates a new user.
@@ -187,6 +190,49 @@ public class UserResource {
         List<ManagedUserRepresentation> managedUserRepresentations = userMapper.usersToManagedUserVMs(page.getContent());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
         return new ResponseEntity<>(managedUserRepresentations, headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /users/organisations : get users associated with any of the organisations the current user
+     * is the admin for.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and with body all users
+     * @throws URISyntaxException if the pagination headers couldn't be generated
+     */
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN})
+    @GetMapping("/users/organisations")
+    @Timed
+    public ResponseEntity<List<ManagedUserRepresentation>> getOrganisationUsers(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+        UUID[] organisationUuids = AccessCheckHelper.getOrganisationUuidsForUserAndRole(
+            securityService.getCurrentUser(), AuthorityConstants.ORGANISATION_ADMIN);
+        Page<User> page = userService.getUsersForOrganisations(pageable, organisationUuids);
+        List<ManagedUserRepresentation> managedUserVMs = userMapper.usersToManagedUserVMs(page.getContent());
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/organisations");
+        return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /users/organisations/:uuid : get users associated with the organisation.
+     * Only available for admins of the organisation.
+     *
+     * @param uuid the uuid of the organisation to fetch the users for
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and with body all users
+     * @throws URISyntaxException if the pagination headers couldn't be generated
+     */
+    @SecuredByOrganisation(authorities = {AuthorityConstants.ORGANISATION_ADMIN})
+    @GetMapping("/users/organisations/{uuid}")
+    @Timed
+    public ResponseEntity<List<ManagedUserRepresentation>> getUsersForOrganisation(
+        @OrganisationUuidParameter @PathVariable UUID uuid,
+        @ApiParam Pageable pageable)
+        throws URISyntaxException {
+        Page<User> page = userService.getUsersForOrganisations(pageable, uuid);
+        List<ManagedUserRepresentation> managedUserVMs = userMapper.usersToManagedUserVMs(page.getContent());
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/organisations/" + uuid.toString());
+        return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
     }
 
     /**

@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,8 +43,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findOneByDeletedIsFalseAndUuid(UUID uuid);
 
-    @Query(value = "select distinct user from User user left join fetch user.roles r left join fetch r.authority where user.deleted = false",
+    @Query(value = "select distinct user from User user left join fetch user.roles r left join fetch r.authority where user.deleted = false and not user.login = 'system'",
         countQuery = "select count(user) from User user where user.deleted = false and not user.login = 'system'")
     Page<User> findAllWithAuthorities(Pageable pageable);
+
+    @Query(value = "select distinct user from User user " +
+        "left join fetch user.roles r " +
+        "left join r.organisation o " +
+        "where user.deleted = false " +
+        "and o.uuid in :organisationUuids",
+        countQuery = "select count(distinct user) from User user " +
+            "left join user.roles r " +
+            "left join r.organisation o " +
+            "where user.deleted = false " +
+            "and o.uuid in :organisationUuids")
+    Page<User> findAllByOrganisations(@Param("organisationUuids") Collection<UUID> organisationUuids, Pageable pageable);
 
 }
