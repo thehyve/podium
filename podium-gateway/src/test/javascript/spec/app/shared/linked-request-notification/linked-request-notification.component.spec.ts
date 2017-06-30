@@ -64,16 +64,10 @@ describe('LinkedRequestNotificationComponent (templateUrl)', () => {
 
     describe('OnDestroy', () => {
         it('should unsubscribe to request change', () => {
-            spyOn(requestService.onRequestUpdate, 'unsubscribe');
-            comp.ngOnDestroy();
-            expect(requestService.onRequestUpdate.unsubscribe).not.toHaveBeenCalled();
-        });
-
-        it('should unsubscribe to request change', () => {
-            spyOn(requestService.onRequestUpdate, 'unsubscribe');
             comp.requestSubscription = new Subscription();
+            spyOn(comp.requestSubscription, 'unsubscribe');
             comp.ngOnDestroy();
-            expect(requestService.onRequestUpdate.unsubscribe).not.toHaveBeenCalled();
+            expect(comp.requestSubscription.unsubscribe).toHaveBeenCalled();
         });
     });
 
