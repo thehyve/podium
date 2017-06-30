@@ -5,7 +5,7 @@ import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
@@ -15,9 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -115,7 +113,7 @@ public class NotificationService {
     @Async
     public void submissionNotificationToCoordinators(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for(OrganisationRepresentation organisation: request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
@@ -153,7 +151,7 @@ public class NotificationService {
     @Async
     public void revisionNotificationToCoordinators(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for(OrganisationRepresentation organisation: request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
@@ -170,7 +168,7 @@ public class NotificationService {
     @Async
     public void reviewNotificationToReviewers(UUID requestUuid) {
         RequestRepresentation request = requestService.findRequest(requestUuid);
-        for(OrganisationDTO organisation: request.getOrganisations()) {
+        for(OrganisationRepresentation organisation: request.getOrganisations()) {
             // Fetch organisation reviewers through Feign.
             List<UserRepresentation> reviewers
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.REVIEWER);
@@ -214,7 +212,7 @@ public class NotificationService {
      * @param deliveryProcess the delivery.
      */
     private void deliveryReceivedNotificationToCoordinators(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) {
-        for (OrganisationDTO organisation: request.getOrganisations()) {
+        for (OrganisationRepresentation organisation: request.getOrganisations()) {
             // Fetch organisation coordinators through Feign.
             List<UserRepresentation> coordinators
                 = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);

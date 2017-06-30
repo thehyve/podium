@@ -20,7 +20,7 @@ Feature: organisation admins can manage organisations in the system (BRPREQ-38)
             | blank user, blank user, blank user | Organisation administrator, Organisation coordinator, Reviewer |
 
     @default
-    Scenario Outline:
+    Scenario Outline: organisation admins can add requestTypes to organisations
         Given VarnameBank_Admin goes to the 'organisation edit' page for the organisation 'VarnameBank'
         When he indicates that '<types>' can be requested from 'VarnameBank'
         Then the organisation's data has changed

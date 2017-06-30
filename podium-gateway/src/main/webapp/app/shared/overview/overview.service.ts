@@ -52,7 +52,7 @@ export class OverviewService {
         this.activeStatus = requestStatus;
 
         // When we have to filter for Drafts
-        if (requestStatus === StatusSidebarOption.Draft && UserGroupAuthority.Requester) {
+        if (requestStatus === StatusSidebarOption.Draft) {
             return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
                 return res;
             });
@@ -93,14 +93,29 @@ export class OverviewService {
     /**
      * Fetch users using pagination and search parameters
      *
+     * @param userGroupAuthority the user group authority to fetch users for
      * @param requestOptions search parameters
      * @returns {Observable<Response>} the response
      */
     findUsersForOverview(
+        userGroupAuthority: UserGroupAuthority,
         requestOptions: any
     ): Observable<Response> {
         let options = HttpHelper.createRequestOption(requestOptions);
-        return this.http.get(`${this.resourceUrl}`, options);
+        let usersUrl;
+        switch (userGroupAuthority) {
+            case UserGroupAuthority.OrganisationAdmin:
+                usersUrl = `${this.resourceUrl}/organisations`;
+                break;
+            case UserGroupAuthority.BbmriAdmin:
+            case UserGroupAuthority.PodiumAdmin:
+                usersUrl = this.resourceUrl;
+                break;
+            default:
+                console.error('No user group authority set for this overview!');
+                return Observable.throw('No user group authority set for this overview!');
+        }
+        return this.http.get(`${usersUrl}`, options);
     }
 
     getRequestCountsForUserGroupAuthority(userGroupAuthority: UserGroupAuthority): Observable<Response> {

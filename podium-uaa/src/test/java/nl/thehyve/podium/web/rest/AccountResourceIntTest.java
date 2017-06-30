@@ -17,8 +17,8 @@ import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import nl.thehyve.podium.web.rest.vm.KeyAndPasswordVM;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.KeyAndPasswordRepresentation;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -169,7 +169,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterValid() throws Exception {
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("joe");
@@ -197,7 +197,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterInvalidLogin() throws Exception {
-        ManagedUserVM invalidUser = new ManagedUserVM();
+        ManagedUserRepresentation invalidUser = new ManagedUserRepresentation();
         setMandatoryFields(invalidUser);
         invalidUser.setId(null);
         invalidUser.setLogin("funky-log!n"); // invalid
@@ -221,7 +221,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterInvalidEmail() throws Exception {
-        ManagedUserVM invalidUser = new ManagedUserVM();
+        ManagedUserRepresentation invalidUser = new ManagedUserRepresentation();
         setMandatoryFields(invalidUser);
         invalidUser.setId(null);
         invalidUser.setLogin("bob");
@@ -260,7 +260,7 @@ public class AccountResourceIntTest {
             tooLongPassword.toString() // password larger than 1000 characters
         };
         for(String password: invalidPasswords) {
-            ManagedUserVM invalidUser = new ManagedUserVM();
+            ManagedUserRepresentation invalidUser = new ManagedUserRepresentation();
             setMandatoryFields(invalidUser);
             invalidUser.setId(null);
             invalidUser.setLogin("bob");
@@ -282,8 +282,8 @@ public class AccountResourceIntTest {
         }
     }
 
-    private ManagedUserVM duplicateManagedUserVM(ManagedUserVM original) {
-        ManagedUserVM duplicate = new ManagedUserVM();
+    private ManagedUserRepresentation duplicateManagedUserVM(ManagedUserRepresentation original) {
+        ManagedUserRepresentation duplicate = new ManagedUserRepresentation();
         duplicate.setId(original.getId());
         duplicate.setLogin(original.getLogin());
         duplicate.setPassword(original.getPassword());
@@ -304,7 +304,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterDuplicateLogin() throws Exception {
         // Good
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("alice");
@@ -316,7 +316,7 @@ public class AccountResourceIntTest {
         validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         // Duplicate login, different e-mail
-        ManagedUserVM duplicatedUser = duplicateManagedUserVM(validUser);
+        ManagedUserRepresentation duplicatedUser = duplicateManagedUserVM(validUser);
         duplicatedUser.setEmail("alicejr@example.com");
 
         // Good user
@@ -341,7 +341,7 @@ public class AccountResourceIntTest {
     @Transactional
     public void testRegisterDuplicateEmail() throws Exception {
         // Good
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("john");
@@ -353,7 +353,7 @@ public class AccountResourceIntTest {
         validUser.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
 
         // Duplicate e-mail, different login
-        ManagedUserVM duplicatedUser = duplicateManagedUserVM(validUser);
+        ManagedUserRepresentation duplicatedUser = duplicateManagedUserVM(validUser);
         duplicatedUser.setLogin("johnjr");
 
         // Good user
@@ -381,7 +381,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testRegisterAdminIsIgnored() throws Exception {
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");
@@ -407,7 +407,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testVerifyUserEmail() throws Exception {
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");
@@ -448,7 +448,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testVerifyUserByResetLink() throws Exception {
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");
@@ -484,13 +484,13 @@ public class AccountResourceIntTest {
                 assertThat(user.getResetKey() != null);
 
                 try {
-                    KeyAndPasswordVM keyAndPasswordVM = new KeyAndPasswordVM();
-                    keyAndPasswordVM.setKey(user.getResetKey());
-                    keyAndPasswordVM.setNewPassword(VALID_PASSWORD);
+                    KeyAndPasswordRepresentation keyAndPasswordRepresentation = new KeyAndPasswordRepresentation();
+                    keyAndPasswordRepresentation.setKey(user.getResetKey());
+                    keyAndPasswordRepresentation.setNewPassword(VALID_PASSWORD);
                     restMvc.perform(
                         post("/api/account/reset_password/finish")
                             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                            .content(TestUtil.convertObjectToJsonBytes(keyAndPasswordVM)))
+                            .content(TestUtil.convertObjectToJsonBytes(keyAndPasswordRepresentation)))
                         .andExpect(status().isOk());
                 } catch (Exception ex) { }
 
@@ -504,7 +504,7 @@ public class AccountResourceIntTest {
     @Test
     @Transactional
     public void testVerifyUserEmailInvalid() throws Exception {
-        ManagedUserVM validUser = new ManagedUserVM();
+        ManagedUserRepresentation validUser = new ManagedUserRepresentation();
         setMandatoryFields(validUser);
         validUser.setId(null);
         validUser.setLogin("badguy");

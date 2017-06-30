@@ -13,7 +13,9 @@ import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
@@ -21,6 +23,7 @@ import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.SummaryEntry;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
+import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
@@ -32,6 +35,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,6 +68,9 @@ public class RequestService {
 
     @Autowired
     private StatusUpdateEventService statusUpdateEventService;
+
+    @Autowired
+    private RequestReviewProcessService requestReviewProcessService;
 
     @PostConstruct
     private void init() {
@@ -104,6 +114,16 @@ public class RequestService {
             }
         }
         return result;
+    }
+
+    public static void validateRequest(RequestRepresentation request) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<RequestRepresentation>> requestConstraintViolations = validator.validate(request);
+        if (!requestConstraintViolations.isEmpty()) {
+            throw new InvalidRequest("Invalid request", requestConstraintViolations);
+        }
     }
 
     /**
@@ -216,6 +236,41 @@ public class RequestService {
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
         return getCountsForOrganisations(organisationUuids);
+    }
+
+    /**
+     * Submit the request by uuid.
+     *
+     * @param user the current user, submitting the request
+     * @param uuid the uuid of the request
+     * @return the updated request
+     * @throws ActionNotAllowed if the request is not in status 'Revision'.
+     */
+    public RequestRepresentation submitRevision(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
+        Request request = requestRepository.findOneByUuid(uuid);
+
+        log.debug("Access and status checks...");
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
+
+        log.debug("Validate new request data.");
+        request.setRequestDetail(request.getRevisionDetail());
+
+        RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
+        validateRequest(requestData);
+
+        // Update the request details with the updated revision details
+        requestRepository.save(request);
+
+        // Submit the request for validation by the organisation coordinator
+        requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
+
+        request = requestRepository.findOneByUuid(uuid);
+        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+
+        statusUpdateEventService.publishReviewStatusUpdate(user, RequestReviewStatus.Revision, request, null);
+
+        return requestRepresentation;
     }
 
     /**
@@ -426,8 +481,8 @@ public class RequestService {
      */
     public void deleteDraft(IdentifiableUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        AccessCheckHelper.checkRequester(user, request);
-        AccessCheckHelper.checkStatus(request, RequestStatus.Draft);
+        RequestAccessCheckHelper.checkRequester(user, request);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
         log.debug("Request to delete Request : {}", uuid);
         deleteRequest(request.getId());
     }

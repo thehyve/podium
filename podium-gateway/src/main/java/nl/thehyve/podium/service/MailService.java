@@ -9,7 +9,7 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.service.AbstractMailService;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class MailService extends AbstractMailService {
      */
     @Async
     public void sendSubmissionNotificationToCoordinators(
-        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> coordinators
+        RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             request, organisation, coordinators == null ? null : coordinators.size());
@@ -108,7 +108,7 @@ public class MailService extends AbstractMailService {
      */
     @Async
     public void sendRequestRevisionSubmissionNotificationToCoordinators(
-        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> coordinators
+        RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             request, organisation, coordinators == null ? null : coordinators.size());
@@ -128,7 +128,7 @@ public class MailService extends AbstractMailService {
 
     @Async
     public void sendRequestReviewNotificationToReviewers(
-        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> reviewers
+        RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> reviewers
     ) {
         log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
             request, organisation, reviewers == null ? null : reviewers.size());
@@ -227,7 +227,7 @@ public class MailService extends AbstractMailService {
     @Async
     public void sendDeliveryReceivedNotificationToCoordinators(
         RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess,
-        OrganisationDTO organisation, List<UserRepresentation> coordinators) {
+        OrganisationRepresentation organisation, List<UserRepresentation> coordinators) {
         log.info("Notifying coordinators: delivery = {}, organisation = {}, #coordinators = {}",
             deliveryProcess, organisation, coordinators == null ? null : coordinators.size());
         for (UserRepresentation user: coordinators) {

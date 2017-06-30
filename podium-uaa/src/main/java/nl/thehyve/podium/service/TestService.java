@@ -23,8 +23,8 @@ import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import nl.thehyve.podium.service.representation.TestRoleRepresentation;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.service.dto.TestRoleRepresentation;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,7 +199,7 @@ public class TestService {
      */
     public User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
         log.info("Creating user {}", name);
-        ManagedUserVM userVM = new ManagedUserVM();
+        ManagedUserRepresentation userVM = new ManagedUserRepresentation();
         userVM.setLogin("test_" + name);
         userVM.setEmail("test_" + name + "@localhost");
         userVM.setFirstName("test_firstname_"+name);

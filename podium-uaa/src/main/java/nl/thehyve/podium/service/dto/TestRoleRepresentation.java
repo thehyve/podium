@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.service.representation;
+package nl.thehyve.podium.service.dto;
 
 import lombok.Data;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;

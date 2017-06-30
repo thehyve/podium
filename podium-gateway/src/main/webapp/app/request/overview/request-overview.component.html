@@ -80,35 +80,35 @@
                             <span class="material-icons md-18"
                                   *ngIf="getIconForLinkedRequest(request.requestDetail.combinedRequest)">link</span>
                         </td>
-                        <td>
+                        <td class="test-id">
                             {{request.id}}
                         </td>
-                        <td>
+                        <td class="test-title">
                             {{request.requestDetail.title || '-'}}
                         </td>
-                        <td *ngIf="isActiveStatus(statusSidebarOptions.All)">
+                        <td class="test-status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
                             {{request.status}}
                             {{ request.status == 'Review' ? '(' + request.requestReview.status + ')' : '' }}
                         </td>
                         <td>
-                            <ul class="overview-list-cell">
+                            <ul class="overview-list-cell test-requestTypes">
                                 <li *ngFor="let requestType of request.requestDetail.requestType">
                                     <span class="material-icons md-18">
                                         {{ getIconForRequestType(requestType)}}
                                     </span>
-                                    {{requestType}}
+                                    <span class="test-requestType-text">{{requestType}}</span>
                                 </li>
                             </ul>
                         </td>
                         <td>
-                            <ul class="overview-list-cell" [ngClass]="{'draft-request': request.status == 'Draft'}">
+                            <ul class="overview-list-cell test-organisations" [ngClass]="{'draft-request': request.status == 'Draft'}">
                                 <li *ngFor="let organisation of request.organisations">{{organisation.name}}</li>
                             </ul>
                         </td>
-                        <td *ngIf="!isResearcherRoute()">
+                        <td class="test-requesterName" *ngIf="!isResearcherRoute()">
                             {{ request.requester.firstName }} {{ request.requester.lastName }}
                         </td>
-                        <td *ngIf="!isResearcherRoute()">
+                        <td class="test-piName" *ngIf="!isResearcherRoute()">
                             {{request.requestDetail.principalInvestigator.name || '-'}}
                         </td>
                         <td>
@@ -116,17 +116,17 @@
                         </td>
                         <td class="text-xs-right">
                             <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
-                                <button type="button" class="btn btn-primary btn-sm"  (click)="editRequest(request)">
+                                <button type="button" class="btn btn-primary btn-sm test-edit-btn"  (click)="editRequest(request)">
                                     <i class="material-icons">edit</i>
                                     <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
                                 </button>
-                                <button type="submit" class="btn btn-danger btn-sm" (click)="deleteDraft(request)">
+                                <button type="submit" class="btn btn-danger btn-sm test-remove-btn" (click)="deleteDraft(request)">
                                     <i class="material-icons">remove_circle_outline</i>
                                     <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
                                 </button>
                             </div>
                             <button type="button"
-                                    class="btn btn-primary btn-sm" (click)="navigateToRequestDetail(request)"
+                                    class="btn btn-primary btn-sm test-details-btn" (click)="navigateToRequestDetail(request)"
                                     *ngIf="request.status !== 'Draft'">
                                 <i class="material-icons md-18">assignment_ind</i>
                                 <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>

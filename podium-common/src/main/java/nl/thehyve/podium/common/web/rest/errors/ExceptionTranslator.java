@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.errors;
+package nl.thehyve.podium.common.web.rest.errors;
 
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.security.annotations.Public;
@@ -41,14 +41,14 @@ public class ExceptionTranslator {
     @ExceptionHandler(ConcurrencyFailureException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ErrorVM processConcurencyError(ConcurrencyFailureException ex) {
-        return new ErrorVM(ErrorConstants.ERR_CONCURRENCY_FAILURE);
+    public ErrorRepresentation processConcurencyError(ConcurrencyFailureException ex) {
+        return new ErrorRepresentation(ErrorConstants.ERR_CONCURRENCY_FAILURE);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorVM processValidationError(MethodArgumentNotValidException ex) {
+    public ErrorRepresentation processValidationError(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
 
@@ -58,19 +58,19 @@ public class ExceptionTranslator {
     @ExceptionHandler(CustomParameterizedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ParameterizedErrorVM processParameterizedValidationError(CustomParameterizedException ex) {
+    public ParameterizedErrorRepresentation processParameterizedValidationError(CustomParameterizedException ex) {
         return ex.getErrorVM();
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public ErrorVM processAccessDeniedException(AccessDeniedException e) {
-        return new ErrorVM(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
+    public ErrorRepresentation processAccessDeniedException(AccessDeniedException e) {
+        return new ErrorRepresentation(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
     }
 
-    private ErrorVM processFieldErrors(List<FieldError> fieldErrors) {
-        ErrorVM dto = new ErrorVM(ErrorConstants.ERR_VALIDATION);
+    private ErrorRepresentation processFieldErrors(List<FieldError> fieldErrors) {
+        ErrorRepresentation dto = new ErrorRepresentation(ErrorConstants.ERR_VALIDATION);
 
         for (FieldError fieldError : fieldErrors) {
             dto.add(fieldError.getObjectName(), fieldError.getField(), fieldError.getCode());
@@ -82,21 +82,21 @@ public class ExceptionTranslator {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ErrorVM processMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
-        return new ErrorVM(ErrorConstants.ERR_METHOD_NOT_SUPPORTED, exception.getMessage());
+    public ErrorRepresentation processMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
+        return new ErrorRepresentation(ErrorConstants.ERR_METHOD_NOT_SUPPORTED, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorVM> processRuntimeException(Exception ex) {
+    public ResponseEntity<ErrorRepresentation> processRuntimeException(Exception ex) {
         BodyBuilder builder;
-        ErrorVM errorVM;
+        ErrorRepresentation errorVM;
         ResponseStatus responseStatus = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class);
         if (responseStatus != null) {
             builder = ResponseEntity.status(responseStatus.value());
-            errorVM = new ErrorVM("error." + responseStatus.value().value(), responseStatus.reason());
+            errorVM = new ErrorRepresentation("error." + responseStatus.value().value(), responseStatus.reason());
         } else {
             builder = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-            errorVM = new ErrorVM(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, "Internal server error");
+            errorVM = new ErrorRepresentation(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, "Internal server error");
         }
         return builder.body(errorVM);
     }
@@ -104,9 +104,9 @@ public class ExceptionTranslator {
     @ExceptionHandler(InvalidRequest.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorVM handleInvalidRequest(InvalidRequest e) {
+    public ErrorRepresentation handleInvalidRequest(InvalidRequest e) {
         log.error("Invalid request: " + e.getMessage());
-        ErrorVM dto = new ErrorVM(ErrorConstants.ERR_VALIDATION);
+        ErrorRepresentation dto = new ErrorRepresentation(ErrorConstants.ERR_VALIDATION);
         for (ConstraintViolation violation : e.getConstraintViolations()) {
             dto.add("request", violation.getPropertyPath().toString(), violation.getMessage());
         }

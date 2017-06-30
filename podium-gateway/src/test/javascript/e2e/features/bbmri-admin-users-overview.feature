@@ -14,11 +14,8 @@ Feature: For a BBMRI admin to do his or her work they need information from the 
 
         Examples:
             | sortBy | userOrder                                                              |
-#            | Nothing | Admin, BBMRI_Admin, blank user, Dave, Linda, System, VarnameBank_Admin |
             | Login  | Admin, BBMRI_Admin, blank user, Dave, Linda, System, VarnameBank_Admin |
             | Email  | Admin, BBMRI_Admin, blank user, Linda, Dave, System, VarnameBank_Admin |
-#            | Role          |                                    |
-#            | AccountStatus |                                    |
 
 #    @default
 #    Scenario: An user has a details page

@@ -16,9 +16,10 @@ import initDataDictionary = require("../data/data-dictionary")
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ After, Before }) {
+    let personaDictionary = initPersonaDictionary();
+    let dataDictionary = initDataDictionary();
 
     function setupUsers(adminConsole: AdminConsole, personas: string[]) {
-        let personaDictionary = initPersonaDictionary();
         let createUserCalls = [];
 
         personas.forEach(function (value) {
@@ -28,29 +29,35 @@ defineSupportCode(function ({ After, Before }) {
     }
 
     function setupOrganisations(adminConsole: AdminConsole, organisations: string[]) {
-        let DataDictionary = initDataDictionary();
-        let personaDictionary = initPersonaDictionary();
         let createOrganisationsCalls = [];
 
         organisations.forEach(function (value) {
             createOrganisationsCalls.push(adminConsole.createOrganisation(
                 personaDictionary['BBMRI_Admin'],
-                DataDictionary[value]));
+                dataDictionary[value]));
         });
         return Promise.all(createOrganisationsCalls);
     }
 
     function setupRequests(adminConsole: AdminConsole, requests: string[]) {
-        let DataDictionary = initDataDictionary();
+        let createRequestCalls = [];
 
         requests.forEach(function (value) {
-            adminConsole.createRequest(DataDictionary[value]);
+            createRequestCalls.push(adminConsole.createRequest(personaDictionary['Linda'], dataDictionary[value]));
+        });
+        return Promise.all(createRequestCalls);
+    }
 
-        })
+    function setupDrafts(adminConsole: AdminConsole, drafts: string[]) {
+        let createDraftCalls = [];
+
+        drafts.forEach(function (value) {
+            createDraftCalls.push(adminConsole.createDraft(personaDictionary['Linda'], dataDictionary[value]));
+        });
+        return Promise.all(createDraftCalls);
     }
 
     function getPersonaList(personas: string[]) {
-        let personaDictionary = initPersonaDictionary();
         let personaList = [];
         personas.forEach(function (personaName) {
             let name = personaName;
@@ -97,12 +104,12 @@ defineSupportCode(function ({ After, Before }) {
 
     Before({ tags: "@default" }, function (scenario): Promise<any> {
         let adminConsole = this.adminConsole as AdminConsole;
-        let userList = ["BBMRI_Admin", "Dave", "Linda", "VarnameBank_Admin", "blank user"];
-        let organisations = ["VarnameBank", 'SomeBank', 'XBank'];
+        let userList = ['BBMRI_Admin', 'Dave', 'Linda', 'VarnameBank_Admin', 'blank user'];
+        let organisations = ['VarnameBank', 'SomeBank', 'XBank'];
 
         return adminConsole.cleanDB().then(function () {
             return setupUsers(adminConsole, userList).then(function () {
-                setupOrganisations(adminConsole, organisations).then(function () {
+                return setupOrganisations(adminConsole, organisations).then(function () {
                     return setupRoles(adminConsole, userList)
                 })
             })
@@ -111,8 +118,20 @@ defineSupportCode(function ({ After, Before }) {
 
     Before({ tags: "@request" }, function (scenario): Promise<any> {
         let adminConsole = this.adminConsole as AdminConsole;
-        let organisations = ["DataBank", 'ImageBank', 'BioBank', 'MultiBank'];
+        let userList = ['Request_Coordinator', 'Request_Reviewer', 'Databank_Coordinator'];
+        let organisations = ['DataBank', 'ImageBank', 'BioBank', 'MultiBank'];
+        let requests = ['Request01', 'Request02'];
+        let drafts = ['Draft01', 'Draft02'];
 
-        return setupOrganisations(adminConsole, organisations)
+        return setupUsers(adminConsole, userList).then(function () {
+            return setupOrganisations(adminConsole, organisations).then(function () {
+                return setupRoles(adminConsole, userList).then(function () {
+                    return Promise.all([
+                        setupRequests(adminConsole, requests),
+                        setupDrafts(adminConsole, drafts)
+                    ])
+                })
+            })
+        })
     });
 });

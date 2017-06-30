@@ -10,7 +10,7 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
-import nl.thehyve.podium.web.rest.vm.RouteVM;
+import nl.thehyve.podium.common.service.dto.RouteRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -51,16 +51,16 @@ public class GatewayResource {
     @GetMapping("/routes")
     @SecuredByAuthority(AuthorityConstants.PODIUM_ADMIN)
     @Timed
-    public ResponseEntity<List<RouteVM>> activeRoutes() {
+    public ResponseEntity<List<RouteRepresentation>> activeRoutes() {
         List<Route> routes = routeLocator.getRoutes();
-        List<RouteVM> routeVMs = new ArrayList<>();
+        List<RouteRepresentation> routeRepresentations = new ArrayList<>();
         routes.forEach(route -> {
-            RouteVM routeVM = new RouteVM();
-            routeVM.setPath(route.getFullPath());
-            routeVM.setServiceId(route.getId());
-            routeVM.setServiceInstances(discoveryClient.getInstances(route.getId()));
-            routeVMs.add(routeVM);
+            RouteRepresentation routeRepresentation = new RouteRepresentation();
+            routeRepresentation.setPath(route.getFullPath());
+            routeRepresentation.setServiceId(route.getId());
+            routeRepresentation.setServiceInstances(discoveryClient.getInstances(route.getId()));
+            routeRepresentations.add(routeRepresentation);
         });
-        return new ResponseEntity<>(routeVMs, HttpStatus.OK);
+        return new ResponseEntity<>(routeRepresentations, HttpStatus.OK);
     }
 }

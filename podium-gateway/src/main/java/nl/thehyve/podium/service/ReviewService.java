@@ -8,18 +8,19 @@ import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
-import nl.thehyve.podium.common.service.dto.ReviewRoundRepresentation;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
 import nl.thehyve.podium.repository.search.ReviewFeedbackSearchRepository;
+import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.mapper.ReviewFeedbackMapper;
 import org.slf4j.Logger;
@@ -29,8 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -80,7 +79,7 @@ public class ReviewService {
      */
     public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        RequestReviewStatus sourceReviewStatus = AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation);
+        RequestReviewStatus sourceReviewStatus = RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         log.debug("Submitting request for review: {}", uuid);
@@ -103,8 +102,8 @@ public class ReviewService {
     ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        RequestStatus sourceStatus = AccessCheckHelper.checkStatus(request, RequestStatus.Review);
-        RequestReviewStatus sourceReviewStatus = AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
+        RequestStatus sourceStatus = RequestAccessCheckHelper.checkStatus(request, RequestStatus.Review);
+        RequestReviewStatus sourceReviewStatus = RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         // Reject the request
@@ -130,8 +129,8 @@ public class ReviewService {
     public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        RequestStatus sourceStatus = AccessCheckHelper.checkStatus(request, RequestStatus.Review);
-        RequestReviewStatus sourceReviewStatus = AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Review);
+        RequestStatus sourceStatus = RequestAccessCheckHelper.checkStatus(request, RequestStatus.Review);
+        RequestReviewStatus sourceReviewStatus = RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Review);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         // Approve the request
@@ -158,7 +157,7 @@ public class ReviewService {
     ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        RequestReviewStatus sourceReviewStatus = AccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
+        RequestReviewStatus sourceReviewStatus = RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         // Request revision by the requester
@@ -194,7 +193,7 @@ public class ReviewService {
         log.debug("Saving review feedback for {}", feedbackBody.getUuid());
 
         Request request = requestRepository.findOneByUuid(requestUuid);
-        AccessCheckHelper.checkStatus(request, RequestStatus.Review);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Review);
 
         final UUID feedbackUuid = feedbackBody.getUuid();
 

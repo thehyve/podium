@@ -8,6 +8,7 @@
  * See the file LICENSE in the root of this repository.
  */
 import { Persona } from './templates';
+import { OrganisationAuthorityOptions } from '../../../../main/webapp/app/shared/authority/authority.constants';
 
 /*
  * pages must be added to this dictionary for the director class to find them.
@@ -150,7 +151,85 @@ function initPersonaDictionary() {
             "Other specialism": "Other specialism",
             "authority": [{
                 orgShortName: "VarnameBank",
-                role: "ROLE_ORGANISATION_ADMIN"
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_ADMIN
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
+        }),
+        new Persona('Databank_Coordinator', {
+            "login": "databank-coordinator",
+            "password": "coordinator123!",
+            "firstName": "coordinator",
+            "lastName": "multi",
+            "email": "databank-coordinator@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief coordinator",
+            "specialism": "Other",
+            "Other specialism": "some specialism",
+            "authority": [{
+                orgShortName: "DataBank",
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
+        }),
+        new Persona('Request_Coordinator', {
+            "login": "coordinator",
+            "password": "coordinator123!",
+            "firstName": "coordinator",
+            "lastName": "multi",
+            "email": "coordinator@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief coordinator",
+            "specialism": "Other",
+            "Other specialism": "some specialism",
+            "authority": [{
+                orgShortName: "DataBank",
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
+            }, {
+                orgShortName: "ImageBank",
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
+            }, {
+                orgShortName: "BioBank",
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
+            }, {
+                orgShortName: "MultiBank",
+                role: OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR
+            }],
+            "emailVerified": true,
+            "adminVerified": true,
+            "accountLocked": false
+        }),
+        new Persona('Request_Reviewer', {
+            "login": "Reviewer",
+            "password": "Reviewer123!",
+            "firstName": "Reviewer",
+            "lastName": "multi",
+            "email": "Reviewer@localhost",
+            "telephone": "0123456789",
+            "institute": "some bio thing",
+            "department": "AB-100",
+            "jobTitle": "chief Reviewer",
+            "specialism": "Other",
+            "Other specialism": "some specialism",
+            "authority": [{
+                orgShortName: "DataBank",
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
+            }, {
+                orgShortName: "ImageBank",
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
+            }, {
+                orgShortName: "BioBank",
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
+            }, {
+                orgShortName: "MultiBank",
+                role: OrganisationAuthorityOptions.ROLE_REVIEWER
             }],
             "emailVerified": true,
             "adminVerified": true,
