@@ -73,6 +73,7 @@
         },
         "detail": {
             "pageTitle": "Request Details",
+            "pageHeader": "[{{requestId}}] request to organisation {{ organisation }}",
             "title": "Title",
             "background": "Background",
             "researchQuestion": "Research Question",
