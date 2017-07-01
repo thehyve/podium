@@ -19,7 +19,7 @@
             Dear
         </p>
 
-        <p th:text="#{email.organisationRequestReviewed.text1(${request.getId().toString()}, ${reviewer.getFullName()})}">
+        <p th:text="#{email.organisationRequestReviewed.text1(${request.getId().toString()}, ${reviewer.getFirstName()}, ${reviewer.getLastName()})}">
             Request [requestId] has been reviewed by [reviewer].
         </p>
 

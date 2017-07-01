@@ -82,8 +82,4 @@ public class UserRepresentation implements IdentifiableUser {
     public UUID getUserUuid() {
         return getUuid();
     }
-
-    public String getFullName() {
-        return this.getFirstName() + " " + this.getLastName();
-    }
 }
