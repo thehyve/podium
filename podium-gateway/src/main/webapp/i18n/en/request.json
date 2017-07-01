@@ -30,6 +30,7 @@
             "approve": "Approve",
             "adviseApprove": "Advise approve",
             "adviseReject": "Advise reject",
+            "deliveryHelper": "In case irregularities have been found with the delivery, please contact the organisation coordinator.",
             "checks": {
                 "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
                 "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."

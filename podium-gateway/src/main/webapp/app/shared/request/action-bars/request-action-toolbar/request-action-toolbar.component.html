@@ -176,12 +176,16 @@
 
                 <!-- Researcher actions -->
                 <div *ngIf="isRequestingResearcher()">
-                    <div class="alert alert-info" jhiTranslate="request.toolbar.delivery">
-                        Your request is currently in the process of delivery. You will be notified when action is required on your behalf.
+                    <div class="alert alert-info">
+                        <span jhiTranslate="request.toolbar.delivery">Your request is currently in the process of delivery. You will be notified when action is required on your behalf.</span>
+                        <br />
+                        <span class="researcher-delivery-helper" jhiTranslate="request.toolbar.deliveryHelper">
+                            In case irregularities have been found with the delivery, please contact the organisation coordinator.
+                        </span>
                     </div>
                 </div>
 
-                <!-- Coordinator action to start request delivery -->
+                <!-- Coordinator actions to finalize request -->
                 <div *ngIf="isRequestCoordinator()">
                     <div class="form-group" *ngIf="!checks.canFinalize">
                         <span class="material-icons">info_outline</span>
