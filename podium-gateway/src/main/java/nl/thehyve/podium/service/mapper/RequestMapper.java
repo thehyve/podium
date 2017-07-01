@@ -106,6 +106,7 @@ public abstract class RequestMapper {
             return null;
         }
         RequestRepresentation requestRepresentation = new RequestRepresentation();
+        requestRepresentation.setId(request.getId());
         requestRepresentation.setUuid(request.getUuid());
         requestRepresentation.setRequestDetail(requestDetailMapper.mapRequestTypeOnly(request.getRequestDetail()));
         requestRepresentation.setOrganisations(organisationMapperHelper.uuidsToExtendedOrganisationDTOs(request.getOrganisations()));

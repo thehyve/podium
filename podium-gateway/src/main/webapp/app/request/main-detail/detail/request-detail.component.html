@@ -75,28 +75,33 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th jhiTranslate="request.relatedRequest.organisation">Organisation</th>
+                            <th jhiTranslate="request.relatedRequest.id">ID</th>
                             <th jhiTranslate="request.relatedRequest.type">Type</th>
+                            <th jhiTranslate="request.relatedRequest.organisation">Organisation</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let relatedRequest of request.relatedRequests">
                             <td>
                                 <a *ngIf="isRequestingResearcher()" [routerLink]="['/requests/detail', relatedRequest.uuid]">
-                        <span *ngFor="let organisation of relatedRequest.organisations">
-                            {{ organisation.name | capitalize }}
-                        </span>
+                                    {{ relatedRequest.id }}
                                 </a>
                                 <span *ngIf="!isRequestingResearcher()">
-                        <span *ngFor="let organisation of relatedRequest.organisations">
-                            {{ organisation.name | capitalize }}
-                        </span>
-                        </span>
+                                    {{ relatedRequest.id }}
+                                </span>
                             </td>
                             <td>
-                                <li *ngFor="let requestType of relatedRequest.requestDetail.requestType">
-                                    {{ requestType | capitalize }}
-                                </li>
+                                <ul>
+                                    <li *ngFor="let requestType of relatedRequest.requestDetail.requestType">
+                                        {{ requestType | capitalize }}
+                                    </li>
+                                </ul>
+
+                            </td>
+                            <td>
+                                <span *ngFor="let organisation of relatedRequest.organisations">
+                                    {{ organisation.name | capitalize }}
+                                </span>
                             </td>
                         </tr>
                     </tbody>
