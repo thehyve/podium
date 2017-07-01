@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
@@ -37,7 +37,7 @@ import { AlertService } from 'ng-jhipster';
     templateUrl: './request-detail.component.html'
 })
 
-export class RequestDetailComponent implements OnDestroy {
+export class RequestDetailComponent implements OnInit, OnDestroy {
 
     public RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
 
@@ -48,6 +48,7 @@ export class RequestDetailComponent implements OnDestroy {
     public isUpdating = false;
     public currentUser: User;
 
+    public authenticationSubscription: Subscription;
     public requestSubscription: Subscription;
     public deliveriesSubscription: Subscription;
 
@@ -60,24 +61,10 @@ export class RequestDetailComponent implements OnDestroy {
         private principal: Principal,
         private alertService: AlertService
     ) {
+    }
 
-        // Forcefully reload logged in user
-        this.requestAccessService.loadCurrentUser(true);
-
-        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
-            this.setRequest(request);
-        });
-
-        this.principal.identity().then((account) => {
-            this.currentUser = account;
-            this.checkIsInRevision(this.request);
-        });
-
-        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
-            (deliveries) => {
-                this.deliveries = deliveries;
-            }
-        );
+    ngOnInit() {
+        this.registerChanges();
     }
 
     /**
@@ -91,6 +78,35 @@ export class RequestDetailComponent implements OnDestroy {
         if (this.deliveriesSubscription) {
             this.deliveriesSubscription.unsubscribe();
         }
+
+        if (this.authenticationSubscription) {
+            this.authenticationSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Setup change detection
+     */
+    registerChanges() {
+        console.log('Registering changes ');
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.setRequest(request);
+        });
+
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries) => {
+                this.deliveries = deliveries;
+            }
+        );
+
+        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+            (identity) => {
+                console.log('Got identity ', identity);
+                this.currentUser = identity;
+                this.checkIsInRevision(this.request);
+            },
+            (err) => this.onError(err)
+        );
     }
 
     /**
@@ -124,7 +140,7 @@ export class RequestDetailComponent implements OnDestroy {
     /**
      * Submit the feedback of a reviewer for a request.
      *
-     * @param requestReviewFeedback the reviewfeedback holding the advice and their findings.
+     * @param decision the reviewfeedback holding the advice and their findings.
      */
     submitReview(decision: RequestReviewDecision) {
         let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
