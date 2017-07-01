@@ -43,8 +43,9 @@
                 <thead>
                     <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse"
                          [callback]="transitionRequests.bind(this)">
-                        <th jhiSortBy="requestDetail.requester.firstName">
+                        <th jhiSortBy="requestDetail.combinedRequest">
                             <span class="material-icons  md-18">link</span>
+                            <span class="fa fa-sort"></span>
                         </th>
                         <th jhiSortBy="id">
                             <span>Request id</span>
