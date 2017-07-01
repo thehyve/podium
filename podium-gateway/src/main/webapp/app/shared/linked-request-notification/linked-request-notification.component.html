@@ -13,7 +13,7 @@
         <span class="material-icons">link</span>
         <div class="message-text-container">
             <h6 jhiTranslate="request.linkedRequest.title"></h6>
-            <div *ngIf="isRequester()" jhiTranslate="request.linkedRequest.researcher"></div>
+            <div *ngIf="isRequester() && !isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.researcher"></div>
             <div *ngIf="isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.organisationCoordinator"></div>
             <div *ngIf="isReviewer() && !isRequester()" jhiTranslate="request.linkedRequest.reviewer"></div>
         </div>
