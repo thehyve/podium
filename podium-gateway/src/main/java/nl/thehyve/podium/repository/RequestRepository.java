@@ -31,14 +31,16 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     @Query(value = "select r from Request r where r.id" +
         " in (select r.id from Request r join r.organisations o" +
-        " where o in :organisations)")
+        " where not r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Draft" +
+        " and o in :organisations)")
     Page<Request> findAllByOrganisations(
         @Param("organisations") Set<UUID> organisations,
         Pageable pageable);
 
     @Query("select distinct r from Request r" +
         " join r.organisations o" +
-        " where r.status = :status" +
+        " where not r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Draft" +
+        " and r.status = :status" +
         " and o in :organisations")
     Page<Request> findAllByOrganisationsAndStatus(
         @Param("organisations") Set<UUID> organisations,
@@ -67,7 +69,8 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     @Query("select count(distinct r) from Request r" +
         " join r.organisations o" +
-        " where o in :organisations")
+        " where not r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Draft" +
+        " and o in :organisations")
     long countByOrganisations(
         @Param("organisations") Set<UUID> organisations);
 
