@@ -13,7 +13,10 @@ import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
-import { RequestReviewStatusOptions } from '../../../shared/request/request-status/request-status.constants';
+import {
+    RequestReviewStatusOptions,
+    RequestStatusOptions
+} from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -284,6 +287,26 @@ export class RequestDetailComponent implements OnDestroy {
 
     hasReviewRounds(): boolean {
         return this.request.reviewRounds && this.request.reviewRounds.length > 0;
+    }
+
+    showReviewPanel(): boolean {
+        // Dont show if we dont have review rounds
+        if (!this.hasReviewRounds()) {
+            return false;
+        }
+
+        // Dont show if the user is not one of the request coordinators or reviewers
+        if (!this.isRequestCoordinator() && !this.isRequestReviewer()) {
+            return false;
+        }
+
+        /**
+         * Show only if the request is not in review and in the validation phase
+         * This is to cover the case when a request has been sent for revision
+         * and the previous review round has been closed.
+         */
+        return !(this.request.status === RequestStatusOptions.Review &&
+        this.request.requestReview.status === RequestReviewStatusOptions.Validation);
     }
 
     onSuccess(response: Response) {

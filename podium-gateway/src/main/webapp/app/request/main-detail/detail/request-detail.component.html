@@ -105,7 +105,7 @@
 
             <pdm-request-review-panel [reviewRounds]="request.reviewRounds"
                                       [request]="request"
-                                      *ngIf="hasReviewRounds() && (isRequestCoordinator() || isRequestReviewer())">
+                                      *ngIf="showReviewPanel()">
             </pdm-request-review-panel>
 
             <pdm-request-delivery-panel [request]="request" *ngIf="request">
