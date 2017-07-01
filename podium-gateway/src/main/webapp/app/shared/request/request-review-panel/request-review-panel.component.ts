@@ -64,6 +64,10 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         }
     }
 
+    hasLastReviewFeedback(): boolean {
+        return this.lastReviewFeedback && this.lastReviewFeedback[0] !== undefined;
+    }
+
     setRequestReviewFeedback() {
         if (this.request.reviewRounds.length) {
             if (this.requestAccessService.isReviewerFor(this.request)) {
