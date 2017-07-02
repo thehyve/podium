@@ -88,20 +88,18 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
      * Setup change detection
      */
     registerChanges() {
-        console.log('Registering changes ');
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.setRequest(request);
         });
 
         this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
-            (deliveries) => {
+            (deliveries: Delivery[]) => {
                 this.deliveries = deliveries;
             }
         );
 
         this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
-            (identity) => {
-                console.log('Got identity ', identity);
+            (identity: User) => {
                 this.currentUser = identity;
                 this.checkIsInRevision(this.request);
             },
