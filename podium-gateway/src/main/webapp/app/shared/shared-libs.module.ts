@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, Http } from '@angular/http';
 import { CommonModule } from '@angular/common';
 import { NgJhipsterModule } from 'ng-jhipster';
-import { PodiumUploadModule } from './upload/upload.module';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
 import { TabsModule } from 'ng2-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -54,7 +53,6 @@ export function HttpLoaderFactory(http: Http) {
         HttpModule,
         CommonModule,
         NgJhipsterModule,
-        PodiumUploadModule,
         InfiniteScrollModule,
         TooltipModule,
         TabsModule,

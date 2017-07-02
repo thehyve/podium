@@ -15,12 +15,10 @@ import {
     RequestDetail,
     RequestType,
     PrincipalInvestigator,
-    AttachmentService,
     RequestBase,
     RequestService,
     Principal,
-    User,
-    Attachment
+    User
 } from '../../shared';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
@@ -36,7 +34,7 @@ import { Organisation } from '../../shared/organisation/organisation.model';
     styleUrls: ['request-form.scss']
 })
 
-export class RequestFormComponent implements OnInit, AfterContentInit {
+export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
 
@@ -57,13 +55,10 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     private revisionId: string;
     public isUpdating = false;
 
-    attachments: Attachment[];
-
     constructor(
         private requestFormService: RequestFormService,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
-        private attachmentService: AttachmentService,
         private router: Router,
         private principal: Principal,
         private eventManager: EventManager,
@@ -83,29 +78,12 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         });
     }
 
-    ngAfterContentInit() {
-        this.registerChangeInFilesUploaded();
-    }
-
     initializeRequestForm() {
         if (this.requestFormService.request) {
             this.selectRequest(this.requestFormService.request);
         } else if (!this.isInRevision) {
             this.initializeBaseRequest();
         }
-    }
-
-    registerChangeInFilesUploaded() {
-        this.eventManager.subscribe('uploadListModification', (response) => this.loadAttachmentsForRequest());
-    }
-
-    loadAttachmentsForRequest() {
-        this.attachmentService
-            .findAttachmentsForRequest(this.requestBase.uuid)
-            .subscribe(
-                (attachments) => this.attachments = attachments,
-                (error) => this.onError(error)
-            );
     }
 
     hasSelectedMultipleOrganisations() {
