@@ -100,15 +100,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Column(nullable = false)
     private UUID requester;
 
-    @ManyToMany
-    @Fetch(FetchMode.JOIN)
-    @BatchSize(size = 1000)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "request_attachments",
-               joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="attachment_id", referencedColumnName="id"))
-    private Set<Attachment> attachments = new HashSet<>();
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)

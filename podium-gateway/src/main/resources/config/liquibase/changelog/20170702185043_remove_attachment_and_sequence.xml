@@ -17,10 +17,10 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Remove the attachment table and drop sequence.
+        Remove the attachment table , relations and drop sequence.
     -->
     <changeSet id="20170702185043-1" author="berndvdveen">
-        <dropForeignKeyConstraint baseTableName="attachment" constraintName="fk_attachment_request_id"/>
+        <dropTable tableName="request_attachments" />
         <dropSequence sequenceName="attachment_seq" />
         <dropTable tableName="attachment" cascadeConstraints="true"/>
     </changeSet>

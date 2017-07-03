@@ -33,7 +33,7 @@
             "organisation": {
                 "main": "Organisation",
                 "org_admin": {
-                    "main": "Admin",
+                    "main": "Admininistration",
                     "orgConfiguration": "Organisation configuration",
                     "userManagement": "User management",
                     "formConfiguration": "Form configuration"
