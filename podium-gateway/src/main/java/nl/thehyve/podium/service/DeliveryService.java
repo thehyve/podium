@@ -130,7 +130,7 @@ public class DeliveryService {
         request.setStatus(RequestStatus.Delivery);
         request = requestRepository.save(request);
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, null);
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**

@@ -104,7 +104,7 @@ public class ReviewService {
         requestRepository.save(request);
 
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, null);
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     public RequestRepresentation rejectRequest(
@@ -133,7 +133,7 @@ public class ReviewService {
 
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, message);
 
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
@@ -159,7 +159,7 @@ public class ReviewService {
         // Finalize a potentially available review round
         reviewRoundService.finalizeReviewRoundForRequest(request);
 
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     public RequestRepresentation requestRevision(
@@ -180,7 +180,7 @@ public class ReviewService {
         reviewRoundService.finalizeReviewRoundForRequest(request);
 
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, message);
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -249,7 +249,7 @@ public class ReviewService {
 
         // Notify request organisation coordinators of review feedback
         notificationService.reviewedNotficationToCoordinators(request.getUuid(), feedback.getReviewer());
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
 }

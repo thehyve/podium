@@ -177,7 +177,7 @@ public class RequestService {
                 result = requestRepository.findAllByRequesterAndStatus(requesterUuid, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::detailsRequestToRequestDTO);
+        return result.map(requestMapper::detailedRequestToRequestDTO);
     }
 
     /**
@@ -223,7 +223,7 @@ public class RequestService {
                 result = requestRepository.findAllByOrganisationsAndStatus(organisationUuids, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::detailsRequestToRequestDTO);
+        return result.map(requestMapper::detailedRequestToRequestDTO);
     }
 
     private Page<RequestRepresentation> findAllOrganisationRequestsInStatusForRole(AuthenticatedUser user,
@@ -275,7 +275,7 @@ public class RequestService {
         requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        RequestRepresentation requestRepresentation = requestMapper.detailsRequestToRequestDTO(request);
+        RequestRepresentation requestRepresentation = requestMapper.detailedRequestToRequestDTO(request);
 
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, null);
 
@@ -296,7 +296,7 @@ public class RequestService {
         if (request == null) {
             throw new ResourceNotFound("Request not found.");
         }
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -339,7 +339,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
-        return result.map(requestMapper::detailsRequestToRequestDTO);
+        return result.map(requestMapper::detailedRequestToRequestDTO);
     }
 
     /**
@@ -546,7 +546,7 @@ public class RequestService {
         request = save(request);
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, message);
 
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**

@@ -19,6 +19,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +67,7 @@ public abstract class RequestMapper {
             return null;
         }
         RequestRepresentation requestRepresentation = new RequestRepresentation();
+        requestRepresentation.setId(request.getId());
         requestRepresentation.setUuid(request.getUuid());
         requestRepresentation.setRequestDetail(requestDetailMapper.mapRequestTypeOnly(request.getRequestDetail()));
         requestRepresentation.setOrganisations(organisationMapperHelper.uuidsToExtendedOrganisationDTOs(request.getOrganisations()));
@@ -95,7 +97,7 @@ public abstract class RequestMapper {
         requestRepresentation.setCreatedDate(request.getCreatedDate());
         requestRepresentation.setOrganisations(organisationMapperHelper.uuidsToExtendedOrganisationDTOs(request.getOrganisations()));
         if (securityService.isCurrentUserInAnyOrganisationRole(
-            request.getOrganisations(), Collections.singleton(AuthorityConstants.ORGANISATION_COORDINATOR))) {
+            request.getOrganisations(), Arrays.asList(AuthorityConstants.ORGANISATION_COORDINATOR, AuthorityConstants.REVIEWER))) {
             requestRepresentation.setRequester(userMapperHelper.uuidToRemoteUserRepresentation(request.getRequester()));
         } else {
             requestRepresentation.setRequester(userMapperHelper.uuidToUserRepresentation(request.getRequester()));
@@ -107,7 +109,7 @@ public abstract class RequestMapper {
     @IterableMapping(qualifiedBy = OverviewMapper.class)
     public abstract List<RequestRepresentation> overviewRequestsToRequestDTOs(List<Request> requests);
 
-    private ReviewRound getLatestReviewRound(Request request) {
+    private static ReviewRound getLatestReviewRound(Request request) {
         if (request.getReviewRounds() == null || request.getReviewRounds().isEmpty()) {
             return null;
         }
@@ -115,15 +117,11 @@ public abstract class RequestMapper {
     }
 
     @RoleAwareDetail
-    public RequestRepresentation detailsRequestToRequestDTO(Request request) {
+    public RequestRepresentation detailedRequestToRequestDTO(Request request) {
         if (request == null) {
             return null;
         }
         RequestRepresentation requestRepresentation = overviewRequestToRequestDTO(request);
-        // Copy requester information
-        if (requestRepresentation.getRequester() == null) {
-            requestRepresentation.setRequester(userMapperHelper.uuidToRemoteUserRepresentation(request.getRequester()));
-        }
         // Copy revision detail if requester
         boolean isRequester = request.getRequester().equals(securityService.getCurrentUserUuid());
         if (isRequester) {
@@ -154,7 +152,7 @@ public abstract class RequestMapper {
 
     @RoleAwareDetail
     @IterableMapping(qualifiedBy = RoleAwareDetail.class)
-    public abstract List<RequestRepresentation> detailsRequestsToRequestDTOs(List<Request> requests);
+    public abstract List<RequestRepresentation> detailedRequestsToRequestDTOs(List<Request> requests);
 
     @Mappings({
         @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),

@@ -17,6 +17,7 @@ import nl.thehyve.podium.common.service.dto.ReviewRoundRepresentation;
 import nl.thehyve.podium.domain.ReviewRound;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.ZonedDateTime;
@@ -45,16 +46,17 @@ public abstract class ReviewRoundMapper {
     @Mapping(target = "requestDetail", ignore = true)
     public abstract ReviewRoundRepresentation reviewRoundToReviewRoundRepresentation(ReviewRound reviewRound);
 
+    @Mappings({
+        @Mapping(target = "requestDetail", ignore = true),
+        @Mapping(target = "reviewFeedback", ignore = true)
+    })
+    public abstract ReviewRoundRepresentation minimalReviewRoundToReviewRoundRepresentation(ReviewRound reviewRound);
+
     public ReviewRoundRepresentation reviewerReviewRoundToReviewRoundRepresentation(ReviewRound reviewRound) {
         if (reviewRound == null) {
             return null;
         }
-        ReviewRoundRepresentation reviewRoundRepresentation = new ReviewRoundRepresentation();
-        reviewRoundRepresentation.setId(reviewRound.getId());
-        reviewRoundRepresentation.setUuid(reviewRound.getUuid());
-        reviewRoundRepresentation.setStartDate(reviewRound.getStartDate());
-        reviewRoundRepresentation.setEndDate(reviewRound.getEndDate());
-        reviewRoundRepresentation.setInitiatedBy(reviewRound.getInitiatedBy());
+        ReviewRoundRepresentation reviewRoundRepresentation = minimalReviewRoundToReviewRoundRepresentation(reviewRound);
         if (reviewRound.getReviewFeedback() != null) {
             UUID reviewerUuid = securityService.getCurrentUserUuid();
             reviewRoundRepresentation.setReviewFeedback(

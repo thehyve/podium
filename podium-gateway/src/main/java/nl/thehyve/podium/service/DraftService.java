@@ -83,7 +83,7 @@ public class DraftService {
         requestDetail.setPrincipalInvestigator(new PrincipalInvestigator());
         request.setRequestDetail(requestDetail);
         requestRepository.save(request);
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -107,7 +107,7 @@ public class DraftService {
         request.getRequestDetail().setCombinedRequest(body.getRequestDetail().getCombinedRequest());
 
         requestRepository.save(request);
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -129,7 +129,7 @@ public class DraftService {
         requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
 
         request = requestRepository.save(request);
-        return requestMapper.detailsRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -217,7 +217,7 @@ public class DraftService {
             statusUpdateEventService.publishStatusUpdate(user, sourceStatus, organisationRequest, null);
         }
 
-        List<RequestRepresentation> result = requestMapper.detailsRequestsToRequestDTOs(organisationRequests);
+        List<RequestRepresentation> result = requestMapper.detailedRequestsToRequestDTOs(organisationRequests);
         notificationService.submissionNotificationToRequester(user, result);
 
         log.debug("Deleting draft request.");
