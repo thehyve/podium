@@ -17,7 +17,9 @@
             </h3>
 
             <pdm-request-progress-bar *ngIf="request" [request]="request"></pdm-request-progress-bar>
-            <pdm-notification *ngIf="request" [request]="request"></pdm-notification>
+            <pdm-linked-notification *ngIf="request && request.requestDetail.combinedRequest"
+                                     [request]="request">
+            </pdm-linked-notification>
             <pdm-event-message-component *ngIf="request" [request]="request"></pdm-event-message-component>
             <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
