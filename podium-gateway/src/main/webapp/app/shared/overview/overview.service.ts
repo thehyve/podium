@@ -13,8 +13,8 @@ import { Http, Response } from '@angular/http';
 import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
-import { StatusSidebarOption } from '../request/status-sidebar/status-sidebar-options';
 import { HttpHelper } from '../util/http-helper';
+import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
 
 @Injectable()
 export class OverviewService {
@@ -22,7 +22,7 @@ export class OverviewService {
     resourceUrl: string;
     resourceSearchUrl: string;
 
-    public activeStatus: StatusSidebarOption;
+    public activeStatus: RequestOverviewStatusOption;
     public onOverviewUpdate: Subject<Response> = new Subject();
 
     constructor(
@@ -39,7 +39,7 @@ export class OverviewService {
 
     findRequestsForOverview(
         requestOptions: any,
-        requestStatus: StatusSidebarOption,
+        requestStatus: RequestOverviewStatusOption,
         userGroup: UserGroupAuthority
     ): Observable<Response> {
         let options = HttpHelper.createRequestOption(requestOptions);
@@ -52,7 +52,7 @@ export class OverviewService {
         this.activeStatus = requestStatus;
 
         // When we have to filter for Drafts
-        if (requestStatus === StatusSidebarOption.Draft) {
+        if (requestStatus === RequestOverviewStatusOption.Draft) {
             return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
                 return res;
             });

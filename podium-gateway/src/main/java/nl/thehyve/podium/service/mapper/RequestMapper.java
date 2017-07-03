@@ -7,17 +7,22 @@
 
 package nl.thehyve.podium.service.mapper;
 
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.service.util.*;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Mapper for the entity Request and its DTO RequestDTO.
@@ -33,76 +38,32 @@ import java.util.List;
 public abstract class RequestMapper {
 
     @Autowired
-    private RequestDetailMapper requestDetailMapper;
+    private SecurityService securityService;
 
+    @Autowired
+    private RequestDetailMapper requestDetailMapper;
 
     @Autowired
     private OrganisationMapperHelper organisationMapperHelper;
 
-    @DefaultRequest
-    @Mappings({
-        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(source = "requestReviewProcess", target = "requestReview"),
-        @Mapping(target = "requester", qualifiedBy = DefaultUser.class),
-        @Mapping(target = "organisations", qualifiedBy = DefaultOrganisation.class),
-        @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class)
-    })
-    public abstract RequestRepresentation requestToRequestDTO(Request request);
+    @Autowired
+    private UserMapperHelper userMapperHelper;
 
-    @DefaultRequest
-    @IterableMapping(qualifiedBy = DefaultRequest.class)
-    public abstract List<RequestRepresentation> requestsToRequestDTOs(List<Request> requests);
+    @Autowired
+    private ReviewRoundMapper reviewRoundMapper;
 
-    @DefaultRequest
-    @Mappings({
-        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(target = "historicEvents", ignore = true),
-        @Mapping(target = "relatedRequests", ignore = true)
-    })
-    public abstract Request requestDTOToRequest(RequestRepresentation requestDTO);
+    @Autowired
+    private PodiumEventMapper podiumEventMapper;
 
-    @Mappings({
-        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(target = "historicEvents", ignore = true),
-        @Mapping(target = "relatedRequests", ignore = true)
-    })
-    public abstract Request updateRequestDTOToRequest(RequestRepresentation requestDTO, @MappingTarget Request request);
-
-    @Mappings({
-        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),
-        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone"),
-        @Mapping(target = "id", ignore = true),
-        @Mapping(target = "uuid", ignore = true),
-        @Mapping(target = "historicEvents", ignore = true),
-        @Mapping(target = "relatedRequests", ignore = true)
-    })
-    public abstract Request clone(Request request);
-
-    @DefaultRequest
-    @IterableMapping(qualifiedBy = DefaultRequest.class)
-    public abstract List<Request> requestDTOsToRequests(List<RequestRepresentation> requestRepresentations);
-
-    @ExtendedRequest
-    @Mappings({
-        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedBy = DefaultRequestDetail.class),
-        @Mapping(source = "requestReviewProcess", target = "requestReview"),
-        @Mapping(target = "organisations", qualifiedBy = ExtendedOrganisation.class),
-        @Mapping(target = "relatedRequests", qualifiedBy = MinimalRequest.class),
-        @Mapping(target = "requester", qualifiedBy = ExtendedUser.class)
-    })
-    public abstract RequestRepresentation extendedRequestToRequestDTO(Request request);
-
-    @ExtendedRequest
-    @IterableMapping(qualifiedBy = ExtendedRequest.class)
-    public abstract List<RequestRepresentation> extendedRequestsToRequestDTOs(List<Request> requests);
-
-    @MinimalRequest
+    /**
+     * Copy only request uuid, request type and organisation uuid and name.
+     *
+     * @param request the source request.
+     * @return the representation.
+     */
+    @MinimalMapper
     public RequestRepresentation minimalRequestToRequestDTO(Request request) {
-        if ( request == null ) {
+        if (request == null) {
             return null;
         }
         RequestRepresentation requestRepresentation = new RequestRepresentation();
@@ -113,8 +74,94 @@ public abstract class RequestMapper {
         return requestRepresentation;
     }
 
-    @MinimalRequest
-    @IterableMapping(qualifiedBy = MinimalRequest.class)
-    public abstract List<RequestRepresentation> minimalRequestsToRequestDTOs(List<Request> requests);
+    @MinimalMapper
+    @IterableMapping(qualifiedBy = MinimalMapper.class)
+    public abstract Set<RequestRepresentation> minimalRequestsToRequestDTOs(Set<Request> requests);
+
+    /**
+     * Copy only the information needed for the request overviews.
+     *
+     * @param request the source request.
+     * @return the representation.
+     */
+    @OverviewMapper
+    public RequestRepresentation overviewRequestToRequestDTO(Request request) {
+        if (request == null) {
+            return null;
+        }
+        RequestRepresentation requestRepresentation = new RequestRepresentation();
+        requestRepresentation.setId(request.getId());
+        requestRepresentation.setUuid(request.getUuid());
+        requestRepresentation.setRequestDetail(requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRequestDetail()));
+        requestRepresentation.setStatus(request.getOverviewStatus());
+        requestRepresentation.setCreatedDate(request.getCreatedDate());
+        requestRepresentation.setOrganisations(organisationMapperHelper.uuidsToExtendedOrganisationDTOs(request.getOrganisations()));
+        if (securityService.isCurrentUserInAnyOrganisationRole(
+            request.getOrganisations(), Arrays.asList(AuthorityConstants.ORGANISATION_COORDINATOR, AuthorityConstants.REVIEWER))) {
+            requestRepresentation.setRequester(userMapperHelper.uuidToRemoteUserRepresentation(request.getRequester()));
+        } else {
+            requestRepresentation.setRequester(userMapperHelper.uuidToUserRepresentation(request.getRequester()));
+        }
+        return requestRepresentation;
+    }
+
+    @OverviewMapper
+    @IterableMapping(qualifiedBy = OverviewMapper.class)
+    public abstract List<RequestRepresentation> overviewRequestsToRequestDTOs(List<Request> requests);
+
+    private static ReviewRound getLatestReviewRound(Request request) {
+        if (request.getReviewRounds() == null || request.getReviewRounds().isEmpty()) {
+            return null;
+        }
+        return request.getReviewRounds().get(request.getReviewRounds().size() - 1);
+    }
+
+    @RoleAwareDetail
+    public RequestRepresentation detailedRequestToRequestDTO(Request request) {
+        if (request == null) {
+            return null;
+        }
+        RequestRepresentation requestRepresentation = overviewRequestToRequestDTO(request);
+        // Copy revision detail if requester
+        boolean isRequester = request.getRequester().equals(securityService.getCurrentUserUuid());
+        if (isRequester) {
+            requestRepresentation.setRevisionDetail(requestDetailMapper.requestDetailToRequestDetailRepresentation(
+                request.getRevisionDetail()
+            ));
+        }
+        boolean isCoordinator = securityService.isCurrentUserInAnyOrganisationRole(request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
+        boolean isReviewer = securityService.isCurrentUserInAnyOrganisationRole(request.getOrganisations(), AuthorityConstants.REVIEWER);
+        // Copy review information of latest review round for coordinators and reviewers
+        ReviewRound latestReviewRound = getLatestReviewRound(request);
+        if (latestReviewRound != null) {
+            if (isCoordinator) {
+                requestRepresentation.setReviewRound(reviewRoundMapper.reviewRoundToReviewRoundRepresentation(latestReviewRound));
+            } else if (isReviewer) {
+                requestRepresentation.setReviewRound(reviewRoundMapper.reviewerReviewRoundToReviewRoundRepresentation(latestReviewRound));
+            }
+        }
+        // Copy latest event if requester or coordinator
+        if (isRequester || isCoordinator) {
+            requestRepresentation.setLatestEvent(podiumEventMapper.lastPodiumEventToPodiumEventRepresentation(request.getHistoricEvents()));
+
+        }
+        // Copy related requests
+        requestRepresentation.setRelatedRequests(this.minimalRequestsToRequestDTOs(request.getRelatedRequests()));
+        return requestRepresentation;
+    }
+
+    @RoleAwareDetail
+    @IterableMapping(qualifiedBy = RoleAwareDetail.class)
+    public abstract List<RequestRepresentation> detailedRequestsToRequestDTOs(List<Request> requests);
+
+    @Mappings({
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone"),
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "uuid", ignore = true),
+        @Mapping(target = "historicEvents", ignore = true),
+        @Mapping(target = "relatedRequests", ignore = true)
+    })
+    public abstract Request clone(Request request);
 
 }

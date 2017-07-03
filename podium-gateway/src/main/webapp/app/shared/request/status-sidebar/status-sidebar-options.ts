@@ -8,26 +8,12 @@
  *
  */
 
-import { RequestOverviewPath } from '../../../request/overview/request-overview.constants';
 import { UserGroupAuthority } from '../../authority/authority.constants';
-export enum StatusSidebarOption {
-    'All'                   = <any>'All',
-    'Draft'                 = <any>'Draft',
-    'Validation'            = <any>'Validation',
-    'Revision'              = <any>'Revision',
-    'Review'                = <any>'Review',
-    'Approved'              = <any>'Approved',
-    'Delivery'              = <any>'Delivery',
-    'Partially_Delivered'   = <any>'Partially_Delivered',
-    'Delivered'             = <any>'Delivered',
-    'Rejected'              = <any>'Rejected',
-    'Cancelled'             = <any>'Cancelled',
-    'Closed_Approved'       = <any>'Closed_Approved'
-}
+import { RequestOverviewStatusOption } from '../request-status/request-status.constants';
 
 export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     'All': {
-        'option': StatusSidebarOption.All,
+        'option': RequestOverviewStatusOption.All,
         'includeFor': [
             UserGroupAuthority.Requester,
             UserGroupAuthority.Coordinator,
@@ -36,14 +22,14 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'assignment'
     },
     'Draft': {
-        'option': StatusSidebarOption.Draft,
+        'option': RequestOverviewStatusOption.Draft,
         'includeFor': [
             UserGroupAuthority.Requester
         ],
         'icon': 'drafts'
     },
     'Validation': {
-        'option': StatusSidebarOption.Validation,
+        'option': RequestOverviewStatusOption.Validation,
         'group': 'Review',
         'groupOrder': 1,
         'includeFor': [
@@ -53,7 +39,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'visibility'
     },
     'Revision': {
-        'option': StatusSidebarOption.Revision,
+        'option': RequestOverviewStatusOption.Revision,
         'group': 'Review',
         'groupOrder': 2,
         'includeFor': [
@@ -63,7 +49,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'redo'
     },
     'Review': {
-        'option': StatusSidebarOption.Review,
+        'option': RequestOverviewStatusOption.Review,
         'group': 'Review',
         'groupOrder': 3,
         'includeFor': [
@@ -74,7 +60,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'assignment_ind'
     },
     'Approved': {
-        'option': StatusSidebarOption.Approved,
+        'option': RequestOverviewStatusOption.Approved,
         'group': 'Approved',
         'groupOrder': 1,
         'includeFor': [
@@ -84,7 +70,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'thumb_up'
     },
     'Delivery': {
-        'option': StatusSidebarOption.Delivery,
+        'option': RequestOverviewStatusOption.Delivery,
         'group': 'Delivery',
         'groupOrder': 1,
         'includeFor': [
@@ -94,7 +80,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'local_shipping'
     },
     'Partially_Delivered': {
-        'option': StatusSidebarOption.Partially_Delivered,
+        'option': RequestOverviewStatusOption.Partially_Delivered,
         'group': 'Closed',
         'groupOrder': 1,
         'includeFor': [
@@ -104,7 +90,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'space_bar'
     },
     'Delivered': {
-        'option': StatusSidebarOption.Delivered,
+        'option': RequestOverviewStatusOption.Delivered,
         'group': 'Closed',
         'groupOrder': 2,
         'includeFor': [
@@ -114,7 +100,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'inbox'
     },
     'Rejected': {
-        'option': StatusSidebarOption.Rejected,
+        'option': RequestOverviewStatusOption.Rejected,
         'group': 'Closed',
         'groupOrder': 3,
         'includeFor': [
@@ -124,7 +110,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'highlight_off'
     },
     'Cancelled': {
-        'option': StatusSidebarOption.Cancelled,
+        'option': RequestOverviewStatusOption.Cancelled,
         'group': 'Closed',
         'groupOrder': 4,
         'includeFor': [
@@ -134,7 +120,7 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
         'icon': 'cancel'
     },
     'Closed_Approved': {
-        'option': StatusSidebarOption.Closed_Approved,
+        'option': RequestOverviewStatusOption.Closed_Approved,
         'group': 'Closed',
         'groupOrder': 5,
         'includeFor': [
@@ -145,8 +131,8 @@ export const RequestStatusSidebarOptions: { [option: string]: any; } = {
     },
 };
 
-function convertNamesToStatusSidebarOptions(options: { [status: string]: any; }): Array<StatusSidebarOption> {
-    let result: Array<StatusSidebarOption> = [];
+function convertNamesToRequestOverviewStatusOptions(options: { [status: string]: any; }): Array<RequestOverviewStatusOption> {
+    let result: Array<RequestOverviewStatusOption> = [];
     for (const status in options) {
         if (options.hasOwnProperty(status)) {
             result.push(options[status]);
@@ -155,4 +141,4 @@ function convertNamesToStatusSidebarOptions(options: { [status: string]: any; })
     return result;
 }
 
-export const StatusSidebarOptionsCollection = convertNamesToStatusSidebarOptions(RequestStatusSidebarOptions);
+export const StatusSidebarOptionsCollection = convertNamesToRequestOverviewStatusOptions(RequestStatusSidebarOptions);

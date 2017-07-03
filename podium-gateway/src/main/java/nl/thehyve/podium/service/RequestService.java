@@ -19,11 +19,13 @@ import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.SummaryEntry;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
+import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
@@ -61,6 +63,9 @@ public class RequestService {
     private RequestMapper requestMapper;
 
     @Autowired
+    private RequestDetailMapper requestDetailMapper;
+
+    @Autowired
     private RequestSearchRepository requestSearchRepository;
 
     @Autowired
@@ -85,6 +90,9 @@ public class RequestService {
     ) {
         Map<OverviewStatus, Long> result = new HashMap<>();
         for(OverviewStatus status: OverviewStatus.values()) {
+            if (status == OverviewStatus.None) {
+                break;
+            }
             FilterValues filterValues = FilterValues.forStatus(status);
             switch (filterValues.getRequestStatus()) {
                 case None:
@@ -116,11 +124,11 @@ public class RequestService {
         return result;
     }
 
-    public static void validateRequest(RequestRepresentation request) {
+    public static void validateRequest(RequestDetailRepresentation requestDetail) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
-        Set<ConstraintViolation<RequestRepresentation>> requestConstraintViolations = validator.validate(request);
+        Set<ConstraintViolation<RequestDetailRepresentation>> requestConstraintViolations = validator.validate(requestDetail);
         if (!requestConstraintViolations.isEmpty()) {
             throw new InvalidRequest("Invalid request", requestConstraintViolations);
         }
@@ -169,7 +177,7 @@ public class RequestService {
                 result = requestRepository.findAllByRequesterAndStatus(requesterUuid, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::extendedRequestToRequestDTO);
+        return result.map(requestMapper::detailedRequestToRequestDTO);
     }
 
     /**
@@ -215,26 +223,32 @@ public class RequestService {
                 result = requestRepository.findAllByOrganisationsAndStatus(organisationUuids, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::extendedRequestToRequestDTO);
+        return result.map(requestMapper::detailedRequestToRequestDTO);
+    }
+
+    /**
+     * Gets the organisation uuids of the organisations for which the user has the specified role.
+     * @param user the user
+     * @param authority the role name
+     */
+    private static Set<UUID> getOrganisationsUuidsForRole(AuthenticatedUser user, String authority) {
+        return user.getOrganisationAuthorities().entrySet().stream()
+            .filter(entry -> entry.getValue().contains(authority))
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
     }
 
     private Page<RequestRepresentation> findAllOrganisationRequestsInStatusForRole(AuthenticatedUser user,
                                                                                    OverviewStatus status,
                                                                                    String authority,
                                                                                    Pageable pageable) {
-        Set<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
-            .filter(entry -> entry.getValue().contains(authority))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+        Set<UUID> organisationUuids = getOrganisationsUuidsForRole(user, authority);
         return findOrganisationRequestsInStatus(organisationUuids, status, pageable);
     }
 
     private Map<OverviewStatus, Long> countOrganisationRequestsForRole(AuthenticatedUser user,
                                                                        String authority) {
-        Set<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
-            .filter(entry -> entry.getValue().contains(authority))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+        Set<UUID> organisationUuids = getOrganisationsUuidsForRole(user, authority);
         return getCountsForOrganisations(organisationUuids);
     }
 
@@ -252,12 +266,13 @@ public class RequestService {
         log.debug("Access and status checks...");
         RequestAccessCheckHelper.checkRequester(user, request);
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Revision);
+        OverviewStatus sourceStatus = request.getOverviewStatus();
 
         log.debug("Validate new request data.");
-        request.setRequestDetail(request.getRevisionDetail());
-
-        RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
+        RequestDetailRepresentation requestData = requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRevisionDetail());
         validateRequest(requestData);
+
+        request.setRequestDetail(request.getRevisionDetail());
 
         // Update the request details with the updated revision details
         requestRepository.save(request);
@@ -266,9 +281,9 @@ public class RequestService {
         requestReviewProcessService.submitForValidation(user, request.getRequestReviewProcess());
 
         request = requestRepository.findOneByUuid(uuid);
-        RequestRepresentation requestRepresentation = requestMapper.extendedRequestToRequestDTO(request);
+        RequestRepresentation requestRepresentation = requestMapper.detailedRequestToRequestDTO(request);
 
-        statusUpdateEventService.publishReviewStatusUpdate(user, RequestReviewStatus.Revision, request, null);
+        statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, null);
 
         return requestRepresentation;
     }
@@ -287,7 +302,7 @@ public class RequestService {
         if (request == null) {
             throw new ResourceNotFound("Request not found.");
         }
-        return requestMapper.extendedRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -304,7 +319,7 @@ public class RequestService {
         if (request == null) {
             throw new ResourceNotFound("Request not found.");
         }
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.overviewRequestToRequestDTO(request);
     }
 
     /**
@@ -330,7 +345,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
-        return result.map(requestMapper::extendedRequestToRequestDTO);
+        return result.map(requestMapper::detailedRequestToRequestDTO);
     }
 
     /**
@@ -348,7 +363,7 @@ public class RequestService {
     }
 
     /**
-     *  Count the requests for the reviewer per overview status.
+     *  Count the requests for the reviewer for overview status 'Review'.
      *
      *  @param user the current user (the reviewer)
      *  @return the map from overview status to number of requests
@@ -356,7 +371,14 @@ public class RequestService {
     @Transactional(readOnly = true)
     public Map<OverviewStatus, Long> countForReviewer(AuthenticatedUser user) {
         log.debug("Request to count Requests for reviewer");
-        return countOrganisationRequestsForRole(user, AuthorityConstants.REVIEWER);
+        Set<UUID> organisationUuids = getOrganisationsUuidsForRole(user, AuthorityConstants.REVIEWER);
+        Map<OverviewStatus, Long> result = new HashMap<>();
+        Long reviewRequestCount = requestRepository.countByOrganisationsAndRequestReviewStatus(
+            organisationUuids, RequestReviewStatus.Review
+        );
+        result.put(OverviewStatus.All, reviewRequestCount);
+        result.put(OverviewStatus.Review, reviewRequestCount);
+        return result;
     }
 
     /**
@@ -454,7 +476,7 @@ public class RequestService {
         if (!request.getRequester().equals(requester.getUserUuid())) {
             throw new AccessDenied("Access denied to request " + request.getUuid().toString());
         }
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.overviewRequestToRequestDTO(request);
     }
 
     /**
@@ -505,7 +527,7 @@ public class RequestService {
     ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
 
-        RequestStatus sourceStatus = request.getStatus();
+        OverviewStatus sourceStatus = request.getOverviewStatus();
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
 
         RequestOutcome outcome;
@@ -537,7 +559,7 @@ public class RequestService {
         request = save(request);
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, message);
 
-        return requestMapper.extendedRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -551,7 +573,7 @@ public class RequestService {
     public Page<RequestRepresentation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Requests for query {}", query);
         Page<Request> result = requestSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(requestMapper::requestToRequestDTO);
+        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
 }

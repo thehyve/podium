@@ -494,8 +494,7 @@ public abstract class AbstractRequestDataIntTest {
                 // Number of requests should equal the number of organisations it was submitted to
                 Assert.assertEquals(organisations.size(), requests.size());
                 for (RequestRepresentation req: requests) {
-                    Assert.assertEquals(RequestStatus.Review, req.getStatus());
-                    Assert.assertEquals(RequestReviewStatus.Validation, req.getRequestReview().getStatus());
+                    Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
                 }
                 res[0] = requests;
             });
@@ -523,7 +522,7 @@ public abstract class AbstractRequestDataIntTest {
                 log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestReviewStatus.Review, requestResult.getRequestReview().getStatus());
+                Assert.assertEquals(OverviewStatus.Review, requestResult.getStatus());
                 res[0] = requestResult;
             });
         return res[0];
@@ -538,9 +537,7 @@ public abstract class AbstractRequestDataIntTest {
                 log.info("Result approved request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestReviewStatus.Closed, requestResult.getRequestReview().getStatus());
-                Assert.assertEquals(ReviewProcessOutcome.Approved, requestResult.getRequestReview().getDecision());
-                Assert.assertEquals(RequestStatus.Approved, requestResult.getStatus());
+                Assert.assertEquals(OverviewStatus.Approved, requestResult.getStatus());
                 res[0] = requestResult;
             });
         return res[0];

@@ -47,7 +47,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
 
         RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
         Assert.assertNotNull(deliveryRequest);
-        Assert.assertEquals(deliveryRequest.getStatus(), RequestStatus.Delivery);
+        Assert.assertEquals(deliveryRequest.getStatus(), OverviewStatus.Delivery);
 
         Thread.sleep(1000);
 
@@ -235,10 +235,10 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         verify(this.mailService, times(1)).sendDeliveryCancelledNotificationToRequester(any(), any(), any(UserRepresentation.class));
     }
 
-    private void testCloseRequest(RequestRepresentation request, RequestOutcome expectedOutcome) throws Exception {
+    private void testCloseRequest(RequestRepresentation request, OverviewStatus expectedOverviewStatus) throws Exception {
         // Close the request.
         MessageRepresentation message = new MessageRepresentation();
-        message.setSummary("Closed request after delivery. Outcome: " + expectedOutcome.name());
+        message.setSummary("Closed request after delivery. Outcome: " + expectedOverviewStatus.name());
         ResultActions res
             = performProcessAction(coordinator1, "close", request.getUuid(), HttpMethod.POST, message);
 
@@ -248,8 +248,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result closed request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(RequestStatus.Closed, requestResult.getStatus());
-                Assert.assertEquals(expectedOutcome, requestResult.getOutcome());
+                Assert.assertEquals(expectedOverviewStatus, requestResult.getStatus());
             });
     }
 
@@ -268,7 +267,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         reset(this.auditService);
         reset(this.mailService);
 
-        testCloseRequest(request, RequestOutcome.Cancelled);
+        testCloseRequest(request, OverviewStatus.Cancelled);
 
         Thread.sleep(1000);
         // Verify that the requester is notified that the request is closed.
@@ -296,7 +295,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         reset(this.auditService);
         reset(this.mailService);
 
-        testCloseRequest(request, RequestOutcome.Delivered);
+        testCloseRequest(request, OverviewStatus.Delivered);
 
         Thread.sleep(1000);
         // Verify that the requester is notified that the request is closed.

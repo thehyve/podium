@@ -51,12 +51,13 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
     }
 
     findLastHistoricReviewMessageEventForCurrentStatus() {
-        let messageEvents = this.request.historicEvents.filter((event) => {
-            return event.data.messageSummary != null
-                && event.data.targetStatus === this.request.requestReview.status.toLocaleString();
-        });
+        let latestEvent = this.request.latestEvent;
+        this.lastEvent = null;
 
-        this.lastEvent = messageEvents[messageEvents.length - 1];
+        if (latestEvent != null) {
+            this.lastEvent = latestEvent.data.messageSummary != null &&
+            latestEvent.data.targetStatus === this.request.status.toLocaleString() ? latestEvent : null;
+        }
     }
 
     isRevisionEvent(): boolean {

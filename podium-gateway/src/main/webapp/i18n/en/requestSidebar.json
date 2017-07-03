@@ -3,9 +3,9 @@
         "status": {
             "All": "All requests",
             "Draft": "Draft",
-            "Validation": "Validation",
+            "Validation": "In validation",
             "Review": "In review",
-            "Revision": "Revision",
+            "Revision": "In revision",
             "Approved": "Approved",
             "Delivery": "In delivery",
             "Partially_Delivered": "Partially delivered",

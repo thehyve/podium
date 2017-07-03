@@ -18,10 +18,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mapper annotation indicating the mapping that
- * only includes request uuid and organisation name and uuid.
+ * Mapper for overview pages.
  */
 @Qualifier
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface MinimalRequest {}
+public @interface OverviewMapper {}

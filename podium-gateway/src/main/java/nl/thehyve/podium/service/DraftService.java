@@ -3,6 +3,7 @@ package nl.thehyve.podium.service;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
@@ -10,6 +11,7 @@ import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
@@ -18,6 +20,7 @@ import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
+import nl.thehyve.podium.service.util.OrganisationMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +83,7 @@ public class DraftService {
         requestDetail.setPrincipalInvestigator(new PrincipalInvestigator());
         request.setRequestDetail(requestDetail);
         requestRepository.save(request);
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -98,9 +101,13 @@ public class DraftService {
         RequestAccessCheckHelper.checkRequester(user, request);
         RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
 
-        request = requestMapper.updateRequestDTOToRequest(body, request);
+        request.setOrganisations(new HashSet<>(OrganisationMapperHelper.organisationDTOsToUuids(body.getOrganisations())));
+        requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRequestDetail(), request.getRequestDetail());
+        request.getRequestDetail().setRequestType(body.getRequestDetail().getRequestType());
+        request.getRequestDetail().setCombinedRequest(body.getRequestDetail().getCombinedRequest());
+
         requestRepository.save(request);
-        return requestMapper.requestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -122,7 +129,7 @@ public class DraftService {
         requestDetailMapper.processingRequestDetailDtoToRequestDetail(body.getRevisionDetail(), request.getRevisionDetail());
 
         request = requestRepository.save(request);
-        return requestMapper.extendedRequestToRequestDTO(request);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -139,9 +146,10 @@ public class DraftService {
 
         log.debug("Access and status checks...");
         RequestAccessCheckHelper.checkRequester(user, request);
-        RequestStatus sourceStatus = RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Draft);
+        OverviewStatus sourceStatus = request.getOverviewStatus();
 
-        RequestRepresentation requestData = requestMapper.requestToRequestDTO(request);
+        RequestDetailRepresentation requestData = requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRequestDetail());
 
         log.debug("Validating request data.");
         RequestService.validateRequest(requestData);
@@ -209,7 +217,7 @@ public class DraftService {
             statusUpdateEventService.publishStatusUpdate(user, sourceStatus, organisationRequest, null);
         }
 
-        List<RequestRepresentation> result = requestMapper.extendedRequestsToRequestDTOs(organisationRequests);
+        List<RequestRepresentation> result = requestMapper.detailedRequestsToRequestDTOs(organisationRequests);
         notificationService.submissionNotificationToRequester(user, result);
 
         log.debug("Deleting draft request.");

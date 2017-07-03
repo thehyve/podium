@@ -14,7 +14,18 @@ import nl.thehyve.podium.common.service.dto.PodiumEventRepresentation;
 import nl.thehyve.podium.domain.PodiumEvent;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", uses = { })
-public interface PodiumEventMapper {
-    PodiumEventRepresentation podiumEventToPodiumEventRepresentation(PodiumEvent podiumEvent);
+public abstract class PodiumEventMapper {
+
+    public abstract PodiumEventRepresentation podiumEventToPodiumEventRepresentation(PodiumEvent podiumEvent);
+
+    public PodiumEventRepresentation lastPodiumEventToPodiumEventRepresentation(List<PodiumEvent> podiumEvents) {
+        if (podiumEvents == null || podiumEvents.isEmpty()) {
+            return null;
+        }
+        return podiumEventToPodiumEventRepresentation(podiumEvents.get(podiumEvents.size() - 1));
+    }
+
 }

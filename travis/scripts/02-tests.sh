@@ -24,13 +24,6 @@ mvn  -q "$MAVEN_OPTS" -Dspring.profiles.active=test test \
     -Dlogging.level.nl.thehyve.podium.sample=ERROR \
     -Dlogging.level.nl.thehyve.podium.travis=ERROR
 
-if [ -f "tsconfig.json" ]; then
-    yarn run test
-    # upload karma code coverage to codebeat.co
-    yarn global add codeclimate-test-reporter
-    codeclimate-test-reporter < target/test-results/coverage/lcov.info
-fi
-
 echo "Stopping and removing docker containers"
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
