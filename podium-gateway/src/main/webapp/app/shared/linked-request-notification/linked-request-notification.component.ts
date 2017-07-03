@@ -15,7 +15,7 @@ import { RequestService } from '../request/request.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-    selector: 'pdm-notification',
+    selector: 'pdm-linked-notification',
     templateUrl: 'linked-request-notification.component.html',
     styleUrls: ['linked-request-notification.component.scss']
 })
