@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.util.UUID;
 
@@ -47,6 +48,9 @@ public class ReviewService {
 
     @Autowired
     private RequestMapper requestMapper;
+
+    @Autowired
+    private RequestService requestService;
 
     @Autowired
     private ReviewFeedbackMapper reviewFeedbackMapper;
@@ -68,6 +72,14 @@ public class ReviewService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @PostConstruct
+    private void init() {
+        notificationService.setRequestService(requestService);
+    }
 
     /**
      * Validating the request by uuid. If successful, the request will change to review status 'Review'.
@@ -235,6 +247,10 @@ public class ReviewService {
         reviewFeedbackSearchRepository.save(feedback);
         entityManager.flush();
         entityManager.refresh(request);
+
+        // Notify request organisation coordinators of review feedback
+        notificationService.reviewedNotficationToCoordinators(request.getUuid(), feedback.getReviewer());
+
         return requestMapper.extendedRequestToRequestDTO(request);
     }
 

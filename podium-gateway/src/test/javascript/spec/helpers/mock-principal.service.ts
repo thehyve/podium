@@ -10,10 +10,12 @@
 import { SpyObject } from './spyobject';
 import { Principal } from '../../../../main/webapp/app/shared/auth/principal.service';
 import Spy = jasmine.Spy;
+import { Observable } from 'rxjs';
 
 export class MockPrincipal extends SpyObject {
 
     identitySpy: Spy;
+    authenticationSpy: Spy;
     fakeResponse: any;
 
     constructor() {
@@ -21,6 +23,7 @@ export class MockPrincipal extends SpyObject {
 
         this.fakeResponse = {};
         this.identitySpy = this.spy('identity').andReturn(Promise.resolve(this.fakeResponse));
+        this.authenticationSpy = this.spy('getAuthenticationState').andReturn(Observable.of(this.fakeResponse));
     }
 
     setResponse(json: any): void {

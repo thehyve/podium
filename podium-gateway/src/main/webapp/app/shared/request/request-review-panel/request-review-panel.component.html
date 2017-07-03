@@ -1,4 +1,4 @@
-<div class="request-action-wrapper">
+<div class="request-action-wrapper" *ngIf="hasLastReviewFeedback()">
     <h3 jhiTranslate="request.review.title">Review</h3>
     <table class="table">
         <thead>
@@ -9,7 +9,7 @@
             <th jhiTranslate="request.review.comment">Comment</th>
         </tr>
         </thead>
-        <tbody *ngIf="lastReviewFeedback">
+        <tbody>
         <tr *ngFor="let feedback of lastReviewFeedback">
             <th scope="row">{{feedback.reviewer.firstName}} {{feedback.reviewer.lastName}}</th>
             <td>{{feedback.date | date:'short'}}</td>

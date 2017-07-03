@@ -31,7 +31,6 @@ import {
     PodiumLoginComponent,
     SpecialismComponent
 } from './';
-import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
@@ -97,7 +96,6 @@ export class PodiumGatewaySharedModule {
                 AuthServerProvider,
                 AuthService,
                 UserService,
-                AttachmentService,
                 RequestService,
                 RequestAccessService,
                 DatePipe

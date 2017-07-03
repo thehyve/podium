@@ -8,7 +8,7 @@
  *
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import { Principal } from '../auth/principal.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
@@ -16,11 +16,13 @@ import { OrganisationAuthorityOptions } from '../authority/authority.constants';
 import { RequestStatusOptions, RequestReviewStatusOptions } from './request-status/request-status.constants';
 import { RequestReviewFeedback } from './request-review-feedback';
 import { RequestReviewDecision } from './request-review-decision';
+import { Subscription } from 'rxjs';
 
 @Injectable()
-export class RequestAccessService {
+export class RequestAccessService implements OnDestroy {
 
     private currentUser: User;
+    authenticationSubscription: Subscription;
 
     /**
      * Check whether a request has a specific status.
@@ -37,7 +39,7 @@ export class RequestAccessService {
     /**
      * Check whether a request review has a specific status.
      * @param request the request
-     * @param status the review status
+     * @param reviewStatus the review status
      * @returns {boolean} true if the request review has the status
      */
     public static isRequestReviewStatus(request: RequestBase, reviewStatus: RequestReviewStatusOptions): boolean {
@@ -55,13 +57,22 @@ export class RequestAccessService {
     constructor(
         private principal: Principal
     ) {
-        this.loadCurrentUser(false);
+        this.registerChangeInAuthentication();
     }
 
-    public loadCurrentUser(force: boolean) {
-        this.principal.identity(force).then((account: User) => {
-            this.currentUser = account;
-        });
+    ngOnDestroy() {
+        if (this.authenticationSubscription) {
+            this.authenticationSubscription.unsubscribe();
+        }
+    }
+
+    registerChangeInAuthentication() {
+        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+            (identity) => {
+                this.currentUser = identity;
+            },
+            (err) => this.onError(err)
+        );
     }
 
     /**
@@ -139,5 +150,9 @@ export class RequestAccessService {
         } else {
             return false;
         }
+    }
+
+    onError(error: any) {
+        console.error('Error', error);
     }
 }

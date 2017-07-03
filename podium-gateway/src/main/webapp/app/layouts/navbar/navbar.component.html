@@ -62,46 +62,37 @@
                         <b class="caret"></b>
                     </span>
                 </a>
-                <ul class="dropdown-menu" ngbDropdownMenu *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
+                <ul class="dropdown-menu" ngbDropdownMenu>
                     <!-- Organisation Admin -->
-                    <li class="dropdown-header">
+                    <li class="dropdown-header" *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_admin.main">
                             Administration
                         </span>
                     </li>
-                    <li class="dropdown-divider"></li>
-                    <li>
+                    <li class="dropdown-divider" *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'"></li>
+                    <li *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
                         <a class="dropdown-item" routerLink="organisation/configuration" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">settings</i>
                             <span jhiTranslate="global.menu.organisation.org_admin.orgConfiguration">Organisation configuration</span>
                         </a>
                     </li>
-                    <li>
+                    <li *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
                         <a class="dropdown-item" routerLink="organisation/user-management" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">supervisor_account</i>
                             <span jhiTranslate="global.menu.organisation.org_admin.userManagement">User management</span>
                         </a>
                     </li>
-                    <li>
-                        <a class="dropdown-item disabled" routerLink="backoffice/form-configuration" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="material-icons">assignment</i>
-                            <span jhiTranslate="global.menu.organisation.org_admin.formConfiguration">Form configuration</span>
-                        </a>
-                    </li>
-                </ul>
 
-                <ul class="dropdown-menu" ngbDropdownMenu *pdmHasAnyAuthority="'ROLE_ORGANISATION_COORDINATOR'">
                     <!-- Organisation Coordinator -->
-                    <li class="dropdown-header">
+                    <li class="dropdown-header" *pdmHasAnyAuthority="'ROLE_ORGANISATION_COORDINATOR'">
                         <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_coordinator.main">
                             Coordination
                         </span>
                     </li>
-                    <li class="dropdown-divider"></li>
-                    <li>
+                    <li class="dropdown-divider" *pdmHasAnyAuthority="'ROLE_ORGANISATION_COORDINATOR'"></li>
+                    <li *pdmHasAnyAuthority="'ROLE_ORGANISATION_COORDINATOR'">
                         <a class="dropdown-item" routerLink="requests/my-organisations" routerLinkActive="active"
-                           (click)
-                            ="collapseNavbar()">
+                           (click)="collapseNavbar()">
                             <i class="material-icons">archive</i>
                             <span jhiTranslate="global.menu.organisation.org_coordinator.requests">Requests</span>
                         </a>
@@ -137,12 +128,6 @@
                         <a class="dropdown-item" routerLink="bbmri/organisation" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">settings</i>
                             <span jhiTranslate="global.menu.bbmri_admin.orgConfiguration">Organisation configuration</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item disabled" routerLink="bbmri/form-configuration" routerLinkActive="active" (click)="collapseNavbar()">
-                            <i class="material-icons">assignment</i>
-                            <span jhiTranslate="global.menu.bbmri_admin.formConfiguration">Form configuration</span>
                         </a>
                     </li>
                 </ul>

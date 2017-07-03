@@ -17,7 +17,11 @@
             <span class="material-icons" *ngIf="isRejectionEvent()">
                 warning
             </span>
-        <div class="message-text-container">
+        <div class="message-text-container feedback-comment">
+            <h4>
+                <strong *ngIf="isRevisionEvent()">Revision required</strong>
+                <strong *ngIf="isRejectionEvent()">Request rejected</strong>
+            </h4>
             <strong>Summary:</strong>
             <span>
                 {{ lastEvent.data.messageSummary }}

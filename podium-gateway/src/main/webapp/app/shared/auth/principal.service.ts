@@ -11,12 +11,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { AccountService } from './account.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class Principal {
     private _identity: any;
     private authenticated = false;
-    private authenticationState = new Subject<any>();
+    private authenticationState = new BehaviorSubject<any>(null);
 
     constructor(
         private account: AccountService
@@ -92,8 +93,8 @@ export class Principal {
         return this._identity !== undefined;
     }
 
-    getAuthenticationState(): Observable<any> {
-        return this.authenticationState.asObservable();
+    getAuthenticationState(): BehaviorSubject<any> {
+        return this.authenticationState;
     }
 
     getImageUrl(): String {

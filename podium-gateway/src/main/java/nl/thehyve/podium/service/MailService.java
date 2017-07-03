@@ -140,8 +140,29 @@ public class MailService extends AbstractMailService {
             context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
-            String content = templateEngine.process("organisationRequestReview", context);
-            String subject = messageSource.getMessage("email.organisationRequestReview.title", null, locale);
+            String content = templateEngine.process("reviewerRequestReview", context);
+            String subject = messageSource.getMessage("email.reviewerRequestReview.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
+    }
+
+    @Async
+    public void sendRequestReviewedNotificationToCoordinators(
+        RequestRepresentation request, OrganisationRepresentation organisation,
+        List<UserRepresentation> coordinators, UserRepresentation reviewer
+    ) {
+        log.info("Notifying coordinators of request reviewed: request = {}, organisation = {}, #coordinators = {}",
+            request, organisation, coordinators == null ? null : coordinators.size());
+        for (UserRepresentation user : coordinators) {
+            log.debug("Sending request reviewed e-mail to '{}'", user.getEmail());
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            context.setVariable("request", request);
+            context.setVariable("reviewer", reviewer);
+            String content = templateEngine.process("organisationRequestReviewed", context);
+            String subject = messageSource.getMessage("email.organisationRequestReviewed.title", null, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }

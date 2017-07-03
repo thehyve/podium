@@ -8,12 +8,15 @@
  *
  */
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
-import { RequestReviewStatusOptions } from '../../../shared/request/request-status/request-status.constants';
+import {
+    RequestReviewStatusOptions,
+    RequestStatusOptions
+} from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -34,7 +37,7 @@ import { AlertService } from 'ng-jhipster';
     templateUrl: './request-detail.component.html'
 })
 
-export class RequestDetailComponent implements OnDestroy {
+export class RequestDetailComponent implements OnInit, OnDestroy {
 
     public RequestReviewDecision: typeof RequestReviewDecision = RequestReviewDecision;
 
@@ -45,6 +48,7 @@ export class RequestDetailComponent implements OnDestroy {
     public isUpdating = false;
     public currentUser: User;
 
+    public authenticationSubscription: Subscription;
     public requestSubscription: Subscription;
     public deliveriesSubscription: Subscription;
 
@@ -57,24 +61,10 @@ export class RequestDetailComponent implements OnDestroy {
         private principal: Principal,
         private alertService: AlertService
     ) {
+    }
 
-        // Forcefully reload logged in user
-        this.requestAccessService.loadCurrentUser(true);
-
-        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
-            this.setRequest(request);
-        });
-
-        this.principal.identity().then((account) => {
-            this.currentUser = account;
-            this.checkIsInRevision(this.request);
-        });
-
-        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
-            (deliveries) => {
-                this.deliveries = deliveries;
-            }
-        );
+    ngOnInit() {
+        this.registerChanges();
     }
 
     /**
@@ -88,6 +78,33 @@ export class RequestDetailComponent implements OnDestroy {
         if (this.deliveriesSubscription) {
             this.deliveriesSubscription.unsubscribe();
         }
+
+        if (this.authenticationSubscription) {
+            this.authenticationSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Setup change detection
+     */
+    registerChanges() {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.setRequest(request);
+        });
+
+        this.deliveriesSubscription = this.deliveryService.onDeliveries.subscribe(
+            (deliveries: Delivery[]) => {
+                this.deliveries = deliveries;
+            }
+        );
+
+        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+            (identity: User) => {
+                this.currentUser = identity;
+                this.checkIsInRevision(this.request);
+            },
+            (err) => this.onError(err)
+        );
     }
 
     /**
@@ -121,7 +138,7 @@ export class RequestDetailComponent implements OnDestroy {
     /**
      * Submit the feedback of a reviewer for a request.
      *
-     * @param requestReviewFeedback the reviewfeedback holding the advice and their findings.
+     * @param decision the reviewfeedback holding the advice and their findings.
      */
     submitReview(decision: RequestReviewDecision) {
         let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
@@ -272,6 +289,38 @@ export class RequestDetailComponent implements OnDestroy {
         let isRequester = this.requestAccessService.isRequesterOf(request);
 
         return revisionStatus && isRequester;
+    }
+
+    /**
+     * Check whether the request has related requests
+     * @returns true if the request has related requests
+     */
+    hasRelatedRequests(): boolean {
+        return this.request.relatedRequests && this.request.relatedRequests.length > 0;
+    }
+
+    hasReviewRounds(): boolean {
+        return this.request.reviewRounds && this.request.reviewRounds.length > 0;
+    }
+
+    showReviewPanel(): boolean {
+        // Dont show if we dont have review rounds
+        if (!this.hasReviewRounds()) {
+            return false;
+        }
+
+        // Dont show if the user is not one of the request coordinators or reviewers
+        if (!this.isRequestCoordinator() && !this.isRequestReviewer()) {
+            return false;
+        }
+
+        /**
+         * Show only if the request is not in review and in the validation phase
+         * This is to cover the case when a request has been sent for revision
+         * and the previous review round has been closed.
+         */
+        return !(this.request.status === RequestStatusOptions.Review &&
+        this.request.requestReview.status === RequestReviewStatusOptions.Validation);
     }
 
     onSuccess(response: Response) {

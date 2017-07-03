@@ -406,14 +406,6 @@
                     </div>
                 </div>
 
-                <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>
-
-                <!-- Attachments -->
-                <button type="button" class="btn btn-default"
-                        [routerLink]="['/', { outlets: { popup: 'upload'} }]"
-                        replaceUrl="false" >Upload attachments
-                </button>
-
                 <pdm-request-action-toolbar
                     [form]="requestForm"
                     [request]="requestBase"

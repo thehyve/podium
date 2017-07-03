@@ -161,6 +161,27 @@ public class NotificationService {
     }
 
     /**
+     * Notify organisation coordinators about a request that has been reviewed.
+     * @param requestUuid The uuid of the request
+     * @param reviewerUuid The uuid of the reviewer
+     */
+    @Async
+    public void reviewedNotficationToCoordinators(UUID requestUuid, UUID reviewerUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+
+        // Fetch reviewer data through Feign.
+        UserRepresentation reviewer = this.fetchUserThroughFeign(reviewerUuid);
+
+        for(OrganisationRepresentation organisation: request.getOrganisations()) {
+            // Fetch organisation coordinators through Feign.
+            List<UserRepresentation> coordinators
+                = this.fetchOrganisationUsersByRoleThroughFeign(organisation.getUuid(), AuthorityConstants.ORGANISATION_COORDINATOR);
+
+            mailService.sendRequestReviewedNotificationToCoordinators(request, organisation, coordinators, reviewer);
+        }
+    }
+
+    /**
      * Notify organisation reviewers about an available request to review.
      *
      * @param requestUuid The uuid of the request to be reviewed
