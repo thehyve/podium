@@ -26,6 +26,9 @@ mvn  -q "$MAVEN_OPTS" -Dspring.profiles.active=test test \
 
 if [ -f "tsconfig.json" ]; then
     yarn run test
+    # upload karma code coverage to codebeat.co
+    yarn global add codeclimate-test-reporter
+    codeclimate-test-reporter < target/test-results/coverage/lcov.info
 fi
 
 echo "Stopping and removing docker containers"
