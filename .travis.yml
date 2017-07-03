@@ -58,7 +58,7 @@ install:
 script:
   - $PODIUM_SCRIPTS/01-docker-compose.sh
   - if [ "$TASK" == "integration" ]; then "$PODIUM_SCRIPTS"/02-tests.sh; fi
-  - if [ "$TASK" == "frontend" ]; then cd podium-gateway && yarn test; fi
+  - if [ "$TASK" == "frontend" ]; then "$PODIUM_SCRIPTS"/02-tests-frontend.sh; fi
   - if [ "$TASK" == "e2e" ]; then "$PODIUM_SCRIPTS"/03-run.sh; fi
 notifications:
   webhooks:
