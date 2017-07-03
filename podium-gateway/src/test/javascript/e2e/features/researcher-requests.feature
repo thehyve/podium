@@ -33,7 +33,7 @@ Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-3, BRPREQ-58
         Given 'Request02' needs revision
         And Linda goes to the 'revise requests' page for the request 'Request02' submitted to 'DataBank'
         When Linda revises and 'submits' the request
-        Then the request is in 'Validation'
+        Then the request is in Review with status 'Validation'
 
     @default
     @request

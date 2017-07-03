@@ -4,7 +4,7 @@ Feature: For a BBMRI admin to do his or her work they need information from the 
     Scenario: BBMRI admins can see users in the system
         Given BBMRI_Admin goes to the 'user management' page
         When he sorts by 'Login'
-        Then the overview contains the user's 'login, email, emailVerified, adminVerified' for the users 'Admin, BBMRI_Admin, blank user, Dave, Linda, System, VarnameBank_Admin'
+        Then the overview contains the user's 'login, email, emailVerified, adminVerified' for the users 'Admin, BBMRI_Admin, blank user, Dave, Linda, VarnameBank_Admin'
 
     @default
     Scenario Outline: user management page is sortable by <sortBy>
@@ -13,9 +13,9 @@ Feature: For a BBMRI admin to do his or her work they need information from the 
         Then users are displayed in the following order: '<userOrder>'
 
         Examples:
-            | sortBy | userOrder                                                              |
-            | Login  | Admin, BBMRI_Admin, blank user, Dave, Linda, System, VarnameBank_Admin |
-            | Email  | Admin, BBMRI_Admin, blank user, Linda, Dave, System, VarnameBank_Admin |
+            | sortBy | userOrder                                                      |
+            | Login  | Admin, BBMRI_Admin, blank user, Dave, Linda, VarnameBank_Admin |
+            | Email  | Admin, BBMRI_Admin, blank user, Linda, Dave, VarnameBank_Admin |
 
 #    @default
 #    Scenario: An user has a details page

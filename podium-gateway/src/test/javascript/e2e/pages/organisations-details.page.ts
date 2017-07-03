@@ -30,10 +30,10 @@ class UserDetails {
 
     constructor() {
         this.name = "organisation Details";
-        this.url = "#/bbmri/organisation/detail/";
+        this.url = "#/bbmri/organisation/edit/";
         this.elements = {
-            "shortName": { locator: $('.test-shortName') },
-            "name": { locator: $('.test-name') },
+            "shortName": { locator: $('#field_shortName') },
+            "name": { locator: $('#field_name') },
         }
     }
 }

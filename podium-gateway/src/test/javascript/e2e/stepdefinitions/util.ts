@@ -52,6 +52,12 @@ export function checkTextElement(element, expectedText): Promise<any> {
     })
 }
 
+export function checkInputElement(element, expectedText): Promise<any> {
+    return element.getAttribute('value').then(function (text) {
+        return promiseTrue(text == expectedText, text + " is not equal to " + expectedText);
+    })
+}
+
 export function roleToRoute(persona: Persona, orgShortName: string): string {
     let roles = persona['authority'].filter((value) => {
         return value["orgShortName"] == orgShortName

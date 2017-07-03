@@ -38,7 +38,7 @@ class UserDetails {
             "authority selection": { locator: $('.field_authority_user') },
             "add": { locator: $('.test-add') },
             "name input": { locator: $('#field_name') },
-            "short name inout": { locator: $('#field_shortName') },
+            "short name input": { locator: $('#field_shortName') },
             "Data": { locator: $('input[value=Data]') },
             "Images": { locator: $('input[value=Images]') },
             "Material": { locator: $('input[value=Material]') },
