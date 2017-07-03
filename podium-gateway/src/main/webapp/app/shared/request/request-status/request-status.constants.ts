@@ -36,23 +36,34 @@ const requestStatusesOpts: { [status: string]: any; } = {
     }
 };
 
-const requestReviewStatusesOpts: { [status: string]: any; } = {
+const requestProgressBarStatusOpts: { [status: string]: any; } = {
+    'Draft': {
+        name: 'Submitted',
+        order: 1
+    },
     'Validation': {
         name: 'Validation',
+        order: 2
+    },
+    'Revision': {
+        name: 'Revision',
         order: 2
     },
     'Review': {
         name: 'Review',
         order: 3
     },
-    // Highlight item 2 in progress bar when in revision
-    'Revision': {
-        name: 'Revision',
-        order: 2
+    'Approved': {
+        name: 'Approved',
+        order: 4
     },
-    'Closed': {
-        name: 'Closed',
-        order: -1
+    'Delivery': {
+        name: 'Delivery',
+        order: 5
+    },
+    'Finished' : {
+        name: 'Finished',
+        order: 6
     }
 };
 
@@ -93,12 +104,27 @@ export enum RequestReviewStatusOptions {
     None        = <any>'None'
 }
 
+export enum RequestOverviewStatusOption {
+    All                  = <any>'All',
+    Draft                = <any>'Draft',
+    Validation           = <any>'Validation',
+    Review               = <any>'Review',
+    Revision             = <any>'Revision',
+    Approved             = <any>'Approved',
+    Delivery             = <any>'Delivery',
+    Delivered            = <any>'Delivered',
+    Partially_Delivered  = <any>'Partially_Delivered',
+    Rejected             = <any>'Rejected',
+    Cancelled            = <any>'Cancelled',
+    Closed_Approved      = <any>'Closed_Approved',
+    None                 = <any>'None'
+}
+
 export type StatusType = RequestStatusOptions | RequestReviewStatusOptions;
 
 export const REQUEST_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestStatusesOpts);
 
-export const REQUEST_REVIEW_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestReviewStatusesOpts);
+export const REQUEST_PROGRESSBAR_STATUSES: ReadonlyArray<RequestStatus> = convertNamesToRequestStatuses(requestProgressBarStatusOpts);
 
-export const REQUEST_STATUSES_MAP: { [token: string]: RequestStatus; } = convertToRequestStatusMap(REQUEST_STATUSES);
-
-export const REQUEST_REVIEW_STATUSES_MAP: { [token: string]: RequestStatus; } = convertToRequestStatusMap(REQUEST_REVIEW_STATUSES);
+export const REQUEST_PROGRESSBAR_STATUSES_MAP: { [token: string]: RequestStatus; }
+    = convertToRequestStatusMap(REQUEST_PROGRESSBAR_STATUSES);

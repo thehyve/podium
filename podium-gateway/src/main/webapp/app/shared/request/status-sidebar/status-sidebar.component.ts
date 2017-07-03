@@ -9,11 +9,12 @@
  */
 
 import { Component, OnInit, Input } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { RequestStatusSidebarOptions, StatusSidebarOptionsCollection, StatusSidebarOption } from './status-sidebar-options';
+import { RequestStatusSidebarOptions, StatusSidebarOptionsCollection } from './status-sidebar-options';
 import { OverviewService } from '../../overview/overview.service';
 import { UserGroupAuthority } from '../../authority/authority.constants';
-import { StatusType, RequestStatusOptions } from '../request-status/request-status.constants';
+import {
+    RequestOverviewStatusOption
+} from '../request-status/request-status.constants';
 import { Response } from '@angular/http';
 import { Subject, Subscription } from 'rxjs';
 
@@ -27,11 +28,11 @@ export class RequestStatusSidebarComponent implements OnInit {
 
     public statusSidebarOptions = StatusSidebarOptionsCollection;
 
-    public onStatusChange: Subject<StatusSidebarOption> = new Subject();
+    public onStatusChange: Subject<RequestOverviewStatusOption> = new Subject();
 
     public overviewSubscription: Subscription;
 
-    public activeStatus: StatusSidebarOption;
+    public activeStatus: RequestOverviewStatusOption;
 
     @Input()
     public userGroupAuthority: UserGroupAuthority;
@@ -61,11 +62,11 @@ export class RequestStatusSidebarComponent implements OnInit {
         this.fetchCounts();
     }
 
-    updateOverviewForStatus(overviewStatus: StatusSidebarOption) {
+    updateOverviewForStatus(overviewStatus: RequestOverviewStatusOption) {
         this.onStatusChange.next(overviewStatus);
     }
 
-    isActiveElement(status: StatusSidebarOption): boolean {
+    isActiveElement(status: RequestOverviewStatusOption): boolean {
         return this.activeStatus === status;
     }
 

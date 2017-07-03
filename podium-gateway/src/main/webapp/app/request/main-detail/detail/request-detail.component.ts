@@ -15,7 +15,7 @@ import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import {
     RequestReviewStatusOptions,
-    RequestStatusOptions
+    RequestStatusOptions, RequestOverviewStatusOption
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
@@ -285,7 +285,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
      * @returns {boolean} true if the user owns the request and it is in revision
      */
     isRevisionStatusForRequester(request: RequestBase): boolean {
-        let revisionStatus = RequestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
+        let revisionStatus = RequestAccessService.isRequestStatus(request, RequestOverviewStatusOption.Revision);
         let isRequester = this.requestAccessService.isRequesterOf(request);
 
         return revisionStatus && isRequester;
@@ -300,9 +300,17 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
     }
 
     hasReviewRounds(): boolean {
-        return this.request.reviewRounds && this.request.reviewRounds.length > 0;
+        return this.request.reviewRound !== null;
     }
 
+    /**
+     * Indicates whether the logged in user is allowed to view the review panel
+     * This is true when with the following conditions have been met; in order:
+     *    - A review round is available
+     *    - The user is the request coordinator or the request reviewer
+     *    - When the request is not in the Validation phase (In this phase no review rounds will be active)
+     * @returns {boolean} true if the user can view the review panel
+     */
     showReviewPanel(): boolean {
         // Dont show if we dont have review rounds
         if (!this.hasReviewRounds()) {
@@ -319,8 +327,15 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
          * This is to cover the case when a request has been sent for revision
          * and the previous review round has been closed.
          */
-        return !(this.request.status === RequestStatusOptions.Review &&
-        this.request.requestReview.status === RequestReviewStatusOptions.Validation);
+        return this.request.status !== RequestOverviewStatusOption.Validation;
+    }
+
+    /**
+     * Indicates whether the logged in user is allowed to view the delivery panel
+     * @returns {boolean} true if the user can view the delivery panel
+     */
+    showDeliveryPanel(): boolean {
+        return this.isRequestCoordinator() || this.isRequestingResearcher();
     }
 
     onSuccess(response: Response) {

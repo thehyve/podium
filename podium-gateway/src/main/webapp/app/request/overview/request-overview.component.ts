@@ -22,10 +22,11 @@ import { Overview } from '../../shared/overview/overview';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
 import { UserGroupAuthority } from '../../shared/authority/authority.constants';
 import {
-    StatusSidebarOption, RequestStatusSidebarOptions
+    RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
 import { RequestType } from '../../shared/request/request-type';
 import { EventManager, ParseLinks } from 'ng-jhipster';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
@@ -63,7 +64,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     eventSubscriber: Subscription;
     overviewSubscription: Subscription;
     sidebarSubscription: Subscription;
-    activeStatus: StatusSidebarOption;
+    activeStatus: RequestOverviewStatusOption;
     routePath: any;
     toggledSidebar = true; // open sidebar by default
     userGroupAuthority: UserGroupAuthority;
@@ -80,7 +81,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     ) {
         super(router, activatedRoute);
 
-        this.activeStatus = this.overviewService.activeStatus || StatusSidebarOption.All;
+        this.activeStatus = this.overviewService.activeStatus || RequestOverviewStatusOption.All;
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
             (res: Response) => this.processAvailableRequests(res.json(), res.headers),
@@ -172,7 +173,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.fetchRequestsFor(this.activeStatus);
     }
 
-    fetchRequestsFor(option?: StatusSidebarOption) {
+    fetchRequestsFor(option?: RequestOverviewStatusOption) {
         if (!option) {
             option = this.overviewService.activeStatus;
         }

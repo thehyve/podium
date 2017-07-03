@@ -88,8 +88,7 @@
                             {{request.requestDetail.title || '-'}}
                         </td>
                         <td class="test-status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
-                            {{request.status}}
-                            {{ request.status == 'Review' ? '(' + request.requestReview.status + ')' : '' }}
+                            <span jhiTranslate="requestSidebar.status.{{ request.status }}"></span>
                         </td>
                         <td>
                             <ul class="overview-list-cell test-requestTypes">

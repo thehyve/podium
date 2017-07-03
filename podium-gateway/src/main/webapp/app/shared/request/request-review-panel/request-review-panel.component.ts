@@ -69,7 +69,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     }
 
     setRequestReviewFeedback() {
-        if (this.request.reviewRounds.length) {
+        if (this.request.reviewRound) {
             if (this.requestAccessService.isReviewerFor(this.request)) {
                 this.principal.identity().then((account) => {
                     this.lastReviewFeedback = [
@@ -77,7 +77,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
                     ];
                 });
             } else {
-                this.lastReviewFeedback = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
+                this.lastReviewFeedback = this.request.reviewRound.reviewFeedback;
             }
         }
     }

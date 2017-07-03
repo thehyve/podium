@@ -13,7 +13,10 @@ import { Principal } from '../auth/principal.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';
-import { RequestStatusOptions, RequestReviewStatusOptions } from './request-status/request-status.constants';
+import {
+    RequestStatusOptions, RequestReviewStatusOptions,
+    RequestOverviewStatusOption
+} from './request-status/request-status.constants';
 import { RequestReviewFeedback } from './request-review-feedback';
 import { RequestReviewDecision } from './request-review-decision';
 import { Subscription } from 'rxjs';
@@ -30,8 +33,8 @@ export class RequestAccessService implements OnDestroy {
      * @param status the status
      * @returns {boolean} true if the request has the status
      */
-    public static isRequestStatus(request: RequestBase, status: RequestStatusOptions): boolean {
-        let requiredStatus = RequestStatusOptions[status];
+    public static isRequestStatus(request: RequestBase, status: RequestOverviewStatusOption): boolean {
+        let requiredStatus = RequestOverviewStatusOption[status];
         let requestStatus = request.status.toString();
         return requestStatus === requiredStatus;
     }

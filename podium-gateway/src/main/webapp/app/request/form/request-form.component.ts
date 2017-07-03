@@ -24,7 +24,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 import { RequestAccessService } from '../../shared/request/request-access.service';
-import { RequestReviewStatusOptions } from '../../shared/request/request-status/request-status.constants';
+import {
+    RequestReviewStatusOptions,
+    RequestOverviewStatusOption
+} from '../../shared/request/request-status/request-status.constants';
 import { OrganisationService } from '../../shared/organisation/organisation.service';
 import { Organisation } from '../../shared/organisation/organisation.model';
 
@@ -116,7 +119,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.organisations = requestBase.organisations || [];
 
         // If the request is in revision use the revisionDetail
-        if (RequestAccessService.isRequestReviewStatus(requestBase, RequestReviewStatusOptions.Revision)) {
+        if (RequestAccessService.isRequestStatus(requestBase, RequestOverviewStatusOption.Revision)) {
             // Remember the revision ID
             this.revisionId = requestBase.revisionDetail.id;
             this.requestDetail = requestBase.revisionDetail;

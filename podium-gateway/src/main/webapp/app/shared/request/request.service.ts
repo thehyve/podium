@@ -194,26 +194,8 @@ export class RequestService {
         this.onRequestUpdate.next(requestBase);
     }
 
-    getLastReviewFeedbacks(reviewRounds: ReviewRound[]): RequestReviewFeedback[] {
-        // get the latest start date of review rounds
-        let lastReviewRoundDate = new Date(Math.max.apply(null, reviewRounds.map((reviewRound) => {
-            return new Date(reviewRound.startDate);
-        })));
-
-        // get the latest round
-        let lastReviewRound = reviewRounds.find((reviewRound) => {
-            return new Date(reviewRound.startDate).getTime() === lastReviewRoundDate.getTime();
-        });
-
-        // return feedback of last review round
-        if (lastReviewRound && lastReviewRound.endDate == null) {
-            return lastReviewRound.reviewFeedback;
-        }
-        return null;
-    }
-
     getLastReviewFeedbackByUser(request: RequestBase, user: User): RequestReviewFeedback {
-        let lastFeedbackList = this.getLastReviewFeedbacks(request.reviewRounds);
+        let lastFeedbackList = request.reviewRound.reviewFeedback;
         let lastFeedback: RequestReviewFeedback;
         if (lastFeedbackList) {
             lastFeedback = lastFeedbackList.find((feedback) => {
