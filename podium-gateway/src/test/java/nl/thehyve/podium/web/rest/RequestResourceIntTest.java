@@ -373,7 +373,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Reviewer counts: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 Map<OverviewStatus, Long> counts =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), countsTypeReference);
-                Assert.assertEquals(3, counts.get(OverviewStatus.All).longValue());
+                Assert.assertEquals(2, counts.get(OverviewStatus.All).longValue());
                 Assert.assertEquals(2, counts.get(OverviewStatus.Review).longValue());
             });
 

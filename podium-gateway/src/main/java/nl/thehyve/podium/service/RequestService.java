@@ -226,23 +226,29 @@ public class RequestService {
         return result.map(requestMapper::detailedRequestToRequestDTO);
     }
 
+    /**
+     * Gets the organisation uuids of the organisations for which the user has the specified role.
+     * @param user the user
+     * @param authority the role name
+     */
+    private static Set<UUID> getOrganisationsUuidsForRole(AuthenticatedUser user, String authority) {
+        return user.getOrganisationAuthorities().entrySet().stream()
+            .filter(entry -> entry.getValue().contains(authority))
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
+    }
+
     private Page<RequestRepresentation> findAllOrganisationRequestsInStatusForRole(AuthenticatedUser user,
                                                                                    OverviewStatus status,
                                                                                    String authority,
                                                                                    Pageable pageable) {
-        Set<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
-            .filter(entry -> entry.getValue().contains(authority))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+        Set<UUID> organisationUuids = getOrganisationsUuidsForRole(user, authority);
         return findOrganisationRequestsInStatus(organisationUuids, status, pageable);
     }
 
     private Map<OverviewStatus, Long> countOrganisationRequestsForRole(AuthenticatedUser user,
                                                                        String authority) {
-        Set<UUID> organisationUuids = user.getOrganisationAuthorities().entrySet().stream()
-            .filter(entry -> entry.getValue().contains(authority))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+        Set<UUID> organisationUuids = getOrganisationsUuidsForRole(user, authority);
         return getCountsForOrganisations(organisationUuids);
     }
 
@@ -357,7 +363,7 @@ public class RequestService {
     }
 
     /**
-     *  Count the requests for the reviewer per overview status.
+     *  Count the requests for the reviewer for overview status 'Review'.
      *
      *  @param user the current user (the reviewer)
      *  @return the map from overview status to number of requests
@@ -365,7 +371,14 @@ public class RequestService {
     @Transactional(readOnly = true)
     public Map<OverviewStatus, Long> countForReviewer(AuthenticatedUser user) {
         log.debug("Request to count Requests for reviewer");
-        return countOrganisationRequestsForRole(user, AuthorityConstants.REVIEWER);
+        Set<UUID> organisationUuids = getOrganisationsUuidsForRole(user, AuthorityConstants.REVIEWER);
+        Map<OverviewStatus, Long> result = new HashMap<>();
+        Long reviewRequestCount = requestRepository.countByOrganisationsAndRequestReviewStatus(
+            organisationUuids, RequestReviewStatus.Review
+        );
+        result.put(OverviewStatus.All, reviewRequestCount);
+        result.put(OverviewStatus.Review, reviewRequestCount);
+        return result;
     }
 
     /**

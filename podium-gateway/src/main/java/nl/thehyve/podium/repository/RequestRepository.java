@@ -92,6 +92,16 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
     List<SummaryEntry<RequestReviewStatus>> countByOrganisationsPerRequestReviewStatus(
         @Param("organisations") Set<UUID> organisations);
 
+    @Query("select count(distinct r)" +
+        " from Request r" +
+        " join r.organisations o" +
+        " where r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Review" +
+        " and r.requestReviewProcess.status = :reviewStatus" +
+        " and o in :organisations")
+    long countByOrganisationsAndRequestReviewStatus(
+        @Param("organisations") Set<UUID> organisations,
+        @Param("reviewStatus") RequestReviewStatus reviewStatus);
+
     @Query("select new nl.thehyve.podium.repository.SummaryEntry(r.outcome, count(distinct r))" +
         " from Request r" +
         " join r.organisations o" +
