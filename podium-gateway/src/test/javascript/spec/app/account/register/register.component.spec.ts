@@ -18,6 +18,8 @@ import { RegisterComponent } from '../../../../../../main/webapp/app/account/reg
 import { PodiumTestModule } from '../../../test.module';
 import { Router } from '@angular/router';
 import { MockRouter } from '../../../helpers/mock-route.service';
+import { TranslateService } from '@ngx-translate/core';
+import { MessageService } from '../../../../../../main/webapp/app/shared/message/message.service';
 
 describe('Component Tests', () => {
 
@@ -31,6 +33,7 @@ describe('Component Tests', () => {
                 declarations: [RegisterComponent],
                 providers: [
                     Register,
+                    MessageService,
                     {
                         provide: Router,
                         useClass: MockRouter
@@ -45,6 +48,9 @@ describe('Component Tests', () => {
                     },
                     {
                         provide: ElementRef,
+                        useValue: null
+                    }, {
+                        provide: TranslateService,
                         useValue: null
                     }
                 ]
@@ -69,26 +75,30 @@ describe('Component Tests', () => {
 
         it('should update success to OK after creating an account',
             inject([Register, JhiLanguageService],
-        fakeAsync((service: Register, mockTranslate: MockLanguageService) => {
-            spyOn(service, 'save').and.returnValue(Observable.of({}));
-            comp.registerAccount.password = comp.confirmPassword = 'password';
+              fakeAsync((service: Register, mockTranslate: MockLanguageService) => {
+                  spyOn(service, 'save').and.returnValue(Observable.of({}));
+                  spyOn(comp, 'processSuccess');
 
-            comp.register();
-            tick();
+                  comp.registerAccount.password = comp.confirmPassword = 'password';
 
-            expect(service.save).toHaveBeenCalledWith({
-                specialism: '',
-                password: 'password',
-                langKey: 'en'
-            });
-            expect(comp.success).toEqual(true);
-            expect(comp.registerAccount.langKey).toEqual('en');
-            expect(mockTranslate.getCurrentSpy).toHaveBeenCalled();
-            expect(comp.errorUserExists).toBeNull();
-            expect(comp.errorEmailExists).toBeNull();
-            expect(comp.error).toBeNull();
-        })
-        )
+                  comp.register();
+                  tick();
+
+                  expect(service.save).toHaveBeenCalledWith({
+                      specialism: '',
+                      password: 'password',
+                      langKey: 'en'
+                  });
+
+                  expect(comp.processSuccess).toHaveBeenCalled();
+
+                  expect(comp.registerAccount.langKey).toEqual('en');
+                  expect(mockTranslate.getCurrentSpy).toHaveBeenCalled();
+                  expect(comp.errorUserExists).toBeNull();
+                  expect(comp.errorEmailExists).toBeNull();
+                  expect(comp.error).toBeNull();
+              })
+            )
         );
 
         it('should notify of user existence upon 400/login already in use',
