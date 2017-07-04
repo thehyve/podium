@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2017  The Hyve and respective contributors.
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ See the file LICENSE in the root of this repository.
+  -->
+
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="20170704103619-1" author="gijs@thehyve.nl">
+        <!-- Request -->
+        <createIndex indexName="request_created_date_key"
+                     tableName="request"
+                     unique="false">
+            <column name="created_date" type="timestamp"/>
+        </createIndex>
+        <createIndex indexName="request_status_key"
+                     tableName="request"
+                     unique="false">
+            <column name="status" type="varchar(255)"/>
+        </createIndex>
+        <createIndex indexName="request_status_outcome_key"
+                     tableName="request"
+                     unique="false">
+            <column name="status" type="varchar(255)"/>
+            <column name="outcome" type="varchar(255)"/>
+        </createIndex>
+        <!-- Request review process -->
+        <createIndex indexName="request_review_process_status_key"
+                     tableName="request_review_process"
+                     unique="false">
+            <column name="status" type="varchar(255)"/>
+        </createIndex>
+        <createIndex indexName="request_review_process_decision_key"
+                     tableName="request_review_process"
+                     unique="false">
+            <column name="status" type="varchar(255)"/>
+            <column name="decision" type="varchar(255)"/>
+        </createIndex>
+        <!-- Review feedback -->
+        <createIndex indexName="review_feedback_reviewer_key"
+                     tableName="review_feedback"
+                     unique="false">
+            <column name="reviewer" type="uuid"/>
+        </createIndex>
+        <!-- Request organisations -->
+        <createIndex indexName="request_organisations_request_key"
+                     tableName="request_organisations"
+                     unique="false">
+            <column name="request_id" type="bigint"/>
+        </createIndex>
+        <!-- Related requests -->
+        <createIndex indexName="request_related_requests_request_key"
+                     tableName="request_related_requests"
+                     unique="false">
+            <column name="request_id" type="bigint"/>
+        </createIndex>
+        <!-- Request delivery processes -->
+        <createIndex indexName="request_delivery_processes_request_key"
+                     tableName="request_delivery_processes"
+                     unique="false">
+            <column name="request_id" type="bigint"/>
+        </createIndex>
+        <!-- Delivery process -->
+        <createIndex indexName="delivery_process_status_key"
+                     tableName="delivery_process"
+                     unique="false">
+            <column name="status" type="varchar(255)"/>
+        </createIndex>
+        <createIndex indexName="delivery_process_status_outcome_key"
+                     tableName="delivery_process"
+                     unique="false">
+            <column name="status" type="varchar(255)"/>
+            <column name="outcome" type="varchar(255)"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

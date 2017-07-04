@@ -22,6 +22,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -29,7 +30,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "delivery_process")
+@Table(name = "delivery_process",
+    indexes = {
+        @Index(name = "delivery_process_status_key", columnList = "status"),
+        @Index(name = "delivery_process_status_outcome_key", columnList = "status,outcome")
+    }
+)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "deliveryprocess")
 @Data
