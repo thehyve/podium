@@ -57,6 +57,11 @@ class RequestDetails {
             "messageDescription": { locator: $('#messageDescription') },
             "cancel": { locator: $('.test-cancel-btn') },
             "submit": { locator: $('.test-submit-btn') },
+            "deliveryAction": { locator: $('.test-delivery-action-btn') },
+            "reference": { locator: $('#reference') },
+            "deliveryrowImages": { locator: $('.test-deliveryrow-Images') },
+            "deliveryrowMaterial": { locator: $('.test-deliveryrow-Material') },
+            "deliveryrowData": { locator: $('.test-deliveryrow-Data') },
         }
     }
 }

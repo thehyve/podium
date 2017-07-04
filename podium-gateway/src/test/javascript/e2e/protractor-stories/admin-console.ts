@@ -156,7 +156,7 @@ export class AdminConsole {
         });
     }
 
-    public getRequests(persona: Persona, status: string, role: string) {
+    public getRequests(persona: Persona, status, role: string) {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
@@ -175,7 +175,7 @@ export class AdminConsole {
      *  status ['Review', 'Delivery']
      *  role ['requester', ]
      */
-    public getRequest(persona: Persona, status: string, role: string, draft: Request, organisationName: string) {
+    public getRequest(persona: Persona, status, role: string, draft: Request, organisationName: string) {
         return this.getRequests(persona, status, role).then((drafts) => {
             return drafts.filter((value) => {
                 return value["requestDetail"]["title"] == draft["title"] && value['organisations'][0]['name'] == organisationName;
@@ -189,6 +189,10 @@ export class AdminConsole {
 
     public approveRequest(persona: Persona, draft: Request) {
         return this.requestGetAction(persona, draft, 'approve');
+    }
+
+    public startDelivery(persona: Persona, draft: Request) {
+        return this.requestGetAction(persona, draft, 'startDelivery');
     }
 
     public getDeliveries(persona: Persona, draft: Request) {
@@ -224,6 +228,31 @@ export class AdminConsole {
             let options = {
                 method: 'POST',
                 url: browser.baseUrl + 'api/requests/' + draft['uuid'] + '/' + action,
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(note)
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public releaseDeliveries(persona: Persona, delivery: Request, note: { 'description': string, 'summary': string }) {
+        return this.requestPostAction(persona, delivery, 'release', note);
+    }
+
+    public receiveDeliveries(persona: Persona, delivery: Request, note: { 'description': string, 'summary': string }) {
+        return this.requestPostAction(persona, delivery, 'received', note);
+    }
+
+    private deliveriesPostAction(persona: Persona, delivery: {}, action: string, note: { 'description': string, 'summary': string }) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/requests/' + delivery['historicEvents'][0]['data']['requestUuid'] + '/deliveries/' + delivery['uuid'] + '/' + action,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'content-type': 'application/json'

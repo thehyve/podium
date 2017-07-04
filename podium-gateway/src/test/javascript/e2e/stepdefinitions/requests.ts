@@ -12,7 +12,8 @@ import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
 import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData, countIs } from './util';
 import { Organisation, Request } from '../data/templates';
-import { $$, browser } from 'protractor';
+import { $$, browser, protractor } from 'protractor';
+import { RequestOverviewStatusOption } from '../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -223,6 +224,32 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
+    Given(/^'(.*)' is approved$/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
+                return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request)
+            })
+        })
+    });
+
+    Given(/^'(.*)'s delivery has started/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
+                return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
+                    return adminConsole.startDelivery(director.getPersona('Request_Coordinator'), request);
+                })
+            })
+        })
+    });
+
     When(/^(.*) revises and '(.*)s' the request$/, function (personaName, action): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
@@ -237,20 +264,6 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    Then(/^the request is in Review with status '(.*)'$/, function (requestState): Promise<any> {
-        let director = this.director as Director;
-        let adminConsole = this.adminConsole as AdminConsole;
-
-        let persona = director.getPersona('he');
-        let orgShortName = this.scenarioData['organisations'][0];
-
-        return browser.sleep(1000).then(() => {
-            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
-                return promiseTrue((body['status'] == 'Review') && (body['requestReview']['status'] == requestState), 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
-            })
-        });
-    });
-
     Then(/^the request has the status '(.*)'$/, function (requestState): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
@@ -259,22 +272,33 @@ defineSupportCode(({ Given, When, Then }) => {
         let orgShortName = this.scenarioData['organisations'][0];
 
         return browser.sleep(1000).then(() => {
-            return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
-                return promiseTrue(body['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState)
+            return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return promiseTrue(body['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState + '\n ' + JSON.stringify(body))
             })
         });
     });
 
-    Then(/^the request is closed with outcome '(.*)'$/, function (outCome): Promise<any> {
+    Then(/^there are the folloing deliveries:$/, function (expectedDeliveriesString): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
+        let expectedDeliveries: { type: string, status: string }[] = JSON.parse(expectedDeliveriesString);
         let persona = director.getPersona('he');
         let orgShortName = this.scenarioData['organisations'][0];
+        let requestState = 'Delivery'
 
         return browser.sleep(1000).then(() => {
-            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
-                return promiseTrue((body['status'] == 'Closed') && body['outcome'] == outCome, 'request ' + body['requestDetail']['title'] + ' is not ' + 'Closed')
+            return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return adminConsole.getDeliveries(persona, body).then((deliveries) => {
+                    return Promise.all([
+                        promiseTrue(expectedDeliveries.length == deliveries.length, 'expected ' + JSON.stringify(expectedDeliveries) + '\nbut found: ' + JSON.stringify(deliveries)),
+                        ...expectedDeliveries.map((expected) => {
+                            return promiseTrue(deliveries.some((delivery) => {
+                                return (expected['type'] == delivery['type'] && expected['status'] == delivery['status'])
+                            }), 'Could not find a matching delivery for: ' + JSON.stringify(expected) + '\nin: ' + JSON.stringify(deliveries))
+                        })
+                    ])
+                })
             })
         });
     });
@@ -367,6 +391,17 @@ defineSupportCode(({ Given, When, Then }) => {
             countIs($$('input'), 1) //only a checkbox for validationCheck
         ])
     });
+
+    When(/^(.*) releases delivery '(.*)'$/, function (personaName, deliveryTypesString) {
+        let director = this.director as Director;
+        let deliveryTypes = deliveryTypesString.split(", ");
+
+        return doInOrder(deliveryTypes, (deliveryType) => {
+            return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click().then((): Promise<any> => {
+                return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
+            })
+        })
+    })
 });
 
 function alphabetically(a, b) {

@@ -91,7 +91,7 @@ function initDataDictionary() {
             "requestTypes": ["Material"],
             "organisations": ["BioBank"],
             "combinedRequest": null,
-            "status": 'Review (Validation)',
+            "status": 'In validation',
         }),
         new Request("Request01-b", {
             "title": "Request01",
@@ -108,7 +108,7 @@ function initDataDictionary() {
             "requestTypes": ["Material", "Images", "Data"],
             "organisations": ["MultiBank"],
             "combinedRequest": null,
-            "status": 'Review (Validation)',
+            "status": 'In validation',
         }),
         new Request("Request02", {
             "title": "Request02",
@@ -125,7 +125,7 @@ function initDataDictionary() {
             "requestTypes": ["Data"],
             "organisations": ["DataBank"],
             "combinedRequest": null,
-            "status": 'Review (Validation)',
+            "status": 'In validation',
             "requesterName": 'Linda New bee',
         }),
         new Request("Draft01", {

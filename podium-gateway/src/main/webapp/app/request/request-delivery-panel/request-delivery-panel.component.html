@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let delivery of requestDeliveries"
+            <tr *ngFor="let delivery of requestDeliveries" [ngClass]="'test-deliveryrow-' + delivery.type"
                 [ngClass]="{
                     'delivery-received': deliveryIsReceived(delivery),
                     'delivery-released': deliveryIsReleased(delivery),
@@ -51,7 +51,7 @@
                 <td>
                     <div class="btn-group pull-right" dropdown
                          *ngIf="isActionable(delivery)">
-                        <button type="button" class="btn btn-outline-primary"
+                        <button type="button" class="btn btn-outline-primary test-delivery-action-btn"
                                 (click)="performAction(primaryStateOptions[delivery.status][delivery.type].action, delivery)">
                             {{ primaryStateOptions[delivery.status][delivery.type].label }}
                         </button>
