@@ -65,18 +65,60 @@ Feature: Organization coordinators can manage requests for their organization (B
         And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         When he starts delivery on the request
         Then the request has the status 'Delivery'
-        And there are the folloing deliveries:
+        And there are the following deliveries:
         """
             [{ "type": "Data", "status": "Preparation" }]
         """
 
     @default
     @request
-    Scenario: BRPREQ-56, As an organisation coordinator I want to start delivery on a request that is approved
+    Scenario: BRPREQ-56, As an organisation coordinator I want to release the materials related to a delivery
         Given 'Request02's delivery has started
         And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         When he releases delivery 'Data'
-        Then there are the folloing deliveries:
+        Then there are the following deliveries:
         """
             [{ "type": "Data", "status": "Released" }]
         """
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to mark a delivery for which the materials have been recieved
+        Given 'Request02's delivery has started
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he releases delivery 'Data'
+        And he marks released delivery 'Data' as received
+        Then there are the following deliveries:
+        """
+            [{ "type": "Data", "status": "Closed" }]
+        """
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to mark a delivery for which the materials have been recieved
+        Given 'Request02's delivery has started
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he releases delivery 'Data'
+        And he marks released delivery 'Data' as received
+        And he finalises the request
+        Then the request has the status 'Delivered'
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to cancel a delivery
+        Given 'Request02's delivery has started
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he cancels delivery 'Data'
+        Then there are the following deliveries:
+        """
+            [{ "type": "Data", "status": "Closed" }]
+        """
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to cancel a delivery
+        Given 'Request02's delivery has started
+        And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
+        When he cancels delivery 'Data'
+        And he finalises the request
+        Then the request has the status 'Cancelled'

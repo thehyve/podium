@@ -57,11 +57,11 @@
                         </button>
                         <button type="button" dropdownToggle
                                 *ngIf="!isOnlyRequester()"
-                                class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
+                                [ngClass]="'test-dropdown-toggle-' + delivery.type" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
                             <span class="caret"></span>
                             <span class="sr-only">Delivery actions</span>
                         </button>
-                        <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                        <ul *dropdownMenu [ngClass]="'test-dropdown-menu-' + delivery.type" class="dropdown-menu dropdown-menu-right" role="menu">
                             <li role="menuitem"
                                 *ngFor="let option of secondaryStateOptions[delivery.status][delivery.type]">
                                 <a href="javascript:void(0);" class="dropdown-item"

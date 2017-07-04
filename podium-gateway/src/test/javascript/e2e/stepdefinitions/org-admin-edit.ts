@@ -93,7 +93,9 @@ function addRole(director: Director, targetName: string, role: string): Promise<
     return director.enterText("user selection", director.getPersona(targetName)["firstName"], protractor.Key.ENTER).then(() => {
         return director.getElement("user selection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
             () => {
-                return director.clickOn("add")
+                return browser.sleep(500).then(() => {
+                    return director.clickOn("add")
+                })
             })
     })
 }

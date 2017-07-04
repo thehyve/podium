@@ -62,6 +62,8 @@ class RequestDetails {
             "deliveryrowImages": { locator: $('.test-deliveryrow-Images') },
             "deliveryrowMaterial": { locator: $('.test-deliveryrow-Material') },
             "deliveryrowData": { locator: $('.test-deliveryrow-Data') },
+            "finalize": { locator: $('.test-request-finalize-request-btn') },
+            "finalizeSubmit": { locator: $('.btn-success') },
         }
     }
 }

@@ -12,7 +12,7 @@ import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
 import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData, countIs } from './util';
 import { Organisation, Request } from '../data/templates';
-import { $$, browser, protractor } from 'protractor';
+import { $$, browser, protractor, $ } from 'protractor';
 import { RequestOverviewStatusOption } from '../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 let { defineSupportCode } = require('cucumber');
 
@@ -278,7 +278,7 @@ defineSupportCode(({ Given, When, Then }) => {
         });
     });
 
-    Then(/^there are the folloing deliveries:$/, function (expectedDeliveriesString): Promise<any> {
+    Then(/^there are the following deliveries:$/, function (expectedDeliveriesString): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
@@ -401,7 +401,46 @@ defineSupportCode(({ Given, When, Then }) => {
                 return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
             })
         })
-    })
+    });
+
+    When(/^(.*) marks released delivery '(.*)' as received$/, function (personaName, deliveryTypesString) {
+        let director = this.director as Director;
+        let deliveryTypes = deliveryTypesString.split(", ");
+
+        return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
+            return doInOrder(deliveryTypes, (deliveryType) => {
+                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click()
+            })
+        });
+    });
+
+    When(/^(.*) finalises the request$/, function (personaName) {
+        let director = this.director as Director;
+
+        return director.clickOn('finalize').then(() => {
+            return director.clickOn('finalizeSubmit')
+        })
+    });
+
+    When(/^(.*) cancels delivery '(.*)'$/, function (personaName, deliveryTypesString) {
+        let director = this.director as Director;
+        let deliveryTypes = deliveryTypesString.split(", ");
+
+        return doInOrder(deliveryTypes, (deliveryType) => {
+            return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
+                return $('.test-dropdown-toggle-' + deliveryType).click().then(() => {
+                    return $('.test-dropdown-menu-' + deliveryType).$('.dropdown-item').click().then((): Promise<any> => {
+                        return Promise.all([
+                            director.enterText('messageSummary', 'cancels delivery messageSummary'),
+                            director.enterText('messageDescription', 'cancels delivery messageDescription')
+                        ]).then(() => {
+                            return director.clickOn('submit')
+                        })
+                    })
+                });
+            })
+        });
+    });
 });
 
 function alphabetically(a, b) {
