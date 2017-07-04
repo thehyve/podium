@@ -11,22 +11,38 @@ import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Message } from '../../shared/message/message.model';
 import { MessageService } from '../../shared/message/message.service';
+import { Router } from '@angular/router';
+import { CompletionType } from './completion-type';
 
 @Component({
-    templateUrl: './completed.component.html'
+    templateUrl: './completed.component.html',
+    styleUrls: ['./completed.scss']
 })
 export class CompletedComponent implements OnInit {
 
     completedTitle: string;
     completedContent: string;
+    type: CompletionType;
+    completionTypes: typeof CompletionType = CompletionType;
 
     constructor(
-        private messageService: MessageService
+        private messageService: MessageService,
+        private router: Router
     ) {}
 
     ngOnInit() {
         let _message: Message = this.messageService.get();
-        this.completedTitle = _message.messageTitle;
-        this.completedContent = _message.messageBody;
+
+        if (_message !== undefined) {
+            this.completedTitle = _message.messageTitle;
+            this.completedContent = _message.messageBody;
+            this.type = _message.type;
+        } else {
+            this.router.navigate(['/']);
+        }
+    }
+
+    isCompletionType(type: CompletionType) {
+        return this.type === type;
     }
 }

@@ -38,6 +38,8 @@ export class PdmMainComponent implements OnInit {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
                 this.jhiLanguageHelper.updateTitle(this.getPageTitle(this.router.routerState.snapshot.root));
+                // Scroll to top of page after page navigation
+                window.scrollTo(0, 0);
             }
         });
     }

@@ -55,9 +55,8 @@
                             <span>Title</span>
                             <span class="fa fa-sort"></span>
                         </th>
-                        <th jhiSortBy="status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
+                        <th *ngIf="isActiveStatus(statusSidebarOptions.All)">
                             <span>Status</span>
-                            <span class="fa fa-sort"></span>
                         </th>
                         <th><span>Request type</span></th>
                         <th><span>Organisation(s)</span></th>
@@ -117,11 +116,11 @@
                         <td class="text-xs-right">
                             <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
                                 <button type="button" class="btn btn-primary btn-sm test-edit-btn"  (click)="editRequest(request)">
-                                    <i class="material-icons">edit</i>
+                                    <i class="material-icons md-18">edit</i>
                                     <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
                                 </button>
                                 <button type="submit" class="btn btn-danger btn-sm test-remove-btn" (click)="deleteDraft(request)">
-                                    <i class="material-icons">remove_circle_outline</i>
+                                    <i class="material-icons md-18">remove_circle_outline</i>
                                     <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
                                 </button>
                             </div>

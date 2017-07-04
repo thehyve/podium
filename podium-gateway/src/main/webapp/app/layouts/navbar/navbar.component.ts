@@ -7,13 +7,15 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { ProfileService } from '../profiles/profile.service';
 import { JhiLanguageHelper, Principal, LoginService } from '../../shared';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
+import { User } from '../../shared/user/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-navbar',
@@ -22,7 +24,7 @@ import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
         'navbar.scss'
     ]
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
 
     inProduction: boolean;
     isNavbarCollapsed: boolean;
@@ -30,6 +32,8 @@ export class NavbarComponent implements OnInit {
     swaggerEnabled: boolean;
     modalRef: NgbModalRef;
     version: string;
+    account: User;
+    accountSubscription: Subscription;
 
     constructor(
         private loginService: LoginService,
@@ -52,6 +56,17 @@ export class NavbarComponent implements OnInit {
             this.inProduction = profileInfo.inProduction;
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
+
+        this.accountSubscription = this.principal.getAuthenticationState()
+            .subscribe(
+                (identity) => this.account = identity
+            );
+    }
+
+    ngOnDestroy() {
+        if (this.accountSubscription) {
+            this.accountSubscription.unsubscribe();
+        }
     }
 
     changeLanguage(languageKey: string) {

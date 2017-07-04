@@ -9,13 +9,17 @@
   -->
 <div class="content-wrapper">
     <div class="row">
-        <div class="col-md-4">
-            &nbsp;
-        </div>
-        <div class="col-md-8">
+        <div class="message-container">
             <h1>{{completedTitle}}</h1>
             <p [innerHTML]="completedContent"></p>
-            <a href="/#/requests/my-requests">Go to request overview</a>
+            <a *ngIf="isCompletionType(completionTypes.Registration)" href="/#/">Login</a>
+            <a *ngIf="isCompletionType(completionTypes.Request_Submit)" href="/#/requests/my-requests">Go to request overview</a>
+        </div>
+    </div>
+    <div class="image-header">
+        <div class="center-block">
+            <a class="logo" href="http://www.bbmri.nl">
+            </a>
         </div>
     </div>
 </div>
