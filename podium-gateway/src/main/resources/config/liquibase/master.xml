@@ -34,4 +34,5 @@
     <include file="./changelog/20170609105528_update_reviewFeedback_reviewer.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170627122125_add_related_requests.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170702185043_remove_attachment_and_sequence.xml" relativeToChangelogFile="true"/>
+    <include file="./changelog/20170704103619_refactor_indexes.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

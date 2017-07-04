@@ -25,6 +25,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -34,7 +35,13 @@ import java.util.*;
  * A Request.
  */
 @Entity
-@Table(name = "request")
+@Table(name = "request",
+    indexes = {
+        @Index(name = "request_created_date_key", columnList = "created_date"),
+        @Index(name = "request_status_key", columnList = "status"),
+        @Index(name = "request_status_outcome_key", columnList = "status,outcome"),
+    }
+)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "request")
 @Data
