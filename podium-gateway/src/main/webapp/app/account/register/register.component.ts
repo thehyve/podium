@@ -11,7 +11,11 @@ import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular
 import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
 import { LoginModalService, MessageService } from '../../shared';
+import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { Message } from '../../shared/message/message.model';
+import { CompletionType } from '../../layouts/completed/completion-type';
 
 @Component({
     templateUrl: './register.component.html'
@@ -25,10 +29,13 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     errorUserExists: string;
     registerAccount: any;
     success: boolean;
+    successMessage: Message;
 
     constructor(
         private languageService: JhiLanguageService,
+        private translate: TranslateService,
         private registerService: Register,
+        private messageService: MessageService,
         private elementRef: ElementRef,
         private renderer: Renderer,
         private router: Router
@@ -55,15 +62,31 @@ export class RegisterComponent implements OnInit, AfterViewInit {
             this.errorEmailExists = null;
             this.languageService.getCurrent().then((key) => {
                 this.registerAccount.langKey = key;
-                this.registerService.save(this.registerAccount).subscribe(() => {
-                    this.success = true;
-                }, (response) => this.processError(response));
+                this.registerService.save(this.registerAccount).subscribe(
+                    (response) => this.processSuccess(),
+                    (error) => this.processError(error)
+                );
             });
         }
     }
 
     gotoLogin() {
         this.router.navigate(['/']);
+    }
+
+    private processSuccess() {
+        this.success = true;
+
+        // Get i18n success page content
+        let successTitle = this.translate.get('register.messages.successTitle');
+        let successContent = this.translate.get('register.messages.success');
+
+        Observable.forkJoin(successTitle, successContent).subscribe(
+            messages => {
+                this.successMessage = new Message(CompletionType.Registration, messages[0], messages[1]);
+                this.messageService.store(this.successMessage);
+                this.router.navigate(['/completed']);
+            });
     }
 
     private processError(response) {

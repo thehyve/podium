@@ -12,6 +12,7 @@ import { RequestService } from '../../shared/request/request.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { MessageService } from '../../shared/message/message.service';
 import { Message } from '../../shared/message/message.model';
+import { CompletionType } from '../../layouts/completed/completion-type';
 
 @Component({
     selector: 'pdm-request-form-submit-dialog',
@@ -43,7 +44,7 @@ export class RequestFormSubmitDialogComponent {
             }
         }
         submittedMessage += `</ul>`;
-        this.messageService.store(new Message(submittedTitle, submittedMessage));
+        this.messageService.store(new Message(CompletionType.Request_Submit, submittedTitle, submittedMessage));
     }
 
     confirmSubmit (request: RequestBase) {
