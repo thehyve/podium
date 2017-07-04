@@ -126,7 +126,7 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     @Query("select distinct r from Request r" +
         " where r.requester = :requester" +
-        " and r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Review" +
+        " and r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Closed" +
         " and r.outcome = :outcome")
     Page<Request> findAllByRequesterAndOutcome(
         @Param("requester") UUID requesterUuid,
