@@ -116,9 +116,20 @@ Feature: Organization coordinators can manage requests for their organization (B
 
     @default
     @request
-    Scenario: BRPREQ-56, As an organisation coordinator I want to cancel a delivery
+    Scenario: BRPREQ-56, As an organisation coordinator I want to finalize the request after canceling all deliveries
         Given 'Request02's delivery has started
         And Databank_Coordinator goes to the 'request details' page for the request 'Request02' submitted to 'DataBank'
         When he cancels delivery 'Data'
         And he finalises the request
         Then the request has the status 'Cancelled'
+
+    @default
+    @request
+    Scenario: BRPREQ-56, As an organisation coordinator I want to finalize the request after canceling some deliveries
+        Given 'Request03's delivery has started
+        And Request_Coordinator goes to the 'request details' page for the request 'Request03' submitted to 'MultiBank'
+        When he releases delivery 'Data, Material'
+        And he marks released delivery 'Data' as received
+        And he cancels delivery 'Material, Images'
+        And he finalises the request
+        Then the request has the status 'Partially_Delivered'

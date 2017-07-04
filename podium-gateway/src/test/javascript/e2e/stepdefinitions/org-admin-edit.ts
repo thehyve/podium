@@ -29,7 +29,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return director.clickOn("permissions tab").then(() => {
             return doInOrder(personaNameList, (userNames) => {
-                return browser.sleep(delay).then(() => {
+                return browser.waitForAngular().then(() => {
                     return addRole(director, userNames, director.getData("menuRoleMapping")[roleNameList.pop()]);
                 });
             });

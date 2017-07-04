@@ -25,7 +25,7 @@ Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-3, BRPREQ-58
     Scenario: BRPREQ-3, As a researcher I want to see an overview of my requests
         Given Linda goes to the 'request overview' page
         When she sorts by 'Title'
-        Then the overview contains the request's 'title, status, requestTypes, organisations' for the requests 'Draft01, Draft02, Request01-a, Request01-b, Request02' Draft01, Draft02, Request01-b, Request01-a, Request02
+        Then the overview contains the request's 'title, status, requestTypes, organisations' for the requests 'Draft01, Draft02, Request01-a, Request01-b, Request02, Request03' Draft01, Draft02, Request01-b, Request01-a, Request02, Request03
 
     @default
     @request

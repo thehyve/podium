@@ -158,16 +158,16 @@ defineSupportCode(({ Given, When, Then }) => {
         let requests: Request[] = director.getListOfData(requestNamesList);
 
         return countIs($$('.test-' + fields[0]), requests.length).then(() => {
-            return checkTable(fields, requests, director);
-        }).then(() => {
-        }, (error) => {
-            if (requestNamesListAltOrder.length == 0) {
-                return Promise.reject(error);
-            }
+            return checkTable(fields, requests, director).then(() => {
+            }, (error) => {
+                if (requestNamesListAltOrder.length == 0) {
+                    return Promise.reject(error);
+                }
 
-            let requests: Request[] = director.getListOfData(requestNamesListAltOrder);
-            fields = fieldNames.split(", ");
-            return checkTable(fields, requests, director);
+                let requests: Request[] = director.getListOfData(requestNamesListAltOrder);
+                fields = fieldNames.split(", ");
+                return checkTable(fields, requests, director);
+            })
         })
     });
 
@@ -241,7 +241,7 @@ defineSupportCode(({ Given, When, Then }) => {
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = copyData(director.getData(requestName)); //store for next step
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData(requestName), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
             return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
                 return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
                     return adminConsole.startDelivery(director.getPersona('Request_Coordinator'), request);
@@ -397,8 +397,10 @@ defineSupportCode(({ Given, When, Then }) => {
         let deliveryTypes = deliveryTypesString.split(", ");
 
         return doInOrder(deliveryTypes, (deliveryType) => {
-            return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click().then((): Promise<any> => {
-                return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
+            return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
+                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click().then((): Promise<any> => {
+                    return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
+                })
             })
         })
     });
@@ -407,8 +409,8 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let deliveryTypes = deliveryTypesString.split(", ");
 
-        return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-            return doInOrder(deliveryTypes, (deliveryType) => {
+        return doInOrder(deliveryTypes, (deliveryType) => {
+            return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
                 return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click()
             })
         });
@@ -417,8 +419,10 @@ defineSupportCode(({ Given, When, Then }) => {
     When(/^(.*) finalises the request$/, function (personaName) {
         let director = this.director as Director;
 
-        return director.clickOn('finalize').then(() => {
-            return director.clickOn('finalizeSubmit')
+        return browser.waitForAngular().then(() => {
+            return director.clickOn('finalize').then(() => {
+                return director.clickOn('finalizeSubmit')
+            })
         })
     });
 
