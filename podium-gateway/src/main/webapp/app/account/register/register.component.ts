@@ -74,7 +74,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/']);
     }
 
-    private processSuccess() {
+    public processSuccess() {
         this.success = true;
 
         // Get i18n success page content
