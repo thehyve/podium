@@ -13,7 +13,14 @@ import { ProfileInfo } from './profile-info.model';
 
 @Component({
     selector: 'pdm-page-ribbon',
-    template: `<div class="ribbon" *ngIf="ribbonEnv"><a href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a></div>`,
+    template: `
+        <div class="ribbon" *ngIf="ribbonEnv">
+            <span [ngSwitch]="profileInfo.inProduction">
+                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
+                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.beta">BETA</a>
+            </span>
+        </div>
+    `,
     styleUrls: [
         'page-ribbon.scss'
     ]
