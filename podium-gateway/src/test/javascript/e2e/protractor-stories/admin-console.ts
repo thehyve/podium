@@ -163,6 +163,29 @@ export class AdminConsole {
         });
     }
 
+    public getOrganisations() {
+        return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public getOrganisation(organisation: Organisation) {
+        return this.getOrganisations().then((organisations) => {
+            return organisations.filter(function (value) {
+                return value["shortName"] == organisation["shortName"];
+            })[0];
+        })
+    }
+
     public getDrafts(persona: Persona) {
         return this.authenticate(persona).then((body) => {
             let options = {
