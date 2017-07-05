@@ -35,7 +35,7 @@ public interface ReviewFeedbackMapper {
     @Mappings({
         @Mapping(source = "summary", target = "message.summary"),
         @Mapping(source = "description", target = "message.description"),
-        @Mapping(target = "reviewer", qualifiedBy = DefaultMapper.class)
+        @Mapping(source = "reviewer", target = "reviewer", qualifiedBy = DefaultMapper.class)
     })
     ReviewFeedbackRepresentation reviewFeedbackToReviewFeedbackRepresentation(ReviewFeedback reviewFeedback);
 

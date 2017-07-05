@@ -202,7 +202,7 @@ public class SecurityService {
         }
         return organisationUuids.stream().anyMatch(organisationUuid -> {
             Collection<String> organisationRoles = user.getOrganisationAuthorities().get(organisationUuid);
-            log.info("Organisation roles: {}", organisationRoles);
+            log.debug("Organisation roles: {}", organisationRoles);
             return organisationRoles != null &&
                 organisationRoles.stream().anyMatch(grantedAuthority ->
                     authorities.stream().anyMatch(authority ->

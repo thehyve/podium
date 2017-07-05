@@ -223,7 +223,7 @@ public class RequestService {
                 result = requestRepository.findAllByOrganisationsAndStatus(organisationUuids, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::detailedRequestToRequestDTO);
+        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
     /**

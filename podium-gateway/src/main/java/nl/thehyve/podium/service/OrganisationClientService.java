@@ -16,6 +16,7 @@ import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
@@ -35,16 +36,26 @@ public class OrganisationClientService {
 
     @Timed
     public List<OrganisationRepresentation> findAllOrganisations() throws URISyntaxException, FeignException {
+        log.info("Fetching all organisations through Feign ...");
         return organisationClient.getAllOrganisations().getBody();
     }
 
     @Timed
     public OrganisationRepresentation findOrganisationByUuid(UUID organisationUuid) throws FeignException {
+        log.info("Fetching organisation through Feign ...");
         return organisationClient.getOrganisation(organisationUuid).getBody();
     }
 
     @Timed
+    @Cacheable("remoteOrganisations")
+    public OrganisationRepresentation findOrganisationByUuidCached(UUID organisationUuid) throws FeignException {
+        log.info("Fetching organisation through Feign ...");
+        return findOrganisationByUuid(organisationUuid);
+    }
+
+    @Timed
     public List<UserRepresentation> findUsersByRole(UUID organisationUuid, String authority) {
+        log.info("Fetching organisation users through Feign ...");
         return internalRoleClient.getOrganisationRoleUsers(organisationUuid, authority).getBody();
     }
 

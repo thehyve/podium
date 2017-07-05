@@ -14,6 +14,7 @@ import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
@@ -29,7 +30,15 @@ public class UserClientService {
 
     @Timed
     public UserRepresentation findUserByUuid(UUID userUuid) throws URISyntaxException, FeignException {
+        log.info("Fetching user through Feign ...");
         return internalUserClient.getUser(userUuid).getBody();
+    }
+
+    @Timed
+    @Cacheable("remoteUsers")
+    public UserRepresentation findUserByUuidCached(UUID userUuid) throws URISyntaxException, FeignException {
+        log.info("Fetching user through Feign ...");
+        return findUserByUuid(userUuid);
     }
 
 }

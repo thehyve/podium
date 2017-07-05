@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.repository;
 
+import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
@@ -25,9 +26,14 @@ import java.util.UUID;
  * Spring Data JPA repository for the Request entity.
  */
 @SuppressWarnings("unused")
+@Timed
 public interface RequestRepository extends JpaRepository<Request,Long> {
 
     Request findOneByUuid(UUID requestUuid);
+
+    @Query(value = "select count(distinct e) from Request r join r.historicEvents e" +
+        " where r.uuid = :requestUuid")
+    long countHistoricEventsByRequestUuid(@Param("requestUuid") UUID requestUuid);
 
     @Query(value = "select r from Request r where r.id" +
         " in (select r.id from Request r join r.organisations o" +

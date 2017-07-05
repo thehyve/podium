@@ -16,18 +16,17 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static nl.thehyve.podium.common.config.PodiumConstants.DEFAULT_LOCALE;
-
 /**
  * A DTO representing a user, with his authorities.
  */
 @Data
-public class UserRepresentation implements IdentifiableUser {
+public class UserRepresentation implements IdentifiableUser, Serializable {
 
     @Pattern(regexp = PodiumConstants.LOGIN_REGEX)
     @Size(max = 50)
