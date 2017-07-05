@@ -91,6 +91,7 @@ public class ExceptionTranslator {
         BodyBuilder builder;
         ErrorRepresentation errorVM;
         ResponseStatus responseStatus = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class);
+        log.error("[Internal server error] {} - {}", ex.getMessage(), ex.getClass().toString());
         if (responseStatus != null) {
             builder = ResponseEntity.status(responseStatus.value());
             errorVM = new ErrorRepresentation("error." + responseStatus.value().value(), responseStatus.reason());
