@@ -12,7 +12,7 @@ import { Promise } from 'es6-promise';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { $ } from 'protractor';
-import { login, promiseTrue, doInOrder } from './util';
+import { login, promiseTrue, doInOrder, copyData } from './util';
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ setDefaultTimeout }) {
@@ -51,16 +51,16 @@ defineSupportCode(({ Given, When, Then }) => {
         return director.at(pageName);
     });
 
-    When(/^(.*) edits the details:$/, function (personaName, fieldValueString): Promise<any> {
+    When(/^(.*) edits the details '(.*)'$/, function (personaName, fieldString): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
-        let fieldValuePairs: { [key: string]: string } = JSON.parse(fieldValueString.trim());
-        this.scenarioData = fieldValuePairs;
-        let promises = [];
+        this.scenarioData = copyData(persona) //copy for future steps
+        let fields: string[] = fieldString.split(', ');
 
-        for (let key in fieldValuePairs) {
-            promises.push(director.enterText(key, fieldValuePairs[key]))
-        }
+        let promises = fields.map((field) => {
+            this.scenarioData[field] = this.scenarioData[field] + 'edited';
+            return director.enterText(field, this.scenarioData[field])
+        });
 
         return Promise.all(promises).then(() => {
             return director.clickOn('submitButton')
@@ -69,14 +69,22 @@ defineSupportCode(({ Given, When, Then }) => {
 
     Then(/^the new details are saved$/, function (): Promise<any> {
         let director = this.director as Director;
-        return Promise.resolve(director.getElement('SuccessMessage').locator.getText()).then((text) => {
-            return promiseTrue(text == 'Settings saved!', 'data was not saved successfully');
-        })
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let fieldsToCheck = ["login", "firstName", "lastName", "email", "telephone", "institute", "department",
+            "jobTitle", "specialism", "emailVerified", "adminVerified", "accountLocked"]
+
+
+        return adminConsole.getUser(this.scenarioData).then((user) => {
+            return Promise.all(fieldsToCheck.map((fieldname) => {
+                return promiseTrue(user[fieldname] == this.scenarioData[fieldname], fieldname + ' did not match user:\n' + JSON.stringify(user) + '\n Persona: \n' + JSON.stringify(this.scenarioData));
+            }))
+        });
     });
 
-    Then(/^the following fields are not editable:$/, function (fieldString): Promise<any> {
+    Then(/^the fields '(.*)' are not editable$/, function (fieldString): Promise<any> {
         let director = this.director as Director;
-        let fields = JSON.parse(fieldString.trim());
+        let fields = fieldString.split(', ');
 
         return doInOrder(fields, (field) => {
             return director.getElement(field).locator.getTagName().then((tagname) => {

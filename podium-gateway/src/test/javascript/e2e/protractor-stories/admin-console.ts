@@ -78,6 +78,36 @@ export class AdminConsole {
         });
     }
 
+    public getUsers() {
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/users/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public getUser(persona: Persona) {
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
     public unlockUser(persona: Persona) {
         let token;
 

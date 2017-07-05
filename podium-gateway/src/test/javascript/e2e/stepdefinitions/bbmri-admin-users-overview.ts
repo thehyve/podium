@@ -9,9 +9,11 @@
  */
 import { Persona } from '../personas/templates';
 import { Promise } from 'es6-promise';
-import { $$ } from 'protractor';
+import { $$, ElementArrayFinder, $ } from 'protractor';
 import { Director } from '../protractor-stories/director';
-import { login, promiseTrue, doInOrder, checkTextElement } from './util';
+import { login, promiseTrue, doInOrder, checkTextElement, checkInputElement, countIs } from './util';
+import { ORGANISATION_AUTHORITIES_MAP } from '../../../../main/webapp/app/shared/authority/authority.constants';
+import { AdminConsole } from '../protractor-stories/admin-console';
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(({ Given, When, Then }) => {
@@ -83,13 +85,14 @@ defineSupportCode(({ Given, When, Then }) => {
         });
     });
 
-    Given(/^(.*) goes to the '(.*)' page for '(.*)'$/, function (personaName, pageName, targetUserName): Promise<any> {
+    Given(/^(.*) goes to the user details page for '(.*)'$/, function (personaName, targetUserName): Promise<any> {
         let director = this.director as Director;
-        let suffix = director.getPersona(targetUserName)["login"];
+        let suffix = director.getPersona(targetUserName)["login"] + '/edit)';
         let persona: Persona = director.getPersona(personaName);
+        this.scenarioData = director.getPersona(targetUserName);
 
         return login(director, persona).then(() => {
-            return director.goToPage(pageName, suffix);
+            return director.goToPage('user details', suffix);
         });
     });
 
@@ -98,12 +101,43 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona: Persona = director.getPersona(personaName);
         let page = director.getCurrentPage();
 
-        let promisses = [
-            checkTextElement(page.elements['login'].locator, persona['login']),
-            checkTextElement(page.elements['firstName'].locator, persona['firstName']),
-            checkTextElement(page.elements['lastName'].locator, persona['lastName']),
-        ];
+        let textInputs = ["login", "firstName", "lastName", "email", "telephone", "institute", "department", "jobTitle", "specialism"];
+
+        let promisses = textInputs.map((fieldname) => {
+            return checkInputElement(director.getLocator(fieldname), persona[fieldname]);
+        });
+
+
+        let authorities = persona['authority'].map((authority) => {
+            return authority['role'];
+        });
+
+        promisses = [countIs(<ElementArrayFinder>director.getLocator('authority'), authorities.length).then(() => {
+            return director.getLocator('authority').each((element, index) => {
+                return checkTextElement(element, ORGANISATION_AUTHORITIES_MAP[authorities[index]].name)
+            })
+        })];
 
         return Promise.all(promisses);
+    });
+
+    When(/^(.*) deletes '(.*)'s account$/, function (personaName, targetUserName) {
+        let director = this.director as Director;
+        this.scenarioData = director.getPersona(targetUserName);
+
+        return $('.test-row-' + this.scenarioData['login']).$('.test-delete-btn').click().then(() => {
+            return $('.test-delete-btn-modal').click();
+        })
+    });
+
+    Then(/^(.*) account is removed$/, function (personaName) {
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        return adminConsole.getUsers().then((users: {}[]) => {
+            let filterd = users.filter((user) => {
+                return user['login'] == this.scenarioData['login']
+            })
+            return promiseTrue(filterd.length == 0, 'there was a user found with login: ' + this.scenarioData['login'])
+        })
     });
 });
