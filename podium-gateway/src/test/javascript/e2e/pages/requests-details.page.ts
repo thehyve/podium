@@ -48,8 +48,22 @@ class RequestDetails {
             "piAffiliation": { locator: $('.test-piAffiliation') },
             "validationCheck": { locator: $('#validationCheck') },
             "validate": { locator: $('#validate-request-btn') },
+            "approve": { locator: $('#approve-request-btn') },
             "reject": { locator: $('.test-reject-request-btn') },
             "revision": { locator: $('.test-request-revision-btn') },
+            "close": { locator: $('.test-close-request-btn') },
+            "startDelivery": { locator: $('.test-request-start-delivery-btn') },
+            "messageSummary": { locator: $('#messageSummary') },
+            "messageDescription": { locator: $('#messageDescription') },
+            "cancel": { locator: $('.test-cancel-btn') },
+            "submit": { locator: $('.test-submit-btn') },
+            "deliveryAction": { locator: $('.test-delivery-action-btn') },
+            "reference": { locator: $('#reference') },
+            "deliveryrowImages": { locator: $('.test-deliveryrow-Images') },
+            "deliveryrowMaterial": { locator: $('.test-deliveryrow-Material') },
+            "deliveryrowData": { locator: $('.test-deliveryrow-Data') },
+            "finalize": { locator: $('.test-request-finalize-request-btn') },
+            "finalizeSubmit": { locator: $('.btn-success') },
         }
     }
 }

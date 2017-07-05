@@ -12,7 +12,7 @@ import { Promise } from 'es6-promise';
 import { $$ } from 'protractor';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
-import { login, doInOrder, promiseTrue, checkTextElement } from './util';
+import { login, doInOrder, promiseTrue, checkInputElement } from './util';
 import { isUndefined } from 'util';
 let { defineSupportCode } = require('cucumber');
 
@@ -78,8 +78,8 @@ defineSupportCode(({ Given, When, Then }) => {
         let page = director.getCurrentPage();
 
         let promisses = [
-            checkTextElement(page.elements['shortName'].locator, organisation['shortName']),
-            checkTextElement(page.elements['name'].locator, organisation['name'])
+            checkInputElement(page.elements['shortName'].locator, organisation['shortName']),
+            checkInputElement(page.elements['name'].locator, organisation['name'])
         ];
 
         return Promise.all(promisses)
