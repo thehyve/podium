@@ -131,7 +131,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         // Setup a submitted draft
         getSubmittedDraft();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         verify(this.mailService, times(1)).sendSubmissionNotificationToCoordinators(any(), any(), nonEmptyUserRepresentationList());
         verify(this.mailService, times(1)).sendSubmissionNotificationToRequester(any(), nonEmptyRequestList());
