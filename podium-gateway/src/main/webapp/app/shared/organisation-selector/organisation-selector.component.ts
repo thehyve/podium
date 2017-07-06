@@ -7,26 +7,28 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
 import { OrganisationService } from '../organisation/organisation.service';
+import { NgForm, NgModel } from '@angular/forms';
 
 @Component({
     selector: 'pdm-organisation-selector',
     templateUrl: './organisation-selector.component.html'
 })
 
-export class OrganisationSelectorComponent implements OnInit {
+export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
 
     allOrganisations: any[];
     selectedOrganisations: any[];
     organisationOptions: any;
     selectedOrganisationUuids: any[];
 
-    @Output() organisationChange = new EventEmitter();
+    @ViewChild('orgModel') orgModel: NgModel;
 
+    @Input('form') parentForm: NgForm;
     @Input() requestTypes: RequestType[];
     @Input()
     get organisations() {
@@ -37,6 +39,8 @@ export class OrganisationSelectorComponent implements OnInit {
         this.organisationChange.emit(this.selectedOrganisations);
     }
 
+    @Output() organisationChange = new EventEmitter();
+
     private static onError (error) {
         return Observable.throw(new Error(error.status));
     }
@@ -44,6 +48,10 @@ export class OrganisationSelectorComponent implements OnInit {
     constructor(
         private organisationService: OrganisationService
     ) { }
+
+    ngAfterViewInit() {
+        this.parentForm.control.addControl('selectedOrganisationUuids', this.orgModel.control);
+    }
 
     onChange() {
         // get organisation instance of selected uuid
