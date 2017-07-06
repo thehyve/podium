@@ -9,9 +9,10 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, JhiLanguageService } from 'ng-jhipster';
+import { EventManager } from 'ng-jhipster';
 import { Account, Principal } from '../shared';
 import { Router } from '@angular/router';
+import { Ng2DeviceService } from 'ng2-device-detector';
 
 @Component({
     selector: 'pdm-home',
@@ -24,11 +25,13 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
+    deviceInfo: any;
 
     constructor(
         private principal: Principal,
         private eventManager: EventManager,
-        private router: Router
+        private router: Router,
+        private deviceService: Ng2DeviceService
     ) {
 
     }
@@ -42,6 +45,8 @@ export class HomeComponent implements OnInit {
         if (this.isAuthenticated()) {
             this.router.navigate(['/dashboard']);
         }
+
+        this.deviceInfo = this.deviceService.getDeviceInfo();
     }
 
     registerAuthenticationSuccess() {
@@ -54,6 +59,10 @@ export class HomeComponent implements OnInit {
 
     isAuthenticated() {
         return this.principal.isAuthenticated();
+    }
+
+    isBrowserIE(): boolean {
+        return this.deviceInfo.browser === 'ie';
     }
 
 }
