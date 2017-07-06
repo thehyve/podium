@@ -35,26 +35,26 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
         " where r.uuid = :requestUuid")
     long countHistoricEventsByRequestUuid(@Param("requestUuid") UUID requestUuid);
 
-    @Query(value = "select r from Request r where r.id" +
-        " in (select r.id from Request r join r.organisations o" +
+    @Query(value = "select r from Request r where r.id in" +
+        " (select r.id from Request r join r.organisations o" +
         " where not r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Draft" +
         " and o in :organisations)")
     Page<Request> findAllByOrganisations(
         @Param("organisations") Set<UUID> organisations,
         Pageable pageable);
 
-    @Query("select distinct r from Request r" +
-        " join r.organisations o" +
+    @Query("select r from Request r where r.id in" +
+        " (select r.id from Request r join r.organisations o" +
         " where not r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Draft" +
         " and r.status = :status" +
-        " and o in :organisations")
+        " and o in :organisations)")
     Page<Request> findAllByOrganisationsAndStatus(
         @Param("organisations") Set<UUID> organisations,
         @Param("status") RequestStatus status,
         Pageable pageable);
 
-    @Query(value = "select r from Request r where r.id" +
-        " in (select r.id from Request r join r.organisations o" +
+    @Query(value = "select r from Request r where r.id in" +
+        " (select r.id from Request r join r.organisations o" +
         " where r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Review" +
         " and r.requestReviewProcess.status = :requestReviewStatus" +
         " and o in :organisations)")
@@ -63,11 +63,11 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
         @Param("requestReviewStatus") RequestReviewStatus requestReviewStatus,
         Pageable pageable);
 
-    @Query("select distinct r from Request r" +
-        " join r.organisations o" +
+    @Query("select r from Request r where r.id in" +
+        " (select r.id from Request r join r.organisations o" +
         " where r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Closed" +
         " and r.outcome = :outcome" +
-        " and o in :organisations")
+        " and o in :organisations)")
     Page<Request> findAllByOrganisationsAndOutcome(
         @Param("organisations") Set<UUID> organisations,
         @Param("outcome") RequestOutcome outcome,
@@ -121,19 +121,19 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     Page<Request> findAllByRequesterAndStatus(UUID requesterUuid, RequestStatus status, Pageable pageable);
 
-    @Query("select distinct r from Request r" +
-        " where r.requester = :requester" +
+    @Query("select r from Request r where r.id in" +
+        " (select r.id from Request r where r.requester = :requester" +
         " and r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Review" +
-        " and r.requestReviewProcess.status = :requestReviewStatus")
+        " and r.requestReviewProcess.status = :requestReviewStatus)")
     Page<Request> findAllByRequesterAndRequestReviewStatus(
         @Param("requester") UUID requesterUuid,
         @Param("requestReviewStatus") RequestReviewStatus status,
         Pageable pageable);
 
-    @Query("select distinct r from Request r" +
-        " where r.requester = :requester" +
+    @Query("select r from Request r where r.id in" +
+        " (select r from Request r where r.requester = :requester" +
         " and r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Closed" +
-        " and r.outcome = :outcome")
+        " and r.outcome = :outcome)")
     Page<Request> findAllByRequesterAndOutcome(
         @Param("requester") UUID requesterUuid,
         @Param("outcome") RequestOutcome outcome,
