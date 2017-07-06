@@ -14,10 +14,10 @@ import { ProfileInfo } from './profile-info.model';
 @Component({
     selector: 'pdm-page-ribbon',
     template: `
-        <div class="ribbon" *ngIf="ribbonEnv">
+        <div class="ribbon" *ngIf="hasRibbon()">
             <span [ngSwitch]="profileInfo.inProduction">
-                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
-                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.alpha">ALPHA</a>
+                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
+                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.prod">ALPHA</a>
             </span>
         </div>
     `,
@@ -37,5 +37,9 @@ export class PageRibbonComponent implements OnInit {
             this.profileInfo = profileInfo;
             this.ribbonEnv = profileInfo.ribbonEnv;
         });
+    }
+
+    hasRibbon(): boolean {
+        return this.profileInfo != null;
     }
 }
