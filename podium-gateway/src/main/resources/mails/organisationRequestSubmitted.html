@@ -37,7 +37,7 @@
             <!-- List of organisations -->
 			<ul>
 				<li th:each="relatedRequest: ${request.getRelatedRequests()}">
-					<span th:text="${request.getId()}"></span>
+					<span th:text="${relatedRequest.getId()}"></span>
                     <span> - </span>
                     <span th:each="organisation: ${relatedRequest.getOrganisations()}">
 						[<span th:text="${organisation.getShortName()}"></span>]
