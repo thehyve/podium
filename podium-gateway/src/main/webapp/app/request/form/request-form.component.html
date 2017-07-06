@@ -82,6 +82,7 @@
                 <div class="form-group" *ngIf="!isInRevision">
                     <label>Organisations</label>
                     <pdm-organisation-selector
+                        [form]="requestForm"
                         [(organisations)]="requestBase.organisations"
                         [(requestTypes)]="requestDetail.requestType"
                         (organisationChange)="updateRequestOrganisations($event)">
