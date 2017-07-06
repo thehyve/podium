@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, ElementFinder } from 'protractor';
+import { browser, ElementFinder, ElementArrayFinder } from 'protractor';
 import { Promise } from 'es6-promise';
 import { isUndefined } from 'util';
 
@@ -28,7 +28,7 @@ export interface Page {
 }
 
 export interface Interactable {
-    locator: ElementFinder;
+    locator: ElementFinder | ElementArrayFinder;
     destination?: string; //name of the expected page after the element is clicked
     strict?: boolean; //if true will call the at() function after the transition
 }
@@ -146,6 +146,10 @@ export class Director {
             this.fatalError('The page: ' + this.getCurrentPage().name + ' does not have an element for ' + elementName + '.\n');
         }
         return element;
+    }
+
+    public getLocator(elementName: string): ElementFinder | ElementArrayFinder {
+        return this.getElement(elementName).locator
     }
 
     private handleDestination(element: Interactable) {

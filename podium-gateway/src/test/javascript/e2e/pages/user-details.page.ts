@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { browser, $, $$ } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
 import ProfileForm = require("./modules/profile-form")
 
@@ -30,19 +30,21 @@ class UserDetails {
 
     constructor() {
         this.name = "User Details";
-        this.url = "#/bbmri/user-management/detail/";
+        this.url = "#/bbmri/user-management/(popup:detail/";
         this.elements = {
-            "login": { locator: $('.test-login') },
-            "firstName": { locator: $('.test-firstName') },
-            "lastName": { locator: $('.test-lastName') },
-            "email": { locator: $('.test-email') },
-            "telephone": { locator: $('.test-telephone') },
-            "institute": { locator: $('.test-institute') },
-            "department": { locator: $('.test-department') },
-            "jobTitle": { locator: $('.test-jobTitle') },
-            "specialism": { locator: $('.test-specialism') },
+            "login": { locator: $('.test-login-modal') },
+            "firstName": { locator: $('.test-firstName-modal') },
+            "lastName": { locator: $('.test-lastName-modal') },
+            "email": { locator: $('.test-email-modal') },
+            "telephone": { locator: $('.test-telephone-modal') },
+            "institute": { locator: $('.test-institute-modal') },
+            "department": { locator: $('.test-department-modal') },
+            "jobTitle": { locator: $('.test-jobTitle-modal') },
+            "specialism": { locator: $('.test-specialism-modal') },
             "activated": { locator: $('.test-activated') },
-            "authority": { locator: $('.test-authority') },
+            "authority": { locator: $$('.test-authority-modal') },
+            "adminVerified": { locator: $('#adminVerified-modal') },
+            "submitButton": { locator: $('.test-save-btn') },
         }
     }
 }

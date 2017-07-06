@@ -69,18 +69,18 @@
                     </div>
                 </td>
             </tr>
-            <tr *ngFor="let organisation of organisations; trackBy: trackUuid">
+            <tr [ngClass]="'test-org-row-' + organisation.shortName" *ngFor="let organisation of organisations; trackBy: trackUuid">
                 <td class="test-shortName">{{organisation.shortName}}</td>
                 <td class="test-name">{{organisation.name}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['./edit', organisation.uuid ]"
-                                class="btn btn-primary btn-sm">
+                                class="btn btn-primary btn-sm test-edit-btn">
                             <span class="material-icons">edit</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
-                        <button type="button" class="btn btn-sm"
+                        <button type="button" class="btn btn-sm test-activation-btn"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [ngClass]="{'btn-warning': !organisation.activated, 'btn-success': organisation.activated}"
                                 (click)="toggleActivated (organisation)">
@@ -96,7 +96,7 @@
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ organisation.uuid + '/delete'} }]"
-                                class="btn btn-danger btn-sm">
+                                class="btn btn-danger btn-sm test-delete-btn">
                             <span class="material-icons">remove_circle_outline</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
                         </button>

@@ -26,7 +26,7 @@
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="userManagement.login">Login</label>
-            <input type="text" class="form-control" name="login" #loginInput="ngModel"
+            <input type="text" class="form-control test-login-modal" name="login" #loginInput="ngModel"
                    [(ngModel)]="user.login" required minlength=1 maxlength=50 pattern="^[_'.@A-Za-z0-9-]*$">
 
             <div *ngIf="loginInput.dirty && loginInput.invalid">
@@ -44,7 +44,7 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="userManagement.firstName">First Name</label>
-            <input type="text" class="form-control" name="firstName" #firstNameInput="ngModel"
+            <input type="text" class="form-control test-firstName-modal" name="firstName" #firstNameInput="ngModel"
                    [(ngModel)]="user.firstName" required maxlength="50">
 
             <div *ngIf="firstNameInput.dirty && firstNameInput.invalid">
@@ -57,7 +57,7 @@
         </div>
         <div class="form-group">
             <label jhiTranslate="userManagement.lastName">Last Name</label>
-            <input type="text" class="form-control" name="lastName" #lastNameInput="ngModel"
+            <input type="text" class="form-control test-lastName-modal" name="lastName" #lastNameInput="ngModel"
                    [(ngModel)]="user.lastName" required maxlength="50">
 
             <div *ngIf="lastNameInput.dirty && lastNameInput.invalid">
@@ -70,7 +70,7 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="userManagement.email">Email</label>
-            <input type="email" class="form-control" name="email" #emailInput="ngModel"
+            <input type="email" class="form-control test-email-modal" name="email" #emailInput="ngModel"
                    [(ngModel)]="user.email" required maxlength="100">
 
             <div *ngIf="emailInput.dirty && emailInput.invalid">
@@ -92,7 +92,7 @@
         </div>
         <div class="form-group">
             <label jhiTranslate="userManagement.telephone">Telephone</label>
-            <input type="text" class="form-control" name="telephone" #telephoneInput="ngModel"
+            <input type="text" class="form-control test-telephone-modal" name="telephone" #telephoneInput="ngModel"
                    [(ngModel)]="user.telephone" required maxlength="50">
 
             <div *ngIf="telephoneInput.dirty && telephoneInput.invalid">
@@ -105,7 +105,7 @@
         </div>
         <div class="form-group">
             <label jhiTranslate="userManagement.institute">Institute</label>
-            <input type="text" class="form-control" name="institute" #instituteInput="ngModel"
+            <input type="text" class="form-control test-institute-modal" name="institute" #instituteInput="ngModel"
                    [(ngModel)]="user.institute" required maxlength="50">
 
             <div *ngIf="instituteInput.dirty && instituteInput.invalid">
@@ -118,7 +118,7 @@
         </div>
         <div class="form-group">
             <label jhiTranslate="userManagement.department">Department</label>
-            <input type="text" class="form-control" name="department" #departmentInput="ngModel"
+            <input type="text" class="form-control test-department-modal" name="department" #departmentInput="ngModel"
                    [(ngModel)]="user.department" required maxlength="50">
 
             <div *ngIf="departmentInput.dirty && departmentInput.invalid">
@@ -131,7 +131,7 @@
         </div>
         <div class="form-group">
             <label jhiTranslate="userManagement.jobTitle">Function</label>
-            <input type="text" class="form-control" name="jobTitle" #jobTitleInput="ngModel"
+            <input type="text" class="form-control test-jobTitle-modal" name="jobTitle" #jobTitleInput="ngModel"
                    [(ngModel)]="user.jobTitle" required maxlength="50">
 
             <div *ngIf="jobTitleInput.dirty && jobTitleInput.invalid">
@@ -144,7 +144,7 @@
         </div>
         <div class="form-group">
             <label jhiTranslate="userManagement.specialism">Specialism</label>
-            <input type="text" class="form-control" name="specialism" #specialismInput="ngModel"
+            <input type="text" class="form-control test-specialism-modal" name="specialism" #specialismInput="ngModel"
                    [(ngModel)]="user.specialism" required maxlength="50">
 
             <div *ngIf="specialismInput.dirty && specialismInput.invalid">
@@ -166,7 +166,7 @@
         <div class="form-group">
             <label>Current authorities</label>
             <div *ngFor="let authority of user.authorities">
-                <span class="tag tag-info">{{ userAuthorityMap[authority].name }}</span>
+                <span class="tag tag-info test-authority-modal">{{ userAuthorityMap[authority].name }}</span>
             </div>
         </div>
 
@@ -178,11 +178,11 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+        <button type="button" class="btn btn-secondary test-cancel-btn" data-dismiss="modal" (click)="clear()">
             <span class="material-icons">cancel</span>&nbsp;
             <span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary test-save-btn">
             <span class="material-icons">save</span>&nbsp;
             <span jhiTranslate="entity.action.save">Save</span>
         </button>

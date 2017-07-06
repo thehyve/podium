@@ -58,6 +58,12 @@ export function checkInputElement(element, expectedText): Promise<any> {
     })
 }
 
+export function checkCheckBox(element, expected) {
+    return element.isSelected().then(function (value) {
+        return promiseTrue(value == expected, value + " is not equal to " + expected);
+    })
+}
+
 export function roleToRoute(persona: Persona, orgShortName: string): string {
     let roles = persona['authority'].filter((value) => {
         return value["orgShortName"] == orgShortName

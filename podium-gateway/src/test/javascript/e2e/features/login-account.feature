@@ -22,22 +22,13 @@ Feature: All users have to login. (BRPREQ-2, BRPREQ-4)
     @default
     Scenario: users can edit their account profile
         Given Linda goes to the 'profile' page
-        When she edits the details:
-        """
-            {
-               "firstName":"newFirstName",
-               "lastName":"newLastName"
-            }
-        """
+        When he edits the details 'firstName, lastName, department, jobTitle'
         Then the new details are saved
 
     @default
     Scenario: some fields in a user's profile cannot be edited
         Given Linda goes to the 'profile' page
-        Then the following fields are not editable:
-        """
-            ["institute"]
-        """
+        Then the fields 'institute' are not editable
 
     @default
     Scenario: register a new user

@@ -51,7 +51,7 @@
             </tr>
             </thead>
             <tbody *ngIf ="users">
-            <tr *ngFor="let user of users; trackBy: trackIdentity">
+            <tr [ngClass]="'test-row-'+user.login"  *ngFor="let user of users; trackBy: trackIdentity">
                 <td><a [routerLink]="['./detail', user.login]">{{user.id}}</a></td>
                 <td class="test-login">{{user.login}}</td>
                 <td class="test-name">{{ user.firstName }} {{ user.lastName }}</td>
@@ -80,7 +80,7 @@
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/edit'} }]"
-                                class="btn btn-primary btn-sm">
+                                class="btn btn-primary btn-sm test-edit-btn">
                             <span class="material-icons">edit</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
@@ -88,7 +88,7 @@
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/unlock'} }]"
                                 skipLocationChange
-                                class="btn btn-danger btn-sm" [disabled]="!user.accountLocked">
+                                class="btn btn-danger btn-sm test-unlock-btn" [disabled]="!user.accountLocked">
                             <span class="material-icons">lock_open</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.unlock">Unlock</span>
                         </button>
@@ -96,7 +96,7 @@
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/delete'} }]"
                                 skipLocationChange
-                                class="btn btn-danger btn-sm" [disabled]="currentAccount.login==user.login">
+                                class="btn btn-danger btn-sm test-delete-btn" [disabled]="currentAccount.login==user.login">
                             <span class="material-icons">remove_circle_outline</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
