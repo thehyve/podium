@@ -21,6 +21,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { UiSwitchModule } from 'angular2-ui-switch';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
 
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, 'i18n/', '.json');
@@ -45,7 +46,8 @@ export function HttpLoaderFactory(http: Http) {
         TabsModule.forRoot(),
         UiSwitchModule,
         BsDropdownModule.forRoot(),
-        CookieModule.forRoot()
+        CookieModule.forRoot(),
+        Ng2DeviceDetectorModule.forRoot()
     ],
     exports: [
         NgbModule,
