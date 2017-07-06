@@ -7,9 +7,9 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import ProfileForm = require("./modules/profile-form")
+import OrganisationsDetailsCommon = require("./modules/organisations-details")
 
 
 /*
@@ -30,21 +30,9 @@ class UserDetails {
 
     constructor() {
         this.name = "organisation edit";
-        this.url = "#/organisation/configuration/edit/";
+        this.url = "#/organisation/management/edit/";
         this.elements = {
-            "details tab": { locator: $('.nav-tabs').$$('.nav-link').get(0) },
-            "permissions tab": { locator: $('.nav-tabs').$$('.nav-link').get(1) },
-            "user selection": { locator: $('.user-select-input.ng-valid') },
-            "authority selection": { locator: $('.field_authority_user') },
-            "add": { locator: $('.test-add') },
-            "name input": { locator: $('#field_name') },
-            "short name input": { locator: $('#field_shortName') },
-            "Data": { locator: $('input[value=Data]') },
-            "Images": { locator: $('input[value=Images]') },
-            "Material": { locator: $('input[value=Material]') },
-            "active switch": { locator: $('ui-switch[name=organisation_active]') },
-            "cancel": { locator: $('.btn-default') },
-            "save": { locator: $('button[type=submit]') },
+            ...OrganisationsDetailsCommon()
         }
     }
 }
