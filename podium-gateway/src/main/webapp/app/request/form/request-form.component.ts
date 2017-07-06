@@ -119,7 +119,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.organisations = requestBase.organisations || [];
 
         // If the request is in revision use the revisionDetail
-        if (RequestAccessService.isRequestStatus(requestBase, RequestOverviewStatusOption.Revision)) {
+        if (this.isRequesterOfRevisionRequest(requestBase)) {
             // Remember the revision ID
             this.revisionId = requestBase.revisionDetail.id;
             this.requestDetail = requestBase.revisionDetail;
@@ -128,6 +128,11 @@ export class RequestFormComponent implements OnInit {
         }
 
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+    }
+
+    isRequesterOfRevisionRequest(requestBase: RequestBase): boolean {
+        return this.requestAccessService.isRequesterOf(requestBase)
+            && RequestAccessService.isRequestStatus(requestBase, RequestOverviewStatusOption.Revision);
     }
 
     updateRequestType(selectedRequestType, event) {
