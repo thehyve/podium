@@ -16,8 +16,8 @@ import { ProfileInfo } from './profile-info.model';
     template: `
         <div class="ribbon" *ngIf="ribbonEnv">
             <span [ngSwitch]="profileInfo.inProduction">
-                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
-                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.beta">BETA</a>
+                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
+                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.alpha">ALPHA</a>
             </span>
         </div>
     `,
