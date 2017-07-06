@@ -126,6 +126,7 @@ public abstract class AbstractRequestDataIntTest {
 
     final String REQUESTS_ROUTE = "/api/requests";
 
+    final Map<UUID, OrganisationRepresentation> organisations = new HashMap<>();
     final Map<UUID, UserRepresentation> users = new HashMap<>();
 
     OrganisationRepresentation createOrganisation(int i, UUID uuid) {
@@ -254,11 +255,15 @@ public abstract class AbstractRequestDataIntTest {
     void initMocks() throws URISyntaxException {
         // Mock organisation service for fetching organisation info through Feign
         OrganisationRepresentation organisation1 = createOrganisation(1, organisationUuid1);
-        given(this.organisationService.findOrganisationByUuid(eq(organisationUuid1)))
-            .willReturn(organisation1);
+        organisations.put(organisationUuid1, organisation1);
         OrganisationRepresentation organisation2 = createOrganisation(2, organisationUuid2);
-        given(this.organisationService.findOrganisationByUuid(eq(organisationUuid2)))
-            .willReturn(organisation2);
+        organisations.put(organisationUuid2, organisation2);
+        for(Map.Entry<UUID, OrganisationRepresentation> entry: organisations.entrySet()) {
+            given(this.organisationService.findOrganisationByUuid(eq(entry.getKey())))
+                .willReturn(entry.getValue());
+            given(this.organisationService.findOrganisationByUuidCached(eq(entry.getKey())))
+                .willReturn(entry.getValue());
+        }
 
         // Mock organisations service for fetching coordinators
         UserRepresentation coordinatorRepresentation1 = createCoordinator(1, coordinatorUuid1);
@@ -296,6 +301,8 @@ public abstract class AbstractRequestDataIntTest {
 
         for(Map.Entry<UUID, UserRepresentation> entry: users.entrySet()) {
             given(this.userClientService.findUserByUuid(eq(entry.getKey())))
+                .willReturn(entry.getValue());
+            given(this.userClientService.findUserByUuidCached(eq(entry.getKey())))
                 .willReturn(entry.getValue());
         }
 

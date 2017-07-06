@@ -16,8 +16,13 @@ import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.domain.ReviewFeedback;
+import nl.thehyve.podium.domain.ReviewRound;
+import nl.thehyve.podium.repository.ReviewFeedbackRepository;
+import nl.thehyve.podium.repository.ReviewRoundRepository;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -49,6 +54,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration
 @SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class RequestResourceIntTest extends AbstractRequestDataIntTest {
+
+    @Autowired
+    private ReviewRoundRepository reviewRoundRepository;
+
+    @Autowired
+    private ReviewFeedbackRepository reviewFeedbackRepository;
+
 
     @Test
     public void createDraft() throws Exception {
@@ -142,8 +154,8 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
             Assert.assertEquals(1, requests.size());
             for(RequestRepresentation req: requests) {
                 Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-                Request reqObj = requestRepository.findOneByUuid(req.getUuid());
-                Assert.assertEquals(1, reqObj.getHistoricEvents().size());
+                long historicEventCount = requestRepository.countHistoricEventsByRequestUuid(req.getUuid());
+                Assert.assertEquals(1, historicEventCount);
             }
         });
     }
@@ -606,7 +618,12 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         ReviewRoundRepresentation reviewRound = request.getReviewRound();
 
         ReviewFeedbackRepresentation reviewFeedback = reviewRound.getReviewFeedback().stream()
-            .filter(feedback -> feedback.getReviewer().getUuid().equals(reviewerUuid1))
+            .filter(feedback -> {
+                log.warn("FEEDBACK: {}", feedback);
+                log.warn("REVIEWER: {}", feedback.getReviewer());
+                log.warn("REVIEWER UUID: {}", feedback.getReviewer().getUuid());
+                return feedback.getReviewer().getUuid().equals(reviewerUuid1);
+            })
             .findFirst().get();
 
         // Submit a review
@@ -652,13 +669,16 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
         // Checking that the review is correctly persisted
         Request req = requestRepository.findOneByUuid(request.getUuid());
-        Assert.assertThat(req.getReviewRounds(), hasSize(1));
+
+        List<ReviewRound> reviewRounds = reviewRoundRepository.findAllByRequestUuid(request.getUuid());
+        Assert.assertThat(reviewRounds, hasSize(1));
         // the review round contains the submitted feedback
-        Assert.assertTrue(req.getReviewRounds().get(0).getReviewFeedback().stream().anyMatch(feedback ->
+        List<ReviewFeedback> reviewFeedbackList = reviewFeedbackRepository.findAllByReviewRoundUuid(reviewRounds.get(0).getUuid());
+        Assert.assertTrue(reviewFeedbackList.stream().anyMatch(feedback ->
             feedback.getUuid().equals(reviewFeedback.getUuid())
         ));
         // the submitted feedback has advice value 'Approved'
-        req.getReviewRounds().get(0).getReviewFeedback().stream().forEach(feedback -> {
+        reviewFeedbackList.stream().forEach(feedback -> {
             if (feedback.getUuid().equals(reviewFeedback.getUuid())) {
                 Assert.assertEquals(ReviewProcessOutcome.Approved, feedback.getAdvice());
             }

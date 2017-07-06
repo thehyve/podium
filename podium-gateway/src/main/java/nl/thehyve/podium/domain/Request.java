@@ -82,24 +82,28 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return OverviewStatus.forStatus(status, reviewStatus, outcome);
     }
 
-    @ElementCollection(targetClass = java.util.UUID.class)
+    @ElementCollection(targetClass = java.util.UUID.class, fetch = FetchType.EAGER)
     @CollectionTable(
         name="request_organisations",
         joinColumns=@JoinColumn(name="request_id")
     )
     @Column(name = "organisation_uuid")
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
     private Set<UUID> organisations = new HashSet<>();
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(unique = true, name = "revision_detail")
     private RequestDetail revisionDetail;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
+    @Fetch(FetchMode.JOIN)
     private RequestDetail requestDetail;
 
     @OneToOne
     @JoinColumn(unique = true, name = "request_review_process")
+    @Fetch(FetchMode.JOIN)
     private RequestReviewProcess requestReviewProcess;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -116,7 +120,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private UUID requester;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderColumn(name="event_order")
@@ -126,7 +129,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderColumn(name="review_round_order")
@@ -136,7 +138,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private List<ReviewRound> reviewRounds;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "request_related_requests",

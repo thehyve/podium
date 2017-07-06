@@ -63,7 +63,7 @@ public class OrganisationMapperHelper {
         organisationRepresentation.setUuid(uuid);
 
         try {
-            OrganisationRepresentation remoteOrganisation = organisationClientService.findOrganisationByUuid(uuid);
+            OrganisationRepresentation remoteOrganisation = organisationClientService.findOrganisationByUuidCached(uuid);
             organisationRepresentation.setName(remoteOrganisation.getName());
             organisationRepresentation.setShortName(remoteOrganisation.getShortName());
         } catch(Exception ex) {}

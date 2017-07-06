@@ -31,6 +31,10 @@ public interface RequestRepository extends JpaRepository<Request,Long> {
 
     Request findOneByUuid(UUID requestUuid);
 
+    @Query(value = "select count(distinct e) from Request r join r.historicEvents e" +
+        " where r.uuid = :requestUuid")
+    long countHistoricEventsByRequestUuid(@Param("requestUuid") UUID requestUuid);
+
     @Query(value = "select r from Request r where r.id" +
         " in (select r.id from Request r join r.organisations o" +
         " where not r.status = nl.thehyve.podium.common.enumeration.RequestStatus.Draft" +

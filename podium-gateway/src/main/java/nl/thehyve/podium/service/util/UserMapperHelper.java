@@ -43,7 +43,7 @@ public class UserMapperHelper {
         UserRepresentation userRepresentation = new UserRepresentation();
 
         try {
-            userRepresentation = userClientService.findUserByUuid(uuid);
+            userRepresentation = userClientService.findUserByUuidCached(uuid);
         } catch (Exception ex) {}
 
         return userRepresentation;

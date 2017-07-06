@@ -9,10 +9,7 @@ package nl.thehyve.podium.domain;
 
 import lombok.Data;
 import nl.thehyve.podium.common.enumeration.RequestType;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.CascadeType;
@@ -78,17 +75,20 @@ public class RequestDetail implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "principal_investigator")
+    @Fetch(FetchMode.JOIN)
     private PrincipalInvestigator principalInvestigator;
 
     @Column(name = "search_query", length = 500)
     private String searchQuery;
 
-    @ElementCollection(targetClass = RequestType.class)
+    @ElementCollection(targetClass = RequestType.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
         name="request_detail_request_types",
         joinColumns=@JoinColumn(name="request_detail_id")
     )
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
     private Set<RequestType> requestType;
 
     @Column(name = "combined_request")
