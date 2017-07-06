@@ -8,6 +8,7 @@ import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
@@ -143,6 +144,11 @@ public class DraftService {
      */
     public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
+
+        // Organisations should be selected during the process before organisation requests can be created.
+        if (request.getOrganisations().isEmpty()) {
+            throw new InvalidRequest("No organisations selected.");
+        }
 
         log.debug("Access and status checks...");
         RequestAccessCheckHelper.checkRequester(user, request);
