@@ -26,7 +26,7 @@
             "bbmri_admin": {
                 "main": "BBMRI",
                 "header": "Global",
-                "orgConfiguration": "Organisation configuration",
+                "orgConfiguration": "Organisation management",
                 "userManagement": "User management",
                 "formConfiguration": "Form configuration"
             },
@@ -34,7 +34,7 @@
                 "main": "Organisation",
                 "org_admin": {
                     "main": "Admininistration",
-                    "orgConfiguration": "Organisation configuration",
+                    "orgConfiguration": "Organisation management",
                     "userManagement": "User management",
                     "formConfiguration": "Form configuration"
                 },

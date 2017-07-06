@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.repository;
 
+import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.RequestOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
@@ -25,6 +26,7 @@ import java.util.UUID;
  * Spring Data JPA repository for the Request entity.
  */
 @SuppressWarnings("unused")
+@Timed
 public interface RequestRepository extends JpaRepository<Request,Long> {
 
     Request findOneByUuid(UUID requestUuid);

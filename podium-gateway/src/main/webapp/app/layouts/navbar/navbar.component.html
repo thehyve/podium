@@ -71,9 +71,9 @@
                     </li>
                     <li class="dropdown-divider" *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'"></li>
                     <li *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
-                        <a class="dropdown-item" routerLink="organisation/configuration" routerLinkActive="active" (click)="collapseNavbar()">
+                        <a class="dropdown-item" routerLink="organisation/management" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">settings</i>
-                            <span jhiTranslate="global.menu.organisation.org_admin.orgConfiguration">Organisation configuration</span>
+                            <span jhiTranslate="global.menu.organisation.org_admin.orgConfiguration">Organisation management</span>
                         </a>
                     </li>
                     <li *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
@@ -127,7 +127,7 @@
                     <li>
                         <a class="dropdown-item" routerLink="bbmri/organisation" routerLinkActive="active" (click)="collapseNavbar()">
                             <i class="material-icons">settings</i>
-                            <span jhiTranslate="global.menu.bbmri_admin.orgConfiguration">Organisation configuration</span>
+                            <span jhiTranslate="global.menu.bbmri_admin.orgConfiguration">Organisation management</span>
                         </a>
                     </li>
                 </ul>

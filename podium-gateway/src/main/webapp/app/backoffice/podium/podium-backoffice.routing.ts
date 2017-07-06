@@ -26,7 +26,7 @@ let PODIUM_ROUTES = [
                 pathMatch: 'full'
             },
             {
-                path: 'configuration',
+                path: 'management',
                 data: {
                     breadcrumb: 'organisation management'
                 },
