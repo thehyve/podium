@@ -7,17 +7,18 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterViewInit, Renderer, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, Renderer, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { JhiLanguageService, EventManager } from 'ng-jhipster';
 import { LoginService } from '../login/login.service';
 import { StateStorageService } from '../auth/state-storage.service';
+import { RedirectService } from '../redirect/redirect.service';
+import { EventManager } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-login',
     templateUrl: './login.component.html'
 })
-export class  PodiumLoginComponent implements OnInit, AfterViewInit {
+export class  PodiumLoginComponent implements AfterViewInit {
     authenticationError: boolean;
     userAccountLocked: boolean;
     emailNotVerified: boolean;
@@ -33,12 +34,10 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         private stateStorageService: StateStorageService,
         private elementRef: ElementRef,
         private renderer: Renderer,
-        private router: Router
+        private router: Router,
+        private redirectService: RedirectService
     ) {
         this.credentials = {};
-    }
-
-    ngOnInit() {
     }
 
     ngAfterViewInit() {
@@ -85,7 +84,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
                 this.stateStorageService.resetPreviousState();
                 this.router.navigate([previousState.name], { queryParams:  previousState.params });
             } else {
-                this.router.navigate(['/dashboard']);
+                this.redirectService.navigateToLandingPageForRole();
             }
         }).catch(err => {
             this.authenticationError = true;
