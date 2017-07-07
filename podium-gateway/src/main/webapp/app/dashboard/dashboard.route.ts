@@ -10,12 +10,17 @@
 import { Route } from '@angular/router';
 import { UserRouteAccessService } from '../shared';
 import { DashboardComponent } from './';
+import { PodiumAuthorityOptions } from '../shared/authority/authority.constants';
 
 export const dashboardRoute: Route = {
     path: 'dashboard',
     component: DashboardComponent,
     data: {
-        authorities: [],
+        authorities: [
+            PodiumAuthorityOptions.ROLE_PODIUM_ADMIN,
+            PodiumAuthorityOptions.ROLE_BBMRI_ADMIN,
+            PodiumAuthorityOptions.ROLE_RESEARCHER
+        ],
         pageTitle: 'dashboard.title',
         breadcrumb: 'dashboard'
     },
