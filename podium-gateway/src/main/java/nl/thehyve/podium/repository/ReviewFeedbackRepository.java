@@ -11,8 +11,12 @@
 package nl.thehyve.podium.repository;
 
 import nl.thehyve.podium.domain.ReviewFeedback;
+import nl.thehyve.podium.domain.ReviewRound;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,4 +24,8 @@ import java.util.UUID;
  */
 public interface ReviewFeedbackRepository extends JpaRepository<ReviewFeedback, Long> {
     ReviewFeedback findOneByUuid(UUID reviewFeedbackUuid);
+
+    @Query("select distinct(rf) from ReviewRound rr join rr.reviewFeedback rf where rr.uuid = :reviewRoundUuid")
+    List<ReviewFeedback> findAllByReviewRoundUuid(@Param("reviewRoundUuid") UUID reviewRoundUuid);
+
 }

@@ -8,13 +8,18 @@
  *
  */
 
+import { CompletionType } from '../../layouts/completed/completion-type';
 export class Message {
     public messageTitle?: string;
     public messageBody?: string;
+    public type: CompletionType;
+
     constructor (
+        type: CompletionType,
         messageTitle?: string,
-        messageBody?: string
+        messageBody?: string,
     ) {
+        this.type = type;
         this.messageTitle = messageTitle ? messageTitle : null;
         this.messageBody = messageBody ? messageBody : null;
     }

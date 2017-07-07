@@ -12,8 +12,15 @@ import { ProfileService } from './profile.service';
 import { ProfileInfo } from './profile-info.model';
 
 @Component({
-    selector: 'jhi-page-ribbon',
-    template: `<div class="ribbon" *ngIf="ribbonEnv"><a href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a></div>`,
+    selector: 'pdm-page-ribbon',
+    template: `
+        <div class="ribbon" *ngIf="hasRibbon()">
+            <span [ngSwitch]="profileInfo.inProduction">
+                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
+                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.prod">ALPHA</a>
+            </span>
+        </div>
+    `,
     styleUrls: [
         'page-ribbon.scss'
     ]
@@ -30,5 +37,9 @@ export class PageRibbonComponent implements OnInit {
             this.profileInfo = profileInfo;
             this.ribbonEnv = profileInfo.ribbonEnv;
         });
+    }
+
+    hasRibbon(): boolean {
+        return this.profileInfo != null;
     }
 }

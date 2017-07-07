@@ -46,11 +46,11 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">
+            <button type="button" class="btn btn-secondary test-cancel-btn" data-dismiss="modal" (click)="close()">
                 <span class="material-icons">cancel</span>&nbsp;
                 <span jhiTranslate="request.action.cancel">Cancel</span>
             </button>
-            <button type="submit" [disabled]="!statusUpdateForm.form.valid" class="btn"
+            <button type="submit" [disabled]="!statusUpdateForm.form.valid" class="btn test-submit-btn"
                     [ngClass]="panelStyles.buttonStyle">
                 <span class="material-icons">send</span>&nbsp;
                 <span jhiTranslate="request.action.submit"

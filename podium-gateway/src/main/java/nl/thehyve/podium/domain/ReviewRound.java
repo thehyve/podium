@@ -10,6 +10,9 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -44,6 +47,7 @@ import java.util.UUID;
 @Table(name = "review_round")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "review_round")
+@Data
 public class ReviewRound implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -62,6 +66,7 @@ public class ReviewRound implements Serializable {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @OneToOne(cascade = {CascadeType.ALL})
@@ -88,16 +93,6 @@ public class ReviewRound implements Serializable {
     @Column(name = "initiated_by")
     private UUID initiatedBy;
 
-    public Long getId() { return id; }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     /**
      * Only the database can return the UUID from the stored entity
      * Pre-persist will add a {@link UUID} to the entity
@@ -114,77 +109,5 @@ public class ReviewRound implements Serializable {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
         }
-    }
-
-    public RequestDetail getRequestDetail() {
-        return requestDetail;
-    }
-
-    public void setRequestDetail(RequestDetail requestDetail) {
-        this.requestDetail = requestDetail;
-    }
-
-    public List<ReviewFeedback> getReviewFeedback() {
-        return reviewFeedback;
-    }
-
-    public void setReviewFeedback(List<ReviewFeedback> reviewFeedback) {
-        this.reviewFeedback = reviewFeedback;
-    }
-
-    public ZonedDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(ZonedDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public ZonedDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(ZonedDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public UUID getInitiatedBy() {
-        return initiatedBy;
-    }
-
-    public void setInitiatedBy(UUID initiatedBy) {
-        this.initiatedBy = initiatedBy;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ReviewRound reviewRound = (ReviewRound) o;
-        if (reviewRound.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, reviewRound.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "ReviewRound{" +
-            "id=" + id +
-            ", requestDetail=" + requestDetail +
-            ", reviewFeedback=" + reviewFeedback +
-            ", startDate=" + startDate +
-            ", endDate=" + endDate +
-            ", initiatedBy=" + initiatedBy +
-            '}';
     }
 }

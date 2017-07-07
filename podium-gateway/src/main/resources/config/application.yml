@@ -106,8 +106,6 @@ hazelcast:
 
 # ===================================================================
 # Podium specific properties
-#
-# Full reference is available at: https://podium.github.io/common-application-properties/
 # ===================================================================
 
 podium:
@@ -143,9 +141,6 @@ podium:
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
 # to have type-safe configuration, like in the PodiumProperties above
-#
-# More documentation is available at:
-# https://podium.github.io/common-application-properties/
 # ===================================================================
 
 application:

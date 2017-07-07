@@ -8,12 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.common.enumeration.DeliveryProcessOutcome;
-import nl.thehyve.podium.common.enumeration.DeliveryStatus;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.enumeration.RequestType;
-import nl.thehyve.podium.common.enumeration.Status;
-import nl.thehyve.podium.common.event.StatusUpdateEvent;
+import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -23,17 +18,16 @@ import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.*;
 import nl.thehyve.podium.repository.RequestRepository;
+import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.DeliveryProcessMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,9 +46,6 @@ public class DeliveryService {
     private RequestRepository requestRepository;
 
     @Autowired
-    private RequestService requestService;
-
-    @Autowired
     private RequestMapper requestMapper;
 
     @Autowired
@@ -67,10 +58,7 @@ public class DeliveryService {
     private DeliveryProcessMapper deliveryProcessMapper;
 
     @Autowired
-    private ApplicationEventPublisher publisher;
-
-    @Autowired
-    private EntityManager entityManager;
+    private StatusUpdateEventService statusUpdateEventService;
 
 
     @PostConstruct
@@ -78,50 +66,6 @@ public class DeliveryService {
         notificationService.setDeliveryService(this);
     }
 
-
-    @Transactional
-    private void persistAndPublishDeliveryEvent(DeliveryProcess deliveryProcess, StatusUpdateEvent event) {
-        PodiumEvent historicEvent = new PodiumEvent(event);
-        entityManager.persist(historicEvent);
-        deliveryProcess.addHistoricEvent(historicEvent);
-        entityManager.persist(deliveryProcess);
-        log.info("About to publish delivery event: {}", event);
-        publisher.publishEvent(event);
-    }
-
-    private void publishDeliveryStatusUpdate(AuthenticatedUser user, DeliveryStatus sourceStatus, Request request, DeliveryProcess deliveryProcess, MessageRepresentation message) {
-        StatusUpdateEvent event =
-            new StatusUpdateEvent<>(user, sourceStatus, deliveryProcess.getStatus(), request.getUuid(), deliveryProcess.getUuid(), message);
-        persistAndPublishDeliveryEvent(deliveryProcess, event);
-    }
-
-    /**
-     * Checks if the request has any of the allowed statuses.
-     * @param request the request object.
-     * @param allowedStatuses the allowed statuses.
-     * @return the current status iff the request has any of the allowed statuses.
-     * @throws ActionNotAllowed iff the request does not have any of the allowed statuses.
-     */
-    private static RequestStatus checkStatus(Request request, RequestStatus ... allowedStatuses) throws ActionNotAllowed {
-        if (!Status.isCurrentStatusAllowed(request.getStatus(), allowedStatuses)) {
-            throw ActionNotAllowed.forStatus(request.getStatus());
-        }
-        return request.getStatus();
-    }
-
-    /**
-     * Checks if the delivery process has any of the allowed statuses.
-     * @param deliveryProcess the delivery process object.
-     * @param allowedStatuses the allowed statuses.
-     * @return the current status iff the delivery process has any of the allowed statuses.
-     * @throws ActionNotAllowed iff the delivery process does not have any of the allowed statuses.
-     */
-    private static DeliveryStatus checkDeliveryStatus(DeliveryProcess deliveryProcess, DeliveryStatus ... allowedStatuses) throws ActionNotAllowed {
-        if (!Status.isCurrentStatusAllowed(deliveryProcess.getStatus(), allowedStatuses)) {
-            throw ActionNotAllowed.forStatus(deliveryProcess.getStatus());
-        }
-        return deliveryProcess.getStatus();
-    }
 
     /**
      * Gets the delivery process with the provided uuid from the request.
@@ -173,18 +117,20 @@ public class DeliveryService {
      */
     public RequestRepresentation startDelivery(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        RequestStatus sourceStatus = checkStatus(request, RequestStatus.Approved);
+        RequestAccessCheckHelper.checkStatus(request, RequestStatus.Approved);
+        OverviewStatus sourceStatus = request.getOverviewStatus();
         List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
+        log.warn("START DELIVERY: #requestTypes: {}", request.getRequestDetail().getRequestType().size());
         for(RequestType type: request.getRequestDetail().getRequestType()) {
             DeliveryProcess deliveryProcess = deliveryProcessService.start(user, type);
             request.addDeliveryProcess(deliveryProcess);
-            publishDeliveryStatusUpdate(user, DeliveryStatus.None, request, deliveryProcess, null);
+            statusUpdateEventService.publishDeliveryStatusUpdate(user, DeliveryStatus.None, request, deliveryProcess, null);
             deliveryProcesses.add(deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess));
         }
         request.setStatus(RequestStatus.Delivery);
         request = requestRepository.save(request);
-        requestService.publishStatusUpdate(user, sourceStatus, request, null);
-        return requestMapper.extendedRequestToRequestDTO(request);
+        statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, null);
+        return requestMapper.detailedRequestToRequestDTO(request);
     }
 
     /**
@@ -202,11 +148,11 @@ public class DeliveryService {
     public DeliveryProcessRepresentation release(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, DeliveryReferenceRepresentation reference) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
+        DeliveryStatus sourceStatus = RequestAccessCheckHelper.checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation);
         deliveryProcess = deliveryProcessService.release(user, deliveryProcess);
         deliveryProcess.setReference(reference.getReference());
         requestRepository.save(request);
-        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, null);
+        statusUpdateEventService.publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, null);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 
@@ -223,9 +169,9 @@ public class DeliveryService {
     public DeliveryProcessRepresentation received(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
+        DeliveryStatus sourceStatus = RequestAccessCheckHelper.checkDeliveryStatus(deliveryProcess, DeliveryStatus.Released);
         deliveryProcess = deliveryProcessService.received(user, deliveryProcess);
-        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, null);
+        statusUpdateEventService.publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, null);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 
@@ -242,9 +188,9 @@ public class DeliveryService {
     public DeliveryProcessRepresentation cancel(AuthenticatedUser user, UUID requestUuid, UUID deliveryProcessUuid, MessageRepresentation message) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(requestUuid);
         DeliveryProcess deliveryProcess = getDeliveryProcess(request, deliveryProcessUuid);
-        DeliveryStatus sourceStatus = checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation, DeliveryStatus.Released);
+        DeliveryStatus sourceStatus = RequestAccessCheckHelper.checkDeliveryStatus(deliveryProcess, DeliveryStatus.Preparation, DeliveryStatus.Released);
         deliveryProcess = deliveryProcessService.cancel(user, deliveryProcess);
-        publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, message);
+        statusUpdateEventService.publishDeliveryStatusUpdate(user, sourceStatus, request, deliveryProcess, message);
         return deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess);
     }
 

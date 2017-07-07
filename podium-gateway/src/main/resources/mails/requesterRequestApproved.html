@@ -19,7 +19,7 @@
             Dear
         </p>
 
-        <p th:text="#{email.requesterRequestApproved.text1(${request.getId()}, ${request.getOrganisations().get(0).getName()})}">
+        <p th:text="#{email.requesterRequestApproved.text1(${request.getId().toString()}, ${request.getOrganisations().get(0).getName()})}">
             Your request [request number] at [organisation name] has been approved. The organisation will now process your request.
             You will be informed about any actions needed from your side during this process.
         </p>

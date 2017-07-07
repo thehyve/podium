@@ -9,8 +9,8 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -18,8 +18,10 @@ import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
+import nl.thehyve.podium.service.DraftService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.service.ReviewService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -53,6 +56,12 @@ public class RequestResource {
     private RequestService requestService;
 
     @Autowired
+    private DraftService draftService;
+
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
     private SecurityService securityService;
 
     /**
@@ -68,7 +77,7 @@ public class RequestResource {
     public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@ApiParam Pageable pageable) throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("Get all request drafts for current user : {}", user);
-        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, RequestStatus.Draft, pageable);
+        Page<RequestRepresentation> page = requestService.findAllForRequesterInStatus(user, OverviewStatus.Draft, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/requests/drafts");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -85,7 +94,7 @@ public class RequestResource {
     public ResponseEntity<RequestRepresentation> createDraft() throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("POST /requests/drafts (user: {})", user);
-        RequestRepresentation result = requestService.createDraft(user);
+        RequestRepresentation result = draftService.createDraft(user);
         log.debug("Result: {}", result.getUuid());
         return ResponseEntity.created(new URI("/api/requests/drafts"))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -125,7 +134,7 @@ public class RequestResource {
         @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
-        RequestRepresentation result = requestService.updateDraft(user, request);
+        RequestRepresentation result = draftService.updateDraft(user, request);
         log.debug("Result: {}", result.getUuid());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -161,7 +170,7 @@ public class RequestResource {
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
-        List<RequestRepresentation> requests = requestService.submitDraft(user, uuid);
+        List<RequestRepresentation> requests = draftService.submitDraft(user, uuid);
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 
@@ -195,14 +204,30 @@ public class RequestResource {
     @GetMapping("/requests/status/{status}/requester")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
     @Timed
-    public ResponseEntity<List<RequestRepresentation>> getRequesterRequestsByStatus(@PathVariable("status") RequestStatus status, @ApiParam Pageable pageable)
+    public ResponseEntity<List<RequestRepresentation>> getRequesterRequestsByStatus(
+        @PathVariable("status") OverviewStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to requests with status {}", status);
         AuthenticatedUser user = securityService.getCurrentUser();
-        Page<RequestRepresentation> page = requestService.findAllRequestsForRequesterByStatus(user, status, pageable);
+        Page<RequestRepresentation> page = requestService.findAllForRequesterInStatus(user, status, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
             "/api/requests/status/" + status.toString() + "/requester");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * GET  /requests/counts/requester : get request counts for a requester.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the map from overview status to number of requests in body
+     */
+    @GetMapping("/requests/counts/requester")
+    @SecuredByAuthority(AuthorityConstants.RESEARCHER)
+    @Timed
+    public ResponseEntity<Map<OverviewStatus, Long>> getRequesterRequestCounts() {
+        log.debug("REST request to request counts");
+        AuthenticatedUser user = securityService.getCurrentUser();
+        Map<OverviewStatus, Long> counts = requestService.countForRequester(user);
+        return new ResponseEntity<>(counts, HttpStatus.OK);
     }
 
     /**
@@ -220,7 +245,7 @@ public class RequestResource {
         @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests (user: {})", user);
-        RequestRepresentation result = requestService.updateRequest(user, request);
+        RequestRepresentation result = draftService.updateRevision(user, request);
         log.debug("Result: {}", result.getUuid());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -246,6 +271,21 @@ public class RequestResource {
     }
 
     /**
+     * GET  /requests/counts/reviewer : get request counts for a reviewer.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the map from overview status to number of requests in body
+     */
+    @GetMapping("/requests/counts/reviewer")
+    @SecuredByAuthority(AuthorityConstants.REVIEWER)
+    @Timed
+    public ResponseEntity<Map<OverviewStatus, Long>> getReviewerRequestCounts() {
+        log.debug("REST request to request counts for reviewer");
+        AuthenticatedUser user = securityService.getCurrentUser();
+        Map<OverviewStatus, Long> counts = requestService.countForReviewer(user);
+        return new ResponseEntity<>(counts, HttpStatus.OK);
+    }
+
+    /**
      * GET  /requests/reviewer : get all the organisation requests in review status for the organisations where the current
      * user is a reviewer.
      *
@@ -267,6 +307,21 @@ public class RequestResource {
     }
 
     /**
+     * GET  /requests/counts/coordinator : get request counts for a organisation coordinator.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the map from overview status to number of requests in body
+     */
+    @GetMapping("/requests/counts/coordinator")
+    @SecuredByAuthority(AuthorityConstants.ORGANISATION_COORDINATOR)
+    @Timed
+    public ResponseEntity<Map<OverviewStatus, Long>> getCoordinatorRequestCounts() {
+        log.debug("REST request to request counts for organisation coordinator");
+        AuthenticatedUser user = securityService.getCurrentUser();
+        Map<OverviewStatus, Long> counts = requestService.countForCoordinator(user);
+        return new ResponseEntity<>(counts, HttpStatus.OK);
+    }
+
+    /**
      * GET  /requests/status/:status/coordinator : get all the organisation requests for the organisations where the current
      * user is a coordinator.
      *
@@ -278,13 +333,15 @@ public class RequestResource {
     @GetMapping("/requests/status/{status}/coordinator")
     @SecuredByAuthority(AuthorityConstants.ORGANISATION_COORDINATOR)
     @Timed
-    public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequests(@PathVariable("status") RequestStatus status, @ApiParam Pageable pageable)
+    public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequests(
+        @PathVariable("status") OverviewStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
-        log.debug("REST request to get a page of requests with status {} for coordinator {}", status, user.getName());
+        log.info("REST request to get a page of requests with status {} for coordinator {}", status, user.getName());
         Page<RequestRepresentation> page = requestService.findAllForCoordinatorInStatus(user, status, pageable);
+        log.info("REST request success: {}", page.getTotalElements());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
-            "/api/requests/status/" + status.toString() + "/coordinator");
+            "/api/requests/status/" + status.name() + "/coordinator");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -325,7 +382,7 @@ public class RequestResource {
     @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_COORDINATOR)
     @Timed
     public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequestsForOrganisation(
-        @PathVariable("status") RequestStatus status,
+        @PathVariable("status") OverviewStatus status,
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid,
         @ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -335,7 +392,7 @@ public class RequestResource {
         Page<RequestRepresentation> page = requestService.findAllForCoordinatorByOrganisationInStatus(
             user, status, uuid, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
-            "/api/requests/status/" + status.toString() + "/organisation/" + uuid.toString()+ "/coordinator");
+            "/api/requests/status/" + status.name() + "/organisation/" + uuid.toString()+ "/coordinator");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -390,7 +447,7 @@ public class RequestResource {
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         log.debug("REST request to validate request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestRepresentation requestRepresentation = requestService.validateRequest(user, uuid);
+        RequestRepresentation requestRepresentation = reviewService.validateRequest(user, uuid);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
@@ -411,7 +468,7 @@ public class RequestResource {
     ) throws ActionNotAllowed {
         log.debug("REST request to reject request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid, message);
+        RequestRepresentation requestRepresentation = reviewService.rejectRequest(user, uuid, message);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
@@ -430,7 +487,7 @@ public class RequestResource {
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         log.debug("REST request to approve request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestRepresentation requestRepresentation = requestService.approveRequest(user, uuid);
+        RequestRepresentation requestRepresentation = reviewService.approveRequest(user, uuid);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
@@ -451,7 +508,7 @@ public class RequestResource {
     ) throws ActionNotAllowed {
         log.debug("REST request to apply revision to request details for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestRepresentation requestRepresentation = requestService.requestRevision(user, uuid, message);
+        RequestRepresentation requestRepresentation = reviewService.requestRevision(user, uuid, message);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
@@ -475,7 +532,7 @@ public class RequestResource {
         log.debug("REST request to provide review feedback advice for request : {}", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
 
-        RequestRepresentation request = requestService.saveReviewFeedback(user, uuid, feedback);
+        RequestRepresentation request = reviewService.saveReviewFeedback(user, uuid, feedback);
 
         return new ResponseEntity<>(request, HttpStatus.OK);
     }

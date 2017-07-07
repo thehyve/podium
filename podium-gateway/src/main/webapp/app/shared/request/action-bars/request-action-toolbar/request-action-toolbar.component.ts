@@ -11,7 +11,10 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angu
 import { JhiLanguageService } from 'ng-jhipster';
 import { Form } from '@angular/forms';
 import { RequestBase } from '../../request-base';
-import { RequestStatusOptions, RequestReviewStatusOptions } from '../../request-status/request-status.constants';
+import {
+    RequestStatusOptions, RequestReviewStatusOptions,
+    RequestOverviewStatusOption
+} from '../../request-status/request-status.constants';
 import { RequestAccessService } from '../../request-access.service';
 import { RequestService } from '../../request.service';
 import { Subscription } from 'rxjs';
@@ -28,8 +31,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     private status: string;
     private reviewStatus?: string;
-    public requestStatus = RequestStatusOptions;
-    public requestReviewStatus = RequestReviewStatusOptions;
+    public requestStatus = RequestOverviewStatusOption;
     private requestSubscription: Subscription;
     private deliveriesSubscription: Subscription;
 
@@ -37,6 +39,12 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         validation: false,
         canFinalize: false
     };
+
+    public reviewStatuses: RequestOverviewStatusOption[] = [
+        RequestOverviewStatusOption.Review,
+        RequestOverviewStatusOption.Revision,
+        RequestOverviewStatusOption.Validation
+    ];
 
     @Input() form: Form;
     @Input() request: RequestBase;
@@ -59,12 +67,11 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() finalizeRequestChange = new EventEmitter();
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestAccessService: RequestAccessService,
         private deliveryService: DeliveryService,
         private requestService: RequestService
     ) {
-        this.jhiLanguageService.setLocations(['request', 'requestStatus']);
+
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
             this.initializeStatuses();
@@ -107,13 +114,11 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     }
 
     isStatus(status): boolean {
-        // Status value comes as enumeration index
-        return this.status === RequestStatusOptions[status];
+        return this.status === RequestOverviewStatusOption[status];
     }
 
-    isReviewStatus(status): boolean {
-        // Status value comes as enumeration index
-        return this.reviewStatus === RequestReviewStatusOptions[status];
+    isReviewStatus(): boolean {
+        return this.reviewStatuses.indexOf(this.request.status) > -1;
     }
 
     isRequestCoordinator(): boolean {
@@ -129,8 +134,10 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     }
 
     isReviewable(): boolean {
-        let lastFeedbacks = this.requestService.getLastReviewFeedbacks(this.request.reviewRounds);
-        return this.requestAccessService.isReviewable(lastFeedbacks);
+        if (!this.request.reviewRound) {
+            return false;
+        }
+        return this.requestAccessService.isReviewable(this.request.reviewRound.reviewFeedback);
     }
 
     saveDraft() {

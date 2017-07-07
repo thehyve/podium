@@ -10,13 +10,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, JhiLanguageService } from 'ng-jhipster';
-import { Organisation } from './organisation.model';
+import { EventManager } from 'ng-jhipster';
 import { OrganisationPopupService } from './organisation-popup.service';
-import { OrganisationService } from './organisation.service';
+import { Organisation } from '../../../shared/organisation/organisation.model';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
+import { RouterHelper } from '../../../shared/util/router-helper';
 
 @Component({
-    selector: 'jhi-organisation-delete-dialog',
+    selector: 'pdm-organisation-delete-dialog',
     templateUrl: './organisation-delete-dialog.component.html'
 })
 export class OrganisationDeleteDialogComponent {
@@ -24,18 +25,17 @@ export class OrganisationDeleteDialogComponent {
     organisation: Organisation;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private organisationService: OrganisationService,
         public activeModal: NgbActiveModal,
         private eventManager: EventManager,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['organisation']);
+
     }
 
     clear () {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     confirmDelete (id: number) {
@@ -44,14 +44,14 @@ export class OrganisationDeleteDialogComponent {
                 name: 'organisationListModification',
                 content: 'Deleted an organisation'
             });
-            this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+            this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
             this.activeModal.dismiss(true);
         });
     }
 }
 
 @Component({
-    selector: 'jhi-organisation-delete-popup',
+    selector: 'pdm-organisation-delete-popup',
     template: ''
 })
 export class OrganisationDeletePopupComponent implements OnInit, OnDestroy {

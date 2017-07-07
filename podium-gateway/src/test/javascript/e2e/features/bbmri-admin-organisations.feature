@@ -14,31 +14,14 @@ Feature: bbmri admins can create and manage organisations in the system (BRPREQ-
 
         Examples:
             | sortBy    | organisationOrder            |
-#            | Nothing   | VarnameBank, SomeBank, XBank |
             | Name      | XBank, SomeBank, VarnameBank |
-            | ShortName | SomeBank, VarnameBank, XBank |
-#            | adminNames       |                   |
-#            | coordinatorNames |                   |
+            | ShortName | XBank, VarnameBank, SomeBank |
 
     @default
+    @request
     Scenario: An organisation has a details page
-        Given BBMRI_Admin goes to the 'organisation details' page for the organisation 'VarnameBank'
-        Then the organisation details page contains 'VarnameBank's data
-
-#    Scenario: An organisation's details can be edited
-#        Given Rob goes to the 'organisation' organisation details page
-#        When 'he' edits the details: {fieldName: value}
-#        Then the new details are saved
-
-#    Scenario: BBMRI admins can page through lists of users
-#        Given Rob goes to the 'organisation overview' page
-#        When 'he' goes to the next list of organisations
-#        Then the list of organisations has changed
-
-#    Scenario: BBMRI admins search for organisations by name
-#        Given Rob goes to the 'organisation overview' page
-#        When 'he' searches for 'organisationName'
-#        Then only 'organisationName' is shown in the list
+        Given BBMRI_Admin goes to the 'organisation details' page for the organisation 'ImageBank'
+        Then the organisation details page contains 'ImageBank's data
 
     @default
     Scenario: BBMRI admins can create new organisations
@@ -46,7 +29,15 @@ Feature: bbmri admins can create and manage organisations in the system (BRPREQ-
         When he creates the organisation 'NewOrg'
         Then 'NewOrg' organisation exists
 
-#    Scenario: BBMRI admins can deactivate organisations
-#        Given Rob goes to the 'organisation overview' page
-#        When 'he' deactivates the organisation 'organisationName'
-#        Then 'that' organisation is Deactivated
+    @default
+    Scenario: BBMRI admins can deactivate organisations
+        Given BBMRI_Admin goes to the 'organisation overview' page
+        When he deactivates the organisation 'VarnameBank'
+        Then the organisation is Deactivated
+
+    @default
+    Scenario: BBMRI admins can edit organisation details
+        Given BBMRI_Admin goes to the 'organisation details' page for the organisation 'VarnameBank'
+        When he indicates that 'Data, Images' can be requested from 'VarnameBank'
+        Then the organisation's data has changed
+

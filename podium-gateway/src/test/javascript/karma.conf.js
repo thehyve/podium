@@ -103,6 +103,7 @@ module.exports = function (config) {
 
         remapIstanbulReporter: {
             reports: { // eslint-disable-line
+                lcovonly: 'target/test-results/coverage/lcov.info',
                 'html': 'target/test-results/coverage',
                 'text-summary': null
             }

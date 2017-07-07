@@ -8,21 +8,14 @@
  *
  */
 import { Component, Input, OnDestroy } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { RequestBase } from '../../../shared/request/request-base';
 import {
-    RequestStatusOptions,
-    RequestReviewStatusOptions,
-    REQUEST_STATUSES,
-    REQUEST_STATUSES_MAP,
-    REQUEST_REVIEW_STATUSES,
-    REQUEST_REVIEW_STATUSES_MAP
+    RequestStatusOptions, RequestOverviewStatusOption,
+    REQUEST_PROGRESSBAR_STATUSES_MAP, REQUEST_PROGRESSBAR_STATUSES, REQUEST_STATUSES
 } from '../../../shared/request/request-status/request-status.constants';
-import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestService } from '../../../shared/request/request.service';
 import { Subscription } from 'rxjs';
 import { RequestStatus } from '../../../shared/request/request-status/request-status';
-import { RequestOutcome } from '../../../shared/request/request-outcome';
 
 @Component({
     selector: 'pdm-request-progress-bar',
@@ -34,23 +27,28 @@ export class RequestProgressBarComponent implements OnDestroy {
 
     @Input() request: RequestBase;
     requestStatusOptions: ReadonlyArray<RequestStatus>;
-    requestStatusMap: { [token: string]: RequestStatus; };
-    requestReviewStatusOptions: ReadonlyArray<RequestStatus>;
-    requestReviewStatusMap: { [token: string]: RequestStatus; };
+    requestProgressBarStatusOptions: ReadonlyArray<RequestStatus>;
+    requestProgressBarStatusMap: { [token: string]: RequestStatus; };
 
     requestSubscription: Subscription;
 
+    /**
+     * List of final state status options
+     */
+    terminalStatuses: RequestOverviewStatusOption[] = [
+        RequestOverviewStatusOption.Closed_Approved,
+        RequestOverviewStatusOption.Cancelled,
+        RequestOverviewStatusOption.Delivered,
+        RequestOverviewStatusOption.Partially_Delivered,
+        RequestOverviewStatusOption.Rejected,
+    ];
+
     constructor(
-        private jhiLanguageService: JhiLanguageService,
-        private requestAccessService: RequestAccessService,
         private requestService: RequestService
     ) {
         this.requestStatusOptions = REQUEST_STATUSES;
-        this.requestStatusMap = REQUEST_STATUSES_MAP;
-        this.requestReviewStatusOptions = REQUEST_REVIEW_STATUSES;
-        this.requestReviewStatusMap = REQUEST_REVIEW_STATUSES_MAP;
-
-        this.jhiLanguageService.addLocation('requestOutcome');
+        this.requestProgressBarStatusOptions = REQUEST_PROGRESSBAR_STATUSES;
+        this.requestProgressBarStatusMap = REQUEST_PROGRESSBAR_STATUSES_MAP;
 
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
@@ -95,25 +93,24 @@ export class RequestProgressBarComponent implements OnDestroy {
      * @returns {boolean} true if the request status is closed
      */
     isClosed(request: RequestBase, currentOrder: number): boolean {
-        if (request.status !== RequestStatusOptions.Closed) {
+        if (this.terminalStatuses.indexOf(request.status) === -1) {
             return false;
         }
 
         let requestOrder = this.getRequestStatusOrder(request);
-
         return requestOrder === currentOrder;
     }
 
     isPartiallyDelivered(request: RequestBase) {
-        return request.outcome === RequestOutcome.Partially_Delivered;
+        return request.status === RequestOverviewStatusOption.Partially_Delivered;
     }
 
     isCancelled(request: RequestBase) {
-        return request.outcome === RequestOutcome.Cancelled;
+        return request.status === RequestOverviewStatusOption.Cancelled;
     }
 
     isRevisionStatus(request: RequestBase): boolean {
-        return this.requestAccessService.isRequestReviewStatus(request, RequestReviewStatusOptions.Revision);
+        return request.status === RequestOverviewStatusOption.Revision;
     }
 
     /**
@@ -126,38 +123,26 @@ export class RequestProgressBarComponent implements OnDestroy {
      */
     getRequestStatusOrder(request: RequestBase): number {
         let reqStatus = request.status;
-        let reviewStatus = RequestStatusOptions.Review;
-        if (reqStatus === reviewStatus) {
-            let reqReviewStatus: RequestReviewStatusOptions = request.requestReview.status;
-            // Return requestReviewStatusOrder
-            if (this.requestReviewStatusMap.hasOwnProperty(reqReviewStatus)) {
-                return this.requestReviewStatusMap[reqReviewStatus].order;
-            }
-        } else {
-            // Not Review status - return requestStatusOrder
-            if (this.requestStatusMap.hasOwnProperty(reqStatus)) {
-                return this.requestStatusMap[reqStatus].order;
-            }
+
+        if (this.requestProgressBarStatusMap.hasOwnProperty(reqStatus)) {
+            return this.requestProgressBarStatusMap[reqStatus].order;
         }
 
-        if (reqStatus === RequestStatusOptions.Closed) {
-            switch (request.outcome) {
-                case RequestOutcome.Rejected:
-                    return 3; // Review element should be selected
-                case RequestOutcome.Approved:
-                    return 4;
-                case RequestOutcome.Cancelled:
-                    return 6;
-                case RequestOutcome.Partially_Delivered:
-                    return 6;
-                case RequestOutcome.Delivered:
-                    return 6;
-                default:
-                    return 0;
-            }
+        switch (request.status) {
+            case RequestOverviewStatusOption.Rejected:
+                return 3; // Review element should be selected
+            case RequestOverviewStatusOption.Approved:
+                return 4;
+            case RequestOverviewStatusOption.Closed_Approved:
+                return 4;
+            case RequestOverviewStatusOption.Cancelled:
+                return 6;
+            case RequestOverviewStatusOption.Partially_Delivered:
+                return 6;
+            case RequestOverviewStatusOption.Delivered:
+                return 6;
+            default:
+                return 0;
         }
-
-
-        return 0;
     }
 }

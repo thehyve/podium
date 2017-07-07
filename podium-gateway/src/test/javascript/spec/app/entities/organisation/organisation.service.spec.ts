@@ -10,25 +10,19 @@
 import { async, inject, TestBed } from '@angular/core/testing';
 import { BaseRequestOptions, Http, HttpModule, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { OrganisationService } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.service';
-import { Organisation } from '../../../../../../main/webapp/app/backoffice/modules/organisation/organisation.model';
+import { PodiumTestModule } from '../../../test.module';
+import { OrganisationService } from '../../../../../../main/webapp/app/shared/organisation/organisation.service';
+import { Organisation } from '../../../../../../main/webapp/app/shared/organisation/organisation.model';
 
 
 describe('OrganisationService (Mocked)', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [PodiumTestModule],
             providers: [
                 OrganisationService,
                 MockBackend,
-                BaseRequestOptions,
-                {
-                    provide: Http,
-                    useFactory: (backend, options) => new Http(backend, options),
-                    deps: [MockBackend, BaseRequestOptions]
-                }
-            ],
-            imports: [
-                HttpModule
+                BaseRequestOptions
             ]
         });
     });

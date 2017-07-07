@@ -56,15 +56,15 @@
                                 </select>
                             </td>
                             <td class="role-actions">
-                                <span class="role-option default" tooltip="Update user role" *ngIf="canUpdate(user, currentAccount)"
+                                <span class="role-option default test-update" tooltip="Update user role" *ngIf="canUpdate(user, currentAccount)"
                                     (click)="update(user)">
                                     <i class="material-icons">update</i>
                                 </span>
-                                <span class="role-option success" tooltip="Add user role" *ngIf="canAdd(user, currentAccount)"
+                                <span class="role-option success test-add" tooltip="Add user role" *ngIf="canAdd(user, currentAccount)"
                                     (click)="save(user)">
                                     <i class="material-icons">add</i>
                                 </span>
-                                <span class="role-option warn" tooltip="Remove user role" *ngIf="canRemove(user, currentAccount)"
+                                <span class="role-option warn test-remove" tooltip="Remove user role" *ngIf="canRemove(user, currentAccount)"
                                     (click)="delete(user)">
                                     <i class="material-icons">clear</i>
                                 </span>

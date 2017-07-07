@@ -9,7 +9,7 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.service.AbstractMailService;
 import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class MailService extends AbstractMailService {
      */
     @Async
     public void sendSubmissionNotificationToCoordinators(
-        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> coordinators
+        RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             request, organisation, coordinators == null ? null : coordinators.size());
@@ -108,7 +108,7 @@ public class MailService extends AbstractMailService {
      */
     @Async
     public void sendRequestRevisionSubmissionNotificationToCoordinators(
-        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> coordinators
+        RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
             request, organisation, coordinators == null ? null : coordinators.size());
@@ -128,7 +128,7 @@ public class MailService extends AbstractMailService {
 
     @Async
     public void sendRequestReviewNotificationToReviewers(
-        RequestRepresentation request, OrganisationDTO organisation, List<UserRepresentation> reviewers
+        RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> reviewers
     ) {
         log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
             request, organisation, reviewers == null ? null : reviewers.size());
@@ -140,8 +140,29 @@ public class MailService extends AbstractMailService {
             context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
-            String content = templateEngine.process("organisationRequestReview", context);
-            String subject = messageSource.getMessage("email.organisationRequestReview.title", null, locale);
+            String content = templateEngine.process("reviewerRequestReview", context);
+            String subject = messageSource.getMessage("email.reviewerRequestReview.title", null, locale);
+            sendEmail(user.getEmail(), subject, content, false, true);
+        }
+    }
+
+    @Async
+    public void sendRequestReviewedNotificationToCoordinators(
+        RequestRepresentation request, OrganisationRepresentation organisation,
+        List<UserRepresentation> coordinators, UserRepresentation reviewer
+    ) {
+        log.info("Notifying coordinators of request reviewed: request = {}, organisation = {}, #coordinators = {}",
+            request, organisation, coordinators == null ? null : coordinators.size());
+        for (UserRepresentation user : coordinators) {
+            log.debug("Sending request reviewed e-mail to '{}'", user.getEmail());
+            Locale locale = Locale.forLanguageTag(user.getLangKey());
+            Context context = new Context(locale);
+            context.setVariable(USER, user);
+            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            context.setVariable("request", request);
+            context.setVariable("reviewer", reviewer);
+            String content = templateEngine.process("organisationRequestReviewed", context);
+            String subject = messageSource.getMessage("email.organisationRequestReviewed.title", null, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -165,7 +186,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestApproved", context);
-        String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", null, locale);
+        String subject = messageSource.getMessage("email.requesterRequestApproved.title", null, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -210,7 +231,7 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryReleased", context);
-        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getShortName()};
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
         String subject = messageSource.getMessage("email.requesterDeliveryReleased.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
@@ -227,7 +248,7 @@ public class MailService extends AbstractMailService {
     @Async
     public void sendDeliveryReceivedNotificationToCoordinators(
         RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess,
-        OrganisationDTO organisation, List<UserRepresentation> coordinators) {
+        OrganisationRepresentation organisation, List<UserRepresentation> coordinators) {
         log.info("Notifying coordinators: delivery = {}, organisation = {}, #coordinators = {}",
             deliveryProcess, organisation, coordinators == null ? null : coordinators.size());
         for (UserRepresentation user: coordinators) {
@@ -261,7 +282,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestClosed", context);
-        String[] args = new String[] {request.getOrganisations().get(0).getShortName()};
+        String[] args = new String[] {request.getOrganisations().get(0).getName()};
         String subject = messageSource.getMessage("email.requesterRequestClosed.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
@@ -284,9 +305,9 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
-        String content = templateEngine.process("organisationDeliveryCancelled", context);
-        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getShortName()};
-        String subject = messageSource.getMessage("email.organisationDeliveryCancelled.title", args, locale);
+        String content = templateEngine.process("requesterDeliveryCancelled", context);
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
+        String subject = messageSource.getMessage("email.requesterDeliveryCancelled.title", args, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 

@@ -7,28 +7,29 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input, EventEmitter, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService, EventManager } from 'ng-jhipster';
+import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
     RequestType,
     PrincipalInvestigator,
-    AttachmentService,
     RequestBase,
     RequestService,
     Principal,
-    User,
-    Attachment
+    User
 } from '../../shared';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
-import { OrganisationService } from '../../backoffice/modules/organisation/organisation.service';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 import { RequestAccessService } from '../../shared/request/request-access.service';
-import { RequestReviewStatusOptions } from '../../shared/request/request-status/request-status.constants';
+import {
+    RequestReviewStatusOptions,
+    RequestOverviewStatusOption
+} from '../../shared/request/request-status/request-status.constants';
+import { OrganisationService } from '../../shared/organisation/organisation.service';
+import { Organisation } from '../../shared/organisation/organisation.model';
 
 @Component({
     selector: 'pdm-request-form',
@@ -36,7 +37,7 @@ import { RequestReviewStatusOptions } from '../../shared/request/request-status/
     styleUrls: ['request-form.scss']
 })
 
-export class RequestFormComponent implements OnInit, AfterContentInit {
+export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
 
@@ -57,23 +58,16 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
     private revisionId: string;
     public isUpdating = false;
 
-    attachments: Attachment[];
-
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestFormService: RequestFormService,
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
-        private attachmentService: AttachmentService,
-        private route: ActivatedRoute,
         private router: Router,
         private principal: Principal,
         private eventManager: EventManager,
         private organisationService: OrganisationService,
         private modalService: NgbModal
     ) {
-        this.jhiLanguageService.setLocations(['request']);
-
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
         });
@@ -87,10 +81,6 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         });
     }
 
-    ngAfterContentInit() {
-        this.registerChangeInFilesUploaded();
-    }
-
     initializeRequestForm() {
         if (this.requestFormService.request) {
             this.selectRequest(this.requestFormService.request);
@@ -99,17 +89,8 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         }
     }
 
-    registerChangeInFilesUploaded() {
-        this.eventManager.subscribe('uploadListModification', (response) => this.loadAttachmentsForRequest());
-    }
-
-    loadAttachmentsForRequest() {
-        this.attachmentService
-            .findAttachmentsForRequest(this.requestBase.uuid)
-            .subscribe(
-                (attachments) => this.attachments = attachments,
-                (error) => this.onError(error)
-            );
+    hasSelectedMultipleOrganisations() {
+        return this.requestBase.organisations.length > 1;
     }
 
     initializeBaseRequest() {
@@ -126,8 +107,11 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
             );
     }
 
-    updateRequestOrganisations(event: Organisation[]) {
-        this.requestBase.organisations = event;
+    updateRequestOrganisations(organisations: Organisation[]) {
+        this.requestBase.organisations = organisations;
+        if (!this.hasSelectedMultipleOrganisations()) {
+            this.requestDetail.combinedRequest = false;
+        }
     }
 
     selectRequest(requestBase: RequestBase) {
@@ -135,7 +119,7 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         this.requestBase.organisations = requestBase.organisations || [];
 
         // If the request is in revision use the revisionDetail
-        if (this.requestAccessService.isRequestReviewStatus(requestBase, RequestReviewStatusOptions.Revision)) {
+        if (this.isRequesterOfRevisionRequest(requestBase)) {
             // Remember the revision ID
             this.revisionId = requestBase.revisionDetail.id;
             this.requestDetail = requestBase.revisionDetail;
@@ -144,6 +128,11 @@ export class RequestFormComponent implements OnInit, AfterContentInit {
         }
 
         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+    }
+
+    isRequesterOfRevisionRequest(requestBase: RequestBase): boolean {
+        return this.requestAccessService.isRequesterOf(requestBase)
+            && RequestAccessService.isRequestStatus(requestBase, RequestOverviewStatusOption.Revision);
     }
 
     updateRequestType(selectedRequestType, event) {

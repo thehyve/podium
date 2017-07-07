@@ -1,0 +1,19 @@
+{
+    "requestSidebar" : {
+        "status": {
+            "All": "All requests",
+            "Draft": "Draft",
+            "Validation": "In validation",
+            "Review": "In review",
+            "Revision": "In revision",
+            "Approved": "Approved",
+            "Delivery": "In delivery",
+            "Partially_Delivered": "Partially delivered",
+            "Delivered": "Delivered",
+            "Rejected": "Rejected",
+            "Cancelled": "Cancelled",
+            "Closed_Approved": "Closed after approval"
+        }
+
+    }
+}

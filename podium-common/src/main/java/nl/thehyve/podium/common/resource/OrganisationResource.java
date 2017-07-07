@@ -8,7 +8,7 @@
 package nl.thehyve.podium.common.resource;
 
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public interface OrganisationResource {
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @RequestMapping(value = "/organisations/all", method = RequestMethod.GET)
-    ResponseEntity<List<OrganisationDTO>> getAllOrganisations() throws URISyntaxException;
+    ResponseEntity<List<OrganisationRepresentation>> getAllOrganisations() throws URISyntaxException;
 
     /**
      * GET  /organisations/uuid/:uuid : get the "uuid" organisation.
@@ -37,6 +37,6 @@ public interface OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the organisation, or with status 404 (Not Found)
      */
     @RequestMapping(value = "/organisations/uuid/{uuid}", method = RequestMethod.GET)
-    ResponseEntity<OrganisationDTO> getOrganisation(@OrganisationUuidParameter @PathVariable("uuid") UUID uuid);
+    ResponseEntity<OrganisationRepresentation> getOrganisation(@OrganisationUuidParameter @PathVariable("uuid") UUID uuid);
 
 }

@@ -13,9 +13,11 @@ import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, JhiLanguageService } from 'ng-jhipster';
 import { UserModalService } from './user-modal.service';
 import { JhiLanguageHelper, User, UserService } from '../../../shared';
+import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
+import { RouterHelper } from '../../../shared/util/router-helper';
 
 @Component({
-    selector: 'jhi-user-mgmt-dialog',
+    selector: 'pdm-user-mgmt-dialog',
     templateUrl: './user-management-dialog.component.html'
 })
 export class UserMgmtDialogComponent implements OnInit {
@@ -24,11 +26,11 @@ export class UserMgmtDialogComponent implements OnInit {
     languages: any[];
     authorities: any[];
     isSaving: Boolean;
+    userAuthorityMap;
 
     constructor (
         public activeModal: NgbActiveModal,
         private languageHelper: JhiLanguageHelper,
-        private jhiLanguageService: JhiLanguageService,
         private userService: UserService,
         private eventManager: EventManager,
         private router: Router
@@ -40,20 +42,26 @@ export class UserMgmtDialogComponent implements OnInit {
         this.languageHelper.getAll().then((languages) => {
             this.languages = languages;
         });
-        this.jhiLanguageService.setLocations(['user-management']);
+
+        this.userAuthorityMap = AUTHORITIES_MAP;
     }
 
     clear() {
         this.activeModal.dismiss('cancel');
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     save() {
         this.isSaving = true;
         if (this.user.id) {
-            this.userService.update(this.user).subscribe(response => this.onSaveSuccess(response), () => this.onSaveError());
+            this.userService.update(this.user).subscribe(
+                (response) => this.onSaveSuccess(response),
+                () => this.onSaveError()
+            );
         } else {
-            this.userService.create(this.user).subscribe(response => this.onSaveSuccess(response), () => this.onSaveError());
+            this.userService.create(this.user).subscribe(
+                (response) => this.onSaveSuccess(response),
+                () => this.onSaveError());
         }
     }
 
@@ -61,7 +69,7 @@ export class UserMgmtDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: 'userListModification', content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(result);
-        this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
+        this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
     private onSaveError() {
@@ -70,7 +78,7 @@ export class UserMgmtDialogComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-user-dialog',
+    selector: 'pdm-user-dialog',
     template: ''
 })
 export class UserDialogComponent implements OnInit, OnDestroy {

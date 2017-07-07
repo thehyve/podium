@@ -14,7 +14,7 @@ describe('PasswordMatchesDirective', () => {
     let confirmPasswordField: FormControl;
 
     let invalidResultObj = {
-        passwordMatches: {
+        pdmPasswordMatches: {
             valid : false
         }
     };
@@ -22,7 +22,7 @@ describe('PasswordMatchesDirective', () => {
     beforeEach(() => {
         passwordField = new FormControl('');
         validator = new PasswordMatchesDirective();
-        validator.passwordMatches = passwordField;
+        validator.pdmPasswordMatches = passwordField;
         confirmPasswordField = new FormControl('');
     });
 

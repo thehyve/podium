@@ -19,7 +19,6 @@ import { DashboardComponent } from './dashboard';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 import { TypeaheadModule } from 'ng2-bootstrap';
-import { OrganisationService } from './backoffice/modules/organisation/organisation.service';
 import { PodiumGatewayRequestModule } from './request/request.module';
 import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
@@ -29,10 +28,10 @@ import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
 import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
+import { OrganisationService } from './shared/organisation/organisation.service';
 
 @NgModule({
     imports: [
-        NgbModule.forRoot(),
         TypeaheadModule.forRoot(),
         BreadcrumbsModule.forRoot(),
         BrowserModule,
@@ -68,6 +67,6 @@ import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
         RoleService
     ],
     bootstrap: [ PdmMainComponent ],
-    exports: [NgbModule]
+    exports: []
 })
 export class PodiumGatewayAppModule {}

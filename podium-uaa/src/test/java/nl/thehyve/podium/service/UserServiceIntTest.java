@@ -12,7 +12,7 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.service.util.RandomUtil;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +56,8 @@ public class UserServiceIntTest {
         assertThat(maybeUser.get().getResetKey()).isNotNull();
     }
 
-    ManagedUserVM createTestUser() {
-        ManagedUserVM userVM = new ManagedUserVM();
+    ManagedUserRepresentation createTestUser() {
+        ManagedUserRepresentation userVM = new ManagedUserRepresentation();
         userVM.setLogin("johndoe");
         userVM.setLogin("johndoes");
         userVM.setFirstName("John");
@@ -69,7 +69,7 @@ public class UserServiceIntTest {
 
     @Test
     public void assertThatResetKeyMustNotBeOlderThan24Hours() throws UserAccountException {
-        ManagedUserVM testUserData = createTestUser();
+        ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
@@ -88,7 +88,7 @@ public class UserServiceIntTest {
 
     @Test
     public void assertThatResetKeyMustBeValid() throws UserAccountException {
-        ManagedUserVM testUserData = createTestUser();
+        ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
 
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
@@ -102,7 +102,7 @@ public class UserServiceIntTest {
 
     @Test
     public void assertThatUserCanResetPassword() throws UserAccountException {
-        ManagedUserVM testUserData = createTestUser();
+        ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
         String oldPassword = user.getPassword();
         ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(2);

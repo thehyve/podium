@@ -7,40 +7,39 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
-import { TranslateService } from 'ng2-translate';
 import { LoginModalService, MessageService } from '../../shared';
+import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { Message } from '../../shared/message/message.model';
 import { Observable } from 'rxjs';
+import { Message } from '../../shared/message/message.model';
+import { CompletionType } from '../../layouts/completed/completion-type';
 
 @Component({
     templateUrl: './register.component.html'
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, AfterViewInit {
 
     confirmPassword: string;
+    doNotMatch: string;
     error: string;
     errorEmailExists: string;
     errorUserExists: string;
     registerAccount: any;
     success: boolean;
     successMessage: Message;
-    modalRef: NgbModalRef;
 
-    constructor(private languageService: JhiLanguageService,
-                private loginModalService: LoginModalService,
-                private messageService: MessageService,
-                private registerService: Register,
-                private elementRef: ElementRef,
-                private renderer: Renderer,
-                private translate: TranslateService,
-                private router: Router
+    constructor(
+        private languageService: JhiLanguageService,
+        private translate: TranslateService,
+        private registerService: Register,
+        private messageService: MessageService,
+        private elementRef: ElementRef,
+        private renderer: Renderer,
+        private router: Router
     ) {
-        this.languageService.setLocations(['register']);
     }
 
     ngOnInit() {
@@ -54,26 +53,28 @@ export class RegisterComponent implements OnInit {
     }
 
     register() {
-        this.error = null;
-        this.errorUserExists = null;
-        this.errorEmailExists = null;
-        this.languageService.getCurrent().then(key => {
-            this.registerAccount.langKey = key;
-            this.registerService.save(this.registerAccount).subscribe(
-                () => this.processSuccess(),
-                (response) => {
-                    this.processError(response);
-                    window.scrollTo(0, 0);
-                }
-            );
-        });
+        if (this.registerAccount.password !== this.confirmPassword) {
+            this.doNotMatch = 'ERROR';
+        } else {
+            this.doNotMatch = null;
+            this.error = null;
+            this.errorUserExists = null;
+            this.errorEmailExists = null;
+            this.languageService.getCurrent().then((key) => {
+                this.registerAccount.langKey = key;
+                this.registerService.save(this.registerAccount).subscribe(
+                    (response) => this.processSuccess(),
+                    (error) => this.processError(error)
+                );
+            });
+        }
     }
 
-    openLogin() {
-        this.modalRef = this.loginModalService.open();
+    gotoLogin() {
+        this.router.navigate(['/']);
     }
 
-    private processSuccess() {
+    public processSuccess() {
         this.success = true;
 
         // Get i18n success page content
@@ -82,7 +83,7 @@ export class RegisterComponent implements OnInit {
 
         Observable.forkJoin(successTitle, successContent).subscribe(
             messages => {
-                this.successMessage = new Message(messages[0], messages[1]);
+                this.successMessage = new Message(CompletionType.Registration, messages[0], messages[1]);
                 this.messageService.store(this.successMessage);
                 this.router.navigate(['/completed']);
             });
@@ -92,7 +93,7 @@ export class RegisterComponent implements OnInit {
         this.success = null;
         if (response.status === 400 && response._body === 'login already in use') {
             this.errorUserExists = 'ERROR';
-        } else if (response.status === 400 && response._body === 'e-mail address already in use') {
+        } else if (response.status === 400 && response._body === 'email address already in use') {
             this.errorEmailExists = 'ERROR';
         } else {
             this.error = 'ERROR';

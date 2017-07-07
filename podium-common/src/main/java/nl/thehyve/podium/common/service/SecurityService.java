@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Service
@@ -171,18 +172,44 @@ public class SecurityService {
      */
     public boolean isCurrentUserInAnyOrganisationRole(UUID organisationUuid, String ... authorities) {
         log.info("Checking access for organisation {}", organisationUuid);
+        return isCurrentUserInAnyOrganisationRole(Collections.singleton(organisationUuid), Arrays.asList(authorities));
+    }
+
+    /**
+     * If the current user has any of the specified authorities (security roles).
+     *
+     * @param organisationUuids The UUID of the organisation to check against.
+     * @param authority the authority to check
+     * @return true if the current user has any of the authorities, false otherwise
+     */
+    public boolean isCurrentUserInAnyOrganisationRole(Collection<UUID> organisationUuids, String authority) {
+        log.info("Checking access for organisation {}", organisationUuids);
+        return isCurrentUserInAnyOrganisationRole(organisationUuids, Collections.singleton(authority));
+    }
+
+    /**
+     * If the current user has any of the specified authorities (security roles).
+     *
+     * @param organisationUuids The UUIDs of the organisations to check against.
+     * @param authorities the authorities to check
+     * @return true if the current user has any of the authorities, false otherwise
+     */
+    public boolean isCurrentUserInAnyOrganisationRole(Collection<UUID> organisationUuids, Collection<String> authorities) {
+        log.info("Checking access for organisations {}", organisationUuids);
         AuthenticatedUser user = getCurrentUser();
         if (user == null) {
             return false;
         }
-        Collection<String> organisationRoles = user.getOrganisationAuthorities().get(organisationUuid);
-        log.info("Organisation roles: {}", organisationRoles);
-        return organisationRoles != null &&
-            organisationRoles.stream().anyMatch(grantedAuthority ->
-                    Arrays.stream(authorities).anyMatch(authority ->
+        return organisationUuids.stream().anyMatch(organisationUuid -> {
+            Collection<String> organisationRoles = user.getOrganisationAuthorities().get(organisationUuid);
+            log.debug("Organisation roles: {}", organisationRoles);
+            return organisationRoles != null &&
+                organisationRoles.stream().anyMatch(grantedAuthority ->
+                    authorities.stream().anyMatch(authority ->
                         grantedAuthority.equals(authority)
                     )
-            );
+                );
+        });
     }
 
 }

@@ -26,15 +26,15 @@
             "bbmri_admin": {
                 "main": "BBMRI",
                 "header": "Global",
-                "orgConfiguration": "Organisation configuration",
+                "orgConfiguration": "Organisation management",
                 "userManagement": "User management",
                 "formConfiguration": "Form configuration"
             },
             "organisation": {
                 "main": "Organisation",
                 "org_admin": {
-                    "main": "Admin",
-                    "orgConfiguration": "Organisation configuration",
+                    "main": "Admininistration",
+                    "orgConfiguration": "Organisation management",
                     "userManagement": "User management",
                     "formConfiguration": "Form configuration"
                 },
@@ -126,7 +126,8 @@
             "uuid": "UUID"
         },
         "ribbon": {
-            "dev":"Development"
+            "dev":"Development",
+            "prod": "ALPHA VERSION"
         },
         "item-count": "Showing {{first}} - {{second}} of {{total}} items."
     },

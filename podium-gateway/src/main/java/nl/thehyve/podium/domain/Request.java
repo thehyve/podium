@@ -7,10 +7,15 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestOutcome;
+import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
@@ -20,6 +25,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -29,9 +35,16 @@ import java.util.*;
  * A Request.
  */
 @Entity
-@Table(name = "request")
+@Table(name = "request",
+    indexes = {
+        @Index(name = "request_created_date_key", columnList = "created_date"),
+        @Index(name = "request_status_key", columnList = "status"),
+        @Index(name = "request_status_outcome_key", columnList = "status,outcome"),
+    }
+)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "request")
+@Data
 public class Request extends AbstractAuditingEntity implements Serializable, IdentifiableUser, IdentifiableRequest {
 
     private static final long serialVersionUID = 1L;
@@ -50,6 +63,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @NotNull
@@ -62,24 +76,34 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Column(name = "outcome", nullable = false)
     private RequestOutcome outcome = RequestOutcome.None;
 
-    @ElementCollection(targetClass = java.util.UUID.class)
+    @Transient
+    public OverviewStatus getOverviewStatus() {
+        RequestReviewStatus reviewStatus = requestReviewProcess == null ? null : requestReviewProcess.getStatus();
+        return OverviewStatus.forStatus(status, reviewStatus, outcome);
+    }
+
+    @ElementCollection(targetClass = java.util.UUID.class, fetch = FetchType.EAGER)
     @CollectionTable(
         name="request_organisations",
         joinColumns=@JoinColumn(name="request_id")
     )
     @Column(name = "organisation_uuid")
+    @Fetch(FetchMode.JOIN)
+    @BatchSize(size = 1000)
     private Set<UUID> organisations = new HashSet<>();
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(unique = true, name = "revision_detail")
     private RequestDetail revisionDetail;
 
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(unique = true, name = "request_detail")
+    @Fetch(FetchMode.JOIN)
     private RequestDetail requestDetail;
 
     @OneToOne
     @JoinColumn(unique = true, name = "request_review_process")
+    @Fetch(FetchMode.JOIN)
     private RequestReviewProcess requestReviewProcess;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -95,17 +119,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @Column(nullable = false)
     private UUID requester;
 
-    @ManyToMany
-    @Fetch(FetchMode.JOIN)
-    @BatchSize(size = 1000)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "request_attachments",
-               joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="attachment_id", referencedColumnName="id"))
-    private Set<Attachment> attachments = new HashSet<>();
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderColumn(name="event_order")
@@ -115,7 +129,6 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderColumn(name="review_round_order")
@@ -124,17 +137,13 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
     private List<ReviewRound> reviewRounds;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @BatchSize(size = 1000)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "request_related_requests",
+        joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
+        inverseJoinColumns = @JoinColumn(name="related_request_id", referencedColumnName="id"))
+    private Set<Request> relatedRequests = new HashSet<>();
 
     @Override
     public UUID getRequestUuid() {
@@ -159,29 +168,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         }
     }
 
-    public RequestStatus getStatus() {
-        return status;
-    }
-
     public Request status(RequestStatus status) {
         this.status = status;
         return this;
-    }
-
-    public void setStatus(RequestStatus status) {
-        this.status = status;
-    }
-
-    public RequestOutcome getOutcome() {
-        return outcome;
-    }
-
-    public void setOutcome(RequestOutcome outcome) {
-        this.outcome = outcome;
-    }
-
-    public Set<UUID> getOrganisations() {
-        return organisations;
     }
 
     public Request organisations(Set<UUID> organisations) {
@@ -189,52 +178,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return this;
     }
 
-    public Request addOrganisations(UUID organisation) {
-        this.organisations.add(organisation);
-        return this;
-    }
-
-    public Request removeOrganisations(UUID organisation) {
-        this.organisations.remove(organisation);
-        return this;
-    }
-
-    public void setOrganisations(Set<UUID> organisations) {
-        this.organisations = organisations;
-    }
-
-    public RequestDetail getRevisionDetail() { return revisionDetail; }
-
-    public void setRevisionDetail(RequestDetail revisionDetail) { this.revisionDetail = revisionDetail; }
-
-    public Request revisionDetail(RequestDetail revisionDetail) {
-        this.revisionDetail = revisionDetail;
-        return this;
-    }
-
-    public RequestDetail getRequestDetail() {
-        return requestDetail;
-    }
-
     public Request requestDetail(RequestDetail requestDetail) {
         this.requestDetail = requestDetail;
         return this;
-    }
-
-    public void setRequestDetail(RequestDetail requestDetail) {
-        this.requestDetail = requestDetail;
-    }
-
-    public RequestReviewProcess getRequestReviewProcess() {
-        return requestReviewProcess;
-    }
-
-    public void setRequestReviewProcess(RequestReviewProcess requestReviewProcess) {
-        this.requestReviewProcess = requestReviewProcess;
-    }
-
-    public List<DeliveryProcess> getDeliveryProcesses() {
-        return deliveryProcesses;
     }
 
     public Request addDeliveryProcess(DeliveryProcess deliveryProcess) {
@@ -242,60 +188,9 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
         return this;
     }
 
-    public void setDeliveryProcesses(List<DeliveryProcess> deliveryProcesses) {
-        this.deliveryProcesses = deliveryProcesses;
-    }
-
-    public Set<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public Request attachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-        return this;
-    }
-
-    public Request addAttachments(Attachment attachment) {
-        this.attachments.add(attachment);
-        return this;
-    }
-
-    public Request removeAttachments(Attachment attachment) {
-        this.attachments.remove(attachment);
-        return this;
-    }
-
-    public void setAttachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
-    public UUID getRequester() {
-        return requester;
-    }
-
-    public void setRequester(UUID requester) {
-        this.requester = requester;
-    }
-
-    public List<PodiumEvent> getHistoricEvents() {
-        return historicEvents;
-    }
-
     public Request addHistoricEvent(PodiumEvent event) {
         this.historicEvents.add(event);
         return this;
-    }
-
-    public void setHistoricEvents(List<PodiumEvent> historicEvents) {
-        this.historicEvents = historicEvents;
-    }
-
-    public List<ReviewRound> getReviewRounds() {
-        return reviewRounds;
-    }
-
-    public void setReviewRounds(List<ReviewRound> reviewRounds) {
-        this.reviewRounds = reviewRounds;
     }
 
     @Override

@@ -8,6 +8,10 @@
 package nl.thehyve.podium.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import org.hibernate.annotations.Cache;
@@ -19,20 +23,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -46,6 +37,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "organisation")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Data
 public class Organisation implements Serializable, IdentifiableOrganisation {
 
     private static final long serialVersionUID = 1L;
@@ -64,6 +56,7 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Setter(AccessLevel.NONE)
     private UUID uuid;
 
     @NotNull
@@ -77,9 +70,11 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
 
     @JsonIgnore
     @Column(name = "deleted", nullable = false)
+    @Getter(AccessLevel.NONE)
     private boolean deleted;
 
     @Column(name = "activated", nullable = false)
+    @Getter(AccessLevel.NONE)
     private boolean activated;
 
     @JsonIgnore
@@ -96,18 +91,6 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
     )
     @Column(name = "request_type")
     private Set<RequestType> requestTypes;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
 
     public UUID getOrganisationUuid() {
         return getUuid();
@@ -128,21 +111,9 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
     public Organisation name(String name) {
         this.name = name;
         return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getShortName() {
-        return shortName;
     }
 
     public Organisation shortName(String shortName) {
@@ -150,37 +121,13 @@ public class Organisation implements Serializable, IdentifiableOrganisation {
         return this;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
     public boolean isDeleted() {
         return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public boolean isActivated() {
         return activated;
     }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Set<RequestType> getRequestTypes() { return requestTypes; }
-
-    public void setRequestTypes(Set<RequestType> requestTypes) { this.requestTypes = requestTypes; }
 
     @Override
     public boolean equals(Object o) {

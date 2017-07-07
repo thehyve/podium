@@ -27,14 +27,14 @@ public class UserMapperHelper {
         return userRepresentation.getUuid();
     }
 
-    @DefaultUser
+    @MinimalMapper
     public UserRepresentation uuidToUserRepresentation(UUID uuid) {
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUuid(uuid);
         return userRepresentation;
     }
 
-    @ExtendedUser
+    @DefaultMapper
     public UserRepresentation uuidToRemoteUserRepresentation(UUID uuid) {
         if (uuid == null) {
             return null;
@@ -43,7 +43,7 @@ public class UserMapperHelper {
         UserRepresentation userRepresentation = new UserRepresentation();
 
         try {
-            userRepresentation = userClientService.findUserByUuid(uuid);
+            userRepresentation = userClientService.findUserByUuidCached(uuid);
         } catch (Exception ex) {}
 
         return userRepresentation;

@@ -2,9 +2,6 @@
 # Spring Boot configuration for the "prod" profile.
 #
 # This configuration overrides the application.yml file.
-#
-# More information on profiles: https://podium.github.io/profiles/
-# More information on configuration properties: https://podium.github.io/common-application-properties/
 # ===================================================================
 
 # ===================================================================

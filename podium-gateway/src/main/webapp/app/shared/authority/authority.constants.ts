@@ -24,6 +24,15 @@ const organisationAuthorities: { [token: string]: string; } = {
     'ROLE_REVIEWER':                    'Reviewer'
 };
 
+export enum UserGroupAuthority {
+    Requester   = <any>'requester',
+    Coordinator = <any>'coordinator',
+    Reviewer    = <any>'reviewer',
+    OrganisationAdmin = <any>'organisationAdmin',
+    BbmriAdmin  = <any>'bbmriAdmin',
+    PodiumAdmin = <any>'podiumAdmin'
+}
+
 function convertNamesToAuthorities(names: { [token: string]: string; }): Array<Authority> {
     let result: Array<Authority> = [];
     for (const token in names) {

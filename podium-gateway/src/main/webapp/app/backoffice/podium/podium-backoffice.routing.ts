@@ -11,6 +11,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewayOrganisationModule } from '../modules/organisation/organisation.module';
 import { PodiumGatewayUserMgmtModule } from '../modules/user-management/user-management.module';
+import { UserGroupAuthority } from '../../shared/authority/authority.constants';
 
 let PODIUM_ROUTES = [
     {
@@ -25,7 +26,7 @@ let PODIUM_ROUTES = [
                 pathMatch: 'full'
             },
             {
-                path: 'configuration',
+                path: 'management',
                 data: {
                     breadcrumb: 'organisation management'
                 },
@@ -34,7 +35,8 @@ let PODIUM_ROUTES = [
             {
                 path: 'user-management',
                 data: {
-                    breadcrumb: 'user management'
+                    breadcrumb: 'user management',
+                    userAuthorityGroup: UserGroupAuthority.PodiumAdmin
                 },
                 loadChildren: () => PodiumGatewayUserMgmtModule
             }

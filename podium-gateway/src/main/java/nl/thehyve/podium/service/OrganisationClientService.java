@@ -11,11 +11,12 @@ import com.codahale.metrics.annotation.Timed;
 import feign.FeignException;
 import nl.thehyve.podium.client.InternalRoleClient;
 import nl.thehyve.podium.client.OrganisationClient;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
@@ -34,17 +35,27 @@ public class OrganisationClientService {
     InternalRoleClient internalRoleClient;
 
     @Timed
-    public List<OrganisationDTO> findAllOrganisations() throws URISyntaxException, FeignException {
+    public List<OrganisationRepresentation> findAllOrganisations() throws URISyntaxException, FeignException {
+        log.info("Fetching all organisations through Feign ...");
         return organisationClient.getAllOrganisations().getBody();
     }
 
     @Timed
-    public OrganisationDTO findOrganisationByUuid(UUID organisationUuid) throws FeignException {
+    public OrganisationRepresentation findOrganisationByUuid(UUID organisationUuid) throws FeignException {
+        log.info("Fetching organisation through Feign ...");
         return organisationClient.getOrganisation(organisationUuid).getBody();
     }
 
     @Timed
+    @Cacheable("remoteOrganisations")
+    public OrganisationRepresentation findOrganisationByUuidCached(UUID organisationUuid) throws FeignException {
+        log.info("Fetching organisation through Feign ...");
+        return findOrganisationByUuid(organisationUuid);
+    }
+
+    @Timed
     public List<UserRepresentation> findUsersByRole(UUID organisationUuid, String authority) {
+        log.info("Fetching organisation users through Feign ...");
         return internalRoleClient.getOrganisationRoleUsers(organisationUuid, authority).getBody();
     }
 

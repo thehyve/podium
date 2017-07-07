@@ -13,7 +13,7 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,7 +111,7 @@ public class UserResourceIntTest {
     @Test
     @Transactional
     public void testCreateUser() throws Exception {
-        ManagedUserVM userData = new ManagedUserVM();
+        ManagedUserRepresentation userData = new ManagedUserRepresentation();
         AccountResourceIntTest.setMandatoryFields(userData);
         userData.setId(null);
         userData.setLogin("joe");
@@ -134,7 +134,7 @@ public class UserResourceIntTest {
     @Test
     @Transactional
     public void testCreateInvalidUser() throws Exception {
-        ManagedUserVM userData = new ManagedUserVM();
+        ManagedUserRepresentation userData = new ManagedUserRepresentation();
         AccountResourceIntTest.setMandatoryFields(userData);
         userData.setId(null);
         userData.setLogin("joe");

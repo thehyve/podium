@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.Data;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -25,6 +26,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "podium_authority")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Data
 public class Authority implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,45 +44,7 @@ public class Authority implements Serializable {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public final boolean isOrganisationAuthority() {
         return AuthorityConstants.isOrganisationAuthority(this.name);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Authority authority = (Authority) o;
-
-        if (name != null ? !name.equals(authority.name) : authority.name != null) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Authority{" +
-            "name='" + name + '\'' +
-            "}";
     }
 }

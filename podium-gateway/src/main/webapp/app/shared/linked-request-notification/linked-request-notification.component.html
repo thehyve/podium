@@ -1,0 +1,21 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="notification-wrapper">
+    <div class="alert alert-warning">
+        <span class="material-icons">link</span>
+        <div class="message-text-container">
+            <h6 jhiTranslate="request.linkedRequest.title"></h6>
+            <div *ngIf="isRequester() && !isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.researcher"></div>
+            <div *ngIf="isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.organisationCoordinator"></div>
+            <div *ngIf="isReviewer() && !isRequester()" jhiTranslate="request.linkedRequest.reviewer"></div>
+        </div>
+    </div>
+</div>

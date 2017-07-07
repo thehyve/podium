@@ -21,6 +21,7 @@
         "login": "Login",
         "firstName": "First name",
         "lastName": "Last name",
+        "name": "Name",
         "email": "Email",
         "telephone": "Telephone",
         "institute": "Institute",

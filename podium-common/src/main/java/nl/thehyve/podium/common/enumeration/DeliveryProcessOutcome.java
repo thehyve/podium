@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.common.enumeration;
 
-public enum DeliveryProcessOutcome {
+public enum DeliveryProcessOutcome implements Classifier {
     Cancelled,
     Received,
     Returned,

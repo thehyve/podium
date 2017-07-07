@@ -8,32 +8,25 @@
   ~
   -->
 
-<div class="row">
+<div class="content-wrapper">
     <div class="container-fluid">
         <div class="col-md-12 col-sm-12 col-lg-10 col-xl-8 offset-lg-1 offset-xl-2 card-container">
-            <h2>
-                <span jhiTranslate="request.detail.pageTitle">Request</span>
-            </h2>
+            <h3 *ngIf="request" jhiTranslate="request.detail.pageHeader" class="main-detail-header"
+              translateValues="{requestId: '{{request.id}}', organisation: '{{request.organisations[0].shortName}}'}">
+                Request header
+            </h3>
 
             <pdm-request-progress-bar *ngIf="request" [request]="request"></pdm-request-progress-bar>
-
+            <pdm-linked-notification *ngIf="request && request.requestDetail.combinedRequest"
+                                     [request]="request">
+            </pdm-linked-notification>
             <pdm-event-message-component *ngIf="request" [request]="request"></pdm-event-message-component>
-
             <jhi-alert></jhi-alert>
             <jhi-alert-error></jhi-alert-error>
 
             <tabset>
                 <tab heading="Details">
                     <pdm-request-detail></pdm-request-detail>
-                </tab>
-                <tab heading="Conversation" [disabled]="true">
-                    test
-                </tab>
-                <tab heading="History" [disabled]="true">
-                    test
-                </tab>
-                <tab heading="Files" [disabled]="true">
-                    test
                 </tab>
             </tabset>
         </div>

@@ -21,8 +21,8 @@ import { RequestFormService } from '../../../../../../main/webapp/app/request/fo
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MockRouter } from '../../../helpers/mock-route.service';
 import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
-import { NgbModalStack } from '@ng-bootstrap/ng-bootstrap/modal/modal-stack';
 import { Observable } from 'rxjs';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('Component Tests', () => {
     describe('Request Overview Component', () => {
@@ -32,12 +32,9 @@ describe('Component Tests', () => {
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
+                imports: [PodiumTestModule],
                 declarations: [RequestOverviewComponent],
                 providers: [
-                    {
-                        provide: JhiLanguageService,
-                        useClass: MockLanguageService
-                    },
                     RequestService,
                     {
                         provide: Router,  useClass: MockRouter
@@ -48,13 +45,9 @@ describe('Component Tests', () => {
                     BaseRequestOptions,
                     EventManager,
                     Principal,
-                    NgbModal,
                     {
-                        provide: Http,
-                        useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                            return new Http(backendInstance, defaultOptions);
-                        },
-                        deps: [MockBackend, BaseRequestOptions]
+                        provide: NgbModal,
+                        useValue: null
                     },
                     {
                         provide: ActivatedRoute,
@@ -63,19 +56,15 @@ describe('Component Tests', () => {
                                 'pagingParams': {},
                             }]),
                             snapshot: {
-                                url: [{path: '/foo'}],
+                                url: [{path: 'my-requests'}],
                                 params: {},
                             }
                         },
                     },
-                    NgbModalStack,
                     AccountService,
                 ]
-            }).overrideComponent(RequestOverviewComponent, {
-                set: {
-                    template: ''
-                }
-            }).compileComponents();
+            }).overrideTemplate(RequestOverviewComponent, '')
+                .compileComponents();
         }));
 
         // synchronous beforeEach
@@ -86,11 +75,11 @@ describe('Component Tests', () => {
 
         describe('ngOnInit()', () => {
             beforeEach(() => {
-                spyOn(comp, 'registerChangeInRequests');
+                spyOn(comp, 'registerChanges');
             });
             it('should load submitted requests and register change in requests', () => {
                 comp.ngOnInit();
-                expect(comp.registerChangeInRequests).toHaveBeenCalled();
+                expect(comp.registerChanges).toHaveBeenCalled();
             });
         });
 

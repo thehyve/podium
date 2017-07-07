@@ -14,7 +14,7 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.security.CustomServerAuthenticationProvider;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +85,7 @@ public class AuthenticationIntTest {
 
     @Before
     public void setup() throws UserAccountException {
-        ManagedUserVM testUser = new ManagedUserVM();
+        ManagedUserRepresentation testUser = new ManagedUserRepresentation();
         testUser.setLogin(testUserName);
         testUser.setPassword(testPassword);
         testUser.setEmail(testEmail);
@@ -117,7 +117,7 @@ public class AuthenticationIntTest {
     @Transactional
     public void testTestUserAuthentication() throws Exception {
         // Create test user
-        ManagedUserVM userData = new ManagedUserVM();
+        ManagedUserRepresentation userData = new ManagedUserRepresentation();
         AccountResourceIntTest.setMandatoryFields(userData);
         userData.setId(null);
         userData.setLogin("joe");

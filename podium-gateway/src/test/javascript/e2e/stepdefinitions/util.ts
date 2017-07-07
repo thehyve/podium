@@ -9,6 +9,11 @@
  */
 import { Director, Persona } from '../protractor-stories/director';
 import { Promise } from 'es6-promise';
+import {
+    UserGroupAuthority,
+    OrganisationAuthorityOptions
+} from '../../../../main/webapp/app/shared/authority/authority.constants';
+import { ElementArrayFinder } from 'protractor';
 
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');
@@ -44,5 +49,50 @@ export function promiseTrue(checkResult: boolean, message: string): Promise<any>
 export function checkTextElement(element, expectedText): Promise<any> {
     return element.getText().then(function (text) {
         return promiseTrue(text == expectedText, text + " is not equal to " + expectedText);
+    })
+}
+
+export function checkInputElement(element, expectedText): Promise<any> {
+    return element.getAttribute('value').then(function (text) {
+        return promiseTrue(text == expectedText, text + " is not equal to " + expectedText);
+    })
+}
+
+export function checkCheckBox(element, expected) {
+    return element.isSelected().then(function (value) {
+        return promiseTrue(value == expected, value + " is not equal to " + expected);
+    })
+}
+
+export function roleToRoute(persona: Persona, orgShortName: string): string {
+    let roles = persona['authority'].filter((value) => {
+        return value["orgShortName"] == orgShortName
+    });
+
+    let role;
+    if (roles.length > 0) {
+        role = roles[0]['role'];
+    }
+
+    switch (role) {
+        case OrganisationAuthorityOptions.ROLE_ORGANISATION_COORDINATOR: {
+            return UserGroupAuthority.Coordinator.toString();
+        }
+        case OrganisationAuthorityOptions.ROLE_REVIEWER: {
+            return UserGroupAuthority.Reviewer.toString();
+        }
+        default: {
+            return UserGroupAuthority.Requester.toString();
+        }
+    }
+}
+
+export function copyData(data) {
+    return JSON.parse(JSON.stringify(data));
+}
+
+export function countIs(elementArray: ElementArrayFinder, expectedCount: number): Promise<any> {
+    return elementArray.count().then((count) => {
+        return promiseTrue(count == expectedCount, "expected: " + expectedCount + " elements but found: " + count);
     })
 }

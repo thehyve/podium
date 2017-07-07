@@ -7,8 +7,8 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AlertService, JhiLanguageService } from 'ng-jhipster';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AlertService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
@@ -17,7 +17,8 @@ import { RequestDetailComponent } from './detail/request-detail.component';
 @Component({
     selector: 'pdm-request-main-detail',
     templateUrl: './request-main-detail.component.html',
-    styleUrls: ['request-main-detail.scss']
+    styleUrls: ['request-main-detail.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 
 export class RequestMainDetailComponent implements OnInit {
@@ -34,12 +35,11 @@ export class RequestMainDetailComponent implements OnInit {
     public success: any;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private route: ActivatedRoute,
         private requestService: RequestService,
         private alertService: AlertService
     ) {
-        this.jhiLanguageService.setLocations(['request']);
+
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });

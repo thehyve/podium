@@ -14,7 +14,7 @@ import { LoginService } from '../login/login.service';
 import { StateStorageService } from '../auth/state-storage.service';
 
 @Component({
-    selector: 'podium-login',
+    selector: 'pdm-login',
     templateUrl: './login.component.html'
 })
 export class  PodiumLoginComponent implements OnInit, AfterViewInit {
@@ -29,7 +29,6 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
 
     constructor(
         private eventManager: EventManager,
-        private languageService: JhiLanguageService,
         private loginService: LoginService,
         private stateStorageService: StateStorageService,
         private elementRef: ElementRef,
@@ -40,7 +39,6 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.languageService.addLocation('login');
     }
 
     ngAfterViewInit() {

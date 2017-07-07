@@ -3,8 +3,6 @@
 #
 # This configuration overrides the application.yml file.
 #
-# More information on configuration properties: https://podium.github.io/common-application-properties/
-#
 # Standard Spring Boot properties.
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
@@ -86,8 +84,6 @@ server:
 
 # ===================================================================
 # Podium specific properties
-#
-# Full reference is available at: https://podium.github.io/common-application-properties/
 # ===================================================================
 
 podium:

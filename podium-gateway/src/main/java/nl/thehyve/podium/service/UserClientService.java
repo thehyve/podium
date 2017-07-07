@@ -9,18 +9,15 @@ package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
 import feign.FeignException;
-import nl.thehyve.podium.client.InternalRoleClient;
 import nl.thehyve.podium.client.InternalUserClient;
-import nl.thehyve.podium.client.OrganisationClient;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,7 +30,15 @@ public class UserClientService {
 
     @Timed
     public UserRepresentation findUserByUuid(UUID userUuid) throws URISyntaxException, FeignException {
+        log.info("Fetching user through Feign ...");
         return internalUserClient.getUser(userUuid).getBody();
+    }
+
+    @Timed
+    @Cacheable("remoteUsers")
+    public UserRepresentation findUserByUuidCached(UUID userUuid) throws URISyntaxException, FeignException {
+        log.info("Fetching user through Feign ...");
+        return findUserByUuid(userUuid);
     }
 
 }

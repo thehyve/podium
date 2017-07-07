@@ -9,10 +9,11 @@
  */
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
-import { isUndefined } from 'util';
 import { Promise } from 'es6-promise';
-import { doInOrder, promiseTrue } from './util';
+import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData, countIs } from './util';
 import { Organisation, Request } from '../data/templates';
+import { $$, browser, protractor, $ } from 'protractor';
+import { RequestOverviewStatusOption } from '../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 let { defineSupportCode } = require('cucumber');
 
 
@@ -40,7 +41,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
     });
 
-    When(/^(.*) selects request types '(.*)'$/, function (personaName, requestTypes) {
+    When(/^(.*) selects request types '(.*)'$/, function (personaName, requestTypes): Promise<any> {
         let director = this.director as Director;
         let types = requestTypes.split(", ");
 
@@ -49,7 +50,7 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    Then(/^the organisations '(.*)' can be selected$/, function (organisationNames) {
+    Then(/^the organisations '(.*)' can be selected$/, function (organisationNames): Promise<any> {
         let director = this.director as Director;
         let orgList = organisationNames.split(", ");
         let orgNames: string[] = [];
@@ -58,9 +59,7 @@ defineSupportCode(({ Given, When, Then }) => {
             orgNames.push(org["name"]);
         });
 
-        return Promise.resolve(director.getElement("organisations").locator.$$('option').count()).then((count) => {
-            return promiseTrue(count == orgNames.length, "expected " + orgNames.length + " organisations but found " + count);
-        }).then(() => {
+        return countIs(director.getElement("organisations").locator.$$('option'), orgNames.length).then(() => {
             return director.getElement("organisations").locator.$$('option').each((element) => {
                 return element.getText().then((text) => {
                     return promiseTrue(orgNames.some((item) => {
@@ -71,21 +70,385 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    Then(/^the draft is saved$/, function (callback) {
+    Then(/^the draft is saved$/, function (): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
         let persona = director.getPersona('he');
 
-        adminConsole.checkDraft(this.scenarioData, checkDraft, persona).then(callback, callback);
+        return adminConsole.getDraft(persona, this.scenarioData).then((draft) => {
+            return promiseTrue(draft['title'] == this.scenarioData['title'], this.scenarioData + ' did not match ' + draft);
+        })
+    });
 
+    Given(/^(.*) goes to the '(.*)' page for the request '(.*)' submitted to '(.*)'$/, function (personaName, pageName, requestName, orgShortName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        let request = director.getData(requestName)
+        let persona = director.getPersona(personaName);
+        let organisation = director.getData(orgShortName);
+        this.scenarioData = copyData(request); //store for next step
+
+        return login(director, persona).then(() => {
+            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), request, organisation['name']).then((sufix) => {
+                return director.goToPage(pageName, sufix['uuid'] as string)
+            })
+        });
+    });
+
+    Then(/^the request details for '(.*)' submitted to '(.*)' are shown$/, function (requestName, orgShortName): Promise<any> {
+        let director = this.director as Director;
+        let page = director.getCurrentPage();
+        let request = director.getData(requestName);
+        let organisation = director.getData(orgShortName);
+
+        let promisses = [
+            checkTextElement(page.elements['title'].locator, request['title']),
+            checkTextElement(page.elements['searchQuery'].locator, request['searchQuery']),
+            checkTextElement(page.elements['background'].locator, request['background']),
+            checkTextElement(page.elements['researchQuestion'].locator, request['research question']),
+            checkTextElement(page.elements['hypothesis'].locator, request['hypothesis']),
+            checkTextElement(page.elements['methods'].locator, request['methods']),
+            checkTextElement(page.elements['piName'].locator, request['piName']),
+            checkTextElement(page.elements['piEmail'].locator, request['piEmail']),
+            checkTextElement(page.elements['piFunction'].locator, request['piFunction']),
+            checkTextElement(page.elements['piAffiliation'].locator, request['piAffiliation']),
+            checkTextElement(page.elements['organisations'].locator, organisation['name']),
+            checkRequestTypes(organisation['requestTypes'], $$('.test-requestTypes'))
+        ];
+
+        return Promise.all(promisses);
+    });
+
+    function checkRequestTypes(requestTypes: string[], elements) {
+        return countIs(elements, requestTypes.length).then(() => {
+            return elements.each((element) => {
+                return element.$('.test-requestType-text').getText().then(function (type) {
+                    return promiseTrue(requestTypes.indexOf(type) > -1, type + " is not part of " + requestTypes);
+                })
+            })
+        })
+    }
+
+    function checkOrganisations(organisations: string[], elements, director: Director) {
+        organisations = director.getListOfData(organisations);
+        let orgNames = organisations.map((org) => {
+            return org['name']
+        });
+
+        return countIs(elements, organisations.length).then(() => {
+            return elements.each((element) => {
+                return element.getText().then(function (orgName) {
+                    return promiseTrue(orgNames.indexOf(orgName) > -1, orgName + " is not part of " + orgNames);
+                })
+            })
+        })
+    }
+
+    Then(/^the overview contains the request's '(.*)' for the requests '(.*)'(.*)$/, function (fieldNames, requestNames, altOrder): Promise<any> {
+        let director = this.director as Director;
+
+        let fields = fieldNames.split(", ");
+        let requestNamesList = requestNames.trim().split(", ");
+        let requestNamesListAltOrder = [];
+        if (altOrder.trim() != '') {
+            requestNamesListAltOrder = altOrder.trim().split(", ");
+        }
+
+        let requests: Request[] = director.getListOfData(requestNamesList);
+
+        return countIs($$('.test-' + fields[0]), requests.length).then(() => {
+            return checkTable(fields, requests, director).then(() => {
+            }, (error) => {
+                if (requestNamesListAltOrder.length == 0) {
+                    return Promise.reject(error);
+                }
+
+                let requests: Request[] = director.getListOfData(requestNamesListAltOrder);
+                fields = fieldNames.split(", ");
+                return checkTable(fields, requests, director);
+            })
+        })
+    });
+
+    function checkTable(fields: any[]|string[], requests: Request[], director: Director) {
+        return doInOrder(fields, (field) => {
+            return $$('.test-' + field).isPresent().then((present) => {
+                return promiseTrue(present, 'field ' + '.test-' + field + ' could not be found')
+            }).then(() => {
+                return $$('.test-' + field).each((element, index) => {
+                    return checkField(element, field, requests[index], director);
+                });
+            });
+        })
+    }
+
+    function checkField(element, field, request: Request, director: Director): Promise<any> {
+        if (['requestTypes', 'organisations'].indexOf(field) > -1) {
+            element = element.$$('li');
+        }
+
+        switch (field) {
+            case 'requestTypes': {
+                return checkRequestTypes(request['requestTypes'], element);
+            }
+            case 'organisations': {
+                return checkOrganisations(request['organisations'], element, director);
+            }
+            default: {
+                return checkTextElement(element, request[field]);
+            }
+        }
+    }
+
+    Given(/^'(.*)' needs revision$/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
+                "summary": "sum",
+                "description": "des"
+            });
+        })
+    });
+
+    Given(/^'(.*)' needs review$/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request);
+        })
+    });
+
+    Given(/^'(.*)' is approved$/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
+                return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request)
+            })
+        })
+    });
+
+    Given(/^'(.*)'s delivery has started/, function (requestName): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        this.scenarioData = copyData(director.getData(requestName)); //store for next step
+
+        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData(requestName), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+            return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
+                return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
+                    return adminConsole.startDelivery(director.getPersona('Request_Coordinator'), request);
+                })
+            })
+        })
+    });
+
+    When(/^(.*) revises and '(.*)s' the request$/, function (personaName, action): Promise<any> {
+        let director = this.director as Director;
+        let persona = director.getPersona(personaName);
+        let request: Request = this.scenarioData;
+
+        return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
+            "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
+            request[key] = request[key] + 'revision';
+            return director.enterText(key, request[key]);
+        }).then(() => {
+            return director.clickOn(action)
+        })
+    });
+
+    Then(/^the request has the status '(.*)'$/, function (requestState): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let persona = director.getPersona('he');
+        let orgShortName = this.scenarioData['organisations'][0];
+
+        return browser.sleep(1000).then(() => {
+            return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return promiseTrue(body['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState + '\n ' + JSON.stringify(body))
+            })
+        });
+    });
+
+    Then(/^there are the following deliveries:$/, function (expectedDeliveriesString): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let expectedDeliveries: { type: string, status: string }[] = JSON.parse(expectedDeliveriesString);
+        let persona = director.getPersona('he');
+        let orgShortName = this.scenarioData['organisations'][0];
+        let requestState = 'Delivery'
+
+        return browser.sleep(1000).then(() => {
+            return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+                return adminConsole.getDeliveries(persona, body).then((deliveries) => {
+                    return Promise.all([
+                        promiseTrue(expectedDeliveries.length == deliveries.length, 'expected ' + JSON.stringify(expectedDeliveries) + '\nbut found: ' + JSON.stringify(deliveries)),
+                        ...expectedDeliveries.map((expected) => {
+                            return promiseTrue(deliveries.some((delivery) => {
+                                return (expected['type'] == delivery['type'] && expected['status'] == delivery['status'])
+                            }), 'Could not find a matching delivery for: ' + JSON.stringify(expected) + '\nin: ' + JSON.stringify(deliveries))
+                        })
+                    ])
+                })
+            })
+        });
+    });
+
+    Then(/^the revision for '(.*)' is saved$/, function (requestName): Promise<any> {
+
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let persona = director.getPersona('he');
+        let request = director.getData(requestName);
+
+        return adminConsole.getRequest(persona, 'Revision', 'requester', request, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
+            let revisedRequest = this.scenarioData;
+            let revisionDetail = body['revisionDetail'];
+
+            return Promise.all([
+                promiseTrue(revisionDetail['title'] == revisedRequest['title'], 'title'),
+                promiseTrue(revisionDetail['searchQuery'] == revisedRequest['searchQuery'], 'searchQuery'),
+                promiseTrue(revisionDetail['background'] == revisedRequest['background'], 'background'),
+                promiseTrue(revisionDetail['researchQuestion'] == revisedRequest['research question'], 'research question'),
+                promiseTrue(revisionDetail['hypothesis'] == revisedRequest['hypothesis'], 'hypothesis'),
+                promiseTrue(revisionDetail['methods'] == revisedRequest['methods'], 'methods'),
+                promiseTrue(revisionDetail['principalInvestigator']['name'] == revisedRequest['piName'], 'piName ' + revisionDetail['piName'] + ' ' + revisedRequest['piName']),
+                promiseTrue(revisionDetail['principalInvestigator']['email'] == revisedRequest['piEmail'], 'piEmail'),
+                promiseTrue(revisionDetail['principalInvestigator']['jobTitle'] == revisedRequest['piFunction'], 'piFunction'),
+                promiseTrue(revisionDetail['principalInvestigator']['affiliation'] == revisedRequest['piAffiliation'], 'piAffiliation'),
+                promiseTrue(body['organisations'][0]['name'] == director.getData(revisedRequest['organisations'][0])['name'], 'organisations'),
+                promiseTrue(JSON.stringify(revisionDetail['requestType'].sort(alphabetically)) == JSON.stringify(revisedRequest['requestTypes'].sort(alphabetically)), 'requestTypes')
+            ])
+        })
+
+    });
+
+    When(/^(.*) sends the request for review$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('validationCheck').then(() => {
+            return director.clickOn('validate')
+        })
+    });
+
+    When(/^(.*) approves the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('approve')
+    });
+
+    When(/^(.*) closes the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('close')
+    });
+
+    When(/^(.*) starts delivery on the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('startDelivery')
+    });
+
+    When(/^(.*) rejects the request$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('reject').then(() => {
+            return Promise.all([
+                director.enterText('messageSummary', 'rejected messageSummary'),
+                director.enterText('messageDescription', 'rejected messageDescription')
+            ]).then(() => {
+                return director.clickOn('submit')
+            })
+        })
+    });
+
+    When(/^(.*) sends the request back for revision$/, function (personaName): Promise<any> {
+        let director = this.director as Director;
+
+        return director.clickOn('revision').then(() => {
+            return Promise.all([
+                director.enterText('messageSummary', 'rejected messageSummary'),
+                director.enterText('messageDescription', 'rejected messageDescription')
+            ]).then(() => {
+                return director.clickOn('submit')
+            })
+        })
+    });
+
+    Then('the request cannot be edited', function (): Promise<any> {
+        return Promise.all([
+            countIs($$('textarea'), 0),
+            countIs($$('input'), 1) //only a checkbox for validationCheck
+        ])
+    });
+
+    When(/^(.*) releases delivery '(.*)'$/, function (personaName, deliveryTypesString) {
+        let director = this.director as Director;
+        let deliveryTypes = deliveryTypesString.split(", ");
+
+        return doInOrder(deliveryTypes, (deliveryType) => {
+            return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
+                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click().then((): Promise<any> => {
+                    return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
+                })
+            })
+        })
+    });
+
+    When(/^(.*) marks released delivery '(.*)' as received$/, function (personaName, deliveryTypesString) {
+        let director = this.director as Director;
+        let deliveryTypes = deliveryTypesString.split(", ");
+
+        return doInOrder(deliveryTypes, (deliveryType) => {
+            return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
+                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click()
+            })
+        });
+    });
+
+    When(/^(.*) finalises the request$/, function (personaName) {
+        let director = this.director as Director;
+
+        return browser.waitForAngular().then(() => {
+            return director.clickOn('finalize').then(() => {
+                return director.clickOn('finalizeSubmit')
+            })
+        })
+    });
+
+    When(/^(.*) cancels delivery '(.*)'$/, function (personaName, deliveryTypesString) {
+        let director = this.director as Director;
+        let deliveryTypes = deliveryTypesString.split(", ");
+
+        return doInOrder(deliveryTypes, (deliveryType) => {
+            return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
+                return $('.test-dropdown-toggle-' + deliveryType).click().then(() => {
+                    return $('.test-dropdown-menu-' + deliveryType).$('.dropdown-item').click().then((): Promise<any> => {
+                        return Promise.all([
+                            director.enterText('messageSummary', 'cancels delivery messageSummary'),
+                            director.enterText('messageDescription', 'cancels delivery messageDescription')
+                        ]).then(() => {
+                            return director.clickOn('submit')
+                        })
+                    })
+                });
+            })
+        });
     });
 });
 
-
-function checkDraft(expected: Request, realData) {
-    if (isUndefined(realData)) {
-        return false
-    }
-    return true
+function alphabetically(a, b) {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
 }

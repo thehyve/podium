@@ -12,9 +12,10 @@ import { RequestService } from '../../shared/request/request.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { MessageService } from '../../shared/message/message.service';
 import { Message } from '../../shared/message/message.model';
+import { CompletionType } from '../../layouts/completed/completion-type';
 
 @Component({
-    selector: 'request-form-submit-dialog',
+    selector: 'pdm-request-form-submit-dialog',
     templateUrl: './request-form-submit-dialog.component.html'
 })
 export class RequestFormSubmitDialogComponent {
@@ -22,13 +23,12 @@ export class RequestFormSubmitDialogComponent {
     request: RequestBase;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
         private router: Router,
         private messageService: MessageService
     ) {
-        this.jhiLanguageService.setLocations(['request']);
+
     }
 
     clear () {
@@ -44,7 +44,7 @@ export class RequestFormSubmitDialogComponent {
             }
         }
         submittedMessage += `</ul>`;
-        this.messageService.store(new Message(submittedTitle, submittedMessage));
+        this.messageService.store(new Message(CompletionType.Request_Submit, submittedTitle, submittedMessage));
     }
 
     confirmSubmit (request: RequestBase) {

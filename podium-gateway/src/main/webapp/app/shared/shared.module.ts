@@ -9,7 +9,6 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { CookieService } from 'angular2-cookie/services/cookies.service';
 import { SessionStorageService } from 'ng2-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
@@ -32,13 +31,13 @@ import {
     PodiumLoginComponent,
     SpecialismComponent
 } from './';
-import { AttachmentService } from './attachment/attachment.service';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
+import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
 
 @NgModule({
     imports: [
@@ -52,6 +51,7 @@ import { PodiumEventMessageComponent } from './event/podium-event-message.compon
         RequestReviewPanelComponent,
         EmailValidatorDirective,
         PodiumEventMessageComponent,
+        LinkedRequestNotificationComponent,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
@@ -68,6 +68,7 @@ import { PodiumEventMessageComponent } from './event/podium-event-message.compon
         OrganisationSelectorComponent,
         RequestReviewPanelComponent,
         PodiumEventMessageComponent,
+        LinkedRequestNotificationComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
@@ -84,7 +85,6 @@ export class PodiumGatewaySharedModule {
         return {
             ngModule: PodiumGatewaySharedModule,
             providers: [
-                CookieService,
                 LoginService,
                 LoginModalService,
                 MessageService,
@@ -96,7 +96,6 @@ export class PodiumGatewaySharedModule {
                 AuthServerProvider,
                 AuthService,
                 UserService,
-                AttachmentService,
                 RequestService,
                 RequestAccessService,
                 DatePipe

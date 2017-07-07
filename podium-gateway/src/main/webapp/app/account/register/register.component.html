@@ -8,7 +8,7 @@
   ~
   -->
 
-<div>
+<div class="content-wrapper">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <h1 jhiTranslate="register.title">Registration</h1>
@@ -101,7 +101,7 @@
                     <label class="form-control-label" for="email" >E-mail</label>
                     <input type="email" class="form-control" id="email" name="email" #email="ngModel"
                            placeholder="{{'global.form.email.placeholder' | translate}}"
-                           [(ngModel)]="registerAccount.email" maxlength="100" required emailValidator>
+                           [(ngModel)]="registerAccount.email" maxlength="100" required pdmEmailValidator>
                     <div *ngIf="email.dirty && email.invalid">
                         <small class="form-text text-danger" *ngIf="email.errors.required"
                                 jhiTranslate="global.messages.validate.email.required">
@@ -198,7 +198,7 @@
                 <!--Specialism-->
                 <div class="form-group">
                     <label  class="form-control-label" for="jobTitle" >Specialism</label>
-                    <podium-specialism [(specialism)]="registerAccount.specialism"></podium-specialism>
+                    <pdm-specialism [(specialism)]="registerAccount.specialism"></pdm-specialism>
                 </div>
 
                 <br>
@@ -209,7 +209,7 @@
                     <label class="form-control-label" for="password">New password</label>
                     <input type="password" class="form-control" id="password" name="password" #password="ngModel"
                            placeholder="{{'global.form.newpassword.placeholder' | translate}}"
-                            [(ngModel)]="registerAccount.password" maxlength=1000 required passwordValidator>
+                            [(ngModel)]="registerAccount.password" maxlength=1000 required pdmPasswordValidator>
                     <div *ngIf="password.dirty && password.invalid">
                         <small class="form-text text-danger" *ngIf="password.errors.required"
                                 jhiTranslate="global.messages.validate.newpassword.required">
@@ -224,7 +224,7 @@
                             Your password cannot be longer than 1000 characters.
                         </small>
                     </div>
-                    <jhi-password-strength-bar [passwordToCheck]="registerAccount.password"></jhi-password-strength-bar>
+                    <pdm-password-strength-bar [passwordToCheck]="registerAccount.password"></pdm-password-strength-bar>
                 </div>
                 <div class="form-group">
                     <label class="form-control-label" for="confirmPassword" jhiTranslate="global.form.confirmpassword">
@@ -232,7 +232,7 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                            #confirmPasswordInput="ngModel"
                            placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
-                            [(ngModel)]="confirmPassword" maxlength=1000 required [passwordMatches]="password">
+                            [(ngModel)]="confirmPassword" maxlength=1000 required [pdmPasswordMatches]="password">
                     <div *ngIf="confirmPasswordInput.dirty && confirmPasswordInput.invalid">
                         <small class="form-text text-danger" *ngIf="confirmPasswordInput.errors.required"
                                jhiTranslate="global.messages.validate.confirmpassword.required">

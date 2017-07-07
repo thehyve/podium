@@ -1,0 +1,41 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="sidebar-nav">
+    <p class="status-header">
+        &nbsp;
+    </p>
+
+    <ul class="status-list">
+        <ng-container *ngFor="let status of statusSidebarOptions">
+            <li class="status-group" *ngIf="isFirstInGroup(status)" [ngClass]="{'collapsed-group': !toggled}">
+                <span *ngIf="toggled">
+                    {{ status.group }}
+                </span>
+            </li>
+            <li class="status-item"
+                *ngIf="includeAsOption(status.includeFor)"
+                [ngClass]="{'active': isActiveElement(status.option)}"
+                (click)="updateOverviewForStatus(status.option)">
+                <i class="material-icons"
+                   tooltip="{{status.option}}"
+                   placement="right"
+                   container="body"
+                   [isDisabled]="toggled">
+                     {{ status.icon }}
+                </i>
+                <span jhiTranslate="requestSidebar.status.{{ status.option }}"></span>
+                <span class="tag tag-default float-xs-right">
+                    {{ counts[status.option] || '0' }}
+                </span>
+            </li>
+        </ng-container>
+    </ul>
+</div>

@@ -12,13 +12,14 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PodiumGatewaySharedModule } from '../shared';
 import { requestRoute, RequestFormService, RequestFormComponent, RequestFormSubmitDialogComponent } from './';
-import { RequestOverviewService, RequestOverviewComponent } from './overview';
+import { RequestOverviewComponent } from './overview';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
 import { RequestActionToolbarComponent } from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
 import { RequestProgressBarComponent } from './main-detail/progress-bar/request-progress-bar.component';
+import { RequestStatusSidebarComponent } from '../shared/request/status-sidebar/status-sidebar.component';
 import {
-    RequestDraftModalModalComponent
+    RequestDraftDeleteModalComponent
 } from './overview/delete-request-draft-modal.component';
 import { RequestResolvePagingParams } from './overview/request-overview.route';
 import { RequestUpdateStatusDialogComponent } from '../shared/status-update/request-update-status-dialog.component';
@@ -34,18 +35,18 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     imports: [
         CommonModule,
         PodiumGatewaySharedModule,
-        NgbModule,
         RouterModule.forChild(requestRoute)
     ],
     declarations: [
         RequestFormComponent,
         RequestFormSubmitDialogComponent,
-        RequestDraftModalModalComponent,
+        RequestDraftDeleteModalComponent,
         RequestOverviewComponent,
         RequestMainDetailComponent,
         RequestDetailComponent,
         RequestActionToolbarComponent,
         RequestProgressBarComponent,
+        RequestStatusSidebarComponent,
         RequestUpdateStatusDialogComponent,
         RequestUpdateReviewDialogComponent,
         DeliveryStatusUpdateDialogComponent,
@@ -54,7 +55,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ],
     entryComponents: [
         RequestFormSubmitDialogComponent,
-        RequestDraftModalModalComponent,
+        RequestDraftDeleteModalComponent,
         RequestUpdateStatusDialogComponent,
         RequestUpdateReviewDialogComponent,
         DeliveryStatusUpdateDialogComponent,
@@ -62,7 +63,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ],
     providers: [
         RequestFormService,
-        RequestOverviewService,
         RequestResolvePagingParams,
         RequestDetailResolver,
         DeliveryService

@@ -9,7 +9,6 @@
  */
 import { PrincipalInvestigator } from './principal-investigator';
 import { RequestType } from './request-type';
-import { Attachment } from '../attachment/attachment';
 
 export class RequestDetail {
 
@@ -26,8 +25,6 @@ export class RequestDetail {
     searchQuery: string;
     combinedRequest: boolean;
     requestType: RequestType[] = [];
-
-    attachments: Attachment[];
 
     constructor() {
     }

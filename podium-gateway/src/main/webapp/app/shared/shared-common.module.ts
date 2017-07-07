@@ -9,7 +9,7 @@
  */
 import { NgModule, Sanitizer } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from 'ng2-translate';
+import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from 'ng-jhipster';
 import {
     PodiumGatewaySharedLibsModule,
@@ -18,8 +18,6 @@ import {
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
 
 export function alertServiceProvider(sanitizer: Sanitizer, translateService: TranslateService) {
     // set below to true to make alerts look like toast
@@ -30,7 +28,6 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
 @NgModule({
     imports: [
         PodiumGatewaySharedLibsModule,
-        NgbModule
     ],
     declarations: [
         FindLanguageFromKeyPipe,

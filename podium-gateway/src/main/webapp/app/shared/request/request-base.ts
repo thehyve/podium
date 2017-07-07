@@ -9,13 +9,12 @@
  */
 import { Request } from './request';
 import { RequestDetail } from './request-detail';
-import { Organisation } from '../../backoffice/modules/organisation/organisation.model';
-import { RequestStatusOptions } from './request-status/request-status.constants';
+import { RequestOverviewStatusOption } from './request-status/request-status.constants';
 import { RequestReviewProcess } from './request-review-process';
 import { PodiumEvent } from '../event/podium-event';
 import { ReviewRound } from './review-round';
 import { User } from '../user/user.model';
-import { RequestOutcome } from './request-outcome';
+import { Organisation } from '../organisation/organisation.model';
 
 export class RequestBase implements Request {
 
@@ -23,14 +22,14 @@ export class RequestBase implements Request {
     dateLastModified?: Date = new Date();
     uuid?: string;
     id?: string;
-    status?: RequestStatusOptions;
-    outcome?: RequestOutcome;
+    status?: RequestOverviewStatusOption;
     revisionDetail?: RequestDetail = new RequestDetail();
     requestDetail?: RequestDetail = new RequestDetail();
     requestReview?: RequestReviewProcess;
-    reviewRounds?: ReviewRound[];
+    reviewRound?: ReviewRound;
     organisations?: Organisation[] = [];
-    historicEvents?: PodiumEvent[];
+    latestEvent?: PodiumEvent;
+    relatedRequests?: RequestBase[] = [];
 
     requester?: User;
 

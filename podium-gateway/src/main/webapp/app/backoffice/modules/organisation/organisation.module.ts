@@ -12,48 +12,47 @@ import { PodiumGatewaySharedModule } from '../../../shared';
 import {
     OrganisationPopupService,
     OrganisationComponent,
-    OrganisationDialogComponent,
-    OrganisationDetailComponent,
     OrganisationDeleteDialogComponent,
-    OrganisationPopupComponent,
     OrganisationDeletePopupComponent,
-    OrganisationService,
     OrganisationResolvePagingParams
 } from './';
 import { OrganisationRoutingModule } from './organisation.routing';
 import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 import { RoleAssignComponent } from '../../../shared/role/role-assign/role-assign.component';
 import { RoleService } from '../../../shared/role/role.service';
 import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
-
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { Http } from '@angular/http';
+import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
+import { OrganisationService } from '../../../shared/organisation/organisation.service';
 
 @NgModule({
     imports: [
+        TranslateModule.forChild({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [Http]
+            }
+        }),
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
-        TypeaheadModule,
-        NgbModule
+        TypeaheadModule
     ],
     declarations: [
         OrganisationComponent,
-        OrganisationDetailComponent,
         OrganisationFormComponent,
-        OrganisationDialogComponent,
         OrganisationDeleteDialogComponent,
-        OrganisationPopupComponent,
         OrganisationDeletePopupComponent,
         RoleAssignComponent
     ],
     entryComponents: [
         OrganisationComponent,
         OrganisationFormComponent,
-        OrganisationDialogComponent,
-        OrganisationPopupComponent,
         OrganisationDeleteDialogComponent,
         OrganisationDeletePopupComponent,
     ],
@@ -66,7 +65,8 @@ import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
-        RouterModule
+        RouterModule,
+        TranslateModule
     ]
 })
 export class PodiumGatewayOrganisationModule {}

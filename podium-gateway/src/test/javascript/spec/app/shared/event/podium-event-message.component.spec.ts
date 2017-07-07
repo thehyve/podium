@@ -25,8 +25,9 @@ import { AccountService } from '../../../../../../main/webapp/app/shared/auth/ac
 import { RequestReviewProcess } from '../../../../../../main/webapp/app/shared/request/request-review-process';
 import {
     RequestReviewStatusOptions,
-    RequestStatusOptions
+    RequestStatusOptions, RequestOverviewStatusOption
 } from '../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
+import { PodiumTestModule } from '../../../test.module';
 
 describe('PodiumEventMessageComponent (templateUrl)', () => {
     let comp: PodiumEventMessageComponent;
@@ -37,6 +38,7 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [PodiumTestModule],
             providers: [
                 BaseRequestOptions,
                 MockBackend,
@@ -47,22 +49,11 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
                 {
                     provide: Principal,
                     useClass: MockPrincipal
-                },
-                {
-                    provide: Http,
-                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backendInstance, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
                 }
             ],
             declarations: [PodiumEventMessageComponent], // declare the test component
-        }).overrideComponent(PodiumEventMessageComponent, {
-            set: {
-                template: ''
-            }
-        }).compileComponents();
-
+        }).overrideTemplate(PodiumEventMessageComponent, '')
+            .compileComponents();
     }));
 
     let getDummyRequest = (): RequestBase => {
@@ -70,11 +61,10 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
         let statusChangeEvent = new PodiumEvent();
         let request = new RequestBase();
         request.requestDetail = new RequestDetail();
-        request.historicEvents = [];
+        request.latestEvent = undefined;
 
-        request.status = RequestStatusOptions.Review;
+        request.status = RequestOverviewStatusOption.Revision;
         request.requestReview = new RequestReviewProcess();
-        request.requestReview.status = RequestReviewStatusOptions.Revision;
 
         revisionEvent.eventDate = new Date();
         revisionEvent.eventType = 'Status_Change';
@@ -94,8 +84,7 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
             targetStatus: 'Review'
         };
 
-        request.historicEvents.push(statusChangeEvent);
-        request.historicEvents.push(revisionEvent);
+        request.latestEvent = revisionEvent;
 
         request.requester = new User();
         request.requester.uuid = 'johndoeuuid';
@@ -132,7 +121,7 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
             fixture.detectChanges(); // initial binding
 
             expect(comp.findLastHistoricReviewMessageEventForCurrentStatus).toHaveBeenCalled();
-            expect(comp.lastEvent).toEqual(request.historicEvents[1]);
+            expect(comp.lastEvent).toEqual(request.latestEvent);
         });
 
     });

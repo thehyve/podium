@@ -1,0 +1,32 @@
+/*!
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
+
+
+.notification-wrapper {
+    margin: 5px 0;
+    border-radius: 2px;
+
+    .material-icons {
+        font-size: 32px;
+        margin-right: 15px;
+        vertical-align: inherit;
+        float: left;
+    }
+
+    .alert {
+        align-items: center;
+        display: flex;
+    }
+
+    .message-text-container {
+        display: block;
+        float: left;
+    }
+}

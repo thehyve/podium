@@ -22,18 +22,17 @@ $link-color: #ccc;
 
 .jh-navbar {
     background-color: #353d47;
-    padding: .2em 1em;
+    padding: .8em 1em;
     border-radius: 0;
 
-    .profile-image {
-        margin: -10px 0px;
-        height: 40px;
-        width: 40px;
-        border-radius: 50%;
+    .dropdown-item {
+        &.active,
+        &.active:focus,
+        &.active:hover {
+            background-color: #353d47;
+        }
     }
-    .dropdown-item.active, .dropdown-item.active:focus, .dropdown-item.active:hover {
-        background-color: #353d47;
-    }
+
     .dropdown-toggle::after {
         margin-left: 0.15em;
     }
@@ -43,7 +42,7 @@ $link-color: #ccc;
             margin-left: 1.5rem;
         }
 
-        .nav-item > * {
+        .nav-item {
             color: $link-color;
         }
 
@@ -63,6 +62,10 @@ $link-color: #ccc;
         &:hover {
             color: #fff;
         }
+    }
+
+    .account-name {
+        margin-right: 5px;
     }
 }
 

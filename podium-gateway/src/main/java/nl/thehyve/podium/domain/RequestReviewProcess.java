@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import lombok.Data;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -16,20 +17,19 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "request_review_process")
+@Table(name = "request_review_process",
+    indexes = {
+        @Index(name = "request_review_process_status_key", columnList = "status"),
+        @Index(name = "request_review_process_decision_key", columnList = "status,decision"),
+    }
+)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "requestreviewprocess")
+@Data
 public class RequestReviewProcess extends AbstractAuditingEntity {
 
     @Id
@@ -57,37 +57,5 @@ public class RequestReviewProcess extends AbstractAuditingEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "decision", nullable = false)
     private ReviewProcessOutcome decision = ReviewProcessOutcome.None;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
-
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    public RequestReviewStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RequestReviewStatus status) {
-        this.status = status;
-    }
-
-    public ReviewProcessOutcome getDecision() {
-        return decision;
-    }
-
-    public void setDecision(ReviewProcessOutcome decision) {
-        this.decision = decision;
-    }
 
 }

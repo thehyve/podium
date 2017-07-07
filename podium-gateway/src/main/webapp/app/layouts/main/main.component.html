@@ -8,7 +8,7 @@
   ~
   -->
 
-<jhi-page-ribbon></jhi-page-ribbon>
+<pdm-page-ribbon></pdm-page-ribbon>
 <div>
     <router-outlet name="navbar"></router-outlet>
     <pdm-breadcrumb #parent>
@@ -20,9 +20,9 @@
         </nav>
     </pdm-breadcrumb>
 </div>
-<div class="container-fluid">
+<div>
     <template ngbModalContainer></template>
-    <div class="card-wrapper">
+    <div>
         <router-outlet></router-outlet>
         <router-outlet name="popup"></router-outlet>
     </div>

@@ -29,7 +29,7 @@ class OrganisationsConfigurationPage {
 
     constructor() {
         this.name = "organisation configuration";
-        this.url = "#/organisation/configuration";
+        this.url = "#/organisation/management";
         this.elements = {
             ...OrganisationsOverviewCommon(),
         }

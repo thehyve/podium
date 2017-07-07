@@ -18,7 +18,6 @@ import initPersonaDictionary = require('../personas/persona-dictionary');
 let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
 
 export class AdminConsole {
-    public token: string;
 
     constructor() {
     }
@@ -79,6 +78,36 @@ export class AdminConsole {
         });
     }
 
+    public getUsers() {
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/users/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public getUser(persona: Persona) {
+        return this.authenticate().then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
     public unlockUser(persona: Persona) {
         let token;
 
@@ -134,9 +163,31 @@ export class AdminConsole {
         });
     }
 
-    public checkDraft(expectedDraft: Request, check, user) {
+    public getOrganisations() {
+        return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
 
-        return this.authenticate(user).then((body) => {
+    public getOrganisation(organisation: Organisation) {
+        return this.getOrganisations().then((organisations) => {
+            return organisations.filter(function (value) {
+                return value["shortName"] == organisation["shortName"];
+            })[0];
+        })
+    }
+
+    public getDrafts(persona: Persona) {
+        return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
                 url: browser.baseUrl + 'api/requests/drafts',
@@ -145,15 +196,124 @@ export class AdminConsole {
                 }
             };
             return request(options).then((body) => {
-                let drafts = parseJSON(body);
+                return parseJSON(body);
+            })
+        })
+    }
 
-                let draft = drafts.filter(function (value) {
-                    return value["requestDetail"]["title"] == expectedDraft["title"];
-                })[0];
+    public getDraft(persona: Persona, draft: Request) {
+        return this.getDrafts(persona).then((drafts) => {
+            return drafts.filter(function (value) {
+                return value["requestDetail"]["title"] == draft["title"];
+            })[0];
+        });
+    }
 
-                if (!check(expectedDraft, draft)) {
-                    return JSON.stringify(draft) + " did not match for " + JSON.stringify(expectedDraft)
+    public getRequests(persona: Persona, status, role: string) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'api/requests/status/' + status + '/' + role,
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    /*
+     *  status ['Review', 'Delivery']
+     *  role ['requester', ]
+     */
+    public getRequest(persona: Persona, status, role: string, draft: Request, organisationName: string) {
+        return this.getRequests(persona, status, role).then((drafts) => {
+            return drafts.filter((value) => {
+                return value["requestDetail"]["title"] == draft["title"] && value['organisations'][0]['name'] == organisationName;
+            })[0];
+        });
+    }
+
+    public validateRequest(persona: Persona, draft: Request) {
+        return this.requestGetAction(persona, draft, 'validate');
+    }
+
+    public approveRequest(persona: Persona, draft: Request) {
+        return this.requestGetAction(persona, draft, 'approve');
+    }
+
+    public startDelivery(persona: Persona, draft: Request) {
+        return this.requestGetAction(persona, draft, 'startDelivery');
+    }
+
+    public getDeliveries(persona: Persona, draft: Request) {
+        return this.requestGetAction(persona, draft, 'deliveries');
+    }
+
+    private requestGetAction(persona: Persona, draft: Request, action: string) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'api/requests/' + draft['uuid'] + '/' + action,
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public rejectRequest(persona: Persona, draft: Request, note: { 'description': string, 'summary': string }) {
+        return this.requestPostAction(persona, draft, 'reject', note);
+    }
+
+
+    public requestRevision(persona: Persona, draft: Request, note: { 'description': string, 'summary': string }) {
+        return this.requestPostAction(persona, draft, 'requestRevision', note);
+    }
+
+    private requestPostAction(persona: Persona, draft: Request, action: string, note: { 'description': string, 'summary': string }) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/requests/' + draft['uuid'] + '/' + action,
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(note)
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public releaseDeliveries(persona: Persona, delivery: Request, note: { 'description': string, 'summary': string }) {
+        return this.requestPostAction(persona, delivery, 'release', note);
+    }
+
+    public receiveDeliveries(persona: Persona, delivery: Request, note: { 'description': string, 'summary': string }) {
+        return this.requestPostAction(persona, delivery, 'received', note);
+    }
+
+    private deliveriesPostAction(persona: Persona, delivery: {}, action: string, note: { 'description': string, 'summary': string }) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'POST',
+                url: browser.baseUrl + 'api/requests/' + delivery['historicEvents'][0]['data']['requestUuid'] + '/deliveries/' + delivery['uuid'] + '/' + action,
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(note)
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
             })
         })
     }
@@ -231,16 +391,14 @@ export class AdminConsole {
         });
     }
 
-    public createRequest(request: Request) {
-        let that = this;
-        return new Promise(function (resolve, reject) {
-            if (false) {
-                // resolve()
-            } else {
-                console.log("creating a Request is not implemented yet");
-                reject("createRequest failed")
-            }
-        });
+    public createRequest(persona: Persona, request: Request) {
+        return this.newDraft(persona).then((draft) => {
+            return this.constructRequest(persona, draft, request).then((draft) => {
+                return this.saveDraft(persona, draft).then((draft) => {
+                    return this.submitDraft(persona, draft);
+                })
+            })
+        })
     }
 
     public cleanDB() {
@@ -259,7 +417,7 @@ export class AdminConsole {
         });
     }
 
-    assignRole(orgShortName: string, role: string, users: [string]) {
+    public assignRole(orgShortName: string, role: string, users: [string]) {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'POST',
@@ -284,7 +442,7 @@ export class AdminConsole {
         });
     }
 
-    getOrgUUID(orgShortName: string) {
+    public getOrgUUID(orgShortName: string) {
         return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
@@ -307,6 +465,14 @@ export class AdminConsole {
         });
     }
 
+    public createDraft(persona: Persona, request: Request) {
+        return this.newDraft(persona).then((draft) => {
+            return this.constructRequest(persona, draft, request).then((draft) => {
+                return this.saveDraft(persona, draft)
+            })
+        })
+    }
+
     public newDraft(persona: Persona) {
         return this.authenticate(persona).then((body) => {
             let options = {
@@ -323,10 +489,105 @@ export class AdminConsole {
         })
     }
 
-    public saveDraft(draft) {
-
+    public saveDraft(persona: Persona, draft) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'PUT',
+                url: browser.baseUrl + 'api/requests/drafts',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(draft)
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            });
+        })
     }
 
+    public submitDraft(persona: Persona, draft) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'api/requests/drafts/' + draft['uuid'] + '/submit',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            });
+        })
+    }
+
+    public getAccount(persona: Persona) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/account',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            });
+        })
+    }
+
+    public getAvailableOrganisations(persona: Persona) {
+        return this.authenticate(persona).then((body) => {
+            let options = {
+                method: 'GET',
+                url: browser.baseUrl + 'podiumuaa/api/organisations/available',
+                headers: {
+                    'Authorization': 'Bearer ' + parseJSON(body).access_token,
+                    'Content-Type': 'application/json'
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
+    public constructRequest(persona: Persona, draft, request: Request) {
+        return this.getAccount(persona).then((requester) => {
+            draft['requester'] = requester;
+            return this.getAvailableOrganisations(persona).then((availableOrganisations: {}[]) => {
+                return availableOrganisations.filter((org) => {
+                    return request['organisations'].indexOf(org['shortName']) > -1;
+                })
+            }).then((result) => {
+                draft['organisations'] = result;
+                setRequestDetails(draft, request);
+                return draft
+            });
+        })
+    }
+}
+
+function setRequestDetails(draft, request: Request) {
+    let requestDetails = draft['requestDetail'];
+    let principalInvestigator = requestDetails['principalInvestigator'];
+
+    requestDetails['title'] = request['title'];
+    requestDetails['background'] = request['background'];
+    requestDetails['researchQuestion'] = request['research question'];
+    requestDetails['hypothesis'] = request['hypothesis'];
+    requestDetails['methods'] = request['methods'];
+    requestDetails['relatedRequestNumber'] = request['related request number'];
+    requestDetails['searchQuery'] = request['searchQuery'];
+    requestDetails['requestType'] = request['requestTypes'];
+    requestDetails['combinedRequest'] = request['combinedRequest'];
+    //principal Investigator
+    principalInvestigator['name'] = request['piName'];
+    principalInvestigator['email'] = request['piEmail'];
+    principalInvestigator['jobTitle'] = request['piFunction'];
+    principalInvestigator['affiliation'] = request['piAffiliation'];
 }
 
 function parseJSON(string: string) {

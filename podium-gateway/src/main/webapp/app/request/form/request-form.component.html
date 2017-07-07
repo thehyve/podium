@@ -8,7 +8,7 @@
   ~
   -->
 
-<div class="row" *ngIf="requestBase">
+<div class="content-wrapper" *ngIf="requestBase">
     <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
         <h1 *ngIf="requestBase.status == 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
         <h1 *ngIf="requestBase.status != 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
@@ -17,7 +17,7 @@
     <div class="card-container"
         [ngClass]="{
             'col-md-6 offset-md-3': !isInRevision,
-            'col-md-12 nested-request-form': isInRevision
+            'nested-request-form': isInRevision
         }">
 
         <form #requestForm="ngForm" class="form" role="form">
@@ -59,7 +59,7 @@
 
                 <!-- Request type -->
                 <div class="form-group">
-                    <label for="requestTypes"  jhiTranslate="request.form.requestType.label">Request Type(s)*</label>
+                    <label for="requestTypes" jhiTranslate="request.form.requestType.label">Request Type(s)*</label>
                     <div class="checkbox-group">
                         <div *ngFor="let requestType of requestTypeOptions | enumKeys">
                             <label>
@@ -78,26 +78,11 @@
                         organisation selection.</small>
                 </div>
 
-                <!-- Linked Request-->
-                <div class="form-group">
-                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
-                    <div class="checkbox-group">
-                        <label for="combinedRequest">
-                            <input type="checkbox"
-                                   name="combinedRequest"
-                                   id="combinedRequest"
-                                   [disabled]="isInRevision"
-                                   [(ngModel)]="requestDetail.combinedRequest"
-                                   value="true" disabled />
-                            <span jhiTranslate="request.form.isLinked.placeHolder">Is a linked request</span>
-                        </label>
-                    </div>
-                </div>
-
                 <!-- Organisations -->
                 <div class="form-group" *ngIf="!isInRevision">
                     <label>Organisations</label>
                     <pdm-organisation-selector
+                        [form]="requestForm"
                         [(organisations)]="requestBase.organisations"
                         [(requestTypes)]="requestDetail.requestType"
                         (organisationChange)="updateRequestOrganisations($event)">
@@ -108,7 +93,20 @@
                     <ul>
                         <li *ngFor="let organisation of requestBase.organisations">{{organisation.name}}</li>
                     </ul>
+                </div>
 
+                <!-- Linked Request-->
+                <div class="form-group">
+                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
+                    <div class="checkbox-group">
+                        <input type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
+                               required [disabled]="!hasSelectedMultipleOrganisations() || isInRevision">
+                        <span jhiTranslate="request.form.isLinked.yes">Yes</span>
+                        &nbsp;
+                        <input type="radio" [value]="false" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
+                               required [disabled]="!hasSelectedMultipleOrganisations() || isInRevision">
+                        <span jhiTranslate="request.form.isLinked.no">No</span>
+                    </div>
                 </div>
 
                 <!-- Search Query -->
@@ -144,7 +142,7 @@
                     <label for="background" jhiTranslate="request.form.background.label">Background</label>
                     <textarea type="text" class="form-control" name="background" id="background" #background="ngModel"
                               autocomplete="off" placeholder="{{'request.form.background.placeholder' | translate}}"
-                              required minlength="1" maxlength="2000" rows="5" [wordLengthValidator]="750"
+                              required minlength="1" maxlength="2000" rows="5" [pdmWordLengthValidator]="750"
                               [(ngModel)]="requestDetail.background">
                 </textarea>
 
@@ -175,7 +173,7 @@
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
                               required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
-                              [wordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
+                              [pdmWordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
                     </textarea>
 
                     <div *ngIf="researchQuestion.dirty && researchQuestion.invalid">
@@ -205,7 +203,7 @@
                     <textarea type="text" class="form-control" name="hypothesis" id="hypothesis"
                               autocomplete="off" placeholder="{{'request.form.hypothesis.placeholder' | translate}}"
                               required minlength="1" maxlength="5000" rows="7" #hypothesis="ngModel"
-                              [(ngModel)]="requestDetail.hypothesis" [wordLengthValidator]="300">
+                              [(ngModel)]="requestDetail.hypothesis" [pdmWordLengthValidator]="300">
                 </textarea>
 
                     <div *ngIf="hypothesis.dirty && hypothesis.invalid">
@@ -235,7 +233,7 @@
                     <textarea type="text" class="form-control" name="methods" id="methods"
                               autocomplete="off" placeholder="{{'request.form.methods.placeholder' | translate}}"
                               required minlength="1" maxlength="10000" rows="7" #methods="ngModel"
-                              [(ngModel)]="requestDetail.methods" [wordLengthValidator]="500">
+                              [(ngModel)]="requestDetail.methods" [pdmWordLengthValidator]="500">
                 </textarea>
 
                     <div *ngIf="methods.dirty && methods.invalid">
@@ -321,7 +319,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off"  #piEmail="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.email.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.email" emailValidator>
+                                   [(ngModel)]="requestDetail.principalInvestigator.email" pdmEmailValidator>
 
                             <div *ngIf="piEmail.dirty && piEmail.invalid">
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.required"
@@ -408,14 +406,6 @@
                         </div>
                     </div>
                 </div>
-
-                <h3 jhiTranslate="request.form.header.additionalInformation">Additional Information</h3>
-
-                <!-- Attachments -->
-                <button type="button" class="btn btn-default"
-                        [routerLink]="['/', { outlets: { popup: 'upload'} }]"
-                        replaceUrl="false" >Upload attachments
-                </button>
 
                 <pdm-request-action-toolbar
                     [form]="requestForm"

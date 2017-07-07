@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.service.dto.OrganisationDTO;
+import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
@@ -84,8 +84,8 @@ public class OrganisationServiceIntTest {
     public void testFetchAllOrganisations() throws URISyntaxException, JsonProcessingException {
         log.info("Testing with mock port {}.", wireMockRule.port());
 
-        List<OrganisationDTO> mockOrganisations = new ArrayList<>();
-        OrganisationDTO mockOrganisation = new OrganisationDTO();
+        List<OrganisationRepresentation> mockOrganisations = new ArrayList<>();
+        OrganisationRepresentation mockOrganisation = new OrganisationRepresentation();
         mockOrganisation.setName("Test organisation");
         mockOrganisations.add(mockOrganisation);
 
@@ -95,7 +95,7 @@ public class OrganisationServiceIntTest {
                         .withHeader("Content-Type", APPLICATION_JSON_VALUE)
                         .withBody(mapper.writeValueAsString(mockOrganisations))));
 
-        List<OrganisationDTO> organisations = organisationService.findAllOrganisations();
+        List<OrganisationRepresentation> organisations = organisationService.findAllOrganisations();
         assertThat(organisations).isNotEmpty();
 
         verify(1, getRequestedFor(urlEqualTo("/api/organisations/all")));

@@ -12,7 +12,6 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@a
 import { UserRouteAccessService } from '../../../shared';
 import { PaginationUtil } from 'ng-jhipster';
 import { OrganisationComponent } from './organisation.component';
-import { OrganisationDetailComponent } from './organisation-detail.component';
 import { OrganisationDeletePopupComponent } from './organisation-delete-dialog.component';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 
@@ -23,7 +22,8 @@ export class OrganisationResolvePagingParams implements Resolve<any> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
+        let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'shortName,asc';
+
         return {
             page: this.paginationUtil.parsePage(page),
             predicate: this.paginationUtil.parsePredicate(sort),
@@ -64,16 +64,6 @@ export const organisationRoute: Routes = [
             pageTitle: 'podiumGatewayApp.organisation.home.title'
         },
         outlet: 'popup',
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'detail/:uuid',
-        component: OrganisationDetailComponent,
-        data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title',
-            breadcrumb: 'organisation details'
-        },
         canActivate: [UserRouteAccessService]
     },
     {

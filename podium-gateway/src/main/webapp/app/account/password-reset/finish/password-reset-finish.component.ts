@@ -7,17 +7,17 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
+import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
 import { PasswordResetFinish } from './password-reset-finish.service';
 
 @Component({
-    selector: 'jhi-password-reset-finish',
+    selector: 'pdm-password-reset-finish',
     templateUrl: './password-reset-finish.component.html'
 })
-export class PasswordResetFinishComponent implements OnInit {
+export class PasswordResetFinishComponent implements OnInit, AfterViewInit {
     confirmPassword: string;
     error: string;
     keyMissing: boolean;
@@ -27,15 +27,13 @@ export class PasswordResetFinishComponent implements OnInit {
     key: string;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private passwordResetFinish: PasswordResetFinish,
         private route: ActivatedRoute,
         private elementRef: ElementRef,
         private renderer: Renderer,
         private router: Router
     ) {
-        this.jhiLanguageService.setLocations(['reset']);
-    }
+           }
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {

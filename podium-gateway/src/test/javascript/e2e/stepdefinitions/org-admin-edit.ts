@@ -27,9 +27,9 @@ defineSupportCode(({ Given, When, Then }) => {
         let personaNameList = targetNames.split(", ");
         let roleNameList = roleNames.split(", ");
 
-        return director.clickOn("permissions tab").then(() => {
+        return director.clickOn("permissionsTab").then(() => {
             return doInOrder(personaNameList, (userNames) => {
-                return browser.sleep(delay).then(() => {
+                return browser.waitForAngular().then(() => {
                     return addRole(director, userNames, director.getData("menuRoleMapping")[roleNameList.pop()]);
                 });
             });
@@ -90,10 +90,12 @@ function checkRole(director: Director, adminConsole: AdminConsole, user: string,
 }
 
 function addRole(director: Director, targetName: string, role: string): Promise<any> {
-    return director.enterText("user selection", director.getPersona(targetName)["firstName"], protractor.Key.ENTER).then(() => {
-        return director.getElement("user selection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
+    return director.enterText("userSelection", director.getPersona(targetName)["firstName"], protractor.Key.ENTER).then(() => {
+        return director.getElement("userSelection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
             () => {
-                return director.clickOn("add")
+                return browser.sleep(500).then(() => {
+                    return director.clickOn("add")
+                })
             })
     })
 }

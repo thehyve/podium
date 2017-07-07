@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { PdmConfigurationService } from './configuration.service';
 
@@ -15,7 +15,7 @@ import { PdmConfigurationService } from './configuration.service';
     selector: 'pdm-configuration',
     templateUrl: './configuration.component.html'
 })
-export class PdmConfigurationComponent {
+export class PdmConfigurationComponent implements OnInit {
     allConfiguration: any = null;
     configuration: any = null;
     configKeys: any[];
@@ -24,10 +24,9 @@ export class PdmConfigurationComponent {
     reverse: boolean;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private configurationService: PdmConfigurationService
     ) {
-        this.jhiLanguageService.setLocations(['configuration']);
+
         this.configKeys = [];
         this.filter = '';
         this.orderProp = 'prefix';

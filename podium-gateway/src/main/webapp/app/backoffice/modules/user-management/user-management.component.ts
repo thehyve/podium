@@ -8,71 +8,88 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Response } from '@angular/http';
+import { Response, Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EventManager, PaginationUtil, ParseLinks, AlertService, JhiLanguageService } from 'ng-jhipster';
-import { PaginationConfig } from '../../../blocks/config/uib-pagination.config';
+import { EventManager, ParseLinks, AlertService } from 'ng-jhipster';
 import { Principal } from '../../../shared/auth/principal.service';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
-import { ITEMS_PER_PAGE } from '../../../shared/constants/pagination.constants';
+import { Overview } from '../../../shared/overview/overview';
+import { OverviewService } from '../../../shared/overview/overview.service';
+import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
+import { Subscription } from 'rxjs';
+import { UserGroupAuthority } from '../../../shared/authority/authority.constants';
+
+let overviewConfig: OverviewServiceConfig = {
+    resourceUrl: 'podiumuaa/api/users',
+    resourceSearchUrl: 'podiumuaa/api/_search/users'
+};
 
 @Component({
-    selector: 'jhi-user-mgmt',
-    templateUrl: './user-management.component.html'
+    selector: 'pdm-user-mgmt',
+    templateUrl: './user-management.component.html',
+    providers: [
+        {
+            provide: OverviewService,
+            useFactory: (http: Http) => {
+                return new OverviewService(http, overviewConfig);
+            },
+            deps: [
+                Http
+            ]
+        }
+    ]
 })
-export class UserMgmtComponent implements OnInit, OnDestroy {
+export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     currentAccount: any;
     users: User[];
     error: any;
     success: any;
-    routeData: any;
-    links: any;
-    totalItems: any;
-    queryCount: any;
-    itemsPerPage: any;
-    page: any;
-    predicate: any;
-    previousPage: any;
-    reverse: any;
+    overviewSubscription: Subscription;
+    eventSubscription: Subscription;
+    userGroupAuthority: UserGroupAuthority;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService,
         private userService: UserService,
         private parseLinks: ParseLinks,
         private alertService: AlertService,
         private principal: Principal,
         private eventManager: EventManager,
-        private paginationUtil: PaginationUtil,
-        private paginationConfig: PaginationConfig,
-        private activatedRoute: ActivatedRoute,
-        private router: Router
+        private overviewService: OverviewService,
+        protected activatedRoute: ActivatedRoute,
+        protected router: Router
     ) {
-        this.itemsPerPage = ITEMS_PER_PAGE;
-        this.routeData = this.activatedRoute.data.subscribe(data => {
-            this.page = data['pagingParams'].page;
-            this.previousPage = data['pagingParams'].page;
-            this.reverse = data['pagingParams'].ascending;
-            this.predicate = data['pagingParams'].predicate;
-        });
-        this.jhiLanguageService.setLocations(['user-management']);
+        super(router, activatedRoute);
+
+        this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
+            (res: Response) => this.processAvailableUsers(res.json(), res.headers)
+        );
     }
 
     ngOnInit() {
+        this.userGroupAuthority = this.activatedRoute.snapshot.data['userAuthorityGroup'];
         this.principal.identity().then((account) => {
             this.currentAccount = account;
-            this.loadAll();
+            this.fetchUsers();
             this.registerChangeInUsers();
         });
     }
 
     ngOnDestroy() {
-        this.routeData.unsubscribe();
+        if (this.eventSubscription) {
+            this.eventManager.destroy(this.eventSubscription);
+        }
+
+        if (this.overviewSubscription) {
+            this.overviewSubscription.unsubscribe();
+        }
     }
 
     registerChangeInUsers() {
-        this.eventManager.subscribe('userListModification', (response) => this.loadAll());
+        this.eventSubscription = this.eventManager.subscribe('userListModification', () => {
+            this.fetchUsers();
+        });
     }
 
     unlock (user) {
@@ -81,7 +98,7 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
                 if (response.status === 200) {
                     this.error = null;
                     this.success = 'OK';
-                    this.loadAll();
+                    this.fetchUsers();
                 } else {
                     this.success = null;
                     this.error = 'ERROR';
@@ -89,53 +106,24 @@ export class UserMgmtComponent implements OnInit, OnDestroy {
             });
     }
 
-    loadAll () {
-        this.userService.query({
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()}).subscribe(
-            (res: Response) => this.onSuccess(res.json(), res.headers),
-            (res: Response) => this.onError(res.json())
-        );
+    transitionUsers() {
+        this.transition();
+        this.fetchUsers();
+    }
+
+    fetchUsers() {
+        this.overviewService.findUsersForOverview(this.userGroupAuthority, this.getPageParams())
+            .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
+    }
+
+    processAvailableUsers (users: User[], headers) {
+        this.links = this.parseLinks.parse(headers.get('link'));
+        this.totalItems = headers.get('x-total-count');
+        this.queryCount = this.totalItems;
+        this.users = users;
     }
 
     trackIdentity (index, item: User) {
         return item.id;
-    }
-
-    sort () {
-        let result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'id') {
-            result.push('id');
-        }
-        return result;
-    }
-
-    loadPage (page: number) {
-        if (page !== this.previousPage) {
-            this.previousPage = page;
-            this.transition();
-        }
-    }
-
-    transition () {
-        this.router.navigate(['backoffice/user-management'], { queryParams:
-                {
-                    page: this.page,
-                    sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-                }
-        });
-        this.loadAll();
-    }
-
-    private onSuccess(data, headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
-        this.queryCount = this.totalItems;
-        this.users = data;
-    }
-
-    private onError(error) {
-        this.alertService.error(error.error, error.message, null);
     }
 }

@@ -8,8 +8,9 @@
   ~
   -->
 
-<div>
-    <h2><span jhiTranslate="podiumGatewayApp.organisation.home.title">Organisations</span>
+<div class="content-wrapper">
+    <h2>
+        <span jhiTranslate="podiumGatewayApp.organisation.home.title">Organisations</span>
         <button class="btn btn-primary float-xs-right create-organisation"
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                 [routerLink]="['./new']">
@@ -29,12 +30,14 @@
                            name="currentSearch"
                            placeholder="{{ 'podiumGatewayApp.organisation.home.search' | translate }}">
                     <span class="input-group-btn width-min">
-                        <button class="btn btn-info" (click)="search(currentSearch)">
+                        <button class="btn btn-info"
+                                (click)="search(currentSearch, transitionOrganisations.bind(this))"
+                                [disabled]="!currentSearch.length">
                             <span class="material-icons">search</span>
                         </button>
                     </span>
                     <span class="input-group-btn width-min" *ngIf="currentSearch">
-                        <button class="btn btn-info" (click)="clear()">
+                        <button class="btn btn-info" (click)="clear(transitionOrganisations.bind(this))">
                             <span class="material-icons">clear</span>
                         </button>
                     </span>
@@ -46,7 +49,7 @@
     <div class="table-responsive" *ngIf="organisations">
         <table class="table table-striped">
             <thead>
-				<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+				<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transitionOrganisations.bind(this)">
 					<th jhiSortBy="shortName">
                         <span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
                         <span class="fa fa-sort"></span>
@@ -66,24 +69,18 @@
                     </div>
                 </td>
             </tr>
-            <tr *ngFor="let organisation of organisations; trackBy: trackUuid">
+            <tr [ngClass]="'test-org-row-' + organisation.shortName" *ngFor="let organisation of organisations; trackBy: trackUuid">
                 <td class="test-shortName">{{organisation.shortName}}</td>
                 <td class="test-name">{{organisation.name}}</td>
                 <td class="text-xs-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['./detail', organisation.uuid ]"
-                                class="btn btn-info btn-sm">
-                            <span class="material-icons">assignment</span>
-                            <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <button type="submit"
                                 [routerLink]="['./edit', organisation.uuid ]"
-                                class="btn btn-primary btn-sm">
+                                class="btn btn-primary btn-sm test-edit-btn">
                             <span class="material-icons">edit</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
-                        <button type="button" class="btn btn-sm"
+                        <button type="button" class="btn btn-sm test-activation-btn"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [ngClass]="{'btn-warning': !organisation.activated, 'btn-success': organisation.activated}"
                                 (click)="toggleActivated (organisation)">
@@ -99,8 +96,7 @@
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ organisation.uuid + '/delete'} }]"
-                                replaceUrl="true"
-                                class="btn btn-danger btn-sm">
+                                class="btn btn-danger btn-sm test-delete-btn">
                             <span class="material-icons">remove_circle_outline</span>
                             <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
@@ -112,6 +108,7 @@
     </div>
     <div class="text-xs-center" *ngIf="organisations && organisations.length">
         <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page, transitionOrganisations.bind(this))"></ngb-pagination>
     </div>
+    <template ngbModalContainer></template>
 </div>

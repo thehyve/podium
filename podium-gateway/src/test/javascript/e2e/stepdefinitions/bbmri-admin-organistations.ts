@@ -9,10 +9,10 @@
  */
 import { Organisation } from '../data/templates';
 import { Promise } from 'es6-promise';
-import { $$ } from 'protractor';
+import { $$, $, browser } from 'protractor';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
-import { login, doInOrder, promiseTrue, checkTextElement } from './util';
+import { login, doInOrder, promiseTrue, checkInputElement, checkCheckBox } from './util';
 import { isUndefined } from 'util';
 let { defineSupportCode } = require('cucumber');
 
@@ -72,14 +72,23 @@ defineSupportCode(({ Given, When, Then }) => {
         });
     });
 
-    Then(/^the organisation details page contains '(.*)'s data$/, function (organisationShortName): Promise<any> {
+    Then(/^the organisation details page contains '(.*)'s data$/, function (orgShortName): Promise<any> {
         let director = this.director as Director;
-        let organisation: Organisation = director.getData(organisationShortName);
+        let organisation: Organisation = director.getData(orgShortName);
         let page = director.getCurrentPage();
 
+        let org = director.getData(orgShortName);
+
         let promisses = [
-            checkTextElement(page.elements['shortName'].locator, organisation['shortName']),
-            checkTextElement(page.elements['name'].locator, organisation['name'])
+            checkInputElement(page.elements['shortName'].locator, organisation['shortName']),
+            checkInputElement(page.elements['name'].locator, organisation['name']),
+            ...['Data', 'Images', 'Material'].map((type) => {
+                if (org['requestTypes'].indexOf(type) > -1) {
+                    return checkCheckBox(page.elements[type].locator, true)
+                } else {
+                    return checkCheckBox(page.elements[type].locator, false)
+                }
+            })
         ];
 
         return Promise.all(promisses)
@@ -105,6 +114,24 @@ defineSupportCode(({ Given, When, Then }) => {
         let organisation: Organisation = director.getData(organisationShortName);
 
         return adminConsole.checkOrganisation(organisation, checkOrg);
+    });
+
+    When(/^(.*) deactivates the organisation '(.*)'$/, function (personaName, organisationShortName) {
+        let director = this.director as Director;
+        this.scenarioData = director.getData(organisationShortName); //store it for the next step
+
+        return $('.test-org-row-' + organisationShortName).$('.test-activation-btn').click()
+    });
+
+    Then('the organisation is Deactivated', function () {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        browser.sleep(500).then(() => {
+            return adminConsole.getOrganisation(this.scenarioData).then((body) => {
+                return promiseTrue(body["activated"] == false, this.scenarioData['name'] + ' is not deactivated \n' + JSON.stringify(body))
+            })
+        })
     });
 });
 

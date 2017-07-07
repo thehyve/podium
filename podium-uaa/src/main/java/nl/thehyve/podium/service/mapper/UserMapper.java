@@ -13,13 +13,14 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.decorators.UserMapperDecorator;
 import nl.thehyve.podium.service.util.UuidMapper;
-import nl.thehyve.podium.web.rest.vm.ManagedUserVM;
+import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -37,36 +38,40 @@ public interface UserMapper {
     UserRepresentation userToUserDTO(User user);
 
     @Mapping(target = "password", ignore = true)
-    ManagedUserVM userToManagedUserVM(User user);
+    ManagedUserRepresentation userToManagedUserVM(User user);
 
-    @IterableMapping(elementTargetType = ManagedUserVM.class)
-    List<ManagedUserVM> usersToManagedUserVMs(List<User> user);
+    @IterableMapping(elementTargetType = ManagedUserRepresentation.class)
+    List<ManagedUserRepresentation> usersToManagedUserVMs(List<User> user);
 
     @IterableMapping(elementTargetType = UserRepresentation.class)
     List<UserRepresentation> usersToUserDTOs(List<User> users);
 
-    @Mapping(target = "createdBy", ignore = true)
-    @Mapping(target = "createdDate", ignore = true)
-    @Mapping(target = "lastModifiedBy", ignore = true)
-    @Mapping(target = "lastModifiedDate", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "activationKey", ignore = true)
-    @Mapping(target = "resetKey", ignore = true)
-    @Mapping(target = "resetDate", ignore = true)
-    @Mapping(target = "password", ignore = true)
+    @Mappings({
+        @Mapping(target = "createdBy", ignore = true),
+        @Mapping(target = "createdDate", ignore = true),
+        @Mapping(target = "lastModifiedBy", ignore = true),
+        @Mapping(target = "lastModifiedDate", ignore = true),
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "activationKey", ignore = true),
+        @Mapping(target = "resetKey", ignore = true),
+        @Mapping(target = "resetDate", ignore = true),
+        @Mapping(target = "password", ignore = true)
+    })
     User userDTOToUser(UserRepresentation userDTO);
 
     List<User> userDTOsToUsers(List<UserRepresentation> userDTOs);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "password", ignore = true)
-    @Mapping(target = "email", ignore = true)
-    @Mapping(target = "login", ignore = true)
-    @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "emailVerified", ignore = true)
-    @Mapping(target = "adminVerified", ignore = true)
-    @Mapping(target = "accountLocked", ignore = true)
-    @Mapping(target = "authorities", ignore = true)
+    @Mappings({
+        @Mapping(target = "id", ignore = true),
+        @Mapping(target = "password", ignore = true),
+        @Mapping(target = "email", ignore = true),
+        @Mapping(target = "login", ignore = true),
+        @Mapping(target = "deleted", ignore = true),
+        @Mapping(target = "emailVerified", ignore = true),
+        @Mapping(target = "adminVerified", ignore = true),
+        @Mapping(target = "accountLocked", ignore = true),
+        @Mapping(target = "authorities", ignore = true)
+    })
     // Copy user properties, except login, password, email, activated.
     User safeUpdateUserWithUserDTO(UserRepresentation userDTO, @MappingTarget User user);
 

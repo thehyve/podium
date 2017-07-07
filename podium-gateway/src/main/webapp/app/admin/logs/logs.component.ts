@@ -13,7 +13,7 @@ import { Log } from './log.model';
 import { LogsService } from './logs.service';
 
 @Component({
-    selector: 'jhi-logs',
+    selector: 'pdm-logs',
     templateUrl: './logs.component.html',
 })
 export class LogsComponent implements OnInit {
@@ -24,13 +24,12 @@ export class LogsComponent implements OnInit {
     reverse: boolean;
 
     constructor (
-        private jhiLanguageService: JhiLanguageService,
         private logsService: LogsService
     ) {
         this.filter = '';
         this.orderProp = 'name';
         this.reverse = false;
-        this.jhiLanguageService.setLocations(['logs']);
+
     }
 
     ngOnInit() {

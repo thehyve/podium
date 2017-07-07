@@ -16,6 +16,7 @@ import { RequestReviewFeedback } from './request-review-feedback';
 import { PodiumEventMessage } from '../event/podium-event-message';
 import { User } from '../user/user.model';
 import { ReviewRound } from './review-round';
+import { HttpHelper } from '../util/http-helper';
 
 @Injectable()
 export class RequestService {
@@ -35,7 +36,7 @@ export class RequestService {
     }
 
     findDrafts(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
             return res;
         });
@@ -49,50 +50,49 @@ export class RequestService {
     }
 
     findMyReviewRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/requester`, options).map((res: Response) => {
             return res;
         });
     }
 
     findMyApprovedRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Approved/requester`, options).map((res: Response) => {
             return res;
         });
     }
 
     findMyDeliveryRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Delivery/requester`, options).map((res: Response) => {
             return res;
         });
     }
 
-
     findCoordinatorReviewRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
 
     findCoordinatorApprovedRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Approved/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
 
     findCoordinatorDeliveryRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Delivery/coordinator`, options).map((res: Response) => {
             return res;
         });
     }
 
     findAllReviewerRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/reviewer`, options).map((res: Response) => {
             return res;
         });
@@ -131,7 +131,7 @@ export class RequestService {
     }
 
     findSubmittedRequests(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
             return res;
         });
@@ -186,7 +186,7 @@ export class RequestService {
     }
 
     search(req?: any): Observable<Response> {
-        let options = this.createRequestOption(req);
+        let options = HttpHelper.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);
     }
 
@@ -194,42 +194,8 @@ export class RequestService {
         this.onRequestUpdate.next(requestBase);
     }
 
-    private createRequestOption(req?: any): BaseRequestOptions {
-        let options: BaseRequestOptions = new BaseRequestOptions();
-        if (req) {
-            let params: URLSearchParams = new URLSearchParams();
-            params.set('page', req.page);
-            params.set('size', req.size);
-            if (req.sort) {
-                params.paramsMap.set('sort', req.sort);
-            }
-            params.set('query', req.query);
-
-            options.search = params;
-        }
-        return options;
-    }
-
-    getLastReviewFeedbacks(reviewRounds: ReviewRound[]): RequestReviewFeedback[] {
-        // get the latest start date of review rounds
-        let lastReviewRoundDate = new Date(Math.max.apply(null, reviewRounds.map((reviewRound) => {
-            return new Date(reviewRound.startDate);
-        })));
-
-        // get the latest round
-        let lastReviewRound = reviewRounds.find((reviewRound) => {
-            return new Date(reviewRound.startDate).getTime() === lastReviewRoundDate.getTime();
-        });
-
-        // return feedback of last review round
-        if (lastReviewRound && lastReviewRound.endDate == null) {
-            return lastReviewRound.reviewFeedback;
-        }
-        return null;
-    }
-
     getLastReviewFeedbackByUser(request: RequestBase, user: User): RequestReviewFeedback {
-        let lastFeedbackList = this.getLastReviewFeedbacks(request.reviewRounds);
+        let lastFeedbackList = request.reviewRound.reviewFeedback;
         let lastFeedback: RequestReviewFeedback;
         if (lastFeedbackList) {
             lastFeedback = lastFeedbackList.find((feedback) => {

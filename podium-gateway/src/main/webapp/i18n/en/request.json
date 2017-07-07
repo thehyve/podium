@@ -6,7 +6,8 @@
             "cancel": "Cancel",
             "details": "Details",
             "edit": "Edit",
-            "delete": "Delete"
+            "delete": "Delete",
+            "new": "New request"
         },
         "toolbar": {
             "cancel": "Cancel",
@@ -29,6 +30,7 @@
             "approve": "Approve",
             "adviseApprove": "Advise approve",
             "adviseReject": "Advise reject",
+            "deliveryHelper": "In case irregularities have been found with the delivery, please contact the organisation coordinator.",
             "checks": {
                 "validation": "I hereby validate this request. Upon sending for review all organisation reviewers will be notified.",
                 "canFinalize": "Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
@@ -72,6 +74,7 @@
         },
         "detail": {
             "pageTitle": "Request Details",
+            "pageHeader": "Request {{requestId}} to {{ organisation }}",
             "title": "Title",
             "background": "Background",
             "researchQuestion": "Research Question",
@@ -82,7 +85,8 @@
             "searchQuery": "Search Query",
             "isLinked": "Linked Request",
             "requestTypes": "Request Types",
-            "organisations": "Organisations"
+            "organisations": "Organisations",
+            "organisation": "Organisation"
         },
         "review": {
             "title": "Review",
@@ -118,6 +122,12 @@
             "pageHeaderCoordinator": "Organisation requests",
             "pageHeaderReviewer": "My reviews"
         },
+        "relatedRequests": "Related requests",
+        "relatedRequest": {
+            "id": "Id",
+            "organisation": "Organisation",
+            "type": "Type"
+        },
         "form": {
             "header": {
                 "new": "New Request",
@@ -139,7 +149,9 @@
             },
             "isLinked": {
                 "label": "Linked Request",
-                "placeHolder": "Is a linked request"
+                "placeHolder": "Is a linked request",
+                "yes": "Yes",
+                "no": "No"
             },
             "background": {
                 "label": "Background",
@@ -262,6 +274,12 @@
                     }
                 }
             }
+        },
+        "linkedRequest": {
+            "title": "Linked request",
+            "researcher": "This is a linked request composed of different data types from different organizations from the same patient selection.",
+            "organisationCoordinator": "This is a linked request, the other organization(s) have also received a request, please contact the other collaborating organization(s) to discuss the handling of the request.",
+            "reviewer": "This is a linked request composed of different data types from different organizations from the same patient selection."
         }
 
     }

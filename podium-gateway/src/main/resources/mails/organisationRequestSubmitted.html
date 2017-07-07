@@ -29,6 +29,23 @@
                 <span th:text="@{|${baseUrl}/#/requests/detail/${request.getUuid()}|}"></span>
             </a>
         </p>
+
+        <p th:if="${request.relatedRequests.size() > 0}">
+            <span th:text="#{email.organisationRequestSubmitted.relatedRequests}">
+            </span>
+            <br />
+            <!-- List of organisations -->
+			<ul>
+				<li th:each="relatedRequest: ${request.getRelatedRequests()}">
+					<span th:text="${relatedRequest.getId()}"></span>
+                    <span> - </span>
+                    <span th:each="organisation: ${relatedRequest.getOrganisations()}">
+						[<span th:text="${organisation.getShortName()}"></span>]
+                        <span th:text="${organisation.getName()}"></span>
+					</span>
+				</li>
+			</ul>
+        </p>
         <br />
 
         <p>

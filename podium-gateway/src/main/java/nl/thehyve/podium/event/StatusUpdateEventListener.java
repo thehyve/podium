@@ -1,6 +1,7 @@
 package nl.thehyve.podium.event;
 
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.util.Arrays;
 
 @Component
 public class StatusUpdateEventListener {
@@ -38,28 +41,28 @@ public class StatusUpdateEventListener {
     @TransactionalEventListener
     public void notifyUsersOfStatusUpdateEvent(StatusUpdateEvent event) {
         log.info("Notification handler for event: {}", event);
-        if (event.getSourceStatus() == RequestStatus.Draft &&
-            event.getTargetStatus() == RequestStatus.Review) {
+        if (event.getSourceStatus() == OverviewStatus.Draft &&
+            event.getTargetStatus() == OverviewStatus.Validation) {
             // sent draft submission notification to organisation coordinators for this request
             notificationService.submissionNotificationToCoordinators(event.getRequestUuid());
-        } else if (event.getTargetStatus() == RequestReviewStatus.Review) {
+        } else if (event.getTargetStatus() == OverviewStatus.Review) {
             // Send review requested notification to all reviewers for this request
             notificationService.reviewNotificationToReviewers(event.getRequestUuid());
-        } else if (event.getTargetStatus() == RequestReviewStatus.Closed) {
+        } else if (event.getSourceStatus() == OverviewStatus.Review && event.getTargetStatus() != OverviewStatus.Revision) {
             // Send rejection email if rejected; send approval mail if approved
             notificationService.reviewProcessClosedNotificationToRequester(event.getRequestUuid());
-        } else if (event.getTargetStatus() == RequestReviewStatus.Revision) {
+        } else if (event.getTargetStatus() == OverviewStatus.Revision) {
             notificationService.revisionNotificationToRequester(event.getRequestUuid());
-        } else if (event.getSourceStatus() == RequestReviewStatus.Revision &&
-            event.getTargetStatus() == RequestReviewStatus.Validation) {
+        } else if (event.getSourceStatus() == OverviewStatus.Revision &&
+            event.getTargetStatus() == OverviewStatus.Validation) {
             // Send revision submitted emails to all organisation coordinators for this request
             notificationService.revisionNotificationToCoordinators(event.getRequestUuid());
         } else if (event.getSourceStatus() == DeliveryStatus.Preparation &&
             event.getTargetStatus() == DeliveryStatus.Released) {
             // Send delivery released email to the requester for this delivery
             notificationService.deliveryReleasedNotificationToRequester(event.getRequestUuid(), event.getDeliveryProcessUuid());
-        } else if ((event.getSourceStatus() == RequestStatus.Approved || event.getSourceStatus() == RequestStatus.Delivery) &&
-            event.getTargetStatus() == RequestStatus.Closed) {
+        } else if (Arrays.asList(OverviewStatus.Closed_Approved, OverviewStatus.Delivered, OverviewStatus.Partially_Delivered,
+            OverviewStatus.Cancelled).contains(event.getTargetStatus())) {
             // Send request closed email to requester
             notificationService.requestClosedNotificationToRequester(event.getRequestUuid());
         } else if (event.getTargetStatus() == DeliveryStatus.Closed) {
