@@ -29,8 +29,8 @@ class NewRequestsPage {
     }
 
     constructor() {
-        this.name = "new requests";
-        this.url = "#/requests/new";
+        this.name = "edit requests";
+        this.url = "#/requests/edit";
         this.elements = {
             ...requestEditForm()
         }

@@ -24,6 +24,7 @@ class RequestDetails {
     public at() {
         let that = this;
         return browser.getCurrentUrl().then(function (currentUrl) {
+            console.log(browser.baseUrl + that.url, currentUrl);
             return (browser.baseUrl + that.url) == currentUrl;
         })
     }

@@ -64,7 +64,7 @@ export function checkCheckBox(element, expected) {
     })
 }
 
-export function roleToRoute(persona: Persona, orgShortName: string): string {
+export function roleToRoute(persona: Persona, orgShortName?: string): string {
     let roles = persona['authority'].filter((value) => {
         return value["orgShortName"] == orgShortName
     });

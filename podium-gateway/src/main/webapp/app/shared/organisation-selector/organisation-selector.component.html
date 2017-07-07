@@ -10,7 +10,8 @@
 <select id="organisations" name="organisations"
         class="form-control" [(ngModel)]="selectedOrganisationUuids"
         (change)="onChange()" required multiple #orgModel="ngModel">
-    <option *ngFor="let organisationOption of organisationOptions" [value]="organisationOption.uuid">
+    <option [ngClass]="'test-option-' + organisationOption.shortName"
+            *ngFor="let organisationOption of organisationOptions" [value]="organisationOption.uuid">
         {{organisationOption.name}}
     </option>
 </select>

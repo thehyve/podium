@@ -127,16 +127,17 @@ export class Director {
 
     public at(pageName: string) {
         let page = this.setCurrentPageTo(pageName);
-        browser.waitForAngular('make sure the page is loaded before doing a check');
-        return Promise.resolve(page.at()).then(function (v) {
-            return new Promise(function (resolve, reject) {
-                if (v) {
-                    resolve();
-                }
-                else {
-                    reject(Error('not at page: ' + pageName));
-                }
-            })
+        return browser.waitForAngular('make sure the page is loaded before doing a check').then(() => {
+            return Promise.resolve(page.at()).then(function (v) {
+                return new Promise(function (resolve, reject) {
+                    if (v) {
+                        resolve();
+                    }
+                    else {
+                        reject(Error('not at page: ' + pageName));
+                    }
+                })
+            });
         });
     };
 
