@@ -17,7 +17,7 @@ If you find a bug in the source code or a mistake in the documentation, you can 
 Depending on the desired functionality you can request a new feature by submitting a ticket to the [Podium](https://github.com/thehyve/podium/issues). If you
 would like to implement a new feature then consider what kind of change it is:
 
-* **Major Changes** that you wish to contribute to the project should be discussed first. Please open a ticket which clearly states that it is a feature request in the title and explain clearly what you want to achieve in the description, and the MatchMiner team will discuss with you what should be done in that ticket. You can then start working on a Pull Request.
+* **Major Changes** that you wish to contribute to the project should be discussed first. Please open a ticket which clearly states that it is a feature request in the title and explain clearly what you want to achieve in the description, and the Podium team will discuss with you what should be done in that ticket. You can then start working on a Pull Request.
 * **Small Changes** can be proposed without any discussion. Open up a ticket which clearly states that it is a feature request in the title. Explain your change in the description, and you can propose a Pull Request straight away.
 
 ## <a name="submit"></a> Submission Guidelines
@@ -35,7 +35,7 @@ chances of your issue being dealt with quickly:
 * **Reproduce the error** - an unambiguous set of steps to reproduce the error. If you have a JavaScript error, maybe you can provide a live example with [JSFiddle](http://jsfiddle.net/)?
 * **Related issues** - has a similar issue been reported before?
 * **Suggest a Fix** - if you can't fix the bug yourself, perhaps you can point to what might be causing the problem (line of code or commit)
-* **MatchMiner Version(s)** - is it a regression?
+* **Podium Version(s)** - is it a regression?
 * **Browsers and Operating System** - is this a problem with all browsers or only IE?
 
 Click [here](https://github.com/thehyve/podium/issues/new) to here to open a bug issue for a Podium issue. This comes with a pre-filled template. For feature requests and enquiries you can use [this template][feature-template].
@@ -73,7 +73,7 @@ Before you submit your pull request consider the following guidelines:
 * In GitHub, send a pull request to `thehyve/podium:master`.
 * If we suggest changes then
   * Make the required updates.
-  * Re-run the MatchMiner UI or API tests on the project and ensure tests are still passing.
+  * Re-run the Podium unit and E2E tests on the project and ensure tests are still passing.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
