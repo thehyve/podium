@@ -1,0 +1,20 @@
+# Simple alert that is triggered by ERROR logs
+es_host: podium-elasticsearch-1
+es_port: 9200
+name: log_error
+type: frequency
+index: logstash-*
+# link to a kibana dashboard with correct time settings
+use_kibana4_dashboard: "http://localhost:5601/app/kibana#/dashboard/logs-dashboard"
+num_events: 1
+timeframe:
+    minutes: 1
+filter:
+- query:
+    query_string:
+      query: "level:ERROR"
+alert:
+- "debug"
+- "gitter"
+# send a webhook to given URL (for example use a testing website like http://webhook.site/)
+gitter_webhook_url: "http://WEBHOOK_URL"

@@ -1,0 +1,23 @@
+{
+      "title": "Alerts Sent",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "rule_name",
+        "match_body.instance_name",
+        "match_body.level",
+        "match_body.logger_name",
+        "match_body.message",
+        "match_body.stack_trace",
+        "match_body.kibana_link",
+        "_id"
+      ],
+      "sort": [
+        "match_body.logger_name",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"elastalert_status\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"elastalert_status\",\"key\":\"alert_sent\",\"negate\":false,\"value\":\"true\"},\"query\":{\"match\":{\"alert_sent\":{\"query\":true,\"type\":\"phrase\"}}}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+      }
+}

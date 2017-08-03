@@ -1,0 +1,17 @@
+{
+      "title": "Timers (without metrics)",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "metric_name",
+        "metric_mean_rate"
+      ],
+      "sort": [
+        "metric_mean_rate",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"logstash-*\",\"query\":{\"query_string\":{\"query\":\"* -metric_name=com.codahale.metrics.*\",\"analyze_wildcard\":true}},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"logstash-*\",\"key\":\"metric_type\",\"negate\":false,\"value\":\"TIMER\"},\"query\":{\"match\":{\"metric_type\":{\"query\":\"TIMER\",\"type\":\"phrase\"}}}}],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+      }
+}

@@ -51,12 +51,21 @@ spring:
             hibernate.cache.hazelcast.use_lite_member: true
     data:
         elasticsearch:
-            cluster-name:
             cluster-nodes:
+            cluster-name:
             properties:
                 path:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
+
+    # Zipkin traces communication between microservices
+    zipkin:
+        base-url: http://localhost:9411
+        enabled: false
+        locator:
+            discovery:
+                enabled: true
+
     mail:
         host: localhost
         port: 25
@@ -100,11 +109,11 @@ podium:
             enabled: false
             endpoint: /prometheusMetrics
         logs: # Reports Dropwizard metrics in the logs
-            enabled: false
+            enabled: true
             reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
-            enabled: false
+            enabled: true
             host: localhost
             port: 5000
             queueSize: 512

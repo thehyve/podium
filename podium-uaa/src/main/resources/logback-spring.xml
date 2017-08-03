@@ -66,6 +66,9 @@
         <resetJUL>true</resetJUL>
     </contextListener>
 
+    <!-- https://logback.qos.ch/manual/configuration.html#shutdownHook and https://jira.qos.ch/browse/LOGBACK-1090 -->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
     <springProfile name="dev">
         <property name="default_level" value="DEBUG" />
     </springProfile>

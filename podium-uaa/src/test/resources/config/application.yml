@@ -53,6 +53,14 @@ spring:
                   logs: target/elasticsearch/log
                   data: target/elasticsearch/data
                 cluster.routing.allocation.disk.watermark.high: 99%
+
+    # Zipkin traces communication between microservices
+    zipkin:
+        enabled: false
+
+    sleuth:
+        enabled: false
+
     mail:
         host: localhost
     mvc:

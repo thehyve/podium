@@ -31,7 +31,6 @@
         <appender-ref ref="FILE"/>
     </appender>
 -->
-
     <logger name="nl.thehyve.podium" level="#logback.loglevel#"/>
 
     <logger name="javax.activation" level="WARN"/>
@@ -69,6 +68,9 @@
     <logger name="org.flowable.engine.impl.db" level="WARN"/>
     <logger name="org.flowable.engine.impl.interceptor" level="WARN"/>
     <logger name="org.flowable.spring.SpringTransactionInterceptor" level="WARN" />
+
+    <!-- https://logback.qos.ch/manual/configuration.html#shutdownHook and https://jira.qos.ch/browse/LOGBACK-1090 -->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
