@@ -58,8 +58,6 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     private Set<RequestRepresentation> relatedRequests;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "outcome", nullable = false)
     private RequestOutcome outcome = RequestOutcome.None;
 
     @Override
