@@ -56,7 +56,7 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     private ReviewRoundRepresentation reviewRound;
 
     private Set<RequestRepresentation> relatedRequests;
-    
+
     private RequestOutcome outcome = RequestOutcome.None;
 
     @Override
