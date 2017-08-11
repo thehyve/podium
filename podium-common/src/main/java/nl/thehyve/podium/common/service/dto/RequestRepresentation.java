@@ -61,6 +61,6 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     }
 
     // Here because otherwise an id of 1500 gets turned into 1,500 in some places
-    public String getStringId() { return Long.toString(this.id); }
+    public String generateStringId() { return Long.toString(this.id); }
 
 }
