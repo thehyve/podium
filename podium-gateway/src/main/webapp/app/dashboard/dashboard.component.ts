@@ -8,9 +8,7 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { Principal } from '../shared';
-import { User } from '../shared/user/user.model';
-import { JhiLanguageService } from 'ng-jhipster';
+import { RedirectService } from '../shared/redirect/redirect.service';
 
 @Component({
     selector: 'pdm-dashboard',
@@ -21,17 +19,14 @@ import { JhiLanguageService } from 'ng-jhipster';
 
 })
 export class DashboardComponent implements OnInit {
-    user: User;
 
     constructor(
-        private principal: Principal
+        private redirectService: RedirectService
     ) {
 
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
-            this.user = account;
-        });
+        this.redirectService.navigateToLandingPageForRole();
     }
 }

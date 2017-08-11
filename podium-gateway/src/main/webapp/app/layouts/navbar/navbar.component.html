@@ -23,13 +23,6 @@
     <div class="collapse navbar-toggleable-md float-lg-right" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed"
          *ngIf="isAuthenticated()">
         <ul class="nav navbar-nav float-lg-right">
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                <a class="nav-link" routerLink="/dashboard" (click)="collapseNavbar()">
-                    <i class="material-icons">dashboard</i>
-                    <span class="hidden-sm-down" jhiTranslate="global.menu.home">Home</span>
-                </a>
-            </li>
-
             <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
                 *pdmHasAnyAuthority="'ROLE_RESEARCHER'">
                 <a class="nav-link" routerLink="/requests/my-requests">

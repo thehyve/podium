@@ -38,6 +38,7 @@ import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
+import { RedirectService } from './redirect/redirect.service';
 
 @NgModule({
     imports: [
@@ -98,7 +99,8 @@ export class PodiumGatewaySharedModule {
                 UserService,
                 RequestService,
                 RequestAccessService,
-                DatePipe
+                DatePipe,
+                RedirectService
             ]
         };
     }

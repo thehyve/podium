@@ -53,6 +53,12 @@ function convertToAuthorityMap(authorities: ReadonlyArray<Authority>): { [token:
     return result;
 }
 
+export enum PodiumAuthorityOptions {
+    ROLE_PODIUM_ADMIN   = <any>'ROLE_PODIUM_ADMIN',
+    ROLE_BBMRI_ADMIN    = <any>'ROLE_BBMRI_ADMIN',
+    ROLE_RESEARCHER     = <any>'ROLE_RESEARCHER'
+}
+
 export enum OrganisationAuthorityOptions {
     ROLE_ORGANISATION_ADMIN         = <any>'ROLE_ORGANISATION_ADMIN',
     ROLE_ORGANISATION_COORDINATOR   = <any>'ROLE_ORGANISATION_COORDINATOR',
