@@ -67,8 +67,20 @@ export class SpecialismComponent implements OnInit, AfterContentInit {
             {value: 'Urology', display: 'Urology'},
             {value: 'Neurology', display: 'Neurology'},
             {value: 'Endocrinology', display: 'Endocrinology'},
-            {value: 'Other', display: '-- Other --'}
         ];
+        this.specialismOptions.sort((optionA, optionB) => {
+                const nameA = optionA.value.toUpperCase(); // ignore upper and lowercase
+                const nameB = optionB.value.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                // values must be equal
+                return 0;
+        });
+        this.specialismOptions.push({value: 'Other', display: '-- Other --'})
     }
 
 }
