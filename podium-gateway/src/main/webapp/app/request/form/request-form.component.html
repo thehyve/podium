@@ -59,7 +59,12 @@
 
                 <!-- Request type -->
                 <div class="form-group">
-                    <label for="requestTypes" jhiTranslate="request.form.requestType.label">Request Type(s)*</label>
+                    <label for="requestTypes" jhiTranslate="request.form.requestType.label">
+                        Request Type(s)*
+                    </label>
+                    <span tooltip="{{'request.form.requestType.tooltip' | translate }}">
+                        <i class="material-icons">info_outline</i>
+                    </span>
                     <div class="checkbox-group">
                         <div *ngFor="let requestType of requestTypeOptions | enumKeys">
                             <label>
@@ -79,25 +84,36 @@
                 </div>
 
                 <!-- Organisations -->
-                <div class="form-group" *ngIf="!isInRevision">
-                    <label>Organisations</label>
-                    <pdm-organisation-selector
-                        [form]="requestForm"
-                        [(organisations)]="requestBase.organisations"
-                        [(requestTypes)]="requestDetail.requestType"
-                        (organisationChange)="updateRequestOrganisations($event)">
-                    </pdm-organisation-selector>
-                </div>
-                <div class="form-group" *ngIf="isInRevision">
-                    <label>Organisations</label>
-                    <ul>
-                        <li *ngFor="let organisation of requestBase.organisations">{{organisation.name}}</li>
-                    </ul>
+                <div class="form-group">
+                    <label jhiTranslate="request.form.organisations.label">
+                        Organisations
+                    </label>
+                    <span tooltip="{{'request.form.organisations.tooltip' | translate }}">
+                        <i class="material-icons">info_outline</i>
+                    </span>
+
+                    <div *ngIf="!isInRevision">
+                        <pdm-organisation-selector
+                            [form]="requestForm"
+                            [(organisations)]="requestBase.organisations"
+                            [(requestTypes)]="requestDetail.requestType"
+                            (organisationChange)="updateRequestOrganisations($event)">
+                        </pdm-organisation-selector>
+                    </div>
+
+                    <div *ngIf="isInRevision">
+                        <ul>
+                            <li *ngFor="let organisation of requestBase.organisations">{{organisation.name}}</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- Linked Request-->
                 <div class="form-group">
                     <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
+                    <span tooltip="{{'request.form.isLinked.tooltip' | translate }}">
+                        <i class="material-icons">info_outline</i>
+                    </span>
                     <div class="checkbox-group" *ngIf="!isInRevision">
                         <input type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
                                required [disabled]="!hasSelectedMultipleOrganisations()">
@@ -115,7 +131,7 @@
                 <!-- Search Query -->
                 <div class="form-group">
                     <label for="methods"
-                           jhiTranslate="request.form.searchQuery.label">Search Query</label>
+                           jhiTranslate="request.form.searchQuery.label">Search Criteria</label>
                     <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
                               autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
                               required minlength="1" maxlength="500" rows="4" #searchQuery="ngModel"
@@ -137,8 +153,14 @@
                         </small>
                     </div>
                 </div>
-
-                <h3 jhiTranslate="request.form.header.researchProposal">Research Proposal</h3>
+                <h3>
+                    <span jhiTranslate="request.form.header.researchProposal">
+                        Research Proposal
+                    </span>
+                    <span tooltip="{{'request.form.header.researchProposalTooltip' | translate }}">
+                        <i class="material-icons">info_outline</i>
+                    </span>
+                </h3>
 
                 <!-- Background -->
                 <div class="form-group">
