@@ -50,7 +50,7 @@ public class MailService extends AbstractMailService {
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestSubmitted", context);
-            String subject = messageSource.getMessage("email.organisationRequestSubmitted.title", new Object[]{request.getStringId()}, locale);
+            String subject = messageSource.getMessage("email.organisationRequestSubmitted.title", new Object[]{request.generateStringId()}, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -73,7 +73,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(USER, requester);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("requests", organisationRequests);
-        String requestList = organisationRequests.stream().map(RequestRepresentation::getStringId).collect(Collectors.joining(", "));
+        String requestList = organisationRequests.stream().map(RequestRepresentation::generateStringId).collect(Collectors.joining(", "));
         context.setVariable("requestList", requestList);
         String content = templateEngine.process("requesterRequestSubmitted", context);
         String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", new Object[]{requestList}, locale);
@@ -98,7 +98,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", requestRepresentation);
         String content = templateEngine.process("requesterRequestRejected", context);
-        String subject = messageSource.getMessage("email.requesterRequestRejected.title", new Object[]{requestRepresentation.getStringId()}, locale);
+        String subject = messageSource.getMessage("email.requesterRequestRejected.title", new Object[]{requestRepresentation.generateStringId()}, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -124,7 +124,7 @@ public class MailService extends AbstractMailService {
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestRevisionSubmitted", context);
-            String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", new Object[]{request.getStringId()}, locale);
+            String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", new Object[]{request.generateStringId()}, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -144,7 +144,7 @@ public class MailService extends AbstractMailService {
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("reviewerRequestReview", context);
-            String subject = messageSource.getMessage("email.reviewerRequestReview.title", new Object[]{request.getStringId()}, locale);
+            String subject = messageSource.getMessage("email.reviewerRequestReview.title", new Object[]{request.generateStringId()}, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -165,7 +165,7 @@ public class MailService extends AbstractMailService {
             context.setVariable("request", request);
             context.setVariable("reviewer", reviewer);
             String content = templateEngine.process("organisationRequestReviewed", context);
-            String subject = messageSource.getMessage("email.organisationRequestReviewed.title", new Object[]{request.getStringId()}, locale);
+            String subject = messageSource.getMessage("email.organisationRequestReviewed.title", new Object[]{request.generateStringId()}, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -189,7 +189,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestApproved", context);
-        String subject = messageSource.getMessage("email.requesterRequestApproved.title", new Object[]{request.getStringId()}, locale);
+        String subject = messageSource.getMessage("email.requesterRequestApproved.title", new Object[]{request.generateStringId()}, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -212,7 +212,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestRevision", context);
-        String subject = messageSource.getMessage("email.requesterRequestRevision.title", new Object[]{request.getStringId()}, locale);
+        String subject = messageSource.getMessage("email.requesterRequestRevision.title", new Object[]{request.generateStringId()}, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -285,7 +285,7 @@ public class MailService extends AbstractMailService {
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestClosed", context);
-        String[] args = new String[] {request.getStringId(), request.getOrganisations().get(0).getName()};
+        String[] args = new String[] {request.generateStringId(), request.getOrganisations().get(0).getName()};
         String subject = messageSource.getMessage("email.requesterRequestClosed.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
