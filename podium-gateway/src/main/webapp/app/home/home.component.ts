@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
         this.registerAuthenticationSuccess();
 
         if (this.isAuthenticated()) {
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/']);
         }
 
         this.deviceInfo = this.deviceService.getDeviceInfo();
