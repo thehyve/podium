@@ -150,7 +150,7 @@
                 "tooltip": "Based on your request type(s) selection, only organisations will be shown that have the requested request type(s) available."
             },
             "organisations": {
-                "label": "Organisations",
+                "label": "Organisation(s)",
                 "tooltip": "Select one or more organisation(s) to submit your request to. By holding the control button you can select multiple organisations."
             },
             "isLinked": {
