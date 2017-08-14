@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.requesterRequestApproved.title}">BBMRI Podium Request Portal &ndash; request has been approved</title>
+        <title th:text="#{email.requesterRequestApproved.title(${request.generateStringId()})}">BBMRI Podium Request Portal &ndash; request has been approved</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>

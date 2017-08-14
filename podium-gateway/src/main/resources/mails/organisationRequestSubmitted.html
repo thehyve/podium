@@ -8,7 +8,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.organisationRequestSubmitted.title}">BBMRI Podium Request Portal &ndash; request has been submitted</title>
+        <title th:text="#{email.organisationRequestSubmitted.title(${request.generateStringId()})}">BBMRI Podium Request Portal &ndash; {0} request has been submitted</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
