@@ -234,7 +234,7 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryReleased", context);
-        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName(), request.generateStringId()};
         String subject = messageSource.getMessage("email.requesterDeliveryReleased.title", args, locale);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
@@ -264,7 +264,7 @@ public class MailService extends AbstractMailService {
             context.setVariable("deliveryProcess", deliveryProcess);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationDeliveryReceived", context);
-            String[] args = new String[] {deliveryProcess.getType().name()};
+            String[] args = new String[] {deliveryProcess.getType().name(), request.generateStringId()};
             String subject = messageSource.getMessage("email.organisationDeliveryReceived.title", args, locale);
             sendEmail(user.getEmail(), subject, content, false, true);
         }
@@ -309,7 +309,7 @@ public class MailService extends AbstractMailService {
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryCancelled", context);
-        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
+        String[] args = new String[] {deliveryProcess.getType().name(), request.getOrganisations().get(0).getName(), request.generateStringId()};
         String subject = messageSource.getMessage("email.requesterDeliveryCancelled.title", args, locale);
         sendEmail(user.getEmail(), subject, content, false, true);
     }
