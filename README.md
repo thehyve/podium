@@ -103,8 +103,7 @@ Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in
 
     yarn test
 
-UI end-to-end tests are powered by [Protractor][], which is built on top of WebDriverJS. They're located in `src/test/javascript/e2e`
-and can be run by starting Spring Boot in one terminal (`./mvnw spring-boot:run`) and running the tests (`yarn e2e`) in a second one.
+For UI end-to-end tests see the READMEs of the individual components
 
 #### <a href="testing-performance"></a>Performance tests
 
