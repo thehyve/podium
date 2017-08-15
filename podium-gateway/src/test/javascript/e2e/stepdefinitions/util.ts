@@ -13,7 +13,7 @@ import {
     UserGroupAuthority,
     OrganisationAuthorityOptions
 } from '../../../../main/webapp/app/shared/authority/authority.constants';
-import { ElementArrayFinder } from 'protractor';
+import { browser, ElementArrayFinder } from 'protractor';
 
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');
@@ -22,7 +22,7 @@ export function login(director: Director, persona: Persona) {
         director.enterText('passwordInput', persona['password'])
     ]).then(function () {
         return director.clickOn('submitButton').then(function () {
-            return director.waitForPage('Dashboard');
+            return browser.waitForAngular()
         });
     })
 }

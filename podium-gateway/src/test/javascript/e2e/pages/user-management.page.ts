@@ -30,7 +30,7 @@ class UserManagementPage {
 
     constructor() {
         this.name = "user management";
-        this.url = "#/bbmri/user-management";
+        this.url = "#/admin/user-management";
         this.elements = {
             "HeaderID": { locator: $('th[jhisortby=id]') },
             "HeaderLogin": { locator: $('th[jhisortby=login]') },

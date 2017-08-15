@@ -4,13 +4,13 @@ Feature: All users have to login. (BRPREQ-2, BRPREQ-4)
     Scenario Outline: every role is able to login
         Given <user> goes to the 'sign in' page
         When he attempts to login
-        Then he is on the 'Dashboard' page
+        Then he is on the '<landingpage>' page
 
         Examples:
-            | user        |
-            | BBMRI_Admin |
-            | Linda       |
-            | Dave        |
+            | user        | landingpage      |
+            | Admin       | user management  |
+            | BBMRI_Admin | user management  |
+            | Linda       | request overview |
 
     @default
     Scenario: failing to login locks the account
