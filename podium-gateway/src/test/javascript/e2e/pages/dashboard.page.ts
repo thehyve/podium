@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { $, browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
 
 class DashboardPage {

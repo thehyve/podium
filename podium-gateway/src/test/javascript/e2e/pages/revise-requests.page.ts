@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { $, browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import ProfileForm = require("./modules/profile-form")
 
 
 /*
@@ -39,10 +38,10 @@ class ReviseRequestsPage {
             "hypothesis": { locator: $('textarea[name=hypothesis]') },
             "methods": { locator: $('textarea[name=methods]') },
             "relatedRequestNumber": { locator: $('input[name=relatedRequestNumber]') },
-            "piName": { locator: $('input[name=piName]') },
-            "piEmail": { locator: $('input[name=piEmail]') },
-            "piFunction": { locator: $('input[name=piFunction]') },
-            "piAffiliation": { locator: $('input[name=piAffiliation]') },
+            "name": { locator: $('input[name=piName]') },
+            "email": { locator: $('input[name=piEmail]') },
+            "jobTitle": { locator: $('input[name=piFunction]') },
+            "affiliation": { locator: $('input[name=piAffiliation]') },
             "searchQuery": { locator: $('textarea[name=searchQuery]') },
             "Data": { locator: $('input[value=Data]') },
             "Images": { locator: $('input[value=Images]') },

@@ -9,10 +9,11 @@
  */
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
+
 let { defineSupportCode } = require('cucumber');
 import initPages = require ("../pages/page-dictionary");
-import initPersonaDictionary = require("../personas/persona-dictionary")
-import initDataDictionary = require("../data/data-dictionary")
+import initPersonaDictionary = require("../personas/persona-dictionary");
+import initDataDictionary = require("../data/data-dictionary");
 
 /*
  *

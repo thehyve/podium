@@ -7,13 +7,12 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import request = require('request-promise-native')
-
-import { isUndefined, isNullOrUndefined } from 'util';
+import request = require('request-promise-native');
+import initPersonaDictionary = require('../personas/persona-dictionary');
+import { isNullOrUndefined, isUndefined } from 'util';
 import { browser } from 'protractor';
 import { Persona } from '../personas/templates';
 import { Organisation, Request } from '../data/templates';
-import initPersonaDictionary = require('../personas/persona-dictionary');
 
 let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
 
@@ -574,18 +573,16 @@ function setRequestDetails(draft, request: Request) {
     let requestDetails = draft['requestDetail'];
     let principalInvestigator = requestDetails['principalInvestigator'];
 
-    let fieldNames = ['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
-        'searchQuery', 'requestType', 'combinedRequest'];
-
-    fieldNames.forEach((fieldName)=>{
+    //request
+    ['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+        'searchQuery', 'requestType', 'combinedRequest'].forEach((fieldName) => {
         requestDetails[fieldName] = request[fieldName];
     });
 
     //principal Investigator
-    principalInvestigator['name'] = request['piName'];
-    principalInvestigator['email'] = request['piEmail'];
-    principalInvestigator['jobTitle'] = request['piFunction'];
-    principalInvestigator['affiliation'] = request['piAffiliation'];
+    ['name', 'email', 'jobTitle', 'affiliation'].forEach((fieldName) => {
+        principalInvestigator[fieldName] = request[fieldName];
+    });
 }
 
 function parseJSON(string: string) {

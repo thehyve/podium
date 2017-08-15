@@ -8,24 +8,24 @@
  * See the file LICENSE in the root of this repository.
  */
 import { Page } from '../protractor-stories/director';
-import SigninPage = require("./signin.page")
-import DashboardPage = require("./dashboard.page")
-import ProfilePage = require("./profile.page")
-import RegistrationPage = require("./registration.page")
-import completedPage = require("./completed.page")
-import UserManagementPage = require("./user-management.page")
-import UserDetailsPage = require("./user-details.page")
-import OrganisationsManagementPage = require("./organisations-management.page")
-import OrganisationsConfigurationPage = require("./organisations-configuration.page")
-import OrganisationsDetailsPage = require("./organisations-details.page")
-import OrganisationsEditPage = require("./organisations-edit.page")
-import CreateOrganisationPage = require("./create-organisation.page")
-import NewRequestsPage = require("./new-requests.page")
-import RequestsManagement = require("./requests-management.page")
-import RequestsDetails = require("./requests-details.page")
-import ReviseRequests = require("./revise-requests.page")
-import EditRequests = require("./edit-requests.page")
-import OrganisationRequestsManagement = require("./requests-management-org.page")
+import SigninPage = require("./signin.page");
+import DashboardPage = require("./dashboard.page");
+import ProfilePage = require("./profile.page");
+import RegistrationPage = require("./registration.page");
+import completedPage = require("./completed.page");
+import UserManagementPage = require("./user-management.page");
+import UserDetailsPage = require("./user-details.page");
+import OrganisationsManagementPage = require("./organisations-management.page");
+import OrganisationsConfigurationPage = require("./organisations-configuration.page");
+import OrganisationsDetailsPage = require("./organisations-details.page");
+import OrganisationsEditPage = require("./organisations-edit.page");
+import CreateOrganisationPage = require("./create-organisation.page");
+import NewRequestsPage = require("./new-requests.page");
+import RequestsManagement = require("./requests-management.page");
+import RequestsDetails = require("./requests-details.page");
+import ReviseRequests = require("./revise-requests.page");
+import EditRequests = require("./edit-requests.page");
+import OrganisationRequestsManagement = require("./requests-management-org.page");
 
 
 /*

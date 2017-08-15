@@ -10,11 +10,12 @@
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
-import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData, countIs } from './util';
+import { checkTextElement, copyData, countIs, doInOrder, login, promiseTrue, roleToRoute } from './util';
 import { Organisation, Request } from '../data/templates';
-import { $$, browser, protractor, $ } from 'protractor';
+import { $, $$, browser, protractor } from 'protractor';
 import { RequestOverviewStatusOption } from '../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 import { isUndefined } from 'util';
+
 let { defineSupportCode } = require('cucumber');
 
 
@@ -26,16 +27,20 @@ defineSupportCode(({ Given, When, Then }) => {
         let request: Request = director.getData(requestName);
         this.scenarioData = copyData(request); //store for next step
 
-        return doInOrder(["title", "background", "researchQuestion", "hypothesis", "methods", "relatedRequestNumber", "piName",
-            "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
+        return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+            'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
             return director.enterText(key, request[key]);
         }).then(() => {
-            return doInOrder(request["requestTypes"], (type) => {
+            return doInOrder(request["requestType"], (type) => {
                 return director.clickOn(type);
             }).then(() => {
                 return doInOrder(request['organisations'], (organisation) => {
                     return browser.actions().mouseMove($('.test-option-' + organisation)).keyDown(platformKey())
-                        .click().keyUp(platformKey()).perform();
+                        .click().keyUp(platformKey()).perform().then(() => {
+                            if (request['combinedRequest']) {
+                                return director.clickOn('combinedRequestYes');
+                            }
+                        });
                 }).then(() => {
                     return director.clickOn("save")
                 });
@@ -117,10 +122,10 @@ defineSupportCode(({ Given, When, Then }) => {
 
                 return checkRequestDetails(revisionDetail, revisedRequest).then(() => {
                     return promiseTrue(JSON.stringify(body['organisations'].map((org) => {
-                            return org['name']
-                        }).sort(alphabetically)) == JSON.stringify(revisedRequest['organisations'].map((org) => {
-                            return director.getData(org)['name']
-                        }).sort(alphabetically)), 'organisations')
+                        return org['name']
+                    }).sort(alphabetically)) == JSON.stringify(revisedRequest['organisations'].map((org) => {
+                        return director.getData(org)['name']
+                    }).sort(alphabetically)), 'organisations')
                 });
             });
         });
@@ -168,15 +173,20 @@ defineSupportCode(({ Given, When, Then }) => {
         let request = director.getData(requestName);
         let organisation = director.getData(orgShortName);
 
-        let fieldNames = ['title', 'searchQuery', 'background', 'researchQuestion', 'hypothesis', 'methods', 'piName',
-            'piEmail', 'piFunction', 'piAffiliation'];
-
         return Promise.all([
-            ...fieldNames.map((fieldName) => {
-                return checkTextElement(page.elements[fieldName].locator, request[fieldName])
+            ...['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+                'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'].map((fieldName) => {
+                return checkTextElement(director.getLocator(fieldName), request[fieldName])
             }),
-            checkTextElement(page.elements['organisations'].locator, organisation['name']),
-            checkRequestTypes(organisation['requestTypes'], $$('.test-requestTypes'))
+            checkTextElement(director.getLocator('organisations'), organisation['name']),
+            checkRequestTypes(organisation['requestTypes'], director.getLocator('requestType'))
+                .then(() => {
+                    if (request['combinedRequest']) {
+                        return checkTextElement(director.getLocator('combinedRequest'), 'Yes')
+                    } else {
+                        return checkTextElement(director.getLocator('combinedRequest'), 'No')
+                    }
+                })
         ])
     });
 
@@ -230,7 +240,7 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    function checkTable(fields: any[]|string[], requests: Request[], director: Director) {
+    function checkTable(fields: any[] | string[], requests: Request[], director: Director) {
         return doInOrder(fields, (field) => {
             return $$('.test-' + field).isPresent().then((present) => {
                 return promiseTrue(present, 'field ' + '.test-' + field + ' could not be found')
@@ -249,7 +259,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         switch (field) {
             case 'requestTypes': {
-                return checkRequestTypes(request['requestTypes'], element);
+                return checkRequestTypes(request['requestType'], element);
             }
             case 'organisations': {
                 return checkOrganisations(request['organisations'], element, director);
@@ -350,8 +360,8 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona(personaName);
         let request: Request = this.scenarioData;
 
-        return doInOrder(["title", "background", "researchQuestion", "hypothesis", "methods", "relatedRequestNumber", "piName",
-            "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
+        return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+            'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
             request[key] = request[key] + 'revision';
             return director.enterText(key, request[key]);
         }).then(() => {
@@ -550,18 +560,17 @@ defineSupportCode(({ Given, When, Then }) => {
 });
 
 function checkRequestDetails(details, request) {
-    let detailsFields = ['title', 'searchQuery', 'background', 'researchQuestion', 'hypothesis', 'methods'];
     let pi = details['principalInvestigator'];
 
     return Promise.all([
-        ...detailsFields.map((field) => {
+        ...['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+            'searchQuery', 'combinedRequest'].map((field) => {
             return promiseTrue(details[field] == request[field], `data for field ${field} did not match details: \n ${JSON.stringify(details)} \n expected: \n ${JSON.stringify(request)}`)
         }),
-        promiseTrue(pi['name'] == request['piName'], 'piName ' + details['piName'] + ' ' + request['piName']),
-        promiseTrue(pi['email'] == request['piEmail'], 'piEmail'),
-        promiseTrue(pi['jobTitle'] == request['piFunction'], 'piFunction'),
-        promiseTrue(pi['affiliation'] == request['piAffiliation'], 'piAffiliation'),
-        promiseTrue(JSON.stringify(details['requestType'].sort(alphabetically)) == JSON.stringify(request['requestTypes'].sort(alphabetically)), `${JSON.stringify(details['requestType'].sort(alphabetically))} ${JSON.stringify(request['requestTypes'].sort(alphabetically))}`)
+        ...['name', 'email', 'jobTitle', 'affiliation'].map((field) => {
+            return promiseTrue(pi[field] == request[field], `data for field ${field} did not match pi: \n ${JSON.stringify(pi)} \n expected: \n ${JSON.stringify(request)}`)
+        }),
+        promiseTrue(JSON.stringify(details['requestType'].sort(alphabetically)) == JSON.stringify(request['requestType'].sort(alphabetically)), `${JSON.stringify(details['requestType'].sort(alphabetically))} ${JSON.stringify(request['requestType'].sort(alphabetically))}`)
     ])
 }
 

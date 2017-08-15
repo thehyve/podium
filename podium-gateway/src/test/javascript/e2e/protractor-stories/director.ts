@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, ElementFinder, ElementArrayFinder } from 'protractor';
+import { browser, ElementArrayFinder, ElementFinder } from 'protractor';
 import { Promise } from 'es6-promise';
 import { isUndefined } from 'util';
 
@@ -22,7 +22,9 @@ export interface Data {
 export interface Page {
     name: string;
     url: string;
+
     at?(): Promise<boolean>;
+
     ignoreSynchronization?: boolean;
     elements: { [name: string]: Interactable };
 }

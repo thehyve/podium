@@ -9,11 +9,12 @@
  */
 import { Organisation } from '../data/templates';
 import { Promise } from 'es6-promise';
-import { $$, $, browser } from 'protractor';
+import { $, $$, browser } from 'protractor';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
-import { login, doInOrder, promiseTrue, checkInputElement, checkCheckBox } from './util';
+import { checkCheckBox, checkInputElement, doInOrder, login, promiseTrue } from './util';
 import { isUndefined } from 'util';
+
 let { defineSupportCode } = require('cucumber');
 
 

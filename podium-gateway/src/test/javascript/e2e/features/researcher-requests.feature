@@ -40,7 +40,7 @@ Feature: researcher can do requests (BRPREQ-121, BRPREQ-134, BRPREQ-146, BRPREQ-
     @request
     Scenario: BRPREQ-146, as a researcher I want to see the request details
         Given Linda goes to the 'request details' page for the request 'Request01' submitted to 'MultiBank'
-        Then the request details for 'Request01' submitted to 'MultiBank' are shown
+        Then the request details for 'Request01-b' submitted to 'MultiBank' are shown
 
     @default
     @request

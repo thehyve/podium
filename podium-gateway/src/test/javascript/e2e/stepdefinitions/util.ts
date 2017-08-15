@@ -10,8 +10,8 @@
 import { Director, Persona } from '../protractor-stories/director';
 import { Promise } from 'es6-promise';
 import {
-    UserGroupAuthority,
-    OrganisationAuthorityOptions
+    OrganisationAuthorityOptions,
+    UserGroupAuthority
 } from '../../../../main/webapp/app/shared/authority/authority.constants';
 import { browser, ElementArrayFinder } from 'protractor';
 

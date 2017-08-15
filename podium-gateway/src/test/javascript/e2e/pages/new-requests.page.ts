@@ -9,7 +9,7 @@
  */
 import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import requestEditForm = require("./modules/request-edit-form")
+import requestEditForm = require("./modules/request-edit-form");
 
 
 /*

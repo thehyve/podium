@@ -9,7 +9,7 @@
  */
 import { $ } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import ProfileForm = require("./modules/profile-form")
+import ProfileForm = require("./modules/profile-form");
 
 /*
  * Must follow the Page interface

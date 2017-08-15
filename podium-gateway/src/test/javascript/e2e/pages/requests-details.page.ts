@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { $, $$, browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import ProfileForm = require("./modules/profile-form")
 
 
 /*
@@ -34,7 +33,7 @@ class RequestDetails {
         this.url = "#/requests/detail/";
         this.elements = {
             "title": { locator: $('.test-title') },
-            "requestTypes": { locator: $('.test-requestTypes') },
+            "requestType": { locator: $$('.test-requestType') },
             "combinedRequest": { locator: $('.test-combinedRequest') },
             "organisations": { locator: $('.test-organisations') },
             "searchQuery": { locator: $('.test-searchQuery') },
@@ -43,10 +42,10 @@ class RequestDetails {
             "hypothesis": { locator: $('.test-hypothesis') },
             "methods": { locator: $('.test-methods') },
             "relatedRequestNumber": { locator: $('.test-relatedRequestNumber') },
-            "piName": { locator: $('.test-piName') },
-            "piEmail": { locator: $('.test-piEmail') },
-            "piFunction": { locator: $('.test-piFunction') },
-            "piAffiliation": { locator: $('.test-piAffiliation') },
+            "name": { locator: $('.test-piName') },
+            "email": { locator: $('.test-piEmail') },
+            "jobTitle": { locator: $('.test-piFunction') },
+            "affiliation": { locator: $('.test-piAffiliation') },
             "validationCheck": { locator: $('#validationCheck') },
             "validate": { locator: $('#validate-request-btn') },
             "approve": { locator: $('#approve-request-btn') },
