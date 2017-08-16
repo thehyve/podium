@@ -286,4 +286,16 @@ public class NotificationService {
         UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
         mailService.sendRequestClosedNotificationToRequester(requester, request);
     }
+
+    /**
+     * Send a request rejected notification to the requester.
+     * @param requestUuid the uuid of the request.
+     */
+    @Async
+    public void requestRejectedNotificationToRequester(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
+        mailService.sendRejectionNotificationToRequester(requester, request);
+    }
 }
