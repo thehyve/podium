@@ -21,7 +21,8 @@
                 "sessions": "Sessions",
                 "login": "Sign in",
                 "logout": "Sign out",
-                "register": "Register"
+                "register": "Register",
+                "settings": "Settings"
             },
             "bbmri_admin": {
                 "main": "BBMRI",
