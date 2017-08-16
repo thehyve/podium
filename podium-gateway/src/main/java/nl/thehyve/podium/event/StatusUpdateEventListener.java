@@ -48,7 +48,10 @@ public class StatusUpdateEventListener {
         } else if (event.getTargetStatus() == OverviewStatus.Review) {
             // Send review requested notification to all reviewers for this request
             notificationService.reviewNotificationToReviewers(event.getRequestUuid());
-        } else if (event.getSourceStatus() == OverviewStatus.Review && event.getTargetStatus() != OverviewStatus.Revision) {
+        } else if (event.getTargetStatus() == OverviewStatus.Rejected) {
+            notificationService.requestRejectedNotificationToRequester(event.getRequestUuid());
+        } else if ( event.getSourceStatus() == OverviewStatus.Review && event.getTargetStatus() != OverviewStatus
+            .Revision) {
             // Send rejection email if rejected; send approval mail if approved
             notificationService.reviewProcessClosedNotificationToRequester(event.getRequestUuid());
         } else if (event.getTargetStatus() == OverviewStatus.Revision) {
@@ -60,8 +63,10 @@ public class StatusUpdateEventListener {
         } else if (event.getSourceStatus() == DeliveryStatus.Preparation &&
             event.getTargetStatus() == DeliveryStatus.Released) {
             // Send delivery released email to the requester for this delivery
-            notificationService.deliveryReleasedNotificationToRequester(event.getRequestUuid(), event.getDeliveryProcessUuid());
-        } else if (Arrays.asList(OverviewStatus.Closed_Approved, OverviewStatus.Delivered, OverviewStatus.Partially_Delivered,
+            notificationService.deliveryReleasedNotificationToRequester(event.getRequestUuid(), event
+                .getDeliveryProcessUuid());
+        } else if (Arrays.asList(OverviewStatus.Closed_Approved, OverviewStatus.Delivered, OverviewStatus
+                .Partially_Delivered,
             OverviewStatus.Cancelled).contains(event.getTargetStatus())) {
             // Send request closed email to requester
             notificationService.requestClosedNotificationToRequester(event.getRequestUuid());
