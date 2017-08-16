@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.requesterDeliveryCancelled.title(${deliveryProcess.getType()}, ${request.getOrganisations().get(0).getName()}, ${request.generateStringId()})}">BBMRI Podium Request Portal &ndash; [Type] cancelled by [organisation]</title>
+        <title th:text="#{email.requesterDeliveryCancelled.title(${request.generateStringId()}, ${deliveryProcess.getType()}, ${request.getOrganisations().get(0).getName()})}">BBMRI Podium Request Portal &ndash; [Type] cancelled by [organisation]</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
