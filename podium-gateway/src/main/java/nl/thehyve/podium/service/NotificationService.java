@@ -131,7 +131,7 @@ public class NotificationService {
         // Fetch requester data through Feign.
         UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
 
-        switch (request.getRequestReview().getDecision()) {
+        switch (request.getStatus()) {
             case Approved:
                 mailService.sendRequestApprovalNotificationToRequester(requester, request);
                 break;
