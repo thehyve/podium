@@ -31,6 +31,7 @@ export class UserMgmtDialogComponent implements OnInit {
     constructor (
         public activeModal: NgbActiveModal,
         private languageHelper: JhiLanguageHelper,
+        private languageService: JhiLanguageService,
         private userService: UserService,
         private eventManager: EventManager,
         private router: Router
@@ -59,9 +60,12 @@ export class UserMgmtDialogComponent implements OnInit {
                 () => this.onSaveError()
             );
         } else {
-            this.userService.create(this.user).subscribe(
-                (response) => this.onSaveSuccess(response),
-                () => this.onSaveError());
+            this.languageService.getCurrent().then((key) => {
+                this.user.langKey = key;
+                this.userService.create(this.user).subscribe(
+                    (response) => this.onSaveSuccess(response),
+                    () => this.onSaveError());
+            });
         }
     }
 
