@@ -115,7 +115,7 @@
                         <i class="material-icons">info_outline</i>
                     </span>
                     <div class="checkbox-group" *ngIf="!isInRevision">
-                        <input type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
+                        <input class="test-combinedRequestYes" type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
                                required [disabled]="!hasSelectedMultipleOrganisations()">
                         <span jhiTranslate="request.form.isLinked.yes">Yes</span>
                         &nbsp;

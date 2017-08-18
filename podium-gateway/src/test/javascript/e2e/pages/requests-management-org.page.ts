@@ -9,7 +9,7 @@
  */
 import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import RequestOverviewCommon = require("./modules/request-overview")
+import RequestOverviewCommon = require("./modules/request-overview");
 
 
 /*

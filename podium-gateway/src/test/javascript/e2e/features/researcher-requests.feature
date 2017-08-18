@@ -1,4 +1,26 @@
-Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-3, BRPREQ-58)
+Feature: researcher can do requests (BRPREQ-121, BRPREQ-134, BRPREQ-146, BRPREQ-3, BRPREQ-58)
+
+    @default
+    @request
+    Scenario: A researcher is able to create a draft
+        Given Linda goes to the 'new requests' page
+        When she fills the new draft with data from 'Draft03'
+        Then the draft is saved
+
+    @default
+    @request
+    Scenario: A researcher is able to save incomplete request at all times as a draft
+        Given Linda opens the draft 'Draft02'
+        When Linda revises and 'saves' the request
+        Then the draft is saved
+
+    @default
+    @request
+    Scenario: A researcher is able to turn a draft in to a request
+        Given Linda opens the draft 'Draft02'
+        When she submits the draft
+        Then the request has the status 'Validation'
+        And the draft is removed
 
     @default
     @request
@@ -18,7 +40,7 @@ Feature: researcher can do requests (BRPREQ-134, BRPREQ-146, BRPREQ-3, BRPREQ-58
     @request
     Scenario: BRPREQ-146, as a researcher I want to see the request details
         Given Linda goes to the 'request details' page for the request 'Request01' submitted to 'MultiBank'
-        Then the request details for 'Request01' submitted to 'MultiBank' are shown
+        Then the request details for 'Request01-b' submitted to 'MultiBank' are shown
 
     @default
     @request

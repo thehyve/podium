@@ -10,35 +10,74 @@
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { Promise } from 'es6-promise';
-import { doInOrder, promiseTrue, login, checkTextElement, roleToRoute, copyData, countIs } from './util';
+import { checkTextElement, copyData, countIs, doInOrder, login, promiseTrue, roleToRoute } from './util';
 import { Organisation, Request } from '../data/templates';
-import { $$, browser, protractor, $ } from 'protractor';
+import { $, $$, browser, protractor } from 'protractor';
 import { RequestOverviewStatusOption } from '../../../../main/webapp/app/shared/request/request-status/request-status.constants';
+import { isUndefined } from 'util';
+
 let { defineSupportCode } = require('cucumber');
 
 
 defineSupportCode(({ Given, When, Then }) => {
 
-    When(/^(.*) creates a new draft filling data for '(.*)'$/, function (personaName, requestName): Promise<any> {
+    When(/^(.*) fills the new draft with data from '(.*)'$/, function (personaName, requestName): Promise<any> {
         let director = this.director as Director;
         let persona = director.getPersona(personaName);
         let request: Request = director.getData(requestName);
-        this.scenarioData = request; //store for next step
-        let page = director.getCurrentPage();
+        this.scenarioData = copyData(request); //store for next step
 
-        return director.clickOn("new draft").then(() => {
-            return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
-                "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
-                return director.enterText(key, request[key]);
+        return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+            'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
+            return director.enterText(key, request[key]);
+        }).then(() => {
+            return doInOrder(request["requestType"], (type) => {
+                return director.clickOn(type);
             }).then(() => {
-                return doInOrder(request["requestTypes"], (type) => {
-                    return director.clickOn(type);
+                return doInOrder(request['organisations'], (organisation) => {
+                    return browser.actions().mouseMove($('.test-option-' + organisation)).keyDown(platformKey())
+                        .click().keyUp(platformKey()).perform().then(() => {
+                            if (request['combinedRequest']) {
+                                return director.clickOn('combinedRequestYes');
+                            }
+                        });
                 }).then(() => {
                     return director.clickOn("save")
-                })
+                });
             })
-        });
+        })
+    });
 
+    function platformKey(): string {
+        switch (process.platform) {
+            case 'darwin': {
+                return protractor.Key.COMMAND;
+            }
+            default: {
+                return protractor.Key.CONTROL;
+            }
+        }
+    }
+
+    When(/^(.*) submits the draft$/, function (personaName) {
+        let director = this.director as Director;
+
+        return director.clickOn('submit').then(() => {
+            return director.clickOn('submit-modal')
+        })
+    });
+
+    Then('the draft is removed', function () {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+
+        let persona = director.getPersona('he');
+
+        return browser.sleep(500).then(() => {
+            return adminConsole.getDraft(persona, this.scenarioData).then((body) => {
+                return promiseTrue(isUndefined(body), `the draft was not removed, getDrafts returned: ${body}`)
+            });
+        });
     });
 
     When(/^(.*) selects request types '(.*)'$/, function (personaName, requestTypes): Promise<any> {
@@ -76,21 +115,53 @@ defineSupportCode(({ Given, When, Then }) => {
 
         let persona = director.getPersona('he');
 
-        return adminConsole.getDraft(persona, this.scenarioData).then((draft) => {
-            return promiseTrue(draft['title'] == this.scenarioData['title'], this.scenarioData + ' did not match ' + draft);
+        return browser.sleep(500).then(() => {
+            return adminConsole.getDraft(persona, this.scenarioData).then((body) => {
+                let revisedRequest = this.scenarioData;
+                let revisionDetail = body['requestDetail'];
+
+                return checkRequestDetails(revisionDetail, revisedRequest).then(() => {
+                    return promiseTrue(JSON.stringify(body['organisations'].map((org) => {
+                        return org['name']
+                    }).sort(alphabetically)) == JSON.stringify(revisedRequest['organisations'].map((org) => {
+                        return director.getData(org)['name']
+                    }).sort(alphabetically)), 'organisations')
+                });
+            });
+        });
+    });
+
+    Given(/^(.*) opens the draft '(.*)'$/, function (personaName, requestName) {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        let request = director.getData(requestName);
+        let persona = director.getPersona(personaName);
+        this.scenarioData = copyData(request); //store for next step
+
+        return login(director, persona).then(() => {
+            return director.goToPage('request overview').then(() => {
+                return $('.test-request-row-' + requestName).$('.test-edit-btn').click().then(() => {
+                    return director.at('edit requests');
+                })
+            })
         })
     });
 
     Given(/^(.*) goes to the '(.*)' page for the request '(.*)' submitted to '(.*)'$/, function (personaName, pageName, requestName, orgShortName): Promise<any> {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
-        let request = director.getData(requestName)
+        let request = director.getData(requestName);
         let persona = director.getPersona(personaName);
         let organisation = director.getData(orgShortName);
         this.scenarioData = copyData(request); //store for next step
 
         return login(director, persona).then(() => {
-            return adminConsole.getRequest(persona, 'All', roleToRoute(persona, orgShortName), request, organisation['name']).then((sufix) => {
+            return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona, orgShortName), (body) => {
+                return body["requestDetail"]["title"] == request["title"] &&
+                    body['organisations'].every((org) => {
+                        return org['name'] == organisation['name']
+                    });
+            }).then((sufix) => {
                 return director.goToPage(pageName, sufix['uuid'] as string)
             })
         });
@@ -102,22 +173,21 @@ defineSupportCode(({ Given, When, Then }) => {
         let request = director.getData(requestName);
         let organisation = director.getData(orgShortName);
 
-        let promisses = [
-            checkTextElement(page.elements['title'].locator, request['title']),
-            checkTextElement(page.elements['searchQuery'].locator, request['searchQuery']),
-            checkTextElement(page.elements['background'].locator, request['background']),
-            checkTextElement(page.elements['researchQuestion'].locator, request['research question']),
-            checkTextElement(page.elements['hypothesis'].locator, request['hypothesis']),
-            checkTextElement(page.elements['methods'].locator, request['methods']),
-            checkTextElement(page.elements['piName'].locator, request['piName']),
-            checkTextElement(page.elements['piEmail'].locator, request['piEmail']),
-            checkTextElement(page.elements['piFunction'].locator, request['piFunction']),
-            checkTextElement(page.elements['piAffiliation'].locator, request['piAffiliation']),
-            checkTextElement(page.elements['organisations'].locator, organisation['name']),
-            checkRequestTypes(organisation['requestTypes'], $$('.test-requestTypes'))
-        ];
-
-        return Promise.all(promisses);
+        return Promise.all([
+            ...['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+                'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'].map((fieldName) => {
+                return checkTextElement(director.getLocator(fieldName), request[fieldName])
+            }),
+            checkTextElement(director.getLocator('organisations'), organisation['name']),
+            checkRequestTypes(organisation['requestTypes'], director.getLocator('requestType'))
+                .then(() => {
+                    if (request['combinedRequest']) {
+                        return checkTextElement(director.getLocator('combinedRequest'), 'Yes')
+                    } else {
+                        return checkTextElement(director.getLocator('combinedRequest'), 'No')
+                    }
+                })
+        ])
     });
 
     function checkRequestTypes(requestTypes: string[], elements) {
@@ -163,7 +233,6 @@ defineSupportCode(({ Given, When, Then }) => {
                 if (requestNamesListAltOrder.length == 0) {
                     return Promise.reject(error);
                 }
-
                 let requests: Request[] = director.getListOfData(requestNamesListAltOrder);
                 fields = fieldNames.split(", ");
                 return checkTable(fields, requests, director);
@@ -171,7 +240,7 @@ defineSupportCode(({ Given, When, Then }) => {
         })
     });
 
-    function checkTable(fields: any[]|string[], requests: Request[], director: Director) {
+    function checkTable(fields: any[] | string[], requests: Request[], director: Director) {
         return doInOrder(fields, (field) => {
             return $$('.test-' + field).isPresent().then((present) => {
                 return promiseTrue(present, 'field ' + '.test-' + field + ' could not be found')
@@ -190,10 +259,14 @@ defineSupportCode(({ Given, When, Then }) => {
 
         switch (field) {
             case 'requestTypes': {
-                return checkRequestTypes(request['requestTypes'], element);
+                return checkRequestTypes(request['requestType'], element);
             }
             case 'organisations': {
                 return checkOrganisations(request['organisations'], element, director);
+            }
+            case 'requesterName': {
+                let requester = director.getPersona(request['requesterDataId']);
+                return checkTextElement(element, `${requester['firstName']} ${requester['lastName']}`);
             }
             default: {
                 return checkTextElement(element, request[field]);
@@ -205,8 +278,16 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = copyData(director.getData(requestName)); //store for next step
+        let persona = director.getPersona(this.scenarioData['requesterDataId']);
+        let request = this.scenarioData;
+        let organisation = director.getData(request['organisations'][0]);
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona), (body) => {
+            return body["requestDetail"]["title"] == request["title"] &&
+                body['organisations'].every((org) => {
+                    return org['name'] == organisation['name']
+                });
+        }).then((request) => {
             return adminConsole.requestRevision(director.getPersona('Request_Coordinator'), request, {
                 "summary": "sum",
                 "description": "des"
@@ -218,8 +299,16 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = copyData(director.getData(requestName)); //store for next step
+        let persona = director.getPersona(this.scenarioData['requesterDataId']);
+        let request = this.scenarioData;
+        let organisation = director.getData(request['organisations'][0]);
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona), (body) => {
+            return body["requestDetail"]["title"] == request["title"] &&
+                body['organisations'].every((org) => {
+                    return org['name'] == organisation['name']
+                });
+        }).then((request) => {
             return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request);
         })
     });
@@ -228,8 +317,16 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = copyData(director.getData(requestName)); //store for next step
+        let persona = director.getPersona(this.scenarioData['requesterDataId']);
+        let request = this.scenarioData;
+        let organisation = director.getData(request['organisations'][0]);
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData('Request02'), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona), (body) => {
+            return body["requestDetail"]["title"] == request["title"] &&
+                body['organisations'].every((org) => {
+                    return org['name'] == organisation['name']
+                });
+        }).then((request) => {
             return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
                 return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request)
             })
@@ -240,8 +337,16 @@ defineSupportCode(({ Given, When, Then }) => {
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
         this.scenarioData = copyData(director.getData(requestName)); //store for next step
+        let persona = director.getPersona(this.scenarioData['requesterDataId']);
+        let request = this.scenarioData;
+        let organisation = director.getData(request['organisations'][0]);
 
-        return adminConsole.getRequest(director.getPersona('Linda'), 'All', 'requester', director.getData(requestName), director.getData(director.getData(requestName)['organisations'][0])['name']).then((request) => {
+        return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona), (body) => {
+            return body["requestDetail"]["title"] == request["title"] &&
+                body['organisations'].every((org) => {
+                    return org['name'] == organisation['name']
+                });
+        }).then((request) => {
             return adminConsole.validateRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
                 return adminConsole.approveRequest(director.getPersona('Request_Coordinator'), request).then((request) => {
                     return adminConsole.startDelivery(director.getPersona('Request_Coordinator'), request);
@@ -255,8 +360,8 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona(personaName);
         let request: Request = this.scenarioData;
 
-        return doInOrder(["title", "background", "research question", "hypothesis", "methods", "related request number", "piName",
-            "piEmail", "piFunction", "piAffiliation", "searchQuery"], (key) => {
+        return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+            'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
             request[key] = request[key] + 'revision';
             return director.enterText(key, request[key]);
         }).then(() => {
@@ -269,10 +374,17 @@ defineSupportCode(({ Given, When, Then }) => {
         let adminConsole = this.adminConsole as AdminConsole;
 
         let persona = director.getPersona('he');
+        let request = this.scenarioData;
         let orgShortName = this.scenarioData['organisations'][0];
+        let organisation = director.getData(orgShortName);
 
-        return browser.sleep(1000).then(() => {
-            return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+        return browser.sleep(500).then(() => {
+            return adminConsole.getRequest(persona, RequestOverviewStatusOption.All, roleToRoute(persona, orgShortName), (body) => {
+                return body["requestDetail"]["title"] == request["title"] &&
+                    body['organisations'].every((org) => {
+                        return org['name'] == organisation['name']
+                    });
+            }).then((body) => {
                 return promiseTrue(body['status'] == requestState, 'request ' + body['requestDetail']['title'] + ' is not in ' + requestState + '\n ' + JSON.stringify(body))
             })
         });
@@ -284,11 +396,17 @@ defineSupportCode(({ Given, When, Then }) => {
 
         let expectedDeliveries: { type: string, status: string }[] = JSON.parse(expectedDeliveriesString);
         let persona = director.getPersona('he');
-        let orgShortName = this.scenarioData['organisations'][0];
-        let requestState = 'Delivery'
+        let request = this.scenarioData;
+        let orgShortName = request['organisations'][0];
+        let organisation = director.getData(orgShortName);
 
-        return browser.sleep(1000).then(() => {
-            return adminConsole.getRequest(persona, requestState, roleToRoute(persona, orgShortName), this.scenarioData, director.getData(orgShortName)['name']).then((body) => {
+        return browser.sleep(500).then(() => {
+            return adminConsole.getRequest(persona, RequestOverviewStatusOption.Delivery, roleToRoute(persona, orgShortName), (body) => {
+                return body["requestDetail"]["title"] == request["title"] &&
+                    body['organisations'].every((org) => {
+                        return org['name'] == organisation['name']
+                    });
+            }).then((body) => {
                 return adminConsole.getDeliveries(persona, body).then((deliveries) => {
                     return Promise.all([
                         promiseTrue(expectedDeliveries.length == deliveries.length, 'expected ' + JSON.stringify(expectedDeliveries) + '\nbut found: ' + JSON.stringify(deliveries)),
@@ -304,33 +422,27 @@ defineSupportCode(({ Given, When, Then }) => {
     });
 
     Then(/^the revision for '(.*)' is saved$/, function (requestName): Promise<any> {
-
         let director = this.director as Director;
         let adminConsole = this.adminConsole as AdminConsole;
 
         let persona = director.getPersona('he');
         let request = director.getData(requestName);
+        let orgShortName = request['organisations'][0];
+        let organisation = director.getData(orgShortName);
 
-        return adminConsole.getRequest(persona, 'Revision', 'requester', request, director.getData(this.scenarioData['organisations'][0])['name']).then((body) => {
+        return adminConsole.getRequest(persona, RequestOverviewStatusOption.Revision, roleToRoute(persona, orgShortName), (body) => {
+            return body["requestDetail"]["title"] == request["title"] &&
+                body['organisations'].every((org) => {
+                    return org['name'] == organisation['name']
+                });
+        }).then((body) => {
             let revisedRequest = this.scenarioData;
             let revisionDetail = body['revisionDetail'];
 
-            return Promise.all([
-                promiseTrue(revisionDetail['title'] == revisedRequest['title'], 'title'),
-                promiseTrue(revisionDetail['searchQuery'] == revisedRequest['searchQuery'], 'searchQuery'),
-                promiseTrue(revisionDetail['background'] == revisedRequest['background'], 'background'),
-                promiseTrue(revisionDetail['researchQuestion'] == revisedRequest['research question'], 'research question'),
-                promiseTrue(revisionDetail['hypothesis'] == revisedRequest['hypothesis'], 'hypothesis'),
-                promiseTrue(revisionDetail['methods'] == revisedRequest['methods'], 'methods'),
-                promiseTrue(revisionDetail['principalInvestigator']['name'] == revisedRequest['piName'], 'piName ' + revisionDetail['piName'] + ' ' + revisedRequest['piName']),
-                promiseTrue(revisionDetail['principalInvestigator']['email'] == revisedRequest['piEmail'], 'piEmail'),
-                promiseTrue(revisionDetail['principalInvestigator']['jobTitle'] == revisedRequest['piFunction'], 'piFunction'),
-                promiseTrue(revisionDetail['principalInvestigator']['affiliation'] == revisedRequest['piAffiliation'], 'piAffiliation'),
-                promiseTrue(body['organisations'][0]['name'] == director.getData(revisedRequest['organisations'][0])['name'], 'organisations'),
-                promiseTrue(JSON.stringify(revisionDetail['requestType'].sort(alphabetically)) == JSON.stringify(revisedRequest['requestTypes'].sort(alphabetically)), 'requestTypes')
-            ])
+            return checkRequestDetails(revisionDetail, revisedRequest).then(() => {
+                return promiseTrue(body['organisations'][0]['name'] == director.getData(revisedRequest['organisations'][0])['name'], 'organisations')
+            });
         })
-
     });
 
     When(/^(.*) sends the request for review$/, function (personaName): Promise<any> {
@@ -446,6 +558,21 @@ defineSupportCode(({ Given, When, Then }) => {
         });
     });
 });
+
+function checkRequestDetails(details, request) {
+    let pi = details['principalInvestigator'];
+
+    return Promise.all([
+        ...['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
+            'searchQuery', 'combinedRequest'].map((field) => {
+            return promiseTrue(details[field] == request[field], `data for field ${field} did not match details: \n ${JSON.stringify(details)} \n expected: \n ${JSON.stringify(request)}`)
+        }),
+        ...['name', 'email', 'jobTitle', 'affiliation'].map((field) => {
+            return promiseTrue(pi[field] == request[field], `data for field ${field} did not match pi: \n ${JSON.stringify(pi)} \n expected: \n ${JSON.stringify(request)}`)
+        }),
+        promiseTrue(JSON.stringify(details['requestType'].sort(alphabetically)) == JSON.stringify(request['requestType'].sort(alphabetically)), `${JSON.stringify(details['requestType'].sort(alphabetically))} ${JSON.stringify(request['requestType'].sort(alphabetically))}`)
+    ])
+}
 
 function alphabetically(a, b) {
     if (a < b) return -1;

@@ -7,9 +7,8 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { browser, $ } from 'protractor';
+import { $, browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import ProfileForm = require("./modules/profile-form")
 
 
 /*
@@ -35,14 +34,14 @@ class ReviseRequestsPage {
             "new draft": { locator: $('button[type=button]') },
             "title": { locator: $('input[name=title]') },
             "background": { locator: $('textarea[name=background]') },
-            "research question": { locator: $('textarea[name=researchQuestion]') },
+            "researchQuestion": { locator: $('textarea[name=researchQuestion]') },
             "hypothesis": { locator: $('textarea[name=hypothesis]') },
             "methods": { locator: $('textarea[name=methods]') },
-            "related request number": { locator: $('input[name=relatedRequestNumber]') },
-            "piName": { locator: $('input[name=piName]') },
-            "piEmail": { locator: $('input[name=piEmail]') },
-            "piFunction": { locator: $('input[name=piFunction]') },
-            "piAffiliation": { locator: $('input[name=piAffiliation]') },
+            "relatedRequestNumber": { locator: $('input[name=relatedRequestNumber]') },
+            "name": { locator: $('input[name=piName]') },
+            "email": { locator: $('input[name=piEmail]') },
+            "jobTitle": { locator: $('input[name=piFunction]') },
+            "affiliation": { locator: $('input[name=piAffiliation]') },
             "searchQuery": { locator: $('textarea[name=searchQuery]') },
             "Data": { locator: $('input[value=Data]') },
             "Images": { locator: $('input[value=Images]') },

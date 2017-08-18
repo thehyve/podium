@@ -9,11 +9,12 @@
  */
 import { Persona } from '../personas/templates';
 import { Promise } from 'es6-promise';
-import { $$, ElementArrayFinder, $ } from 'protractor';
+import { $, $$, ElementArrayFinder } from 'protractor';
 import { Director } from '../protractor-stories/director';
-import { login, promiseTrue, doInOrder, checkTextElement, checkInputElement, countIs } from './util';
+import { checkInputElement, checkTextElement, countIs, doInOrder, login, promiseTrue } from './util';
 import { ORGANISATION_AUTHORITIES_MAP } from '../../../../main/webapp/app/shared/authority/authority.constants';
 import { AdminConsole } from '../protractor-stories/admin-console';
+
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(({ Given, When, Then }) => {

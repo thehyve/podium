@@ -24,20 +24,20 @@ export class Organisation {
 interface Irequest {
     title: string;
     background: string;
-    "research question": string;
+    researchQuestion: string;
     hypothesis: string;
     methods: string;
-    "related request number": string;
-    piName: string;
-    piEmail: string;
-    piFunction: string;
-    piAffiliation: string;
+    relatedRequestNumber: string;
+    name: string;
+    email: string;
+    jobTitle: string;
+    affiliation: string;
     searchQuery: string;
-    requestTypes: string[];
+    requestType: string[];
     organisations: string[];
     combinedRequest?: boolean;
     status?: string;
-    requesterName?: string; //default user that creates this request
+    requesterDataId?: string; //default user that creates this request
 }
 
 export class Request {

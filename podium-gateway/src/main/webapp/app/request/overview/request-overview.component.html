@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let request of availableRequests; trackBy: trackId">
+                    <tr [ngClass]="'test-request-row-'+ request.requestDetail.title" *ngFor="let request of availableRequests; trackBy: trackId">
                         <td>
                             <span class="material-icons md-18"
                                   *ngIf="getIconForLinkedRequest(request.requestDetail.combinedRequest)">link</span>
@@ -107,7 +107,7 @@
                         <td class="test-requesterName" *ngIf="!isResearcherRoute()">
                             {{ request.requester.firstName }} {{ request.requester.lastName }}
                         </td>
-                        <td class="test-piName" *ngIf="!isResearcherRoute()">
+                        <td class="test-name" *ngIf="!isResearcherRoute()">
                             {{request.requestDetail.principalInvestigator.name || '-'}}
                         </td>
                         <td>

@@ -10,8 +10,8 @@
 import { Director, Persona } from '../protractor-stories/director';
 import { Promise } from 'es6-promise';
 import {
-    UserGroupAuthority,
-    OrganisationAuthorityOptions
+    OrganisationAuthorityOptions,
+    UserGroupAuthority
 } from '../../../../main/webapp/app/shared/authority/authority.constants';
 import { browser, ElementArrayFinder } from 'protractor';
 
@@ -64,7 +64,7 @@ export function checkCheckBox(element, expected) {
     })
 }
 
-export function roleToRoute(persona: Persona, orgShortName: string): string {
+export function roleToRoute(persona: Persona, orgShortName?: string): string {
     let roles = persona['authority'].filter((value) => {
         return value["orgShortName"] == orgShortName
     });
