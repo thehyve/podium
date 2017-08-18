@@ -148,9 +148,6 @@ public abstract class RequestMapper {
         // Copy related requests
         requestRepresentation.setRelatedRequests(this.minimalRequestsToRequestDTOs(request.getRelatedRequests()));
 
-        // Copy Outcome
-        requestRepresentation.setOutcome(request.getOutcome());
-
         return requestRepresentation;
     }
 

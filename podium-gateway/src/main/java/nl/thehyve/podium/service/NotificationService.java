@@ -139,8 +139,8 @@ public class NotificationService {
                 mailService.sendRejectionNotificationToRequester(requester, request);
                 break;
             default:
-                log.error("Unexpected review process outcome for request {}: {}. No notification sent.",
-                    requestUuid, request.getRequestReview().getDecision());
+                log.error("Unexpected status for request {}: {}. No notification sent.",
+                    requestUuid, request.getStatus());
         }
     }
 
