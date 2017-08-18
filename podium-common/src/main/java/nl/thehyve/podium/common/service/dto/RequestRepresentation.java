@@ -12,14 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestOutcome;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
-
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -56,8 +49,6 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     private ReviewRoundRepresentation reviewRound;
 
     private Set<RequestRepresentation> relatedRequests;
-
-    private RequestOutcome outcome = RequestOutcome.None;
 
     @Override
     @JsonIgnore

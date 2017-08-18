@@ -50,8 +50,8 @@ public class StatusUpdateEventListener {
             notificationService.reviewNotificationToReviewers(event.getRequestUuid());
         } else if (event.getTargetStatus() == OverviewStatus.Rejected) {
             notificationService.requestRejectedNotificationToRequester(event.getRequestUuid());
-        } else if ( event.getSourceStatus() == OverviewStatus.Review && event.getTargetStatus() != OverviewStatus
-            .Revision) {
+        } else if ( event.getSourceStatus() == OverviewStatus.Review &&
+            event.getTargetStatus() != OverviewStatus.Revision) {
             // Send rejection email if rejected; send approval mail if approved
             notificationService.reviewProcessClosedNotificationToRequester(event.getRequestUuid());
         } else if (event.getTargetStatus() == OverviewStatus.Revision) {

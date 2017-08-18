@@ -19,7 +19,7 @@
             Dear
         </p>
 
-        <div th:switch="${request.getOutcome().name()}">
+        <div th:switch="${request.getStatus().name()}">
             <p th:case="'Delivered'">
             <span th:text="#{email.requesterRequestClosed.delivered(${request.getOrganisations().get(0).getName()})}">
                 Organisation [organisation] has finished your request. All deliveries for the request have been successfully completed.
