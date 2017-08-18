@@ -12,11 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestOutcome;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
-
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -59,5 +55,8 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     public UUID getRequestUuid() {
         return uuid;
     }
+
+    // Here because otherwise an id of 1500 gets turned into 1,500 in some places
+    public String generateStringId() { return Long.toString(this.id); }
 
 }

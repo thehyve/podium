@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.requesterRequestClosed.title(${request.getOrganisations().get(0).getName()})}">BBMRI Podium Request Portal &ndash; Request finished by [organisation]</title>
+        <title th:text="#{email.requesterRequestClosed.title(${request.generateStringId()}, ${request.getOrganisations().get(0).getName()})}">BBMRI Podium Request Portal &ndash; Request finished by [organisation]</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -19,7 +19,7 @@
             Dear
         </p>
 
-        <div th:switch="${request.getOutcome().name()}">
+        <div th:switch="${request.getStatus().name()}">
             <p th:case="'Delivered'">
             <span th:text="#{email.requesterRequestClosed.delivered(${request.getOrganisations().get(0).getName()})}">
                 Organisation [organisation] has finished your request. All deliveries for the request have been successfully completed.
@@ -63,9 +63,11 @@
             <br/>
             <span th:text="#{email.signature.group}">BBMRI Request Portal</span>
             <br/>
-            <span th:text="#{email.signature.email}">E-mail: servicedesk@ctmm-trait.nl</span>
+            <span th:text="#{email.signature.email}">E-mail: servicedesk@trait-platform.org</span>
             <br/>
             <span th:text="#{email.signature.servicelink}">Selfservice: http://trait.topdesk.net</span>
+            <br/>
+            <span th:text="#{email.signature.website}">Website: www.trait-platform.org</span>
             <br/>
             <span th:text="#{email.signature.telephone}">Telephone: +31 (0)881167500</span>
         </p>

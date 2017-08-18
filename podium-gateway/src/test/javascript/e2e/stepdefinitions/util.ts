@@ -10,10 +10,10 @@
 import { Director, Persona } from '../protractor-stories/director';
 import { Promise } from 'es6-promise';
 import {
-    UserGroupAuthority,
-    OrganisationAuthorityOptions
+    OrganisationAuthorityOptions,
+    UserGroupAuthority
 } from '../../../../main/webapp/app/shared/authority/authority.constants';
-import { ElementArrayFinder } from 'protractor';
+import { browser, ElementArrayFinder } from 'protractor';
 
 export function login(director: Director, persona: Persona) {
     director.goToPage('sign in');
@@ -22,7 +22,7 @@ export function login(director: Director, persona: Persona) {
         director.enterText('passwordInput', persona['password'])
     ]).then(function () {
         return director.clickOn('submitButton').then(function () {
-            return director.waitForPage('Dashboard');
+            return browser.waitForAngular()
         });
     })
 }
@@ -64,7 +64,7 @@ export function checkCheckBox(element, expected) {
     })
 }
 
-export function roleToRoute(persona: Persona, orgShortName: string): string {
+export function roleToRoute(persona: Persona, orgShortName?: string): string {
     let roles = persona['authority'].filter((value) => {
         return value["orgShortName"] == orgShortName
     });

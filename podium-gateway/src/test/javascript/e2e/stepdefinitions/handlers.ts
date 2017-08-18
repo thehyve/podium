@@ -10,6 +10,7 @@
 import { browser } from 'protractor';
 import { Promise } from 'es6-promise';
 import { AdminConsole } from '../protractor-stories/admin-console';
+
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ registerHandler }) {
@@ -26,9 +27,11 @@ defineSupportCode(function ({ registerHandler }) {
         }, () => {
             browser.driver.quit(); //clean up the driver instance
             return Promise.reject("\n\n" +
-                "   =================================================\n" +
-                "   !!COULD NOT LOG INTO PODIUM. SKIPPING ALL TESTS!!\n" +
-                "   =================================================\n");
+                "   ==================================================\n" +
+                "   !!COULD NOT LOG INTO PODIUM. SKIPPING ALL TESTS !!\n" +
+                "   Make sure podium registry uaa and gateway are " +
+                "   running with the dev profile\n" +
+                "   ==================================================\n");
         })
     });
 });

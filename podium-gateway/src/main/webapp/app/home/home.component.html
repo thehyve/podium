@@ -22,7 +22,7 @@
                 <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Firefox</a>.
             </div>
             <b class="clearfix"></b>
-            <pdm-login></pdm-login>
+            <pdm-login *ngIf="!isAuthenticated()"></pdm-login>
         </div>
     </div>
     <pdm-footer></pdm-footer>

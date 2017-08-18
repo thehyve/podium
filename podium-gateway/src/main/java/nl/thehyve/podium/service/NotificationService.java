@@ -131,7 +131,7 @@ public class NotificationService {
         // Fetch requester data through Feign.
         UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
 
-        switch (request.getRequestReview().getDecision()) {
+        switch (request.getStatus()) {
             case Approved:
                 mailService.sendRequestApprovalNotificationToRequester(requester, request);
                 break;
@@ -139,8 +139,8 @@ public class NotificationService {
                 mailService.sendRejectionNotificationToRequester(requester, request);
                 break;
             default:
-                log.error("Unexpected review process outcome for request {}: {}. No notification sent.",
-                    requestUuid, request.getRequestReview().getDecision());
+                log.error("Unexpected status for request {}: {}. No notification sent.",
+                    requestUuid, request.getStatus());
         }
     }
 
@@ -285,5 +285,17 @@ public class NotificationService {
         // Fetch requester data through Feign.
         UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
         mailService.sendRequestClosedNotificationToRequester(requester, request);
+    }
+
+    /**
+     * Send a request rejected notification to the requester.
+     * @param requestUuid the uuid of the request.
+     */
+    @Async
+    public void requestRejectedNotificationToRequester(UUID requestUuid) {
+        RequestRepresentation request = requestService.findRequest(requestUuid);
+        // Fetch requester data through Feign.
+        UserRepresentation requester = this.fetchUserThroughFeign(request.getRequester().getUuid());
+        mailService.sendRejectionNotificationToRequester(requester, request);
     }
 }

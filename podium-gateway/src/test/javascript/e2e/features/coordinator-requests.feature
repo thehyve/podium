@@ -5,7 +5,7 @@ Feature: Organization coordinators can manage requests for their organization (B
     Scenario: BRPREQ-23, As an organisation coordinator I want to see an overview of requests for my organization
         Given Databank_Coordinator goes to the 'organisation request overview' page
         When he sorts by 'Title'
-        Then the overview contains the request's 'title, status, requestTypes, organisations, requesterName, piName' for the requests 'Request02'
+        Then the overview contains the request's 'title, status, requestTypes, organisations, requesterName, name' for the requests 'Request02'
 
     @default
     @request

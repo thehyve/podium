@@ -77,15 +77,15 @@
             "pageHeader": "Request {{requestId}} to {{ organisation }}",
             "title": "Title",
             "background": "Background",
-            "researchQuestion": "Research Question",
+            "researchQuestion": "Research Question(s)",
             "hypothesis": "Hypothesis",
             "methods": "Methods",
             "relatedRequestNumber": "Related Request Number",
             "principalInvestigator": "Principal Investigator",
-            "searchQuery": "Search Query",
+            "searchQuery": "Search Criteria",
             "isLinked": "Linked Request",
             "requestTypes": "Request Types",
-            "organisations": "Organisations",
+            "organisations": "Organisation(s)",
             "organisation": "Organisation"
         },
         "review": {
@@ -133,23 +133,30 @@
                 "new": "New Request",
                 "edit": "Edit Request",
                 "researchProposal": "Research Proposal",
+                "researchProposalTooltip": "Necessary information to understand research question and therefore helps in the approval/review process of your request.",
                 "principalInvestigator": "Principal Investigator Details",
                 "requestDetails": "Request Details",
                 "additionalInformation": "Additional Information",
-                "organisations": "Organisations",
+                "organisations": "Organisation(s)",
                 "selectDraft": "Select draft or create new request"
             },
             "title": {
                 "label": "Title",
-                "placeholder": "Request title"
+                "placeholder": "Title of your research"
             },
             "requestType": {
                 "label": "Request Type(s)*",
-                "footnote": "* Changing this value will clear organisation selection."
+                "footnote": "* Changing this value will clear organisation selection.",
+                "tooltip": "Based on your request type(s) selection, only organisations will be shown that have the requested request type(s) available."
+            },
+            "organisations": {
+                "label": "Organisation(s)",
+                "tooltip": "Select one or more organisation(s) to submit your request to. By holding the control button you can select multiple organisations."
             },
             "isLinked": {
                 "label": "Linked Request",
-                "placeHolder": "Is a linked request",
+                "tooltip": "A linked request is a request composed of (different) data types from different organizations for which the resulting datasets needs to be linked by subject and/or sample. (eg. materials from PALGA and data from PHARMO)",
+                "placeHolder": "Indicator whether or not your request is a linked request",
                 "yes": "Yes",
                 "no": "No"
             },
@@ -158,8 +165,8 @@
                 "placeholder": "Your research background description"
             },
             "researchQuestion": {
-                "label": "Research Question",
-                "placeholder": "Your research question"
+                "label": "Research Question(s)",
+                "placeholder": "Your research question(s)"
             },
             "hypothesis": {
                 "label": "Hypothesis / Goals",
@@ -167,7 +174,7 @@
             },
             "methods": {
                 "label": "Methods",
-                "placeholder": "Your research methods"
+                "placeholder": "Your research methods that will be applied to answer proposed research question"
             },
             "relatedRequestNumber": {
                 "label": "Related Request Number",
@@ -193,8 +200,8 @@
             },
 
             "searchQuery": {
-                "label": "Search Query",
-                "placeholder": "Search query for sample selection"
+                "label": "Search Criteria",
+                "placeholder": "eg. DNA samples from male patients >50 year with Prostate Cancer"
             },
 
             "messages": {
@@ -257,9 +264,9 @@
                         }
                     },
                     "searchQuery": {
-                        "required": "Search query is required.",
-                        "minlength": "Search query has to be at least 1 character long.",
-                        "maxlength": "Search query cannot be longer than 500 characters."
+                        "required": "Search criteria is required.",
+                        "minlength": "Search criteria has to be at least 1 character long.",
+                        "maxlength": "Search criteria cannot be longer than 500 characters."
                     },
                     "combinedRequest": {
                         "required": ""

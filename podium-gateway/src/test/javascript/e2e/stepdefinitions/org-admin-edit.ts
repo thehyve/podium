@@ -9,12 +9,13 @@
  */
 import { doInOrder } from './util';
 import { Director } from '../protractor-stories/director';
-import { protractor, by, browser } from 'protractor';
+import { browser, by, protractor } from 'protractor';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { isUndefined } from 'util';
 import { Promise } from 'es6-promise';
 import { Persona } from '../personas/templates';
 import { Organisation } from '../data/templates';
+
 let { defineSupportCode } = require('cucumber');
 
 

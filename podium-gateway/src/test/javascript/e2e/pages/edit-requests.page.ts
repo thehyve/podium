@@ -9,13 +9,14 @@
  */
 import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import OrganisationsOverviewCommon = require("./modules/organisations-overview");
+import requestEditForm = require("./modules/request-edit-form");
+
 
 /*
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class OrganisationsConfigurationPage {
+class NewRequestsPage {
     public name: string;
     public url: string;
     public elements: { [name: string]: Interactable };
@@ -28,12 +29,12 @@ class OrganisationsConfigurationPage {
     }
 
     constructor() {
-        this.name = "organisation configuration";
-        this.url = "#/organisation/management";
+        this.name = "edit requests";
+        this.url = "#/requests/edit";
         this.elements = {
-            ...OrganisationsOverviewCommon(),
+            ...requestEditForm()
         }
     }
 }
 
-export = OrganisationsConfigurationPage;
+export = NewRequestsPage;

@@ -13,7 +13,7 @@ import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';
 import { PodiumEvent } from './podium-event';
 import { RequestAccessService } from '../request/request-access.service';
-import { RequestStatusOptions } from '../request/request-status/request-status.constants';
+import { RequestOverviewStatusOption, RequestStatusOptions } from '../request/request-status/request-status.constants';
 import { Subscription } from 'rxjs';
 import { RequestStatusUpdateAction } from '../status-update/request-update-action';
 
@@ -72,7 +72,7 @@ export class PodiumEventMessageComponent implements OnInit, OnDestroy {
         if (!this.lastEvent) {
             return false;
         }
-        let closedAction = RequestStatusOptions.Closed;
+        let closedAction = RequestOverviewStatusOption.Rejected;
         return this.lastEvent.data.targetStatus === closedAction.toLocaleString();
     }
 

@@ -11,7 +11,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title th:text="#{email.organisationRequestRevisionSubmitted.title}">BBMRI Podium Request Portal &ndash; request revision has been submitted</title>
+        <title th:text="#{email.organisationRequestRevisionSubmitted.title(${request.generateStringId()})}">BBMRI Podium Request Portal &ndash; {0} request revision has been submitted</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -39,9 +39,11 @@
             <br/>
             <span th:text="#{email.signature.group}">BBMRI Request Portal</span>
             <br/>
-            <span th:text="#{email.signature.email}">E-mail: servicedesk@ctmm-trait.nl</span>
+            <span th:text="#{email.signature.email}">E-mail: servicedesk@trait-platform.org</span>
             <br/>
             <span th:text="#{email.signature.servicelink}">Selfservice: http://trait.topdesk.net</span>
+            <br/>
+            <span th:text="#{email.signature.website}">Website: www.trait-platform.org</span>
             <br/>
             <span th:text="#{email.signature.telephone}">Telephone: +31 (0)881167500</span>
         </p>

@@ -12,7 +12,8 @@ import { Promise } from 'es6-promise';
 import { Director } from '../protractor-stories/director';
 import { AdminConsole } from '../protractor-stories/admin-console';
 import { $ } from 'protractor';
-import { login, promiseTrue, doInOrder, copyData } from './util';
+import { copyData, doInOrder, login, promiseTrue } from './util';
+
 let { defineSupportCode } = require('cucumber');
 
 defineSupportCode(function ({ setDefaultTimeout }) {

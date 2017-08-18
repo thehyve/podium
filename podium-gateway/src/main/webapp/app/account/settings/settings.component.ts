@@ -10,6 +10,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
+import { User } from '../../shared/user/user.model';
 
 @Component({
     selector: 'pdm-settings',
@@ -18,7 +19,7 @@ import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
 export class SettingsComponent implements OnInit {
     error: string;
     success: string;
-    settingsAccount: any;
+    settingsAccount: User;
     languages: any[];
 
     constructor(
@@ -31,7 +32,7 @@ export class SettingsComponent implements OnInit {
 
     ngOnInit () {
         this.principal.identity().then((account) => {
-            this.settingsAccount = this.copyAccount(account);
+            this.settingsAccount = SettingsComponent.copyAccount(account);
         });
         this.languageHelper.getAll().then((languages) => {
             this.languages = languages;
@@ -43,7 +44,7 @@ export class SettingsComponent implements OnInit {
             this.error = null;
             this.success = 'OK';
             this.principal.identity(true).then((account) => {
-                this.settingsAccount = this.copyAccount(account);
+                this.settingsAccount = SettingsComponent.copyAccount(account);
             });
             this.languageService.getCurrent().then((current) => {
                 if (this.settingsAccount.langKey !== current) {
@@ -56,7 +57,7 @@ export class SettingsComponent implements OnInit {
         });
     }
 
-    copyAccount (account) {
+    static copyAccount (account): any {
         return {
             activated: account.activated,
             specialism: account.specialism,

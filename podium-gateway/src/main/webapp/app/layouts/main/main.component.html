@@ -11,14 +11,15 @@
 <pdm-page-ribbon></pdm-page-ribbon>
 <div>
     <router-outlet name="navbar"></router-outlet>
-    <pdm-breadcrumb #parent>
-        <nav class="breadcrumb">
-            <template ngFor let-route [ngForOf]="parent.breadcrumbs">
-                <a    *ngIf="!route.terminal" class="breadcrumb-item" href="" [routerLink]="[route.url]">{{ route.displayName }}</a>
-                <span *ngIf="route.terminal"  class="breadcrumb-item active">{{ route.displayName }}</span>
-            </template>
-        </nav>
-    </pdm-breadcrumb>
+     <!--FIXME-->
+    <!--<pdm-breadcrumb #parent>-->
+        <!--<nav class="breadcrumb">-->
+            <!--<template ngFor let-route [ngForOf]="parent.breadcrumbs">-->
+                <!--<a    *ngIf="!route.terminal" class="breadcrumb-item" href="" [routerLink]="[route.url]">{{ route.displayName }}</a>-->
+                <!--<span *ngIf="route.terminal"  class="breadcrumb-item active">{{ route.displayName }}</span>-->
+            <!--</template>-->
+        <!--</nav>-->
+    <!--</pdm-breadcrumb>-->
 </div>
 <div>
     <template ngbModalContainer></template>

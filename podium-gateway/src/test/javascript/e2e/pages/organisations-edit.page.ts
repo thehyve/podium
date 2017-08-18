@@ -9,7 +9,7 @@
  */
 import { browser } from 'protractor';
 import { Interactable } from '../protractor-stories/director';
-import OrganisationsDetailsCommon = require("./modules/organisations-details")
+import OrganisationsDetailsCommon = require("./modules/organisations-details");
 
 
 /*
