@@ -16,6 +16,7 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
+import nl.thehyve.podium.common.service.dto.ExternalRequestRepresentation;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
 import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
 import nl.thehyve.podium.service.DraftService;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -577,4 +579,23 @@ public class RequestResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    /**
+     * Handle external request to create a new request draft
+     *
+     * @return redirect to request form with filled in data
+     */
+    @PostMapping("/requests/external/new")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<RequestRepresentation> externalRequest(@RequestBody ExternalRequestRepresentation json) throws URISyntaxException {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        log.debug("Create new external draft for user: {}\nWith data: {}", user, json);
+        RequestRepresentation result = draftService.createDraft(user);
+        log.debug("Result: {}", result.getUuid());
+        return ResponseEntity.created(new URI("/api/requests/drafts"))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+
+    }
 }
