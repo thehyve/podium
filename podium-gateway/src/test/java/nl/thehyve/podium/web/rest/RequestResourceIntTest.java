@@ -721,15 +721,12 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         externalRequestRepresentation.setNToken("nToken1");
 
         Map<String, String> collect1 = new HashMap<>();
-        collect1.put("collectionID", "1073d5e1-5b4f-4c02-8fbe-137af0593bfb" );
+
+        collect1.put("collectionID", organisationUuid1.toString() );
         collect1.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
-        Map<String, String> collect2 = new HashMap<>();
-        collect2.put("collectionID", "1073d5e1-5b4f-4c02-8fbe-137af0593bfb" );
-        collect2.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
 
         ArrayList<Map<String, String>> collections = new ArrayList<>();
         collections.add(collect1);
-        collections.add(collect2);
         externalRequestRepresentation.setCollections(collections);
 
         // Submit ext req
@@ -746,9 +743,10 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result rejected request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(OverviewStatus.Rejected, requestResult.getStatus());
-            })
-            .andExpect(status().isOk());
+                Assert.assertEquals(OverviewStatus.Draft, requestResult.getStatus());
+                Assert.assertEquals("This is a test search query for external requests",
+                    requestResult.getRequestDetail().getSearchQuery());
+            });
     }
 
 }
