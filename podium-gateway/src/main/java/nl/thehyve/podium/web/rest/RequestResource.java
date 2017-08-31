@@ -62,8 +62,6 @@ public class RequestResource {
     @Autowired
     private SecurityService securityService;
 
-    @Autowired
-    private OrganisationClientService organisationClientService;
 
     /**
      * Fetch drafts for the current user
@@ -579,7 +577,7 @@ public class RequestResource {
     }
 
     /**
-     * Handle external request to create a new request draft
+     * Accept external request data and create a new request draft
      *
      * @return redirect to request form with filled in data
      */
@@ -592,22 +590,7 @@ public class RequestResource {
         log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
 
         RequestRepresentation result = draftService.createDraft(user);
-        RequestDetailRepresentation detail = result.getRequestDetail();
-
-        detail.setSearchQuery(externalRequestRepresentation.getHumanReadable());
-
-        ArrayList<Map<String, String>> collections = externalRequestRepresentation.getCollections();
-
-        // Get the String id's from the exteral request and turn them into a list of relevant organisations
-        List<OrganisationRepresentation> organisations = new ArrayList<>();
-        collections.forEach(collection -> organisations.add(
-            organisationClientService.findOrganisationByUuidCached(UUID.fromString(collection.get("collectionID")))));
-        result.setOrganisations(organisations);
-
-        Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material));
-        detail.setRequestType(allTypes);
-
-        result.setRequestDetail(detail);
+        result = requestService.createExternalRequest(result, user, externalRequestRepresentation);
         draftService.updateDraft(user, result);
 
         log.debug("Result: {}", result.getUuid());
