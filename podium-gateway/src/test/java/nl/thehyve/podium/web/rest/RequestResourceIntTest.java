@@ -740,7 +740,8 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
         externalRequest
             .andDo(result -> {
-                log.info("Result rejected request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.info("Result rejected request: {} ({})", result.getResponse().getStatus(),
+                    result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(OverviewStatus.Draft, requestResult.getStatus());

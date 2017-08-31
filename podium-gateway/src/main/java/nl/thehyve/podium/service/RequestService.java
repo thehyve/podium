@@ -585,7 +585,8 @@ public class RequestService {
      * @param externalRequestRepresentation the data given to us from the external party
      * @return Filled in RequestRepresentation
      */
-     public RequestRepresentation createExternalRequest(RequestRepresentation newRequest, AuthenticatedUser user, ExternalRequestRepresentation externalRequestRepresentation){
+     public RequestRepresentation createExternalRequest(RequestRepresentation newRequest, AuthenticatedUser user,
+                                                        ExternalRequestRepresentation externalRequestRepresentation){
          RequestDetailRepresentation detail = newRequest.getRequestDetail();
 
          detail.setSearchQuery(externalRequestRepresentation.getHumanReadable());
@@ -598,7 +599,8 @@ public class RequestService {
              organisationClientService.findOrganisationByUuidCached(UUID.fromString(collection.get("collectionID")))));
          newRequest.setOrganisations(organisations);
 
-         Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material));
+         Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images,
+             RequestType.Material));
          detail.setRequestType(allTypes);
 
          newRequest.setRequestDetail(detail);

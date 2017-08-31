@@ -584,7 +584,9 @@ public class RequestResource {
     @PostMapping("/requests/external/new")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity<RequestRepresentation> externalRequest(@RequestBody ExternalRequestRepresentation externalRequestRepresentation) throws URISyntaxException, ActionNotAllowed {
+    public ResponseEntity<RequestRepresentation> externalRequest(
+        @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
+        throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
 
         log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
