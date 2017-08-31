@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
+import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -16,11 +17,10 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
-import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
+import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.service.DraftService;
+import nl.thehyve.podium.service.OrganisationClientService;
 import nl.thehyve.podium.service.RequestService;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.service.ReviewService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
@@ -37,9 +37,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * REST controller for managing Request.
@@ -63,6 +61,7 @@ public class RequestResource {
 
     @Autowired
     private SecurityService securityService;
+
 
     /**
      * Fetch drafts for the current user
@@ -577,4 +576,29 @@ public class RequestResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    /**
+     * Accept external request data and create a new request draft
+     *
+     * @return redirect to request form with filled in data
+     */
+    @PostMapping("/requests/external/new")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<RequestRepresentation> externalRequest(
+        @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
+        throws URISyntaxException, ActionNotAllowed {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
+
+        RequestRepresentation result = draftService.createDraft(user);
+        result = requestService.createExternalRequest(result, user, externalRequestRepresentation);
+        draftService.updateDraft(user, result);
+
+        log.debug("Result: {}", result.getUuid());
+        return ResponseEntity.created(new URI("/api/requests/drafts"))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+
+    }
 }
