@@ -11,10 +11,10 @@ import lombok.Data;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.validation.Required;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,7 +55,7 @@ public class RequestDetailRepresentation implements Serializable {
     private PrincipalInvestigatorRepresentation principalInvestigator;
 
     @Required
-    @Size(max = 500)
+    @Column(columnDefinition="TEXT")
     private String searchQuery;
 
     private Set<RequestType> requestType;
