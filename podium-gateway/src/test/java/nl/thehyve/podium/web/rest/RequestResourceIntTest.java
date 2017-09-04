@@ -20,6 +20,7 @@ import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
 import nl.thehyve.podium.repository.ReviewRoundRepository;
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
@@ -60,7 +54,6 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
     @Autowired
     private ReviewFeedbackRepository reviewFeedbackRepository;
-
 
     @Test
     public void createDraft() throws Exception {
@@ -715,6 +708,46 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result of submitting feedback by wrong user: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
             });
 
+    }
+
+    @Test
+    public void acceptExternalRequest() throws Exception {
+        initMocks();
+
+        // Create ext req data
+        ExternalRequestRepresentation externalRequestRepresentation = new ExternalRequestRepresentation();
+        externalRequestRepresentation.setUrl("http://test.url");
+        externalRequestRepresentation.setHumanReadable("This is a test search query for external requests");
+        externalRequestRepresentation.setNToken("nToken1");
+
+        Map<String, String> collect1 = new HashMap<>();
+
+        collect1.put("collectionID", organisationUuid1.toString() );
+        collect1.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
+
+        ArrayList<Map<String, String>> collections = new ArrayList<>();
+        collections.add(collect1);
+        externalRequestRepresentation.setCollections(collections);
+
+        // Submit ext req
+        ResultActions externalRequest = mockMvc.perform(
+            getRequest(HttpMethod.POST,
+                "/api/requests/external/new",
+                externalRequestRepresentation,
+                Collections.emptyMap())
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON));
+
+        externalRequest
+            .andDo(result -> {
+                log.info("Result rejected request: {} ({})", result.getResponse().getStatus(),
+                    result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(OverviewStatus.Draft, requestResult.getStatus());
+                Assert.assertEquals("This is a test search query for external requests",
+                    requestResult.getRequestDetail().getSearchQuery());
+            });
     }
 
 }
