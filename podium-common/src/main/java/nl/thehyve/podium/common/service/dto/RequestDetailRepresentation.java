@@ -55,7 +55,6 @@ public class RequestDetailRepresentation implements Serializable {
     private PrincipalInvestigatorRepresentation principalInvestigator;
 
     @Required
-    @Column(columnDefinition="TEXT")
     private String searchQuery;
 
     private Set<RequestType> requestType;

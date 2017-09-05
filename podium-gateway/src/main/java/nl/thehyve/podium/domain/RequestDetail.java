@@ -78,7 +78,7 @@ public class RequestDetail implements Serializable {
     @Fetch(FetchMode.JOIN)
     private PrincipalInvestigator principalInvestigator;
 
-    @Column(name = "search_query", length = 500)
+    @Column(name = "search_query", columnDefinition="TEXT")
     private String searchQuery;
 
     @ElementCollection(targetClass = RequestType.class, fetch = FetchType.EAGER)
