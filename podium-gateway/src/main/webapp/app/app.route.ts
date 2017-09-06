@@ -14,18 +14,21 @@ import { dashboardRoute } from './dashboard/dashboard.route';
 import { navbarRoute } from './shared/navbar/navbar.route';
 import { errorRoute } from './shared/error/error.route';
 import { completedRoute } from './shared/completed/completed.route';
+import { notFoundRoute } from './shared/not-found/not-found.route';
 
 let LAYOUT_ROUTES = [
     homeRoute,
     dashboardRoute,
     navbarRoute,
+    ...notFoundRoute,
     ...errorRoute,
-    ...completedRoute
+    ...completedRoute,
+    { path: '**', redirectTo: '/404' }
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(LAYOUT_ROUTES, { useHash: true })
+        RouterModule.forRoot(LAYOUT_ROUTES, {useHash: true})
     ],
     exports: [
         RouterModule

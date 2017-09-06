@@ -30,14 +30,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         BreadcrumbsModule.forRoot(),
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
         BrowserModule,
-        AppRoutingModule,
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
         PodiumGatewayAccountModule,
         PodiumGatewayBbmriBackofficeModule,
         PodiumGatewayOrganisationBackofficeModule,
-        PodiumGatewayPodiumBackofficeModule
+        PodiumGatewayPodiumBackofficeModule,
+        AppRoutingModule
     ],
     declarations: [
         DashboardComponent,
