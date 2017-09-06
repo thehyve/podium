@@ -8,9 +8,8 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { Message } from '../../shared/message/message.model';
-import { MessageService } from '../../shared/message/message.service';
+import { Message } from '../message/message.model';
+import { MessageService } from '../message/message.service';
 import { Router } from '@angular/router';
 import { CompletionType } from './completion-type';
 

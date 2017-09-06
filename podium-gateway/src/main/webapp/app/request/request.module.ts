@@ -29,7 +29,6 @@ import { RequestDeliveryPanelComponent } from './request-delivery-panel/request-
 import { DeliveryService } from '../shared/delivery/delivery.service';
 import { DeliveryStatusUpdateDialogComponent } from '../shared/delivery-update/delivery-update.component';
 import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-dialog/request-finalize-dialog.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
