@@ -15,8 +15,12 @@
     <property name="now" value="GETDATE()" dbms="mssql"/>
 
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
-    <changeSet author="gijs@thehyve.nl" id="20170609105528-1">
-        <addNotNullConstraint columnDataType="uuid" columnName="reviewer" tableName="review_feedback"/>
+
+    <changeSet id="20170905101804-1" author="frankbijlsma">
+
+        <modifyDataType columnName="search_query"
+                        newDataType="text"
+                        tableName="request_detail"/>
     </changeSet>
 
 </databaseChangeLog>
