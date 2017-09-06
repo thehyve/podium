@@ -8,18 +8,24 @@
  *
  */
 
-import { Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { NotFoundComponent } from './not-found.component';
-import { UserRouteAccessService } from '../auth/user-route-access-service';
+import { NgModule } from '@angular/core';
 
-export const notFoundRoute: Routes = [
-    {
-        path: '404',
-        component: NotFoundComponent,
-        data: {
-            authorities: [],
-            pageTitle: 'error.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
+@NgModule({
+    imports: [
+        RouterModule.forChild([
+            {
+                path: '**',
+                component: NotFoundComponent
+            }
+        ])
+    ],
+    declarations: [
+        NotFoundComponent
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class NotFoundRoutingModule { }

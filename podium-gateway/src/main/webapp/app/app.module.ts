@@ -22,6 +22,7 @@ import { AppRoutingModule } from './app.route';
 import { HomeComponent } from './home/home.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
 
 @NgModule({
     imports: [
@@ -30,6 +31,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         BreadcrumbsModule.forRoot(),
         Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
         BrowserModule,
+        AppRoutingModule,
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         PodiumGatewayRequestModule,
@@ -37,7 +39,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         PodiumGatewayBbmriBackofficeModule,
         PodiumGatewayOrganisationBackofficeModule,
         PodiumGatewayPodiumBackofficeModule,
-        AppRoutingModule
+        NotFoundRoutingModule
     ],
     declarations: [
         DashboardComponent,

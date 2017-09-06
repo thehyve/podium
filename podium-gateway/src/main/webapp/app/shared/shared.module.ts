@@ -37,7 +37,6 @@ import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
 import { ErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { NotFoundComponent } from './not-found/not-found.component';
 import { ProfileService } from './profiles/profile.service';
 import { RouterModule } from '@angular/router';
 
@@ -65,7 +64,6 @@ import { RouterModule } from '@angular/router';
         CompletedComponent,
         ErrorComponent,
         NavbarComponent,
-        NotFoundComponent,
     ],
     providers: [
         ProfileService,

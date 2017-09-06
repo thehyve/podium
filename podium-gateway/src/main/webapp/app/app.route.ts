@@ -7,6 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
+
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { homeRoute } from './home/home.route';
@@ -14,16 +15,13 @@ import { dashboardRoute } from './dashboard/dashboard.route';
 import { navbarRoute } from './shared/navbar/navbar.route';
 import { errorRoute } from './shared/error/error.route';
 import { completedRoute } from './shared/completed/completed.route';
-import { notFoundRoute } from './shared/not-found/not-found.route';
 
 let LAYOUT_ROUTES = [
     homeRoute,
     dashboardRoute,
     navbarRoute,
-    ...notFoundRoute,
     ...errorRoute,
-    ...completedRoute,
-    { path: '**', redirectTo: '/404' }
+    ...completedRoute
 ];
 
 @NgModule({
@@ -34,5 +32,4 @@ let LAYOUT_ROUTES = [
         RouterModule
     ]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}
