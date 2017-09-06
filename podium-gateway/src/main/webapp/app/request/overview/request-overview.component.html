@@ -41,104 +41,109 @@
         <div class="table-responsive" *ngIf="availableRequests">
             <table class="table table-striped">
                 <thead>
-                    <tr  jhiSort [(predicate)]="predicate" [(ascending)]="reverse"
-                         [callback]="transitionRequests.bind(this)">
-                        <th jhiSortBy="requestDetail.combinedRequest">
-                            <span class="material-icons  md-18">link</span>
-                            <span class="fa fa-sort"></span>
-                        </th>
-                        <th jhiSortBy="id">
-                            <span>Request id</span>
-                            <span class="fa fa-sort"></span>
-                        </th>
-                        <th jhiSortBy="requestDetail.title">
-                            <span>Title</span>
-                            <span class="fa fa-sort"></span>
-                        </th>
-                        <th *ngIf="isActiveStatus(statusSidebarOptions.All)">
-                            <span>Status</span>
-                        </th>
-                        <th><span>Request type(s)</span></th>
-                        <th><span>Organisation(s)</span></th>
-                        <th *ngIf="!isResearcherRoute()">
-                            <span>Requester</span>
-                        </th>
-                        <th jhiSortBy="requestDetail.principalInvestigator.name" *ngIf="!isResearcherRoute()">
-                            <span>Principal investigator</span>
-                            <span class="fa fa-sort"></span>
-                        </th>
-                        <th jhiSortBy="createdDate">
-                            <span>Date created</span>
-                            <span class="fa fa-sort"></span>
-                        </th>
-                        <th></th>
-                    </tr>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse"
+                    [callback]="transitionRequests.bind(this)">
+                    <th jhiSortBy="requestDetail.combinedRequest">
+                        <span class="material-icons  md-18">link</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
+                    <th jhiSortBy="id">
+                        <span>Request id</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
+                    <th jhiSortBy="requestDetail.title">
+                        <span>Title</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
+                    <th *ngIf="isActiveStatus(statusSidebarOptions.All)">
+                        <span>Status</span>
+                    </th>
+                    <th><span>Request type(s)</span></th>
+                    <th><span>Organisation(s)</span></th>
+                    <th *ngIf="!isResearcherRoute()">
+                        <span>Requester</span>
+                    </th>
+                    <th jhiSortBy="requestDetail.principalInvestigator.name" *ngIf="!isResearcherRoute()">
+                        <span>Principal investigator</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
+                    <th jhiSortBy="createdDate">
+                        <span>Date created</span>
+                        <span class="fa fa-sort"></span>
+                    </th>
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr [ngClass]="'test-request-row-'+ request.requestDetail.title" *ngFor="let request of availableRequests; trackBy: trackId">
-                        <td>
+                <tr [ngClass]="'test-request-row-'+ request.requestDetail.title"
+                    *ngFor="let request of availableRequests; trackBy: trackId">
+                    <td>
                             <span class="material-icons md-18"
                                   *ngIf="getIconForLinkedRequest(request.requestDetail.combinedRequest)">link</span>
-                        </td>
-                        <td class="test-id">
-                            {{request.id}}
-                        </td>
-                        <td class="test-title">
-                            {{request.requestDetail.title || '-'}}
-                        </td>
-                        <td class="test-status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
-                            <span jhiTranslate="requestSidebar.status.{{ request.status }}"></span>
-                        </td>
-                        <td>
-                            <ul class="overview-list-cell test-requestTypes">
-                                <li *ngFor="let requestType of request.requestDetail.requestType">
+                    </td>
+                    <td class="test-id">
+                        {{request.id}}
+                    </td>
+                    <td class="test-title">
+                        {{request.requestDetail.title || '-'}}
+                    </td>
+                    <td class="test-status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
+                        <span jhiTranslate="requestSidebar.status.{{ request.status }}"></span>
+                    </td>
+                    <td>
+                        <ul class="overview-list-cell test-requestTypes">
+                            <li *ngFor="let requestType of request.requestDetail.requestType">
                                     <span class="material-icons md-18">
                                         {{ getIconForRequestType(requestType)}}
                                     </span>
-                                    <span class="test-requestType-text">{{requestType}}</span>
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <ul class="overview-list-cell test-organisations" [ngClass]="{'draft-request': request.status == 'Draft'}">
-                                <li *ngFor="let organisation of request.organisations">{{organisation.name}}</li>
-                            </ul>
-                        </td>
-                        <td class="test-requesterName" *ngIf="!isResearcherRoute()">
-                            {{ request.requester.firstName }} {{ request.requester.lastName }}
-                        </td>
-                        <td class="test-name" *ngIf="!isResearcherRoute()">
-                            {{request.requestDetail.principalInvestigator.name || '-'}}
-                        </td>
-                        <td>
-                            {{request.createdDate | date:'shortDate' }}
-                        </td>
-                        <td class="text-xs-right">
-                            <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
-                                <button type="button" class="btn btn-primary btn-sm test-edit-btn"  (click)="editRequest(request)">
-                                    <i class="material-icons md-18">edit</i>
-                                    <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
-                                </button>
-                                <button type="submit" class="btn btn-danger btn-sm test-remove-btn" (click)="deleteDraft(request)">
-                                    <i class="material-icons md-18">remove_circle_outline</i>
-                                    <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
-                                </button>
-                            </div>
-                            <button type="button"
-                                    class="btn btn-primary btn-sm test-details-btn" (click)="navigateToRequestDetail(request)"
-                                    *ngIf="request.status !== 'Draft'">
-                                <i class="material-icons md-18">assignment_ind</i>
-                                <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
+                                <span class="test-requestType-text">{{requestType}}</span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="overview-list-cell test-organisations"
+                            [ngClass]="{'draft-request': request.status == 'Draft'}">
+                            <li *ngFor="let organisation of request.organisations">{{organisation.name}}</li>
+                        </ul>
+                    </td>
+                    <td class="test-requesterName" *ngIf="!isResearcherRoute()">
+                        {{ request.requester.firstName }} {{ request.requester.lastName }}
+                    </td>
+                    <td class="test-name" *ngIf="!isResearcherRoute()">
+                        {{request.requestDetail.principalInvestigator.name || '-'}}
+                    </td>
+                    <td>
+                        {{request.createdDate | date:"dd-MM-yyyy',' HH:mm"}}
+                    </td>
+                    <td class="text-xs-right">
+                        <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
+                            <button type="button" class="btn btn-primary btn-sm test-edit-btn"
+                                    (click)="editRequest(request)">
+                                <i class="material-icons md-18">edit</i>
+                                <span class="hidden-md-down" jhiTranslate="request.action.edit">Edit</span>
                             </button>
-                        </td>
-                    </tr>
-                    <tr *ngIf="availableRequests.length == 0">
-                        <td colspan="10" class="no-results">
-                            <div class="alert alert-info">
-                                No requests found
-                            </div>
-                        </td>
-                    </tr>
+                            <button type="submit" class="btn btn-danger btn-sm test-remove-btn"
+                                    (click)="deleteDraft(request)">
+                                <i class="material-icons md-18">remove_circle_outline</i>
+                                <span class="hidden-md-down" jhiTranslate="request.action.delete">Remove</span>
+                            </button>
+                        </div>
+                        <button type="button"
+                                class="btn btn-primary btn-sm test-details-btn"
+                                (click)="navigateToRequestDetail(request)"
+                                *ngIf="request.status !== 'Draft'">
+                            <i class="material-icons md-18">assignment_ind</i>
+                            <span class="hidden-md-down" jhiTranslate="request.action.details">Details</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="availableRequests.length == 0">
+                    <td colspan="10" class="no-results">
+                        <div class="alert alert-info">
+                            No requests found
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <div class="text-xs-center" *ngIf="availableRequests && availableRequests.length">

@@ -144,7 +144,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     editRequest(request) {
         this.requestFormService.request = request;
-        this.router.navigate(['./requests/edit']);
+        this.router.navigate(['./requests/edit', request.uuid]);
     }
 
     deleteDraft(request) {
