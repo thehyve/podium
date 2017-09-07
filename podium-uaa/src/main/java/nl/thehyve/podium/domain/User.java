@@ -121,7 +121,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
 
     @Size(min = 2, max = 5)
     @Column(name = "lang_key", length = 5)
-    private String langKey;
+    private String langKey = "en";
 
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
