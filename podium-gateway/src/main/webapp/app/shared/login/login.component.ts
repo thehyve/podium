@@ -15,7 +15,8 @@ import { StateStorageService } from '../auth/state-storage.service';
 
 @Component({
     selector: 'pdm-login',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    styleUrls: ['login.component.scss']
 })
 export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     authenticationError: boolean;

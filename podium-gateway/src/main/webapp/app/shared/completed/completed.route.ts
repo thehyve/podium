@@ -8,7 +8,7 @@
  *
  */
 import { Routes } from '@angular/router';
-import { UserRouteAccessService } from '../../shared';
+import { UserRouteAccessService } from '../';
 import { CompletedComponent } from './completed.component';
 
 export const completedRoute: Routes = [

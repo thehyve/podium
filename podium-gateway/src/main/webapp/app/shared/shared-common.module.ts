@@ -14,7 +14,6 @@ import { AlertService } from 'ng-jhipster';
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
-    FindLanguageFromKeyPipe,
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
@@ -30,7 +29,6 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
         PodiumGatewaySharedLibsModule,
     ],
     declarations: [
-        FindLanguageFromKeyPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ],
@@ -45,7 +43,6 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
     ],
     exports: [
         PodiumGatewaySharedLibsModule,
-        FindLanguageFromKeyPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]

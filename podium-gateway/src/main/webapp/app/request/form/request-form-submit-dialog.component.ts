@@ -7,12 +7,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiLanguageService } from 'ng-jhipster';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { MessageService } from '../../shared/message/message.service';
 import { Message } from '../../shared/message/message.model';
-import { CompletionType } from '../../layouts/completed/completion-type';
+import { CompletionType } from '../../shared/completed/completion-type';
 
 @Component({
     selector: 'pdm-request-form-submit-dialog',

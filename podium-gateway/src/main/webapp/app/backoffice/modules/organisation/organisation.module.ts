@@ -28,6 +28,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
 import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
+import { PodiumAuthModule } from '../../../shared/auth/auth.module';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
-        TypeaheadModule
+        TypeaheadModule,
+        PodiumAuthModule
     ],
     declarations: [
         OrganisationComponent,

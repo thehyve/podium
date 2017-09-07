@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
 import {
@@ -30,6 +30,7 @@ import {
 } from '../../shared/request/request-status/request-status.constants';
 import { OrganisationService } from '../../shared/organisation/organisation.service';
 import { Organisation } from '../../shared/organisation/organisation.model';
+import { equalParamsAndUrlSegments } from '@angular/router/src/router_state';
 
 @Component({
     selector: 'pdm-request-form',
@@ -63,9 +64,8 @@ export class RequestFormComponent implements OnInit {
         private requestAccessService: RequestAccessService,
         private requestService: RequestService,
         private router: Router,
+        private activatedRoute: ActivatedRoute,
         private principal: Principal,
-        private eventManager: EventManager,
-        private organisationService: OrganisationService,
         private modalService: NgbModal
     ) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -82,11 +82,23 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        if (this.requestFormService.request) {
-            this.selectRequest(this.requestFormService.request);
-        } else if (!this.isInRevision) {
+        if (this.router.url === '/requests/new'  && !this.isInRevision) {
             this.initializeBaseRequest();
+        } else {
+            this.activatedRoute.paramMap
+                .switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid')))
+                .subscribe(
+                    request => {
+                        this.requestFormService.request = request;
+                        this.selectRequest(this.requestFormService.request);
+                    },
+                    error => {
+                        this.onError(error);
+                        this.router.navigate(['404'])
+                    }
+                );
         }
+
     }
 
     hasSelectedMultipleOrganisations() {
