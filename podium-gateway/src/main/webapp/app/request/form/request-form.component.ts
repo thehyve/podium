@@ -30,6 +30,7 @@ import {
 } from '../../shared/request/request-status/request-status.constants';
 import { OrganisationService } from '../../shared/organisation/organisation.service';
 import { Organisation } from '../../shared/organisation/organisation.model';
+import { equalParamsAndUrlSegments } from '@angular/router/src/router_state';
 
 @Component({
     selector: 'pdm-request-form',
@@ -81,22 +82,23 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        this.activatedRoute.paramMap
-            .switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid')))
-            .subscribe(
-                request => {
-                    this.requestFormService.request = request;
-                    if (this.requestFormService.request) {
+        if (this.router.url === '/requests/new'  && !this.isInRevision) {
+            this.initializeBaseRequest();
+        } else {
+            this.activatedRoute.paramMap
+                .switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid')))
+                .subscribe(
+                    request => {
+                        this.requestFormService.request = request;
                         this.selectRequest(this.requestFormService.request);
-                    } else if (!this.isInRevision) {
-                        this.initializeBaseRequest();
+                    },
+                    error => {
+                        this.onError(error);
+                        this.router.navigate(['404'])
                     }
-                },
-                error => {
-                    this.onError(error);
-                    this.router.navigate(['404'])
-                }
-            );
+                );
+        }
+
     }
 
     hasSelectedMultipleOrganisations() {
