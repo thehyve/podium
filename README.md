@@ -42,7 +42,13 @@ You will only need to run this command when dependencies change in `package.json
 
 We use npm scripts and [Webpack][] as our build system.
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
+Before the uaa and gateway services can start [podium-registry](https://github.com/thehyve/podium-registry) needs to be up and running.
+
+After open a new terminal and navigate to the podium-uaa folder and start the uaa service with 
+
+    mvn
+
+Finally open two more terminals and run the following commands in the podium-gateway folder to create a blissful development experience where your browser
 auto-refreshes when files change on your hard drive.
 
     mvn
@@ -93,13 +99,14 @@ Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
 
 ### <a href="testing"></a> Testing
 
-To launch your application's tests, run:
+To launch a service's tests, run in its folder:
 
     mvn clean test
 
 #### <a href="testing-client"></a>Client tests
 
-Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in `src/test/javascript/` and can be run with:
+Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in `src/test/javascript/` 
+in each of the service folders and can be run with:
 
     yarn test
 
@@ -107,7 +114,8 @@ For UI end-to-end tests see the READMEs of the individual components
 
 #### <a href="testing-performance"></a>Performance tests
 
-Performance tests are run by [Gatling][] and written in Scala. They're located in `src/test/gatling` and can be run with:
+Performance tests are run by [Gatling][] and written in Scala. They're located in `src/test/gatling` 
+in each of the service folders and can be run with:
 
     mvn gatling:execute
 
@@ -115,7 +123,8 @@ For more information, refer to the [Running tests page][].
 
 ### <a href="docker"></a>Using Docker to simplify development (optional)
 
-You can use Docker to improve your Podium development experience. A number of docker-compose configuration are available in the `src/main/docker` folder to launch required third party services.
+You can use Docker to improve your Podium development experience. A number of docker-compose configuration are available 
+in the `src/main/docker` folder in each of the service folders to launch required third party services.
 For example, to start a postgresql database in a docker container, run:
 
     docker-compose -f src/main/docker/postgresql.yml up -d
