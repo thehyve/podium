@@ -11,8 +11,6 @@ The application scaffold was generated using JHipster 4.0.0, you can find docume
 This application is configured for Service Discovery and Configuration with the Podium-Registry. On launch, it will refuse to start if it is not able to connect to the Podium-Registry at [http://localhost:8761](http://localhost:8761).
 
 
-## What is Podium?
-
 ## <a href="development"></a>Development
 
 ### Setup database
@@ -124,7 +122,7 @@ in each of the service folders and can be run with:
 
 For more information, refer to the [Running tests page][].
 
-### <a href="docker"></a>Using Docker to simplify development (optional)
+### <a href="docker"></a>Using Docker to simplify development/deployment (optional)
 
 You can use Docker to improve your Podium development experience. A number of docker-compose configuration are available 
 in the `src/main/docker` folder in each of the service folders to launch required third party services.
