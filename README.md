@@ -47,7 +47,7 @@ We use npm scripts and [Webpack][] as our build system.
 
 Before the uaa and gateway services can start [Podium Registry][] needs to be up and running.
 
-After open a new terminal and navigate to the podium-uaa folder and start the uaa service with 
+After that open a new terminal and navigate to the podium-uaa folder and start the uaa service with 
 
     mvn
 
