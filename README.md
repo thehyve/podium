@@ -42,7 +42,10 @@ You will only need to run this command when dependencies change in `package.json
 
 We use npm scripts and [Webpack][] as our build system.
 
-Before the uaa and gateway services can start [podium-registry](https://github.com/thehyve/podium-registry) needs to be up and running.
+
+### Running Podium for development
+
+Before the uaa and gateway services can start [Podium Registry][] needs to be up and running.
 
 After open a new terminal and navigate to the podium-uaa folder and start the uaa service with 
 
@@ -161,3 +164,5 @@ To set up a CI environment, consult the [Setting up Continuous Integration][] pa
 [Protractor]: https://angular.github.io/protractor/
 [Leaflet]: http://leafletjs.com/
 [DefinitelyTyped]: http://definitelytyped.org/
+[Podium Registry]: https://github.com/thehyve/podium-registry
+[Npm]: https://www.npmjs.com/
