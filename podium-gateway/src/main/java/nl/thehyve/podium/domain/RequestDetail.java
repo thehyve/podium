@@ -71,7 +71,6 @@ public class RequestDetail implements Serializable {
     private PrincipalInvestigator principalInvestigator;
 
     @Column(name = "search_query", columnDefinition="TEXT")
-    @Type(type="org.hibernate.type.StringType")
     private String searchQuery;
 
     @ElementCollection(targetClass = RequestType.class, fetch = FetchType.EAGER)

@@ -16,10 +16,12 @@
 
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
-    <changeSet id="20170905101804-1" author="frankbijlsma">
+    <property name="clob.type" value="varchar" dbms="h2"/>
+    <property name="clob.type" value="text" dbms="postgresql"/>
 
+    <changeSet id="20170905101804-1" author="frankbijlsma">
         <modifyDataType columnName="search_query"
-                        newDataType="text"
+                        newDataType="${clob.type}"
                         tableName="request_detail"/>
     </changeSet>
 
