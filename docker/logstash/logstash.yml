@@ -1,0 +1,2 @@
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.url: ["http://podium-elasticsearch-1:9200"]

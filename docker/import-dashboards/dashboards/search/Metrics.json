@@ -1,0 +1,17 @@
+{
+      "title": "Metrics",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"index\": \"logstash-*\",\n  \"query\": {\n    \"query_string\": {\n      \"analyze_wildcard\": true,\n      \"query\": \"*\"\n    }\n  },\n  \"filter\": [\n    {\n      \"meta\": {\n        \"negate\": false,\n        \"index\": \"logstash-*\",\n        \"key\": \"logger_name\",\n        \"value\": \"metrics\",\n        \"disabled\": false,\n        \"alias\": null\n      },\n      \"query\": {\n        \"match\": {\n          \"logger_name\": {\n            \"query\": \"metrics\",\n            \"type\": \"phrase\"\n          }\n        }\n      },\n      \"$state\": {\n        \"store\": \"appState\"\n      }\n    }\n  ],\n  \"highlight\": {\n    \"pre_tags\": [\n      \"@kibana-highlighted-field@\"\n    ],\n    \"post_tags\": [\n      \"@/kibana-highlighted-field@\"\n    ],\n    \"fields\": {\n      \"*\": {}\n    },\n    \"require_field_match\": false,\n    \"fragment_size\": 2147483647\n  }\n}"
+
+}
+}
