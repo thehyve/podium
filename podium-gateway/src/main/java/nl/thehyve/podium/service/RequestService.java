@@ -596,7 +596,7 @@ public class RequestService {
          // Get the String id's from the exteral request and turn them into a list of relevant organisations
          List<OrganisationRepresentation> organisations = new ArrayList<>();
          collections.forEach(collection -> organisations.add(
-             organisationClientService.findOrganisationByUuidCached(UUID.fromString(collection.get("collectionID")))));
+             organisationClientService.findOrganisationByUuidCached(UUID.fromString(collection.get("biobankID")))));
          newRequest.setOrganisations(organisations);
 
          Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images,
