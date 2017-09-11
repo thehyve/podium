@@ -23,6 +23,7 @@ import { HomeComponent } from './home/home.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
+import { RedirectService } from './shared/auth/redirect.service';
 
 @NgModule({
     imports: [
@@ -55,6 +56,7 @@ import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
         PaginationConfig,
         UserRouteAccessService,
         OrganisationService,
+        RedirectService,
         RoleService
     ],
     bootstrap: [ PdmMainComponent ],

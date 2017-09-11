@@ -35,6 +35,7 @@ export * from './auth/auth.service';
 export * from './auth/principal.service';
 export * from './auth/has-any-authority.directive';
 export * from './auth/user-route-access-service';
+export * from './auth/redirect.service';
 export * from './language/language.constants';
 export * from './language/language.helper';
 export * from './language/language.pipe';

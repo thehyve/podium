@@ -11,8 +11,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager } from 'ng-jhipster';
 import { Account, Principal } from '../shared';
-import { Router } from '@angular/router';
 import { Ng2DeviceService } from 'ng2-device-detector';
+import { RedirectService } from '../shared/auth/redirect.service';
 
 @Component({
     selector: 'pdm-home',
@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
     constructor(
         private principal: Principal,
         private eventManager: EventManager,
-        private router: Router,
+        private redirectService: RedirectService,
         private deviceService: Ng2DeviceService
     ) {
 
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
         this.registerAuthenticationSuccess();
 
         if (this.isAuthenticated()) {
-            this.router.navigate(['/']);
+            this.redirectService.redirectUser();
         }
 
         this.deviceInfo = this.deviceService.getDeviceInfo();
