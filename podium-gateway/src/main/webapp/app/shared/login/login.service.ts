@@ -11,7 +11,6 @@ import { Injectable } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Principal } from '../auth/principal.service';
 import { AuthServerProvider } from '../auth/auth-jwt.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class LoginService {
@@ -19,8 +18,7 @@ export class LoginService {
     constructor (
         private languageService: JhiLanguageService,
         private principal: Principal,
-        private authServerProvider: AuthServerProvider,
-        private router: Router
+        private authServerProvider: AuthServerProvider
     ) {}
 
     login (credentials, callback?) {
@@ -48,30 +46,5 @@ export class LoginService {
     logout () {
         this.authServerProvider.logout().subscribe();
         this.principal.authenticate(null);
-    }
-
-    redirectUser() {
-        Promise.all([
-            this.principal.hasAuthority('ROLE_PODIUM_ADMIN'),
-            this.principal.hasAuthority('ROLE_BBMRI_ADMIN'),
-            this.principal.hasAuthority('ROLE_ORGANISATION_ADMIN'),
-            this.principal.hasAuthority('ROLE_ORGANISATION_COORDINATOR'),
-            this.principal.hasAuthority('ROLE_REVIEWER'),
-            this.principal.hasAuthority('ROLE_RESEARCHER')
-        ]).then(res => {
-            if (res[0] || res[1]) {
-                this.router.navigate(['/admin/user-management']);
-            } else if (res[2]) {
-                this.router.navigate(['/organisation/management']);
-            } else if (res[3]) {
-                this.router.navigate(['/requests/my-organisations']);
-            } else if (res[4]) {
-                this.router.navigate(['/requests/my-reviews']);
-            } else if (res[5]) {
-                this.router.navigate(['/requests/my-requests']);
-            } else {
-                this.router.navigate(['/']);
-            }
-        })
     }
 }
