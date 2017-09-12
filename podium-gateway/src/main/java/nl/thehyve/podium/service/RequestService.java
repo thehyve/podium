@@ -610,13 +610,13 @@ public class RequestService {
 
              } catch (IllegalArgumentException e) {
                  Map<String, String> error = new HashMap<>();
-                 error.put("orgId", collection.get("biobankID"));
+                 error.put("organisationId", collection.get("biobankID"));
                  error.put("errorMessage", e.getMessage());
                  missingOrgUUIDS.add(error);
 
              } catch (HystrixRuntimeException e) {
                  Map<String, String> error = new HashMap<>();
-                 error.put("orgId", collection.get("biobankID"));
+                 error.put("organisationId", collection.get("biobankID"));
                  error.put("errorMessage", "Cannot find an organization for the given id: " +
                      collection.get("biobankID"));
                  missingOrgUUIDS.add(error);

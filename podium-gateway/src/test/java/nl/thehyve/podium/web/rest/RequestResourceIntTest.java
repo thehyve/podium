@@ -758,7 +758,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 JSONObject missingObject = (JSONObject) missing.get(0);
                 Assert.assertEquals(missingObject.get("errorMessage"),
                     "Invalid UUID string: bbmri-eric:biobankID:BE_B0383");
-                Assert.assertEquals(missingObject.get("orgId"),"bbmri-eric:biobankID:BE_B0383");
+                Assert.assertEquals(missingObject.get("organisationId"),"bbmri-eric:biobankID:BE_B0383");
 
                 JSONObject draft = (JSONObject) jsonData.get("draft");
                 log.info("draft: {}",draft);
