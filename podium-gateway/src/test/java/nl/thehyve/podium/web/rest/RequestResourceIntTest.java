@@ -728,8 +728,8 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
         Map<String, String> collect2 = new HashMap<>();
 
-        collect2.put("collectionID", "bbmri-eric:biobankID:BE_B0383");
-        collect2.put("biobankID", organisationUuid1.toString() );
+        collect2.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
+        collect2.put("collectionID", organisationUuid1.toString() );
 
         ArrayList<Map<String, String>> collections = new ArrayList<>();
         collections.add(collect1);
