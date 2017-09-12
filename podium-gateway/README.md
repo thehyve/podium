@@ -1,4 +1,4 @@
-# Podium Gateaway
+# Podium Gateway
 
 The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
 
