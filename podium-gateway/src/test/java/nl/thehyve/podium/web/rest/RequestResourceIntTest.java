@@ -20,7 +20,8 @@ import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
 import nl.thehyve.podium.repository.ReviewRoundRepository;
-import org.apache.commons.collections.map.HashedMap;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -725,8 +726,14 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         collect1.put("collectionID", organisationUuid1.toString() );
         collect1.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
 
+        Map<String, String> collect2 = new HashMap<>();
+
+        collect2.put("collectionID", "bbmri-eric:biobankID:BE_B0383");
+        collect2.put("biobankID", organisationUuid1.toString() );
+
         ArrayList<Map<String, String>> collections = new ArrayList<>();
         collections.add(collect1);
+        collections.add(collect2);
         externalRequestRepresentation.setCollections(collections);
 
         // Submit ext req
@@ -740,13 +747,25 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
         externalRequest
             .andDo(result -> {
-                log.info("Result rejected request: {} ({})", result.getResponse().getStatus(),
+                log.info("Result external request: {} ({})", result.getResponse().getStatus(),
                     result.getResponse().getContentAsString());
-                RequestRepresentation requestResult =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
-                Assert.assertEquals(OverviewStatus.Draft, requestResult.getStatus());
-                Assert.assertEquals("This is a test search query for external requests",
-                    requestResult.getRequestDetail().getSearchQuery());
+                JSONObject jsonData = new JSONObject(result.getResponse().getContentAsString());
+
+                log.info("JSON data: {}", jsonData);
+
+                JSONArray missing = (JSONArray) jsonData.get("missingOrgUUIDs");
+
+                JSONObject missingObject = (JSONObject) missing.get(0);
+                Assert.assertEquals(missingObject.get("errorMessage"),
+                    "Invalid UUID string: bbmri-eric:biobankID:BE_B0383");
+                Assert.assertEquals(missingObject.get("orgId"),"bbmri-eric:biobankID:BE_B0383");
+
+                JSONObject draft = (JSONObject) jsonData.get("draft");
+                log.info("draft: {}",draft);
+                JSONObject details = (JSONObject) draft.get("requestDetail");
+                Assert.assertEquals(draft.get("status"), "Draft");
+                Assert.assertEquals((String) details.get("searchQuery"),
+                    "This is a test search query for external requests");
             });
     }
 
