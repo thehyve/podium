@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;
@@ -585,8 +586,8 @@ public class RequestService {
      * @param externalRequestRepresentation the data given to us from the external party
      * @return Filled in RequestRepresentation
      */
-     public RequestRepresentation createExternalRequest(RequestRepresentation newRequest, AuthenticatedUser user,
-                                                        ExternalRequestRepresentation externalRequestRepresentation){
+     public Map<String, Object> createExternalRequest(RequestRepresentation newRequest, AuthenticatedUser user,
+                                                      ExternalRequestRepresentation externalRequestRepresentation){
          RequestDetailRepresentation detail = newRequest.getRequestDetail();
 
          detail.setSearchQuery(externalRequestRepresentation.getHumanReadable());
@@ -595,8 +596,33 @@ public class RequestService {
 
          // Get the String id's from the exteral request and turn them into a list of relevant organisations
          List<OrganisationRepresentation> organisations = new ArrayList<>();
-         collections.forEach(collection -> organisations.add(
-             organisationClientService.findOrganisationByUuidCached(UUID.fromString(collection.get("biobankID")))));
+         List<Map<String, String>> missingOrgUUIDS = new ArrayList<>();
+
+         for (Map<String, String> collection : collections) {
+             try {
+                 UUID biobankID = UUID.fromString(collection.get("biobankID"));
+                 log.debug("Checking for organization", biobankID);
+
+                 OrganisationRepresentation organisationRepresentation =
+                     organisationClientService.findOrganisationByUuidCached(biobankID);
+
+                 organisations.add(organisationRepresentation);
+
+             } catch (IllegalArgumentException e) {
+                 Map<String, String> error = new HashMap<>();
+                 error.put("orgId", collection.get("biobankID"));
+                 error.put("errorMessage", e.getMessage());
+                 missingOrgUUIDS.add(error);
+
+             } catch (HystrixRuntimeException e) {
+                 Map<String, String> error = new HashMap<>();
+                 error.put("orgId", collection.get("biobankID"));
+                 error.put("errorMessage", "Cannot find an organization for the given id: " +
+                     collection.get("biobankID"));
+                 missingOrgUUIDS.add(error);
+             }
+         }
+
          newRequest.setOrganisations(organisations);
 
          Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images,
@@ -604,6 +630,10 @@ public class RequestService {
          detail.setRequestType(allTypes);
 
          newRequest.setRequestDetail(detail);
-         return newRequest;
+
+         Map<String, Object> returnObject = new HashMap<>();
+         returnObject.put("draft", newRequest);
+         returnObject.put("missingOrgUUIDs", missingOrgUUIDS);
+         return returnObject;
      }
 }

@@ -9,7 +9,6 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
-import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -19,7 +18,6 @@ import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.service.DraftService;
-import nl.thehyve.podium.service.OrganisationClientService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.ReviewService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -584,20 +582,21 @@ public class RequestResource {
     @PostMapping("/requests/external/new")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity<RequestRepresentation> externalRequest(
+    public ResponseEntity<Object> externalRequest(
         @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
         throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
 
         log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
 
-        RequestRepresentation result = draftService.createDraft(user);
-        result = requestService.createExternalRequest(result, user, externalRequestRepresentation);
-        draftService.updateDraft(user, result);
+        RequestRepresentation draft = draftService.createDraft(user);
+        Map<String, Object> result = requestService.createExternalRequest(draft, user, externalRequestRepresentation);
 
-        log.debug("Result: {}", result.getUuid());
+        draftService.updateDraft(user, draft);
+
+        log.debug("Result: {}", draft.getUuid());
         return ResponseEntity.created(new URI("/api/requests/drafts"))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
             .body(result);
 
     }
