@@ -4,7 +4,8 @@
 <img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png?raw=true" style="display:inline;" width="200" height="105">
 
 # Welcome to the Podium Request Portal
-Podium is the request portal for samples, data and images from BBMRI Biobanks, with the purpose to uniformize the request and review processes for all associated users and organisations.
+Podium is the request portal for samples, data and images from biobanks, with the purpose to uniformize the request 
+and review processes for all associated users and organisations.
 
 The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
 
