@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -60,6 +61,8 @@ public class RequestResource {
     @Autowired
     private SecurityService securityService;
 
+    @Autowired
+    protected PodiumProperties podiumProperties;
 
     /**
      * Fetch drafts for the current user
@@ -593,9 +596,11 @@ public class RequestResource {
         Map<String, Object> result = requestService.createExternalRequest(draft, user, externalRequestRepresentation);
 
         draftService.updateDraft(user, draft);
+        String callbackURL = String.format("%s/#/requests/detail/%s",
+            podiumProperties.getMail().getBaseUrl(), draft.getUuid());
 
         log.debug("Result: {}", draft.getUuid());
-        return ResponseEntity.created(new URI("/api/requests/drafts"))
+        return ResponseEntity.created(new URI(callbackURL))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
             .body(result);
 
