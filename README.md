@@ -7,12 +7,13 @@
 Podium is the request portal for samples, data and images from biobanks, with the purpose to uniformize the request 
 and review processes for all associated users and organisations.
 
-The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
-
 This application is configured for Service Discovery and Configuration with the Podium-Registry. On launch, it will refuse to start if it is not able to connect to the Podium-Registry at [http://localhost:8761](http://localhost:8761).
 
 
 ## <a href="development"></a>Development
+
+The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
+
 
 ### Setup database
 
@@ -41,8 +42,20 @@ You will only need to run this command when dependencies change in `package.json
 
 We use npm scripts and [Webpack][] as our build system.
 
+### Microservices Overview
+
+Podium uses microservices. There are two services in this repository, the uaa service and the gateway service. There is a third the [Podium Registry][] that has its own repository and needs to be running for the others to work.
+The services have to be started in the following order:
+
+1. Podium-Registry
+2. Podium-UAA
+3. Podium-Gateway
 
 ### Running Podium for development
+
+First everything should be installed by running the following in the root folder.
+
+    mvn clean install
 
 Before the uaa and gateway services can start [Podium Registry][] needs to be up and running.
 
@@ -61,30 +74,6 @@ specifying a newer version in `package.json`. You can also run `yarn update` and
 Add the `help` flag on any command to see how you can use it. For example, `yarn help update`.
 
 The `yarn run` command will list all of the scripts available to run for this project.
-
-### <a href="dependencies"></a>Adding dependencies
-
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
-
-    yarn add --exact leaflet
-
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
-
-    yarn add --dev --exact @types/leaflet
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-
-Edit `src/main/webapp/app/vendor.ts`file:
-~~~
-import 'leaflet/dist/leaflet.js';
-~~~
-
-Edit `src/main/webapp/content/css/vendor.css` file:
-~~~
-@import '~leaflet/dist/leaflet.css';
-~~~
-
-Note: there are still few other things remaining to do for Leaflet that we won't detail here.
 
 ### <a href="building-for-production"></a> Building for production
 
@@ -123,32 +112,13 @@ in each of the service folders and can be run with:
 
 For more information, refer to the [Running tests page][].
 
-### <a href="docker"></a>Using Docker to simplify development/deployment (optional)
-
-You can use Docker to improve your Podium development experience. A number of docker-compose configuration are available 
-in the `src/main/docker` folder in each of the service folders to launch required third party services.
-For example, to start a postgresql database in a docker container, run:
-
-    docker-compose -f src/main/docker/postgresql.yml up -d
-
-To stop it and remove the container, run:
-
-    docker-compose -f src/main/docker/postgresql.yml down
-
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
-
-    mvn package -Pprod docker:build
-
-Then run:
-
-    docker-compose -f src/main/docker/app.yml up -d
-
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`yo podium:docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
-
 ### <a href="continuous-integration"></a>Continuous Integration (optional)
 
 To set up a CI environment, consult the [Setting up Continuous Integration][] page.
+
+### Wiki
+
+For more information please [see the wiki](https://github.com/thehyve/podium/wiki)
 
 [JHipster Homepage and latest documentation]: https://jhipster.github.io
 [JHipster 4.0.0 archive]: https://podium.github.io/documentation-archive/v4.0.0
@@ -165,3 +135,4 @@ To set up a CI environment, consult the [Setting up Continuous Integration][] pa
 [DefinitelyTyped]: http://definitelytyped.org/
 [Podium Registry]: https://github.com/thehyve/podium-registry
 [Npm]: https://www.npmjs.com/
+[Running tests page]: http://www.jhipster.tech/running-tests/
