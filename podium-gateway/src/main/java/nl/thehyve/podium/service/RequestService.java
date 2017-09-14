@@ -606,7 +606,10 @@ public class RequestService {
                  OrganisationRepresentation organisationRepresentation =
                      organisationClientService.findOrganisationByUuidCached(biobankID);
 
-                 organisations.add(organisationRepresentation);
+                 if(organisationRepresentation.getActivated()){
+                     organisations.add(organisationRepresentation);
+                 }
+
 
              } catch (IllegalArgumentException e) {
                  Map<String, String> error = new HashMap<>();
