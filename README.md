@@ -4,11 +4,8 @@
 <img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png?raw=true" style="display:inline;" width="200" height="105">
 
 # Welcome to the Podium Request Portal
-Podium is the request portal for samples, data and images from biobanks, with the purpose to uniformize the request 
+Podium is the request portal for samples, data and images from biobanks with the purpose to uniformize the request 
 and review processes for all associated users and organisations.
-
-This application is configured for Service Discovery and Configuration with the Podium-Registry. On launch, it will refuse to start if it is not able to connect to the Podium-Registry at [http://localhost:8761](http://localhost:8761).
-
 
 ## <a href="development"></a>Development
 
@@ -35,13 +32,6 @@ Before you can build this project, you must install and configure the following 
 2. [Yarn][]: We use Yarn to manage Node dependencies.
    Depending on your system, you can install Yarn either from source or as a pre-packaged bundle.
 
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in `package.json`.
-
-    yarn install
-
-We use npm scripts and [Webpack][] as our build system.
-
 ### Microservices Overview
 
 Podium is built in a microservices architecture which works in following way:
@@ -60,25 +50,28 @@ The services have to be started in the following order:
 
 First everything should be installed by running the following in the root folder.
 
-    mvn clean install
+    $ podium > mvn clean install
 
+### Running Podium Registry
 Before the uaa and gateway services can start [Podium Registry][] needs to be up and running.
 
+### Running Podium UAA
 After that open a new terminal and navigate to the podium-uaa folder and start the uaa service with 
 
-    mvn
+    $ podium/podium-uaa > mvn
 
-Finally open two more terminals and run the following commands in the podium-gateway folder to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
-
-    mvn
-    yarn start
-
-[Npm][] is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
+### Running Podium Gateway
+[Yarn][] is used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
 specifying a newer version in `package.json`. You can also run `yarn update` and `yarn install` to manage dependencies.
 Add the `help` flag on any command to see how you can use it. For example, `yarn help update`.
 
 The `yarn run` command will list all of the scripts available to run for this project.
+
+Finally open two more terminals and run the following commands in the `/podium-gateway` folder to create a blissful development experience where your browser auto-refreshes when files change on your hard drive.
+
+    $ podium/podium-gateway > mvn
+    $ podium/podium-gateway > yarn start
+
 
 ### <a href="building-for-production"></a> Building for production
 
