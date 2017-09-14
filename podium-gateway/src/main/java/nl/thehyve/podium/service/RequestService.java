@@ -608,9 +608,12 @@ public class RequestService {
 
                  if(organisationRepresentation.getActivated()){
                      organisations.add(organisationRepresentation);
+                 } else {
+                     Map<String, String> error = new HashMap<>();
+                     error.put("organisationId", collection.get("biobankID"));
+                     error.put("errorMessage", "Organisation linked is inactive");
+                     missingOrgUUIDS.add(error);
                  }
-
-
              } catch (IllegalArgumentException e) {
                  Map<String, String> error = new HashMap<>();
                  error.put("organisationId", collection.get("biobankID"));
