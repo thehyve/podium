@@ -44,12 +44,20 @@ We use npm scripts and [Webpack][] as our build system.
 
 ### Microservices Overview
 
-Podium uses microservices. There are two services in this repository, the uaa service and the gateway service. There is a third the [Podium Registry][] that has its own repository and needs to be running for the others to work.
+Podium is built in a microservices architecture which works in following way:
+
+**Podium Gateway**, serves the Angular application and also handles web traffic.
+
+**Podium UAA**, is a User Account and Authentication server based on Spring Security. This server provides OAuth2 tokens for securing the gateway.
+
+**Podium Registry**, a runtime application on which all applications registers and get their configuration from. It also provides runtime monitoring dashboards.
+
+There are two services in this repository, the uaa service and the gateway service. There is a third the [Podium Registry][] that has its own repository and needs to be running for the others to work.
 The services have to be started in the following order:
 
-1. Podium-Registry
-2. Podium-UAA
-3. Podium-Gateway
+1. Podium Registry
+2. Podium UAA
+3. Podium Gateway
 
 ### Running Podium for development
 
