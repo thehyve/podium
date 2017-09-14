@@ -596,7 +596,7 @@ public class RequestResource {
         Map<String, Object> result = requestService.createExternalRequest(draft, user, externalRequestRepresentation);
 
         draftService.updateDraft(user, draft);
-        String callbackURL = String.format("%s/#/requests/detail/%s",
+        String callbackURL = String.format("%s/#/requests/edit/%s",
             podiumProperties.getMail().getBaseUrl(), draft.getUuid());
 
         log.debug("Result: {}", draft.getUuid());
