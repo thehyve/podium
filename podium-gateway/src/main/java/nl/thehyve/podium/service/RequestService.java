@@ -612,7 +612,7 @@ public class RequestService {
                  if(organisationRepresentation.getActivated()){
                      organisations.add(organisationRepresentation);
                  } else {
-                     error.put("errorMessage", "Organisation linked is inactive");
+                     error.put("errorMessage", "Organisation is inactive");
                      missingOrgUUIDS.add(error);
                  }
              } catch (IllegalArgumentException e) {
