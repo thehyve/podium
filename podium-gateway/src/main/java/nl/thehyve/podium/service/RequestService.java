@@ -599,6 +599,9 @@ public class RequestService {
          List<Map<String, String>> missingOrgUUIDS = new ArrayList<>();
 
          for (Map<String, String> collection : collections) {
+             Map<String, String> error = new HashMap<>();
+             error.put("organisationId", collection.get("biobankID"));
+
              try {
                  UUID biobankID = UUID.fromString(collection.get("biobankID"));
                  log.debug("Checking for organization", biobankID);
@@ -609,20 +612,14 @@ public class RequestService {
                  if(organisationRepresentation.getActivated()){
                      organisations.add(organisationRepresentation);
                  } else {
-                     Map<String, String> error = new HashMap<>();
-                     error.put("organisationId", collection.get("biobankID"));
                      error.put("errorMessage", "Organisation linked is inactive");
                      missingOrgUUIDS.add(error);
                  }
              } catch (IllegalArgumentException e) {
-                 Map<String, String> error = new HashMap<>();
-                 error.put("organisationId", collection.get("biobankID"));
                  error.put("errorMessage", e.getMessage());
                  missingOrgUUIDS.add(error);
 
              } catch (HystrixRuntimeException e) {
-                 Map<String, String> error = new HashMap<>();
-                 error.put("organisationId", collection.get("biobankID"));
                  error.put("errorMessage", "Cannot find an organization for the given id: " +
                      collection.get("biobankID"));
                  missingOrgUUIDS.add(error);
