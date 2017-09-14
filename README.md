@@ -10,7 +10,7 @@ and review processes for all associated users and organisations.
 The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
 
 
-### Setup database
+### Database Setup
 
 For development, you can create a Postgres database locally with `psql`:
 `sudo -u postgres psql`
@@ -34,9 +34,9 @@ Before you can build this project, you must install and configure the following 
 
 Podium is built in a microservices architecture which works in following way:
 
-* Podium Gateway, serves the Angular application and also handles web traffic.
-* Podium UAA, is a User Account and Authentication server based on Spring Security. This server provides OAuth2 tokens for securing the gateway.
-* Podium Registry, a runtime application on which all applications registers and get their configuration from. It also provides runtime monitoring dashboards.
+* **Podium Gateway**, serves the Angular application and also handles web traffic.
+* **Podium UAA**, is a User Account and Authentication server based on Spring Security. This server provides OAuth2 tokens for securing the gateway.
+* **Podium Registry**, a runtime application on which all applications registers and get their configuration from. It also provides runtime monitoring dashboards.
 
 The services have to be started in the following order:
 
@@ -51,10 +51,10 @@ First everything should be installed by running the following in the root folder
     $ podium > mvn clean install
 
 #### Running Podium Registry
-Before the uaa and gateway services can start [Podium Registry][] needs to be up and running.
+[Podium Registry][] needs to be up and running before the UAA and Gateway services start.
 
 #### Running Podium UAA
-After that open a new terminal and navigate to the podium-uaa folder and start the uaa service with 
+Open a new terminal and navigate to the `/podium-uaa` folder and start the UAA service with 
 
     $ podium/podium-uaa > mvn
 
@@ -71,7 +71,7 @@ Finally open two more terminals and run the following commands in the `/podium-g
     $ podium/podium-gateway > yarn start
 
 
-## <a href="building-for-production"></a> Building for production
+## <a href="building-for-production"></a> Building for Production
 
 To optimize the podiumGateway application for production, run:
 
@@ -90,7 +90,7 @@ To launch a service's tests, run in its folder:
 
     mvn clean test
 
-### <a href="testing-client"></a>Client tests
+### <a href="testing-client"></a>Client Tests
 
 Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in `src/test/javascript/` 
 in each of the service folders and can be run with:
@@ -99,7 +99,7 @@ in each of the service folders and can be run with:
 
 For UI end-to-end tests see the READMEs of the individual components
 
-### <a href="testing-performance"></a>Performance tests
+### <a href="testing-performance"></a>Performance Tests
 
 Performance tests are run by [Gatling][] and written in Scala. They're located in `src/test/gatling` 
 in each of the service folders and can be run with:
