@@ -52,7 +52,6 @@ Podium is built in a microservices architecture which works in following way:
 
 **Podium Registry**, a runtime application on which all applications registers and get their configuration from. It also provides runtime monitoring dashboards.
 
-There are two services in this repository, the uaa service and the gateway service. There is a third the [Podium Registry][] that has its own repository and needs to be running for the others to work.
 The services have to be started in the following order:
 
 1. Podium Registry
