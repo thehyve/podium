@@ -753,7 +753,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
                 log.info("JSON data: {}", jsonData);
 
-                JSONArray missing = (JSONArray) jsonData.get("missingOrgUUIDs");
+                JSONArray missing = (JSONArray) jsonData.get("missingOrganisations");
 
                 JSONObject missingObject = (JSONObject) missing.get(0);
                 Assert.assertEquals(missingObject.get("errorMessage"),
