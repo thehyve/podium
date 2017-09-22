@@ -17,7 +17,7 @@
 <!--
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/podiumUaa.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>90</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -72,11 +72,15 @@
     <springProfile name="test">
         <property name="default_level" value="WARN" />
     </springProfile>
+    <springProfile name="prod">
+        <property name="default_level" value="ERROR" />
+    </springProfile>
     <springProfile name="!dev">
         <property name="default_level" value="INFO" />
     </springProfile>
     <logger name="nl.thehyve.podium" level="${default_level}"/>
     <root level="${default_level}">
+        <!--<appender-ref ref="FILE"/>-->
         <appender-ref ref="CONSOLE"/>
     </root>
 

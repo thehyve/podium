@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;
@@ -18,8 +19,7 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
+import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.SummaryEntry;
@@ -27,7 +27,6 @@ import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +75,9 @@ public class RequestService {
 
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
+
+    @Autowired
+    private OrganisationClientService organisationClientService;
 
     @PostConstruct
     private void init() {
@@ -576,4 +578,65 @@ public class RequestService {
         return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
+    /**
+     * Handle external request data and create a new request draft
+     *
+     * @param newRequest a newly initiated Request
+     * @param user Authenticated user making the request
+     * @param externalRequestRepresentation the data given to us from the external party
+     * @return Filled in RequestRepresentation
+     */
+     public Map<String, Object> createExternalRequest(RequestRepresentation newRequest, AuthenticatedUser user,
+                                                      ExternalRequestRepresentation externalRequestRepresentation){
+         RequestDetailRepresentation detail = newRequest.getRequestDetail();
+
+         detail.setSearchQuery(externalRequestRepresentation.getHumanReadable());
+
+         ArrayList<Map<String, String>> collections = externalRequestRepresentation.getCollections();
+
+         // Get the String id's from the exteral request and turn them into a list of relevant organisations
+         List<OrganisationRepresentation> organisations = new ArrayList<>();
+         List<Map<String, String>> missingOrgUUIDS = new ArrayList<>();
+
+         for (Map<String, String> collection : collections) {
+             Map<String, String> error = new HashMap<>();
+             error.put("organisationId", collection.get("biobankID"));
+
+             try {
+                 UUID biobankID = UUID.fromString(collection.get("biobankID"));
+                 log.debug("Checking for organization", biobankID);
+
+                 OrganisationRepresentation organisationRepresentation =
+                     organisationClientService.findOrganisationByUuidCached(biobankID);
+
+                 if(organisationRepresentation.getActivated()){
+                     organisations.add(organisationRepresentation);
+                 } else {
+                     error.put("errorMessage", "Organisation is inactive");
+                     missingOrgUUIDS.add(error);
+                 }
+             } catch (IllegalArgumentException e) {
+                 error.put("errorMessage", e.getMessage());
+                 missingOrgUUIDS.add(error);
+
+             } catch (HystrixRuntimeException e) {
+                 error.put("errorMessage", "Cannot find an organization for the given id: " +
+                     collection.get("biobankID"));
+                 missingOrgUUIDS.add(error);
+             }
+         }
+
+         newRequest.setOrganisations(organisations);
+
+         Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images,
+             RequestType.Material));
+         detail.setRequestType(allTypes);
+
+         newRequest.setRequestDetail(detail);
+
+         Map<String, Object> returnObject = new HashMap<>();
+         returnObject.put("draft", newRequest);
+         returnObject.put("missingOrgUUIDs", missingOrgUUIDS);
+         return returnObject;
+     }
 }

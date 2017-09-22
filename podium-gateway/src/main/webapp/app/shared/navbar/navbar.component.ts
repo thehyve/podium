@@ -12,9 +12,9 @@ import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { ProfileService } from '../profiles/profile.service';
-import { JhiLanguageHelper, Principal, LoginService } from '../../shared';
+import { JhiLanguageHelper, Principal, LoginService } from '../';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
-import { User } from '../../shared/user/user.model';
+import { User } from '../user/user.model';
 import { Subscription } from 'rxjs';
 
 @Component({

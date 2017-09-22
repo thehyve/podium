@@ -10,21 +10,13 @@ package nl.thehyve.podium.domain;
 import lombok.Data;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.Parameter;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import javax.persistence.*;
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
@@ -78,7 +70,7 @@ public class RequestDetail implements Serializable {
     @Fetch(FetchMode.JOIN)
     private PrincipalInvestigator principalInvestigator;
 
-    @Column(name = "search_query", length = 500)
+    @Column(name = "search_query", columnDefinition="TEXT")
     private String searchQuery;
 
     @ElementCollection(targetClass = RequestType.class, fetch = FetchType.EAGER)

@@ -15,8 +15,14 @@
     <property name="now" value="GETDATE()" dbms="mssql"/>
 
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
-    <changeSet author="gijs@thehyve.nl" id="20170609105528-1">
-        <addNotNullConstraint columnDataType="uuid" columnName="reviewer" tableName="review_feedback"/>
+
+    <property name="clob.type" value="varchar" dbms="h2"/>
+    <property name="clob.type" value="text" dbms="postgresql"/>
+
+    <changeSet id="20170905101804-1" author="frankbijlsma">
+        <modifyDataType columnName="search_query"
+                        newDataType="${clob.type}"
+                        tableName="request_detail"/>
     </changeSet>
 
 </databaseChangeLog>

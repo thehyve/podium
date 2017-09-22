@@ -8,7 +8,8 @@
  *
  */
 
-import { CompletionType } from '../../layouts/completed/completion-type';
+import { CompletionType } from '../completed/completion-type';
+
 export class Message {
     public messageTitle?: string;
     public messageBody?: string;

@@ -20,6 +20,8 @@ import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
 import nl.thehyve.podium.repository.ReviewRoundRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
@@ -60,7 +55,6 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
     @Autowired
     private ReviewFeedbackRepository reviewFeedbackRepository;
-
 
     @Test
     public void createDraft() throws Exception {
@@ -715,6 +709,64 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
                 log.info("Result of submitting feedback by wrong user: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
             });
 
+    }
+
+    @Test
+    public void acceptExternalRequest() throws Exception {
+        initMocks();
+
+        // Create ext req data
+        ExternalRequestRepresentation externalRequestRepresentation = new ExternalRequestRepresentation();
+        externalRequestRepresentation.setUrl("http://test.url");
+        externalRequestRepresentation.setHumanReadable("This is a test search query for external requests");
+        externalRequestRepresentation.setNToken("nToken1");
+
+        Map<String, String> collect1 = new HashMap<>();
+
+        collect1.put("biobankID", organisationUuid1.toString() );
+        collect1.put("collectionID", "bbmri-eric:biobankID:BE_B0383");
+
+        Map<String, String> collect2 = new HashMap<>();
+
+        collect2.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
+        collect2.put("collectionID", organisationUuid1.toString() );
+
+        ArrayList<Map<String, String>> collections = new ArrayList<>();
+        collections.add(collect1);
+        collections.add(collect2);
+        externalRequestRepresentation.setCollections(collections);
+
+        // Submit ext req
+        ResultActions externalRequest = mockMvc.perform(
+            getRequest(HttpMethod.POST,
+                "/api/requests/external/new",
+                externalRequestRepresentation,
+                Collections.emptyMap())
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON));
+
+        externalRequest
+            .andDo(result -> {
+                log.info("Result external request: {} ({})", result.getResponse().getStatus(),
+                    result.getResponse().getContentAsString());
+                JSONObject jsonData = new JSONObject(result.getResponse().getContentAsString());
+
+                log.info("JSON data: {}", jsonData);
+
+                JSONArray missing = (JSONArray) jsonData.get("missingOrgUUIDs");
+
+                JSONObject missingObject = (JSONObject) missing.get(0);
+                Assert.assertEquals(missingObject.get("errorMessage"),
+                    "Invalid UUID string: bbmri-eric:biobankID:BE_B0383");
+                Assert.assertEquals(missingObject.get("organisationId"),"bbmri-eric:biobankID:BE_B0383");
+
+                JSONObject draft = (JSONObject) jsonData.get("draft");
+                log.info("draft: {}",draft);
+                JSONObject details = (JSONObject) draft.get("requestDetail");
+                Assert.assertEquals(draft.get("status"), "Draft");
+                Assert.assertEquals((String) details.get("searchQuery"),
+                    "This is a test search query for external requests");
+            });
     }
 
 }

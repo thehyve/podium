@@ -10,12 +10,12 @@
 import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
-import { LoginModalService, MessageService } from '../../shared';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Message } from '../../shared/message/message.model';
-import { CompletionType } from '../../layouts/completed/completion-type';
+import { MessageService } from '../../shared/message/message.service';
+import { CompletionType } from '../../shared/completed/completion-type';
 
 @Component({
     templateUrl: './register.component.html'
