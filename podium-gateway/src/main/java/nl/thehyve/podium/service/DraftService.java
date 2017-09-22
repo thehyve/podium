@@ -10,6 +10,7 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.service.dto.ExternalRequestRepresentation;
@@ -89,6 +90,14 @@ public class DraftService {
         return requestMapper.detailedRequestToRequestDTO(request);
     }
 
+    private UUID stringToUUID(String uuidString) {
+        try {
+            return UUID.fromString(uuidString);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
     /**
      * Create a new draft based on external request
      *
@@ -108,32 +117,37 @@ public class DraftService {
         requestDetail.setSearchQuery(externalRequestRepresentation.getHumanReadable());
         List<Map<String, String>> collections = externalRequestRepresentation.getCollections();
 
-        // Get the String id's from the exteral request and turn them into a list of relevant organisations
+        // Get the String id's from the external request and turn them into a list of relevant organisations
         Set<UUID> organisationUUIDs = new HashSet<>();
 
         for (Map<String, String> collection : collections) {
             String biobankId = collection.get("biobankID");
-            try {
-                UUID biobankUUID = UUID.fromString(collection.get("biobankID"));
-                log.debug("Checking for organization", biobankId);
+            UUID biobankUUID = stringToUUID(biobankId);
+            if (biobankUUID == null) {
+                missingOrganisationUUIDs.add(
+                        createMissingOrganisationError(biobankId, "Invalid UUID string: " + biobankId));
+            } else {
+                log.debug("Checking for organisation {}", biobankId);
 
-                OrganisationRepresentation organisationRepresentation =
-                    organisationClientService.findOrganisationByUuidCached(biobankUUID);
-
-                if (organisationRepresentation.getActivated()) {
-                    organisationUUIDs.add(organisationRepresentation.getUuid());
-                } else {
-                    missingOrganisationUUIDs.add(createMissingOrganisationError(biobankId, "Organisation for the " +
-                        "given id: " + biobankId + " is inactive"));
+                OrganisationRepresentation organisationRepresentation = null;
+                try {
+                    organisationRepresentation =
+                            organisationClientService.findOrganisationByUuidCached(biobankUUID);
+                } catch (ResourceNotFound e) {
+                    log.error("Organisation not found with uuid '{}'.", biobankUUID, e);
                 }
-            } catch (IllegalArgumentException e) {
-                missingOrganisationUUIDs.add(
-                    createMissingOrganisationError(biobankId, e.getMessage()));
-            } catch (HystrixRuntimeException e) {
-                missingOrganisationUUIDs.add(
-                    createMissingOrganisationError(biobankId, "Cannot find an organization for the given id: " +
-                        biobankId)
-                );
+                if (organisationRepresentation == null) {
+                    missingOrganisationUUIDs.add(
+                            createMissingOrganisationError(biobankId, "Cannot find an organisation with id: " +
+                                    biobankId)
+                    );
+                } else if (!organisationRepresentation.getActivated()) {
+                    missingOrganisationUUIDs.add(
+                            createMissingOrganisationError(biobankId,
+                                    "The organisation with id " + biobankId + " is inactive."));
+                } else {
+                    organisationUUIDs.add(organisationRepresentation.getUuid());
+                }
             }
         }
 
@@ -141,7 +155,6 @@ public class DraftService {
         Set<RequestType> allTypes = new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images,
             RequestType.Material));
         requestDetail.setRequestType(allTypes);
-        request.setRequestDetail(requestDetail);
         request.setRequestDetail(requestDetail);
         requestRepository.save(request);
         return requestMapper.detailedRequestToRequestDTO(request);
