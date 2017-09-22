@@ -14,13 +14,13 @@
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.7.RELEASE</version>
         <relativePath />
     </parent>
 
     <groupId>nl.thehyve.podium</groupId>
     <artifactId>podium</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7-SNAPSHOT</version>
     <name>Podium</name>
     <packaging>pom</packaging>
 
