@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -35,8 +36,11 @@ public class AsyncConfiguration implements AsyncConfigurer {
 
     private final PodiumProperties podiumProperties;
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
+    @Autowired(required = false)
+    private Registration registration;
+
+    @Value("${eureka.instance.appname}")
+    String appName;
 
     public AsyncConfiguration(PodiumProperties podiumProperties) {
         this.podiumProperties = podiumProperties;
@@ -45,15 +49,17 @@ public class AsyncConfiguration implements AsyncConfigurer {
     @Override
     @Bean(name = "taskExecutor")
     public Executor getAsyncExecutor() {
-
-        String serviceInstanceId = discoveryClient.getLocalServiceInstance().getServiceId();
+        String serviceId = appName;
+        if (registration != null && registration.getServiceId() != null) {
+            serviceId = registration.getServiceId();
+        }
 
         log.debug("Creating Async Task Executor");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(podiumProperties.getAsync().getCorePoolSize());
         executor.setMaxPoolSize(podiumProperties.getAsync().getMaxPoolSize());
         executor.setQueueCapacity(podiumProperties.getAsync().getQueueCapacity());
-        executor.setThreadNamePrefix(serviceInstanceId + "-Executor-");
+        executor.setThreadNamePrefix(serviceId + "-Executor-");
         return new ExceptionHandlingAsyncTaskExecutor(executor);
     }
 
