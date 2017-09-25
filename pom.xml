@@ -58,15 +58,17 @@
         <hibernate-validator.version>5.3.4.Final</hibernate-validator.version>
         <hibernate.version>5.2.7.Final</hibernate.version>
         <hikaricp.version>2.6.0</hikaricp.version>
+        <jackson.version>2.9.1</jackson.version>
         <jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
         <javassist.version>3.21.0-GA</javassist.version>
         <jcache.version>1.0.0</jcache.version>
+        <jhipster.server.version>1.1.11</jhipster.server.version>
         <jna.version>4.3.0</jna.version>
         <jzlib.version>1.1.3</jzlib.version>
         <liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
         <liquibase-slf4j.version>2.0.0</liquibase-slf4j.version>
         <liquibase.version>3.5.3</liquibase.version>
-        <logstash-logback-encoder.version>4.7</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>4.9</logstash-logback-encoder.version>
         <lz4.version>1.3.0</lz4.version>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         <mapstruct.version>1.2.0.Beta3</mapstruct.version>
@@ -119,11 +121,10 @@
         <sortpom-maven-plugin.version>2.5.0</sortpom-maven-plugin.version>
 
         <!-- Spring properties -->
-        <spring-cloud.version>Camden.SR4</spring-cloud.version>
-        <spring-cloud-netflix.version>1.2.5.RELEASE</spring-cloud-netflix.version>
+        <spring-cloud.version>Dalston.SR2</spring-cloud.version>
         <spring-security.version>4.2.1.RELEASE</spring-security.version>
         <spring-security-oauth.version>2.0.12.RELEASE</spring-security-oauth.version>
-        <springfox.version>2.6.1</springfox.version>
+        <springfox.version>2.7.0</springfox.version>
         <yarn.version>v0.19.1</yarn.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
@@ -132,11 +133,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-netflix-core</artifactId>
-                <version>${spring-cloud-netflix.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
