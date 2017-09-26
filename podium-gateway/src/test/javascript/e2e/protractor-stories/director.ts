@@ -136,7 +136,9 @@ export class Director {
                         resolve();
                     }
                     else {
-                        reject(Error('not at page: ' + pageName));
+                        browser.getCurrentUrl().then(function(currentUrl) {
+                            reject(Error(`not at page: ${pageName} (${page.url}), instead on ${currentUrl}`));
+                        });
                     }
                 })
             });
@@ -164,7 +166,10 @@ export class Director {
     public clickOn(elementName: string): Promise<any> {
         let element = this.getElement(elementName);
         this.handleDestination(element);
-        return element.locator.click()
+        return browser.executeScript("arguments[0].scrollIntoView();", element.locator.getWebElement()).then(() => {
+            browser.sleep(200);
+            return element.locator.click();
+        });
     }
 
     public enterText(fieldName: string, text: string, specialKey?: string) {
