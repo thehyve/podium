@@ -16,7 +16,7 @@ import requestEditForm = require("./modules/request-edit-form");
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class NewRequestsPage {
+class EditRequestsPage {
     public name: string;
     public url: string;
     public elements: { [name: string]: Interactable };
@@ -24,7 +24,7 @@ class NewRequestsPage {
     public at() {
         let that = this;
         return browser.getCurrentUrl().then(function (currentUrl) {
-            return (browser.baseUrl + that.url) == currentUrl;
+            return currentUrl.startsWith(browser.baseUrl + that.url);
         })
     }
 
@@ -37,4 +37,4 @@ class NewRequestsPage {
     }
 }
 
-export = NewRequestsPage;
+export = EditRequestsPage;
