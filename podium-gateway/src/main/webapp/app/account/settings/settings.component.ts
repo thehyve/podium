@@ -17,10 +17,28 @@ import { User } from '../../shared/user/user.model';
     templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
+
     error: string;
     success: string;
     settingsAccount: User;
     languages: any[];
+
+    static copyAccount (account): any {
+        return {
+            activated: account.activated,
+            specialism: account.specialism,
+            jobTitle: account.jobTitle,
+            department: account.department,
+            institute: account.institute,
+            telephone: account.telephone,
+            email: account.email,
+            firstName: account.firstName,
+            langKey: account.langKey,
+            lastName: account.lastName,
+            login: account.login,
+            imageUrl: account.imageUrl
+        };
+    }
 
     constructor(
         private account: AccountService,
@@ -57,20 +75,4 @@ export class SettingsComponent implements OnInit {
         });
     }
 
-    static copyAccount (account): any {
-        return {
-            activated: account.activated,
-            specialism: account.specialism,
-            jobTitle: account.jobTitle,
-            department: account.department,
-            institute: account.institute,
-            telephone: account.telephone,
-            email: account.email,
-            firstName: account.firstName,
-            langKey: account.langKey,
-            lastName: account.lastName,
-            login: account.login,
-            imageUrl: account.imageUrl
-        };
-    }
 }

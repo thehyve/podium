@@ -42,6 +42,6 @@ export class RedirectService {
             } else {
                 this.router.navigate(['/']);
             }
-        })
+        });
     }
 }
