@@ -510,7 +510,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click().then((): Promise<any> => {
+                return director.clickOnElement(director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn')).then((): Promise<any> => {
                     return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
                 })
             })
@@ -523,7 +523,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click()
+                return director.clickOnElement(director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn'))
             })
         });
     });
@@ -544,8 +544,8 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-                return $('.test-dropdown-toggle-' + deliveryType).click().then(() => {
-                    return $('.test-dropdown-menu-' + deliveryType).$('.dropdown-item').click().then((): Promise<any> => {
+                return director.clickOnElement($('.test-dropdown-toggle-' + deliveryType)).then(() => {
+                    return director.clickOnElement($('.test-dropdown-menu-' + deliveryType).$('.dropdown-item')).then((): Promise<any> => {
                         return Promise.all([
                             director.enterText('messageSummary', 'cancels delivery messageSummary'),
                             director.enterText('messageDescription', 'cancels delivery messageDescription')

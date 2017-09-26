@@ -163,13 +163,17 @@ export class Director {
         }
     }
 
+    public clickOnElement(element: ElementFinder | ElementArrayFinder): Promise<any> {
+        return browser.executeScript("arguments[0].scrollIntoView();", element.getWebElement()).then(() => {
+            browser.sleep(200);
+            return element.click();
+        });
+    }
+
     public clickOn(elementName: string): Promise<any> {
         let element = this.getElement(elementName);
         this.handleDestination(element);
-        return browser.executeScript("arguments[0].scrollIntoView();", element.locator.getWebElement()).then(() => {
-            browser.sleep(200);
-            return element.locator.click();
-        });
+        return this.clickOnElement(element.locator);
     }
 
     public enterText(fieldName: string, text: string, specialKey?: string) {

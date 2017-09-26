@@ -92,8 +92,11 @@ function checkRole(director: Director, adminConsole: AdminConsole, user: string,
 
 function addRole(director: Director, targetName: string, role: string): Promise<any> {
     return director.enterText("userSelection", director.getPersona(targetName)["firstName"], protractor.Key.ENTER).then(() => {
-        return director.getElement("userSelection").locator.element(by.xpath('../..')).$('option[ng-reflect-ng-value="' + role + '"]').click().then(
-            () => {
+        return director.clickOnElement(
+                director.getLocator("userSelection")
+                .element(by.xpath('../..'))
+                .$(`.user-authority-${role.toLowerCase()}`))
+            .then(() => {
                 return browser.sleep(500).then(() => {
                     return director.clickOn("add")
                 })

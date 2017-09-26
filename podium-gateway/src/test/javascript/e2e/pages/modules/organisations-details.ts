@@ -17,8 +17,8 @@ function initLocators() {
     elements = {
         "detailsTab": { locator: $('.nav-tabs').$$('.nav-link').get(0) },
         "permissionsTab": { locator: $('.nav-tabs').$$('.nav-link').get(1) },
-        "userSelection": { locator: $('.user-select-input.ng-valid') },
-        "authoritySelection": { locator: $('.field_authority_user') },
+        "userSelection": { locator: $('.user-select-input.ng-valid:enabled') },
+        "authoritySelection": { locator: $('.field-user-authority') },
         "add": { locator: $('.test-add') },
         "name": { locator: $('#field_name') },
         "shortName": { locator: $('#field_shortName') },

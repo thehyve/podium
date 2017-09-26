@@ -44,12 +44,14 @@
                             </td>
                             <td>
                                 <!-- Authority select -->
-                                <select class="form-control" id="field_authority_user" name="authority-{{ user.uuid }}-{{i}}"
+                                <select class="form-control field-user-authority"
+                                        name="authority-{{ user.uuid }}-{{i}}"
                                         (change)="userAuthorityChange(user, $event)"
                                         [(ngModel)]="user.authority"
                                         [disabled]="isAdminOfOrganisation(user, currentAccount)">
                                     <option [ngValue]="undefined" disabled selected>Please select a role</option>
                                     <option [ngValue]="authorityOption.token === user.authority ? user.authority : authorityOption.token"
+                                            class="user-authority-{{authorityOption.token.toLowerCase()}}"
                                             *ngFor="let authorityOption of authorityOptions; trackBy: trackAuthorityByToken">
                                         {{authorityOption.name}}
                                     </option>
