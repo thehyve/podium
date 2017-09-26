@@ -33,7 +33,6 @@ eureka:
 ribbon:
     eureka:
         enabled: true
-    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
 
 zuul:
     host:
@@ -41,6 +40,7 @@ zuul:
         max-per-route-connections: 100
     semaphore:
         max-semaphores: 500
+    retryable: true
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
