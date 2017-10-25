@@ -48,7 +48,7 @@
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+            <column name="created_date" type="timestamp">
                 <constraints nullable="false"/>
             </column>
             <column name="reset_date" type="timestamp">
@@ -96,27 +96,7 @@
                                  constraintName="fk_user_id"
                                  referencedColumnNames="id"
                                  referencedTableName="podium_user"/>
-        <loadData encoding="UTF-8"
-                  file="../users.csv"
-                  relativeToChangelogFile="true"
-                  separator=";"
-                  tableName="podium_user">
-            <column name="activated" type="boolean"/>
-            <column name="created_date" type="timestamp"/>
-        </loadData>
-        <dropDefaultValue tableName="podium_user" columnName="created_date" columnDataType="datetime"/>
 
-        <loadData encoding="UTF-8"
-                  file="../authorities.csv"
-                  relativeToChangelogFile="true"
-                  separator=";"
-                  tableName="podium_authority"/>
-
-        <loadData encoding="UTF-8"
-                  file="../users_authorities.csv"
-                  relativeToChangelogFile="true"
-                  separator=";"
-                  tableName="podium_user_authority"/>
         <createTable tableName="podium_persistent_audit_event">
             <column name="event_id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
@@ -157,6 +137,33 @@
                                  constraintName="fk_evt_pers_audit_evt_data"
                                  referencedColumnNames="event_id"
                                  referencedTableName="podium_persistent_audit_event"/>
+    </changeSet>
+
+    <changeSet id="00000000000002" author="podium">
+        <loadData encoding="UTF-8"
+                  file="../authorities.csv"
+                  relativeToChangelogFile="true"
+                  separator=";"
+                  tableName="podium_authority"/>
+    </changeSet>
+
+    <changeSet id="00000000000003" author="podium" context="dev">
+        <addDefaultValue tableName="podium_user" columnName="created_date" defaultValueDate="${now}"/>
+        <loadData encoding="UTF-8"
+                  file="../users.csv"
+                  relativeToChangelogFile="true"
+                  separator=";"
+                  tableName="podium_user">
+            <column name="activated" type="boolean"/>
+            <column name="created_date" type="timestamp"/>
+        </loadData>
+        <dropDefaultValue tableName="podium_user" columnName="created_date" columnDataType="datetime"/>
+
+        <loadData encoding="UTF-8"
+                  file="../users_authorities.csv"
+                  relativeToChangelogFile="true"
+                  separator=";"
+                  tableName="podium_user_authority"/>
     </changeSet>
 
 </databaseChangeLog>
