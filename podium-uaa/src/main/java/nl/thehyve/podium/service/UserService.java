@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.event.AuthenticationEvent;
 import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -31,6 +32,7 @@ import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.elasticsearch.action.suggest.SuggestResponse;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
+import org.mapstruct.ap.shaded.freemarker.template.utility.SecurityUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,6 +126,9 @@ public class UserService {
             mailService.sendUserRegisteredEmail(administrators, user);
 
             log.debug("Activated user: {}", user);
+            AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Verified_Registration, user.getUserUuid());
+            PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+            persistenceAuditEventRepository.save(persistentAuditEvent);
         }
 
         return foundUser;
@@ -143,13 +149,15 @@ public class UserService {
                 user.setActivationKeyDate(ZonedDateTime.now());
                 save(user);
                 mailService.sendVerificationEmail(user);
+                AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Send_ActivationKey, user.getUserUuid());
+                PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+                persistenceAuditEventRepository.save(persistentAuditEvent);
                 return user;
             });
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
        log.debug("Reset user password for reset key {}", key);
-
        return userRepository.findOneByDeletedIsFalseAndResetKey(key)
             .filter(user -> {
                 ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
@@ -164,6 +172,9 @@ public class UserService {
                     SearchUser searchUser = userMapper.userToSearchUser(user);
                     userSearchRepository.save(searchUser);
                     log.debug("Activated user: {}", user);
+                    AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.User_Activated, user.getUserUuid());
+                    PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+                    persistenceAuditEventRepository.save(persistentAuditEvent);
 
                     // Notify BBMRI admin
                     Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
@@ -172,6 +183,9 @@ public class UserService {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
+                AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Update_UserPassword, user.getUserUuid());
+                PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+                persistenceAuditEventRepository.save(persistentAuditEvent);
                 return user;
            });
     }
@@ -181,6 +195,9 @@ public class UserService {
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
                 user.setResetDate(ZonedDateTime.now());
+                AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Reset_UserPassword_Request, user.getUserUuid());
+                PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+                persistenceAuditEventRepository.save(persistentAuditEvent);
                 return user;
             });
     }
@@ -269,6 +286,17 @@ public class UserService {
         save(user);
 
         log.debug("Created Information for User: {}", user);
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
+        AuthenticationEvent authenticationEvent;
+        if (userOptional.isPresent()) {
+            User handler = userOptional.get();
+            authenticationEvent = new AuthenticationEvent(user, EventType.Registration, user.getUserUuid(), handler.getUserUuid());
+        } else {
+            authenticationEvent = new AuthenticationEvent(user, EventType.Registration, user.getUserUuid());
+        }
+
+        PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+        persistenceAuditEventRepository.save(persistentAuditEvent);
         return user;
     }
 
@@ -289,6 +317,9 @@ public class UserService {
         user = save(user);
 
         log.debug("Changed Information for User: {}", user);
+        AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Update_User, user.getUserUuid());
+        PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+        persistenceAuditEventRepository.save(persistentAuditEvent);
         return userMapper.userToUserDTO(user);
     }
 
@@ -333,6 +364,9 @@ public class UserService {
             String encryptedPassword = passwordEncoder.encode(password);
             user.setPassword(encryptedPassword);
             log.debug("Changed password for User: {}", user);
+            AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Update_UserPassword, user.getUserUuid());
+            PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+            persistenceAuditEventRepository.save(persistentAuditEvent);
         });
     }
 
@@ -340,6 +374,9 @@ public class UserService {
         user.setAccountLocked(false);
         user.setAccountLockDate(null);
         user.resetFailedLoginAttempts();
+        AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Unlock_Account, user.getUserUuid());
+        PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+        persistenceAuditEventRepository.save(persistentAuditEvent);
         return save(user);
     }
 
@@ -361,6 +398,9 @@ public class UserService {
         save(user);
 
         log.debug("Deleted User: {}", user);
+        AuthenticationEvent authenticationEvent = new AuthenticationEvent(user, EventType.Delete_User, user.getUserUuid());
+        PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+        persistenceAuditEventRepository.save(persistentAuditEvent);
     }
 
     @Transactional(readOnly = true)

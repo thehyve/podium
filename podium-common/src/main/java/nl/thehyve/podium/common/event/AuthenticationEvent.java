@@ -16,13 +16,12 @@ public class AuthenticationEvent extends AbstractEvent {
         AuthenticatedUser user,
         EventType eventType,
         UUID userUuid,
-        UUID handlerUuid,
-        MessageRepresentation message) {
+        UUID handlerUuid) {
         super(user, EventType.Status_Change);
         this.eventType = eventType;
         this.userUuid = userUuid;
         this.handlerUuid = handlerUuid;
-        this.message = message;
+        this.message = null;
     }
 
     public AuthenticationEvent(
