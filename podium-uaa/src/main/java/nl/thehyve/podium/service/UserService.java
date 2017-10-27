@@ -7,16 +7,20 @@
 
 package nl.thehyve.podium.service;
 
+import nl.thehyve.podium.common.event.AuthenticationEvent;
+import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.config.UaaProperties;
+import nl.thehyve.podium.domain.PersistentAuditEvent;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
 import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.exceptions.VerificationKeyExpired;
+import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
@@ -81,6 +85,9 @@ public class UserService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private PersistenceAuditEventRepository persistenceAuditEventRepository;
 
     /**
      * Activate a user by a given key.
@@ -231,6 +238,9 @@ public class UserService {
         save(newUser);
 
         log.debug("Created Information for User: {}", newUser);
+        AuthenticationEvent authenticationEvent = new AuthenticationEvent(newUser, EventType.Registration, newUser.getUserUuid());
+        PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent(authenticationEvent);
+        persistenceAuditEventRepository.save(persistentAuditEvent);
         return newUser;
     }
 
