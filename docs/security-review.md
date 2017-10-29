@@ -99,8 +99,7 @@ If not ticked, an explanation should be added in the [open issues](#section-issu
 - [x] No weaknesses in account update/creation functionality.
       _Specific routes for account editing._
 - [x] Enable to securely update credentials. `TLS` `Application`
-- [ ] Logging of authentication decisions (for security investigations).
-      :warning: _Not implemented yet._
+- [x] Logging of authentication decisions (for security investigations).
 - [x] Secure password hashing and storage. `Spring`
 - [x] No leaking of credentials. `Spring`
 - [x] No harvesting of user accounts possible through login functionality.
