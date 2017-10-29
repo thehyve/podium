@@ -111,9 +111,8 @@ public class ReviewRoundService {
 
             // Set date of initialization. Update when feedback is given.
             feedback.setDate(ZonedDateTime.now());
-
             reviewFeedbackRepository.save(feedback);
-            reviewFeedbackSearchRepository.save(feedback);
+//            reviewFeedbackSearchRepository.save(feedback);
 
             // Add the feedback to the round.
             reviewRound.getReviewFeedback().add(feedback);
