@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.event.AuthenticationEvent;
 import nl.thehyve.podium.common.event.EventType;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -32,7 +31,6 @@ import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.elasticsearch.action.suggest.SuggestResponse;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
-import org.mapstruct.ap.shaded.freemarker.template.utility.SecurityUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
