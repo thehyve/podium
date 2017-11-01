@@ -11,6 +11,8 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import org.junit.Test;
@@ -19,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.Future;
 
@@ -33,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
-@Transactional
+@DirtiesContext
 public class ElasticsearchIndexServiceIntTest {
 
     Logger log = LoggerFactory.getLogger(ElasticsearchIndexServiceIntTest.class);
@@ -47,6 +49,9 @@ public class ElasticsearchIndexServiceIntTest {
     @Autowired
     private OrganisationSearchRepository organisationSearchRepository;
 
+    @Autowired
+    private TestService testService;
+
     @Test
     public void assertThatEntitiesAreMapped() throws Exception {
         Long beforeIndexSearchOrganisations = organisationSearchRepository.count();
@@ -54,6 +59,10 @@ public class ElasticsearchIndexServiceIntTest {
 
         assertThat(beforeIndexSearchOrganisations).isEqualTo(0);
         assertThat(beforeIndexSearchUsers).isEqualTo(0);
+
+        Organisation organisation = testService.createOrganisation("Test organisation");
+        testService.createUser("User1", AuthorityConstants.RESEARCHER);
+        testService.createUser("Reviewer2", AuthorityConstants.REVIEWER, organisation);
 
         // Wait for the future to complete
         Future future = elasticsearchIndexService.reindexAll();
@@ -63,7 +72,7 @@ public class ElasticsearchIndexServiceIntTest {
         Long afterIndexSearchUsers = userSearchRepository.count();
 
         assertThat(afterIndexSearchOrganisations).isEqualTo(1);
-        assertThat(afterIndexSearchUsers).isEqualTo(7);
+        assertThat(afterIndexSearchUsers).isEqualTo(2);
 
     }
 
