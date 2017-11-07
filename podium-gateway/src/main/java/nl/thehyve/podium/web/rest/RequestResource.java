@@ -22,6 +22,7 @@ import nl.thehyve.podium.service.DraftService;
 import nl.thehyve.podium.service.RequestFileService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.ReviewService;
+import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -621,7 +622,7 @@ public class RequestResource {
                                           @RequestParam("file") MultipartFile file) throws URISyntaxException,
                                                                                            ActionNotAllowed{
         AuthenticatedUser user = securityService.getCurrentUser();
-        requestFileService.addFile(user, uuid, file);
-        return ResponseEntity.accepted().body("");
+        RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file);
+        return ResponseEntity.accepted().body(requestFileRepresentation);
     }
 }
