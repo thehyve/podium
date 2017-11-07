@@ -28,15 +28,6 @@ public class RequestFileService {
         requestFile.setOwner(owner.getUserUuid());
         requestFile.setRequest(requestUUID);
         requestFileRepository.save(requestFile);
-//        Request request = new Request();
-//        request.setStatus(RequestStatus.Draft);
-//        request.setRequester(user.getUserUuid());
-//        RequestDetail requestDetail = new RequestDetail();
-//        requestDetail.setCombinedRequest(false);
-//        requestDetail.setPrincipalInvestigator(new PrincipalInvestigator());
-//        request.setRequestDetail(requestDetail);
-//        requestRepository.save(request);
-//        return requestMapper.detailedRequestToRequestDTO(request);
 
         return requestFileMapper.processingRequestFileDtoToRequestFile(requestFile);
     }
