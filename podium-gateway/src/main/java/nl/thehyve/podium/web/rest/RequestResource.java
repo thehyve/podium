@@ -19,6 +19,7 @@ import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.service.DraftService;
+import nl.thehyve.podium.service.RequestFileService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.ReviewService;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -32,6 +33,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -63,6 +65,9 @@ public class RequestResource {
 
     @Autowired
     protected PodiumProperties podiumProperties;
+
+    @Autowired
+    protected RequestFileService requestFileService;
 
     /**
      * Fetch drafts for the current user
@@ -604,5 +609,19 @@ public class RequestResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
             .body(result);
 
+    }
+
+    /**
+     * Accept a RequestFile and add it to the request data
+     * @return A confirmation of the upload
+     */
+    @PostMapping("/requests/{uuid}/addfile/")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
+                                          @RequestParam("file") MultipartFile file) throws URISyntaxException,
+                                                                                           ActionNotAllowed{
+        AuthenticatedUser user = securityService.getCurrentUser();
+        requestFileService.addFile(user, uuid, file);
+        return ResponseEntity.accepted().body("");
     }
 }
