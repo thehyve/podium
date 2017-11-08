@@ -34,13 +34,23 @@
             </column>
         </addColumn>
 
+        <addColumn tableName="organisation">
+            <column name="uuid" type="uuid">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20170202133114-2" author="gijs@thehyve.nl" context="dev">
         <loadUpdateData encoding="UTF-8"
                         file="../user_uuids.csv"
                         relativeToChangelogFile="true"
                         separator=";"
                         tableName="podium_user"
                         primaryKey="id"/>
+    </changeSet>
 
+    <changeSet id="20170202133114-3" author="gijs@thehyve.nl">
         <addNotNullConstraint tableName="podium_user" columnName="uuid" columnDataType="uuid"/>
 
         <createIndex indexName="idx_user_uuid"
@@ -49,16 +59,11 @@
             <column name="uuid" type="uuid"/>
         </createIndex>
 
-        <addColumn tableName="organisation">
-            <column name="uuid" type="uuid">
-                <constraints unique="true" nullable="false"/>
-            </column>
-        </addColumn>
-
         <createIndex indexName="idx_organisation_uuid"
                      tableName="organisation"
                      unique="true">
             <column name="uuid" type="uuid"/>
         </createIndex>
     </changeSet>
+
 </databaseChangeLog>

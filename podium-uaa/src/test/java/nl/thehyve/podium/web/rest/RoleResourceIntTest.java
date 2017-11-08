@@ -57,6 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
+@Transactional
 public class RoleResourceIntTest {
 
     @Autowired
@@ -141,7 +142,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void createRoleNotAllowed() throws Exception {
         int databaseSizeBeforeCreate = roleRepository.findAll().size();
 
@@ -158,7 +158,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void getAllRoles() throws Exception {
         // Initialize the database
         roleRepository.saveAndFlush(role);
@@ -171,7 +170,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void getRole() throws Exception {
         // Initialize the database
         roleRepository.saveAndFlush(role);
@@ -184,7 +182,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void getNonExistingRole() throws Exception {
         // Get the role
         restRoleMockMvc.perform(get("/api/roles/{id}", Long.MAX_VALUE))
@@ -192,7 +189,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void updateRole() throws Exception {
         // Initialize the database
         roleService.save(role);
@@ -218,7 +214,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void updateNonExistingRole() throws Exception {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
 
@@ -234,7 +229,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void deleteRoleNotAllowed() throws Exception {
         // Initialize the database
         roleService.save(role);
@@ -252,7 +246,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void searchRole() throws Exception {
         // Initialize the database
         roleService.save(role);

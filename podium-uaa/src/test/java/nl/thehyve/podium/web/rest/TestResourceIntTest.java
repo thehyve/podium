@@ -220,13 +220,21 @@ public class TestResourceIntTest {
     @Test
     @Transactional
     public void testClearDatabase() throws Exception {
+        createBbmriAdmin();
+        createJoe();
+        createTestOrganisation();
+
         long organisationCount = organisationRepository.count();
         long userCount = userRepository.count();
         long roleCount = roleRepository.count();
 
-        assertThat(organisationCount).isGreaterThan(0);
-        assertThat(userCount).isGreaterThan(2);
-        assertThat(roleCount).isGreaterThan(3);
+        for(User user: userRepository.findAll()) {
+            log.info(" - User: {}", user.getLogin());
+        }
+
+        assertThat(organisationCount).isEqualTo(1);
+        assertThat(userCount).isEqualTo(2);
+        assertThat(roleCount).isEqualTo(6);
 
         testService.clearDatabase();
 
@@ -235,20 +243,24 @@ public class TestResourceIntTest {
         roleCount = roleRepository.count();
 
         assertThat(organisationCount).isEqualTo(0);
-        assertThat(userCount).isEqualTo(2);
+        assertThat(userCount).isEqualTo(0);
         assertThat(roleCount).isEqualTo(3);
     }
 
     @Test
     @Transactional
     public void testClearDatabaseAfterRoleAssignment() throws Exception {
+        createBbmriAdmin();
+        createJoe();
+        createTestOrganisation();
+
         long organisationCount = organisationRepository.count();
         long userCount = userRepository.count();
         long roleCount = roleRepository.count();
 
-        assertThat(organisationCount).isGreaterThan(0);
-        assertThat(userCount).isGreaterThan(2);
-        assertThat(roleCount).isGreaterThan(3);
+        assertThat(organisationCount).isEqualTo(1);
+        assertThat(userCount).isEqualTo(2);
+        assertThat(roleCount).isEqualTo(6);
 
         testService.clearDatabase();
 
@@ -275,7 +287,7 @@ public class TestResourceIntTest {
         roleCount = roleRepository.count();
 
         assertThat(organisationCount).isEqualTo(0);
-        assertThat(userCount).isEqualTo(2);
+        assertThat(userCount).isEqualTo(0);
         assertThat(roleCount).isEqualTo(3);
     }
 
