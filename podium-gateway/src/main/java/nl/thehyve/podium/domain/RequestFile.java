@@ -39,7 +39,8 @@ public class RequestFile extends AbstractAuditingEntity {
     @Column(nullable = false)
     private UUID request;
 
-//    private String fileDriveLocation;
+    @Column(unique=true, name="file_location")
+    private String fileLocation;
 
     public Long getId() {
         return id;
@@ -71,5 +72,13 @@ public class RequestFile extends AbstractAuditingEntity {
 
     public void setRequest(UUID request) {
         this.request = request;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String file_location) {
+        this.fileLocation = file_location;
     }
 }

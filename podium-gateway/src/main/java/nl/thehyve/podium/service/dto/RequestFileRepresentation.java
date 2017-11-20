@@ -17,7 +17,7 @@ public class RequestFileRepresentation implements Serializable {
 
     private UUID uuid;
 
-    private UserRepresentation owner;
+    private UUID owner;
 
     private ZonedDateTime createdDate;
 
