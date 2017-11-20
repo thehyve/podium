@@ -46,3 +46,41 @@ h3 {
     cursor: pointer;
     color: purple;
 }
+
+.upload-button input {
+    display: none;
+}
+
+.upload-items {
+    display: block;
+    width: 100%;
+}
+
+.upload-items .upload-item {
+    width: 100%;
+    display: block;
+    margin-top: 20px;
+}
+
+.upload-items .upload-item .filename {
+    display: block;
+    padding: 0 0 5px 5px;
+}
+
+.upload-items .upload-item .progress {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 15px;
+    border: 1px solid purple;
+    border-radius: 2px;
+}
+
+.upload-items .upload-item .progress .bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    background: purple;
+}
+
