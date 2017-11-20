@@ -9,7 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { Account, Principal } from '../shared';
 import { Ng2DeviceService } from 'ng2-device-detector';
 import { RedirectService } from '../shared/auth/redirect.service';
@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private principal: Principal,
-        private eventManager: EventManager,
+        private JhiEventManager: JhiEventManager,
         private redirectService: RedirectService,
         private deviceService: Ng2DeviceService
     ) {
@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
     }
 
     registerAuthenticationSuccess() {
-        this.eventManager.subscribe('authenticationSuccess', (message) => {
+        this.JhiEventManager.subscribe('authenticationSuccess', (message) => {
             this.principal.identity().then((account) => {
                 this.account = account;
             });

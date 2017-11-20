@@ -26,3 +26,23 @@ h3 {
     box-shadow: none;
     background-color: inherit;
 }
+
+.drop-container {
+    background: white;
+    border-radius: 6px;
+    height: 150px;
+    width: 100%;
+    box-shadow: 1px 2px 20px rgba(black, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed grey;
+}
+
+.upload-button {
+    display: inline-block;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: purple;
+}

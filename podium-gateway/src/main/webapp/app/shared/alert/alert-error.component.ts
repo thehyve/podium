@@ -9,7 +9,7 @@
  */
 import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { EventManager, AlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Subscription } from 'rxjs/Rx';
 
 @Component({
@@ -26,10 +26,10 @@ export class JhiAlertErrorComponent implements OnDestroy {
     alerts: any[];
     cleanHttpErrorListener: Subscription;
 
-    constructor(private alertService: AlertService, private eventManager: EventManager, private translateService: TranslateService) {
+    constructor(private JhiAlertService: JhiAlertService, private JhiEventManager: JhiEventManager, private translateService: TranslateService) {
         this.alerts = [];
 
-        this.cleanHttpErrorListener = eventManager.subscribe('podiumGatewayApp.httpError', (response) => {
+        this.cleanHttpErrorListener = JhiEventManager.subscribe('podiumGatewayApp.httpError', (response) => {
             let i;
             let httpResponse = response.content;
             switch (httpResponse.status) {
@@ -86,7 +86,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
 
     ngOnDestroy() {
         if (this.cleanHttpErrorListener !== undefined && this.cleanHttpErrorListener !== null) {
-            this.eventManager.destroy(this.cleanHttpErrorListener);
+            this.JhiEventManager.destroy(this.cleanHttpErrorListener);
             this.alerts = [];
         }
     }
@@ -94,13 +94,13 @@ export class JhiAlertErrorComponent implements OnDestroy {
     addErrorAlert (message, key?, data?) {
         key = key && key !== null ? key : message;
         this.alerts.push(
-            this.alertService.addAlert(
+            this.JhiAlertService.addAlert(
                 {
                     type: 'danger',
                     msg: key,
                     params: data,
                     timeout: 5000,
-                    toast: this.alertService.isToast(),
+                    toast: this.JhiAlertService.isToast(),
                     scoped: true
                 },
                 this.alerts

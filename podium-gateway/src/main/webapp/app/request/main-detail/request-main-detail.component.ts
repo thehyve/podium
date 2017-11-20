@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
@@ -37,7 +37,7 @@ export class RequestMainDetailComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private requestService: RequestService,
-        private alertService: AlertService
+        private alertService: JhiAlertService
     ) {
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {

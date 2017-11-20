@@ -17,7 +17,7 @@ defineSupportCode(function ({ registerHandler }) {
     let delay = process.env.BROWSERSTACK_DELAY ? process.env.BROWSERSTACK_DELAY : 0;
 
     registerHandler('BeforeStep', function (step): Promise<any> {
-        return browser.sleep(delay);
+        return browser.sleep(500);
     });
 
     registerHandler('BeforeFeatures', function (features) {

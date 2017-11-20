@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from '../../../shared';
-import { PaginationUtil } from 'ng-jhipster';
+import { JhiPaginationUtil } from 'ng-jhipster';
 import { OrganisationComponent } from './organisation.component';
 import { OrganisationDeletePopupComponent } from './organisation-delete-dialog.component';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
@@ -18,7 +18,7 @@ import { OrganisationFormComponent } from './organisation-form/organisation-form
 @Injectable()
 export class OrganisationResolvePagingParams implements Resolve<any> {
 
-    constructor(private paginationUtil: PaginationUtil) {}
+    constructor(private paginationUtil: JhiPaginationUtil) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';

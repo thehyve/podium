@@ -13,7 +13,7 @@ import { MockBackend } from '@angular/http/testing';
 import { Http, BaseRequestOptions } from '@angular/http';
 import { RequestOverviewComponent } from '../../../../../../main/webapp/app/request/overview/request-overview.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService, ParseLinks, EventManager } from 'ng-jhipster';
+import { JhiLanguageService, JhiParseLinks, JhiEventManager } from 'ng-jhipster';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
@@ -39,11 +39,11 @@ describe('Component Tests', () => {
                     {
                         provide: Router,  useClass: MockRouter
                     },
-                    ParseLinks,
+                    JhiParseLinks,
                     MockBackend,
                     RequestFormService,
                     BaseRequestOptions,
-                    EventManager,
+                    JhiEventManager,
                     Principal,
                     {
                         provide: NgbModal,

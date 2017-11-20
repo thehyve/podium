@@ -15,7 +15,7 @@
     </div>
 
     <div class="card-container"
-        [ngClass]="{
+         [ngClass]="{
             'col-md-6 offset-md-3': !isInRevision,
             'nested-request-form': isInRevision
         }">
@@ -37,7 +37,7 @@
                     <input type="text" class="form-control" name="title" id="title"
                            required minlength="1" maxlength="50" #title="ngModel"
                            autocomplete="off" placeholder="{{'request.form.title.placeholder' | translate}}"
-                           [(ngModel)]="requestDetail.title" />
+                           [(ngModel)]="requestDetail.title"/>
 
                     <div *ngIf="title.dirty && title.invalid">
                         <small class="form-text text-danger" *ngIf="title.errors.required"
@@ -74,13 +74,14 @@
                                        value="{{requestType.value}}"
                                        [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
-                                       (change)="updateRequestType(requestType, $event)" />
+                                       (change)="updateRequestType(requestType, $event)"/>
                                 {{requestType.value | capitalize}}
                             </label>
                         </div>
                     </div>
                     <small jhiTranslate="request.form.requestType.footnote">* Changing this value will clear
-                        organisation selection.</small>
+                        organisation selection.
+                    </small>
                 </div>
 
                 <!-- Organisations -->
@@ -115,7 +116,8 @@
                         <i class="material-icons">info_outline</i>
                     </span>
                     <div class="checkbox-group" *ngIf="!isInRevision">
-                        <input class="test-combinedRequestYes" type="radio" [value]="true" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
+                        <input class="test-combinedRequestYes" type="radio" [value]="true" name="islinked"
+                               [(ngModel)]="requestDetail.combinedRequest"
                                required [disabled]="!hasSelectedMultipleOrganisations()">
                         <span jhiTranslate="request.form.isLinked.yes">Yes</span>
                         &nbsp;
@@ -196,7 +198,8 @@
                     <label for="researchQuestion"
                            jhiTranslate="request.form.researchQuestion.label">Research Question</label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
-                              autocomplete="off" placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
+                              autocomplete="off"
+                              placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
                               required minlength="1" maxlength="300" rows="5" #researchQuestion="ngModel"
                               [pdmWordLengthValidator]="30" [(ngModel)]="requestDetail.researchQuestion">
                     </textarea>
@@ -288,7 +291,7 @@
                     <input type="text" class="form-control" name="relatedRequestNumber" id="relatedRequestNumber"
                            maxlength="50" autocomplete="off" #relatedRequestNumber="ngModel"
                            placeholder="{{'request.form.relatedRequestNumber.placeholder' | translate}}"
-                           [(ngModel)]="requestDetail.relatedRequestNumber" />
+                           [(ngModel)]="requestDetail.relatedRequestNumber"/>
 
                     <div *ngIf="relatedRequestNumber.dirty && relatedRequestNumber.invalid">
                         <small class="form-text text-danger" *ngIf="relatedRequestNumber.errors.maxlength"
@@ -313,7 +316,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piName="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.name.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.name" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.name"/>
 
                             <div *ngIf="piName.dirty && piName.invalid">
                                 <small class="form-text text-danger" *ngIf="piName.errors.required"
@@ -342,7 +345,7 @@
                             </label>
                             <input type="text" class="form-control" name="piEmail" id="piEmail"
                                    required minlength="1" maxlength="150"
-                                   autocomplete="off"  #piEmail="ngModel"
+                                   autocomplete="off" #piEmail="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.email.placeholder' | translate}}"
                                    [(ngModel)]="requestDetail.principalInvestigator.email" pdmEmailValidator>
 
@@ -381,7 +384,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piFunction="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.function.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.jobTitle" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.jobTitle"/>
 
                             <div *ngIf="piFunction.dirty && piFunction.invalid">
                                 <small class="form-text text-danger" *ngIf="piFunction.errors.required"
@@ -412,7 +415,7 @@
                                    required minlength="1" maxlength="150"
                                    autocomplete="off" #piAffiliation="ngModel"
                                    placeholder="{{'request.form.principalInvestigator.affiliation.placeholder' | translate}}"
-                                   [(ngModel)]="requestDetail.principalInvestigator.affiliation" />
+                                   [(ngModel)]="requestDetail.principalInvestigator.affiliation"/>
 
                             <div *ngIf="piAffiliation.dirty && piAffiliation.invalid">
                                 <small class="form-text text-danger" *ngIf="piAffiliation.errors.required"
@@ -427,6 +430,42 @@
                                        jhiTranslate="request.form.messages.validate.principalInvestigator.affiliation.maxlength">
                                     The principal investigator affiliation cannot be longer than 150 characters.
                                 </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 jhiTranslate="request.form.header.attachments">Attachments</h3>
+
+                <div class="row">
+                    <div class="form-group">
+                        <div class="column is-8 is-offset-2">
+                            <div class="drop-container" ngFileDrop [options]="options"
+                                 (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+                                <p>
+                                    Drag a file here or
+                                    <label class="upload-button">
+                                        <input type="file" ngFileSelect [options]="options"
+                                               (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
+                                               multiple>
+                                        browse
+                                    </label>
+                                    to upload.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="column is-8 is-offset-2">
+                            <div class="upload-items">
+                                <div class="upload-item" *ngFor="let f of files; let i = index;">
+                                    <span class="filename">
+                                    <span>{{ f.name }} ({{ f.id }}) - {{ f.progress?.data?.percentage }}%</span>
+                                    <span>uploading with {{ f.progress?.data?.speedHuman }}</span>
+                                    <span>ETA {{ f.progress?.data?.etaHuman }}</span>
+                                    </span>
+                                    <div class="progress">
+                                        <span class="bar" [style.width]="f?.progress?.data?.percentage + '%'"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

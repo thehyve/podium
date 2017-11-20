@@ -68,7 +68,7 @@ spring:
 
     mail:
         host: localhost
-        port: 25
+        port: 2525
         username:
         password:
     messages:
