@@ -23,8 +23,10 @@ import java.util.UUID;
 @Timed
 public interface RequestFileRepository extends JpaRepository<RequestFile, Long> {
 
-    RequestFile findOneByUuid(UUID deliveryProcessUuid);
+    RequestFile findOneByUuid(UUID requestFileUuid);
 
-    List<RequestFile> findDistinctByRequest(Request request);
+    RequestFile findOneByUuidAndDeletedFalse(UUID requestFileUuid);
+
+    List<RequestFile> findDistinctByRequestAndDeletedFalse(Request request);
 
 }

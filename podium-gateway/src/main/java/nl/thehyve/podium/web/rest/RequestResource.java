@@ -667,4 +667,17 @@ public class RequestResource {
         return ResponseEntity.ok(files);
     }
 
+    @GetMapping("/requests/{uuid}/deletefile/{fileuuid}")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    public ResponseEntity<Object> deleteFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
+                                             @PathVariable("fileuuid") UUID fileUuid)
+        throws URISyntaxException, ActionNotAllowed{
+
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        Boolean deleted = requestFileService.deleteFile(user, fileUuid);
+
+        return ResponseEntity.ok(deleted);
+    }
+
 }

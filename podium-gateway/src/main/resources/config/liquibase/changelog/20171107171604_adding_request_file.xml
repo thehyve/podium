@@ -45,6 +45,8 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="deleted" type="boolean" defaultValueBoolean="false" />
+
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
 

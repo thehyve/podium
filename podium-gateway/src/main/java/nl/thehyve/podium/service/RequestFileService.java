@@ -81,7 +81,7 @@ public class RequestFileService {
     }
 
     public ByteArrayResource getFile(IdentifiableUser requester, UUID requestUUID, UUID fileUuid) throws IOException{
-        RequestFile requestFile = requestFileRepository.findOneByUuid(fileUuid);
+        RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
 
         Path path = Paths.get(requestFile.getFileLocation());
         return new ByteArrayResource(Files.readAllBytes(path));
@@ -90,7 +90,7 @@ public class RequestFileService {
     public List<RequestFileRepresentation> getFilesForRequest(IdentifiableUser requester, UUID requestUUID){
         Request request = requestRepository.findOneByUuid(requestUUID);
 
-        List<RequestFile> files = requestFileRepository.findDistinctByRequest(request);
+        List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
 
         List<RequestFileRepresentation> representations = new ArrayList<RequestFileRepresentation>();
         for(RequestFile file : files){
@@ -99,5 +99,18 @@ public class RequestFileService {
         }
 
         return representations;
+    }
+
+    public Boolean deleteFile(IdentifiableUser requester, UUID fileUuid){
+        RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
+
+        //Only owners can delete files.
+        if(requestFile.getOwner().equals(requester.getUserUuid())){
+            requestFile.setDeleted(true);
+            requestFileRepository.save(requestFile);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

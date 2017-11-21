@@ -47,6 +47,9 @@ public class RequestFile extends AbstractAuditingEntity {
     @Column(unique=true, name="file_location")
     private String fileLocation;
 
+    @Column(name="deleted")
+    private Boolean deleted;
+
     public Long getId() {
         return id;
     }
@@ -92,5 +95,13 @@ public class RequestFile extends AbstractAuditingEntity {
 
     public void setFileLocation(String file_location) {
         this.fileLocation = file_location;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
