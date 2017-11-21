@@ -37,5 +37,4 @@
     <include file="./changelog/20170704103619_refactor_indexes.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20170905101804_searchquery_unlimited_text.xml" relativeToChangelogFile="true"/>
     <include file="./changelog/20171107171604_adding_request_file.xml" relativeToChangelogFile="true"/>
-    <include file="./changelog/20171115110035_updating_request_file.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

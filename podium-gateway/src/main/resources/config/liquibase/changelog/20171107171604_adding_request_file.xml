@@ -26,15 +26,15 @@
             </column>
 
             <column name="uuid" type="uuid">
-                <constraints unique="true"/>
+                <constraints unique="true" nullable="false"/>
             </column>
 
             <column name="request" type="uuid">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="owner" type="uuid">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
 
             <column name="created_by" type="varchar(50)">
@@ -47,7 +47,15 @@
 
             <column name="last_modified_by" type="varchar(50)"/>
             <column name="last_modified_date" type="timestamp"/>
+
+            <column name="file_location" type="varchar"/>
         </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="request"
+                                 baseTableName="request_file"
+                                 constraintName="fk_request_file_request_id"
+                                 referencedColumnNames="uuid"
+                                 referencedTableName="request"/>
     </changeSet>
 
 </databaseChangeLog>

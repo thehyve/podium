@@ -28,15 +28,18 @@ import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -622,7 +625,34 @@ public class RequestResource {
                                           @RequestParam("file") MultipartFile file) throws URISyntaxException,
                                                                                            ActionNotAllowed{
         AuthenticatedUser user = securityService.getCurrentUser();
-        RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file);
-        return ResponseEntity.accepted().body(requestFileRepresentation);
+        if(!file.isEmpty()){
+            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file);
+            return ResponseEntity.accepted().body(requestFileRepresentation);
+        } else {
+            return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
+        }
     }
+
+    /**
+     * Return a file for a given request
+     * @return the requested file
+     */
+    @PostMapping("/requests/{uuid}/getfile/{fileuuid}")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
+                                          @PathVariable("fileuuid") UUID fileUuid) throws URISyntaxException,
+        ActionNotAllowed{
+
+        AuthenticatedUser user = securityService.getCurrentUser();
+        try{
+            ByteArrayResource resource = requestFileService.getFile(user, requestUuid, fileUuid);
+            return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+        } catch(IOException e){
+            log.error("Can't access file " + fileUuid);
+            return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
+        }
+    }
+
 }

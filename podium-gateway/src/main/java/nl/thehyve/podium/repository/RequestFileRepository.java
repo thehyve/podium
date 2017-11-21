@@ -22,6 +22,6 @@ import java.util.UUID;
 @Timed
 public interface RequestFileRepository extends JpaRepository<RequestFile, Long> {
 
-    DeliveryProcess findOneByUuid(UUID deliveryProcessUuid);
+    RequestFile findOneByUuid(UUID deliveryProcessUuid);
 
 }

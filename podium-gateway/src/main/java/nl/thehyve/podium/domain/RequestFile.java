@@ -3,6 +3,8 @@ package nl.thehyve.podium.domain;
 import lombok.AccessLevel;
 import lombok.Setter;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -29,6 +31,7 @@ public class RequestFile extends AbstractAuditingEntity {
     )
     private Long id;
 
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(unique = true, nullable = false)
     @Setter(AccessLevel.NONE)
     private UUID uuid;
@@ -36,8 +39,10 @@ public class RequestFile extends AbstractAuditingEntity {
     @Column(nullable = false)
     private UUID owner;
 
-    @Column(nullable = false)
-    private UUID request;
+    @OneToOne
+    @JoinColumn(unique = true, name = "request", nullable=false)
+    @Fetch(FetchMode.JOIN)
+    private Request request;
 
     @Column(unique=true, name="file_location")
     private String fileLocation;
@@ -55,8 +60,8 @@ public class RequestFile extends AbstractAuditingEntity {
     }
 
     public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
+        //
+   }
 
     public UUID getOwner() {
         return owner;
@@ -66,11 +71,11 @@ public class RequestFile extends AbstractAuditingEntity {
         this.owner = owner;
     }
 
-    public UUID getRequest() {
+    public Request getRequest() {
         return request;
     }
 
-    public void setRequest(UUID request) {
+    public void setRequest(Request request) {
         this.request = request;
     }
 
