@@ -3,6 +3,7 @@ package nl.thehyve.podium.service.dto;
 import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.domain.Request;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -19,9 +20,10 @@ public class RequestFileRepresentation implements Serializable {
 
     private UUID owner;
 
+    private Request request;
+
     private ZonedDateTime createdDate;
 
     private ZonedDateTime lastModifiedDate;
 
-    private String fileDriveLocation;
 }

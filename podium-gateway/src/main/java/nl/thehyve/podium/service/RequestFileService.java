@@ -1,6 +1,7 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.repository.RequestFileRepository;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -82,5 +85,19 @@ public class RequestFileService {
 
         Path path = Paths.get(requestFile.getFileLocation());
         return new ByteArrayResource(Files.readAllBytes(path));
+    }
+
+    public List<RequestFileRepresentation> getFilesForRequest(IdentifiableUser requester, UUID requestUUID){
+        Request request = requestRepository.findOneByUuid(requestUUID);
+
+        List<RequestFile> files = requestFileRepository.findDistinctByRequest(request);
+
+        List<RequestFileRepresentation> representations = new ArrayList<RequestFileRepresentation>();
+        for(RequestFile file : files){
+            RequestFileRepresentation representation = requestFileMapper.processingRequestFileDtoToRequestFile(file);
+            representations.add(representation);
+        }
+
+        return representations;
     }
 }

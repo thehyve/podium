@@ -18,6 +18,7 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.service.DraftService;
 import nl.thehyve.podium.service.RequestFileService;
 import nl.thehyve.podium.service.RequestService;
@@ -653,6 +654,17 @@ public class RequestResource {
             log.error("Can't access file " + fileUuid);
             return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping("/requests/{uuid}/listfiles")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    public ResponseEntity<Object> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
+        URISyntaxException, ActionNotAllowed {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        List<RequestFileRepresentation> files = requestFileService.getFilesForRequest(user, requestUuid);
+
+        return ResponseEntity.ok(files);
     }
 
 }

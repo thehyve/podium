@@ -9,10 +9,11 @@ package nl.thehyve.podium.repository;
 
 
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.domain.DeliveryProcess;
+import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,5 +24,7 @@ import java.util.UUID;
 public interface RequestFileRepository extends JpaRepository<RequestFile, Long> {
 
     RequestFile findOneByUuid(UUID deliveryProcessUuid);
+
+    List<RequestFile> findDistinctByRequest(Request request);
 
 }

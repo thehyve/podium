@@ -14,6 +14,7 @@ public abstract class RequestFileMapper {
         requestFileRepresentation.setLastModifiedDate(requestFile.getLastModifiedDate());
         requestFileRepresentation.setOwner(requestFile.getOwner());
         requestFileRepresentation.setUuid(requestFile.getUuid());
+        requestFileRepresentation.setRequest(requestFile.getRequest());
 
         return requestFileRepresentation;
     }
