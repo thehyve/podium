@@ -637,7 +637,7 @@ public class RequestResource {
      * Return a file for a given request
      * @return the requested file
      */
-    @PostMapping("/requests/{uuid}/getfile/{fileuuid}")
+    @GetMapping("/requests/{uuid}/getfile/{fileuuid}")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
                                           @PathVariable("fileuuid") UUID fileUuid) throws URISyntaxException,
