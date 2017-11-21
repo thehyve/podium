@@ -1,7 +1,10 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.IdentifiableUser;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
+import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.repository.RequestFileRepository;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -28,8 +32,6 @@ import java.util.UUID;
 public class RequestFileService {
 
     private final Logger log = LoggerFactory.getLogger(DeliveryService.class);
-
-    FileSystem fileSystem = FileSystems.getDefault();
 
     @Autowired
     private RequestFileRepository requestFileRepository;
@@ -40,18 +42,49 @@ public class RequestFileService {
     @Autowired
     private RequestFileMapper requestFileMapper;
 
+    @Autowired
+    private SecurityService securityService;
+
     /**
      * Create a new draft request.
      *
      * @param owner the user that owns the file. requestUUID for the request it is linked to and the MultipartFile
      * @return saved request representation
      */
-    public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file) {
+    public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file) throws
+        ActionNotAllowed {
         RequestFile requestFile = new RequestFile();
         requestFile.setOwner(owner.getUserUuid());
         Request request = requestRepository.findOneByUuid(requestUuid);
         requestFile.setRequest(request);
+        Set<UUID> organisationUuids = request.getOrganisations();
+        RequestStatus requestStatus = request.getStatus();
 
+        Boolean allowedToAdd = false;
+
+        // Researchers can add files if it is in Draft(/Revision) status
+        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.RESEARCHER)){
+            if(request.getStatus() == RequestStatus.Draft){
+                allowedToAdd = true;
+            }
+        }
+        // Coordinator can add files in Validation status
+        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.ORGANISATION_COORDINATOR)){
+            if(request.getStatus() == RequestStatus.Review){
+                allowedToAdd = true;
+            }
+        }
+
+        // Reviewer can add files in Review status
+        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.REVIEWER)){
+            if(request.getStatus() == RequestStatus.Review){
+                allowedToAdd = true;
+            }
+        }
+
+        if(!allowedToAdd){
+            throw ActionNotAllowed.forStatus(request.getStatus());
+        }
         try{
             String uploadFolder = "/tmp/podium_data/" + System.currentTimeMillis() + "/";
             byte[] bytes = file.getBytes();
