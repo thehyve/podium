@@ -86,6 +86,7 @@ public class RequestFileService {
             throw ActionNotAllowed.forStatus(request.getStatus());
         }
         try{
+            //TODO: Make this folder configurable
             String uploadFolder = "/tmp/podium_data/" + System.currentTimeMillis() + "/";
             byte[] bytes = file.getBytes();
             String pathString = uploadFolder + file.getOriginalFilename();
