@@ -61,7 +61,14 @@ public class RequestFile extends AbstractAuditingEntity {
 
     public void setUuid(UUID uuid) {
         //
-   }
+    }
+
+    @PrePersist
+    public void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+    }
 
     public UUID getOwner() {
         return owner;
