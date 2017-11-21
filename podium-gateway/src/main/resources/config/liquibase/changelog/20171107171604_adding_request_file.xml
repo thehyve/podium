@@ -29,7 +29,7 @@
                 <constraints unique="true" nullable="false"/>
             </column>
 
-            <column name="request" type="uuid">
+            <column name="request" type="bigint">
                 <constraints nullable="false" />
             </column>
 
@@ -54,7 +54,7 @@
         <addForeignKeyConstraint baseColumnNames="request"
                                  baseTableName="request_file"
                                  constraintName="fk_request_file_request_id"
-                                 referencedColumnNames="uuid"
+                                 referencedColumnNames="id"
                                  referencedTableName="request"/>
     </changeSet>
 
