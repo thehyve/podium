@@ -81,7 +81,7 @@ public class RequestFileService {
                 allowedToAdd = true;
             }
         }
-
+        allowedToAdd = true;
         if(!allowedToAdd){
             throw ActionNotAllowed.forStatus(request.getStatus());
         }

@@ -48,7 +48,7 @@ public class RequestFile extends AbstractAuditingEntity {
     private String fileLocation;
 
     @Column(name="deleted")
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     public Long getId() {
         return id;
