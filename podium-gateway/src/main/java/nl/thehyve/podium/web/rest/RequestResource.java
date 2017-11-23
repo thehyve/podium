@@ -630,7 +630,7 @@ public class RequestResource {
         AuthenticatedUser user = securityService.getCurrentUser();
         if(!file.isEmpty()){
             RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
-                RequestFileType.Type1);
+                RequestFileType.NOT_SET);
             return ResponseEntity.accepted().body(requestFileRepresentation);
         } else {
             return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
