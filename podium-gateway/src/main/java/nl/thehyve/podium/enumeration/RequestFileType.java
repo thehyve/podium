@@ -5,9 +5,12 @@ package nl.thehyve.podium.enumeration;
  * The RequestStatus enumeration.
  */
 public enum RequestFileType {
-    Type1,
-    Type2,
-    Type3
+    METC_LETTER,
+    ORG_CONDITIONS,
+    MTA,
+    DTA,
+    OTHER,
+    NOT_SET,
 
 //    String name();
 }
