@@ -7,6 +7,7 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
+import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
@@ -51,40 +52,40 @@ public class RequestFileService {
      * @param owner the user that owns the file. requestUUID for the request it is linked to and the MultipartFile
      * @return saved request representation
      */
-    public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file) throws
-        ActionNotAllowed {
+    public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file,
+                                             RequestFileType requestFileType) throws ActionNotAllowed {
         RequestFile requestFile = new RequestFile();
         requestFile.setOwner(owner.getUserUuid());
         Request request = requestRepository.findOneByUuid(requestUuid);
         requestFile.setRequest(request);
         Set<UUID> organisationUuids = request.getOrganisations();
         RequestStatus requestStatus = request.getStatus();
-
-        Boolean allowedToAdd = false;
-
-        // Researchers can add files if it is in Draft(/Revision) status
-        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.RESEARCHER)){
-            if(request.getStatus() == RequestStatus.Draft){
-                allowedToAdd = true;
-            }
-        }
-        // Coordinator can add files in Validation status
-        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.ORGANISATION_COORDINATOR)){
-            if(request.getStatus() == RequestStatus.Review){
-                allowedToAdd = true;
-            }
-        }
-
-        // Reviewer can add files in Review status
-        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.REVIEWER)){
-            if(request.getStatus() == RequestStatus.Review){
-                allowedToAdd = true;
-            }
-        }
-        allowedToAdd = true;
-        if(!allowedToAdd){
-            throw ActionNotAllowed.forStatus(request.getStatus());
-        }
+        requestFile.setRequestFileType(requestFileType);
+//        Boolean allowedToAdd = false;
+//
+//        // Researchers can add files if it is in Draft(/Revision) status
+//        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.RESEARCHER)){
+//            if(requestStatus == RequestStatus.Draft){
+//                allowedToAdd = true;
+//            }
+//        }
+//        // Coordinator can add files in Validation status
+//        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.ORGANISATION_COORDINATOR)){
+//            if(requestStatus == RequestStatus.Review){
+//                allowedToAdd = true;
+//            }
+//        }
+//
+//        // Reviewer can add files in Review status
+//        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.REVIEWER)){
+//            if(requestStatus == RequestStatus.Review){
+//                allowedToAdd = true;
+//            }
+//        }
+//        allowedToAdd = true;
+//        if(!allowedToAdd){
+//            throw ActionNotAllowed.forStatus(request.getStatus());
+//        }
         try{
             //TODO: Make this folder configurable
             String uploadFolder = "/tmp/podium_data/" + System.currentTimeMillis() + "/";
@@ -103,7 +104,7 @@ public class RequestFileService {
                 Files.write(path, bytes);
                 requestFile.setFileLocation(path.toString());
             } else {
-                return this.addFile(owner, requestUuid, file);
+                return this.addFile(owner, requestUuid, file, requestFileType);
             }
         } catch (IOException e) {
             log.error("Exception saving File", e);

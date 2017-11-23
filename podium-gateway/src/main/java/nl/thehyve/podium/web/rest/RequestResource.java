@@ -19,6 +19,7 @@ import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.domain.RequestFile;
+import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.service.DraftService;
 import nl.thehyve.podium.service.RequestFileService;
 import nl.thehyve.podium.service.RequestService;
@@ -628,7 +629,8 @@ public class RequestResource {
                                                                                            ActionNotAllowed{
         AuthenticatedUser user = securityService.getCurrentUser();
         if(!file.isEmpty()){
-            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file);
+            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
+                RequestFileType.Type1);
             return ResponseEntity.accepted().body(requestFileRepresentation);
         } else {
             return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
@@ -654,7 +656,7 @@ public class RequestResource {
                 .body(resource);
         } catch(IOException e){
             log.error("Can't access file " + fileUuid);
-            return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
         }
     }
 
@@ -681,7 +683,11 @@ public class RequestResource {
 
         Boolean deleted = requestFileService.deleteFile(user, fileUuid);
 
-        return ResponseEntity.ok(deleted);
+        if(deleted){
+            return ResponseEntity.ok(deleted);
+        } else {
+            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
+        }
     }
 
 }

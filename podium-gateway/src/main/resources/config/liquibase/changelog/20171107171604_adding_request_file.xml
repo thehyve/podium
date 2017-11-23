@@ -51,6 +51,10 @@
             <column name="last_modified_date" type="timestamp"/>
 
             <column name="file_location" type="varchar"/>
+
+            <column name="request_file_type" type="varchar">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="request"

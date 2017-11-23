@@ -3,6 +3,7 @@ package nl.thehyve.podium.domain;
 import lombok.AccessLevel;
 import lombok.Setter;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
+import nl.thehyve.podium.enumeration.RequestFileType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
@@ -49,6 +50,10 @@ public class RequestFile extends AbstractAuditingEntity {
 
     @Column(name="deleted")
     private Boolean deleted = false;
+
+    @Column(name="request_file_type")
+    @Enumerated(EnumType.STRING)
+    private RequestFileType requestFileType;
 
     public Long getId() {
         return id;
@@ -103,5 +108,13 @@ public class RequestFile extends AbstractAuditingEntity {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public RequestFileType getRequestFileType() {
+        return requestFileType;
+    }
+
+    public void setRequestFileType(RequestFileType requestFileType) {
+        this.requestFileType = requestFileType;
     }
 }
