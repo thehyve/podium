@@ -621,7 +621,7 @@ public class RequestResource {
      * Accept a RequestFile and add it to the request data
      * @return A confirmation of the upload
      */
-    @PostMapping("/requests/{uuid}/addfile/")
+    @PostMapping("/requests/{uuid}/addfile")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
