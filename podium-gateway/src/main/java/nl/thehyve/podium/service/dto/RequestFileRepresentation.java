@@ -19,7 +19,7 @@ public class RequestFileRepresentation implements Serializable {
 
     private UUID uuid;
 
-    private String owner;
+    private UserRepresentation owner;
 
     private Request request;
 

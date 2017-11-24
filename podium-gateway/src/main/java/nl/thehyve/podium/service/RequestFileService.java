@@ -61,6 +61,7 @@ public class RequestFileService {
         Set<UUID> organisationUuids = request.getOrganisations();
         RequestStatus requestStatus = request.getStatus();
         requestFile.setRequestFileType(requestFileType);
+        //TODO: actually work this out.
 //        Boolean allowedToAdd = false;
 //
 //        // Researchers can add files if it is in Draft(/Revision) status
@@ -82,7 +83,7 @@ public class RequestFileService {
 //                allowedToAdd = true;
 //            }
 //        }
-//        allowedToAdd = true;
+//
 //        if(!allowedToAdd){
 //            throw ActionNotAllowed.forStatus(request.getStatus());
 //        }
