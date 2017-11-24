@@ -33,7 +33,7 @@ public abstract class RequestFileMapper {
 
         UserRepresentation owner = userMapperHelper.uuidToRemoteUserRepresentation(requestFile.getOwner());
         requestFileRepresentation.setOwner(owner);
-        
+
         return requestFileRepresentation;
     }
 

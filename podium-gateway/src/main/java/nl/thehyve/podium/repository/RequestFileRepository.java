@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Spring Data JPA repository for the DeliveryProcess entity.
+ * Spring Data JPA repository for the RequestFile entity.
  */
 @SuppressWarnings("unused")
 @Timed
