@@ -39,15 +39,21 @@ import { ErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProfileService } from './profiles/profile.service';
 import { RouterModule } from '@angular/router';
+import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
+import { NgUploaderModule } from 'ngx-uploader';
+import { AttachmentsService } from './attachment/attachments.service';
+import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedLibsModule,
         PodiumGatewaySharedCommonModule,
         PodiumAuthModule,
-        RouterModule
+        RouterModule,
+        NgUploaderModule,
     ],
     declarations: [
+        AttachmentComponent,
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
@@ -64,6 +70,7 @@ import { RouterModule } from '@angular/router';
         CompletedComponent,
         ErrorComponent,
         NavbarComponent,
+        AttachmentListComponent,
     ],
     providers: [
         ProfileService,
@@ -74,6 +81,7 @@ import { RouterModule } from '@angular/router';
         UserService,
         RequestService,
         RequestAccessService,
+        AttachmentsService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
@@ -83,6 +91,8 @@ import { RouterModule } from '@angular/router';
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        AttachmentComponent,
+        AttachmentListComponent,
         RequestReviewPanelComponent,
         PodiumEventMessageComponent,
         LinkedRequestNotificationComponent,

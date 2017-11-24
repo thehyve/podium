@@ -439,35 +439,8 @@
 
                 <div class="row">
                     <div class="form-group">
-                        <div class="column is-8 is-offset-2">
-                            <div class="drop-container" ngFileDrop [options]="options"
-                                 (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
-                                <p>
-                                    Drag a file here or
-                                    <label class="upload-button">
-                                        <input type="file" ngFileSelect [options]="options"
-                                               (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
-                                               multiple>
-                                        browse
-                                    </label>
-                                    to upload.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="column is-8 is-offset-2">
-                            <div class="upload-items">
-                                <div class="upload-item" *ngFor="let f of files; let i = index;">
-                                    <span class="filename">
-                                    <span>{{ f.name }} ({{ f.id }}) - {{ f.progress?.data?.percentage }}%</span>
-                                    <span>uploading with {{ f.progress?.data?.speedHuman }}</span>
-                                    <span>ETA {{ f.progress?.data?.etaHuman }}</span>
-                                    </span>
-                                    <div class="progress">
-                                        <span class="bar" [style.width]="f?.progress?.data?.percentage + '%'"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <pdm-attachment [requestBaseId]="requestBase.uuid"></pdm-attachment>
+                        <pdm-attachment-list [requestUUID]="requestBase.uuid"></pdm-attachment-list>
                     </div>
                 </div>
 
@@ -480,7 +453,9 @@
                     (saveDraftChange)="saveRequestDraft()"
                     (saveRequestChange)="saveRequest()"
                     (submitRequestChange)="submitRequest()"
-                    (submitDraftChange)="submitDraft()">
+                    (submitDraftChange)="submitDraft()"
+                >
+                <br/>
                 </pdm-request-action-toolbar>
 
             </fieldset>

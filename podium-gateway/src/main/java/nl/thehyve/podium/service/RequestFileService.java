@@ -140,7 +140,7 @@ public class RequestFileService {
 
         List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
 
-        List<RequestFileRepresentation> representations = new ArrayList<RequestFileRepresentation>();
+        List<RequestFileRepresentation> representations = new ArrayList<>();
         for(RequestFile file : files){
             RequestFileRepresentation representation = requestFileMapper.processingRequestFileToRequestFileDto(file);
             representations.add(representation);

@@ -1,0 +1,36 @@
+<div *ngIf="files.length" class="small attachment-list-container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Uploader</th>
+            <th>Size</th>
+            <th>Uploaded Date</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let attachment of files">
+            <td><a (click)="downloadAttachment(attachment)"
+                   download="{{attachment.fileName}}">{{attachment.fileName}}</a></td>
+            <td>
+                <select id="attachment-type-select">
+                    <option *ngFor="let attachmentType of attachmentTypes" value="{{attachmentType.value}}">
+                        {{attachmentType.label}}
+                    </option>
+                </select>
+            </td>
+            <td>{{'__PLACEHOLDER__'}}</td>
+            <td>{{formatByte(attachment.fileSize,1)}}</td>
+            <td>{{attachment.createdDate | date:'short'}}</td>
+            <td>
+                <button type="submit" class="btn btn-danger btn-sm test-remove-btn"
+                        (click)="deleteAttachment(attachment)" title="Remove attachment">
+                    <i class="material-icons md-18">delete</i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

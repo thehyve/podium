@@ -35,7 +35,7 @@ export function interceptableFactory(
             new NotificationInterceptor()
         ]
     );
-};
+}
 
 export function customHttpProvider() {
     return {
@@ -50,4 +50,4 @@ export function customHttpProvider() {
             JhiEventManager
         ]
     };
-};
+}
