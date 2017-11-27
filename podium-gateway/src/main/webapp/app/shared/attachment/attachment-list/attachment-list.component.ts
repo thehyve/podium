@@ -18,9 +18,8 @@ import { AttachmentTypes } from '../attachment.constants';
     templateUrl: './attachment-list.component.html',
     styleUrls: ['attachment-list.scss']
 })
-export class AttachmentListComponent implements OnInit {
+export class AttachmentListComponent {
 
-    files: Attachment[] = [];
     attachmentTypes: any[] = [
         {label: AttachmentTypes[AttachmentTypes.NOT_SET], value: AttachmentTypes.NOT_SET},
         {label: AttachmentTypes[AttachmentTypes.METC_LETTER], value: AttachmentTypes.METC_LETTER},
@@ -31,24 +30,16 @@ export class AttachmentListComponent implements OnInit {
     ];
 
     @Input() requestUUID: string;
+    @Input() attachments: Attachment[];
 
     constructor(private attachmentService: AttachmentsService) {
     }
 
     deleteAttachment(attachment: Attachment) {
         let removeCall = this.attachmentService.remove(attachment);
-        let getAttachmentsCall = this.attachmentService.getAttachments(this.requestUUID);
-        let responses = [];
-
-        removeCall.concat(getAttachmentsCall).subscribe(
+        removeCall.subscribe(
             response => {
-                responses.push(response);
-            },
-            error => {
-                console.log(error);
-            },
-            () => {
-                this.files = responses.pop();
+                console.log('Deletion is completed', response);
             }
         );
     }
@@ -74,16 +65,5 @@ export class AttachmentListComponent implements OnInit {
         const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
             number = Math.floor(Math.log(bytes) / Math.log(1024));
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
-    }
-
-    ngOnInit(): void {
-        this.attachmentService.getAttachments(this.requestUUID).subscribe(
-            (attachments) => {
-                this.files = attachments;
-            },
-            (error) => {
-                console.log(error)
-            }
-        );
     }
 }

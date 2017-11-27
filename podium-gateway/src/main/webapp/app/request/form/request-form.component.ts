@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, OnInit, ViewChild, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { RequestFormService } from './request-form.service';
 import {
@@ -24,11 +24,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 import { RequestAccessService } from '../../shared/request/request-access.service';
-import {
-    RequestReviewStatusOptions,
-    RequestOverviewStatusOption
-} from '../../shared/request/request-status/request-status.constants';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 import { Organisation } from '../../shared/organisation/organisation.model';
+import { Attachment } from '../../shared/attachment/attachment.model';
+import { AttachmentsService } from '../../shared/attachment/attachments.service';
+import { UploadOutput } from 'ngx-uploader';
 
 @Component({
     selector: 'pdm-request-form',
@@ -54,9 +54,10 @@ export class RequestFormComponent implements OnInit {
     public selectDraft: boolean;
     public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
-    private revisionId: string;
-    public isUpdating = false;
+    public isUpdating: boolean = false;
+    public attachments: Attachment[];
 
+    private revisionId: string;
 
 
     constructor(
@@ -67,6 +68,7 @@ export class RequestFormComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private principal: Principal,
         private modalService: NgbModal,
+        private attachmentService: AttachmentsService
     ) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
@@ -81,6 +83,23 @@ export class RequestFormComponent implements OnInit {
         });
     }
 
+    onUploadAttachment(uploadInput: UploadOutput) {
+        this.getAttachments(this.requestBase.uuid);
+    }
+
+    getAttachments (requestUUID) {
+        this.attachmentService.getAttachments(requestUUID).subscribe(
+            (attachments) => {
+                this.attachments = attachments;
+            },
+            (error) => {
+                this.onError(error);
+                this.router.navigate(['404'])
+            }
+        );
+
+    }
+
     initializeRequestForm() {
         if (this.router.url === '/requests/new'  && !this.isInRevision) {
             this.initializeBaseRequest();
@@ -91,6 +110,7 @@ export class RequestFormComponent implements OnInit {
                     request => {
                         this.requestFormService.request = request;
                         this.selectRequest(this.requestFormService.request);
+                        this.getAttachments(this.requestFormService.request.uuid);
                     },
                     error => {
                         this.onError(error);
@@ -114,6 +134,7 @@ export class RequestFormComponent implements OnInit {
                     this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
                     this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+                    this.getAttachments(requestBase.uuid);
                 },
                 (error) => this.onError('Error initializing base request')
             );

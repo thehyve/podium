@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes, UploaderOptions } from 'ngx-uploader';
 import { AuthServerProvider } from '../../auth/auth-jwt.service';
 
@@ -17,9 +17,10 @@ import { AuthServerProvider } from '../../auth/auth-jwt.service';
     templateUrl: './attachment.component.html',
     styleUrls: ['attachment.scss']
 })
-export class AttachmentComponent implements OnInit {
+export class AttachmentComponent {
 
     @Input() requestBaseId: string;
+    @Output() onUpload: EventEmitter<UploadOutput>;
 
     public options: UploaderOptions;
     public files: UploadFile[];
@@ -32,11 +33,8 @@ export class AttachmentComponent implements OnInit {
     ) {
         this.files = []; // local uploading files array
         this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
+        this.onUpload = new EventEmitter<UploadOutput>();
         this.humanizeBytes = humanizeBytes;
-    }
-
-    ngOnInit(): void {
-
     }
 
     onUploadOutput(output: UploadOutput): void {
@@ -56,6 +54,7 @@ export class AttachmentComponent implements OnInit {
             // update current data in files array for uploading file
             const index = this.files.findIndex(file => typeof output.file !== 'undefined' && file.id === output.file.id);
             this.files[index] = output.file;
+            this.onUpload.emit(output);
         } else if (output.type === 'removed') {
             // remove file from array when removed
             this.files = this.files.filter((file: UploadFile) => file !== output.file);
