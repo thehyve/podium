@@ -2,14 +2,14 @@
     <div class="drop-container" ngFileDrop [options]="options"
          (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
         <p>
-            Drag a file here or
+            <span jhiTranslate="attachments.upload.dragHere">Drag a file here or</span>
             <label class="upload-button">
                 <input type="file" ngFileSelect [options]="options"
                        (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
                        multiple>
-                browse
+                <span jhiTranslate="attachments.upload.browse">browse</span>
             </label>
-            to upload.
+            <span jhiTranslate="attachments.upload.toUpload">to upload.</span>
         </p>
     </div>
 </div>

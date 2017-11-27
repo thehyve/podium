@@ -1,0 +1,26 @@
+{
+    "attachments": {
+        "title": "Attachments",
+        "upload": {
+            "dragHere": "Drag here or ",
+            "browse": "browse",
+            "toUpload": "to upload.",
+            "uploadWith": "uploading with {{f.progress?.data?.speedHuman}}"
+        },
+        "list": {
+            "name": "Name",
+            "type": "Type",
+            "owner": "Owner",
+            "size": "Size",
+            "uploadDate": "Upload Date"
+        },
+        "option": {
+            "NOT_SET": "-- none --",
+            "METC_LETTER": "METC Letter",
+            "ORG_CONDITIONS": "Organisation Conditions",
+            "MTAR": "MTAR",
+            "DTAR": "DTAR",
+            "OTHER": "Other"
+        }
+    }
+}
