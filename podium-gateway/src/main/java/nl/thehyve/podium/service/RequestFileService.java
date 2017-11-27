@@ -3,7 +3,6 @@ package nl.thehyve.podium.service;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
-import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
@@ -19,6 +18,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,9 @@ public class RequestFileService {
     @Autowired
     private SecurityService securityService;
 
+    @Value("${podium.files.upload-dir}")
+    private String uploadDir;
+
     /**
      * Create a new draft request.
      *
@@ -54,6 +57,8 @@ public class RequestFileService {
      */
     public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file,
                                              RequestFileType requestFileType) throws ActionNotAllowed {
+
+
         RequestFile requestFile = new RequestFile();
         requestFile.setOwner(owner.getUserUuid());
         Request request = requestRepository.findOneByUuid(requestUuid);
@@ -89,7 +94,7 @@ public class RequestFileService {
 //        }
         try{
             //TODO: Make this folder configurable
-            String uploadFolder = "/tmp/podium_data/" + System.currentTimeMillis() + "/";
+            String uploadFolder = uploadDir + System.currentTimeMillis() + "/";
             byte[] bytes = file.getBytes();
             String pathString = uploadFolder + file.getOriginalFilename();
             Path path = Paths.get(pathString);

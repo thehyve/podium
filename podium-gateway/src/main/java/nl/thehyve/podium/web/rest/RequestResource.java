@@ -30,6 +30,7 @@ import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,6 +75,9 @@ public class RequestResource {
 
     @Autowired
     protected RequestFileService requestFileService;
+
+    @Value("${podium.files.max-size}")
+    private Long maxFileSize;
 
     /**
      * Fetch drafts for the current user
@@ -629,7 +633,7 @@ public class RequestResource {
                                                                                            ActionNotAllowed{
         AuthenticatedUser user = securityService.getCurrentUser();
         if(!file.isEmpty()){
-            if(file.getSize() < 50000000){
+            if(file.getSize() < (maxFileSize * 1000000)){
                 RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
                     RequestFileType.NOT_SET);
                 return ResponseEntity.accepted().body(requestFileRepresentation);

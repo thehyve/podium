@@ -136,6 +136,9 @@ podium:
         license-url:
     ribbon:
         display-on-active-profiles: dev
+    files:
+        max-size: 50
+        upload-dir: /tmp/podium_data
 
 # ===================================================================
 # Application specific properties
