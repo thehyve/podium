@@ -629,11 +629,16 @@ public class RequestResource {
                                                                                            ActionNotAllowed{
         AuthenticatedUser user = securityService.getCurrentUser();
         if(!file.isEmpty()){
-            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
-                RequestFileType.NOT_SET);
-            return ResponseEntity.accepted().body(requestFileRepresentation);
+            if(file.getSize() < 50000000){
+                RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
+                    RequestFileType.NOT_SET);
+                return ResponseEntity.accepted().body(requestFileRepresentation);
+            } else {
+                return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+            }
+
         } else {
-            return new ResponseEntity<>("No File Found", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
         }
     }
 
