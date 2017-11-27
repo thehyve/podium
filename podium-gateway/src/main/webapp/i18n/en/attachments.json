@@ -18,8 +18,8 @@
             "NOT_SET": "-- none --",
             "METC_LETTER": "METC Letter",
             "ORG_CONDITIONS": "Organisation Conditions",
-            "MTAR": "MTAR",
-            "DTAR": "DTAR",
+            "MTA": "MTA",
+            "DTA": "DTA",
             "OTHER": "Other"
         }
     }

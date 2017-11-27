@@ -36,12 +36,19 @@ export class AttachmentListComponent implements OnInit {
     }
 
     deleteAttachment(attachment: Attachment) {
-        this.attachmentService.remove(attachment).subscribe(
-            (res) => {
-                console.log('res', res);
+        let removeCall = this.attachmentService.remove(attachment);
+        let getAttachmentsCall = this.attachmentService.getAttachments(this.requestUUID);
+        let responses = [];
+
+        removeCall.concat(getAttachmentsCall).subscribe(
+            response => {
+                responses.push(response);
             },
-            (error) => {
+            error => {
                 console.log(error);
+            },
+            () => {
+                this.files = responses.pop();
             }
         );
     }
