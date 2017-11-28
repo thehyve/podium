@@ -11,11 +11,12 @@
 
 import { RequestBase } from '../request/request-base';
 import { AttachmentTypes } from './attachment.constants';
+import { User } from '../user/user.model';
 
 export class Attachment {
     id: number;
     uuid: string;
-    owner: string;
+    owner: User;
     request: RequestBase;
     createdDate: Date;
     lastModifiedDate: Date;

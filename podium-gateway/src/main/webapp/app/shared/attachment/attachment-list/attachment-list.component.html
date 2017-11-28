@@ -22,7 +22,7 @@
                     </option>
                 </select>
             </td>
-            <td>{{''}}</td> <!--TODO: Get name-->
+            <td>{{attachment.owner.login}}</td>
             <td>{{formatByte(attachment.fileSize,1)}}</td>
             <td>{{attachment.createdDate | date:'short'}}</td>
             <td>

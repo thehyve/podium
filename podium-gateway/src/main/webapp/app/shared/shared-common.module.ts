@@ -23,7 +23,6 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
     // set below to true to make alerts look like toast
     let jhiConfigService = new JhiConfigService();
     jhiConfigService.CONFIG_OPTIONS.alertAsToast = false;
-    console.log(jhiConfigService);
     return new JhiAlertService(sanitizer, jhiConfigService, translateService);
 }
 
