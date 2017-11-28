@@ -10,7 +10,6 @@ public enum RequestFileType {
     MTA,
     DTA,
     OTHER,
-    NOT_SET,
+    NONE
 
-//    String name();
 }

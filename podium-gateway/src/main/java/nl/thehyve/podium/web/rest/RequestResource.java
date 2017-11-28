@@ -635,7 +635,7 @@ public class RequestResource {
         if(!file.isEmpty()){
             if(file.getSize() < (maxFileSize * 1000000)){
                 RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
-                    RequestFileType.NOT_SET);
+                    RequestFileType.NONE);
                 return ResponseEntity.accepted().body(requestFileRepresentation);
             } else {
                 return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
