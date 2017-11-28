@@ -699,4 +699,17 @@ public class RequestResource {
         }
     }
 
+    @PostMapping("/requests/setfiletype/{fileuuid}")
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
+                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    public ResponseEntity<RequestFileRepresentation> setFileType(@PathVariable("fileuuid") UUID fileUuid,
+                                                                 @RequestParam("type") RequestFileType type)
+        throws URISyntaxException, ActionNotAllowed {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        RequestFileRepresentation requestFile = requestFileService.setFileType(user, fileUuid, type);
+
+        return ResponseEntity.ok(requestFile);
+    }
+
 }

@@ -153,4 +153,19 @@ public class RequestFileService {
             return false;
         }
     }
+
+    public RequestFileRepresentation setFileType(IdentifiableUser requester, UUID fileUuid, RequestFileType filetype)
+        throws ActionNotAllowed{
+
+        RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
+        if(requester.getUserUuid().equals(requestFile.getOwner())){
+            requestFile.setRequestFileType(filetype);
+            requestFileRepository.save(requestFile);
+            return requestFileMapper.processingRequestFileDtoToRequestFile(requestFile);
+        }else {
+            throw new ActionNotAllowed("Only Owner can set type");
+        }
+
+
+    }
 }
