@@ -21,7 +21,7 @@ import { AttachmentTypes } from '../attachment.constants';
 export class AttachmentListComponent {
 
     attachmentTypes: any[] = [
-        {label: AttachmentTypes[AttachmentTypes.NOT_SET], value: AttachmentTypes.NOT_SET},
+        {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
         {label: AttachmentTypes[AttachmentTypes.METC_LETTER], value: AttachmentTypes.METC_LETTER},
         {label: AttachmentTypes[AttachmentTypes.ORG_CONDITIONS], value: AttachmentTypes.ORG_CONDITIONS},
         {label: AttachmentTypes[AttachmentTypes.MTA], value: AttachmentTypes.MTA},
@@ -35,6 +35,14 @@ export class AttachmentListComponent {
 
     constructor(private attachmentService: AttachmentsService) {
         this.onDeleteFile = new EventEmitter<boolean>();
+    }
+
+    onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
+        attachment.requestFileType = newType;
+        let res = this.attachmentService.setAttachmentType(attachment).subscribe(
+            response => { console.log(response); },
+            error => { console.log(error); }
+        );
     }
 
     deleteAttachment(attachment: Attachment) {

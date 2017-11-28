@@ -15,10 +15,10 @@
             <td><a (click)="downloadAttachment(attachment)"
                    download="{{attachment.fileName}}">{{attachment.fileName}}</a></td>
             <td>
-                <select id="attachment-type-select">
+                <select id="attachment-type-select" #attachmentType [(ngModel)]="attachment.requestFileType"
+                        (change)="onAttachmentTypeChange(attachment, attachmentType.value)" >
                     <option *ngFor="let attachmentType of attachmentTypes" value="{{attachmentType.value}}"
                             jhiTranslate="attachments.option.{{attachmentType.label}}">
-                        _PLACEHOLDER_
                     </option>
                 </select>
             </td>

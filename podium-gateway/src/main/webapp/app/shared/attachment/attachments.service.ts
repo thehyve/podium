@@ -12,6 +12,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Http, RequestOptions, Response, ResponseContentType } from '@angular/http';
 import { Attachment } from './attachment.model';
+import { AttachmentTypes } from './attachment.constants';
 
 @Injectable()
 export class AttachmentsService {
@@ -92,4 +93,14 @@ export class AttachmentsService {
         });
     }
 
+    /**
+     * Set attachment type
+     * @param {string} uuid
+     * @param {AttachmentTypes} attachment
+     * @returns {Observable<Response>}
+     */
+    setAttachmentType(attachment: Attachment): Observable<Response> {
+        return this.http.post(`${this.resourceUrl}/setfiletype/${attachment.uuid}`, attachment)
+            .map((response: Response) => { return response.json();});
+    }
 }

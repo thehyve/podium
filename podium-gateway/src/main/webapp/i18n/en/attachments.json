@@ -15,7 +15,7 @@
             "uploadDate": "Upload Date"
         },
         "option": {
-            "NOT_SET": "-- none --",
+            "NONE": "-- none --",
             "METC_LETTER": "METC Letter",
             "ORG_CONDITIONS": "Organisation Conditions",
             "MTA": "MTA",
