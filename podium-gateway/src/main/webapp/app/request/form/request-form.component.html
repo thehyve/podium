@@ -443,7 +443,11 @@
                             (onUpload)="onUploadAttachment($event)"
                         >
                         </pdm-attachment>
-                        <pdm-attachment-list [requestUUID]="requestBase.uuid" [attachments]="attachments">
+                        <pdm-attachment-list
+                            [requestUUID]="requestBase.uuid"
+                            [attachments]="attachments"
+                            (onDeleteFile)="onDeleteAttachment($event)"
+                        >
                         </pdm-attachment-list>
                     </div>
                 </div>

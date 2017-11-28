@@ -87,6 +87,12 @@ export class RequestFormComponent implements OnInit {
         this.getAttachments(this.requestBase.uuid);
     }
 
+    onDeleteAttachment(isSuccess: boolean) {
+        if (isSuccess) {
+            this.getAttachments(this.requestBase.uuid);
+        }
+    }
+
     getAttachments (requestUUID) {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {

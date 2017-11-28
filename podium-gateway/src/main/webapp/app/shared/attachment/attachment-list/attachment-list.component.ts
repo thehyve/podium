@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttachmentsService } from '../attachments.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
@@ -31,15 +31,24 @@ export class AttachmentListComponent {
 
     @Input() requestUUID: string;
     @Input() attachments: Attachment[];
+    @Output() onDeleteFile: EventEmitter<boolean>;
 
     constructor(private attachmentService: AttachmentsService) {
+        this.onDeleteFile = new EventEmitter<boolean>();
     }
 
     deleteAttachment(attachment: Attachment) {
         let removeCall = this.attachmentService.remove(attachment);
         removeCall.subscribe(
             response => {
-                console.log('Deletion is completed', response);
+                if (response.toString() === 'true') {
+                    this.onDeleteFile.emit(true);
+                } else {
+                    this.onDeleteFile.emit(false);
+                }
+            },
+            error => {
+                this.onDeleteFile.emit(false);
             }
         );
     }
