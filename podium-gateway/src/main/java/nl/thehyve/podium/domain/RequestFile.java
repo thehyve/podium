@@ -20,12 +20,12 @@ import java.util.UUID;
 )
 public class RequestFile extends AbstractAuditingEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_seq_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_file_seq_gen")
     @GenericGenerator(
-        name = "request_seq_gen",
+        name = "request_file_seq_gen",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = {
-            @Parameter(name = "sequence_name", value = "request_seq"),
+            @Parameter(name = "sequence_name", value = "request_file_seq"),
             @Parameter(name = "initial_value", value = "1000"),
             @Parameter(name = "increment_size", value = "50")
         }
