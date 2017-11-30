@@ -72,7 +72,6 @@ public class RequestFileService {
 
         Request request = requestRepository.findOneByUuid(requestUuid);
 
-        RequestAccessCheckHelper.checkRequester(owner, request);
         Boolean allowedToAdd = false;
 
         Set<UUID> organisationUuids = request.getOrganisations();
