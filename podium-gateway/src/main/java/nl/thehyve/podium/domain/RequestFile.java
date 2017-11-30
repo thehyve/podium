@@ -55,6 +55,12 @@ public class RequestFile extends AbstractAuditingEntity {
     @Enumerated(EnumType.STRING)
     private RequestFileType requestFileType;
 
+    @Column(name="file_name")
+    private String fileName;
+
+    @Column(name="file_byte_size")
+    private Long fileByteSize;
+
     public Long getId() {
         return id;
     }
@@ -116,5 +122,21 @@ public class RequestFile extends AbstractAuditingEntity {
 
     public void setRequestFileType(RequestFileType requestFileType) {
         this.requestFileType = requestFileType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Long getFileByteSize() {
+        return fileByteSize;
+    }
+
+    public void setFileByteSize(Long fileByteSize) {
+        this.fileByteSize = fileByteSize;
     }
 }

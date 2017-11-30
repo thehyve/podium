@@ -55,6 +55,14 @@
             <column name="request_file_type" type="varchar">
                 <constraints nullable="false"/>
             </column>
+
+            <column name="file_name" type="varchar">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="file_byte_size" type="bigint">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint baseColumnNames="request"
@@ -62,6 +70,8 @@
                                  constraintName="fk_request_file_request_id"
                                  referencedColumnNames="id"
                                  referencedTableName="request"/>
+
+        <createSequence sequenceName="request_file_seq" startValue="1000" incrementBy="50"/>
     </changeSet>
 
 </databaseChangeLog>

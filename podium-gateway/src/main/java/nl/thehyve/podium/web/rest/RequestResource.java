@@ -630,7 +630,8 @@ public class RequestResource {
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
                                           @RequestParam("file") MultipartFile file) throws URISyntaxException,
-                                                                                           ActionNotAllowed{
+                                                                                           ActionNotAllowed,
+                                                                                           IOException{
         AuthenticatedUser user = securityService.getCurrentUser();
         if(!file.isEmpty()){
             if(file.getSize() < (maxFileSize * 1000000)){
@@ -638,11 +639,11 @@ public class RequestResource {
                     RequestFileType.NONE);
                 return ResponseEntity.accepted().body(requestFileRepresentation);
             } else {
-                return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+                throw new IOException("File to big");
             }
 
         } else {
-            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
+            throw new IOException("File empty");
         }
     }
 
@@ -655,18 +656,13 @@ public class RequestResource {
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
                                           @PathVariable("fileuuid") UUID fileUuid) throws URISyntaxException,
-        ActionNotAllowed{
+        ActionNotAllowed, IOException{
 
         AuthenticatedUser user = securityService.getCurrentUser();
-        try{
-            ByteArrayResource resource = requestFileService.getFile(user, requestUuid, fileUuid);
-            return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(resource);
-        } catch(IOException e){
-            log.error("Can't access file " + fileUuid);
-            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
-        }
+        ByteArrayResource resource = requestFileService.getFile(user, requestUuid, fileUuid);
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("application/octet-stream"))
+            .body(resource);
     }
 
     @GetMapping("/requests/{uuid}/listfiles")

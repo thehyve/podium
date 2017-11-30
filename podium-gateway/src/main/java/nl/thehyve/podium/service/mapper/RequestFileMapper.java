@@ -26,9 +26,8 @@ public abstract class RequestFileMapper {
         requestFileRepresentation.setUuid(requestFile.getUuid());
         requestFileRepresentation.setRequest(requestFile.getRequest());
 
-        File file = new File(requestFile.getFileLocation());
-        requestFileRepresentation.setFileSize(file.length());
-        requestFileRepresentation.setFileName(file.getName());
+        requestFileRepresentation.setFileSize(requestFile.getFileByteSize());
+        requestFileRepresentation.setFileName(requestFile.getFileName());
         requestFileRepresentation.setRequestFileType(requestFile.getRequestFileType());
 
         UserRepresentation owner = userMapperHelper.uuidToRemoteUserRepresentation(requestFile.getOwner());

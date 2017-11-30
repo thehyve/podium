@@ -1,7 +1,9 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.domain.Request;
@@ -9,6 +11,7 @@ import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
+import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.service.mapper.RequestFileMapper;
 import org.slf4j.Logger;
@@ -46,8 +49,8 @@ public class RequestFileService {
     @Autowired
     private SecurityService securityService;
 
-    @Value("${podium.files.upload-dir}")
-    private String uploadDir;
+    @Autowired
+    private PodiumProperties podiumProperties;
 
     /**
      * Create a new draft request.
@@ -56,13 +59,16 @@ public class RequestFileService {
      * @return saved request representation
      */
     public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file,
-                                             RequestFileType requestFileType) throws ActionNotAllowed {
+                                             RequestFileType requestFileType) throws ActionNotAllowed, AccessDenied, IOException {
 
+        Request request = requestRepository.findOneByUuid(requestUuid);
 
+        RequestAccessCheckHelper.checkRequester(owner, request);
         RequestFile requestFile = new RequestFile();
         requestFile.setOwner(owner.getUserUuid());
-        Request request = requestRepository.findOneByUuid(requestUuid);
+
         requestFile.setRequest(request);
+
         Set<UUID> organisationUuids = request.getOrganisations();
         RequestStatus requestStatus = request.getStatus();
         requestFile.setRequestFileType(requestFileType);
@@ -92,28 +98,14 @@ public class RequestFileService {
 //        if(!allowedToAdd){
 //            throw ActionNotAllowed.forStatus(request.getStatus());
 //        }
-        try{
-            String uploadFolder = uploadDir + System.currentTimeMillis() + "/";
-            byte[] bytes = file.getBytes();
-            String pathString = uploadFolder + file.getOriginalFilename();
-            Path path = Paths.get(pathString);
-            File posFile = new File(path.toString());
-            File neededDir = new File(uploadFolder);
+        String uploadDir = podiumProperties.getFiles().getUploadDir();
+        requestFile.setFileName(file.getOriginalFilename());
+        requestFile.setFileByteSize(file.getSize());
+        Path path = Paths.get(uploadDir);
 
-            // Add the required folder(s) if it doesn't exist yet
-            if(!neededDir.exists()){
-                neededDir.mkdirs();
-            }
-            // Doublecheck if this doesn't exist, otherwise call this function again to generate a new uploadFolder string.
-            if(!posFile.exists()){
-                Files.write(path, bytes);
-                requestFile.setFileLocation(path.toString());
-            } else {
-                return this.addFile(owner, requestUuid, file, requestFileType);
-            }
-        } catch (IOException e) {
-            log.error("Exception saving File", e);
-        }
+        Path tempFile = Files.createTempFile(path,"", "");
+        Files.write(tempFile, file.getBytes());
+        requestFile.setFileLocation(path.toString());
 
         requestFileRepository.save(requestFile);
 
