@@ -15,8 +15,6 @@ import java.util.UUID;
  */
 @Data
 public class RequestFileRepresentation implements Serializable {
-    private Long id;
-
     private UUID uuid;
 
     private UserRepresentation owner;

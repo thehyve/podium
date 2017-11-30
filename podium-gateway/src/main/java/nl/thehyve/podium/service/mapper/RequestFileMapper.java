@@ -21,7 +21,6 @@ public abstract class RequestFileMapper {
     public RequestFileRepresentation processingRequestFileDtoToRequestFile(RequestFile requestFile){
         RequestFileRepresentation requestFileRepresentation = new RequestFileRepresentation();
         requestFileRepresentation.setCreatedDate(requestFile.getCreatedDate());
-        requestFileRepresentation.setId(requestFile.getId());
         requestFileRepresentation.setLastModifiedDate(requestFile.getLastModifiedDate());
         requestFileRepresentation.setUuid(requestFile.getUuid());
         requestFileRepresentation.setRequest(requestFile.getRequest());
