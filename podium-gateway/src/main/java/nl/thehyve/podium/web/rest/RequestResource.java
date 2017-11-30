@@ -76,9 +76,6 @@ public class RequestResource {
     @Autowired
     protected RequestFileService requestFileService;
 
-    @Value("${podium.files.max-size}")
-    private Long maxFileSize;
-
     /**
      * Fetch drafts for the current user
      *
@@ -633,6 +630,8 @@ public class RequestResource {
                                                                                            ActionNotAllowed,
                                                                                            IOException{
         AuthenticatedUser user = securityService.getCurrentUser();
+        int maxFileSize = podiumProperties.getFiles().getMaxSize();
+
         if(!file.isEmpty()){
             if(file.getSize() < (maxFileSize * 1000000)){
                 RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
