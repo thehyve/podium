@@ -2,10 +2,13 @@ package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.PodiumProperties;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.SecurityService;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.enumeration.RequestFileType;
@@ -14,6 +17,8 @@ import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.service.mapper.RequestFileMapper;
+import nl.thehyve.podium.service.mapper.RequestMapper;
+import nl.thehyve.podium.service.util.UserMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +55,12 @@ public class RequestFileService {
     @Autowired
     private PodiumProperties podiumProperties;
 
+    @Autowired
+    private UserMapperHelper userMapperHelper;
+
+    @Autowired
+    private RequestMapper requestMapper;
+
     /**
      * Create a new draft request.
      *
@@ -62,40 +73,47 @@ public class RequestFileService {
         Request request = requestRepository.findOneByUuid(requestUuid);
 
         RequestAccessCheckHelper.checkRequester(owner, request);
+        Boolean allowedToAdd = false;
+
+        Set<UUID> organisationUuids = request.getOrganisations();
+        UUID requester = request.getRequester();
+        UserRepresentation ownerRepresentation = userMapperHelper.uuidToRemoteUserRepresentation(owner.getUserUuid());
+        Set<String> authorities = ownerRepresentation.getAuthorities();
+
+        RequestRepresentation requestRepresentation = requestMapper.overviewRequestToRequestDTO(request);
+        OverviewStatus overviewStatus = requestRepresentation.getStatus();
+
+        // Researchers can add files if it is in Draft(/Revision) status
+        if(authorities.contains(AuthorityConstants.RESEARCHER) &&
+            (overviewStatus == OverviewStatus.Draft || overviewStatus == OverviewStatus.Revision)&&
+            requester.equals(owner.getUserUuid())){
+            allowedToAdd = true;
+        }
+        // Coordinator can add files in Validation status
+        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.ORGANISATION_COORDINATOR)){
+            if(overviewStatus == OverviewStatus.Validation){
+                allowedToAdd = true;
+            }
+        }
+
+        // Reviewer can add files in Review status
+        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.REVIEWER)){
+            if(overviewStatus == OverviewStatus.Review){
+                allowedToAdd = true;
+            }
+        }
+
+        if(!allowedToAdd){
+            throw ActionNotAllowed.forStatus(request.getStatus());
+        }
+
         RequestFile requestFile = new RequestFile();
         requestFile.setOwner(owner.getUserUuid());
 
         requestFile.setRequest(request);
 
-        Set<UUID> organisationUuids = request.getOrganisations();
-        RequestStatus requestStatus = request.getStatus();
         requestFile.setRequestFileType(requestFileType);
-        //TODO: actually work this out.
-//        Boolean allowedToAdd = false;
-//
-//        // Researchers can add files if it is in Draft(/Revision) status
-//        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.RESEARCHER)){
-//            if(requestStatus == RequestStatus.Draft){
-//                allowedToAdd = true;
-//            }
-//        }
-//        // Coordinator can add files in Validation status
-//        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.ORGANISATION_COORDINATOR)){
-//            if(requestStatus == RequestStatus.Review){
-//                allowedToAdd = true;
-//            }
-//        }
-//
-//        // Reviewer can add files in Review status
-//        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.REVIEWER)){
-//            if(requestStatus == RequestStatus.Review){
-//                allowedToAdd = true;
-//            }
-//        }
-//
-//        if(!allowedToAdd){
-//            throw ActionNotAllowed.forStatus(request.getStatus());
-//        }
+
         String uploadDir = podiumProperties.getFiles().getUploadDir();
         requestFile.setFileName(file.getOriginalFilename());
         requestFile.setFileByteSize(file.getSize());
