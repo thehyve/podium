@@ -21,11 +21,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Set;
@@ -109,7 +107,7 @@ public class RequestFileService {
 
         requestFileRepository.save(requestFile);
 
-        return requestFileMapper.processingRequestFileDtoToRequestFile(requestFile);
+        return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
     }
 
     public ByteArrayResource getFile(IdentifiableUser requester, UUID requestUUID, UUID fileUuid) throws IOException{
@@ -126,7 +124,7 @@ public class RequestFileService {
 
         List<RequestFileRepresentation> representations = new ArrayList<RequestFileRepresentation>();
         for(RequestFile file : files){
-            RequestFileRepresentation representation = requestFileMapper.processingRequestFileDtoToRequestFile(file);
+            RequestFileRepresentation representation = requestFileMapper.processingRequestFileToRequestFileDto(file);
             representations.add(representation);
         }
 
@@ -153,7 +151,7 @@ public class RequestFileService {
         if(requester.getUserUuid().equals(requestFile.getOwner())){
             requestFile.setRequestFileType(filetype);
             requestFileRepository.save(requestFile);
-            return requestFileMapper.processingRequestFileDtoToRequestFile(requestFile);
+            return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
         }else {
             throw new ActionNotAllowed("Only Owner can set type");
         }

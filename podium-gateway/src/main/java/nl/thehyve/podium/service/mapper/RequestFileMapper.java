@@ -18,7 +18,7 @@ public abstract class RequestFileMapper {
     @Autowired
     private UserMapperHelper userMapperHelper;
 
-    public RequestFileRepresentation processingRequestFileDtoToRequestFile(RequestFile requestFile){
+    public RequestFileRepresentation processingRequestFileToRequestFileDto(RequestFile requestFile){
         RequestFileRepresentation requestFileRepresentation = new RequestFileRepresentation();
         requestFileRepresentation.setCreatedDate(requestFile.getCreatedDate());
         requestFileRepresentation.setLastModifiedDate(requestFile.getLastModifiedDate());
