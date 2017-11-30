@@ -622,7 +622,7 @@ public class RequestResource {
      * Accept a RequestFile and add it to the request data
      * @return A confirmation of the upload
      */
-    @PostMapping("/requests/{uuid}/addfile")
+    @PostMapping("/requests/{uuid}/files")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
@@ -650,7 +650,7 @@ public class RequestResource {
      * Return a file for a given request
      * @return the requested file
      */
-    @GetMapping("/requests/{uuid}/getfile/{fileuuid}")
+    @GetMapping("/requests/{uuid}/files/{fileuuid}")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
@@ -664,7 +664,7 @@ public class RequestResource {
             .body(resource);
     }
 
-    @GetMapping("/requests/{uuid}/listfiles")
+    @GetMapping("/requests/{uuid}/files")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
