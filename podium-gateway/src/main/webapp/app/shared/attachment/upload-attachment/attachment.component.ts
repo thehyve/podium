@@ -43,7 +43,7 @@ export class AttachmentComponent {
             // uncomment this if you want to auto upload files when added
             const event: UploadInput = {
                 type: 'uploadAll',
-                url: '/api/requests/' + this.requestBaseId + '/addfile',
+                url: '/api/requests/' + this.requestBaseId + '/files',
                 headers: { 'Authorization': 'Bearer ' + token },
                 method: 'POST'
             };

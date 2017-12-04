@@ -10,7 +10,7 @@
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Http, RequestOptions, Response, ResponseContentType } from '@angular/http';
+import { Http, RequestOptions, Response, ResponseContentType, Headers } from '@angular/http';
 import { Attachment } from './attachment.model';
 import { AttachmentTypes } from './attachment.constants';
 
@@ -76,7 +76,7 @@ export class AttachmentsService {
      * @returns {Observable<Attachment[]>}
      */
     downloadAttachment(uuid: string, fileuuid: string) {
-        return this.http.get(`${this.resourceUrl}/${uuid}/getfile/${fileuuid}`, {
+        return this.http.get(`${this.resourceUrl}/${uuid}/file/${fileuuid}`, {
             responseType: ResponseContentType.Blob
         }).map((response: Response) => {
             return <Attachment[]> response.json();
@@ -88,15 +88,14 @@ export class AttachmentsService {
      * @returns {Observable<Response>}
      */
     getAttachments(uuid: string): Observable<Attachment[]> {
-        return this.http.get(`${this.resourceUrl}/${uuid}/listfiles`).map((response: Response) => {
+        return this.http.get(`${this.resourceUrl}/${uuid}/files`).map((response: Response) => {
             return <Attachment[]> response.json();
         });
     }
 
     /**
      * Set attachment type
-     * @param {string} uuid
-     * @param {AttachmentTypes} attachment
+     * @param {Attachment} attachment
      * @returns {Observable<Response>}
      */
     setAttachmentType(attachment: Attachment): Observable<Response> {

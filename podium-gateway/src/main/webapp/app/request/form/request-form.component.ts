@@ -99,8 +99,8 @@ export class RequestFormComponent implements OnInit {
                 this.attachments = attachments;
             },
             (error) => {
-                this.onError(error);
-                this.router.navigate(['404'])
+                // this.onError(error);
+                //this.router.navigate(['404'])
             }
         );
 
