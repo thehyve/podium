@@ -680,7 +680,7 @@ public class RequestResource {
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     public ResponseEntity<Object> deleteFile(@PathVariable("fileuuid") UUID fileUuid)
-        throws URISyntaxException, ActionNotAllowed{
+        throws URISyntaxException, ActionNotAllowed, IOException{
 
         AuthenticatedUser user = securityService.getCurrentUser();
 

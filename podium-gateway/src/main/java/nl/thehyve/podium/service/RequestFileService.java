@@ -149,13 +149,16 @@ public class RequestFileService {
         return representations;
     }
 
-    public void deleteFile(IdentifiableUser requester, UUID fileUuid) throws ResourceNotFound {
+    public void deleteFile(IdentifiableUser requester, UUID fileUuid) throws ResourceNotFound, IOException {
         RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
 
         //Only owners can delete files.
         if(requestFile.getOwner().equals(requester.getUserUuid())){
             requestFile.setDeleted(true);
             requestFileRepository.save(requestFile);
+            String uploadDir = podiumProperties.getFiles().getUploadDir();
+            String fileLocation = requestFile.getFileLocation();
+            Files.delete(Paths.get(uploadDir + '/' + fileLocation));
         } else {
             throw new ResourceNotFound("File not found");
         }
