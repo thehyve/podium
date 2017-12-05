@@ -139,4 +139,16 @@ public class RequestFile extends AbstractAuditingEntity {
     public void setFileByteSize(Long fileByteSize) {
         this.fileByteSize = fileByteSize;
     }
+
+    public RequestFile copy(RequestFile requestFile){
+        this.setOwner(requestFile.getOwner());
+        this.setFileByteSize(requestFile.getFileByteSize());
+        this.setFileName(requestFile.getFileName());
+        this.setRequestFileType(requestFile.getRequestFileType());
+        this.setFileLocation(requestFile.getFileLocation());
+        this.setRequest(requestFile.getRequest());
+        this.setOwner(requestFile.getOwner());
+        this.generateUuid();
+        return this;
+    }
 }

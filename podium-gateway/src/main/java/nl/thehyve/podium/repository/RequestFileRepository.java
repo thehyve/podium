@@ -29,4 +29,6 @@ public interface RequestFileRepository extends JpaRepository<RequestFile, Long> 
 
     List<RequestFile> findDistinctByRequestAndDeletedFalse(Request request);
 
+    List<RequestFile> findDistinctByRequest(Request request);
+
 }
