@@ -86,6 +86,9 @@ spring:
         elasticsearch:
             properties:
                 cluster.routing.allocation.disk.watermark.high: 99%
+    http:
+        multipart:
+            max-file-size: 50MB
 
 security:
     basic:
@@ -137,7 +140,6 @@ podium:
     ribbon:
         display-on-active-profiles: dev
     files:
-        max-size: 50
         upload-dir: ./podium_uploads
 
 # ===================================================================

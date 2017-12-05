@@ -630,16 +630,11 @@ public class RequestResource {
                                                                                            ActionNotAllowed,
                                                                                            IOException{
         AuthenticatedUser user = securityService.getCurrentUser();
-        int maxFileSize = podiumProperties.getFiles().getMaxSize();
 
         if(!file.isEmpty()){
-            if(file.getSize() < (maxFileSize * 1000000)){
-                RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
-                    RequestFileType.NONE);
-                return ResponseEntity.accepted().body(requestFileRepresentation);
-            } else {
-                throw new IOException("File to big");
-            }
+            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
+                RequestFileType.NONE);
+            return ResponseEntity.accepted().body(requestFileRepresentation);
 
         } else {
             throw new IOException("File empty");

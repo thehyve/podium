@@ -762,7 +762,6 @@ public class PodiumProperties {
 
     public static class Files {
         private String uploadDir = "/tmp/podium_data";
-        private int maxSize = 50;
 
         public Files(){
 
@@ -774,14 +773,6 @@ public class PodiumProperties {
 
         public void setUploadDir(String uploadDir) {
             this.uploadDir = uploadDir;
-        }
-
-        public int getMaxSize() {
-            return maxSize;
-        }
-
-        public void setMaxSize(int maxSize) {
-            this.maxSize = maxSize;
         }
     }
 }
