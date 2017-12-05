@@ -10,8 +10,8 @@
 
 <div class="content-wrapper" *ngIf="requestBase">
     <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
-        <h1 *ngIf="requestBase.status == 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
-        <h1 *ngIf="requestBase.status != 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
+        <h1 *ngIf="requestBase.status === 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
+        <h1 *ngIf="requestBase.status !== 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
     </div>
 
     <div class="card-container"
@@ -440,15 +440,17 @@
                     <div class="form-group">
                         <pdm-attachment
                             [requestBaseId]="requestBase.uuid"
-                            (onUpload)="onUploadAttachment($event)"
-                        >
+                            (onFinishedUpload)="onFinishedUploadAttachment($event)">
                         </pdm-attachment>
                         <pdm-attachment-list
                             [requestUUID]="requestBase.uuid"
                             [attachments]="attachments"
-                            (onDeleteFile)="onDeleteAttachment($event)"
-                        >
+                            (onDeleteFile)="onDeleteAttachment($event)">
                         </pdm-attachment-list>
+                        <small class="form-text text-danger"
+                               jhiTranslate="request.form.messages.validate.attachments.fileTypes">
+                            Please set file types.
+                        </small>
                     </div>
                 </div>
 

@@ -49,13 +49,14 @@ export class AttachmentListComponent {
         let removeCall = this.attachmentService.remove(attachment);
         removeCall.subscribe(
             response => {
-                if (response.toString() === 'true') {
+                if (response === 'ok') {
                     this.onDeleteFile.emit(true);
                 } else {
                     this.onDeleteFile.emit(false);
                 }
             },
             error => {
+                console.log('sdsdsd error', error)
                 this.onDeleteFile.emit(false);
             }
         );

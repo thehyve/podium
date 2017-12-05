@@ -28,7 +28,7 @@ import { RequestOverviewStatusOption } from '../../shared/request/request-status
 import { Organisation } from '../../shared/organisation/organisation.model';
 import { Attachment } from '../../shared/attachment/attachment.model';
 import { AttachmentsService } from '../../shared/attachment/attachments.service';
-import { UploadOutput } from 'ngx-uploader';
+import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 
 @Component({
     selector: 'pdm-request-form',
@@ -39,6 +39,9 @@ import { UploadOutput } from 'ngx-uploader';
 export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
+
+    @ViewChild(AttachmentComponent)
+    private attachmentComponent: AttachmentComponent;
 
     @ViewChild(OrganisationSelectorComponent)
     private organisationSelectorComponent: OrganisationSelectorComponent;
@@ -83,8 +86,10 @@ export class RequestFormComponent implements OnInit {
         });
     }
 
-    onUploadAttachment(uploadInput: UploadOutput) {
-        this.getAttachments(this.requestBase.uuid);
+    onFinishedUploadAttachment(success: boolean) {
+        if (success) {
+            this.getAttachments(this.requestBase.uuid);
+        }
     }
 
     onDeleteAttachment(isSuccess: boolean) {
@@ -99,8 +104,7 @@ export class RequestFormComponent implements OnInit {
                 this.attachments = attachments;
             },
             (error) => {
-                // this.onError(error);
-                //this.router.navigate(['404'])
+                console.error(error)
             }
         );
 

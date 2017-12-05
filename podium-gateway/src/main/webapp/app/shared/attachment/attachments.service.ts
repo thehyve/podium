@@ -38,7 +38,7 @@ export class AttachmentsService {
      */
     remove(attachment: Attachment): Observable<Response> {
         return this.http.get(
-            `${this.resourceUrl}/${attachment.request.uuid}/deletefile/${attachment.uuid}`)
+            `${this.resourceUrl}/deletefile/${attachment.uuid}`)
             .map((response: Response) => {
                 return response.json();
             });

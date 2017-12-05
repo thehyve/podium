@@ -20,21 +20,21 @@ import { AuthServerProvider } from '../../auth/auth-jwt.service';
 export class AttachmentComponent {
 
     @Input() requestBaseId: string;
-    @Output() onUpload: EventEmitter<UploadOutput>;
+    @Output() onFinishedUpload: EventEmitter<boolean>;
 
-    public options: UploaderOptions;
-    public files: UploadFile[];
-    public uploadInput: EventEmitter<UploadInput>;
-    public humanizeBytes: Function;
-    public dragOver: boolean;
+    options: UploaderOptions;
+    files: UploadFile[];
+    uploadInput: EventEmitter<UploadInput>;
+    humanizeBytes: Function;
+    dragOver: boolean;
+    error: any[];
 
-    constructor(
-        private authServerProvider: AuthServerProvider,
-    ) {
+    constructor(private authServerProvider: AuthServerProvider,) {
         this.files = []; // local uploading files array
         this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
-        this.onUpload = new EventEmitter<UploadOutput>();
+        this.onFinishedUpload = new EventEmitter<boolean>();
         this.humanizeBytes = humanizeBytes;
+        this.error = [];
     }
 
     onUploadOutput(output: UploadOutput): void {
@@ -44,17 +44,17 @@ export class AttachmentComponent {
             const event: UploadInput = {
                 type: 'uploadAll',
                 url: '/api/requests/' + this.requestBaseId + '/files',
-                headers: { 'Authorization': 'Bearer ' + token },
+                headers: {'Authorization': 'Bearer ' + token},
                 method: 'POST'
             };
+            this.error = [];
             this.uploadInput.emit(event);
-        } else if (output.type === 'addedToQueue'  && typeof output.file !== 'undefined') { // add file to array when added
+        } else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') { // add file to array when added
             this.files.push(output.file);
         } else if (output.type === 'uploading' && typeof output.file !== 'undefined') {
             // update current data in files array for uploading file
             const index = this.files.findIndex(file => typeof output.file !== 'undefined' && file.id === output.file.id);
             this.files[index] = output.file;
-            this.onUpload.emit(output);
         } else if (output.type === 'removed') {
             // remove file from array when removed
             this.files = this.files.filter((file: UploadFile) => file !== output.file);
@@ -64,6 +64,13 @@ export class AttachmentComponent {
             this.dragOver = false;
         } else if (output.type === 'drop') {
             this.dragOver = false;
+        } else if (output.type === 'done') {
+            if (output.file.responseStatus >= 300) {
+                this.error.push(output.file.response.message);
+                this.onFinishedUpload.emit(false);
+            } else {
+                this.onFinishedUpload.emit(true);
+            }
         }
     }
 
@@ -72,22 +79,22 @@ export class AttachmentComponent {
             type: 'uploadAll',
             url: '/api/requests/' + this.requestBaseId + '/addfile',
             method: 'POST',
-            data: { foo: 'bar' }
+            data: {foo: 'bar'}
         };
 
         this.uploadInput.emit(event);
     }
 
     cancelUpload(id: string): void {
-        this.uploadInput.emit({ type: 'cancel', id: id });
+        this.uploadInput.emit({type: 'cancel', id: id});
     }
 
     removeFile(id: string): void {
-        this.uploadInput.emit({ type: 'remove', id: id });
+        this.uploadInput.emit({type: 'remove', id: id});
     }
 
     removeAllFiles(): void {
-        this.uploadInput.emit({ type: 'removeAll' });
+        this.uploadInput.emit({type: 'removeAll'});
     }
 
 }

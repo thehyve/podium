@@ -694,10 +694,10 @@ public class RequestResource {
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     @Timed
     public ResponseEntity<RequestFileRepresentation> setFileType(@PathVariable("fileuuid") UUID fileUuid,
-                                                                 @RequestParam("type") RequestFileType type)
+                                                                 @RequestBody RequestFileRepresentation requestFileRepresentation)
         throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
-
+        RequestFileType type = requestFileRepresentation.getRequestFileType();
         RequestFileRepresentation requestFile = requestFileService.setFileType(user, fileUuid, type);
 
         return ResponseEntity.ok(requestFile);
