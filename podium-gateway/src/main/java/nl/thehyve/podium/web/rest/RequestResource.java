@@ -681,7 +681,7 @@ public class RequestResource {
 
         requestFileService.deleteFile(user, fileUuid);
 
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok("ok");
     }
 
     @PostMapping("/requests/setfiletype/{fileuuid}")
