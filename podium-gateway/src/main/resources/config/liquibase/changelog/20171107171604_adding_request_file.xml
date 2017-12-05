@@ -69,7 +69,8 @@
                                  baseTableName="request_file"
                                  constraintName="fk_request_file_request_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="request"/>
+                                 referencedTableName="request"
+                                 onDelete="CASCADE"/>
 
         <createSequence sequenceName="request_file_seq" startValue="1000" incrementBy="50"/>
     </changeSet>
