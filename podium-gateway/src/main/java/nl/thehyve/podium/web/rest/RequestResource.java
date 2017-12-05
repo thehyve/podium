@@ -658,7 +658,7 @@ public class RequestResource {
         ActionNotAllowed, IOException{
 
         AuthenticatedUser user = securityService.getCurrentUser();
-        ByteArrayResource resource = requestFileService.getFile(user, requestUuid, fileUuid);
+        ByteArrayResource resource = requestFileService.getFile(user, fileUuid);
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType("application/octet-stream"))
             .body(resource);
@@ -667,7 +667,7 @@ public class RequestResource {
     @GetMapping("/requests/{uuid}/files")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    public ResponseEntity<Object> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
+    public ResponseEntity<List<RequestFileRepresentation>> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
         URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
 
@@ -676,22 +676,17 @@ public class RequestResource {
         return ResponseEntity.ok(files);
     }
 
-    @GetMapping("/requests/{uuid}/deletefile/{fileuuid}")
+    @GetMapping("/requests/deletefile/{fileuuid}")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    public ResponseEntity<Object> deleteFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
-                                             @PathVariable("fileuuid") UUID fileUuid)
+    public ResponseEntity<Object> deleteFile(@PathVariable("fileuuid") UUID fileUuid)
         throws URISyntaxException, ActionNotAllowed{
 
         AuthenticatedUser user = securityService.getCurrentUser();
 
-        Boolean deleted = requestFileService.deleteFile(user, fileUuid);
+        requestFileService.deleteFile(user, fileUuid);
 
-        if(deleted){
-            return ResponseEntity.ok(deleted);
-        } else {
-            return new ResponseEntity<>("", HttpStatus.NO_CONTENT);
-        }
+        return ResponseEntity.ok("");
     }
 
     @PostMapping("/requests/setfiletype/{fileuuid}")

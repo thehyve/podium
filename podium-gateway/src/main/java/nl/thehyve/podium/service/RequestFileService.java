@@ -5,6 +5,7 @@ import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
@@ -14,7 +15,6 @@ import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
-import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.service.mapper.RequestFileMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -120,17 +120,18 @@ public class RequestFileService {
 
         Path tempFile = Files.createTempFile(path,"", "");
         Files.write(tempFile, file.getBytes());
-        requestFile.setFileLocation(path.toString());
+        requestFile.setFileLocation(tempFile.getFileName().toString());
 
         requestFileRepository.save(requestFile);
 
         return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
     }
 
-    public ByteArrayResource getFile(IdentifiableUser requester, UUID requestUUID, UUID fileUuid) throws IOException{
+    public ByteArrayResource getFile(IdentifiableUser requester, UUID fileUuid) throws IOException{
         RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
+        String uploadDir = podiumProperties.getFiles().getUploadDir();
 
-        Path path = Paths.get(requestFile.getFileLocation());
+        Path path = Paths.get(uploadDir +'/'+ requestFile.getFileLocation());
         return new ByteArrayResource(Files.readAllBytes(path));
     }
 
@@ -148,16 +149,15 @@ public class RequestFileService {
         return representations;
     }
 
-    public Boolean deleteFile(IdentifiableUser requester, UUID fileUuid){
+    public void deleteFile(IdentifiableUser requester, UUID fileUuid) throws ResourceNotFound {
         RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
 
         //Only owners can delete files.
         if(requestFile.getOwner().equals(requester.getUserUuid())){
             requestFile.setDeleted(true);
             requestFileRepository.save(requestFile);
-            return true;
         } else {
-            return false;
+            throw new ResourceNotFound("File not found");
         }
     }
 
