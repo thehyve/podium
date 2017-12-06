@@ -3,18 +3,18 @@
         <thead>
         <tr>
             <th jhiTranslate="attachments.list.name">Name</th>
-            <th jhiTranslate="attachments.list.type">Type</th>
+            <th jhiTranslate="attachments.list.type" *ngIf="canChange">Type</th>
             <th jhiTranslate="attachments.list.owner">Uploader</th>
             <th jhiTranslate="attachments.list.size">Size</th>
             <th jhiTranslate="attachments.list.uploadDate">Uploaded Date</th>
-            <th>&nbsp;</th>
+            <th *ngIf="canChange">&nbsp;</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let attachment of attachments">
             <td><a (click)="downloadAttachment(attachment)"
                    download="{{attachment.fileName}}">{{attachment.fileName}}</a></td>
-            <td>
+            <td *ngIf="canChange">
                 <select id="attachment-type-select" #attachmentType [(ngModel)]="attachment.requestFileType"
                         (change)="onAttachmentTypeChange(attachment, attachmentType.value)" >
                     <option *ngFor="let attachmentType of attachmentTypes" value="{{attachmentType.value}}"
@@ -23,9 +23,9 @@
                 </select>
             </td>
             <td>{{attachment.owner.login}}</td>
-            <td>{{formatByte(attachment.fileSize,1)}}</td>
+            <td>{{formatByte(attachment.fileSize, 1)}}</td>
             <td>{{attachment.createdDate | date:'short'}}</td>
-            <td>
+            <td *ngIf="canChange">
                 <button type="submit" class="btn btn-danger btn-sm test-remove-btn"
                         (click)="deleteAttachment(attachment)" title="Remove attachment">
                     <i class="material-icons md-18">remove_circle_outline</i>

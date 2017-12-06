@@ -28,6 +28,23 @@
                 <tab heading="Details">
                     <pdm-request-detail></pdm-request-detail>
                 </tab>
+                <tab heading="Attachments">
+                    <div class="row">
+                        <div class="form-group">
+                            <pdm-attachment *ngIf="isRequestCoordinator()"
+                                [requestBaseId]="request.uuid"
+                                (onFinishedUpload)="onFinishedUploadAttachment($event)">
+                            </pdm-attachment>
+                            <pdm-attachment-list
+                                [requestUUID]="request.uuid"
+                                [canChange]="canChange()"
+                                [attachments]="attachments"
+                                (onDeleteFile)="onDeleteAttachment($event)"
+                                (onFileTypeChange)="onAttachmentTypeChange($event)">
+                            </pdm-attachment-list>
+                        </div>
+                    </div>
+                </tab>
             </tabset>
         </div>
     </div>

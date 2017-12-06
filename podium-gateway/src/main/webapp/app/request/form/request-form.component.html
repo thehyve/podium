@@ -444,6 +444,7 @@
                         </pdm-attachment>
                         <pdm-attachment-list
                             [requestUUID]="requestBase.uuid"
+                            [canChange]="true"
                             [attachments]="attachments"
                             (onDeleteFile)="onDeleteAttachment($event)"
                             (onFileTypeChange)="onAttachmentTypeChange($event)">

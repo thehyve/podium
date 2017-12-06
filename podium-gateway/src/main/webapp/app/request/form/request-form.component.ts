@@ -117,7 +117,6 @@ export class RequestFormComponent implements OnInit {
                 console.error(error)
             }
         );
-
     }
 
     initializeRequestForm() {

@@ -12,6 +12,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { AttachmentsService } from '../attachments.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
+import { UserGroupAuthority } from '../../authority/authority.constants';
 
 
 const ATTACHMENT_TYPES = [
@@ -34,6 +35,7 @@ export class AttachmentListComponent implements OnChanges {
     error: any[];
 
     @Input() requestUUID: string;
+    @Input() canChange: boolean;
     @Input() attachments: Attachment[];
 
     @Output() onDeleteFile: EventEmitter<boolean>;
@@ -85,7 +87,7 @@ export class AttachmentListComponent implements OnChanges {
         );
     }
 
-    downloadAttachment(attachment: Attachment) {
+    downloadAttachment(attachment: Attachment) : void {
         this.attachmentService.downloadAttachment(this.requestUUID, attachment.uuid).subscribe(
             (blob) => {
                 let link = document.createElement('a');
@@ -95,7 +97,6 @@ export class AttachmentListComponent implements OnChanges {
             }
         );
     }
-
 
     formatByte(bytes: any, precision: number) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';

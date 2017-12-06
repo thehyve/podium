@@ -72,7 +72,7 @@ export class AttachmentsService {
      * @returns {Observable<Attachment[]>}
      */
     downloadAttachment(uuid: string, fileuuid: string) {
-        return this.http.get(`${this.resourceUrl}/${uuid}/file/${fileuuid}`, {
+        return this.http.get(`${this.resourceUrl}/${uuid}/files/${fileuuid}`, {
             responseType: ResponseContentType.Blob
         }).map((response: Response) => {
             return <Attachment[]> response.json();
