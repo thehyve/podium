@@ -29,6 +29,7 @@ import { Organisation } from '../../shared/organisation/organisation.model';
 import { Attachment } from '../../shared/attachment/attachment.model';
 import { AttachmentsService } from '../../shared/attachment/attachments.service';
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
+import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 
 @Component({
     selector: 'pdm-request-form',
@@ -42,6 +43,9 @@ export class RequestFormComponent implements OnInit {
 
     @ViewChild(AttachmentComponent)
     private attachmentComponent: AttachmentComponent;
+
+    @ViewChild(AttachmentListComponent)
+    private attachmentListComponent: AttachmentListComponent;
 
     @ViewChild(OrganisationSelectorComponent)
     private organisationSelectorComponent: OrganisationSelectorComponent;
@@ -94,6 +98,12 @@ export class RequestFormComponent implements OnInit {
 
     onDeleteAttachment(isSuccess: boolean) {
         if (isSuccess) {
+            this.getAttachments(this.requestBase.uuid);
+        }
+    }
+
+    onAttachmentTypeChange(attachment: Attachment) {
+        if (attachment) {
             this.getAttachments(this.requestBase.uuid);
         }
     }

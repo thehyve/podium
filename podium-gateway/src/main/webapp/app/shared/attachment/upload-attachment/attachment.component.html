@@ -10,14 +10,14 @@
                 <span jhiTranslate="attachments.upload.browse">browse</span>
             </label>
             <span jhiTranslate="attachments.upload.toUpload">to upload.</span>
-            <small class="form-text text-danger" *ngIf="error.length">Error: File size has to be less than 5MB.</small>
+            <small class="form-text text-danger" *ngIf="error.length">Error: File size has to be less than 50MB.</small>
         </p>
     </div>
 </div>
 <div class="column is-8 is-offset-2">
     <div class="upload-items">
         <div class="upload-item" *ngFor="let f of files; let i = index;">
-            <div class="filename">
+            <div class="small filename">
                 <span>{{ f.name }} ({{ f.id }}) - {{ f.progress?.data?.percentage }}%</span>
                 <span>uploading with {{ f.progress?.data?.speedHuman }}</span>
                 <span>ETA {{ f.progress?.data?.etaHuman }}</span>

@@ -10,9 +10,8 @@
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Http, RequestOptions, Response, ResponseContentType, Headers } from '@angular/http';
+import { Http, Response, ResponseContentType } from '@angular/http';
 import { Attachment } from './attachment.model';
-import { AttachmentTypes } from './attachment.constants';
 
 @Injectable()
 export class AttachmentsService {
@@ -37,11 +36,8 @@ export class AttachmentsService {
      * @returns {Observable<Response>}
      */
     remove(attachment: Attachment): Observable<Response> {
-        return this.http.get(
-            `${this.resourceUrl}/deletefile/${attachment.uuid}`)
-            .map((response: Response) => {
-                return response.json();
-            });
+        return this.http.delete(
+            `${this.resourceUrl}/deletefile/${attachment.uuid}`);
     }
 
     /**

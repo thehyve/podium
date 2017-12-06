@@ -445,12 +445,9 @@
                         <pdm-attachment-list
                             [requestUUID]="requestBase.uuid"
                             [attachments]="attachments"
-                            (onDeleteFile)="onDeleteAttachment($event)">
+                            (onDeleteFile)="onDeleteAttachment($event)"
+                            (onFileTypeChange)="onAttachmentTypeChange($event)">
                         </pdm-attachment-list>
-                        <small class="form-text text-danger"
-                               jhiTranslate="request.form.messages.validate.attachments.fileTypes">
-                            Please set file types.
-                        </small>
                     </div>
                 </div>
 
@@ -463,8 +460,7 @@
                     (saveDraftChange)="saveRequestDraft()"
                     (saveRequestChange)="saveRequest()"
                     (submitRequestChange)="submitRequest()"
-                    (submitDraftChange)="submitDraft()"
-                >
+                    (submitDraftChange)="submitDraft()">
                 <br/>
                 </pdm-request-action-toolbar>
 

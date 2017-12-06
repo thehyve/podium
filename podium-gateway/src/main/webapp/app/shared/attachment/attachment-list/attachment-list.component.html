@@ -34,4 +34,10 @@
         </tr>
         </tbody>
     </table>
+
+    <div class="form-text text-danger" *ngFor="let err of error">
+        <span jhiTranslate="attachments.list.validate.fileTypes">Please set file types</span>
+        <strong>{{err.filename}}</strong>
+    </div>
+
 </div>

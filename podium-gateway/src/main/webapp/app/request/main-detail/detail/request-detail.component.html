@@ -116,29 +116,6 @@
             <pdm-request-delivery-panel [request]="request" *ngIf="request && showDeliveryPanel()">
             </pdm-request-delivery-panel>
 
-            <h3 jhiTranslate="attachments.title">Attachments</h3>
-            <div class="row">
-                <div class="form-group">
-                    <pdm-attachment
-                        [requestBaseId]="requestBase.uuid"
-                        (onUpload)="onUploadAttachment($event)">
-                    </pdm-attachment>
-                    <pdm-attachment-list
-                        [requestUUID]="requestBase.uuid"
-                        [attachments]="attachments"
-                        (onDeleteFile)="onDeleteAttachment($event)">
-                    </pdm-attachment-list>
-                    <small class="form-text text-danger"
-                           jhiTranslate="request.form.messages.validate.attachments.fileTypes">
-                        Please set file types.
-                    </small>
-                    <small class="form-text text-danger"
-                           jhiTranslate="request.form.messages.validate.attachments.fileSize">
-                        File size has to be less than .
-                    </small>
-                </div>
-            </div>
-
             <pdm-request-action-toolbar
                 [request]="request"
                 [isUpdating]="isUpdating"

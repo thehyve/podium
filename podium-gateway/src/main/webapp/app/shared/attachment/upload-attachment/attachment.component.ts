@@ -65,6 +65,7 @@ export class AttachmentComponent {
         } else if (output.type === 'drop') {
             this.dragOver = false;
         } else if (output.type === 'done') {
+            this.files = [];
             if (output.file.responseStatus >= 300) {
                 this.error.push(output.file.response.message);
                 this.onFinishedUpload.emit(false);

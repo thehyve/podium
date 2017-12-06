@@ -12,7 +12,10 @@
             "type": "Type",
             "owner": "Owner",
             "size": "Size",
-            "uploadDate": "Upload Date"
+            "uploadDate": "Upload Date",
+            "validate": {
+                "fileTypes": "Please set file types for "
+            }
         },
         "option": {
             "NONE": "-- none --",

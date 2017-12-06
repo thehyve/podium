@@ -8,40 +8,69 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { AttachmentsService } from '../attachments.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
+
+
+const ATTACHMENT_TYPES = [
+    {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
+    {label: AttachmentTypes[AttachmentTypes.METC_LETTER], value: AttachmentTypes.METC_LETTER},
+    {label: AttachmentTypes[AttachmentTypes.ORG_CONDITIONS], value: AttachmentTypes.ORG_CONDITIONS},
+    {label: AttachmentTypes[AttachmentTypes.MTA], value: AttachmentTypes.MTA},
+    {label: AttachmentTypes[AttachmentTypes.DTA], value: AttachmentTypes.DTA},
+    {label: AttachmentTypes[AttachmentTypes.OTHER], value: AttachmentTypes.OTHER},
+];
 
 @Component({
     selector: 'pdm-attachment-list',
     templateUrl: './attachment-list.component.html',
     styleUrls: ['attachment-list.scss']
 })
-export class AttachmentListComponent {
+export class AttachmentListComponent implements OnChanges {
 
-    attachmentTypes: any[] = [
-        {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
-        {label: AttachmentTypes[AttachmentTypes.METC_LETTER], value: AttachmentTypes.METC_LETTER},
-        {label: AttachmentTypes[AttachmentTypes.ORG_CONDITIONS], value: AttachmentTypes.ORG_CONDITIONS},
-        {label: AttachmentTypes[AttachmentTypes.MTA], value: AttachmentTypes.MTA},
-        {label: AttachmentTypes[AttachmentTypes.DTA], value: AttachmentTypes.DTA},
-        {label: AttachmentTypes[AttachmentTypes.OTHER], value: AttachmentTypes.OTHER},
-    ];
+    attachmentTypes: any[];
+    error: any[];
 
     @Input() requestUUID: string;
     @Input() attachments: Attachment[];
+
     @Output() onDeleteFile: EventEmitter<boolean>;
+    @Output() onFileTypeChange: EventEmitter<Attachment>;
 
     constructor(private attachmentService: AttachmentsService) {
+        this.attachmentTypes = ATTACHMENT_TYPES;
         this.onDeleteFile = new EventEmitter<boolean>();
+        this.onFileTypeChange = new EventEmitter<Attachment>();
+        this.error = [];
     }
+
+    refreshError(attachments): void {
+        this.error = [];
+        if (attachments) {
+            attachments.forEach( (file: Attachment) => {
+                if (file.requestFileType === AttachmentTypes.NONE) {
+                    this.error.push({
+                        filename: file.fileName
+                    });
+                }
+            })
+        }
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        let files = changes.attachments.currentValue;
+        this.refreshError(files);
+    }
+
 
     onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
         attachment.requestFileType = newType;
-        let res = this.attachmentService.setAttachmentType(attachment).subscribe(
-            response => { console.log(response); },
-            error => { console.log(error); }
+        this.attachmentService.setAttachmentType(attachment).subscribe(
+            response => {
+                this.onFileTypeChange.emit(attachment);
+            }
         );
     }
 
@@ -49,15 +78,9 @@ export class AttachmentListComponent {
         let removeCall = this.attachmentService.remove(attachment);
         removeCall.subscribe(
             response => {
-                if (response === 'ok') {
+                if (response.status === 200) {
                     this.onDeleteFile.emit(true);
-                } else {
-                    this.onDeleteFile.emit(false);
                 }
-            },
-            error => {
-                console.log('sdsdsd error', error)
-                this.onDeleteFile.emit(false);
             }
         );
     }
@@ -69,9 +92,6 @@ export class AttachmentListComponent {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = attachment.fileName;
                 link.click();
-            },
-            (error) => {
-                console.error('error', error);
             }
         );
     }
