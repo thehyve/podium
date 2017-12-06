@@ -37,6 +37,8 @@ public class PodiumProperties {
 
     private final Registry registry = new Registry();
 
+    private final Files files = new Files();
+
     public PodiumProperties() {
     }
 
@@ -85,6 +87,8 @@ public class PodiumProperties {
     public Logging getLogging() {
         return this.logging;
     }
+
+    public Files getFiles() {return this.files; }
 
     public static class Ribbon {
         private String[] displayOnActiveProfiles;
@@ -771,6 +775,22 @@ public class PodiumProperties {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+    }
+
+    public static class Files {
+        private String uploadDir = "/tmp/podium_data";
+
+        public Files(){
+
+        }
+
+        public String getUploadDir() {
+            return uploadDir;
+        }
+
+        public void setUploadDir(String uploadDir) {
+            this.uploadDir = uploadDir;
         }
     }
 }

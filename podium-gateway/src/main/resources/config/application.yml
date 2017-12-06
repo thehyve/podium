@@ -87,6 +87,10 @@ spring:
         elasticsearch:
             properties:
                 cluster.routing.allocation.disk.watermark.high: 99%
+    http:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
 
 security:
     basic:
@@ -137,6 +141,8 @@ podium:
         license-url:
     ribbon:
         display-on-active-profiles: dev
+    files:
+        upload-dir: ./podium_uploads
 
 # ===================================================================
 # Application specific properties

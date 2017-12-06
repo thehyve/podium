@@ -20,8 +20,11 @@ import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
+import nl.thehyve.podium.domain.RequestFile;
+import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
+import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.util.OrganisationMapperHelper;
@@ -71,6 +74,9 @@ public class DraftService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private RequestFileRepository requestFileRepository;
 
     /**
      * Create a new draft request.
@@ -315,6 +321,23 @@ public class DraftService {
         notificationService.submissionNotificationToRequester(user, result);
 
         log.debug("Deleting draft request.");
+
+        //Copy the relevant RequestFiles.
+        List<RequestFile> requestFiles = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
+        for (Request organisationRequest: organisationRequests) {
+            for (RequestFile requestFile : requestFiles) {
+                RequestFile organisationRequestFile = new RequestFile().copy(requestFile);
+                organisationRequestFile.setRequest(organisationRequest);
+                requestFileRepository.save(organisationRequestFile);
+            }
+        }
+
+        requestFiles = requestFileRepository.findDistinctByRequest(request);
+        //Delete old RequestFile objects from database
+        for (RequestFile requestFile : requestFiles) {
+            requestFileRepository.delete(requestFile.getId());
+        }
+
         requestService.deleteRequest(request.getId());
         return result;
     }

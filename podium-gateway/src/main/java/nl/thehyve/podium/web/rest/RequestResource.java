@@ -18,22 +18,31 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.domain.RequestFile;
+import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.service.DraftService;
+import nl.thehyve.podium.service.RequestFileService;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.service.ReviewService;
+import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -63,6 +72,9 @@ public class RequestResource {
 
     @Autowired
     protected PodiumProperties podiumProperties;
+
+    @Autowired
+    protected RequestFileService requestFileService;
 
     /**
      * Fetch drafts for the current user
@@ -606,4 +618,89 @@ public class RequestResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
             .body(result);
     }
+
+    /**
+     * Accept a RequestFile and add it to the request data
+     * @return A confirmation of the upload
+     */
+    @PostMapping("/requests/{uuid}/files")
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
+                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
+                                          @RequestParam("file") MultipartFile file) throws URISyntaxException,
+                                                                                           ActionNotAllowed,
+                                                                                           IOException{
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        if(!file.isEmpty()){
+            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
+                RequestFileType.NONE);
+            return ResponseEntity.accepted().body(requestFileRepresentation);
+
+        } else {
+            throw new IOException("File empty");
+        }
+    }
+
+    /**
+     * Return a file for a given request
+     * @return the requested file
+     */
+    @GetMapping("/requests/{uuid}/files/{fileuuid}")
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
+                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
+                                          @PathVariable("fileuuid") UUID fileUuid) throws URISyntaxException,
+        ActionNotAllowed, IOException{
+
+        AuthenticatedUser user = securityService.getCurrentUser();
+        ByteArrayResource resource = requestFileService.getFile(user, fileUuid);
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("application/octet-stream"))
+            .body(resource);
+    }
+
+    @GetMapping("/requests/{uuid}/files")
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
+                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<List<RequestFileRepresentation>> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
+        URISyntaxException, ActionNotAllowed {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        List<RequestFileRepresentation> files = requestFileService.getFilesForRequest(user, requestUuid);
+
+        return ResponseEntity.ok(files);
+    }
+
+    @DeleteMapping("/requests/deletefile/{fileuuid}")
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
+                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<Object> deleteFile(@PathVariable("fileuuid") UUID fileUuid)
+        throws URISyntaxException, ActionNotAllowed, IOException{
+
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        requestFileService.deleteFile(user, fileUuid);
+
+        return ResponseEntity.ok("ok");
+    }
+
+    @PostMapping("/requests/setfiletype/{fileuuid}")
+    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
+                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<RequestFileRepresentation> setFileType(@PathVariable("fileuuid") UUID fileUuid,
+                                                                 @RequestParam("type") RequestFileType type)
+        throws URISyntaxException, ActionNotAllowed {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        RequestFileRepresentation requestFile = requestFileService.setFileType(user, fileUuid, type);
+
+        return ResponseEntity.ok(requestFile);
+    }
+
 }
