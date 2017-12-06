@@ -625,6 +625,7 @@ public class RequestResource {
     @PostMapping("/requests/{uuid}/files")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
     public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
                                           @RequestParam("file") MultipartFile file) throws URISyntaxException,
                                                                                            ActionNotAllowed,
@@ -648,6 +649,7 @@ public class RequestResource {
     @GetMapping("/requests/{uuid}/files/{fileuuid}")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
     public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
                                           @PathVariable("fileuuid") UUID fileUuid) throws URISyntaxException,
         ActionNotAllowed, IOException{
@@ -662,6 +664,7 @@ public class RequestResource {
     @GetMapping("/requests/{uuid}/files")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
     public ResponseEntity<List<RequestFileRepresentation>> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
         URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -671,9 +674,10 @@ public class RequestResource {
         return ResponseEntity.ok(files);
     }
 
-    @GetMapping("/requests/deletefile/{fileuuid}")
+    @DeleteMapping("/requests/deletefile/{fileuuid}")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
     public ResponseEntity<Object> deleteFile(@PathVariable("fileuuid") UUID fileUuid)
         throws URISyntaxException, ActionNotAllowed, IOException{
 
@@ -687,6 +691,7 @@ public class RequestResource {
     @PostMapping("/requests/setfiletype/{fileuuid}")
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
+    @Timed
     public ResponseEntity<RequestFileRepresentation> setFileType(@PathVariable("fileuuid") UUID fileUuid,
                                                                  @RequestParam("type") RequestFileType type)
         throws URISyntaxException, ActionNotAllowed {
