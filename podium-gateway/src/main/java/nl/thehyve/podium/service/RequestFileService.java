@@ -140,7 +140,7 @@ public class RequestFileService {
 
         List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
 
-        List<RequestFileRepresentation> representations = new ArrayList<>();
+        List<RequestFileRepresentation> representations = new ArrayList<RequestFileRepresentation>();
         for(RequestFile file : files){
             RequestFileRepresentation representation = requestFileMapper.processingRequestFileToRequestFileDto(file);
             representations.add(representation);
@@ -164,14 +164,12 @@ public class RequestFileService {
         }
     }
 
-    public RequestFileRepresentation setFileType(IdentifiableUser requester, UUID fileUuid, RequestFileRepresentation
-        requestFileRepresentation)
+    public RequestFileRepresentation setFileType(IdentifiableUser requester, UUID fileUuid, RequestFileType filetype)
         throws ActionNotAllowed{
 
         RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
-
         if(requester.getUserUuid().equals(requestFile.getOwner())){
-            requestFile.setRequestFileType(requestFileRepresentation.getRequestFileType());
+            requestFile.setRequestFileType(filetype);
             requestFileRepository.save(requestFile);
             return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
         }else {
