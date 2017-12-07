@@ -31,14 +31,14 @@
                 <tab heading="Attachments">
                     <div class="row">
                         <div class="form-group">
-                            <pdm-attachment *ngIf="isRequestCoordinator()"
+                            <pdm-attachment *ngIf="canChangeAttachments()"
                                 [requestBaseId]="request.uuid"
                                 (onFinishedUpload)="onFinishedUploadAttachment($event)">
                             </pdm-attachment>
                             <pdm-attachment-list
                                 [requestUUID]="request.uuid"
-                                [canChange]="canChange()"
                                 [attachments]="attachments"
+                                [canUpdate]="canChangeAttachments()"
                                 (onDeleteFile)="onDeleteAttachment($event)"
                                 (onFileTypeChange)="onAttachmentTypeChange($event)">
                             </pdm-attachment-list>

@@ -11,5 +11,4 @@ public enum RequestFileType {
     DTA,
     OTHER,
     NONE
-
 }

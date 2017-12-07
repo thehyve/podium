@@ -3,31 +3,33 @@
         <thead>
         <tr>
             <th jhiTranslate="attachments.list.name">Name</th>
-            <th jhiTranslate="attachments.list.type" *ngIf="canChange">Type</th>
+            <th jhiTranslate="attachments.list.type">Type</th>
             <th jhiTranslate="attachments.list.owner">Uploader</th>
             <th jhiTranslate="attachments.list.size">Size</th>
             <th jhiTranslate="attachments.list.uploadDate">Uploaded Date</th>
-            <th *ngIf="canChange">&nbsp;</th>
+            <th>&nbsp;</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let attachment of attachments">
             <td><a (click)="downloadAttachment(attachment)"
                    download="{{attachment.fileName}}">{{attachment.fileName}}</a></td>
-            <td *ngIf="canChange">
+            <td>
                 <select id="attachment-type-select" #attachmentType [(ngModel)]="attachment.requestFileType"
-                        (change)="onAttachmentTypeChange(attachment, attachmentType.value)" >
+                        (change)="onAttachmentTypeChange(attachment, attachmentType.value)"
+                        *ngIf="canEdit(attachment)">
                     <option *ngFor="let attachmentType of attachmentTypes" value="{{attachmentType.value}}"
                             jhiTranslate="attachments.option.{{attachmentType.label}}">
                     </option>
                 </select>
+                <span *ngIf="!canEdit(attachment)" jhiTranslate="attachments.option.{{attachment.requestFileType}}"></span>
             </td>
             <td>{{attachment.owner.login}}</td>
             <td>{{formatByte(attachment.fileSize, 1)}}</td>
             <td>{{attachment.createdDate | date:'short'}}</td>
-            <td *ngIf="canChange">
+            <td >
                 <button type="submit" class="btn btn-danger btn-sm test-remove-btn"
-                        (click)="deleteAttachment(attachment)" title="Remove attachment">
+                        (click)="deleteAttachment(attachment)" title="Remove attachment" *ngIf="canEdit(attachment)">
                     <i class="material-icons md-18">remove_circle_outline</i>
                 </button>
             </td>

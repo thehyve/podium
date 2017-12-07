@@ -8,12 +8,11 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { AttachmentsService } from '../attachments.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
-import { UserGroupAuthority } from '../../authority/authority.constants';
-
+import { Principal } from '../../auth/principal.service';
 
 const ATTACHMENT_TYPES = [
     {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
@@ -29,29 +28,37 @@ const ATTACHMENT_TYPES = [
     templateUrl: './attachment-list.component.html',
     styleUrls: ['attachment-list.scss']
 })
-export class AttachmentListComponent implements OnChanges {
+export class AttachmentListComponent implements OnChanges, OnInit {
 
+    currentAccount: any;
     attachmentTypes: any[];
     error: any[];
 
     @Input() requestUUID: string;
-    @Input() canChange: boolean;
     @Input() attachments: Attachment[];
+    @Input() canUpdate: boolean;
 
     @Output() onDeleteFile: EventEmitter<boolean>;
     @Output() onFileTypeChange: EventEmitter<Attachment>;
 
-    constructor(private attachmentService: AttachmentsService) {
+    constructor(private principal: Principal,
+                private attachmentService: AttachmentsService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
         this.onDeleteFile = new EventEmitter<boolean>();
         this.onFileTypeChange = new EventEmitter<Attachment>();
         this.error = [];
     }
 
+    ngOnInit(): void {
+        this.principal.identity().then((account) => {
+            this.currentAccount = account;
+        });
+    }
+
     refreshError(attachments): void {
         this.error = [];
         if (attachments) {
-            attachments.forEach( (file: Attachment) => {
+            attachments.forEach((file: Attachment) => {
                 if (file.requestFileType === AttachmentTypes.NONE) {
                     this.error.push({
                         filename: file.fileName
@@ -65,7 +72,6 @@ export class AttachmentListComponent implements OnChanges {
         let files = changes.attachments.currentValue;
         this.refreshError(files);
     }
-
 
     onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
         attachment.requestFileType = newType;
@@ -87,7 +93,7 @@ export class AttachmentListComponent implements OnChanges {
         );
     }
 
-    downloadAttachment(attachment: Attachment) : void {
+    downloadAttachment(attachment: Attachment): void {
         this.attachmentService.downloadAttachment(this.requestUUID, attachment.uuid).subscribe(
             (blob) => {
                 let link = document.createElement('a');
@@ -98,11 +104,12 @@ export class AttachmentListComponent implements OnChanges {
         );
     }
 
+    canEdit(attachment: Attachment): boolean {
+        return attachment ?
+            this.attachmentService.isFileOwner(this.currentAccount, attachment) && this.canUpdate : this.canUpdate;
+    }
+
     formatByte(bytes: any, precision: number) {
-        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-        if (typeof precision === 'undefined') precision = 1;
-        const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-            number = Math.floor(Math.log(bytes) / Math.log(1024));
-        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
+        return this.attachmentService.formatByte(bytes, precision);
     }
 }

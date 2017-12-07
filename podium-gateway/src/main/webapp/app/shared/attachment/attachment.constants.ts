@@ -12,10 +12,10 @@
  * Attachment types enum
  */
 export enum AttachmentTypes {
-    NONE = <any>'NONE',
     METC_LETTER = <any>'METC_LETTER',
     ORG_CONDITIONS = <any>'ORG_CONDITIONS',
     MTA = <any>'MTA',
     DTA = <any>'DTA',
     OTHER = <any>'OTHER',
+    NONE = <any>'NONE',
 }

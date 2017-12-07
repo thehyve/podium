@@ -16,6 +16,7 @@ import { RequestDetailComponent } from './detail/request-detail.component';
 import { Attachment } from '../../shared/attachment/attachment.model';
 import { AttachmentsService } from '../../shared/attachment/attachments.service';
 import { RequestAccessService } from '../../shared/request/request-access.service';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 
 @Component({
     selector: 'pdm-request-main-detail',
@@ -100,12 +101,19 @@ export class RequestMainDetailComponent implements OnInit {
         }
     }
 
-    canChange() {
-        return false; // TBD
-    }
-
-    isRequestCoordinator(): boolean {
-        return this.requestAccessService.isCoordinatorFor(this.request);
+    /**
+     * User can change attachments when:
+     * - Has researcher role and when request is still a draft or in revision
+     * - Has coordinator role and when request is in validation or in review
+     * @returns {boolean}
+     */
+    canChangeAttachments() {
+        let isInRevision = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Revision);
+        let isRequester = this.requestAccessService.isRequesterOf(this.request);
+        let isCoordinator = this.requestAccessService.isCoordinatorFor(this.request);
+        let isInValidation = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Validation);
+        let isInReview = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Review);
+        return (isInRevision && isRequester) || (isCoordinator && isInValidation) || (isCoordinator && isInReview);
     }
 
 }

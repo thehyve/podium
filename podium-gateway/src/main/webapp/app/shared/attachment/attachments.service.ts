@@ -12,6 +12,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Http, Response, ResponseContentType } from '@angular/http';
 import { Attachment } from './attachment.model';
+import { User } from '../user/user.model';
 
 @Injectable()
 export class AttachmentsService {
@@ -20,15 +21,6 @@ export class AttachmentsService {
 
     constructor(private http: Http) {
 
-    }
-
-    /**
-     * Attach a file
-     * @returns {Observable<Response>}
-     */
-    attach(): Observable<Response> {
-        console.log('in attach');
-        return null;
     }
 
     /**
@@ -49,6 +41,9 @@ export class AttachmentsService {
         return null;
     }
 
+    isFileOwner(user: User, attachment: Attachment): boolean {
+        return user.uuid === attachment.owner.uuid;
+    }
 
     /**
      * Format bytes
@@ -63,7 +58,6 @@ export class AttachmentsService {
             number = Math.floor(Math.log(bytes) / Math.log(1024));
         return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
     }
-
 
     /**
      * Download an attachment
