@@ -12,7 +12,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let attachment of attachments">
-            <td><a (click)="downloadAttachment(attachment)"
+            <td><a (click)="downloadAttachment(attachment)" class="downloadable-file"
                    download="{{attachment.fileName}}">{{attachment.fileName}}</a></td>
             <td>
                 <select id="attachment-type-select" #attachmentType [(ngModel)]="attachment.requestFileType"
