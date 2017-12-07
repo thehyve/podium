@@ -95,8 +95,8 @@ public class RequestFileService {
             }
         }
 
-        // Reviewer can add files in Review status
-        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.REVIEWER)){
+        // Coordinator can add files in Review status
+        if(securityService.isCurrentUserInAnyOrganisationRole(organisationUuids, AuthorityConstants.ORGANISATION_COORDINATOR)){
             if(overviewStatus == OverviewStatus.Review){
                 allowedToAdd = true;
             }
