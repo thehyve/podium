@@ -108,7 +108,7 @@ export class RequestFormComponent implements OnInit {
         }
     }
 
-    getAttachments (requestUUID) {
+    private getAttachments (requestUUID) {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {
                 this.attachments = attachments;

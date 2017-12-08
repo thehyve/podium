@@ -72,7 +72,7 @@ export class RequestMainDetailComponent implements OnInit {
         this.success = null;
     }
 
-    getAttachments (requestUUID) {
+    private getAttachments (requestUUID) {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {
                 this.attachments = attachments;
