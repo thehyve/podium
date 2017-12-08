@@ -20,7 +20,7 @@ export class OrganisationPopupService {
         private organisationService: OrganisationService
     ) {}
 
-    open (component: Component, uuid?: string | any): NgbModalRef {
+    open (component: any, uuid?: string | any): NgbModalRef {
         if (this.isOpen) {
             return;
         }

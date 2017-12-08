@@ -10,18 +10,20 @@
 import { NgModule, Sanitizer } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
+import { JhiConfigService } from 'ng-jhipster/src/config.service';
 
 export function alertServiceProvider(sanitizer: Sanitizer, translateService: TranslateService) {
     // set below to true to make alerts look like toast
-    let isToast = false;
-    return new AlertService(sanitizer, isToast, translateService);
+    let jhiConfigService = new JhiConfigService();
+    jhiConfigService.CONFIG_OPTIONS.alertAsToast = false;
+    return new JhiAlertService(sanitizer, jhiConfigService, translateService);
 }
 
 @NgModule({
@@ -35,7 +37,7 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
     providers: [
         JhiLanguageHelper,
         {
-            provide: AlertService,
+            provide: JhiAlertService,
             useFactory: alertServiceProvider,
             deps: [Sanitizer, TranslateService]
         },

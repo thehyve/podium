@@ -8,11 +8,15 @@
  *
  */
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';
+import { Attachment } from '../../shared/attachment/attachment.model';
+import { AttachmentsService } from '../../shared/attachment/attachments.service';
+import { RequestAccessService } from '../../shared/request/request-access.service';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 
 @Component({
     selector: 'pdm-request-main-detail',
@@ -31,13 +35,17 @@ export class RequestMainDetailComponent implements OnInit {
     private requestDetail: RequestDetailComponent;
 
     public request: RequestBase;
+    public attachments: Attachment[];
+
     public error: any;
     public success: any;
 
     constructor(
         private route: ActivatedRoute,
         private requestService: RequestService,
-        private alertService: AlertService
+        private alertService: JhiAlertService,
+        private attachmentService: AttachmentsService,
+        private requestAccessService: RequestAccessService
     ) {
 
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -49,6 +57,7 @@ export class RequestMainDetailComponent implements OnInit {
         this.route.data
             .subscribe((data: { request: RequestBase }) => {
                 this.request = data.request;
+                this.getAttachments(data.request.uuid);
                 this.onSuccess(data.request);
             }, err => this.onError(err));
     }
@@ -62,4 +71,49 @@ export class RequestMainDetailComponent implements OnInit {
         this.alertService.error(error.error, error.message, null);
         this.success = null;
     }
+
+    private getAttachments (requestUUID) {
+        this.attachmentService.getAttachments(requestUUID).subscribe(
+            (attachments) => {
+                this.attachments = attachments;
+            },
+            (error) => {
+                console.error(error)
+            }
+        );
+    }
+
+    onFinishedUploadAttachment(success: boolean) {
+        if (success) {
+            this.getAttachments(this.request.uuid);
+        }
+    }
+
+    onDeleteAttachment(isSuccess: boolean) {
+        if (isSuccess) {
+            this.getAttachments(this.request.uuid);
+        }
+    }
+
+    onAttachmentTypeChange(attachment: Attachment) {
+        if (attachment) {
+            this.getAttachments(this.request.uuid);
+        }
+    }
+
+    /**
+     * User can change attachments when:
+     * - Has researcher role and when request is still a draft or in revision
+     * - Has coordinator role and when request is in validation or in review
+     * @returns {boolean}
+     */
+    canChangeAttachments() {
+        let isInRevision = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Revision);
+        let isRequester = this.requestAccessService.isRequesterOf(this.request);
+        let isCoordinator = this.requestAccessService.isCoordinatorFor(this.request);
+        let isInValidation = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Validation);
+        let isInReview = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Review);
+        return (isInRevision && isRequester) || (isCoordinator && isInValidation) || (isCoordinator && isInReview);
+    }
+
 }

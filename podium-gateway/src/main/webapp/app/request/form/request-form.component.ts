@@ -7,9 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
+
+import { Component, OnInit, ViewChild, Input} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { EventManager } from 'ng-jhipster';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
@@ -24,13 +24,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 import { RequestAccessService } from '../../shared/request/request-access.service';
-import {
-    RequestReviewStatusOptions,
-    RequestOverviewStatusOption
-} from '../../shared/request/request-status/request-status.constants';
-import { OrganisationService } from '../../shared/organisation/organisation.service';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 import { Organisation } from '../../shared/organisation/organisation.model';
-import { equalParamsAndUrlSegments } from '@angular/router/src/router_state';
+import { Attachment } from '../../shared/attachment/attachment.model';
+import { AttachmentsService } from '../../shared/attachment/attachments.service';
+import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
+import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 
 @Component({
     selector: 'pdm-request-form',
@@ -41,6 +40,12 @@ import { equalParamsAndUrlSegments } from '@angular/router/src/router_state';
 export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
+
+    @ViewChild(AttachmentComponent)
+    private attachmentComponent: AttachmentComponent;
+
+    @ViewChild(AttachmentListComponent)
+    private attachmentListComponent: AttachmentListComponent;
 
     @ViewChild(OrganisationSelectorComponent)
     private organisationSelectorComponent: OrganisationSelectorComponent;
@@ -56,8 +61,11 @@ export class RequestFormComponent implements OnInit {
     public selectDraft: boolean;
     public selectedDraft: any = null;
     public requestDraftsAvailable: boolean;
+    public isUpdating: boolean = false;
+    public attachments: Attachment[];
+
     private revisionId: string;
-    public isUpdating = false;
+
 
     constructor(
         private requestFormService: RequestFormService,
@@ -66,7 +74,8 @@ export class RequestFormComponent implements OnInit {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private principal: Principal,
-        private modalService: NgbModal
+        private modalService: NgbModal,
+        private attachmentService: AttachmentsService
     ) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
@@ -81,6 +90,35 @@ export class RequestFormComponent implements OnInit {
         });
     }
 
+    onFinishedUploadAttachment(success: boolean) {
+        if (success) {
+            this.getAttachments(this.requestBase.uuid);
+        }
+    }
+
+    onDeleteAttachment(isSuccess: boolean) {
+        if (isSuccess) {
+            this.getAttachments(this.requestBase.uuid);
+        }
+    }
+
+    onAttachmentTypeChange(attachment: Attachment) {
+        if (attachment) {
+            this.getAttachments(this.requestBase.uuid);
+        }
+    }
+
+    private getAttachments (requestUUID) {
+        this.attachmentService.getAttachments(requestUUID).subscribe(
+            (attachments) => {
+                this.attachments = attachments;
+            },
+            (error) => {
+                console.error(error)
+            }
+        );
+    }
+
     initializeRequestForm() {
         if (this.router.url === '/requests/new'  && !this.isInRevision) {
             this.initializeBaseRequest();
@@ -91,6 +129,7 @@ export class RequestFormComponent implements OnInit {
                     request => {
                         this.requestFormService.request = request;
                         this.selectRequest(this.requestFormService.request);
+                        this.getAttachments(this.requestFormService.request.uuid);
                     },
                     error => {
                         this.onError(error);
@@ -114,6 +153,7 @@ export class RequestFormComponent implements OnInit {
                     this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
                     this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+                    this.getAttachments(requestBase.uuid);
                 },
                 (error) => this.onError('Error initializing base request')
             );

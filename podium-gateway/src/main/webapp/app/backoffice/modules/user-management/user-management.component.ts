@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Response, Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EventManager, ParseLinks, AlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { Principal } from '../../../shared/auth/principal.service';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
@@ -52,10 +52,10 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     constructor(
         private userService: UserService,
-        private parseLinks: ParseLinks,
-        private alertService: AlertService,
+        private JhiParseLinks: JhiParseLinks,
+        private JhiAlertService: JhiAlertService,
         private principal: Principal,
-        private eventManager: EventManager,
+        private JhiEventManager: JhiEventManager,
         private overviewService: OverviewService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router
@@ -78,7 +78,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (this.eventSubscription) {
-            this.eventManager.destroy(this.eventSubscription);
+            this.JhiEventManager.destroy(this.eventSubscription);
         }
 
         if (this.overviewSubscription) {
@@ -87,7 +87,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     registerChangeInUsers() {
-        this.eventSubscription = this.eventManager.subscribe('userListModification', () => {
+        this.eventSubscription = this.JhiEventManager.subscribe('userListModification', () => {
             this.fetchUsers();
         });
     }
@@ -117,7 +117,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     processAvailableUsers (users: User[], headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+        this.links = this.JhiParseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.users = users;

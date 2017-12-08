@@ -8,6 +8,7 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;

@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { TooltipModule } from 'ng2-bootstrap/tooltip';
 import { TabsModule } from 'ng2-bootstrap/tabs';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDropdownModule } from 'ng2-bootstrap/dropdown';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieModule } from 'ngx-cookie';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';

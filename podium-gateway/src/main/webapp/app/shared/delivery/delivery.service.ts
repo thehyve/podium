@@ -21,7 +21,7 @@ export class DeliveryService {
 
     private resourceUrl = 'api/requests';
 
-    public onDeliveryUpdate: Subject<Delivery> = new Subject();
+    public onDeliveryUpdate: Subject<Delivery[]> = new Subject();
     public onDeliveries: Subject<Delivery[]> = new Subject();
 
     public static countDeliveriesWithOutcome(deliveries: Delivery[], outcome: DeliveryOutcome): number {
@@ -61,7 +61,7 @@ export class DeliveryService {
     }
 
     public deliveryUpdateEvent(delivery: Delivery) {
-        this.onDeliveryUpdate.next(delivery);
+        this.onDeliveryUpdate.next([delivery]);
     }
 
     public deliveriesFetchEvent(deliveries: Delivery[]) {

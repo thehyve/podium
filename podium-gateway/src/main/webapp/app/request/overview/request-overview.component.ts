@@ -25,7 +25,7 @@ import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
 import { RequestType } from '../../shared/request/request-type';
-import { EventManager, ParseLinks } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
 import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 
 let overviewConfig: OverviewServiceConfig = {
@@ -72,8 +72,8 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     constructor(
         private requestFormService: RequestFormService,
-        private eventManager: EventManager,
-        private parseLinks: ParseLinks,
+        private JhiEventManager: JhiEventManager,
+        private JhiParseLinks: JhiParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
@@ -122,12 +122,12 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         }
 
         if (this.eventSubscriber) {
-            this.eventManager.destroy(this.eventSubscriber);
+            this.JhiEventManager.destroy(this.eventSubscriber);
         }
     }
 
     registerChanges() {
-        this.eventSubscriber = this.eventManager
+        this.eventSubscriber = this.JhiEventManager
             .subscribe('requestListModification',
                 (response) => this.fetchRequestsFor(this.activeStatus));
 
@@ -162,7 +162,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     }
 
     processAvailableRequests(requests, headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+        this.links = this.JhiParseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.availableRequests = requests;

@@ -18,7 +18,6 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
-import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.service.DraftService;
 import nl.thehyve.podium.service.RequestFileService;
@@ -30,7 +29,6 @@ import nl.thehyve.podium.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +55,7 @@ public class RequestResource {
     private final Logger log = LoggerFactory.getLogger(RequestResource.class);
 
     private static final String ENTITY_NAME = "request";
+    private static final String REQUEST_FILE_NAME = "requestFile";
 
     @Autowired
     private RequestService requestService;
@@ -681,12 +680,9 @@ public class RequestResource {
     @Timed
     public ResponseEntity<Object> deleteFile(@PathVariable("fileuuid") UUID fileUuid)
         throws URISyntaxException, ActionNotAllowed, IOException{
-
         AuthenticatedUser user = securityService.getCurrentUser();
-
         requestFileService.deleteFile(user, fileUuid);
-
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(REQUEST_FILE_NAME, fileUuid.toString())).build();
     }
 
     @PostMapping("/requests/setfiletype/{fileuuid}")
@@ -694,10 +690,10 @@ public class RequestResource {
                          AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
     @Timed
     public ResponseEntity<RequestFileRepresentation> setFileType(@PathVariable("fileuuid") UUID fileUuid,
-                                                                 @RequestParam("type") RequestFileType type)
+                                                                 @RequestBody RequestFileRepresentation requestFileRepresentation)
         throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
-
+        RequestFileType type = requestFileRepresentation.getRequestFileType();
         RequestFileRepresentation requestFile = requestFileService.setFileType(user, fileUuid, type);
 
         return ResponseEntity.ok(requestFile);

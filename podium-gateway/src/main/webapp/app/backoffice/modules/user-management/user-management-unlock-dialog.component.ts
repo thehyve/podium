@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { UserModalService } from './user-modal.service';
@@ -26,7 +26,7 @@ export class UserMgmtUnlockDialogComponent {
     constructor(
         private userService: UserService,
         public activeModal: NgbActiveModal,
-        private eventManager: EventManager,
+        private JhiEventManager: JhiEventManager,
         private router: Router
     ) {
 
@@ -39,7 +39,7 @@ export class UserMgmtUnlockDialogComponent {
 
     confirmUnlock (user) {
         this.userService.unlock(user).subscribe(response => {
-            this.eventManager.broadcast({ name: 'userListModification',
+            this.JhiEventManager.broadcast({ name: 'userListModification',
                 content: 'Unlock a user'});
             this.activeModal.dismiss(true);
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });

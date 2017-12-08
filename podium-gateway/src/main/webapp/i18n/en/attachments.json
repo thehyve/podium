@@ -1,0 +1,29 @@
+{
+    "attachments": {
+        "title": "Attachments",
+        "upload": {
+            "dragHere": "Drag here or ",
+            "browse": "browse",
+            "toUpload": "to upload.",
+            "uploadWith": "uploading with {{f.progress?.data?.speedHuman}}"
+        },
+        "list": {
+            "name": "Name",
+            "type": "Type",
+            "owner": "Owner",
+            "size": "Size",
+            "uploadDate": "Upload Date",
+            "validate": {
+                "fileTypes": "Please set file types for "
+            }
+        },
+        "option": {
+            "NONE": "-- none --",
+            "METC_LETTER": "METC Letter",
+            "ORG_CONDITIONS": "Organisation Conditions",
+            "MTA": "MTA",
+            "DTA": "DTA",
+            "OTHER": "Other"
+        }
+    }
+}

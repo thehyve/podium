@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { RequestService } from '../../shared/request/request.service';
-import { EventManager } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { RequestBase } from '../../shared/request/request-base';
 
 @Component({
@@ -26,12 +26,12 @@ export class RequestDraftDeleteModalComponent {
     constructor(
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
-        private eventManager: EventManager
+        private JhiEventManager: JhiEventManager
     ) {}
 
     confirmDelete() {
         this.requestService.deleteDraft(this.request.uuid).subscribe((res) => {
-            this.eventManager.broadcast({
+            this.JhiEventManager.broadcast({
                 name: 'requestListModification',
                 content: 'Deleted a request'
             });

@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
+import { JhiLanguageService, JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
 import { Role } from '../role.model';
@@ -40,16 +40,16 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     public organisationRoles: Role[];
     public organisationUsers: any[] = [];
     public eventSubscriber: Subscription;
-    public usersPromises: Promise<Response>[] = [];
+    public usersPromises: Promise<User>[] = [];
 
     @Input() organisation;
 
     constructor(
         private roleService: RoleService,
         private userService: UserService,
-        private alertService: AlertService,
+        private JhiAlertService: JhiAlertService,
         private principal: Principal,
-        private eventManager: EventManager
+        private JhiEventManager: JhiEventManager
     ) {
 
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
@@ -63,11 +63,11 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
 
         this.registerChangeInRoles();
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.JhiEventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
     ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
+        this.JhiEventManager.destroy(this.eventSubscriber);
     }
 
     /**
@@ -77,7 +77,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
      * Finally a new empty OrganisationUser will be added as an empty row to assign new users to roles.
      */
     registerChangeInRoles() {
-        this.eventSubscriber = this.eventManager.subscribe('userRolesModification', () => {
+        this.eventSubscriber = this.JhiEventManager.subscribe('userRolesModification', () => {
             this.loadAllRolesForOrganisation().subscribe(() => {
 
                 /**
@@ -217,7 +217,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
 
                         // Map all the users in the role
                         role.users.map((user) => {
-
                             let promise = this.getPromiseForUserOfRole(user, role);
                             this.usersPromises.push(promise);
                         });
@@ -240,8 +239,8 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
      * @param role The role the user originated from
      * @returns {Promise<Response>}
      */
-    public getPromiseForUserOfRole(user: string, role: Role): Promise<Response> {
-        let promise: Promise<Response> = this.userService.findByUuid(user).toPromise();
+    public getPromiseForUserOfRole(user: string, role: Role): Promise<User> {
+        let promise: Promise<User> = this.userService.findByUuid(user).toPromise();
 
         promise.then(userRes => {
             let organisationUser = this.generateOrganisationUser(userRes, role);
@@ -277,7 +276,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                 // Perform update
                 this.roleService.update(role)
                     .subscribe(
-                        (res: Response) => {
+                        (res: Role) => {
                             observer.next(res);
                         },
                         (res: Response) => {
@@ -292,16 +291,16 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
 
     private onSaveSuccess(res: Response, isDelete: boolean) {
         let notification = isDelete ? 'podiumGatewayApp.roleAssign.deleted' : 'podiumGatewayApp.roleAssign.saved';
-        this.alertService.success(notification);
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.JhiAlertService.success(notification);
+        this.JhiEventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
     private onError (error) {
-        this.alertService.error(error.message, null, null);
+        this.JhiAlertService.error(error.message, null, null);
     }
 
     private onSaveError (error) {
-        this.alertService.error(error.message, null, null);
+        this.JhiAlertService.error(error.message, null, null);
     }
 
     private addNewOrganisationUser() {
