@@ -30,6 +30,7 @@ import { Attachment } from '../../shared/attachment/attachment.model';
 import { AttachmentsService } from '../../shared/attachment/attachments.service';
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
+import { FormControl, NgForm } from '@angular/forms';
 
 @Component({
     selector: 'pdm-request-form',
@@ -40,6 +41,8 @@ import { AttachmentListComponent } from '../../shared/attachment/attachment-list
 export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
+
+    @ViewChild('requestForm') requestForm: NgForm;
 
     @ViewChild(AttachmentComponent)
     private attachmentComponent: AttachmentComponent;
@@ -112,11 +115,16 @@ export class RequestFormComponent implements OnInit {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {
                 this.attachments = attachments;
+                this.requestBase.hasAttachmentsTypes = this.hasAttachmentsTypeNone() ? null : true;
             },
             (error) => {
                 console.error(error)
             }
         );
+    }
+
+    private hasAttachmentsTypeNone (): boolean {
+        return this.attachmentService.hasAttachmentsTypeNone(this.attachments);
     }
 
     initializeRequestForm() {

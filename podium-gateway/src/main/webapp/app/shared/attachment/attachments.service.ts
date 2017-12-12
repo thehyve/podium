@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { Http, Response, ResponseContentType } from '@angular/http';
 import { Attachment } from './attachment.model';
 import { User } from '../user/user.model';
+import { AttachmentTypes } from './attachment.constants';
 
 @Injectable()
 export class AttachmentsService {
@@ -91,5 +92,16 @@ export class AttachmentsService {
     setAttachmentType(attachment: Attachment): Observable<Response> {
         return this.http.post(`${this.resourceUrl}/setfiletype/${attachment.uuid}`, attachment)
             .map((response: Response) => { return response.json();});
+    }
+
+    /**
+     * Tests if at least one attachment does not have attachment type
+     * @param {Attachment[]} attachments
+     * @returns {boolean}
+     */
+    hasAttachmentsTypeNone(attachments: Attachment[]): boolean {
+        return attachments.some( attachment => {
+           return attachment.requestFileType === AttachmentTypes.NONE;
+        });
     }
 }

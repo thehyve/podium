@@ -30,7 +30,7 @@ export class RequestBase implements Request {
     organisations?: Organisation[] = [];
     latestEvent?: PodiumEvent;
     relatedRequests?: RequestBase[] = [];
-
+    hasAttachmentsTypes?: boolean;
     requester?: User;
 
     constructor() {
