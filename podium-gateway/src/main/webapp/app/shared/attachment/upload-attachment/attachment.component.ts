@@ -11,6 +11,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes, UploaderOptions } from 'ngx-uploader';
 import { AuthServerProvider } from '../../auth/auth-jwt.service';
+import { AttachmentsService } from '../attachments.service';
 
 @Component({
     selector: 'pdm-attachment',
@@ -27,14 +28,17 @@ export class AttachmentComponent {
     uploadInput: EventEmitter<UploadInput>;
     humanizeBytes: Function;
     dragOver: boolean;
+    maxFileSize: string;
     error: any[];
 
-    constructor(private authServerProvider: AuthServerProvider,) {
+    constructor(private authServerProvider: AuthServerProvider,
+                private attachmentService: AttachmentsService) {
         this.files = []; // local uploading files array
         this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
         this.onFinishedUpload = new EventEmitter<boolean>();
         this.humanizeBytes = humanizeBytes;
         this.error = [];
+        this.maxFileSize = null;
     }
 
     onUploadOutput(output: UploadOutput): void {
@@ -79,8 +83,7 @@ export class AttachmentComponent {
         const event: UploadInput = {
             type: 'uploadAll',
             url: '/api/requests/' + this.requestBaseId + '/addfile',
-            method: 'POST',
-            data: {foo: 'bar'}
+            method: 'POST'
         };
 
         this.uploadInput.emit(event);
