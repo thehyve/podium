@@ -29,7 +29,7 @@ export class AttachmentComponent {
     dragOver: boolean;
     error: any[];
 
-    constructor(private authServerProvider: AuthServerProvider,) {
+    constructor(private authServerProvider: AuthServerProvider) {
         this.files = []; // local uploading files array
         this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
         this.onFinishedUpload = new EventEmitter<boolean>();
@@ -79,8 +79,7 @@ export class AttachmentComponent {
         const event: UploadInput = {
             type: 'uploadAll',
             url: '/api/requests/' + this.requestBaseId + '/addfile',
-            method: 'POST',
-            data: {foo: 'bar'}
+            method: 'POST'
         };
 
         this.uploadInput.emit(event);

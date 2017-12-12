@@ -10,7 +10,7 @@
                 <span jhiTranslate="attachments.upload.browse">browse</span>
             </label>
             <span jhiTranslate="attachments.upload.toUpload">to upload.</span>
-            <small class="form-text text-danger" *ngIf="error.length">Error: File size has to be less than 50MB.</small>
+            <small class="form-text text-danger" *ngIf="error.length">{{error}}</small>
         </p>
     </div>
 </div>
