@@ -449,7 +449,9 @@
                             (onDeleteFile)="onDeleteAttachment($event)"
                             (onFileTypeChange)="onAttachmentTypeChange($event)">
                         </pdm-attachment-list>
-                        <input type="hidden" [ngModel]="requestBase.hasAttachmentsTypes"/>
+                        <input type="text" required name="hasAttachmentTypes" id="hasAttachmentTypes" minlength="1"
+                               maxlength="150" #hasAttachmentTypes="ngModel"
+                               [(ngModel)]="requestBase.hasAttachmentsTypes" hidden/>
                     </div>
                 </div>
 
