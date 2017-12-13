@@ -28,9 +28,10 @@
                 <tab heading="Details">
                     <pdm-request-detail></pdm-request-detail>
                 </tab>
-                <tab heading="Attachments">
+                <tab heading="Attachments{{asterisk}} ({{attachments.length}})">
                     <div class="row">
                         <div class="form-group">
+
                             <pdm-attachment *ngIf="canChangeAttachments()"
                                 [requestBaseId]="request.uuid"
                                 (onFinishedUpload)="onFinishedUploadAttachment($event)">

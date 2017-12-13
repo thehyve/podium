@@ -35,6 +35,7 @@ export class RequestMainDetailComponent implements OnInit {
     private requestDetail: RequestDetailComponent;
 
     public request: RequestBase;
+    public asterisk: string = '';
     public attachments: Attachment[];
 
     public error: any;
@@ -54,6 +55,7 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.attachments = [];
         this.route.data
             .subscribe((data: { request: RequestBase }) => {
                 this.request = data.request;
@@ -76,11 +78,17 @@ export class RequestMainDetailComponent implements OnInit {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {
                 this.attachments = attachments;
+                this.request.hasAttachmentsTypes = !this.hasAttachmentsTypeNone();
+                this.asterisk = this.hasAttachmentsTypeNone() ? '*' : '';
             },
             (error) => {
                 console.error(error)
             }
         );
+    }
+
+    private hasAttachmentsTypeNone (): boolean {
+        return this.attachmentService.hasAttachmentsTypeNone(this.attachments);
     }
 
     onFinishedUploadAttachment(success: boolean) {

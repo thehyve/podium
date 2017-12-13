@@ -49,7 +49,7 @@
 
                     <!-- Revision -->
                     <div *ngIf="isStatus(requestStatus.Revision)">
-                        <button type="button" class="btn btn-default" id="cancel-btn" (click)="cancel()">
+                        <button type="button" class="btn btn-outline-warning" id="cancel-btn" (click)="cancel()">
                             <span jhiTranslate="request.toolbar.cancel">Cancel</span>
                         </button>
                         <div class="float-xs-right">
@@ -90,15 +90,16 @@
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
                         <div class="float-xs-right">
-                            <button type="button" class="btn btn-default test-request-revision-btn"
-                                    (click)="requireRevision()">
+                            <button type="button" class="btn btn-outline-primary test-request-revision-btn"
+                                    (click)="requireRevision()" [disabled]="!request.hasAttachmentsTypes">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
                             <button type="submit" class="btn btn-success" id="validate-request-btn"
-                                    (click)="validateRequest()" [disabled]="!checks.validation">
+                                    (click)="validateRequest()"
+                                    [disabled]="!canProceedFromValidation()">
                             <span jhiTranslate="request.toolbar.sendForReview"
                                   tooltip="Please validate the request by checking the box above."
-                                  [isDisabled]="checks.validation">Send for review</span>
+                                  [isDisabled]="!canProceedFromValidation()">Send for review</span>
                             </button>
                         </div>
                     </div>
@@ -117,12 +118,12 @@
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
                         <div class="float-xs-right">
-                            <button type="button" class="btn btn-default test-request-revision-btn"
-                                    (click)="requireRevision()">
+                            <button type="button" class="btn btn-outline-primary test-request-revision-btn"
+                                    (click)="requireRevision()" [disabled]="!request.hasAttachmentsTypes">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
                             <button type="button" class="btn btn-success" id="approve-request-btn"
-                                    (click)="approveRequest()">
+                                    (click)="approveRequest()" [disabled]="!request.hasAttachmentsTypes">
                                 <span jhiTranslate="request.toolbar.approve">Approve</span>
                             </button>
                         </div>
@@ -162,7 +163,7 @@
                     </button>
 
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-default test-request-start-delivery-btn"
+                        <button type="button" class="btn btn-outline-primary test-request-start-delivery-btn"
                                 (click)="startDelivery()">
                             <span jhiTranslate="request.toolbar.startDelivery">Start delivery process</span>
                         </button>
@@ -196,7 +197,7 @@
                     </div>
 
                     <div class="float-xs-right">
-                        <button type="button" class="btn btn-default test-request-finalize-request-btn"
+                        <button type="button" class="btn btn-outline-primary test-request-finalize-request-btn"
                                 [disabled]="!checks.canFinalize"
                                 (click)="finalizeRequest()">
                             <span tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."
