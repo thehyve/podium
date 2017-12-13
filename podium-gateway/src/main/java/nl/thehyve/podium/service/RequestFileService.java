@@ -175,7 +175,17 @@ public class RequestFileService {
         }else {
             throw new ActionNotAllowed("Only Owner can set type");
         }
+    }
 
+    public Boolean hasUnsetFile(Request request) {
+        List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
+        Boolean unsetFiles = false;
 
+        for(RequestFile file : files){
+            if (file.getRequestFileType() == RequestFileType.NONE) {
+                unsetFiles = true;
+            }
+        }
+        return unsetFiles;
     }
 }
