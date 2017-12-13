@@ -102,7 +102,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         if (!requestDeliveries) {
             this.checks.canFinalize = false;
         }
-
         this.checks.canFinalize = this.deliveryService.canFinalizeRequest(requestDeliveries);
     }
 
@@ -111,6 +110,10 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         if (this.request.requestReview) {
             this.reviewStatus = this.request.requestReview.status.toString();
         }
+    }
+
+    canProceedFromValidation() {
+        return this.checks.validation && this.request.hasAttachmentsTypes;
     }
 
     isStatus(status): boolean {

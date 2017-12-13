@@ -115,7 +115,7 @@ export class RequestFormComponent implements OnInit {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {
                 this.attachments = attachments;
-                this.requestBase.hasAttachmentsTypes = this.hasAttachmentsTypeNone() ? null : true;
+                this.requestBase.hasAttachmentsTypes = !this.hasAttachmentsTypeNone();
             },
             (error) => {
                 console.error(error)
