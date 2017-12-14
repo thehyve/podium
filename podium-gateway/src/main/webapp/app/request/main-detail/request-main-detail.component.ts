@@ -116,12 +116,20 @@ export class RequestMainDetailComponent implements OnInit {
      * @returns {boolean}
      */
     canChangeAttachments() {
-        let isInRevision = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Revision);
         let isRequester = this.requestAccessService.isRequesterOf(this.request);
         let isCoordinator = this.requestAccessService.isCoordinatorFor(this.request);
+        let isInRevision = this.isInRevision();
         let isInValidation = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Validation);
         let isInReview = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Review);
         return (isInRevision && isRequester) || (isCoordinator && isInValidation) || (isCoordinator && isInReview);
+    }
+
+    canViewAttachmentTab() {
+        return !this.isInRevision() || this.requestAccessService.isCoordinatorFor(this.request);
+    }
+
+    isInRevision() {
+        return  RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Revision);
     }
 
 }

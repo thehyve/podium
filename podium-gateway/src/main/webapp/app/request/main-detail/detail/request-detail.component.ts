@@ -138,7 +138,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
     /**
      * Submit the feedback of a reviewer for a request.
      *
-     * @param decision the reviewfeedback holding the advice and their findings.
+     * @param decision the review feedback holding the advice and their findings.
      */
     submitReview(decision: RequestReviewDecision) {
         let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
@@ -170,7 +170,10 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         this.isUpdating = true;
         this.requestService.validateRequest(this.request.uuid)
             .subscribe(
-                (res) => this.onSuccess(res),
+                (res) => {
+                    this.onSuccess(res);
+                    this.registerChanges();
+                },
                 (err) => this.onError(err)
             );
     }

@@ -21,7 +21,7 @@
                         <span jhiTranslate="request.toolbar.saveDraft">Save draft</span>
                     </button>
                     <button type="submit" class="btn btn-success" id="submit-draft-btn"
-                            [disabled]="!form.form.valid" (click)="submitDraft()">
+                            [disabled]="!canSubmitDraft()" (click)="submitDraft()">
                         <span jhiTranslate="request.toolbar.submit">Submit</span>
                     </button>
                 </div>
@@ -119,11 +119,11 @@
                         </button>
                         <div class="float-xs-right">
                             <button type="button" class="btn btn-outline-primary test-request-revision-btn"
-                                    (click)="requireRevision()" [disabled]="!request.hasAttachmentsTypes">
+                                    (click)="requireRevision()" [disabled]="!canProceedFromReview()">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
                             <button type="button" class="btn btn-success" id="approve-request-btn"
-                                    (click)="approveRequest()" [disabled]="!request.hasAttachmentsTypes">
+                                    (click)="approveRequest()" [disabled]="!canProceedFromReview()">
                                 <span jhiTranslate="request.toolbar.approve">Approve</span>
                             </button>
                         </div>
