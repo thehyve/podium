@@ -28,7 +28,7 @@
                 <tab heading="Details">
                     <pdm-request-detail></pdm-request-detail>
                 </tab>
-                <tab heading="Attachments{{asterisk}} ({{attachments.length}})">
+                <tab heading="Attachments{{asterisk}} ({{attachments.length}})" *ngIf="canViewAttachmentTab()">
                     <div class="row">
                         <div class="form-group">
 
