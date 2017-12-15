@@ -67,6 +67,7 @@ public class RequestFileService {
      * @param owner the user that owns the file. requestUUID for the request it is linked to and the MultipartFile
      * @return saved request representation
      */
+    @Transactional
     public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file,
                                              RequestFileType requestFileType) throws ActionNotAllowed, AccessDenied, IOException {
 
@@ -127,6 +128,7 @@ public class RequestFileService {
         return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
     }
 
+    @Transactional
     public ByteArrayResource getFile(IdentifiableUser requester, UUID fileUuid) throws IOException{
         RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
         String uploadDir = podiumProperties.getFiles().getUploadDir();
@@ -135,6 +137,7 @@ public class RequestFileService {
         return new ByteArrayResource(Files.readAllBytes(path));
     }
 
+    @Transactional
     public List<RequestFileRepresentation> getFilesForRequest(IdentifiableUser requester, UUID requestUUID){
         Request request = requestRepository.findOneByUuid(requestUUID);
 
@@ -149,6 +152,7 @@ public class RequestFileService {
         return representations;
     }
 
+    @Transactional
     public void deleteFile(IdentifiableUser requester, UUID fileUuid) throws ResourceNotFound, IOException {
         RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
 
@@ -164,6 +168,7 @@ public class RequestFileService {
         }
     }
 
+    @Transactional
     public RequestFileRepresentation setFileType(IdentifiableUser requester, UUID fileUuid, RequestFileType filetype)
         throws ActionNotAllowed{
 

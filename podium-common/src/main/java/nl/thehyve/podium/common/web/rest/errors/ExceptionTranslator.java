@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.List;
  */
 @ControllerAdvice
 @Public
+@EnableWebMvc
 public class ExceptionTranslator {
 
     private final Logger log = LoggerFactory.getLogger(ExceptionTranslator.class);
@@ -112,6 +115,14 @@ public class ExceptionTranslator {
             dto.add("request", violation.getPropertyPath().toString(), violation.getMessage());
         }
         return dto;
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ErrorRepresentation> processMultipartException(Exception e){
+        log.error("Error with a fileupload " + e.getMessage());
+        BodyBuilder builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
+        ErrorRepresentation errorVM = new ErrorRepresentation(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, e.getMessage());
+        return builder.body(errorVM);
     }
 
 }
