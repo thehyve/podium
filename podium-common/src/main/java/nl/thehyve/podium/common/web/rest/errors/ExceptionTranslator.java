@@ -118,7 +118,7 @@ public class ExceptionTranslator {
     }
 
     @ExceptionHandler(MultipartException.class)
-    public ResponseEntity<ErrorRepresentation> processMaxUploadSizeException(Exception e){
+    public ResponseEntity<ErrorRepresentation> processMultipartException(Exception e){
         log.error("Error with a fileupload " + e.getMessage());
         BodyBuilder builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
         ErrorRepresentation errorVM = new ErrorRepresentation(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, e.getMessage());
