@@ -19,3 +19,5 @@ export enum AttachmentTypes {
     OTHER = <any>'OTHER',
     NONE = <any>'NONE',
 }
+
+export const MAX_UPLOAD_SIZE = 52428800;

@@ -11,6 +11,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UploadOutput, UploadInput, UploadFile, humanizeBytes, UploaderOptions } from 'ngx-uploader';
 import { AuthServerProvider } from '../../auth/auth-jwt.service';
+import { MAX_UPLOAD_SIZE } from '../attachment.constants';
 
 @Component({
     selector: 'pdm-attachment',
@@ -47,10 +48,13 @@ export class AttachmentComponent {
                 headers: {'Authorization': 'Bearer ' + token},
                 method: 'POST'
             };
-            this.error = [];
             this.uploadInput.emit(event);
         } else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') { // add file to array when added
-            this.files.push(output.file);
+            if (output.file.size > MAX_UPLOAD_SIZE) {
+                this.error.push(`${output.file.name} is too big. Max attachment size is  ${MAX_UPLOAD_SIZE}`);
+            } else {
+                this.files.push(output.file);
+            }
         } else if (output.type === 'uploading' && typeof output.file !== 'undefined') {
             // update current data in files array for uploading file
             const index = this.files.findIndex(file => typeof output.file !== 'undefined' && file.id === output.file.id);
@@ -63,15 +67,11 @@ export class AttachmentComponent {
         } else if (output.type === 'dragOut') {
             this.dragOver = false;
         } else if (output.type === 'drop') {
+            this.error = [];
             this.dragOver = false;
         } else if (output.type === 'done') {
             this.files = [];
-            if (output.file.responseStatus >= 300) {
-                this.error.push(output.file.response.message);
-                this.onFinishedUpload.emit(false);
-            } else {
-                this.onFinishedUpload.emit(true);
-            }
+            this.onFinishedUpload.emit(output.file.responseStatus < 300);
         }
     }
 
