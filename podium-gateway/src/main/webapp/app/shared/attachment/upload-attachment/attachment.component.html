@@ -10,7 +10,9 @@
                 <span jhiTranslate="attachments.upload.browse">browse</span>
             </label>
             <span jhiTranslate="attachments.upload.toUpload">to upload.</span>
-            <small class="form-text text-danger" *ngIf="error.length">{{error}}</small>
+            <small class="form-text text-danger" *ngIf="error.length">
+                <div *ngFor="let err of error">{{err}}</div>
+            </small>
         </p>
     </div>
 </div>
