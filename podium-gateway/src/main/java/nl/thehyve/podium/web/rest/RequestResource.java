@@ -26,6 +26,7 @@ import nl.thehyve.podium.service.ReviewService;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -595,27 +599,33 @@ public class RequestResource {
     @PostMapping("/requests/external/new")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity<DraftRepresentation> createDraftByExternalRequest(
+    public ResponseEntity createDraftByExternalRequest(
         @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
-        throws URISyntaxException, ActionNotAllowed {
+        throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException{
         AuthenticatedUser user = securityService.getCurrentUser();
 
-        log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
-        List<Map<String, String>> missingOrganisationUUIDs = new ArrayList<>();
-        RequestRepresentation draft = draftService.createDraftFromExternalRequest(user,
-            externalRequestRepresentation,  missingOrganisationUUIDs);
+        List<Map<String, String>> collections = externalRequestRepresentation.getCollections();
+        // Get the String id's from the external request and turn them into a list of relevant organisations
+        Set<UUID> organisationUUIDs = new HashSet<>();
 
-        DraftRepresentation result = new DraftRepresentation();
-        result.setDraft(draft);
-        result.setMissingOrganisations(missingOrganisationUUIDs);
-        log.debug("Missing organisation uuids: " + missingOrganisationUUIDs.toString());
+        for (Map<String, String> collection : collections) {
+            String biobankId = collection.get("biobankID");
 
-        String callbackURL = String.format("%s/#/requests/edit/%s", podiumProperties.getMail().getBaseUrl(), draft
-            .getUuid());
-        log.debug("Result: {}", draft.getUuid());
-        return ResponseEntity.created(new URI(callbackURL))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
-            .body(result);
+            try {
+                UUID biobankUUID = UUID.fromString(biobankId);
+                organisationUUIDs.add(biobankUUID);
+            } catch (IllegalArgumentException e) {
+                continue;
+            }
+
+        }
+        String callbackURL = String.format("%s/#/requests/external/new?searchquery=%s&collections=%s",
+            podiumProperties.getMail().getBaseUrl(),
+            URLEncoder.encode(externalRequestRepresentation.getHumanReadable(), "UTF-8"),
+            StringUtils.join(organisationUUIDs, ','));
+
+        log.debug("Returning URL {}", callbackURL);
+        return ResponseEntity.ok(new URI(callbackURL));
     }
 
     /**
