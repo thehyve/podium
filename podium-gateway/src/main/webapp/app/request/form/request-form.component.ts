@@ -31,6 +31,7 @@ import { AttachmentsService } from '../../shared/attachment/attachments.service'
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 import { FormControl, NgForm } from '@angular/forms';
+import {OrganisationService} from "../../shared/organisation/organisation.service";
 
 @Component({
     selector: 'pdm-request-form',
@@ -66,9 +67,10 @@ export class RequestFormComponent implements OnInit {
     public requestDraftsAvailable: boolean;
     public isUpdating: boolean = false;
     public attachments: Attachment[];
+    public searchQuery: string;
+    public collections: string[];
 
     private revisionId: string;
-
 
     constructor(
         private requestFormService: RequestFormService,
@@ -78,7 +80,8 @@ export class RequestFormComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private principal: Principal,
         private modalService: NgbModal,
-        private attachmentService: AttachmentsService
+        private attachmentService: AttachmentsService,
+        private organisationService: OrganisationService
     ) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
@@ -90,6 +93,16 @@ export class RequestFormComponent implements OnInit {
             this.currentUser = account;
             this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
+        });
+
+        this.activatedRoute.queryParams.subscribe(params => {
+            if('searchquery' in params){
+                this.searchQuery = params['searchquery'] || '';
+            }
+
+            if('collections' in params){
+                this.collections = params['collections'].split(',') || '';
+            }
         });
     }
 
@@ -128,7 +141,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        if (this.router.url === '/requests/new'  && !this.isInRevision) {
+        if (this.router.url.substring(0,13) === '/requests/new'  && !this.isInRevision) {
             this.initializeBaseRequest();
         } else {
             this.activatedRoute.paramMap
@@ -160,7 +173,22 @@ export class RequestFormComponent implements OnInit {
                     this.requestBase = requestBase;
                     this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
-                    this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+
+                    this.requestDetail.searchQuery = this.searchQuery;
+                    if(this.collections != []){
+                        //Select all types when organizations are passed
+                        this.requestDetail.requestType = [];
+                        this.requestDetail.requestType.push(RequestType.Data);
+                        this.requestDetail.requestType.push(RequestType.Images);
+                        this.requestDetail.requestType.push(RequestType.Material);
+                        for(let collection of this.collections){
+                            this.organisationService.findByUuid(collection).subscribe(organisation => {
+                                this.requestBase.organisations.push(organisation);
+                            });
+                        }
+                    } else {
+                        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+                    }
                     this.getAttachments(requestBase.uuid);
                 },
                 (error) => this.onError('Error initializing base request')

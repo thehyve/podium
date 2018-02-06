@@ -619,7 +619,7 @@ public class RequestResource {
             }
 
         }
-        String callbackURL = String.format("%s/#/requests/external/new?searchquery=%s&collections=%s",
+        String callbackURL = String.format("%s/#/requests/new?searchquery=%s&collections=%s",
             podiumProperties.getMail().getBaseUrl(),
             URLEncoder.encode(externalRequestRepresentation.getHumanReadable(), "UTF-8"),
             StringUtils.join(organisationUUIDs, ','));
