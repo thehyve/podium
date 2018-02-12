@@ -500,7 +500,7 @@ defineSupportCode(({ Given, When, Then }) => {
     Then('the request cannot be edited', function (): Promise<any> {
         return Promise.all([
             countIs($$('textarea'), 0),
-            countIs($$('input'), 1) //only a checkbox for validationCheck
+            countIs($$('input'), 2) //only a checkbox for validationCheck and an upload input
         ])
     });
 
