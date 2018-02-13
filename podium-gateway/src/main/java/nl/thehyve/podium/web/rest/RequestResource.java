@@ -26,7 +26,6 @@ import nl.thehyve.podium.service.ReviewService;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +36,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.*;
 
 /**
