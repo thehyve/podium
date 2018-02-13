@@ -150,3 +150,4 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+podium-gateway/podium_uploads

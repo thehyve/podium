@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -126,6 +127,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @JoinTable(name = "request_historic_events",
         joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
         inverseJoinColumns = @JoinColumn(name="event_id", referencedColumnName="event_id"))
+    @JsonIgnore
     private List<PodiumEvent> historicEvents = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -135,6 +137,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @JoinTable(name = "request_review_rounds",
         joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
         inverseJoinColumns = @JoinColumn(name="review_round_id", referencedColumnName="review_round_id"))
+    @JsonIgnore
     private List<ReviewRound> reviewRounds;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
@@ -143,6 +146,7 @@ public class Request extends AbstractAuditingEntity implements Serializable, Ide
     @JoinTable(name = "request_related_requests",
         joinColumns = @JoinColumn(name="request_id", referencedColumnName="id"),
         inverseJoinColumns = @JoinColumn(name="related_request_id", referencedColumnName="id"))
+    @JsonIgnore
     private Set<Request> relatedRequests = new HashSet<>();
 
     @Override
