@@ -593,42 +593,6 @@ public class RequestResource {
     }
 
     /**
-     * Accept external request data and create a new request draft
-     * @return redirect to request form with filled in data
-     */
-    @PostMapping("/requests/external/new")
-    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity createDraftByExternalRequest(
-        @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
-        throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException{
-        AuthenticatedUser user = securityService.getCurrentUser();
-
-        List<Map<String, String>> collections = externalRequestRepresentation.getCollections();
-        // Get the String id's from the external request and turn them into a list of relevant organisations
-        Set<UUID> organisationUUIDs = new HashSet<>();
-
-        for (Map<String, String> collection : collections) {
-            String biobankId = collection.get("biobankID");
-
-            try {
-                UUID biobankUUID = UUID.fromString(biobankId);
-                organisationUUIDs.add(biobankUUID);
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
-
-        }
-        String callbackURL = String.format("%s/#/requests/new?searchquery=%s&collections=%s",
-            podiumProperties.getMail().getBaseUrl(),
-            URLEncoder.encode(externalRequestRepresentation.getHumanReadable(), "UTF-8"),
-            StringUtils.join(organisationUUIDs, ','));
-
-        log.debug("Returning URL {}", callbackURL);
-        return ResponseEntity.ok(new URI(callbackURL));
-    }
-
-    /**
      * Accept a RequestFile and add it to the request data
      * @return A confirmation of the upload
      */

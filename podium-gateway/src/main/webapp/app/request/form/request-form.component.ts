@@ -32,6 +32,7 @@ import { AttachmentComponent } from '../../shared/attachment/upload-attachment/a
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 import { FormControl, NgForm } from '@angular/forms';
 import {OrganisationService} from "../../shared/organisation/organisation.service";
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'pdm-request-form',
@@ -93,16 +94,6 @@ export class RequestFormComponent implements OnInit {
             this.currentUser = account;
             this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
-        });
-
-        this.activatedRoute.queryParams.subscribe(params => {
-            if('searchquery' in params){
-                this.searchQuery = params['searchquery'] || '';
-            }
-
-            if('collections' in params){
-                this.collections = params['collections'].split(',') || '';
-            }
         });
     }
 
@@ -174,18 +165,31 @@ export class RequestFormComponent implements OnInit {
                     this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
 
+                    this.activatedRoute.queryParams.subscribe(params => {
+                        if ('searchquery' in params) {
+                            this.searchQuery = params['searchquery'] || '';
+                        }
+                        if ('collections' in params) {
+                            this.collections = params['collections'].split(',') || '';
+                        }
+                    });
+
                     this.requestDetail.searchQuery = this.searchQuery;
-                    if(this.collections != []){
+
+                    if (this.collections) {
+                        let organisationObservables: Observable<Organisation>[] = [];
                         //Select all types when organizations are passed
                         this.requestDetail.requestType = [];
                         this.requestDetail.requestType.push(RequestType.Data);
                         this.requestDetail.requestType.push(RequestType.Images);
                         this.requestDetail.requestType.push(RequestType.Material);
-                        for(let collection of this.collections){
-                            this.organisationService.findByUuid(collection).subscribe(organisation => {
-                                this.requestBase.organisations.push(organisation);
-                            });
+                        for (let collection of this.collections) {
+                            organisationObservables.push(this.organisationService.findByUuid(collection));
                         }
+                        Observable.forkJoin(organisationObservables).subscribe(dataArray => {
+                            this.requestBase.organisations = dataArray;
+                            this.organisationSelectorComponent.organisations = dataArray;
+                        });
                     } else {
                         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     }
