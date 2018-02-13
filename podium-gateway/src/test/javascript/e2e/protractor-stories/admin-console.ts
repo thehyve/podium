@@ -10,7 +10,6 @@
 import request = require('request-promise-native');
 import initPersonaDictionary = require('../personas/persona-dictionary');
 import { isNullOrUndefined, isUndefined } from 'util';
-import { browser } from 'protractor';
 import { Persona } from '../personas/templates';
 import { Organisation, Request } from '../data/templates';
 
@@ -208,6 +207,37 @@ export class AdminConsole {
                 return value["requestDetail"]["title"] == draft["title"];
             })[0];
         });
+    }
+
+    public getFiles(persona: Persona, draft: Request) {
+
+        return this.authenticate(persona).then((body) => {
+            let token = parseJSON(body).access_token;
+
+            let options = {
+                method: 'GET',
+                url: this.apiUrl + 'api/requests/drafts',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            };
+            return request(options).then((body) => {
+                let draftUUID = parseJSON(body).filter(function (value) {
+                    return value["requestDetail"]["title"] == draft["title"];
+                })[0]['uuid'];
+
+                let options = {
+                    method: 'GET',
+                    url: this.apiUrl + 'api/requests/' + draftUUID + '/files',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                };
+                return request(options).then((body) => {
+                    return parseJSON(body);
+                })
+            })
+        })
     }
 
     public getRequests(persona: Persona, status, role: string) {

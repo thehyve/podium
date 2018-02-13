@@ -42,6 +42,12 @@ defineSupportCode(({ Given, When, Then }) => {
                             }
                         });
                 }).then(() => {
+                    if (request['files']) {
+                        return doInOrder(request['files'], (filename) => {
+                            return director.uploadFile("uploadFile", filename);
+                        })
+                    }
+                }).then(() => {
                     return director.clickOn("save")
                 });
             })
@@ -129,6 +135,25 @@ defineSupportCode(({ Given, When, Then }) => {
                 });
             });
         });
+    });
+
+    Then(/^the draft has the files '(.*)' attached$/, function (fileNames): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        let expectedFiles = fileNames == '' ? [] : fileNames.split(", ");
+
+        let persona = director.getPersona('he');
+
+        return browser.sleep(500).then(() => {
+            return adminConsole.getFiles(persona, this.scenarioData).then((files: any[]) => {
+                return promiseTrue(files.length == expectedFiles.length, "there are no expected number of files for this request: " + JSON.stringify(files));
+            });
+        });
+    });
+
+    When(/^the file is removed$/, function (): Promise<any> {
+        let director = this.director as Director;
+        return director.clickOn("removeFile");
     });
 
     Given(/^(.*) opens the draft '(.*)'$/, function (personaName, requestName) {

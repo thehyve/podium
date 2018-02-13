@@ -38,6 +38,7 @@ interface Irequest {
     combinedRequest?: boolean;
     status?: string;
     requesterDataId?: string; //default user that creates this request
+    files?: string[]
 }
 
 export class Request {
@@ -46,7 +47,12 @@ export class Request {
     }
 }
 
-export class File {
-    constructor(public dataID: string, public path: string) {
+interface Ifile {
+    path: string;
+}
+
+export class FileData {
+    constructor(public dataID: string, requestData: Ifile) {
+        Object.assign(this, requestData)
     }
 }
