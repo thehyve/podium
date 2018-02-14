@@ -589,36 +589,6 @@ public class RequestResource {
     }
 
     /**
-     * Accept external request data and create a new request draft
-     * @return redirect to request form with filled in data
-     */
-    @PostMapping("/requests/external/new")
-    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity<DraftRepresentation> createDraftByExternalRequest(
-        @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
-        throws URISyntaxException, ActionNotAllowed {
-        AuthenticatedUser user = securityService.getCurrentUser();
-
-        log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
-        List<Map<String, String>> missingOrganisationUUIDs = new ArrayList<>();
-        RequestRepresentation draft = draftService.createDraftFromExternalRequest(user,
-            externalRequestRepresentation,  missingOrganisationUUIDs);
-
-        DraftRepresentation result = new DraftRepresentation();
-        result.setDraft(draft);
-        result.setMissingOrganisations(missingOrganisationUUIDs);
-        log.debug("Missing organisation uuids: " + missingOrganisationUUIDs.toString());
-
-        String callbackURL = String.format("%s/#/requests/edit/%s", podiumProperties.getMail().getBaseUrl(), draft
-            .getUuid());
-        log.debug("Result: {}", draft.getUuid());
-        return ResponseEntity.created(new URI(callbackURL))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
-            .body(result);
-    }
-
-    /**
      * Accept a RequestFile and add it to the request data
      * @return A confirmation of the upload
      */
