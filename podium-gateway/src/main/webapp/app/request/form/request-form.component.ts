@@ -30,8 +30,8 @@ import { Attachment } from '../../shared/attachment/attachment.model';
 import { AttachmentsService } from '../../shared/attachment/attachments.service';
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
-import { FormControl, NgForm } from '@angular/forms';
-import {OrganisationService} from "../../shared/organisation/organisation.service";
+import { NgForm } from '@angular/forms';
+import { OrganisationService } from "../../shared/organisation/organisation.service";
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -62,10 +62,7 @@ export class RequestFormComponent implements OnInit {
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
     public requestTypeOptions: any;
-    public availableRequestDrafts: RequestBase[];
-    public selectDraft: boolean;
     public selectedDraft: any = null;
-    public requestDraftsAvailable: boolean;
     public isUpdating: boolean = false;
     public attachments: Attachment[];
     public searchQuery: string;
