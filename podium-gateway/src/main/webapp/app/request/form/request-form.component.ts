@@ -58,6 +58,7 @@ export class RequestFormComponent implements OnInit {
     @Input() isInRevision: boolean;
 
     public error: string;
+    public listOfInvalidOrganisationUUID: string[];
     public success: string;
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
@@ -174,19 +175,37 @@ export class RequestFormComponent implements OnInit {
                     this.requestDetail.searchQuery = this.searchQuery;
 
                     if (this.collections) {
-                        let organisationObservables: Observable<Organisation>[] = [];
+                        let organisationObservables: Observable<any>[] = [];
+                        this.listOfInvalidOrganisationUUID = [];
                         //Select all types when organizations are passed
                         this.requestDetail.requestType = [];
                         this.requestDetail.requestType.push(RequestType.Data);
                         this.requestDetail.requestType.push(RequestType.Images);
                         this.requestDetail.requestType.push(RequestType.Material);
                         for (let collection of this.collections) {
-                            organisationObservables.push(this.organisationService.findByUuid(collection));
+                            let obx = this.organisationService.findByUuid(collection)
+                                .map((res:Organisation) => res)
+                                .catch((error, caught) => {
+                                    this.listOfInvalidOrganisationUUID.push(collection);
+                                    return Observable.of({});
+                                });
+                            organisationObservables.push(obx);
                         }
-                        Observable.forkJoin(organisationObservables).subscribe(dataArray => {
-                            this.requestBase.organisations = dataArray;
-                            this.organisationSelectorComponent.organisations = dataArray;
-                        });
+                        Observable.forkJoin(organisationObservables).subscribe(
+                            dataArray => {
+                                this.requestBase.organisations = dataArray.filter(obj => {
+                                    return Object.keys(obj).length > 0;
+                                });
+                                this.organisationSelectorComponent.organisations = this.requestBase.organisations;
+                            },
+                            error => {},
+                            () => {
+                                // TODO: Display invalid uuids in error alert
+                                if (this.listOfInvalidOrganisationUUID.length) {
+                                    console.error('Invalid organisation uuids', this.listOfInvalidOrganisationUUID);
+                                }
+                            }
+                        );
                     } else {
                         this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
                     }
