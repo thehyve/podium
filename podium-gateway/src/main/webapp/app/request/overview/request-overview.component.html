@@ -113,7 +113,7 @@
                         {{request.requestDetail.principalInvestigator.name || '-'}}
                     </td>
                     <td>
-                        {{request.createdDate * 1000 | date:"dd-MM-yyyy',' HH:mm"}}
+                        {{request.createdDate | date:"dd-MM-yyyy',' HH:mm"}}
                     </td>
                     <td class="text-xs-right">
                         <div class="btn-group flex-btn-group-container" *ngIf="request.status === 'Draft'">
