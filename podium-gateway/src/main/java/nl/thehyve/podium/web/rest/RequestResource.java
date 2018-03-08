@@ -18,14 +18,14 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.domain.ExternalRequestTemplate;
 import nl.thehyve.podium.enumeration.RequestFileType;
-import nl.thehyve.podium.service.DraftService;
-import nl.thehyve.podium.service.RequestFileService;
-import nl.thehyve.podium.service.RequestService;
-import nl.thehyve.podium.service.ReviewService;
+import nl.thehyve.podium.service.*;
+import nl.thehyve.podium.service.dto.ExternalRequestTemplateRepresentation;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +41,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -74,6 +76,9 @@ public class RequestResource {
 
     @Autowired
     protected RequestFileService requestFileService;
+
+    @Autowired
+    protected ExternalRequestTemplateService externalRequestTemplateService;
 
     /**
      * Fetch drafts for the current user
@@ -595,28 +600,37 @@ public class RequestResource {
     @PostMapping("/requests/external/new")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity<DraftRepresentation> createDraftByExternalRequest(
+    public ResponseEntity createDraftByExternalRequest(
         @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
-        throws URISyntaxException, ActionNotAllowed {
+        throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException {
         AuthenticatedUser user = securityService.getCurrentUser();
 
-        log.debug("Create new external draft for user: {}\nWith data: {}", user, externalRequestRepresentation);
-        List<Map<String, String>> missingOrganisationUUIDs = new ArrayList<>();
-        RequestRepresentation draft = draftService.createDraftFromExternalRequest(user,
-            externalRequestRepresentation,  missingOrganisationUUIDs);
+        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
+            externalRequestTemplateService.createTemplate(externalRequestRepresentation, user);
 
-        DraftRepresentation result = new DraftRepresentation();
-        result.setDraft(draft);
-        result.setMissingOrganisations(missingOrganisationUUIDs);
-        log.debug("Missing organisation uuids: " + missingOrganisationUUIDs.toString());
 
-        String callbackURL = String.format("%s/#/requests/edit/%s", podiumProperties.getMail().getBaseUrl(), draft
-            .getUuid());
-        log.debug("Result: {}", draft.getUuid());
-        return ResponseEntity.created(new URI(callbackURL))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, draft.getId().toString()))
-            .body(result);
+        String callbackURL = String.format("%s/#/requests/new?template=%s",
+            podiumProperties.getMail().getBaseUrl(), externalRequestTemplateRepresentation.getUuid()
+        );
+
+        log.debug("Returning URL {}", callbackURL);
+        return ResponseEntity.ok(new URI(callbackURL));
     }
+
+
+    /**
+     * Accept external request data and create a new request draft
+     * @return redirect to request form with filled in data
+     */
+    @GetMapping("/requests/external/{uuid}")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity createDraftByExternalRequest(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
+        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
+            externalRequestTemplateService.getTemplate(uuid);
+        return ResponseEntity.ok(externalRequestTemplateRepresentation);
+    }
+
 
     /**
      * Accept a RequestFile and add it to the request data
