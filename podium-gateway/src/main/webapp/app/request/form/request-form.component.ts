@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, OnInit, ViewChild, Input} from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { RequestFormService } from './request-form.service';
 import {
@@ -33,6 +33,7 @@ import { AttachmentListComponent } from '../../shared/attachment/attachment-list
 import { NgForm } from '@angular/forms';
 import { OrganisationService } from "../../shared/organisation/organisation.service";
 import { Observable } from 'rxjs/Observable';
+import { RequestTemplate } from '../../shared/request/request-template';
 
 @Component({
     selector: 'pdm-request-form',
@@ -66,22 +67,22 @@ export class RequestFormComponent implements OnInit {
     public selectedDraft: any = null;
     public isUpdating: boolean = false;
     public attachments: Attachment[];
+
+    public templateUUID: string;
+
     public searchQuery: string;
-    public collections: string[];
 
     private revisionId: string;
 
-    constructor(
-        private requestFormService: RequestFormService,
-        private requestAccessService: RequestAccessService,
-        private requestService: RequestService,
-        private router: Router,
-        private activatedRoute: ActivatedRoute,
-        private principal: Principal,
-        private modalService: NgbModal,
-        private attachmentService: AttachmentsService,
-        private organisationService: OrganisationService
-    ) {
+    constructor(private requestFormService: RequestFormService,
+                private requestAccessService: RequestAccessService,
+                private requestService: RequestService,
+                private router: Router,
+                private activatedRoute: ActivatedRoute,
+                private principal: Principal,
+                private modalService: NgbModal,
+                private attachmentService: AttachmentsService,
+                private organisationService: OrganisationService) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
         });
@@ -113,7 +114,7 @@ export class RequestFormComponent implements OnInit {
         }
     }
 
-    private getAttachments (requestUUID) {
+    private getAttachments(requestUUID) {
         this.attachmentService.getAttachments(requestUUID).subscribe(
             (attachments) => {
                 this.attachments = attachments;
@@ -125,12 +126,12 @@ export class RequestFormComponent implements OnInit {
         );
     }
 
-    private hasAttachmentsTypeNone (): boolean {
+    private hasAttachmentsTypeNone(): boolean {
         return this.attachmentService.hasAttachmentsTypeNone(this.attachments);
     }
 
     initializeRequestForm() {
-        if (this.router.url.substring(0,13) === '/requests/new'  && !this.isInRevision) {
+        if (this.router.url.substring(0, 13) === '/requests/new' && !this.isInRevision) {
             this.initializeBaseRequest();
         } else {
             this.activatedRoute.paramMap
@@ -154,61 +155,73 @@ export class RequestFormComponent implements OnInit {
         return this.requestBase.organisations.length > 1;
     }
 
+    populateRequestDetails(requestTemplate: RequestTemplate) {
+
+        // map search query
+        this.requestDetail.searchQuery = requestTemplate.humanReadable;
+
+        if (requestTemplate.organizationIds) {
+
+            let organisationObservables: Observable<any>[] = [];
+            this.listOfInvalidOrganisationUUID = [];
+
+            // Select all types when organizations are passed
+            this.requestDetail.requestType = [
+                RequestType.Data, RequestType.Images, RequestType.Material
+            ];
+
+            // Get organisations by uuid
+            for (let collection of requestTemplate.organizationIds) {
+                let obx = this.organisationService.findByUuid(collection)
+                    .map((res: Organisation) => res)
+                    .catch((error, caught) => {
+                        this.listOfInvalidOrganisationUUID.push(collection);
+                        return Observable.of({});
+                    });
+                organisationObservables.push(obx);
+            }
+
+            // Display as selected organisation when uuids are matched
+            Observable.forkJoin(organisationObservables).subscribe(
+                dataArray => {
+                    this.requestBase.organisations = dataArray.filter(obj => {
+                        return Object.keys(obj).length > 0;
+                    });
+                    this.organisationSelectorComponent.organisations = this.requestBase.organisations;
+                },
+                error => {
+                },
+                () => {
+                    // TODO: Display invalid uuids in error alert
+                    if (this.listOfInvalidOrganisationUUID.length) {
+                        console.error('Invalid organisation uuids', this.listOfInvalidOrganisationUUID);
+                    }
+                }
+            );
+        } else {
+            this.requestDetail.requestType = this.requestBase.requestDetail.requestType || [];
+        }
+    }
+
     initializeBaseRequest() {
         this.requestService.createDraft()
             .subscribe(
                 (requestBase) => {
+
                     this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
-                    this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
 
                     this.activatedRoute.queryParams.subscribe(params => {
-                        if ('searchquery' in params) {
-                            this.searchQuery = params['searchquery'] || '';
-                        }
-                        if ('collections' in params) {
-                            this.collections = params['collections'].split(',') || '';
+                        if ('template_uuid' in params) {
+                            this.templateUUID = params['template_uuid'];
+                            this.requestService.getTemplateByUuid(params['template_uuid'])
+                                .subscribe(
+                                    (requestTemplate) => this.populateRequestDetails(requestTemplate),
+                                    (error) => this.onError(error)
+                                )
                         }
                     });
-
-                    this.requestDetail.searchQuery = this.searchQuery;
-
-                    if (this.collections) {
-                        let organisationObservables: Observable<any>[] = [];
-                        this.listOfInvalidOrganisationUUID = [];
-                        //Select all types when organizations are passed
-                        this.requestDetail.requestType = [];
-                        this.requestDetail.requestType.push(RequestType.Data);
-                        this.requestDetail.requestType.push(RequestType.Images);
-                        this.requestDetail.requestType.push(RequestType.Material);
-                        for (let collection of this.collections) {
-                            let obx = this.organisationService.findByUuid(collection)
-                                .map((res:Organisation) => res)
-                                .catch((error, caught) => {
-                                    this.listOfInvalidOrganisationUUID.push(collection);
-                                    return Observable.of({});
-                                });
-                            organisationObservables.push(obx);
-                        }
-                        Observable.forkJoin(organisationObservables).subscribe(
-                            dataArray => {
-                                this.requestBase.organisations = dataArray.filter(obj => {
-                                    return Object.keys(obj).length > 0;
-                                });
-                                this.organisationSelectorComponent.organisations = this.requestBase.organisations;
-                            },
-                            error => {},
-                            () => {
-                                // TODO: Display invalid uuids in error alert
-                                if (this.listOfInvalidOrganisationUUID.length) {
-                                    console.error('Invalid organisation uuids', this.listOfInvalidOrganisationUUID);
-                                }
-                            }
-                        );
-                    } else {
-                        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
-                    }
                     this.getAttachments(requestBase.uuid);
                 },
                 (error) => this.onError('Error initializing base request')
@@ -245,7 +258,7 @@ export class RequestFormComponent implements OnInit {
 
     updateRequestType(selectedRequestType, event) {
         let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
-        if ( _idx < 0) {
+        if (_idx < 0) {
             this.requestDetail.requestType.push(selectedRequestType.value);
         } else {
             this.requestDetail.requestType.splice(_idx, 1);
@@ -265,7 +278,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     confirmSubmitModal(request: RequestBase) {
-        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
@@ -309,7 +322,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveRequestRevision(this.requestBase)
-            // Submit the request
+        // Submit the request
             .flatMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid))
             .subscribe(
                 (res) => this.onSuccess(res),
@@ -342,7 +355,7 @@ export class RequestFormComponent implements OnInit {
 
     private onSuccess(result) {
         this.isUpdating = false;
-        this.error =  null;
+        this.error = null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
 
@@ -351,7 +364,7 @@ export class RequestFormComponent implements OnInit {
 
     private onError(error) {
         this.isUpdating = false;
-        this.error =  'ERROR';
+        this.error = 'ERROR';
         this.success = null;
         window.scrollTo(0, 0);
     }

@@ -17,6 +17,7 @@ import { PodiumEventMessage } from '../event/podium-event-message';
 import { User } from '../user/user.model';
 import { ReviewRound } from './review-round';
 import { HttpHelper } from '../util/http-helper';
+import { RequestTemplate } from './request-template';
 
 @Injectable()
 export class RequestService {
@@ -145,6 +146,12 @@ export class RequestService {
 
     findByUuid(uuid: string): Observable<RequestDetail> {
         return this.http.get(`${this.resourceUrl}/${uuid}`).map((res: Response) => {
+            return res.json();
+        });
+    }
+
+    getTemplateByUuid(uuid: string): Observable<RequestTemplate> {
+        return this.http.get(`${this.resourceUrl}/external/${uuid}`).map((res: Response) => {
             return res.json();
         });
     }
