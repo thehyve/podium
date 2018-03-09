@@ -600,7 +600,7 @@ public class RequestResource {
     @PostMapping("/requests/external/new")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity createDraftByExternalRequest(
+    public ResponseEntity<URI> createDraftByExternalRequest(
         @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
         throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -614,7 +614,7 @@ public class RequestResource {
         );
 
         log.debug("Returning URL {}", callbackURL);
-        return ResponseEntity.ok(new URI(callbackURL));
+        return new ResponseEntity(new URI(callbackURL), HttpStatus.ACCEPTED);
     }
 
 
@@ -625,7 +625,7 @@ public class RequestResource {
     @GetMapping("/requests/external/{uuid}")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity createDraftByExternalRequest(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
+    public ResponseEntity getExternalRequestDraft(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
         ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
             externalRequestTemplateService.getTemplate(uuid);
         return ResponseEntity.ok(externalRequestTemplateRepresentation);
@@ -633,6 +633,7 @@ public class RequestResource {
 
 
     /**
+
      * Accept a RequestFile and add it to the request data
      * @return A confirmation of the upload
      */

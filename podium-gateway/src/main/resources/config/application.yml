@@ -142,8 +142,7 @@ podium:
     ribbon:
         display-on-active-profiles: dev
     files:
-        upload-dir: /home/frank/code/podium/podium_uploads
-
+        upload-dir: ./podium_uploads
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
