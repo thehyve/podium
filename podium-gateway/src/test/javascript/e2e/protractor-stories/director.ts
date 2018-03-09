@@ -136,7 +136,7 @@ export class Director {
                         resolve();
                     }
                     else {
-                        browser.getCurrentUrl().then(function(currentUrl) {
+                        browser.getCurrentUrl().then(function (currentUrl) {
                             reject(Error(`not at page: ${pageName} (${page.url}), instead on ${currentUrl}`));
                         });
                     }
@@ -204,6 +204,6 @@ export class Director {
         let element = this.getElement(elementName);
         let file = this.getData(fileName);
 
-        return element.locator.sendKeys(file["path"]).then(() => browser.sleep((uploadTimer || 1000)))
+        return element.locator.sendKeys(this.searchDir + "/data/" + file["path"]).then(() => browser.sleep((uploadTimer || 1000)))
     }
 }

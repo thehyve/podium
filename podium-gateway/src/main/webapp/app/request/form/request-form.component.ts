@@ -30,7 +30,9 @@ import { Attachment } from '../../shared/attachment/attachment.model';
 import { AttachmentsService } from '../../shared/attachment/attachments.service';
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
-import { FormControl, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
+import { OrganisationService } from "../../shared/organisation/organisation.service";
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'pdm-request-form',
@@ -56,19 +58,18 @@ export class RequestFormComponent implements OnInit {
     @Input() isInRevision: boolean;
 
     public error: string;
+    public listOfInvalidOrganisationUUID: string[];
     public success: string;
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
     public requestTypeOptions: any;
-    public availableRequestDrafts: RequestBase[];
-    public selectDraft: boolean;
     public selectedDraft: any = null;
-    public requestDraftsAvailable: boolean;
     public isUpdating: boolean = false;
     public attachments: Attachment[];
+    public searchQuery: string;
+    public collections: string[];
 
     private revisionId: string;
-
 
     constructor(
         private requestFormService: RequestFormService,
@@ -78,7 +79,8 @@ export class RequestFormComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private principal: Principal,
         private modalService: NgbModal,
-        private attachmentService: AttachmentsService
+        private attachmentService: AttachmentsService,
+        private organisationService: OrganisationService
     ) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
@@ -128,7 +130,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     initializeRequestForm() {
-        if (this.router.url === '/requests/new'  && !this.isInRevision) {
+        if (this.router.url.substring(0,13) === '/requests/new'  && !this.isInRevision) {
             this.initializeBaseRequest();
         } else {
             this.activatedRoute.paramMap
@@ -160,7 +162,53 @@ export class RequestFormComponent implements OnInit {
                     this.requestBase = requestBase;
                     this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
-                    this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+
+                    this.activatedRoute.queryParams.subscribe(params => {
+                        if ('searchquery' in params) {
+                            this.searchQuery = params['searchquery'] || '';
+                        }
+                        if ('collections' in params) {
+                            this.collections = params['collections'].split(',') || '';
+                        }
+                    });
+
+                    this.requestDetail.searchQuery = this.searchQuery;
+
+                    if (this.collections) {
+                        let organisationObservables: Observable<any>[] = [];
+                        this.listOfInvalidOrganisationUUID = [];
+                        //Select all types when organizations are passed
+                        this.requestDetail.requestType = [];
+                        this.requestDetail.requestType.push(RequestType.Data);
+                        this.requestDetail.requestType.push(RequestType.Images);
+                        this.requestDetail.requestType.push(RequestType.Material);
+                        for (let collection of this.collections) {
+                            let obx = this.organisationService.findByUuid(collection)
+                                .map((res:Organisation) => res)
+                                .catch((error, caught) => {
+                                    this.listOfInvalidOrganisationUUID.push(collection);
+                                    return Observable.of({});
+                                });
+                            organisationObservables.push(obx);
+                        }
+                        Observable.forkJoin(organisationObservables).subscribe(
+                            dataArray => {
+                                this.requestBase.organisations = dataArray.filter(obj => {
+                                    return Object.keys(obj).length > 0;
+                                });
+                                this.organisationSelectorComponent.organisations = this.requestBase.organisations;
+                            },
+                            error => {},
+                            () => {
+                                // TODO: Display invalid uuids in error alert
+                                if (this.listOfInvalidOrganisationUUID.length) {
+                                    console.error('Invalid organisation uuids', this.listOfInvalidOrganisationUUID);
+                                }
+                            }
+                        );
+                    } else {
+                        this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+                    }
                     this.getAttachments(requestBase.uuid);
                 },
                 (error) => this.onError('Error initializing base request')
