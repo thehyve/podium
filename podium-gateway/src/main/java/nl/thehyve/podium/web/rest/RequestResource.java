@@ -600,7 +600,7 @@ public class RequestResource {
     @PostMapping("/requests/external/new")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity createDraftByExternalRequest(
+    public ResponseEntity<URI> createDraftByExternalRequest(
         @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
         throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -614,7 +614,7 @@ public class RequestResource {
         );
 
         log.debug("Returning URL {}", callbackURL);
-        return ResponseEntity.ok(new URI(callbackURL));
+        return new ResponseEntity(new URI(callbackURL), HttpStatus.ACCEPTED);
     }
 
 
