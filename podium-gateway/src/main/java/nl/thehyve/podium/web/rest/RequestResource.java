@@ -625,7 +625,7 @@ public class RequestResource {
     @GetMapping("/requests/external/{uuid}")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity createDraftByExternalRequest(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
+    public ResponseEntity getExternalRequestDraft(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
         ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
             externalRequestTemplateService.getTemplate(uuid);
         return ResponseEntity.ok(externalRequestTemplateRepresentation);
