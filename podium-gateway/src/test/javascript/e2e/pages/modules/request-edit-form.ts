@@ -36,6 +36,8 @@ function initLocators() {
         "submit": { locator: $('#submit-draft-btn') },
         "submit-modal": { locator: $('.test-submit-btn') },
         "cancel-modal": { locator: $('.test-cancel-btn') },
+        "uploadFile": { locator: $('input[multiple=multiple]') },
+        "removeFile": { locator: $("button[title='Remove attachment']")}
     };
 
     return elements;

@@ -7,7 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, Input, Output, EventEmitter, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {
+    Component, Input, Output, EventEmitter, OnInit, ViewChild, AfterViewInit, OnChanges,
+    SimpleChanges
+} from '@angular/core';
 import { Response } from '@angular/http';
 import { RequestType } from '../request/request-type';
 import { Observable } from 'rxjs';
@@ -36,6 +39,9 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
     }
     set organisations(val) {
         this.selectedOrganisations = val;
+        this.selectedOrganisationUuids = this.organisations.map( organisation => {
+            return organisation.uuid;
+        });
         this.organisationChange.emit(this.selectedOrganisations);
     }
 
@@ -53,7 +59,7 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
         this.parentForm.control.addControl('selectedOrganisationUuids', this.orgModel.control);
     }
 
-    onChange() {
+    handleUserSelect() {
         // get organisation instance of selected uuid
         this.organisations = this.selectedOrganisationUuids.map(
             (selected) => {
