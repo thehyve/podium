@@ -609,7 +609,7 @@ public class RequestResource {
             externalRequestTemplateService.createTemplate(externalRequestRepresentation, user);
 
 
-        String callbackURL = String.format("%s/#/requests/new?template=%s",
+        String callbackURL = String.format("%s/#/requests/new?template_uuid=%s",
             podiumProperties.getMail().getBaseUrl(), externalRequestTemplateRepresentation.getUuid()
         );
 
