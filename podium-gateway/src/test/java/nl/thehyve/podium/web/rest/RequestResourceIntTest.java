@@ -711,4 +711,46 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
 
     }
 
+    @Test
+    public void acceptExternalRequest() throws Exception {
+        initMocks();
+
+        // Create ext req data
+        ExternalRequestRepresentation externalRequestRepresentation = new ExternalRequestRepresentation();
+        externalRequestRepresentation.setUrl("http://test.url");
+        externalRequestRepresentation.setHumanReadable("This is a test search query for external requests");
+        externalRequestRepresentation.setNToken("nToken1");
+
+        Map<String, String> collect1 = new HashMap<>();
+
+        collect1.put("biobankID", organisationUuid1.toString() );
+        collect1.put("collectionID", "bbmri-eric:biobankID:BE_B0383");
+
+        Map<String, String> collect2 = new HashMap<>();
+
+        collect2.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
+        collect2.put("collectionID", organisationUuid1.toString() );
+
+        ArrayList<Map<String, String>> collections = new ArrayList<>();
+        collections.add(collect1);
+        collections.add(collect2);
+        externalRequestRepresentation.setCollections(collections);
+
+        // Submit ext req
+        ResultActions externalRequest = mockMvc.perform(
+            getRequest(HttpMethod.POST,
+                "/api/requests/external/new",
+                externalRequestRepresentation,
+                Collections.emptyMap())
+                .with(token(requester))
+                .accept(MediaType.APPLICATION_JSON));
+
+        externalRequest
+            .andDo(result -> {
+                log.info("Result external request: {} ({})", result.getResponse().getStatus(),
+                    result.getResponse().getContentAsString());
+                Assert.assertEquals(result.getResponse().getStatus(), 202);
+            });
+    }
+
 }

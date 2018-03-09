@@ -18,14 +18,14 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.domain.ExternalRequestTemplate;
 import nl.thehyve.podium.enumeration.RequestFileType;
-import nl.thehyve.podium.service.DraftService;
-import nl.thehyve.podium.service.RequestFileService;
-import nl.thehyve.podium.service.RequestService;
-import nl.thehyve.podium.service.ReviewService;
+import nl.thehyve.podium.service.*;
+import nl.thehyve.podium.service.dto.ExternalRequestTemplateRepresentation;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +41,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -74,6 +76,9 @@ public class RequestResource {
 
     @Autowired
     protected RequestFileService requestFileService;
+
+    @Autowired
+    protected ExternalRequestTemplateService externalRequestTemplateService;
 
     /**
      * Fetch drafts for the current user
@@ -589,6 +594,46 @@ public class RequestResource {
     }
 
     /**
+     * Accept external request data and create a new request draft
+     * @return redirect to request form with filled in data
+     */
+    @PostMapping("/requests/external/new")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity<URI> createDraftByExternalRequest(
+        @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
+        throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException {
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
+            externalRequestTemplateService.createTemplate(externalRequestRepresentation, user);
+
+
+        String callbackURL = String.format("%s/#/requests/new?template_uuid=%s",
+            podiumProperties.getMail().getBaseUrl(), externalRequestTemplateRepresentation.getUuid()
+        );
+
+        log.debug("Returning URL {}", callbackURL);
+        return new ResponseEntity(new URI(callbackURL), HttpStatus.ACCEPTED);
+    }
+
+
+    /**
+     * Accept external request data and create a new request draft
+     * @return redirect to request form with filled in data
+     */
+    @GetMapping("/requests/external/{uuid}")
+    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    @Timed
+    public ResponseEntity getExternalRequestDraft(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
+        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
+            externalRequestTemplateService.getTemplate(uuid);
+        return ResponseEntity.ok(externalRequestTemplateRepresentation);
+    }
+
+
+    /**
+
      * Accept a RequestFile and add it to the request data
      * @return A confirmation of the upload
      */
