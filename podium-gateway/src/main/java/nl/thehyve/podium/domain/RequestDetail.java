@@ -19,6 +19,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class RequestDetail implements Serializable {
     )
     @Fetch(FetchMode.JOIN)
     @BatchSize(size = 1000)
-    private Set<RequestType> requestType;
+    private Set<RequestType> requestType = new HashSet<>();
 
     @Column(name = "combined_request")
     private Boolean combinedRequest;
