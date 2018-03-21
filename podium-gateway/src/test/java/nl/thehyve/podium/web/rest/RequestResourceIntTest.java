@@ -28,10 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -736,12 +738,19 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         collections.add(collect2);
         externalRequestRepresentation.setCollections(collections);
 
+        Map<String, String> headers = new HashMap<>();
+        String id = "test:test";
+        String base64 = new String(Base64.encode(id.getBytes()), Charset.forName("UTF-8"));
+
+        Assert.assertEquals(base64, "dGVzdDp0ZXN0");
+        headers.put("Authorization", String.format("Basic %s", base64));
+
         // Submit ext req
         ResultActions externalRequest = mockMvc.perform(
             getRequest(HttpMethod.POST,
                 "/api/requests/external/new",
                 externalRequestRepresentation,
-                Collections.emptyMap())
+                headers)
                 .with(token(requester))
                 .accept(MediaType.APPLICATION_JSON));
 

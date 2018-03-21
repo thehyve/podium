@@ -107,4 +107,7 @@ podium:
         queue-capacity: 10000
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
+    access:
+        external-request:
+            - test:test
 
