@@ -8,11 +8,11 @@
  *
  */
 import { Route } from '@angular/router';
-import { HomeComponent } from './';
+import { PdmHomeComponent } from './';
 
 export const homeRoute: Route = {
     path: '',
-    component: HomeComponent,
+    component: PdmHomeComponent,
     data: {
         authorities: [],
         pageTitle: 'home.title',

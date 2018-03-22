@@ -22,14 +22,14 @@ import { RedirectService } from '../shared/auth/redirect.service';
     ]
 
 })
-export class HomeComponent implements OnInit {
+export class PdmHomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
     deviceInfo: any;
 
     constructor(
         private principal: Principal,
-        private JhiEventManager: JhiEventManager,
+        private eventManager: JhiEventManager,
         private redirectService: RedirectService,
         private deviceService: Ng2DeviceService
     ) {
@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
     }
 
     registerAuthenticationSuccess() {
-        this.JhiEventManager.subscribe('authenticationSuccess', (message) => {
+        this.eventManager.subscribe('authenticationSuccess', (message) => {
             this.principal.identity().then((account) => {
                 this.account = account;
             });

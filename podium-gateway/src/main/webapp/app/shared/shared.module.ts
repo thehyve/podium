@@ -35,7 +35,7 @@ import { PodiumAuthModule } from './auth/auth.module';
 import { FindLanguageFromKeyPipe } from './language/language.pipe';
 import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
-import { ErrorComponent } from './error/error.component';
+import { PdmErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProfileService } from './profiles/profile.service';
 import { RouterModule } from '@angular/router';
@@ -68,7 +68,7 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
         FindLanguageFromKeyPipe,
         ActiveMenuDirective,
         CompletedComponent,
-        ErrorComponent,
+        PdmErrorComponent,
         NavbarComponent,
         AttachmentListComponent,
     ],

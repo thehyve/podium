@@ -9,12 +9,12 @@
  */
 import { Routes } from '@angular/router';
 import { UserRouteAccessService } from '../';
-import { ErrorComponent } from './error.component';
+import { PdmErrorComponent } from './error.component';
 
 export const errorRoute: Routes = [
     {
         path: 'error',
-        component: ErrorComponent,
+        component: PdmErrorComponent,
         data: {
             authorities: [],
             pageTitle: 'error.title'
@@ -23,7 +23,7 @@ export const errorRoute: Routes = [
     },
     {
         path: 'accessdenied',
-        component: ErrorComponent,
+        component: PdmErrorComponent,
         data: {
             authorities: [],
             pageTitle: 'error.title'

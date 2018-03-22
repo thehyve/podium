@@ -35,8 +35,8 @@ export class AttachmentsService {
 
     /**
      * Download an attachment
-     * @param {string} uuid - request uuid
-     * @param {string} fileuuid - file uuid
+     * @param {string} requestUuid - request uuid
+     * @param {string} fileUuid - file uuid
      * @returns {Observable<Attachment[]>}
      */
     downloadAttachment(requestUuid: string, fileUuid: string) {
@@ -48,7 +48,8 @@ export class AttachmentsService {
     }
 
     /**
-     * Get all attachments
+     * Get all attachments for a request
+     * @param {string} requestUuid - request uuid
      * @returns {Observable<Response>}
      */
     getAttachments(requestUuid: string): Observable<Attachment[]> {
@@ -65,7 +66,7 @@ export class AttachmentsService {
     setAttachmentType(attachment: Attachment): Observable<Response> {
         return this.http.put(
             `${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}/type`, attachment)
-            .map((response: Response) => { return response.json();});
+            .map((response: Response) => { return response.json(); });
     }
 
     /**

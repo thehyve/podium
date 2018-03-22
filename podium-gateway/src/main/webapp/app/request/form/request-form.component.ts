@@ -31,7 +31,7 @@ import { AttachmentsService } from '../../shared/attachment/attachments.service'
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 import { NgForm } from '@angular/forms';
-import { OrganisationService } from "../../shared/organisation/organisation.service";
+import { OrganisationService } from '../../shared/organisation/organisation.service';
 import { Observable } from 'rxjs/Observable';
 import { RequestTemplate } from '../../shared/request/request-template';
 

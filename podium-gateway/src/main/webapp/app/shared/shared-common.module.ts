@@ -14,8 +14,8 @@ import { JhiAlertService } from 'ng-jhipster';
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
-    JhiAlertComponent,
-    JhiAlertErrorComponent
+    PdmAlertComponent,
+    PdmAlertErrorComponent
 } from './';
 import { JhiConfigService } from 'ng-jhipster/src/config.service';
 
@@ -31,8 +31,8 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
         PodiumGatewaySharedLibsModule,
     ],
     declarations: [
-        JhiAlertComponent,
-        JhiAlertErrorComponent
+        PdmAlertComponent,
+        PdmAlertErrorComponent
     ],
     providers: [
         JhiLanguageHelper,
@@ -45,8 +45,8 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
     ],
     exports: [
         PodiumGatewaySharedLibsModule,
-        JhiAlertComponent,
-        JhiAlertErrorComponent
+        PdmAlertComponent,
+        PdmAlertErrorComponent
     ]
 })
 export class PodiumGatewaySharedCommonModule {}
