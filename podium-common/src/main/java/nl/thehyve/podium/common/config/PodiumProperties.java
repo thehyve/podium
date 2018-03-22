@@ -39,6 +39,8 @@ public class PodiumProperties {
 
     private final Files files = new Files();
 
+    private final Access access = new Access();
+
     public PodiumProperties() {
     }
 
@@ -89,6 +91,8 @@ public class PodiumProperties {
     }
 
     public Files getFiles() {return this.files; }
+
+    public Access getAccess() { return access; }
 
     public static class Ribbon {
         private String[] displayOnActiveProfiles;
@@ -791,6 +795,18 @@ public class PodiumProperties {
 
         public void setUploadDir(String uploadDir) {
             this.uploadDir = uploadDir;
+        }
+    }
+
+    public static class Access {
+        private List<String> externalRequest;
+
+        public List<String> getExternalRequest() {
+            return externalRequest;
+        }
+
+        public void setExternalRequest(List<String> externalRequest) {
+            this.externalRequest = externalRequest;
         }
     }
 }

@@ -35,7 +35,7 @@ public class ExternalRequestTemplateService {
     protected ExternalRequestTemplateMapper externalRequestTemplateMapper;
 
     public ExternalRequestTemplateRepresentation createTemplate(
-        ExternalRequestRepresentation externalRequestRepresentation, AuthenticatedUser user
+        ExternalRequestRepresentation externalRequestRepresentation
     ){
         ExternalRequestTemplate externalRequestTemplate = new ExternalRequestTemplate();
         externalRequestTemplate.setNToken(externalRequestRepresentation.getNToken());

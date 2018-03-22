@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -26,12 +27,17 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -736,14 +742,20 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         collections.add(collect2);
         externalRequestRepresentation.setCollections(collections);
 
+        String id = "test:test";
+        String base64 = new String(Base64.encode(id.getBytes()), Charset.forName("UTF-8"));
+
+        Assert.assertEquals(base64, "dGVzdDp0ZXN0");
+
         // Submit ext req
-        ResultActions externalRequest = mockMvc.perform(
-            getRequest(HttpMethod.POST,
-                "/api/requests/external/new",
-                externalRequestRepresentation,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON));
+        MockHttpServletRequestBuilder request = getRequest(HttpMethod.POST, "/api/requests/external/new",
+            externalRequestRepresentation, Collections.emptyMap());
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Authorization", String.format("Basic %s", base64));
+        request.headers(header);
+
+        ResultActions externalRequest = mockMvc.perform(request);
 
         externalRequest
             .andDo(result -> {

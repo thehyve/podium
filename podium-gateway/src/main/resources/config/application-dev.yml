@@ -121,6 +121,10 @@ podium:
         spectator-metrics: # Reports Spectator Circuit Breaker metrics in the logs
             enabled: false
             # edit spring.metrics.export.delay-millis to set report frequency
+    access:
+        external-request:
+            - researcher:researcher
+            - test:test
 
 # ===================================================================
 # Application specific properties

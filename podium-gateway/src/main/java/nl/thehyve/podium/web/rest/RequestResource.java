@@ -18,14 +18,14 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
-import nl.thehyve.podium.domain.ExternalRequestTemplate;
 import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.service.*;
 import nl.thehyve.podium.service.dto.ExternalRequestTemplateRepresentation;
 import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
-import org.apache.commons.lang.StringUtils;
+import org.springframework.security.crypto.codec.Base64;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +45,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -594,19 +595,37 @@ public class RequestResource {
     }
 
     /**
-     * Accept external request data and create a new request draft
-     * @return redirect to request form with filled in data
+     * Accept external request data and create a new request draft. This endpoint doesn't require a podium login, but
+     * does check the Authorization header. It assumes the sender is including a Basic value that is treated like an
+     * API key. The values are stored in the config file and only stored values are allowed. It is done this way to
+     * connect to other old services that cannot use OAuth2, like Molgenis.
+     *
+     * @return String URL to request form with filled in data
      */
     @PostMapping("/requests/external/new")
-    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
+    @Public
     @Timed
     public ResponseEntity<URI> createDraftByExternalRequest(
-        @RequestBody ExternalRequestRepresentation externalRequestRepresentation)
+        @RequestBody ExternalRequestRepresentation externalRequestRepresentation,
+        @RequestHeader("Authorization") String authorization)
         throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException {
-        AuthenticatedUser user = securityService.getCurrentUser();
+
+        if(! authorization.substring(0, 6).equals("Basic ")){
+            throw new AccessDenied("No Auth provided");
+        }
+        // Turn base64 string into normal string with a username:password format
+        String base64 = authorization.substring(6, authorization.length());
+        String id = new String(Base64.decode(base64.getBytes()), Charset.forName("UTF-8"));
+
+        List<String> allowedIds = podiumProperties.getAccess().getExternalRequest();
+
+        if(!allowedIds.contains(id)){
+            throw new AccessDenied(String.format("Provided id: %s is not on the allowed id list for creating" +
+                " external requests", id));
+        }
 
         ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
-            externalRequestTemplateService.createTemplate(externalRequestRepresentation, user);
+            externalRequestTemplateService.createTemplate(externalRequestRepresentation);
 
 
         String callbackURL = String.format("%s/#/requests/new?template_uuid=%s",

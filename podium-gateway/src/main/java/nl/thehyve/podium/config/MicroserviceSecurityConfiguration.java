@@ -71,6 +71,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
         .and()
             .authorizeRequests()
             .antMatchers("/api/profile-info").permitAll()
+            .antMatchers("/api/requests/external/new").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/**").hasAuthority(AuthorityConstants.PODIUM_ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll();
