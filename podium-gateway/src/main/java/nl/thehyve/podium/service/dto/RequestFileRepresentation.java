@@ -1,9 +1,8 @@
 package nl.thehyve.podium.service.dto;
 
 import lombok.Data;
-import nl.thehyve.podium.common.IdentifiableRequest;
+import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.enumeration.RequestFileType;
 
 import java.io.Serializable;
@@ -19,7 +18,7 @@ public class RequestFileRepresentation implements Serializable {
 
     private UserRepresentation owner;
 
-    private Request request;
+    private RequestRepresentation request;
 
     private ZonedDateTime createdDate;
 
@@ -30,5 +29,4 @@ public class RequestFileRepresentation implements Serializable {
     private RequestFileType requestFileType;
 
     private String fileName;
-
 }

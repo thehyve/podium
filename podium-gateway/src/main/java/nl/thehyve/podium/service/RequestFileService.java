@@ -22,11 +22,13 @@ import nl.thehyve.podium.service.util.UserMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
@@ -38,7 +40,7 @@ import java.util.UUID;
 @Transactional
 public class RequestFileService {
 
-    private final Logger log = LoggerFactory.getLogger(DeliveryService.class);
+    private final Logger log = LoggerFactory.getLogger(RequestFileService.class);
 
     @Autowired
     private RequestFileRepository requestFileRepository;
@@ -61,6 +63,24 @@ public class RequestFileService {
     @Autowired
     private RequestMapper requestMapper;
 
+
+    private Request findRequest(UUID requestUuid) {
+        Request request = requestRepository.findOneByUuid(requestUuid);
+        if (request == null) {
+            throw new ResourceNotFound("Request not found.");
+        }
+        return request;
+    }
+
+    private RequestFile findRequestFile(UUID requestUuid, UUID fileUuid) {
+        Request request = findRequest(requestUuid);
+        RequestFile requestFile = requestFileRepository.findOneByRequestAndUuidAndDeletedFalse(request, fileUuid);
+        if (requestFile == null) {
+            throw new ResourceNotFound("File not found.");
+        }
+        return requestFile;
+    }
+
     /**
      * Create a new draft request.
      *
@@ -71,9 +91,9 @@ public class RequestFileService {
     public RequestFileRepresentation addFile(IdentifiableUser owner, UUID requestUuid, MultipartFile file,
                                              RequestFileType requestFileType) throws ActionNotAllowed, AccessDenied, IOException {
 
-        Request request = requestRepository.findOneByUuid(requestUuid);
+        Request request = findRequest(requestUuid);
 
-        Boolean allowedToAdd = false;
+        boolean allowedToAdd = false;
 
         Set<UUID> organisationUuids = request.getOrganisations();
         UUID requester = request.getRequester();
@@ -103,7 +123,7 @@ public class RequestFileService {
             }
         }
 
-        if(!allowedToAdd){
+        if (!allowedToAdd){
             throw ActionNotAllowed.forStatus(request.getStatus());
         }
 
@@ -128,22 +148,22 @@ public class RequestFileService {
         return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
     }
 
-    @Transactional
-    public ByteArrayResource getFile(IdentifiableUser requester, UUID fileUuid) throws IOException{
-        RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
+    @Transactional(readOnly = true)
+    public InputStreamResource getFileResource(UUID requestUuid, UUID fileUuid) throws IOException{
+        RequestFile requestFile = findRequestFile(requestUuid, fileUuid);
         String uploadDir = podiumProperties.getFiles().getUploadDir();
 
         Path path = Paths.get(uploadDir +'/'+ requestFile.getFileLocation());
-        return new ByteArrayResource(Files.readAllBytes(path));
+        InputStream input = new FileInputStream(path.toFile());
+        return new InputStreamResource(input);
     }
 
-    @Transactional
-    public List<RequestFileRepresentation> getFilesForRequest(IdentifiableUser requester, UUID requestUUID){
-        Request request = requestRepository.findOneByUuid(requestUUID);
-
+    @Transactional(readOnly = true)
+    public List<RequestFileRepresentation> getFilesForRequest(UUID requestUuid){
+        Request request = findRequest(requestUuid);
         List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
 
-        List<RequestFileRepresentation> representations = new ArrayList<RequestFileRepresentation>();
+        List<RequestFileRepresentation> representations = new ArrayList<>();
         for(RequestFile file : files){
             RequestFileRepresentation representation = requestFileMapper.processingRequestFileToRequestFileDto(file);
             representations.add(representation);
@@ -153,44 +173,32 @@ public class RequestFileService {
     }
 
     @Transactional
-    public void deleteFile(IdentifiableUser requester, UUID fileUuid) throws ResourceNotFound, IOException {
-        RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
+    public void deleteFile(IdentifiableUser requester, UUID requestUuid, UUID fileUuid) throws ResourceNotFound, IOException {
+        RequestFile requestFile = findRequestFile(requestUuid, fileUuid);
 
-        //Only owners can delete files.
-        if(requestFile.getOwner().equals(requester.getUserUuid())){
-            requestFile.setDeleted(true);
-            requestFileRepository.save(requestFile);
-            String uploadDir = podiumProperties.getFiles().getUploadDir();
-            String fileLocation = requestFile.getFileLocation();
-            Files.delete(Paths.get(uploadDir + '/' + fileLocation));
-        } else {
+        if (!requestFile.getOwner().equals(requester.getUserUuid())) {
+            // Only owners can delete files.
             throw new ResourceNotFound("File not found");
         }
+        requestFile.setDeleted(true);
+        requestFileRepository.save(requestFile);
+        String uploadDir = podiumProperties.getFiles().getUploadDir();
+        String fileLocation = requestFile.getFileLocation();
+        Files.delete(Paths.get(uploadDir + '/' + fileLocation));
     }
 
     @Transactional
-    public RequestFileRepresentation setFileType(IdentifiableUser requester, UUID fileUuid, RequestFileType filetype)
-        throws ActionNotAllowed{
-
-        RequestFile requestFile = requestFileRepository.findOneByUuidAndDeletedFalse(fileUuid);
-        if(requester.getUserUuid().equals(requestFile.getOwner())){
-            requestFile.setRequestFileType(filetype);
-            requestFileRepository.save(requestFile);
-            return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
-        }else {
-            throw new ActionNotAllowed("Only Owner can set type");
-        }
+    public RequestFileRepresentation setFileType(UUID requestUuid, UUID fileUuid, RequestFileType filetype) {
+        RequestFile requestFile = findRequestFile(requestUuid, fileUuid);
+        requestFile.setRequestFileType(filetype);
+        requestFileRepository.save(requestFile);
+        return requestFileMapper.processingRequestFileToRequestFileDto(requestFile);
     }
 
+    @Transactional(readOnly = true)
     public Boolean hasUnsetFile(Request request) {
         List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
-        Boolean unsetFiles = false;
-
-        for(RequestFile file : files){
-            if (file.getRequestFileType() == RequestFileType.NONE) {
-                unsetFiles = true;
-            }
-        }
-        return unsetFiles;
+        return files.stream().anyMatch(file -> file.getRequestFileType() == RequestFileType.NONE);
     }
+
 }

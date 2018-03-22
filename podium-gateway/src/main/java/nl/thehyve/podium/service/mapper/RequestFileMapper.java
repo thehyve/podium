@@ -7,23 +7,23 @@ import nl.thehyve.podium.service.util.UserMapperHelper;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {
+        RequestMapper.class
+})
 public abstract class RequestFileMapper {
 
     @Autowired
     private UserMapperHelper userMapperHelper;
+
+    @Autowired
+    private RequestMapper requestMapper;
 
     public RequestFileRepresentation processingRequestFileToRequestFileDto(RequestFile requestFile){
         RequestFileRepresentation requestFileRepresentation = new RequestFileRepresentation();
         requestFileRepresentation.setCreatedDate(requestFile.getCreatedDate());
         requestFileRepresentation.setLastModifiedDate(requestFile.getLastModifiedDate());
         requestFileRepresentation.setUuid(requestFile.getUuid());
-        requestFileRepresentation.setRequest(requestFile.getRequest());
+        requestFileRepresentation.setRequest(requestMapper.minimalRequestToRequestDTO(requestFile.getRequest()));
 
         requestFileRepresentation.setFileSize(requestFile.getFileByteSize());
         requestFileRepresentation.setFileName(requestFile.getFileName());
@@ -34,6 +34,5 @@ public abstract class RequestFileMapper {
 
         return requestFileRepresentation;
     }
-
 
 }
