@@ -9,7 +9,6 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
-import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -18,34 +17,23 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
-import nl.thehyve.podium.enumeration.RequestFileType;
 import nl.thehyve.podium.service.*;
-import nl.thehyve.podium.service.dto.ExternalRequestTemplateRepresentation;
-import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.web.rest.util.PaginationUtil;
-import org.springframework.security.crypto.codec.Base64;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -58,7 +46,6 @@ public class RequestResource {
     private final Logger log = LoggerFactory.getLogger(RequestResource.class);
 
     private static final String ENTITY_NAME = "request";
-    private static final String REQUEST_FILE_NAME = "requestFile";
 
     @Autowired
     private RequestService requestService;
@@ -72,14 +59,6 @@ public class RequestResource {
     @Autowired
     private SecurityService securityService;
 
-    @Autowired
-    protected PodiumProperties podiumProperties;
-
-    @Autowired
-    protected RequestFileService requestFileService;
-
-    @Autowired
-    protected ExternalRequestTemplateService externalRequestTemplateService;
 
     /**
      * Fetch drafts for the current user
@@ -122,15 +101,13 @@ public class RequestResource {
      * Fetch the request draft
      *
      * @param uuid of the request draft
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> getDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) {
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation request = requestService.findRequestForRequester(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
@@ -141,14 +118,13 @@ public class RequestResource {
      *
      * @param request the request to be updated
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests/drafts")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(
-        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
+        @RequestParameter @RequestBody RequestRepresentation request) throws  ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = draftService.updateDraft(user, request);
@@ -176,7 +152,6 @@ public class RequestResource {
      * Submit the request draft
      *
      * @param uuid of the request draft to be saved
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      * @return The list of requestDTOs generated
      */
@@ -184,7 +159,7 @@ public class RequestResource {
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
         List<RequestRepresentation> requests = draftService.submitDraft(user, uuid);
@@ -252,14 +227,13 @@ public class RequestResource {
      *
      * @param request the request to be updated
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateRevisionRequest(
-        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
+        @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests (user: {})", user);
         RequestRepresentation result = draftService.updateRevision(user, request);
@@ -272,7 +246,6 @@ public class RequestResource {
      *
      * @param uuid of the request to be saved
      * @return the updated request representation
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/submit")
@@ -280,7 +253,7 @@ public class RequestResource {
     @Timed
     public ResponseEntity<RequestRepresentation> submitRevisedRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid
-    ) throws URISyntaxException, ActionNotAllowed {
+    ) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
         RequestRepresentation request = requestService.submitRevision(user, uuid);
@@ -417,7 +390,6 @@ public class RequestResource {
      * GET /requests/:uuid : Fetch the request
      *
      * @param uuid of the request
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @return The list of requestDTOs
      */
     @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
@@ -426,7 +398,7 @@ public class RequestResource {
     @SecuredByRequestOrganisationReviewer
     @Timed
     public ResponseEntity<RequestRepresentation> getRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) {
         RequestRepresentation request = requestService.findRequest(uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
@@ -592,145 +564,6 @@ public class RequestResource {
         Page<RequestRepresentation> page = requestService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requests");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-    /**
-     * Accept external request data and create a new request draft. This endpoint doesn't require a podium login, but
-     * does check the Authorization header. It assumes the sender is including a Basic value that is treated like an
-     * API key. The values are stored in the config file and only stored values are allowed. It is done this way to
-     * connect to other old services that cannot use OAuth2, like Molgenis.
-     *
-     * @return String URL to request form with filled in data
-     */
-    @PostMapping("/requests/external/new")
-    @Public
-    @Timed
-    public ResponseEntity<URI> createDraftByExternalRequest(
-        @RequestBody ExternalRequestRepresentation externalRequestRepresentation,
-        @RequestHeader("Authorization") String authorization)
-        throws URISyntaxException, ActionNotAllowed, UnsupportedEncodingException {
-
-        if(! authorization.substring(0, 6).equals("Basic ")){
-            throw new AccessDenied("No Auth provided");
-        }
-        // Turn base64 string into normal string with a username:password format
-        String base64 = authorization.substring(6, authorization.length());
-        String id = new String(Base64.decode(base64.getBytes()), Charset.forName("UTF-8"));
-
-        List<String> allowedIds = podiumProperties.getAccess().getExternalRequest();
-
-        if(!allowedIds.contains(id)){
-            throw new AccessDenied(String.format("Provided id: %s is not on the allowed id list for creating" +
-                " external requests", id));
-        }
-
-        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
-            externalRequestTemplateService.createTemplate(externalRequestRepresentation);
-
-
-        String callbackURL = String.format("%s/#/requests/new?template_uuid=%s",
-            podiumProperties.getMail().getBaseUrl(), externalRequestTemplateRepresentation.getUuid()
-        );
-
-        log.debug("Returning URL {}", callbackURL);
-        return new ResponseEntity(new URI(callbackURL), HttpStatus.ACCEPTED);
-    }
-
-
-    /**
-     * Accept external request data and create a new request draft
-     * @return redirect to request form with filled in data
-     */
-    @GetMapping("/requests/external/{uuid}")
-    @SecuredByAuthority({AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity getExternalRequestDraft(@RequestUuidParameter @PathVariable("uuid") UUID uuid){
-        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
-            externalRequestTemplateService.getTemplate(uuid);
-        return ResponseEntity.ok(externalRequestTemplateRepresentation);
-    }
-
-
-    /**
-
-     * Accept a RequestFile and add it to the request data
-     * @return A confirmation of the upload
-     */
-    @PostMapping("/requests/{uuid}/files")
-    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
-                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity<Object> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
-                                          @RequestParam("file") MultipartFile file) throws URISyntaxException,
-                                                                                           ActionNotAllowed,
-                                                                                           IOException{
-        AuthenticatedUser user = securityService.getCurrentUser();
-
-        if(!file.isEmpty()){
-            RequestFileRepresentation requestFileRepresentation = requestFileService.addFile(user, uuid, file,
-                RequestFileType.NONE);
-            return ResponseEntity.accepted().body(requestFileRepresentation);
-
-        } else {
-            throw new IOException("File empty");
-        }
-    }
-
-    /**
-     * Return a file for a given request
-     * @return the requested file
-     */
-    @GetMapping("/requests/{uuid}/files/{fileuuid}")
-    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
-                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity<Object> getFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
-                                          @PathVariable("fileuuid") UUID fileUuid) throws URISyntaxException,
-        ActionNotAllowed, IOException{
-
-        AuthenticatedUser user = securityService.getCurrentUser();
-        ByteArrayResource resource = requestFileService.getFile(user, fileUuid);
-        return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType("application/octet-stream"))
-            .body(resource);
-    }
-
-    @GetMapping("/requests/{uuid}/files")
-    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
-                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity<List<RequestFileRepresentation>> listFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) throws
-        URISyntaxException, ActionNotAllowed {
-        AuthenticatedUser user = securityService.getCurrentUser();
-
-        List<RequestFileRepresentation> files = requestFileService.getFilesForRequest(user, requestUuid);
-
-        return ResponseEntity.ok(files);
-    }
-
-    @DeleteMapping("/requests/deletefile/{fileuuid}")
-    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
-                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity<Object> deleteFile(@PathVariable("fileuuid") UUID fileUuid)
-        throws URISyntaxException, ActionNotAllowed, IOException{
-        AuthenticatedUser user = securityService.getCurrentUser();
-        requestFileService.deleteFile(user, fileUuid);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(REQUEST_FILE_NAME, fileUuid.toString())).build();
-    }
-
-    @PostMapping("/requests/setfiletype/{fileuuid}")
-    @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN, AuthorityConstants.ORGANISATION_COORDINATOR,
-                         AuthorityConstants.REVIEWER, AuthorityConstants.RESEARCHER})
-    @Timed
-    public ResponseEntity<RequestFileRepresentation> setFileType(@PathVariable("fileuuid") UUID fileUuid,
-                                                                 @RequestBody RequestFileRepresentation requestFileRepresentation)
-        throws URISyntaxException, ActionNotAllowed {
-        AuthenticatedUser user = securityService.getCurrentUser();
-        RequestFileType type = requestFileRepresentation.getRequestFileType();
-        RequestFileRepresentation requestFile = requestFileService.setFileType(user, fileUuid, type);
-
-        return ResponseEntity.ok(requestFile);
     }
 
 }

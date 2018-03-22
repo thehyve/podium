@@ -19,13 +19,10 @@ import java.util.UUID;
 /**
  * Spring Data JPA repository for the RequestFile entity.
  */
-@SuppressWarnings("unused")
 @Timed
 public interface RequestFileRepository extends JpaRepository<RequestFile, Long> {
 
-    RequestFile findOneByUuid(UUID requestFileUuid);
-
-    RequestFile findOneByUuidAndDeletedFalse(UUID requestFileUuid);
+    RequestFile findOneByRequestAndUuidAndDeletedFalse(Request request, UUID requestFileUuid);
 
     List<RequestFile> findDistinctByRequestAndDeletedFalse(Request request);
 

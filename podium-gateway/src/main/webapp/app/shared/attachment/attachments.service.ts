@@ -30,34 +30,7 @@ export class AttachmentsService {
      */
     remove(attachment: Attachment): Observable<Response> {
         return this.http.delete(
-            `${this.resourceUrl}/deletefile/${attachment.uuid}`);
-    }
-
-    /**
-     * Remove all attachment
-     * @returns {Observable<Response>}
-     */
-    removeAll(): Observable<Response> {
-        console.log('remove all attachment');
-        return null;
-    }
-
-    isFileOwner(user: User, attachment: Attachment): boolean {
-        return user.uuid === attachment.owner.uuid;
-    }
-
-    /**
-     * Format bytes
-     * @param bytes
-     * @param precision
-     * @returns {string}
-     */
-    formatByte(bytes, precision): string {
-        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-        if (typeof precision === 'undefined') precision = 1;
-        const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-            number = Math.floor(Math.log(bytes) / Math.log(1024));
-        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+            `${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}`);
     }
 
     /**
@@ -66,8 +39,8 @@ export class AttachmentsService {
      * @param {string} fileuuid - file uuid
      * @returns {Observable<Attachment[]>}
      */
-    downloadAttachment(uuid: string, fileuuid: string) {
-        return this.http.get(`${this.resourceUrl}/${uuid}/files/${fileuuid}`, {
+    downloadAttachment(requestUuid: string, fileUuid: string) {
+        return this.http.get(`${this.resourceUrl}/${requestUuid}/files/${fileUuid}/download`, {
             responseType: ResponseContentType.Blob
         }).map((response: Response) => {
             return <Attachment[]> response.json();
@@ -78,8 +51,8 @@ export class AttachmentsService {
      * Get all attachments
      * @returns {Observable<Response>}
      */
-    getAttachments(uuid: string): Observable<Attachment[]> {
-        return this.http.get(`${this.resourceUrl}/${uuid}/files`).map((response: Response) => {
+    getAttachments(requestUuid: string): Observable<Attachment[]> {
+        return this.http.get(`${this.resourceUrl}/${requestUuid}/files`).map((response: Response) => {
             return <Attachment[]> response.json();
         });
     }
@@ -90,7 +63,8 @@ export class AttachmentsService {
      * @returns {Observable<Response>}
      */
     setAttachmentType(attachment: Attachment): Observable<Response> {
-        return this.http.post(`${this.resourceUrl}/setfiletype/${attachment.uuid}`, attachment)
+        return this.http.put(
+            `${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}/type`, attachment)
             .map((response: Response) => { return response.json();});
     }
 
@@ -104,4 +78,5 @@ export class AttachmentsService {
            return attachment.requestFileType === AttachmentTypes.NONE;
         });
     }
+
 }

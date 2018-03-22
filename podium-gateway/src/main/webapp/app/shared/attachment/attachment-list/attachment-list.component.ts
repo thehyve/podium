@@ -12,7 +12,8 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { AttachmentsService } from '../attachments.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
-import { Principal } from '../../auth/principal.service';
+import { Principal, User } from '../../';
+import { FormatHelper } from '../../util/format-helper';
 
 const ATTACHMENT_TYPES = [
     {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
@@ -47,6 +48,10 @@ export class AttachmentListComponent implements OnChanges, OnInit {
         this.onDeleteFile = new EventEmitter<boolean>();
         this.onFileTypeChange = new EventEmitter<Attachment>();
         this.error = [];
+    }
+
+    static isFileOwner(user: User, attachment: Attachment): boolean {
+        return user.uuid === attachment.owner.uuid;
     }
 
     ngOnInit(): void {
@@ -106,10 +111,11 @@ export class AttachmentListComponent implements OnChanges, OnInit {
 
     canEdit(attachment: Attachment): boolean {
         return attachment ?
-            this.attachmentService.isFileOwner(this.currentAccount, attachment) && this.canUpdate : this.canUpdate;
+            AttachmentListComponent.isFileOwner(this.currentAccount, attachment) && this.canUpdate : this.canUpdate;
     }
 
-    formatByte(bytes: any, precision: number) {
-        return this.attachmentService.formatByte(bytes, precision);
+    formatBytes(bytes: number, precision: number) {
+        return FormatHelper.formatBytes(bytes, precision);
     }
+
 }
