@@ -748,16 +748,9 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         Assert.assertEquals(base64, "dGVzdDp0ZXN0");
 
         // Submit ext req
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(HttpMethod.POST, "/api/requests/external/new");
-        if (externalRequestRepresentation != null) {
-            try {
-                request = request
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsBytes(externalRequestRepresentation));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("JSON serialisation error", e);
-            }
-        }
+        MockHttpServletRequestBuilder request = getRequest(HttpMethod.POST, "/api/requests/external/new",
+            externalRequestRepresentation, Collections.emptyMap());
+
         HttpHeaders header = new HttpHeaders();
         header.add("Authorization", String.format("Basic %s", base64));
         request.headers(header);
