@@ -26,12 +26,12 @@ export class RequestDraftDeleteModalComponent {
     constructor(
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
-        private JhiEventManager: JhiEventManager
+        private eventManager: JhiEventManager
     ) {}
 
     confirmDelete() {
         this.requestService.deleteDraft(this.request.uuid).subscribe((res) => {
-            this.JhiEventManager.broadcast({
+            this.eventManager.broadcast({
                 name: 'requestListModification',
                 content: 'Deleted a request'
             });

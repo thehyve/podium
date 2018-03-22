@@ -42,16 +42,16 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     @Output() onDeleteFile: EventEmitter<boolean>;
     @Output() onFileTypeChange: EventEmitter<Attachment>;
 
+    static isFileOwner(user: User, attachment: Attachment): boolean {
+        return user.uuid === attachment.owner.uuid;
+    }
+
     constructor(private principal: Principal,
                 private attachmentService: AttachmentsService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
         this.onDeleteFile = new EventEmitter<boolean>();
         this.onFileTypeChange = new EventEmitter<Attachment>();
         this.error = [];
-    }
-
-    static isFileOwner(user: User, attachment: Attachment): boolean {
-        return user.uuid === attachment.owner.uuid;
     }
 
     ngOnInit(): void {

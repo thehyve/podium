@@ -13,6 +13,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class FormatHelper {
 
+    static units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
+
     /**
      * Format bytes
      * @param bytes Number of bytes
@@ -20,11 +22,14 @@ export class FormatHelper {
      * @returns {string}
      */
     static formatBytes(bytes: number, precision: number): string {
-        if (isNaN(bytes) || !isFinite(bytes)) return '-';
-        if (typeof precision === 'undefined') precision = 1;
-        const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
-            number = Math.min(Math.floor(Math.log(bytes) / Math.log(1000)), units.length - 1);
-        return (bytes / Math.pow(1000, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+        if (isNaN(bytes) || !isFinite(bytes)) {
+            return '-';
+        }
+        if (typeof precision === 'undefined') {
+            precision = 1;
+        }
+        const number = Math.min(Math.floor(Math.log(bytes) / Math.log(1000)), FormatHelper.units.length - 1);
+        return (bytes / Math.pow(1000, Math.floor(number))).toFixed(precision) +  ' ' + FormatHelper.units[number];
     }
 
 }

@@ -13,7 +13,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Subscription } from 'rxjs/Rx';
 
 @Component({
-    selector: 'jhi-alert-error',
+    selector: 'pdm-alert-error',
     template: `
         <div class="alerts" role="alert">
             <div *ngFor="let alert of alerts"  [ngClass]="{\'alert.position\': true, \'toast\': alert.toast}">
@@ -21,15 +21,17 @@ import { Subscription } from 'rxjs/Rx';
             </div>
         </div>`
 })
-export class JhiAlertErrorComponent implements OnDestroy {
+export class PdmAlertErrorComponent implements OnDestroy {
 
     alerts: any[];
     cleanHttpErrorListener: Subscription;
 
-    constructor(private JhiAlertService: JhiAlertService, private JhiEventManager: JhiEventManager, private translateService: TranslateService) {
+    constructor(private alertService: JhiAlertService,
+                private eventManager: JhiEventManager,
+                private translateService: TranslateService) {
         this.alerts = [];
 
-        this.cleanHttpErrorListener = JhiEventManager.subscribe('podiumGatewayApp.httpError', (response) => {
+        this.cleanHttpErrorListener = eventManager.subscribe('podiumGatewayApp.httpError', (response) => {
             let i;
             let httpResponse = response.content;
             switch (httpResponse.status) {
@@ -86,7 +88,7 @@ export class JhiAlertErrorComponent implements OnDestroy {
 
     ngOnDestroy() {
         if (this.cleanHttpErrorListener !== undefined && this.cleanHttpErrorListener !== null) {
-            this.JhiEventManager.destroy(this.cleanHttpErrorListener);
+            this.eventManager.destroy(this.cleanHttpErrorListener);
             this.alerts = [];
         }
     }
@@ -94,13 +96,13 @@ export class JhiAlertErrorComponent implements OnDestroy {
     addErrorAlert (message, key?, data?) {
         key = key && key !== null ? key : message;
         this.alerts.push(
-            this.JhiAlertService.addAlert(
+            this.alertService.addAlert(
                 {
                     type: 'danger',
                     msg: key,
                     params: data,
                     timeout: 5000,
-                    toast: this.JhiAlertService.isToast(),
+                    toast: this.alertService.isToast(),
                     scoped: true
                 },
                 this.alerts

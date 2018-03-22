@@ -11,10 +11,10 @@ import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
-    selector: 'jhi-error',
+    selector: 'pdm-error',
     templateUrl: './error.component.html'
 })
-export class ErrorComponent implements OnInit {
+export class PdmErrorComponent implements OnInit {
     errorMessage: string;
     error403: boolean;
 

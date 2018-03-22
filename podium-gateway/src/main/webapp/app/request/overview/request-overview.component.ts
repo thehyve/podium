@@ -9,24 +9,24 @@
  */
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
-import { OverviewService } from '../../shared/overview/overview.service';
-import { RequestBase } from '../../shared/request/request-base';
+import { OverviewService } from '../../shared';
+import { RequestBase } from '../../shared/request';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RequestFormService } from '../form/request-form.service';
+import { RequestFormService } from '../form';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
 import { RequestOverviewPath } from './request-overview.constants';
 import { Response, Http } from '@angular/http';
-import { Overview } from '../../shared/overview/overview';
+import { Overview } from '../../shared';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
-import { UserGroupAuthority } from '../../shared/authority/authority.constants';
+import { UserGroupAuthority } from '../../shared';
 import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
-import { RequestType } from '../../shared/request/request-type';
+import { RequestType } from '../../shared/request';
 import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
-import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
@@ -72,8 +72,8 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     constructor(
         private requestFormService: RequestFormService,
-        private JhiEventManager: JhiEventManager,
-        private JhiParseLinks: JhiParseLinks,
+        private eventManager: JhiEventManager,
+        private parseLinks: JhiParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
@@ -122,12 +122,12 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         }
 
         if (this.eventSubscriber) {
-            this.JhiEventManager.destroy(this.eventSubscriber);
+            this.eventManager.destroy(this.eventSubscriber);
         }
     }
 
     registerChanges() {
-        this.eventSubscriber = this.JhiEventManager
+        this.eventSubscriber = this.eventManager
             .subscribe('requestListModification',
                 (response) => this.fetchRequestsFor(this.activeStatus));
 
@@ -162,7 +162,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     }
 
     processAvailableRequests(requests, headers) {
-        this.links = this.JhiParseLinks.parse(headers.get('link'));
+        this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.availableRequests = requests;
@@ -231,4 +231,5 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.success = null;
         window.scrollTo(0, 0);
     }
+
 }
