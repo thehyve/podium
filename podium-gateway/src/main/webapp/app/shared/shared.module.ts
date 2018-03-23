@@ -41,7 +41,7 @@ import { ProfileService } from './profiles/profile.service';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
 import { NgUploaderModule } from 'ngx-uploader';
-import { AttachmentsService } from './attachment/attachments.service';
+import { AttachmentService } from './attachment/attachment.service';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 
 @NgModule({
@@ -81,11 +81,12 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
         UserService,
         RequestService,
         RequestAccessService,
-        AttachmentsService,
+        AttachmentService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
     exports: [
+        PodiumAuthModule,
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,

@@ -33,11 +33,11 @@
                         <div class="form-group">
 
                             <pdm-attachment *ngIf="canChangeAttachments()"
-                                [requestBaseId]="request.uuid"
+                                [request]="request"
                                 (onFinishedUpload)="onFinishedUploadAttachment($event)">
                             </pdm-attachment>
                             <pdm-attachment-list
-                                [requestUUID]="request.uuid"
+                                [request]="request"
                                 [attachments]="attachments"
                                 [canUpdate]="canChangeAttachments()"
                                 (onDeleteFile)="onDeleteAttachment($event)"

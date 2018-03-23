@@ -20,7 +20,7 @@ export class Attachment {
     request: RequestBase;
     createdDate: Date;
     lastModifiedDate: Date;
-    fileSize: number;
+    fileByteSize: number;
     requestFileType: AttachmentTypes;
     fileName: string;
 }

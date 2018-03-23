@@ -33,7 +33,7 @@ export class UserMgmtDialogComponent implements OnInit {
         private languageHelper: JhiLanguageHelper,
         private languageService: JhiLanguageService,
         private userService: UserService,
-        private JhiEventManager: JhiEventManager,
+        private eventManager: JhiEventManager,
         private router: Router
     ) {}
 
@@ -70,7 +70,7 @@ export class UserMgmtDialogComponent implements OnInit {
     }
 
     private onSaveSuccess(result) {
-        this.JhiEventManager.broadcast({ name: 'userListModification', content: 'OK' });
+        this.eventManager.broadcast({ name: 'userListModification', content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(result);
         this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });

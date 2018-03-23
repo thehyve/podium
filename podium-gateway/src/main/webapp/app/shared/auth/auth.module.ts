@@ -21,10 +21,10 @@ import { UserRouteAccessService } from './user-route-access-service';
 
 @NgModule({
     declarations: [
-        HasAnyAuthorityDirective,
+        HasAnyAuthorityDirective
     ],
     exports: [
-        HasAnyAuthorityDirective,
+        HasAnyAuthorityDirective
     ],
     providers: [
         AccountService,
@@ -35,7 +35,6 @@ import { UserRouteAccessService } from './user-route-access-service';
         SessionStorageService,
         StateStorageService,
         UserRouteAccessService
-
     ]
 })
 export class PodiumAuthModule {}
