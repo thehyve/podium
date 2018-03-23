@@ -12,9 +12,8 @@ import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
-import nl.thehyve.podium.common.service.dto.ExternalRequestRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestTemplateRepresentation;
 import nl.thehyve.podium.service.*;
-import nl.thehyve.podium.service.dto.ExternalRequestTemplateRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -45,7 +45,7 @@ public class RequestTemplateResource {
     protected RequestFileService requestFileService;
 
     @Autowired
-    protected ExternalRequestTemplateService externalRequestTemplateService;
+    protected RequestTemplateService requestTemplateService;
 
 
     /**
@@ -62,27 +62,26 @@ public class RequestTemplateResource {
     @PostMapping("/public/requests/templates")
     @Public
     @Timed
-    public ResponseEntity<URI> createDraftByExternalRequest(
-        @RequestBody ExternalRequestRepresentation externalRequestRepresentation,
+    public ResponseEntity<URI> createRequestTemplate(
+        @Valid @RequestBody RequestTemplateRepresentation requestTemplateRepresentation,
         @RequestHeader("Authorization") String authorization)
         throws URISyntaxException {
 
-        if(! authorization.substring(0, 6).equals("Basic ")){
+        if(!authorization.substring(0, 6).equals("Basic ")){
             throw new AccessDenied("No Auth provided");
         }
         // Turn base64 string into normal string with a username:password format
         String base64 = authorization.substring(6, authorization.length());
         String id = new String(Base64.decode(base64.getBytes()), Charset.forName("UTF-8"));
 
-        List<String> allowedIds = podiumProperties.getAccess().getExternalRequest();
+        List<String> allowedIds = podiumProperties.getAccess().getRequestTemplate();
 
-        if (!allowedIds.contains(id)){
-            throw new AccessDenied(String.format("Provided id: %s is not on the allowed id list for creating" +
-                " external requests", id));
+        if (allowedIds != null && !allowedIds.contains(id)){
+            throw new AccessDenied("Provided token is not in the list of access tokens for creating request templates.");
         }
 
-        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
-            externalRequestTemplateService.createTemplate(externalRequestRepresentation);
+        RequestTemplateRepresentation externalRequestTemplateRepresentation =
+            requestTemplateService.createTemplate(requestTemplateRepresentation);
 
         String callbackURL = String.format("%s/#/requests/new?template_uuid=%s",
             podiumProperties.getMail().getBaseUrl(), externalRequestTemplateRepresentation.getUuid()
@@ -99,10 +98,10 @@ public class RequestTemplateResource {
     @GetMapping("/requests/templates/{uuid}")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
     @Timed
-    public ResponseEntity<ExternalRequestTemplateRepresentation> getRequestTemplate(@PathVariable("uuid") UUID uuid){
-        ExternalRequestTemplateRepresentation externalRequestTemplateRepresentation =
-            externalRequestTemplateService.getTemplate(uuid);
-        return ResponseEntity.ok(externalRequestTemplateRepresentation);
+    public ResponseEntity<RequestTemplateRepresentation> getRequestTemplate(@PathVariable("uuid") UUID uuid){
+        RequestTemplateRepresentation requestTemplateRepresentation =
+            requestTemplateService.getTemplate(uuid);
+        return ResponseEntity.ok(requestTemplateRepresentation);
     }
 
 }

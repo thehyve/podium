@@ -143,6 +143,9 @@ podium:
         display-on-active-profiles: dev
     files:
         upload-dir: ./podium_uploads
+    access:
+        request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

@@ -91,8 +91,8 @@ public class ReviewService {
      */
     public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        if(requestFileService.hasUnsetFile(request)){
-            throw new ActionNotAllowed("Cannot validate request with unset requestfiletype");
+        if (requestFileService.hasUnsetFileType(request)){
+            throw new ActionNotAllowed("Cannot validate request with unset request file type.");
         }
 
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation);
@@ -145,8 +145,8 @@ public class ReviewService {
 
     public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        if(requestFileService.hasUnsetFile(request)){
-            throw new ActionNotAllowed("Cannot approve request with unset requestfiletype");
+        if (requestFileService.hasUnsetFileType(request)){
+            throw new ActionNotAllowed("Cannot approve request with unset request file type.");
         }
         RequestAccessCheckHelper.checkStatus(request, RequestStatus.Review);
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Review);
@@ -175,8 +175,8 @@ public class ReviewService {
         AuthenticatedUser user, UUID uuid, MessageRepresentation message
     ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-        if(requestFileService.hasUnsetFile(request)){
-            throw new ActionNotAllowed("Cannot request revision with unset requestfiletype");
+        if (requestFileService.hasUnsetFileType(request)){
+            throw new ActionNotAllowed("Cannot request revision with unset request file type.");
         }
 
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
