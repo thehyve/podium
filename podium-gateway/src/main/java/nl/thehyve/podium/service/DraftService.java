@@ -2,7 +2,6 @@ package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -10,10 +9,8 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
-import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.service.dto.ExternalRequestRepresentation;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
@@ -24,7 +21,6 @@ import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
-import nl.thehyve.podium.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.util.OrganisationMapperHelper;
@@ -35,6 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,6 +58,9 @@ public class DraftService {
 
     @Autowired
     private RequestDetailMapper requestDetailMapper;
+
+    @Autowired
+    private RequestFileService requestFileService;
 
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
@@ -151,7 +153,7 @@ public class DraftService {
      * @return the list of generated requests to organisations.
      * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
+    public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed, IOException {
         Request request = requestRepository.findOneByUuid(uuid);
 
         // Organisations should be selected during the process before organisation requests can be created.
@@ -165,6 +167,7 @@ public class DraftService {
         OverviewStatus sourceStatus = request.getOverviewStatus();
 
         RequestDetailRepresentation requestData = requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRequestDetail());
+        List<RequestFile> requestFiles = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
 
         log.debug("Validating request data.");
         RequestService.validateRequest(requestData);
@@ -205,6 +208,13 @@ public class DraftService {
                 requestReviewProcessService.start(user));
             organisationRequest = requestRepository.save(organisationRequest);
 
+            // Copy the attachments.
+            for (RequestFile requestFile : requestFiles) {
+                RequestFile copy = requestFileService.copyFile(requestFile);
+                copy.setRequest(organisationRequest);
+                requestFileRepository.save(copy);
+            }
+
             organisationRequests.add(organisationRequest);
 
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
@@ -237,19 +247,9 @@ public class DraftService {
 
         log.debug("Deleting draft request.");
 
-        //Copy the relevant RequestFiles.
-        List<RequestFile> requestFiles = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
-        for (Request organisationRequest: organisationRequests) {
-            for (RequestFile requestFile : requestFiles) {
-                RequestFile organisationRequestFile = new RequestFile().copy(requestFile);
-                organisationRequestFile.setRequest(organisationRequest);
-                requestFileRepository.save(organisationRequestFile);
-            }
-        }
-
-        requestFiles = requestFileRepository.findDistinctByRequest(request);
-        //Delete old RequestFile objects from database
-        for (RequestFile requestFile : requestFiles) {
+        // Delete old request files
+        for (RequestFile requestFile: requestFiles) {
+            Files.deleteIfExists(new File(requestFile.getFileLocation()).toPath());
             requestFileRepository.delete(requestFile.getId());
         }
 

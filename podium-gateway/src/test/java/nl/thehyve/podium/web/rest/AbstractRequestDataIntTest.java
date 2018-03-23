@@ -14,6 +14,7 @@ import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.*;
+import nl.thehyve.podium.common.service.dto.RequestFileRepresentation;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,18 +24,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.net.URISyntaxException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.*;
 
 import static org.hamcrest.Matchers.allOf;
@@ -89,6 +100,9 @@ public abstract class AbstractRequestDataIntTest {
     TypeReference<Map<OverviewStatus, Long>> countsTypeReference =
         new TypeReference<Map<OverviewStatus, Long>>(){};
 
+    TypeReference<List<RequestFileRepresentation>> requestFileListTypeReference =
+            new TypeReference<List<RequestFileRepresentation>>(){};
+
     MockMvc mockMvc;
 
     UserAuthenticationToken requester;
@@ -115,6 +129,7 @@ public abstract class AbstractRequestDataIntTest {
     final String DELIVERY_RECEIVED = "received";
     final String DELIVERY_CANCEL = "cancel";
     final String ACTION_SUBMIT_REVIEW_FEEDBACK = "review";
+    final String ACTION_GET_FILES = "files";
 
     final String TEST_TWO_ORGANISATIONS_TITLE = "Test request to two organisations";
 
@@ -182,7 +197,7 @@ public abstract class AbstractRequestDataIntTest {
         return roles;
     }
     @Before
-    public void setup() throws URISyntaxException {
+    public void setup() {
         log.info("Clearing database before test ...");
         testService.clearDatabase();
 
@@ -252,7 +267,7 @@ public abstract class AbstractRequestDataIntTest {
         testService.clearDatabase();
     }
 
-    void initMocks() throws URISyntaxException {
+    void initMocks() {
         // Mock organisation service for fetching organisation info through Feign
         OrganisationRepresentation organisation1 = createOrganisation(1, organisationUuid1);
         organisations.put(organisationUuid1, organisation1);
@@ -346,6 +361,22 @@ public abstract class AbstractRequestDataIntTest {
         return request;
     }
 
+    MockMultipartHttpServletRequestBuilder getUploadRequest(
+            String url,
+            URL resource) {
+        MockMultipartHttpServletRequestBuilder request = MockMvcRequestBuilders.fileUpload(url);
+        try {
+            String[] filenameParts = resource.getFile().split("/");
+            String filename = filenameParts[filenameParts.length - 1];
+            InputStream input = resource.openStream();
+            MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.APPLICATION_OCTET_STREAM_VALUE, input);
+            log.info("Uploading file {}", file);
+            return request.file(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Error uploading file", e);
+        }
+    }
+
     RequestRepresentation newDraft(UserAuthenticationToken user) throws Exception {
         final RequestRepresentation[] request = new RequestRepresentation[1];
 
@@ -415,6 +446,61 @@ public abstract class AbstractRequestDataIntTest {
         submitDraftToOrganisations(requestOneOrganisation, Arrays.asList(organisationUuid2));
     }
 
+    List<RequestRepresentation> fetchRequests(UserAuthenticationToken user, String query) throws Exception {
+        final List<RequestRepresentation>[] res = new List[1];
+        mockMvc.perform(
+                getRequest(HttpMethod.GET,
+                        REQUESTS_ROUTE + query,
+                        null,
+                        Collections.emptyMap())
+                        .with(token(user))
+                        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andDo(result -> {
+            List<RequestRepresentation> requests =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+            res[0] = requests;
+        });
+        return res[0];
+    }
+
+    RequestRepresentation fetchRequest(UserAuthenticationToken user, String query) throws Exception {
+        final RequestRepresentation[] res = new RequestRepresentation[1];
+        mockMvc.perform(
+                getRequest(HttpMethod.GET,
+                        REQUESTS_ROUTE + query,
+                        null,
+                        Collections.emptyMap())
+                        .with(token(user))
+                        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andDo(result -> {
+            RequestRepresentation request =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+            res[0] = request;
+        });
+        return res[0];
+    }
+
+    Map<OverviewStatus, Long> fetchCounts(UserAuthenticationToken user, String query) throws Exception {
+        final Map<OverviewStatus, Long>[] res = new Map[1];
+        mockMvc.perform(
+                getRequest(HttpMethod.GET,
+                        REQUESTS_ROUTE + query,
+                        null,
+                        Collections.emptyMap())
+                        .with(token(user))
+                        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andDo(result -> {
+            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+            Map<OverviewStatus, Long> counts =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), countsTypeReference);
+            res[0] = counts;
+        });
+        return res[0];
+    }
+
     List<RequestRepresentation> fetchAllForRole(UserAuthenticationToken user, String authority) throws Exception {
         String role;
         switch(authority) {
@@ -430,21 +516,7 @@ public abstract class AbstractRequestDataIntTest {
             default:
                 throw new RuntimeException("Unsupported authority: " + authority);
         }
-        final List<RequestRepresentation>[] res = new List[1];
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/" + role,
-                null,
-                Collections.emptyMap())
-                .with(token(user))
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                List<RequestRepresentation> requests =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-                res[0] = requests;
-            });
-        return res[0];
+        return fetchRequests(user, "/status/Validation/" + role);
     }
 
     List<RequestRepresentation> fetchAllForCoordinator(UserAuthenticationToken user) throws Exception {
@@ -484,28 +556,15 @@ public abstract class AbstractRequestDataIntTest {
         Assert.assertEquals(organisations.size(), request.getOrganisations().size());
 
         // Submit the draft. One request should have been generated (and is returned).
-        final List<RequestRepresentation>[] res = new List[1];
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/drafts/" + request.getUuid().toString() + "/submit",
-                null,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Submitted result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                List<RequestRepresentation> requests =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+        List<RequestRepresentation> requests = fetchRequests( requester,
+                "/drafts/" + request.getUuid().toString() + "/submit");
 
-                // Number of requests should equal the number of organisations it was submitted to
-                Assert.assertEquals(organisations.size(), requests.size());
-                for (RequestRepresentation req: requests) {
-                    Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-                }
-                res[0] = requests;
-            });
-        return res[0];
+        // Number of requests should equal the number of organisations it was submitted to
+        Assert.assertEquals(organisations.size(), requests.size());
+        for (RequestRepresentation req: requests) {
+            Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
+        }
+        return requests;
     }
 
     RequestRepresentation getSubmittedDraft() throws Exception {
@@ -610,11 +669,96 @@ public abstract class AbstractRequestDataIntTest {
         return approveRequest(request, coordinator1);
     }
 
-    List<UserRepresentation> nonEmptyUserRepresentationList() {
+    RequestFileRepresentation uploadRequestFile(UserAuthenticationToken user, RequestRepresentation request, String filename) throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL resource = classLoader.getResource(filename);
+
+        log.info("File: {} | {}", filename, resource);
+
+        final RequestFileRepresentation[] resultRequestFile = new RequestFileRepresentation[1];
+        mockMvc.perform(
+                getUploadRequest(
+                        REQUESTS_ROUTE + "/" + request.getUuid().toString() + "/files",
+                        resource)
+                        .with(token(user))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andDo(result -> {
+                    log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                    resultRequestFile[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestFileRepresentation.class);
+                });
+        return resultRequestFile[0];
+    }
+
+    List<RequestFileRepresentation> getRequestFiles(UserAuthenticationToken user, RequestRepresentation request) throws Exception {
+        final List<RequestFileRepresentation> files = new ArrayList<>();
+        // Fetch delivery processes
+        performProcessAction(user, ACTION_GET_FILES, request.getUuid(), HttpMethod.GET, null)
+                .andExpect(status().isOk())
+                .andDo(result -> {
+                    log.info("Result files: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                    files.addAll(
+                            mapper.readValue(result.getResponse().getContentAsByteArray(), requestFileListTypeReference));
+                });
+        return files;
+    }
+
+    /**
+     * Create a request template.
+     * This endpoint uses Basic authentication.
+     * @param requestTemplateRepresentation The request template data.
+     * @param authentication A string of the format "username:password", which will be base64 encoded.
+     * @return the view URL for the request template.
+     */
+    URI createRequestTemplate(RequestTemplateRepresentation requestTemplateRepresentation, String authentication) throws Exception {
+        MockHttpServletRequestBuilder request = getRequest(HttpMethod.POST, "/api/public/requests/templates",
+                requestTemplateRepresentation, Collections.emptyMap());
+
+        HttpHeaders header = new HttpHeaders();
+        String base64 = new String(Base64.encode(authentication.getBytes()), Charset.forName("UTF-8"));
+        header.add("Authorization", String.format("Basic %s", base64));
+        request.headers(header);
+
+        final URI[] uri = new URI[1];
+        ResultActions createRequestTemplateRequest = mockMvc.perform(request);
+        createRequestTemplateRequest
+                .andDo(result -> {
+                    log.info("Result request template: {} ({})", result.getResponse().getStatus(),
+                            result.getResponse().getContentAsString());
+                    Assert.assertEquals(result.getResponse().getStatus(), HttpStatus.ACCEPTED.value());
+                    uri[0] = new URI(result.getResponse().getContentAsString().replace("\"", ""));
+                });
+        return uri[0];
+    }
+
+    RequestTemplateRepresentation getRequestTemplate(UserAuthenticationToken user, UUID uuid) throws Exception {
+        final RequestTemplateRepresentation[] template = new RequestTemplateRepresentation[1];
+        // Fetch request template
+        mockMvc.perform(
+                getRequest(HttpMethod.GET,
+                        REQUESTS_ROUTE + "/templates/" + uuid.toString(),
+                        null,
+                        Collections.emptyMap())
+                        .with(token(user))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(result -> {
+                    log.info("Result template: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                    template[0] =
+                            mapper.readValue(result.getResponse().getContentAsByteArray(), RequestTemplateRepresentation.class);
+                });
+        return template[0];
+    }
+
+    static List<UserRepresentation> nonEmptyUserRepresentationList() {
         return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
-    List<RequestRepresentation> nonEmptyRequestList() {
+    static List<RequestRepresentation> nonEmptyRequestList() {
+        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+    }
+
+    static List<RequestFileRepresentation> nonEmptyRequestFileList() {
         return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 

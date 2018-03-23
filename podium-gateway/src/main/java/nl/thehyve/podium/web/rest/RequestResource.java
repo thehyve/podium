@@ -32,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -124,7 +125,7 @@ public class RequestResource {
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(
-        @RequestParameter @RequestBody RequestRepresentation request) throws  ActionNotAllowed {
+        @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = draftService.updateDraft(user, request);
@@ -159,7 +160,7 @@ public class RequestResource {
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed, IOException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
         List<RequestRepresentation> requests = draftService.submitDraft(user, uuid);
@@ -329,7 +330,6 @@ public class RequestResource {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.info("REST request to get a page of requests with status {} for coordinator {}", status, user.getName());
         Page<RequestRepresentation> page = requestService.findAllForCoordinatorInStatus(user, status, pageable);
-        log.info("REST request success: {}", page.getTotalElements());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
             "/api/requests/status/" + status.name() + "/coordinator");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

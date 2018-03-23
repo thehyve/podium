@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -798,15 +799,22 @@ public class PodiumProperties {
         }
     }
 
+    /**
+     * Configuration for custom access tokens for endpoints.
+     */
     public static class Access {
-        private List<String> externalRequest;
 
-        public List<String> getExternalRequest() {
-            return externalRequest;
+        /**
+         * Access tokens for the /api/public/requests/template endpoint.
+         */
+        private List<String> requestTemplate = new ArrayList<>();
+
+        public List<String> getRequestTemplate() {
+            return requestTemplate;
         }
 
-        public void setExternalRequest(List<String> externalRequest) {
-            this.externalRequest = externalRequest;
+        public void setRequestTemplate(List<String> requestTemplate) {
+            this.requestTemplate = requestTemplate;
         }
     }
 }
