@@ -8,12 +8,14 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { AttachmentsService } from '../attachments.service';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AttachmentService } from '../attachment.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
 import { Principal, User } from '../../';
 import { FormatHelper } from '../../util/format-helper';
+import { Subscription } from 'rxjs/Rx';
+import { RequestBase } from '../../request';
 
 const ATTACHMENT_TYPES = [
     {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
@@ -29,13 +31,14 @@ const ATTACHMENT_TYPES = [
     templateUrl: './attachment-list.component.html',
     styleUrls: ['attachment-list.scss']
 })
-export class AttachmentListComponent implements OnChanges, OnInit {
+export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
 
-    currentAccount: any;
+    account: User;
+    accountSubscription: Subscription;
     attachmentTypes: any[];
     error: any[];
 
-    @Input() requestUUID: string;
+    @Input() request: RequestBase;
     @Input() attachments: Attachment[];
     @Input() canUpdate: boolean;
 
@@ -47,7 +50,7 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     constructor(private principal: Principal,
-                private attachmentService: AttachmentsService) {
+                private attachmentService: AttachmentService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
         this.onDeleteFile = new EventEmitter<boolean>();
         this.onFileTypeChange = new EventEmitter<Attachment>();
@@ -55,9 +58,16 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     ngOnInit(): void {
-        this.principal.identity().then((account) => {
-            this.currentAccount = account;
-        });
+        this.accountSubscription = this.principal.getAuthenticationState()
+            .subscribe(
+                (identity) => this.account = identity
+            );
+    }
+
+    ngOnDestroy() {
+        if (this.accountSubscription) {
+            this.accountSubscription.unsubscribe();
+        }
     }
 
     refreshError(attachments): void {
@@ -99,7 +109,7 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     downloadAttachment(attachment: Attachment): void {
-        this.attachmentService.downloadAttachment(this.requestUUID, attachment.uuid).subscribe(
+        this.attachmentService.downloadAttachment(this.request, attachment.uuid).subscribe(
             (blob) => {
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
@@ -111,7 +121,7 @@ export class AttachmentListComponent implements OnChanges, OnInit {
 
     canEdit(attachment: Attachment): boolean {
         return attachment ?
-            AttachmentListComponent.isFileOwner(this.currentAccount, attachment) && this.canUpdate : this.canUpdate;
+            AttachmentListComponent.isFileOwner(this.account, attachment) && this.canUpdate : this.canUpdate;
     }
 
     formatBytes(bytes: number, precision: number) {

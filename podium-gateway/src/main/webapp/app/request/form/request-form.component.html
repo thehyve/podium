@@ -439,11 +439,11 @@
                 <div class="row">
                     <div class="form-group">
                         <pdm-attachment
-                            [requestBaseId]="requestBase.uuid"
+                            [request]="requestBase"
                             (onFinishedUpload)="onFinishedUploadAttachment($event)">
                         </pdm-attachment>
                         <pdm-attachment-list
-                            [requestUUID]="requestBase.uuid"
+                            [request]="requestBase"
                             [canUpdate]="true"
                             [attachments]="attachments"
                             (onDeleteFile)="onDeleteAttachment($event)"

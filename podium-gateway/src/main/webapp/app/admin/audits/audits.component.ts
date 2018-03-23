@@ -33,7 +33,7 @@ export class AuditsComponent implements OnInit {
 
     constructor(
         private auditsService: AuditsService,
-        private JhiParseLinks: JhiParseLinks,
+        private parseLinks: JhiParseLinks,
         @Inject(LOCALE_ID) private locale: string,
         private paginationConfig: PaginationConfig
     ) {
@@ -64,7 +64,7 @@ export class AuditsComponent implements OnInit {
             fromDate: this.fromDate, toDate: this.toDate}).subscribe(res => {
 
             this.audits = res.json();
-            this.links = this.JhiParseLinks.parse(res.headers.get('link'));
+            this.links = this.parseLinks.parse(res.headers.get('link'));
             this.totalItems = + res.headers.get('X-Total-Count');
         });
     }

@@ -26,7 +26,7 @@ export class UserMgmtDeleteDialogComponent {
     constructor(
         private userService: UserService,
         public activeModal: NgbActiveModal,
-        private JhiEventManager: JhiEventManager,
+        private eventManager: JhiEventManager,
         private router: Router
     ) {
 
@@ -39,7 +39,7 @@ export class UserMgmtDeleteDialogComponent {
 
     confirmDelete (login) {
         this.userService.delete(login).subscribe(response => {
-            this.JhiEventManager.broadcast({ name: 'userListModification',
+            this.eventManager.broadcast({ name: 'userListModification',
                 content: 'Deleted a user'});
             this.activeModal.dismiss(true);
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });

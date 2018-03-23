@@ -27,7 +27,7 @@ import { RequestAccessService } from '../../shared/request/request-access.servic
 import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 import { Organisation } from '../../shared/organisation/organisation.model';
 import { Attachment } from '../../shared/attachment/attachment.model';
-import { AttachmentsService } from '../../shared/attachment/attachments.service';
+import { AttachmentService } from '../../shared/attachment/attachment.service';
 import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 import { NgForm } from '@angular/forms';
@@ -65,7 +65,7 @@ export class RequestFormComponent implements OnInit {
     public requestDetail?: RequestDetail;
     public requestTypeOptions: any;
     public selectedDraft: any = null;
-    public isUpdating: boolean = false;
+    public isUpdating = false;
     public attachments: Attachment[];
 
     public templateUUID: string;
@@ -81,7 +81,7 @@ export class RequestFormComponent implements OnInit {
                 private activatedRoute: ActivatedRoute,
                 private principal: Principal,
                 private modalService: NgbModal,
-                private attachmentService: AttachmentsService,
+                private attachmentService: AttachmentService,
                 private organisationService: OrganisationService) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
@@ -98,24 +98,24 @@ export class RequestFormComponent implements OnInit {
 
     onFinishedUploadAttachment(success: boolean) {
         if (success) {
-            this.getAttachments(this.requestBase.uuid);
+            this.getAttachments(this.requestBase);
         }
     }
 
     onDeleteAttachment(isSuccess: boolean) {
         if (isSuccess) {
-            this.getAttachments(this.requestBase.uuid);
+            this.getAttachments(this.requestBase);
         }
     }
 
     onAttachmentTypeChange(attachment: Attachment) {
         if (attachment) {
-            this.getAttachments(this.requestBase.uuid);
+            this.getAttachments(this.requestBase);
         }
     }
 
-    private getAttachments(requestUUID) {
-        this.attachmentService.getAttachments(requestUUID).subscribe(
+    private getAttachments(request: RequestBase) {
+        this.attachmentService.getAttachments(request).subscribe(
             (attachments) => {
                 this.attachments = attachments;
                 this.requestBase.hasAttachmentsTypes = !this.hasAttachmentsTypeNone();
@@ -140,7 +140,7 @@ export class RequestFormComponent implements OnInit {
                     request => {
                         this.requestFormService.request = request;
                         this.selectRequest(this.requestFormService.request);
-                        this.getAttachments(this.requestFormService.request.uuid);
+                        this.getAttachments(this.requestFormService.request);
                     },
                     error => {
                         this.onError(error);
@@ -222,7 +222,7 @@ export class RequestFormComponent implements OnInit {
                                 )
                         }
                     });
-                    this.getAttachments(requestBase.uuid);
+                    this.getAttachments(requestBase);
                 },
                 (error) => this.onError('Error initializing base request')
             );

@@ -26,7 +26,7 @@ export class UserMgmtUnlockDialogComponent {
     constructor(
         private userService: UserService,
         public activeModal: NgbActiveModal,
-        private JhiEventManager: JhiEventManager,
+        private eventManager: JhiEventManager,
         private router: Router
     ) {
 
@@ -39,7 +39,7 @@ export class UserMgmtUnlockDialogComponent {
 
     confirmUnlock (user) {
         this.userService.unlock(user).subscribe(response => {
-            this.JhiEventManager.broadcast({ name: 'userListModification',
+            this.eventManager.broadcast({ name: 'userListModification',
                 content: 'Unlock a user'});
             this.activeModal.dismiss(true);
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });

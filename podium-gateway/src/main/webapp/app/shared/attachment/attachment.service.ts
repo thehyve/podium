@@ -13,7 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { Http, Response, ResponseContentType } from '@angular/http';
 import { Attachment } from './attachment.model';
 import { AttachmentTypes } from './attachment.constants';
-import { UploadInput } from 'ngx-uploader/index';
+import { UploadInput } from 'ngx-uploader';
 import { AuthServerProvider } from '../auth/auth-jwt.service';
 import { RequestBase } from '../request';
 
@@ -21,8 +21,6 @@ import { RequestBase } from '../request';
 export class AttachmentService {
 
     private resourceUrl = 'api/requests';
-    // input events, we use this to emit data to ngx-uploader
-    private uploadInput = new EventEmitter<UploadInput>();
 
     constructor(private http: Http, private authServerProvider: AuthServerProvider) {
     }
@@ -30,7 +28,7 @@ export class AttachmentService {
     /**
      * Upload file
      */
-    uploadRequestFile(request: RequestBase) {
+    uploadRequestFile(request: RequestBase, uploadInputEventEmitter: EventEmitter<UploadInput>) {
         let token = this.authServerProvider.getToken();
         const event: UploadInput = {
             type: 'uploadAll',
@@ -38,7 +36,7 @@ export class AttachmentService {
             headers: {'Authorization': 'Bearer ' + token},
             method: 'POST'
         };
-        this.uploadInput.emit(event);
+        uploadInputEventEmitter.emit(event);
     }
 
     /**

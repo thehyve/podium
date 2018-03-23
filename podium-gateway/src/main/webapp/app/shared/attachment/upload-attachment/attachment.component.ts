@@ -8,10 +8,11 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UploadOutput, UploadInput, UploadFile, humanizeBytes, UploaderOptions } from 'ngx-uploader';
-import { AuthServerProvider } from '../../auth/auth-jwt.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { UploadOutput, UploadFile, UploadInput, humanizeBytes, UploaderOptions } from 'ngx-uploader';
 import { MAX_UPLOAD_SIZE } from '../attachment.constants';
+import { RequestBase } from '../../request';
+import { AttachmentService } from '../attachment.service';
 
 @Component({
     selector: 'pdm-attachment',
@@ -20,35 +21,27 @@ import { MAX_UPLOAD_SIZE } from '../attachment.constants';
 })
 export class AttachmentComponent {
 
-    @Input() requestBaseId: string;
+    @Input() request: RequestBase;
     @Output() onFinishedUpload: EventEmitter<boolean>;
 
+    // input events, we use this to emit data to ngx-uploader
+    uploadInput = new EventEmitter<UploadInput>();
     options: UploaderOptions;
     files: UploadFile[];
-    uploadInput: EventEmitter<UploadInput>;
     humanizeBytes: Function;
     dragOver: boolean;
     error: any[];
 
-    constructor(private authServerProvider: AuthServerProvider) {
+    constructor(private attachmentService: AttachmentService) {
         this.files = []; // local uploading files array
-        this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
         this.onFinishedUpload = new EventEmitter<boolean>();
         this.humanizeBytes = humanizeBytes;
         this.error = [];
     }
 
     onUploadOutput(output: UploadOutput): void {
-        let token = this.authServerProvider.getToken();
         if (output.type === 'allAddedToQueue') { // when all files added in queue
-            // uncomment this if you want to auto upload files when added
-            const event: UploadInput = {
-                type: 'uploadAll',
-                url: '/api/requests/' + this.requestBaseId + '/files',
-                headers: {'Authorization': 'Bearer ' + token},
-                method: 'POST'
-            };
-            this.uploadInput.emit(event);
+            this.attachmentService.uploadRequestFile(this.request, this.uploadInput);
         } else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') { // add file to array when added
             if (output.file.size > MAX_UPLOAD_SIZE) {
                 this.error.push(`${output.file.name} is too big. Max attachment size is  ${MAX_UPLOAD_SIZE}`);
@@ -73,28 +66,6 @@ export class AttachmentComponent {
             this.files = [];
             this.onFinishedUpload.emit(output.file.responseStatus < 300);
         }
-    }
-
-    startUpload(): void {
-        const event: UploadInput = {
-            type: 'uploadAll',
-            url: '/api/requests/' + this.requestBaseId + '/addfile',
-            method: 'POST'
-        };
-
-        this.uploadInput.emit(event);
-    }
-
-    cancelUpload(id: string): void {
-        this.uploadInput.emit({type: 'cancel', id: id});
-    }
-
-    removeFile(id: string): void {
-        this.uploadInput.emit({type: 'remove', id: id});
-    }
-
-    removeAllFiles(): void {
-        this.uploadInput.emit({type: 'removeAll'});
     }
 
 }

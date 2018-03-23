@@ -22,7 +22,7 @@ export function interceptableFactory(
     localStorage: LocalStorageService,
     sessionStorage: SessionStorageService,
     injector: Injector,
-    JhiEventManager: JhiEventManager
+    eventManager: JhiEventManager
 ) {
     return new JhiInterceptableHttp(
         backend,
@@ -31,7 +31,7 @@ export function interceptableFactory(
             new AuthInterceptor(localStorage, sessionStorage),
             new AuthExpiredInterceptor(injector),
             // Other interceptors can be added here
-            new ErrorHandlerInterceptor(JhiEventManager),
+            new ErrorHandlerInterceptor(eventManager),
             new NotificationInterceptor()
         ]
     );

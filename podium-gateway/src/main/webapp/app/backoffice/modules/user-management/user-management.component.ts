@@ -52,10 +52,10 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     constructor(
         private userService: UserService,
-        private JhiParseLinks: JhiParseLinks,
-        private JhiAlertService: JhiAlertService,
+        private parseLinks: JhiParseLinks,
+        private alertService: JhiAlertService,
         private principal: Principal,
-        private JhiEventManager: JhiEventManager,
+        private eventManager: JhiEventManager,
         private overviewService: OverviewService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router
@@ -78,7 +78,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         if (this.eventSubscription) {
-            this.JhiEventManager.destroy(this.eventSubscription);
+            this.eventManager.destroy(this.eventSubscription);
         }
 
         if (this.overviewSubscription) {
@@ -87,7 +87,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     registerChangeInUsers() {
-        this.eventSubscription = this.JhiEventManager.subscribe('userListModification', () => {
+        this.eventSubscription = this.eventManager.subscribe('userListModification', () => {
             this.fetchUsers();
         });
     }
@@ -117,7 +117,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     processAvailableUsers (users: User[], headers) {
-        this.links = this.JhiParseLinks.parse(headers.get('link'));
+        this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.users = users;
