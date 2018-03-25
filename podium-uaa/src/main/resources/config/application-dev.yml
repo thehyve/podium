@@ -87,7 +87,7 @@ podium:
             clientId: internal
             clientSecret: internal
     mail: # specific Podium mail property, for standard properties see MailProperties
-        from: podiumUaa@localhost
+        from: podium@localhost
         baseUrl: http://127.0.0.1:8080
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true

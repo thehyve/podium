@@ -93,7 +93,7 @@ podium:
         corePoolSize: 2
         maxPoolSize: 50
         queueCapacity: 10000
-    cors: #By default CORS are not enabled. Uncomment to enable.
+    cors: # By default CORS is enabled.
         allowed-origins: "*"
         allowed-methods: GET, PUT, POST, DELETE, OPTIONS
         allowed-headers: "*"
@@ -101,14 +101,15 @@ podium:
         allow-credentials: true
         max-age: 1800
     mail:
-        from: podiumUaa@localhost
+        from: podium@localhost
+        # base-url: https://podium.example.com
     swagger:
-        title: podiumUaa API
-        description: podiumUaa API documentation
+        title: Podium UAA API
+        description: API documentation for the user manegement and authentication component of the Podium request portal.
         version: 0.0.1
         termsOfServiceUrl:
         contactName:
-        contactUrl:
+        contactUrl: https://github.com/thehyve/podium
         contactEmail:
         license:
         licenseUrl:
