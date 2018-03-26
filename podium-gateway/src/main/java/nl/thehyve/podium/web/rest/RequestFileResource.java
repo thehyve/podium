@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
@@ -152,13 +151,15 @@ public class RequestFileResource {
      */
     @PutMapping("/requests/{uuid}/files/{fileuuid}/type")
     @SecuredByRequestOwner
+    @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestFileRepresentation> setFileType(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
                                                                  @PathVariable("fileuuid") UUID fileUuid,
                                                                  @RequestBody RequestFileRepresentation requestFileRepresentation) {
         RequestFileType type = requestFileRepresentation.getRequestFileType();
         log.debug("REST request to set the file type of file {} for request {} to : {}", fileUuid, requestUuid, type);
-        RequestFileRepresentation requestFile = requestFileService.setFileType(requestUuid, fileUuid, type);
+        AuthenticatedUser user = securityService.getCurrentUser();
+        RequestFileRepresentation requestFile = requestFileService.setFileType(user, requestUuid, fileUuid, type);
         return ResponseEntity.ok(requestFile);
     }
 

@@ -1,17 +1,14 @@
 package nl.thehyve.podium.service;
 
-import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.enumeration.Status;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.SecurityService;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
 import nl.thehyve.podium.common.enumeration.RequestFileType;
@@ -19,8 +16,6 @@ import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.common.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.service.mapper.RequestFileMapper;
-import nl.thehyve.podium.service.mapper.RequestMapper;
-import nl.thehyve.podium.service.util.UserMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.nio.file.*;
-import java.util.Set;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -85,10 +77,38 @@ public class RequestFileService {
         // Coordinators can add files in Validation or Review status
         if (user.getOrganisationAuthorities().entrySet().stream().anyMatch(entry ->
                 organisationUuids.contains(entry.getKey()) && entry.getValue().contains(AuthorityConstants.ORGANISATION_COORDINATOR)) &&
-                Status.isCurrentStatusAllowed(request.getOverviewStatus(), OverviewStatus.Validation, OverviewStatus.Review)){
+                Status.isCurrentStatusAllowed(request.getOverviewStatus(), OverviewStatus.Validation, OverviewStatus.Review)) {
             return;
         }
         throw ActionNotAllowed.forStatus(request.getOverviewStatus());
+    }
+
+    private void checkAllowedToUpdateFile(AuthenticatedUser user, RequestFile requestFile, Request request) throws AccessDenied {
+        final Set<UUID> organisationUuids = request.getOrganisations();
+        if (requestFile.getOwner() != null) {
+            log.info("File owner not null: {}", requestFile.getOwner());
+            if (requestFile.getOwner().equals(user.getUserUuid()) &&
+                    Status.isCurrentStatusAllowed(request.getOverviewStatus(), OverviewStatus.Draft, OverviewStatus.Revision)) {
+                // Researchers can update their own files in Draft or Revision status
+                return;
+            }
+        } else {
+            log.info("Checking organisation access for file with request status {}, organisation UUIDs {}",
+                    request.getOverviewStatus(),
+                    Arrays.toString(organisationUuids.toArray(new UUID[] {})));
+
+            for (UUID organisationUuid: user.getOrganisationAuthorities().keySet()) {
+                log.info("Organisation {}: {}", organisationUuid,
+                        Arrays.toString(user.getOrganisationAuthorities().get(organisationUuid).toArray(new String[] {})));
+            }
+            if (user.getOrganisationAuthorities().entrySet().stream().anyMatch(entry ->
+                    organisationUuids.contains(entry.getKey()) && entry.getValue().contains(AuthorityConstants.ORGANISATION_COORDINATOR)) &&
+                    Status.isCurrentStatusAllowed(request.getOverviewStatus(), OverviewStatus.Validation, OverviewStatus.Review)) {
+                // Coordinators can update files uploaded by the organisation in Validation or Review status
+                return;
+            }
+        }
+        throw new AccessDenied("Not allowed to update file.");
     }
 
     private Path getRequestFilePath(RequestFile requestFile) {
@@ -123,7 +143,9 @@ public class RequestFileService {
         checkAllowedToAddFile(user, request);
 
         RequestFile requestFile = new RequestFile();
-        requestFile.setOwner(user.getUserUuid());
+        if (request.getRequester().equals(user.getUserUuid())) {
+            requestFile.setOwner(user.getUserUuid());
+        }
         requestFile.setRequest(request);
         requestFile.setRequestFileType(requestFileType);
         requestFile.setFileName(file.getOriginalFilename());
@@ -172,21 +194,21 @@ public class RequestFileService {
         return representations;
     }
 
-    public void deleteFile(IdentifiableUser requester, UUID requestUuid, UUID fileUuid) throws ResourceNotFound, IOException {
+    public void deleteFile(AuthenticatedUser user, UUID requestUuid, UUID fileUuid) throws ResourceNotFound, IOException {
+        Request request = findRequest(requestUuid);
         RequestFile requestFile = findRequestFile(requestUuid, fileUuid);
-
-        if (!requestFile.getOwner().equals(requester.getUserUuid())) {
-            // Only owners can delete files.
-            throw new AccessDenied("Only owners can delete files.");
-        }
+        checkAllowedToUpdateFile(user, requestFile, request);
 
         requestFile.setDeleted(true);
         requestFileRepository.save(requestFile);
         Files.delete(getRequestFilePath(requestFile));
     }
 
-    public RequestFileRepresentation setFileType(UUID requestUuid, UUID fileUuid, RequestFileType filetype) {
+    public RequestFileRepresentation setFileType(AuthenticatedUser user, UUID requestUuid, UUID fileUuid, RequestFileType filetype) {
+        Request request = findRequest(requestUuid);
         RequestFile requestFile = findRequestFile(requestUuid, fileUuid);
+        checkAllowedToUpdateFile(user, requestFile, request);
+
         requestFile.setRequestFileType(filetype);
         requestFileRepository.save(requestFile);
         return requestFileMapper.requestFileToRequestFileDto(requestFile);

@@ -15,7 +15,7 @@ import { AttachmentTypes } from '../attachment.constants';
 import { Principal, User } from '../../';
 import { FormatHelper } from '../../util/format-helper';
 import { Subscription } from 'rxjs/Rx';
-import { RequestBase } from '../../request';
+import { RequestAccessService, RequestBase } from '../../request';
 
 const ATTACHMENT_TYPES = [
     {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
@@ -46,11 +46,12 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     @Output() onFileTypeChange: EventEmitter<Attachment>;
 
     static isFileOwner(user: User, attachment: Attachment): boolean {
-        return user.uuid === attachment.owner.uuid;
+        return attachment.owner && (user.uuid === attachment.owner.uuid);
     }
 
     constructor(private principal: Principal,
-                private attachmentService: AttachmentService) {
+                private attachmentService: AttachmentService,
+                private requestAccessService: RequestAccessService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
         this.onDeleteFile = new EventEmitter<boolean>();
         this.onFileTypeChange = new EventEmitter<Attachment>();
@@ -122,8 +123,11 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     canEdit(attachment: Attachment): boolean {
-        return attachment ?
-            AttachmentListComponent.isFileOwner(this.account, attachment) && this.canUpdate : this.canUpdate;
+        if (!this.canUpdate) {
+            return false;
+        }
+        return AttachmentListComponent.isFileOwner(this.account, attachment) ||
+            ((!attachment.owner) && this.requestAccessService.isCoordinatorFor(attachment.request));
     }
 
     formatBytes(bytes: number, precision: number) {

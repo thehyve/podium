@@ -18,7 +18,7 @@
             }
         },
         "option": {
-            "NONE": "-- none --",
+            "NONE": "<em>&ndash; None &ndash;</em>",
             "METC_LETTER": "METC Letter",
             "ORG_CONDITIONS": "Organisation Conditions",
             "MTA": "MTA",

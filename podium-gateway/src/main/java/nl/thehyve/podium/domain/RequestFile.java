@@ -41,7 +41,6 @@ public class RequestFile extends AbstractAuditingEntity implements Serializable 
     @Setter(AccessLevel.NONE)
     private UUID uuid;
 
-    @Column(nullable = false)
     private UUID owner;
 
     @OneToOne

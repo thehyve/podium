@@ -33,9 +33,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="owner" type="uuid">
-                <constraints nullable="false" />
-            </column>
+            <column name="owner" type="uuid"/>
 
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
