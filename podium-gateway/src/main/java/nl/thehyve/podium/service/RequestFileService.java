@@ -91,6 +91,12 @@ public class RequestFileService {
         throw ActionNotAllowed.forStatus(request.getOverviewStatus());
     }
 
+    private Path getRequestFilePath(RequestFile requestFile) {
+        String uploadDir = podiumProperties.getFiles().getUploadDir();
+        String fileLocation = requestFile.getFileLocation();
+        return Paths.get(uploadDir, fileLocation);
+    }
+
     private Path getTempFile() throws IOException {
         String uploadDir = podiumProperties.getFiles().getUploadDir();
         Path path = Paths.get(uploadDir);
@@ -136,7 +142,7 @@ public class RequestFileService {
         RequestFile target = new RequestFile();
         requestFileMapper.minimalRequestFileToRequestFile(source, target);
         Path targetFile = getTempFile();
-        Path sourceFile = new File(source.getFileLocation()).toPath();
+        Path sourceFile = getRequestFilePath(source);
         Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
         target.setFileLocation(targetFile.getFileName().toString());
         return target;
@@ -176,9 +182,7 @@ public class RequestFileService {
 
         requestFile.setDeleted(true);
         requestFileRepository.save(requestFile);
-        String uploadDir = podiumProperties.getFiles().getUploadDir();
-        String fileLocation = requestFile.getFileLocation();
-        Files.delete(Paths.get(uploadDir + '/' + fileLocation));
+        Files.delete(getRequestFilePath(requestFile));
     }
 
     public RequestFileRepresentation setFileType(UUID requestUuid, UUID fileUuid, RequestFileType filetype) {
