@@ -3,9 +3,12 @@
 
 <img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png?raw=true" style="display:inline;" width="200" height="105">
 
+
 # Welcome to the Podium request portal
-**Podium** is the request portal for samples, data and images from biobanks with the purpose to uniformize the request 
-and review processes for all associated users and organisations.
+
+**Podium** is the request portal for samples, data and images from biobanks
+with the purpose to uniformize the request and review processes
+for all associated users and organisations.
 
 
 
@@ -29,6 +32,7 @@ The gateway serves the Angular frontend application, contains a component
 for handling requests and deliveries, and also handles web traffic
 
 The services have to be started in order.
+
 
 
 ## Development
@@ -59,7 +63,6 @@ configured in the root [pom.xml](pom.xml).
 [Yarn] is used to manage CSS and JavaScript dependencies for the user interface application.
 You can upgrade dependencies by specifying a newer version in [package.json](podium-gateway/package.json).
 You can use `npm install`, `yarn update` and `yarn install` to manage dependencies.
-
 
 ### Install
 
@@ -97,7 +100,6 @@ npm run start
 ```
 This will open the application at [http://localhost:9000](http://localhost:9000) in your browser.
 
-
 ### Building for production
 
 To optimize the podiumGateway application for production, run:
@@ -134,7 +136,6 @@ mvn -Dspring.profiles.active=h2,test test
 ```
 Tests are run automatically on [Travis](https://travis-ci.org/thehyve/podium/branches).
 
-
 ### User interface tests
 
 User interface unit tests are run by [Karma] and written with [Jasmine].
@@ -143,7 +144,6 @@ They're located in `src/test/javascript/` in each of the service folders and can
 ```bash
 npm run test
 ```
-
 
 ### End to end (e2e) testing
 
@@ -158,7 +158,7 @@ The reason for this is that the setup steps makes use of routes from podium-uaa 
 npm install --global protractor
 ```
 
-**2. Run a development [environment](../README.md#development)**
+**2. Run a development [environment](#development)**
 
 **3. Run tests**
 ```bash
@@ -175,7 +175,6 @@ protractor --specs=e2e/features/bbmri-admin-organisations.feature
 By default the test suite expects the user interface to be available at port 9000.
 To change this, set the `baseUrl` setting in [protractor.conf.js](podium-gateway/src/test/javascript/protractor.conf.js).
 
-
 #### Adding tests
 Test are made up out of three main components.
 - A scenario described in a feature file. `e2e/features/*.feature`
@@ -186,6 +185,25 @@ The director class is used to bind the test data to test scripts. dataIds that a
 retrieve test data from the appropriate dictionary.
 for examples on how to do this look at the .ts files in `e2e/stepdefinitions/*.ts`
 
+
+
+## License
+
+Copyright &copy; 2017, 2018 &nbsp; The Hyve and respective contributors.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the Apache 2.0 License
+published by the Apache Software Foundation, either version 2.0 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+Apache 2.0 License for more details.
+
+You should have received a copy of the [Apache 2.0 License](al-2.0.txt)
+along with this program. If not, see
+https://www.apache.org/licenses/LICENSE-2.0.txt.
 
 
 [JHipster Homepage and latest documentation]: https://jhipster.github.io
