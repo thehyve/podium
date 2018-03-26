@@ -160,7 +160,7 @@ export class RequestFormComponent implements OnInit {
         // map search query
         this.requestDetail.searchQuery = requestTemplate.humanReadable;
 
-        if (requestTemplate.organizationIds) {
+        if (requestTemplate.organisations) {
 
             let organisationObservables: Observable<any>[] = [];
             this.listOfInvalidOrganisationUUID = [];
@@ -171,7 +171,7 @@ export class RequestFormComponent implements OnInit {
             ];
 
             // Get organisations by uuid
-            for (let collection of requestTemplate.organizationIds) {
+            for (let collection of requestTemplate.organisations) {
                 let obx = this.organisationService.findByUuid(collection)
                     .map((res: Organisation) => res)
                     .catch((error, caught) => {
