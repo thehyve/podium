@@ -209,33 +209,18 @@ export class AdminConsole {
         });
     }
 
-    public getFiles(persona: Persona, draft: Request) {
-
+    public getFiles(persona: Persona, req: Request) {
         return this.authenticate(persona).then((body) => {
             let token = parseJSON(body).access_token;
-
             let options = {
                 method: 'GET',
-                url: this.apiUrl + 'api/requests/drafts',
+                url: this.apiUrl + 'api/requests/' + req['uuid'] + '/files',
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
             };
             return request(options).then((body) => {
-                let draftUUID = parseJSON(body).filter(function (value) {
-                    return value["requestDetail"]["title"] == draft["title"];
-                })[0]['uuid'];
-
-                let options = {
-                    method: 'GET',
-                    url: this.apiUrl + 'api/requests/' + draftUUID + '/files',
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                };
-                return request(options).then((body) => {
-                    return parseJSON(body);
-                })
+                return parseJSON(body);
             })
         })
     }
@@ -259,11 +244,28 @@ export class AdminConsole {
      *  status ['Review', 'Delivery']
      *  role ['requester', ]
      */
-    public getRequest(persona: Persona, status, role: string, filter: (body) => boolean) {
+    public getRequest(persona: Persona, status, role: string, filter: (body) => boolean): Promise<any> {
         return this.getRequests(persona, status, role).then((drafts) => {
-            return drafts.filter((value) => {
+            let req = drafts.filter((value) => {
                 return filter(value);
             })[0];
+            return this.getRequestDetails(persona, req);
+        });
+    }
+
+    public getRequestDetails(persona: Persona, req: Request): Promise<any> {
+        return this.authenticate(persona).then((body) => {
+            let token = parseJSON(body).access_token;
+            let options = {
+                method: 'GET',
+                url: this.apiUrl + 'api/requests/' + req['uuid'],
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            });
         });
     }
 
