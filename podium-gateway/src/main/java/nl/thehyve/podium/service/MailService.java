@@ -27,6 +27,19 @@ public class MailService extends AbstractMailService {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
+    private Context getDefaultContextForUser(UserRepresentation user) {
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Context context = new Context(locale);
+        context.setVariable(USER, user);
+        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        return context;
+    }
+
+    private String getMessage(UserRepresentation user, String messageKey, Object ... parameters) {
+        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        return messageSource.getMessage(messageKey, parameters, locale);
+    }
+
     /**
      * Send a notification email to the coordinators of an organisation that a request has been
      * submitted to their organisation.
@@ -43,14 +56,11 @@ public class MailService extends AbstractMailService {
             request, organisation, coordinators == null ? null : coordinators.size());
         for (UserRepresentation user: coordinators) {
             log.debug("Sending request submitted e-mail to '{}'", user.getEmail());
-            Locale locale = Locale.forLanguageTag(user.getLangKey());
-            Context context = new Context(locale);
-            context.setVariable(USER, user);
-            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            Context context = getDefaultContextForUser(user);
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestSubmitted", context);
-            String subject = messageSource.getMessage("email.organisationRequestSubmitted.title", new Object[]{request.generateStringId()}, locale);
+            String subject = getMessage(user, "email.organisationRequestSubmitted.title", request.generateStringId());
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -68,15 +78,12 @@ public class MailService extends AbstractMailService {
         log.info("Notifying requester: requester = {}, #requests = {}",
             requester, organisationRequests == null ? null : organisationRequests.size());
         log.debug("Sending request submitted e-mail to '{}'", requester.getEmail());
-        Locale locale = Locale.forLanguageTag(requester.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, requester);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(requester);
         context.setVariable("requests", organisationRequests);
         String requestList = organisationRequests.stream().map(RequestRepresentation::generateStringId).collect(Collectors.joining(", "));
         context.setVariable("requestList", requestList);
         String content = templateEngine.process("requesterRequestSubmitted", context);
-        String subject = messageSource.getMessage("email.requesterRequestSubmitted.title", new Object[]{requestList}, locale);
+        String subject = getMessage(requester, "email.requesterRequestSubmitted.title", requestList);
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -92,13 +99,11 @@ public class MailService extends AbstractMailService {
     ) {
         log.info("Notifying requester: requester = {}, request = {}", requester, requestRepresentation);
         log.debug("Sending request rejection e-mail to requester '{}'", requester.getEmail());
-        Locale locale = Locale.forLanguageTag(requester.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, requester);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(requester);
         context.setVariable("request", requestRepresentation);
         String content = templateEngine.process("requesterRequestRejected", context);
-        String subject = messageSource.getMessage("email.requesterRequestRejected.title", new Object[]{requestRepresentation.generateStringId()}, locale);
+        String subject = getMessage(requester, "email.requesterRequestRejected.title",
+                requestRepresentation.generateStringId());
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -117,14 +122,12 @@ public class MailService extends AbstractMailService {
             request, organisation, coordinators == null ? null : coordinators.size());
         for (UserRepresentation user: coordinators) {
             log.debug("Sending request revision e-mail to '{}'", user.getEmail());
-            Locale locale = Locale.forLanguageTag(user.getLangKey());
-            Context context = new Context(locale);
-            context.setVariable(USER, user);
-            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            Context context = getDefaultContextForUser(user);
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestRevisionSubmitted", context);
-            String subject = messageSource.getMessage("email.organisationRequestRevisionSubmitted.title", new Object[]{request.generateStringId()}, locale);
+            String subject = getMessage(user, "email.organisationRequestRevisionSubmitted.title",
+                    request.generateStringId());
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -137,14 +140,11 @@ public class MailService extends AbstractMailService {
             request, organisation, reviewers == null ? null : reviewers.size());
         for (UserRepresentation user : reviewers) {
             log.debug("Sending review request e-mail to '{}'", user.getEmail());
-            Locale locale = Locale.forLanguageTag(user.getLangKey());
-            Context context = new Context(locale);
-            context.setVariable(USER, user);
-            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            Context context = getDefaultContextForUser(user);
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("reviewerRequestReview", context);
-            String subject = messageSource.getMessage("email.reviewerRequestReview.title", new Object[]{request.generateStringId()}, locale);
+            String subject = getMessage(user, "email.reviewerRequestReview.title", request.generateStringId());
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -158,14 +158,12 @@ public class MailService extends AbstractMailService {
             request, organisation, coordinators == null ? null : coordinators.size());
         for (UserRepresentation user : coordinators) {
             log.debug("Sending request reviewed e-mail to '{}'", user.getEmail());
-            Locale locale = Locale.forLanguageTag(user.getLangKey());
-            Context context = new Context(locale);
-            context.setVariable(USER, user);
-            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            Context context = getDefaultContextForUser(user);
             context.setVariable("request", request);
             context.setVariable("reviewer", reviewer);
             String content = templateEngine.process("organisationRequestReviewed", context);
-            String subject = messageSource.getMessage("email.organisationRequestReviewed.title", new Object[]{request.generateStringId()}, locale);
+            String subject = getMessage(user, "email.organisationRequestReviewed.title",
+                    request.generateStringId());
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -183,13 +181,11 @@ public class MailService extends AbstractMailService {
     ) {
         log.info("Notifying requester: requester = {}, request = {}", requester, request);
         log.debug("Sending request approved e-mail to '{}'", requester.getEmail());
-        Locale locale = Locale.forLanguageTag(requester.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, requester);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(requester);
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestApproved", context);
-        String subject = messageSource.getMessage("email.requesterRequestApproved.title", new Object[]{request.generateStringId()}, locale);
+        String subject = getMessage(requester, "email.requesterRequestApproved.title",
+                request.generateStringId());
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -206,13 +202,11 @@ public class MailService extends AbstractMailService {
     ) {
         log.info("Notifying requester: requester = {}, request = {}", requester, request);
         log.debug("Sending request revision e-mail to '{}'", requester.getEmail());
-        Locale locale = Locale.forLanguageTag(requester.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, requester);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(requester);
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestRevision", context);
-        String subject = messageSource.getMessage("email.requesterRequestRevision.title", new Object[]{request.generateStringId()}, locale);
+        String subject = getMessage(requester, "email.requesterRequestRevision.title",
+                request.generateStringId());
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -227,16 +221,14 @@ public class MailService extends AbstractMailService {
     public void sendDeliveryReleasedNotificationToRequester(
         UserRepresentation requester, RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) {
         log.info("Notifying requester: requester = {}, delivery = {}", requester, deliveryProcess);
-        Locale locale = Locale.forLanguageTag(requester.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, requester);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(requester);
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryReleased", context);
-        String[] args = new String[] {request.generateStringId(),
-            deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
-        String subject = messageSource.getMessage("email.requesterDeliveryReleased.title", args, locale);
+        String subject = getMessage(requester, "email.requesterDeliveryReleased.title",
+                request.generateStringId(),
+                deliveryProcess.getType().name(),
+                request.getOrganisations().get(0).getName());
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -257,16 +249,14 @@ public class MailService extends AbstractMailService {
             deliveryProcess, organisation, coordinators == null ? null : coordinators.size());
         for (UserRepresentation user: coordinators) {
             log.debug("Sending delivery received e-mail to '{}'", user.getEmail());
-            Locale locale = Locale.forLanguageTag(user.getLangKey());
-            Context context = new Context(locale);
-            context.setVariable(USER, user);
-            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+            Context context = getDefaultContextForUser(user);
             context.setVariable("request", request);
             context.setVariable("deliveryProcess", deliveryProcess);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationDeliveryReceived", context);
-            String[] args = new String[] {request.generateStringId(), deliveryProcess.getType().name()};
-            String subject = messageSource.getMessage("email.organisationDeliveryReceived.title", args, locale);
+            String subject = getMessage(user, "email.organisationDeliveryReceived.title",
+                    request.generateStringId(),
+                    deliveryProcess.getType().name());
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
@@ -280,14 +270,12 @@ public class MailService extends AbstractMailService {
     @Async
     public void sendRequestClosedNotificationToRequester(UserRepresentation requester, RequestRepresentation request) {
         log.info("Notifying requester: requester = {}, request = {}", requester, request);
-        Locale locale = Locale.forLanguageTag(requester.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, requester);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(requester);
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestClosed", context);
-        String[] args = new String[] {request.generateStringId(), request.getOrganisations().get(0).getName()};
-        String subject = messageSource.getMessage("email.requesterRequestClosed.title", args, locale);
+        String subject = getMessage(requester, "email.requesterRequestClosed.title",
+                request.generateStringId(),
+                request.getOrganisations().get(0).getName());
         sendEmail(requester.getEmail(), subject, content, false, true);
     }
 
@@ -303,15 +291,13 @@ public class MailService extends AbstractMailService {
         log.info("Notifying requester: delivery = {}, requester = {}",
             deliveryProcess, user);
         log.debug("Sending delivery received e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(user);
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryCancelled", context);
-        String[] args = new String[] {request.generateStringId(), deliveryProcess.getType().name(), request.getOrganisations().get(0).getName()};
-        String subject = messageSource.getMessage("email.requesterDeliveryCancelled.title", args, locale);
+        String subject = getMessage(user, "email.requesterDeliveryCancelled.title",
+                request.generateStringId(), deliveryProcess.getType().name(),
+                request.getOrganisations().get(0).getName());
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
