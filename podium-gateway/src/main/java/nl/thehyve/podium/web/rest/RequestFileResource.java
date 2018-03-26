@@ -18,7 +18,7 @@ import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.enumeration.RequestFileType;
 import nl.thehyve.podium.service.*;
 import nl.thehyve.podium.common.service.dto.RequestFileRepresentation;
-import nl.thehyve.podium.web.rest.util.HeaderUtil;
+import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

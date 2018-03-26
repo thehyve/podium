@@ -6,9 +6,9 @@
             "createOrEditLabel": "Create or edit a user"
         },
         "created": "A new user is created with identifier {{ param }}",
-        "updated": "An user is updated with identifier {{ param }}",
-        "deleted": "An user is deleted with identifier {{ param }}",
-        "unlocked": "An user is unlocked with identifier {{ param }}",
+        "updated": "A user is updated with identifier {{ param }}",
+        "deleted": "A user is deleted with identifier {{ param }}",
+        "unlocked": "A user is unlocked with identifier {{ param }}",
         "unlock": {
             "question": "Are you sure you want to unlock user {{ login }}?"
         },

@@ -1,33 +1,26 @@
 {
-    "podiumGatewayApp": {
-        "organisation" : {
-            "home": {
-                "title": "Organisations",
-                "createLabel": "Create a new organisation",
-                "createOrEditLabel": "Create or edit an organisation",
-                "search": "Search for organisation"
-            },
-            "delete": {
-                "question": "Are you sure you want to delete organisation {{ name }}?"
-            },
-            "detail": {
-                "title": "Organisation"
-            },
-            "name": "Name",
-            "shortName": "Short name",
-            "activated": "Activated",
-            "deactivated": "Deactivated",
-            "organisationAdminInactive":
-                "Your organisation requires all fields to be filled in and has a user assigned for each of the roles.<br />Contact the BBMRI admin to validate your organisation.",
-            "saved": "Successfully saved organisation",
-            "updated": "Successfully updated organisation"
-        }
-    },
-    "podiumuaaApp": {
-        "organisation" : {
-            "created": "A new organisation is created with identifier {{ param }}",
-            "updated": "An organisation is updated with identifier {{ param }}",
-            "deleted": "An organisation is deleted with identifier {{ param }}"
-        }
+    "organisation" : {
+        "home": {
+            "title": "Organisations",
+            "createLabel": "Create a new organisation",
+            "createOrEditLabel": "Create or edit an organisation",
+            "search": "Search for organisation"
+        },
+        "delete": {
+            "question": "Are you sure you want to delete organisation {{ name }}?"
+        },
+        "detail": {
+            "title": "Organisation"
+        },
+        "name": "Name",
+        "shortName": "Short name",
+        "activated": "Activated",
+        "deactivated": "Deactivated",
+        "organisationAdminInactive":
+            "Your organisation requires all fields to be filled in and has a user assigned for each of the roles.<br />Contact the BBMRI admin to validate your organisation.",
+        "saved": "Successfully saved organisation",
+        "updated": "Successfully updated organisation",
+        "created": "A new organisation is created with identifier {{ param }}",
+        "deleted": "An organisation is deleted with identifier {{ param }}"
     }
 }

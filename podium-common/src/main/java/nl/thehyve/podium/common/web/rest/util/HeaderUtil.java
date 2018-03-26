@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.util;
+package nl.thehyve.podium.common.web.rest.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,17 @@ public final class HeaderUtil {
 
     private static final Logger log = LoggerFactory.getLogger(HeaderUtil.class);
 
-    private static final String APPLICATION_NAME = "podiumGatewayApp";
+    private static final String APPLICATION_NAME = "Podium";
+    private static final String PARAMS_HEADER_NAME = "X-" + APPLICATION_NAME + "-params";
+    private static final String ALERT_HEADER_NAME = "X-" + APPLICATION_NAME + "-alert";
 
     private HeaderUtil() {
     }
 
     public static HttpHeaders createAlert(String message, String param) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-podiumGatewayApp-alert", message);
-        headers.add("X-podiumGatewayApp-params", param);
+        headers.add(ALERT_HEADER_NAME, message);
+        headers.add(PARAMS_HEADER_NAME, param);
         return headers;
     }
 
@@ -42,11 +44,4 @@ public final class HeaderUtil {
         return createAlert(APPLICATION_NAME + "." + entityName + ".deleted", param);
     }
 
-    public static HttpHeaders createFailureAlert(String entityName, String errorKey, String defaultMessage) {
-        log.error("Entity creation failed, {}", defaultMessage);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-podiumGatewayApp-error", "error." + errorKey);
-        headers.add("X-podiumGatewayApp-params", entityName);
-        return headers;
-    }
 }

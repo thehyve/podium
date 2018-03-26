@@ -17,9 +17,9 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
+import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
 import nl.thehyve.podium.service.*;
-import nl.thehyve.podium.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.web.rest.util.PaginationUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

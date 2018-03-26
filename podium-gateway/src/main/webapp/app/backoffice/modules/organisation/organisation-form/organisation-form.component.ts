@@ -67,7 +67,7 @@ export class OrganisationFormComponent implements OnInit {
             this.organisation = result;
         }
 
-        let notification = isCreate ? 'podiumGatewayApp.organisation.saved' : 'podiumGatewayApp.organisation.updated';
+        let notification = isCreate ? 'organisation.saved' : 'organisation.updated';
 
         this.alertService.success(notification);
         this.isSaving = false;

@@ -10,12 +10,12 @@
 
 <div class="content-wrapper">
     <h2>
-        <span jhiTranslate="podiumGatewayApp.organisation.home.title">Organisations</span>
+        <span jhiTranslate="organisation.home.title">Organisations</span>
         <button class="btn btn-primary float-xs-right create-organisation"
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                 [routerLink]="['./new']">
             <span class="material-icons">add_circle_outline</span>
-            <span class="hidden-sm-down" jhiTranslate="podiumGatewayApp.organisation.home.createLabel">
+            <span class="hidden-sm-down" jhiTranslate="organisation.home.createLabel">
             Create new Organisation
             </span>
         </button>
@@ -28,7 +28,7 @@
                 <div class="input-group pull-right">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
                            name="currentSearch"
-                           placeholder="{{ 'podiumGatewayApp.organisation.home.search' | translate }}">
+                           placeholder="{{ 'organisation.home.search' | translate }}">
                     <span class="input-group-btn width-min">
                         <button class="btn btn-info"
                                 (click)="search(currentSearch, transitionOrganisations.bind(this))"
@@ -53,11 +53,11 @@
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse"
                 [callback]="transitionOrganisations.bind(this)">
                 <th jhiSortBy="shortName">
-                    <span jhiTranslate="podiumGatewayApp.organisation.shortName">Short name</span>
+                    <span jhiTranslate="organisation.shortName">Short name</span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th jhiSortBy="name">
-                    <span jhiTranslate="podiumGatewayApp.organisation.name">Name</span>
+                    <span jhiTranslate="organisation.name">Name</span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th></th>
@@ -89,11 +89,11 @@
                                 (click)="toggleActivated (organisation)">
                             <i *ngIf="!organisation.activated" class="material-icons">pause_circle_filled</i>
                             <span class="hidden-md-down" *ngIf="!organisation.activated"
-                                  jhiTranslate="podiumGatewayApp.organisation.deactivated">Deactivated
+                                  jhiTranslate="organisation.deactivated">Deactivated
                             </span>
                             <i *ngIf="organisation.activated" class="material-icons">check_circle</i>
                             <span class="hidden-md-down" *ngIf="organisation.activated"
-                                  jhiTranslate="podiumGatewayApp.organisation.activated">Activated
+                                  jhiTranslate="organisation.activated">Activated
                             </span>
                         </button>
                         <button type="submit"

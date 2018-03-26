@@ -5,7 +5,7 @@
  * See the file LICENSE in the root of this repository.
  */
 
-package nl.thehyve.podium.web.rest.util;
+package nl.thehyve.podium.common.web.rest.util;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ public final class PaginationUtil {
     private PaginationUtil() {
     }
 
-    public static HttpHeaders generatePaginationHttpHeaders(Page page, String baseUrl)
+    public static HttpHeaders generatePaginationHttpHeaders(Page<?> page, String baseUrl)
         throws URISyntaxException {
 
         HttpHeaders headers = new HttpHeaders();
@@ -53,7 +53,7 @@ public final class PaginationUtil {
         return UriComponentsBuilder.fromUriString(baseUrl).queryParam("page", page).queryParam("size", size).toUriString();
     }
 
-    public static HttpHeaders generateSearchPaginationHttpHeaders(String query, Page page, String baseUrl)
+    public static HttpHeaders generateSearchPaginationHttpHeaders(String query, Page<?> page, String baseUrl)
         throws URISyntaxException {
 
         HttpHeaders headers = new HttpHeaders();

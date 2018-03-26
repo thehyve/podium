@@ -41,7 +41,7 @@ export const organisationRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title',
+            pageTitle: 'organisation.home.title',
             breadcrumb: 'overview'
         },
         canActivate: [UserRouteAccessService]
@@ -51,7 +51,7 @@ export const organisationRoute: Routes = [
         component: OrganisationFormComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title',
+            pageTitle: 'organisation.detail.title',
             breadcrumb: 'new organisation'
         },
         canActivate: [UserRouteAccessService]
@@ -61,7 +61,7 @@ export const organisationRoute: Routes = [
         component: OrganisationDeletePopupComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title'
+            pageTitle: 'organisation.home.title'
         },
         outlet: 'popup',
         canActivate: [UserRouteAccessService]
@@ -71,7 +71,7 @@ export const organisationRoute: Routes = [
         component: OrganisationFormComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title',
+            pageTitle: 'organisation.detail.title',
             breadcrumb: 'edit organisation'
         },
         canActivate: [UserRouteAccessService]

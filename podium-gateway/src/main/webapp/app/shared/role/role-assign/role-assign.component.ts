@@ -290,7 +290,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     private onSaveSuccess(res: Response, isDelete: boolean) {
-        let notification = isDelete ? 'podiumGatewayApp.roleAssign.deleted' : 'podiumGatewayApp.roleAssign.saved';
+        let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
         this.alertService.success(notification);
         this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
