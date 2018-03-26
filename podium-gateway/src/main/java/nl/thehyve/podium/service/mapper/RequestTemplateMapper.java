@@ -61,11 +61,13 @@ public abstract class RequestTemplateMapper {
         if (collections != null) {
             for (Map<String, String> collection : collections) {
                 String biobankId = collection.get(ORGANISATION_UUID_KEY);
-                try {
-                    UUID biobankUUID = UUID.fromString(biobankId);
-                    organisationUUIDs.add(biobankUUID);
-                } catch (IllegalArgumentException e) {
-                    // skip
+                if (biobankId != null) {
+                    try {
+                        UUID biobankUUID = UUID.fromString(biobankId);
+                        organisationUUIDs.add(biobankUUID);
+                    } catch (IllegalArgumentException e) {
+                        // skip
+                    }
                 }
             }
         }
