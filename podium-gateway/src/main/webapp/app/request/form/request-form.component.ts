@@ -85,6 +85,7 @@ export class RequestFormComponent implements OnInit {
                 private organisationService: OrganisationService) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
+            this.getAttachments(request);
         });
     }
 

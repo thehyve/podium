@@ -84,8 +84,10 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        let files = changes.attachments.currentValue;
-        this.refreshError(files);
+        if (changes.attachments) {
+            let files = changes.attachments.currentValue;
+            this.refreshError(files);
+        }
     }
 
     onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
