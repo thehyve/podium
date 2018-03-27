@@ -8,11 +8,14 @@
  *
  */
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { AttachmentsService } from '../attachments.service';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { AttachmentService } from '../attachment.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
-import { Principal } from '../../auth/principal.service';
+import { Principal, User } from '../../';
+import { FormatHelper } from '../../util/format-helper';
+import { Subscription } from 'rxjs/Rx';
+import { RequestAccessService, RequestBase } from '../../request';
 
 const ATTACHMENT_TYPES = [
     {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
@@ -28,21 +31,27 @@ const ATTACHMENT_TYPES = [
     templateUrl: './attachment-list.component.html',
     styleUrls: ['attachment-list.scss']
 })
-export class AttachmentListComponent implements OnChanges, OnInit {
+export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
 
-    currentAccount: any;
+    account: User;
+    accountSubscription: Subscription;
     attachmentTypes: any[];
     error: any[];
 
-    @Input() requestUUID: string;
+    @Input() request: RequestBase;
     @Input() attachments: Attachment[];
     @Input() canUpdate: boolean;
 
     @Output() onDeleteFile: EventEmitter<boolean>;
     @Output() onFileTypeChange: EventEmitter<Attachment>;
 
+    static isFileOwner(user: User, attachment: Attachment): boolean {
+        return attachment.owner && (user.uuid === attachment.owner.uuid);
+    }
+
     constructor(private principal: Principal,
-                private attachmentService: AttachmentsService) {
+                private attachmentService: AttachmentService,
+                private requestAccessService: RequestAccessService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
         this.onDeleteFile = new EventEmitter<boolean>();
         this.onFileTypeChange = new EventEmitter<Attachment>();
@@ -50,9 +59,16 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     ngOnInit(): void {
-        this.principal.identity().then((account) => {
-            this.currentAccount = account;
-        });
+        this.accountSubscription = this.principal.getAuthenticationState()
+            .subscribe(
+                (identity) => this.account = identity
+            );
+    }
+
+    ngOnDestroy() {
+        if (this.accountSubscription) {
+            this.accountSubscription.unsubscribe();
+        }
     }
 
     refreshError(attachments): void {
@@ -69,8 +85,10 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        let files = changes.attachments.currentValue;
-        this.refreshError(files);
+        if (changes.attachments) {
+            let files = changes.attachments.currentValue;
+            this.refreshError(files);
+        }
     }
 
     onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
@@ -94,7 +112,7 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     downloadAttachment(attachment: Attachment): void {
-        this.attachmentService.downloadAttachment(this.requestUUID, attachment.uuid).subscribe(
+        this.attachmentService.downloadAttachment(this.request, attachment.uuid).subscribe(
             (blob) => {
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
@@ -105,11 +123,15 @@ export class AttachmentListComponent implements OnChanges, OnInit {
     }
 
     canEdit(attachment: Attachment): boolean {
-        return attachment ?
-            this.attachmentService.isFileOwner(this.currentAccount, attachment) && this.canUpdate : this.canUpdate;
+        if (!this.canUpdate) {
+            return false;
+        }
+        return AttachmentListComponent.isFileOwner(this.account, attachment) ||
+            ((!attachment.owner) && this.requestAccessService.isCoordinatorFor(attachment.request));
     }
 
-    formatByte(bytes: any, precision: number) {
-        return this.attachmentService.formatByte(bytes, precision);
+    formatBytes(bytes: number, precision: number) {
+        return FormatHelper.formatBytes(bytes, precision);
     }
+
 }

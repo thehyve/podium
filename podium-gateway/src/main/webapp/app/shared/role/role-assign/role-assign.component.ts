@@ -47,9 +47,9 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     constructor(
         private roleService: RoleService,
         private userService: UserService,
-        private JhiAlertService: JhiAlertService,
+        private alertService: JhiAlertService,
         private principal: Principal,
-        private JhiEventManager: JhiEventManager
+        private eventManager: JhiEventManager
     ) {
 
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
@@ -63,11 +63,11 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
 
         this.registerChangeInRoles();
-        this.JhiEventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
     ngOnDestroy() {
-        this.JhiEventManager.destroy(this.eventSubscriber);
+        this.eventManager.destroy(this.eventSubscriber);
     }
 
     /**
@@ -77,7 +77,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
      * Finally a new empty OrganisationUser will be added as an empty row to assign new users to roles.
      */
     registerChangeInRoles() {
-        this.eventSubscriber = this.JhiEventManager.subscribe('userRolesModification', () => {
+        this.eventSubscriber = this.eventManager.subscribe('userRolesModification', () => {
             this.loadAllRolesForOrganisation().subscribe(() => {
 
                 /**
@@ -290,17 +290,17 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     private onSaveSuccess(res: Response, isDelete: boolean) {
-        let notification = isDelete ? 'podiumGatewayApp.roleAssign.deleted' : 'podiumGatewayApp.roleAssign.saved';
-        this.JhiAlertService.success(notification);
-        this.JhiEventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
+        this.alertService.success(notification);
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
     private onError (error) {
-        this.JhiAlertService.error(error.message, null, null);
+        this.alertService.error(error.message, null, null);
     }
 
     private onSaveError (error) {
-        this.JhiAlertService.error(error.message, null, null);
+        this.alertService.error(error.message, null, null);
     }
 
     private addNewOrganisationUser() {

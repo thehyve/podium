@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.resource.OrganisationResource;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -20,10 +21,10 @@ import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
+import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
-import nl.thehyve.podium.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,11 +80,7 @@ public class OrganisationServer implements OrganisationResource {
     public ResponseEntity<OrganisationRepresentation> createOrganisation(@Valid @RequestBody OrganisationRepresentation organisationRepresentation) throws URISyntaxException {
         log.debug("REST request to save Organisation : {}", organisationRepresentation);
         if (organisationRepresentation.getId() != null) {
-            return ResponseEntity.badRequest().headers(
-                HeaderUtil.createFailureAlert(ENTITY_NAME,
-                    "idexists",
-                    "A new organisation cannot already have an ID")
-            ).body(null);
+            throw new InvalidRequest("A new organisation cannot already have an ID");
         }
 
         OrganisationRepresentation result = organisationService.create(organisationRepresentation);

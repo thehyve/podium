@@ -35,13 +35,13 @@ import { PodiumAuthModule } from './auth/auth.module';
 import { FindLanguageFromKeyPipe } from './language/language.pipe';
 import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
-import { ErrorComponent } from './error/error.component';
+import { PdmErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { ProfileService } from './profiles/profile.service';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
 import { NgUploaderModule } from 'ngx-uploader';
-import { AttachmentsService } from './attachment/attachments.service';
+import { AttachmentService } from './attachment/attachment.service';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 
 @NgModule({
@@ -68,7 +68,7 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
         FindLanguageFromKeyPipe,
         ActiveMenuDirective,
         CompletedComponent,
-        ErrorComponent,
+        PdmErrorComponent,
         NavbarComponent,
         AttachmentListComponent,
     ],
@@ -81,11 +81,12 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
         UserService,
         RequestService,
         RequestAccessService,
-        AttachmentsService,
+        AttachmentService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
     exports: [
+        PodiumAuthModule,
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,

@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
+import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.security.CustomServerAuthenticationProvider;

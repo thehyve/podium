@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 @Service
@@ -29,14 +28,14 @@ public class UserClientService {
     InternalUserClient internalUserClient;
 
     @Timed
-    public UserRepresentation findUserByUuid(UUID userUuid) throws URISyntaxException, FeignException {
+    public UserRepresentation findUserByUuid(UUID userUuid) throws FeignException {
         log.info("Fetching user through Feign ...");
         return internalUserClient.getUser(userUuid).getBody();
     }
 
     @Timed
     @Cacheable("remoteUsers")
-    public UserRepresentation findUserByUuidCached(UUID userUuid) throws URISyntaxException, FeignException {
+    public UserRepresentation findUserByUuidCached(UUID userUuid) throws FeignException {
         log.info("Fetching user through Feign ...");
         return findUserByUuid(userUuid);
     }

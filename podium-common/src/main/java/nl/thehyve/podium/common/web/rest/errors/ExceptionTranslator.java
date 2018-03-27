@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.common.web.rest.errors;
 
+import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.security.annotations.Public;
 import org.slf4j.Logger;
@@ -70,6 +71,13 @@ public class ExceptionTranslator {
         return new ErrorRepresentation(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
     }
 
+    @ExceptionHandler(AccessDenied.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorRepresentation processAccessDenied(AccessDenied e) {
+        return new ErrorRepresentation(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
+    }
+
     private ErrorRepresentation processFieldErrors(List<FieldError> fieldErrors) {
         ErrorRepresentation dto = new ErrorRepresentation(ErrorConstants.ERR_VALIDATION);
 
@@ -93,6 +101,7 @@ public class ExceptionTranslator {
         ErrorRepresentation errorVM;
         ResponseStatus responseStatus = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class);
         log.error("[Internal server error] {} - {}", ex.getMessage(), ex.getClass().toString());
+        log.error("[Internal server error] Stack trace", ex);
         if (responseStatus != null) {
             builder = ResponseEntity.status(responseStatus.value());
             errorVM = new ErrorRepresentation("error." + responseStatus.value().value(), responseStatus.reason());
@@ -117,7 +126,7 @@ public class ExceptionTranslator {
 
     @ExceptionHandler(MultipartException.class)
     public ResponseEntity<ErrorRepresentation> processMultipartException(Exception e){
-        log.error("Error with a fileupload " + e.getMessage());
+        log.error("Error with a file upload: " + e.getMessage(), e);
         BodyBuilder builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
         ErrorRepresentation errorVM = new ErrorRepresentation(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, e.getMessage());
         return builder.body(errorVM);

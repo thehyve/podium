@@ -13,7 +13,7 @@ import { Observable } from 'rxjs/Observable';
 
 export class ErrorHandlerInterceptor extends JhiHttpInterceptor {
 
-    constructor(private JhiEventManager: JhiEventManager) {
+    constructor(private eventManager: JhiEventManager) {
         super();
     }
 
@@ -25,7 +25,7 @@ export class ErrorHandlerInterceptor extends JhiHttpInterceptor {
         return <Observable<Response>> observable.catch(error => {
             if (!(error.status === 401 && (error.text() === '' ||
                 (error.json().path && error.json().path.indexOf('/api/account') === 0 )))) {
-                this.JhiEventManager.broadcast( {name: 'podiumGatewayApp.httpError', content: error});
+                this.eventManager.broadcast( {name: 'podiumGatewayApp.httpError', content: error});
             }
             return Observable.throw(error);
         });

@@ -25,7 +25,9 @@ export class Organisation implements IOrganisation {
     public requestTypes?: RequestType[];
 
     constructor(jsonResponse?: any) {
-        jsonResponse ? Object.assign(this, jsonResponse) : this;
+        if (jsonResponse) {
+            Object.assign(this, jsonResponse);
+        }
     }
 
     hasRequestTypes(requestTypes) {

@@ -8,7 +8,6 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;
@@ -76,8 +75,6 @@ public class RequestService {
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
 
-    @Autowired
-    private OrganisationClientService organisationClientService;
 
     @PostConstruct
     private void init() {
@@ -179,7 +176,7 @@ public class RequestService {
                 result = requestRepository.findAllByRequesterAndStatus(requesterUuid, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::detailedRequestToRequestDTO);
+        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
     /**
@@ -347,7 +344,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
-        return result.map(requestMapper::detailedRequestToRequestDTO);
+        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
     /**

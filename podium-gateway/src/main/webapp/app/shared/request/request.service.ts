@@ -151,7 +151,7 @@ export class RequestService {
     }
 
     getTemplateByUuid(uuid: string): Observable<RequestTemplate> {
-        return this.http.get(`${this.resourceUrl}/external/${uuid}`).map((res: Response) => {
+        return this.http.get(`${this.resourceUrl}/templates/${uuid}`).map((res: Response) => {
             return res.json();
         });
     }

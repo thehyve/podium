@@ -20,4 +20,4 @@ export enum AttachmentTypes {
     NONE = <any>'NONE',
 }
 
-export const MAX_UPLOAD_SIZE = 52428800;
+export const MAX_UPLOAD_SIZE = 5000000; // 5MB

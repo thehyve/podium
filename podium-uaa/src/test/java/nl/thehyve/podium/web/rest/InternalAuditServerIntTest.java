@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.event.EventType;
+import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.PersistentAuditEvent;
 import nl.thehyve.podium.repository.PersistenceAuditEventRepository;
 import nl.thehyve.podium.service.AuditEventService;

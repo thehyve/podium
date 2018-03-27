@@ -13,6 +13,6 @@ export class RequestTemplate {
     uuid: string;
     url: string;
     humanReadable: string;
-    organizationIds: string[];
+    organisations: string[];
     ntoken: null;
 }

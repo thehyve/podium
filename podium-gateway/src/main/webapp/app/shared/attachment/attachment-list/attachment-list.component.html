@@ -24,9 +24,9 @@
                 </select>
                 <span *ngIf="!canEdit(attachment)" jhiTranslate="attachments.option.{{attachment.requestFileType}}"></span>
             </td>
-            <td>{{attachment.owner.login}}</td>
-            <td>{{formatByte(attachment.fileSize, 1)}}</td>
-            <td>{{attachment.createdDate | date:'short'}}</td>
+            <td>{{attachment.owner?.login}}</td>
+            <td>{{formatBytes(attachment.fileByteSize, 1)}}</td>
+            <td>{{attachment.createdDate | date: "dd-MM-yyyy',' HH:mm"}}</td>
             <td >
                 <button type="submit" class="btn btn-danger btn-sm test-remove-btn"
                         (click)="deleteAttachment(attachment)" title="Remove attachment" *ngIf="canEdit(attachment)">

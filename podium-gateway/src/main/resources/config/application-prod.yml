@@ -91,9 +91,6 @@ podium:
         hazelcast: # Hazelcast distributed cache
             time-to-live-seconds: 3600
             backup-count: 1
-    mail: # specific Podium mail property, for standard properties see MailProperties
-        from: podiumGateway@localhost
-        base-url: http://my-server-url-to-change # Modify according to your server's URL
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         graphite:

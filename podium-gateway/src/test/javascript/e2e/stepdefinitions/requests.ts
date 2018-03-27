@@ -145,8 +145,10 @@ defineSupportCode(({ Given, When, Then }) => {
         let persona = director.getPersona('he');
 
         return browser.sleep(500).then(() => {
-            return adminConsole.getFiles(persona, this.scenarioData).then((files: any[]) => {
-                return promiseTrue(files.length == expectedFiles.length, "there are no expected number of files for this request: " + JSON.stringify(files));
+            return adminConsole.getDraft(persona, this.scenarioData).then((body) => {
+                return adminConsole.getFiles(persona, body).then((files: any[]) => {
+                    return promiseTrue(files.length == expectedFiles.length, "there are no expected number of files for this request: " + JSON.stringify(files));
+                });
             });
         });
     });

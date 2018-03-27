@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';
 import { Attachment } from '../../shared/attachment/attachment.model';
-import { AttachmentsService } from '../../shared/attachment/attachments.service';
+import { AttachmentService } from '../../shared/attachment/attachment.service';
 import { RequestAccessService } from '../../shared/request/request-access.service';
 import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 
@@ -35,7 +35,7 @@ export class RequestMainDetailComponent implements OnInit {
     private requestDetail: RequestDetailComponent;
 
     public request: RequestBase;
-    public asterisk: string = '';
+    public asterisk = '';
     public attachments: Attachment[];
 
     public error: any;
@@ -45,7 +45,7 @@ export class RequestMainDetailComponent implements OnInit {
         private route: ActivatedRoute,
         private requestService: RequestService,
         private alertService: JhiAlertService,
-        private attachmentService: AttachmentsService,
+        private attachmentService: AttachmentService,
         private requestAccessService: RequestAccessService
     ) {
 
@@ -59,7 +59,7 @@ export class RequestMainDetailComponent implements OnInit {
         this.route.data
             .subscribe((data: { request: RequestBase }) => {
                 this.request = data.request;
-                this.getAttachments(data.request.uuid);
+                this.getAttachments(data.request);
                 this.onSuccess(data.request);
             }, err => this.onError(err));
     }
@@ -74,8 +74,8 @@ export class RequestMainDetailComponent implements OnInit {
         this.success = null;
     }
 
-    private getAttachments (requestUUID) {
-        this.attachmentService.getAttachments(requestUUID).subscribe(
+    private getAttachments (request: RequestBase) {
+        this.attachmentService.getAttachments(request).subscribe(
             (attachments) => {
                 this.attachments = attachments;
                 this.request.hasAttachmentsTypes = !this.hasAttachmentsTypeNone();
@@ -93,19 +93,19 @@ export class RequestMainDetailComponent implements OnInit {
 
     onFinishedUploadAttachment(success: boolean) {
         if (success) {
-            this.getAttachments(this.request.uuid);
+            this.getAttachments(this.request);
         }
     }
 
     onDeleteAttachment(isSuccess: boolean) {
         if (isSuccess) {
-            this.getAttachments(this.request.uuid);
+            this.getAttachments(this.request);
         }
     }
 
     onAttachmentTypeChange(attachment: Attachment) {
         if (attachment) {
-            this.getAttachments(this.request.uuid);
+            this.getAttachments(this.request);
         }
     }
 

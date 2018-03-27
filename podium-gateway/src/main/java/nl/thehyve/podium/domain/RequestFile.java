@@ -1,15 +1,18 @@
 package nl.thehyve.podium.domain;
 
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Setter;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
-import nl.thehyve.podium.enumeration.RequestFileType;
+import nl.thehyve.podium.common.enumeration.RequestFileType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +21,8 @@ import java.util.UUID;
         @Index(name = "request_file_created_date_key", columnList = "created_date"),
     }
 )
-public class RequestFile extends AbstractAuditingEntity {
+@Data
+public class RequestFile extends AbstractAuditingEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "request_file_seq_gen")
     @GenericGenerator(
@@ -37,7 +41,6 @@ public class RequestFile extends AbstractAuditingEntity {
     @Setter(AccessLevel.NONE)
     private UUID uuid;
 
-    @Column(nullable = false)
     private UUID owner;
 
     @OneToOne
@@ -61,20 +64,15 @@ public class RequestFile extends AbstractAuditingEntity {
     @Column(name="file_byte_size")
     private Long fileByteSize;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
+    /**
+     * Only the database can return the UUID from the stored entity
+     * Pre-persist will add a {@link UUID} to the entity
+     * This setter is only added to satisfy mapstruct e.g.
+     *
+     * @param uuid is ignored.
+     */
     public void setUuid(UUID uuid) {
-        //
+        // pass
     }
 
     @PrePersist
@@ -84,71 +82,32 @@ public class RequestFile extends AbstractAuditingEntity {
         }
     }
 
-    public UUID getOwner() {
-        return owner;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RequestFile requestFile = (RequestFile) o;
+        if (requestFile.id == null || id == null) {
+            return false;
+        }
+        return Objects.equals(id, requestFile.id);
     }
 
-    public void setOwner(UUID owner) {
-        this.owner = owner;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
-    public Request getRequest() {
-        return request;
+    @Override
+    public String toString() {
+        return "RequestFile{" +
+                "id=" + id +
+                ", fileName='" + fileName + "'" +
+                '}';
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
-    }
-
-    public String getFileLocation() {
-        return fileLocation;
-    }
-
-    public void setFileLocation(String file_location) {
-        this.fileLocation = file_location;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public RequestFileType getRequestFileType() {
-        return requestFileType;
-    }
-
-    public void setRequestFileType(RequestFileType requestFileType) {
-        this.requestFileType = requestFileType;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public Long getFileByteSize() {
-        return fileByteSize;
-    }
-
-    public void setFileByteSize(Long fileByteSize) {
-        this.fileByteSize = fileByteSize;
-    }
-
-    public RequestFile copy(RequestFile requestFile){
-        this.setOwner(requestFile.getOwner());
-        this.setFileByteSize(requestFile.getFileByteSize());
-        this.setFileName(requestFile.getFileName());
-        this.setRequestFileType(requestFile.getRequestFileType());
-        this.setFileLocation(requestFile.getFileLocation());
-        this.setRequest(requestFile.getRequest());
-        this.setOwner(requestFile.getOwner());
-        this.generateUuid();
-        return this;
-    }
 }

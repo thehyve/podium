@@ -30,7 +30,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     credentials: any;
 
     constructor(
-        private JhiEventManager: JhiEventManager,
+        private eventManager: JhiEventManager,
         private loginService: LoginService,
         private stateStorageService: StateStorageService,
         private redirectService: RedirectService,
@@ -76,7 +76,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
                 this.router.navigate(['']);
             }
 
-            this.JhiEventManager.broadcast({
+            this.eventManager.broadcast({
                 name: 'authenticationSuccess',
                 content: 'Sending Authentication Success'
             });

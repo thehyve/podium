@@ -12,17 +12,17 @@
     <div class="container-fluid">
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-8 offset-xl-2 card-container">
             <h2>
-                <span jhiTranslate="podiumGatewayApp.organisation.detail.title">Organisation</span>
+                <span jhiTranslate="organisation.detail.title">Organisation</span>
             </h2>
 
             <tabset>
                 <tab heading="Organisation Details">
                         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-                            <jhi-alert></jhi-alert>
-                            <jhi-alert-error></jhi-alert-error>
+                            <pdm-alert></pdm-alert>
+                            <pdm-alert-error></pdm-alert-error>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.name"
+                                <label class="form-control-label" jhiTranslate="organisation.name"
                                        for="field_name">
                                     Name
                                 </label>
@@ -39,7 +39,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.shortName"
+                                <label class="form-control-label" jhiTranslate="organisation.shortName"
                                        for="field_shortName">
                                     Short Name
                                 </label>
@@ -80,7 +80,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="podiumGatewayApp.organisation.activated">
+                                <label class="form-control-label" jhiTranslate="organisation.activated">
                                     Active
                                 </label>
                                 <ui-switch [(ngModel)]="organisation.activated" name="organisation_active"
@@ -89,7 +89,7 @@
 
                                 <div *ngIf="isOrganisationAdmin() && !organisation.activated">
                                     <small class="form-text text-danger"
-                                           jhiTranslate="podiumGatewayApp.organisation.organisationAdminInactive">
+                                           jhiTranslate="organisation.organisationAdminInactive">
                                         Your organisation requires all fields to be filled in and has a user assigned
                                         for each of the roles. Contact the BBMRI admin to validate your organisation.
                                     </small>

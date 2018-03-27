@@ -14,6 +14,7 @@ import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
+import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;

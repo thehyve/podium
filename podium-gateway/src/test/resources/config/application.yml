@@ -107,7 +107,10 @@ podium:
         queue-capacity: 10000
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
+    mail:
+        from: podiumGateway@localhost
+        base-url: http://127.0.0.1:10344
     access:
-        external-request:
+        request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
             - test:test
 
