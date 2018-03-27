@@ -249,7 +249,7 @@ public class DraftService {
 
         // Delete old request files
         for (RequestFile requestFile: requestFiles) {
-            Files.deleteIfExists(new File(requestFile.getFileLocation()).toPath());
+            requestFileService.deleteFileFromFileSystem(requestFile);
             requestFileRepository.delete(requestFile.getId());
         }
 
