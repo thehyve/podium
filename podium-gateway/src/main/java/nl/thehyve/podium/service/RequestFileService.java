@@ -194,6 +194,10 @@ public class RequestFileService {
         return representations;
     }
 
+    public void deleteFileFromFileSystem(RequestFile requestFile) throws IOException {
+        Files.deleteIfExists(getRequestFilePath(requestFile));
+    }
+
     public void deleteFile(AuthenticatedUser user, UUID requestUuid, UUID fileUuid) throws ResourceNotFound, IOException {
         Request request = findRequest(requestUuid);
         RequestFile requestFile = findRequestFile(requestUuid, fileUuid);
@@ -201,7 +205,7 @@ public class RequestFileService {
 
         requestFile.setDeleted(true);
         requestFileRepository.save(requestFile);
-        Files.delete(getRequestFilePath(requestFile));
+        deleteFileFromFileSystem(requestFile);
     }
 
     public RequestFileRepresentation setFileType(AuthenticatedUser user, UUID requestUuid, UUID fileUuid, RequestFileType filetype) {
