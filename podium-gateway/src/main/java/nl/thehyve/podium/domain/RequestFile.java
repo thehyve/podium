@@ -64,6 +64,9 @@ public class RequestFile extends AbstractAuditingEntity implements Serializable 
     @Column(name="file_byte_size")
     private Long fileByteSize;
 
+    @Column(name="uploader")
+    private UUID uploader;
+
     /**
      * Only the database can return the UUID from the stored entity
      * Pre-persist will add a {@link UUID} to the entity

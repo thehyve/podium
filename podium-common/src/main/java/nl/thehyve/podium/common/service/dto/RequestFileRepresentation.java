@@ -29,4 +29,6 @@ public class RequestFileRepresentation implements Serializable {
 
     private String fileName;
 
+    private UserRepresentation uploader;
+
 }
