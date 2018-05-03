@@ -12,6 +12,7 @@
             "type": "Type",
             "owner": "Owner",
             "size": "Size",
+            "uploader": "Uploader",
             "uploadDate": "Upload Date",
             "validate": {
                 "fileTypes": "Please set file types for "

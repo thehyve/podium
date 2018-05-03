@@ -24,6 +24,7 @@ public abstract class RequestFileMapper {
     @Mappings({
             @Mapping(target = "request", ignore = true),
             @Mapping(target = "owner", ignore = true),
+            @Mapping(target = "uploader", ignore = true)
     })
     abstract RequestFileRepresentation minimalRequestFileToRequestFileDto(RequestFile requestFile);
 
@@ -31,6 +32,7 @@ public abstract class RequestFileMapper {
         RequestFileRepresentation requestFileRepresentation = minimalRequestFileToRequestFileDto(requestFile);
         requestFileRepresentation.setRequest(requestMapper.minimalRequestToRequestDTO(requestFile.getRequest()));
         requestFileRepresentation.setOwner(userMapperHelper.uuidToRemoteUserRepresentation(requestFile.getOwner()));
+        requestFileRepresentation.setUploader(userMapperHelper.uuidToRemoteUserRepresentation(requestFile.getUploader()));
         return requestFileRepresentation;
     }
 

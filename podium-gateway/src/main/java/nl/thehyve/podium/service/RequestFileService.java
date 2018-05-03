@@ -146,6 +146,7 @@ public class RequestFileService {
         if (request.getRequester().equals(user.getUserUuid())) {
             requestFile.setOwner(user.getUserUuid());
         }
+        requestFile.setUploader(user.getUuid());
         requestFile.setRequest(request);
         requestFile.setRequestFileType(requestFileType);
         requestFile.setFileName(file.getOriginalFilename());
