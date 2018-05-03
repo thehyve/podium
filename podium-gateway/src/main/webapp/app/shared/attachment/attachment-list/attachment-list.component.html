@@ -4,7 +4,7 @@
         <tr>
             <th jhiTranslate="attachments.list.name">Name</th>
             <th jhiTranslate="attachments.list.type">Type</th>
-            <th jhiTranslate="attachments.list.owner">Uploader</th>
+            <th jhiTranslate="attachments.list.uploader">Uploader</th>
             <th jhiTranslate="attachments.list.size">Size</th>
             <th jhiTranslate="attachments.list.uploadDate">Uploaded Date</th>
             <th>&nbsp;</th>
@@ -24,7 +24,7 @@
                 </select>
                 <span *ngIf="!canEdit(attachment)" jhiTranslate="attachments.option.{{attachment.requestFileType}}"></span>
             </td>
-            <td>{{attachment.owner?.login}}</td>
+            <td>{{attachment.uploader?.login}}</td>
             <td>{{formatBytes(attachment.fileByteSize, 1)}}</td>
             <td>{{attachment.createdDate | date: "dd-MM-yyyy',' HH:mm"}}</td>
             <td >
