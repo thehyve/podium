@@ -118,7 +118,7 @@ public class RequestFileResource {
     public ResponseEntity<List<RequestFileRepresentation>> listFiles(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) {
         log.debug("REST request to retrieve the list of files for request {} ", requestUuid);
         //Get list sorted by created date so the order shown on a request page is always the same.
-        List<RequestFileRepresentation> files = requestFileService.getSortedFilesForRequest(requestUuid);
+        List<RequestFileRepresentation> files = requestFileService.getFilesForRequest(requestUuid);
         return ResponseEntity.ok(files);
     }
 

@@ -183,7 +183,7 @@ public class RequestFileService {
     @Transactional(readOnly = true)
     public List<RequestFileRepresentation> getFilesForRequest(UUID requestUuid){
         Request request = findRequest(requestUuid);
-        List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
+        List<RequestFile> files = requestFileRepository.findDistinctByRequestAndDeletedFalseOrderByCreatedDate(request);
 
         List<RequestFileRepresentation> representations = new ArrayList<>();
         for(RequestFile file : files){
@@ -192,12 +192,6 @@ public class RequestFileService {
         }
 
         return representations;
-    }
-
-    public List<RequestFileRepresentation> getSortedFilesForRequest(UUID requestUUID){
-        List<RequestFileRepresentation> files = this.getFilesForRequest(requestUUID);
-        files.sort(Comparator.comparing(RequestFileRepresentation::getCreatedDate));
-        return files;
     }
 
     public void deleteFileFromFileSystem(RequestFile requestFile) throws IOException {
