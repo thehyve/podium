@@ -143,9 +143,8 @@ public class RequestFileService {
         checkAllowedToAddFile(user, request);
 
         RequestFile requestFile = new RequestFile();
-        if (request.getRequester().equals(user.getUserUuid())) {
-            requestFile.setOwner(user.getUserUuid());
-        }
+
+        requestFile.setOwner(user.getUserUuid());
         requestFile.setRequest(request);
         requestFile.setRequestFileType(requestFileType);
         requestFile.setFileName(file.getOriginalFilename());
