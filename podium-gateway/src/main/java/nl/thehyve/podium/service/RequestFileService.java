@@ -194,6 +194,12 @@ public class RequestFileService {
         return representations;
     }
 
+    public List<RequestFileRepresentation> getSortedFilesForRequest(UUID requestUUID){
+        List<RequestFileRepresentation> files = this.getFilesForRequest(requestUUID);
+        files.sort(Comparator.comparing(RequestFileRepresentation::getCreatedDate));
+        return files;
+    }
+
     public void deleteFileFromFileSystem(RequestFile requestFile) throws IOException {
         Files.deleteIfExists(getRequestFilePath(requestFile));
     }
