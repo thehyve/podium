@@ -17,6 +17,7 @@ import nl.thehyve.podium.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
@@ -87,8 +88,10 @@ public class RequestTemplateResource {
             podiumProperties.getMail().getBaseUrl(), externalRequestTemplateRepresentation.getUuid()
         );
 
-        log.debug("Returning URL {}", callbackURL);
-        return new ResponseEntity<>(new URI(callbackURL), HttpStatus.ACCEPTED);
+        log.info("Returning URL {}", callbackURL);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(callbackURL));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).headers(headers).build();
     }
 
     /**
