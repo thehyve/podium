@@ -10,7 +10,6 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

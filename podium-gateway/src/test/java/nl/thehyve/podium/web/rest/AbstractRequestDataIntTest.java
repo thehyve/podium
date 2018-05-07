@@ -726,7 +726,7 @@ public abstract class AbstractRequestDataIntTest {
                     log.info("Result request template: {} ({})", result.getResponse().getStatus(),
                             result.getResponse().getContentAsString());
                     Assert.assertEquals(result.getResponse().getStatus(), HttpStatus.ACCEPTED.value());
-                    uri[0] = new URI(result.getResponse().getContentAsString().replace("\"", ""));
+                    uri[0] = new URI(result.getResponse().getHeader("Location"));
                 });
         return uri[0];
     }
