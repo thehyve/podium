@@ -330,7 +330,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
          * This is to cover the case when a request has been sent for revision
          * and the previous review round has been closed.
          */
-        return this.request.status !== RequestOverviewStatusOption.Validation;
+        return this.request.status !== RequestOverviewStatusOption.Review;
     }
 
     /**
