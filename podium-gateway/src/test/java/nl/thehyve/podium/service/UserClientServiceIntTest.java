@@ -29,9 +29,7 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -51,9 +49,6 @@ public class UserClientServiceIntTest {
 
     @Autowired
     private UserClientService userClientService;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private LoadBalancerClient loadBalancer;
@@ -83,7 +78,7 @@ public class UserClientServiceIntTest {
     }
 
     @Test
-    public void testFetchUserByUuid() throws URISyntaxException, JsonProcessingException {
+    public void testFetchUserByUuid() throws JsonProcessingException {
         log.info("Testing with mock port {}.", wireMockRule.port());
 
         UUID userUuid = UUID.randomUUID();
