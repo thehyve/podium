@@ -69,9 +69,6 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     private DraftService draftService;
 
     @Autowired
-    private RequestService requestService;
-
-    @Autowired
     private WebApplicationContext context;
 
     @MockBean
@@ -82,9 +79,6 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
 
     @MockBean
     private InternalUserResource internalUserResource;
-
-    @MockBean
-    private MailService mailService;
 
     @MockBean
     private AuditService auditService;

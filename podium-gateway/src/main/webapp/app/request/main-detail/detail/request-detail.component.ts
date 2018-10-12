@@ -13,10 +13,7 @@ import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
-import {
-    RequestReviewStatusOptions,
-    RequestStatusOptions, RequestOverviewStatusOption
-} from '../../../shared/request/request-status/request-status.constants';
+import { RequestOverviewStatusOption } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -330,7 +327,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
          * This is to cover the case when a request has been sent for revision
          * and the previous review round has been closed.
          */
-        return this.request.status !== RequestOverviewStatusOption.Validation;
+        return this.request.status !== RequestOverviewStatusOption.Review;
     }
 
     /**

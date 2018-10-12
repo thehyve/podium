@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
@@ -31,7 +30,6 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
@@ -78,7 +76,7 @@ public class AuditServiceIntTest {
     }
 
     @Test
-    public void testPublishEvent() throws URISyntaxException, JsonProcessingException, InterruptedException {
+    public void testPublishEvent() throws InterruptedException {
         log.info("Testing with mock port {}.", wireMockRule.port());
 
         UUID requestUuid = UUID.randomUUID();
@@ -86,7 +84,7 @@ public class AuditServiceIntTest {
         UUID userUuid = UUID.randomUUID();
         SerialisedUser mockUser = new SerialisedUser(userUuid, "mock", Arrays.asList("ROLE_RESEARCHER"), new HashMap<>());
 
-        StatusUpdateEvent mockEvent = new StatusUpdateEvent(mockUser, RequestReviewStatus.Review, RequestReviewStatus.Revision, requestUuid);
+        StatusUpdateEvent mockEvent = new StatusUpdateEvent<>(mockUser, RequestReviewStatus.Review, RequestReviewStatus.Revision, requestUuid);
 
         stubFor(post(urlEqualTo("/internal/audit/events"))
                 .willReturn(aResponse()
