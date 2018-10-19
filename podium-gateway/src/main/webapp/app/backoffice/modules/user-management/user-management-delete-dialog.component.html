@@ -10,9 +10,9 @@
 
 <form name="deleteForm" (ngSubmit)="confirmDelete(user.login)">
     <div class="modal-header">
+        <h4 class="modal-title" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
-        <h4 class="modal-title" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>

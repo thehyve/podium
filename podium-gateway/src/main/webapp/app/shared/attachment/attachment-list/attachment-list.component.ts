@@ -114,7 +114,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     downloadAttachment(attachment: Attachment): void {
         this.attachmentService.downloadAttachment(this.request, attachment.uuid).subscribe(
             (blob) => {
-                //msSaveOrOpenBlob is for downloading on IE, the else statement for saving on FF/Chrome
+                // msSaveOrOpenBlob is for downloading on IE, the else statement for saving on FF/Chrome
                 if (window.navigator.msSaveOrOpenBlob) {
                     window.navigator.msSaveOrOpenBlob(blob, attachment.fileName);
                 } else {

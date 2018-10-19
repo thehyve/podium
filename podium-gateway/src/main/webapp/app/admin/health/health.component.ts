@@ -37,11 +37,11 @@ export class PdmHealthCheckComponent implements OnInit {
         return this.healthService.getBaseName(name);
     }
 
-    getTagClass(statusState) {
+    getBadgeClass(statusState) {
         if (statusState === 'UP') {
-            return 'tag-success';
+            return 'badge-success';
         } else {
-            return 'tag-danger';
+            return 'badge-danger';
         }
     }
 

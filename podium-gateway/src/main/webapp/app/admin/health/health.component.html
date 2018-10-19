@@ -29,7 +29,7 @@
                 <tr *ngFor="let health of healthData">
                     <td>{{'health.indicator.' + baseName(health.name) | translate}} {{subSystemName(health.name)}}</td>
                     <td class="text-xs-center">
-                        <span class="tag" [ngClass]="getTagClass(health.status)" jhiTranslate="{{'health.status.' + health.status}}">
+                        <span class="badge" [ngClass]="getBadgeClass(health.status)" jhiTranslate="{{'health.status.' + health.status}}">
                             {{health.status}}
                         </span>
                     </td>

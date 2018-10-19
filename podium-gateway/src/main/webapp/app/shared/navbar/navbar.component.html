@@ -8,26 +8,26 @@
   ~
   -->
 
-<nav class="navbar navbar-dark jh-navbar" *ngIf="isAuthenticated()">
-    <div class="jh-logo-container float-xs-left">
-        <a class="jh-navbar-toggler hidden-lg-up float-xs-left" href="javascript:void(0);"
+<nav class="navbar navbar-dark navbar-expand-md jh-navbar" *ngIf="isAuthenticated()">
+    <div class="jh-logo-container float-left">
+        <a class="jh-navbar-toggler d-lg-none float-left" href="javascript:void(0);"
            data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
            aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
             <i class="material-icons">view_headline</i>
         </a>
-        <a class="navbar-brand logo float-xs-right" routerLink="/" (click)="collapseNavbar()">
+        <a class="navbar-brand logo float-right" routerLink="/" (click)="collapseNavbar()">
             <span class="logo-img"></span>
             <span jhiTranslate="global.title" class="navbar-title">Podium Request Portal</span> <span class="navbar-version">{{version}}</span>
         </a>
     </div>
-    <div class="collapse navbar-toggleable-md float-lg-right" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed"
+    <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed"
          *ngIf="isAuthenticated()">
-        <ul class="nav navbar-nav float-lg-right">
+        <ul class="navbar-nav ml-auto">
             <li class="nav-item"routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
                 *pdmHasAnyAuthority="'ROLE_RESEARCHER'">
                 <a class="nav-link" routerLink="/requests/my-requests">
                     <i class="material-icons">assignment_ind</i>
-                    <span class="hidden-sm-down" jhiTranslate="global.menu.requests.overview">My Requests</span>
+                    <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.requests.overview">My Requests</span>
                 </a>
             </li>
 
@@ -35,7 +35,7 @@
                 *pdmHasAnyAuthority="'ROLE_REVIEWER'">
                 <a class="nav-link" routerLink="/requests/my-reviews">
                     <i class="material-icons">rate_review</i>
-                    <span class="hidden-sm-down"
+                    <span class="d-none d-md-inline-flex"
                           jhiTranslate="global.menu.organisation.org_reviewer.reviews">
                         My Reviews
                     </span>
@@ -49,7 +49,7 @@
                    ngbDropdownToggle href="javascript:void(0);" id="org-admin-menu">
                     <span>
                         <i class="material-icons">business</i>
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.main">
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.organisation.main">
                             Organisation
                         </span>
                         <b class="caret"></b>
@@ -58,7 +58,7 @@
                 <ul class="dropdown-menu" ngbDropdownMenu>
                     <!-- Organisation Admin -->
                     <li class="dropdown-header" *pdmHasAnyAuthority="'ROLE_ORGANISATION_ADMIN'">
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_admin.main">
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.organisation.org_admin.main">
                             Administration
                         </span>
                     </li>
@@ -78,7 +78,7 @@
 
                     <!-- Organisation Coordinator -->
                     <li class="dropdown-header" *pdmHasAnyAuthority="'ROLE_ORGANISATION_COORDINATOR'">
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.organisation.org_coordinator.main">
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.organisation.org_coordinator.main">
                             Coordination
                         </span>
                     </li>
@@ -98,7 +98,7 @@
                 <a class="nav-link dropdown-toggle" routerLinkActive="active" ngbDropdownToggle href="javascript:void(0);" id="podium-menu">
                     <span>
                         <i class="material-icons">settings</i>
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.bbmri_admin.main">
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.bbmri_admin.main">
                            BBMRI
                         </span>
                         <b class="caret"></b>
@@ -106,7 +106,7 @@
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
                     <li class="dropdown-header">
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.bbmri_admin.header">
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.bbmri_admin.header">
                             Global
                         </span>
                     </li>
@@ -130,13 +130,13 @@
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="admin-menu">
                     <span>
                         <i class="material-icons">supervisor_account</i>
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.podium.main">Podium</span>
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.podium.main">Podium</span>
                         <b class="caret"></b>
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
                     <li class="dropdown-header">
-                        <span class="hidden-sm-down">
+                        <span class="d-none d-md-inline-flex">
                             Global
                         </span>
                     </li>
@@ -148,7 +148,7 @@
                         </a>
                     </li>
                     <li class="dropdown-header">
-                        <span class="hidden-sm-down">
+                        <span class="d-none d-md-inline-flex">
                             Service
                         </span>
                     </li>
@@ -184,7 +184,7 @@
                         </a>
                     </li>
                     <li class="dropdown-header">
-                        <span class="hidden-sm-down">
+                        <span class="d-none d-md-inline-flex">
                             Logging
                         </span>
                     </li>
@@ -209,15 +209,15 @@
                     </li>
                 </ul>
             </li>
-            <li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages">
+            <li ngbDropdown class="nav-item dropdown pointer d-inline-flex" *ngIf="languages && languages.length > 1">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="languages.length > 1">
                     <span>
                         <i class="material-icons">language</i>
-                        <span class="hidden-sm-down" jhiTranslate="global.menu.language">Language</span>
+                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.language">Language</span>
                         <b class="caret"></b>
                     </span>
                 </a>
-                <ul class="dropdown-menu" ngbDropdownMenu *ngIf="languages.length > 1">
+                <ul class="dropdown-menu" ngbDropdownMenu>
                     <li *ngFor="let language of languages">
                         <a class="dropdown-item" [pdmActiveMenu]="language" href="javascript:void(0);"
                            (click)="changeLanguage(language);collapseNavbar();">
@@ -226,11 +226,11 @@
                     </li>
                 </ul>
             </li>
-            <li [ngSwitch]="isAuthenticated()" ngbDropdown class="nav-item dropdown pointer">
+            <li [ngSwitch]="isAuthenticated()" ngbDropdown class="nav-item dropdown pointer d-inline-flex" placement="bottom-right">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">
                         <i class="material-icons">account_circle</i>
-                    <span class="hidden-sm account-name">
+                    <span class="d-inline-flex d-sm-none d-md-inline-flex account-name">
                         {{ account.firstName }}
                     </span>
                     <b class="caret"></b>
@@ -241,7 +241,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
                     <li class="dropdown-header">
-                        <span class="hidden-sm-down">
+                        <span class="d-none d-md-inline-flex">
                             Account options
                         </span>
                     </li>

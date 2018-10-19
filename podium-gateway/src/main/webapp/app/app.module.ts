@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
-import { TypeaheadModule } from 'ng2-bootstrap';
+import { TypeaheadModule } from 'ngx-bootstrap';
 import { PodiumGatewayRequestModule } from './request/request.module';
 import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';

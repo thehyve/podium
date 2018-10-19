@@ -10,8 +10,8 @@
 
 <form name="deleteDraftForm" ng-submit="confirmDelete()">
     <div class="modal-header">
-        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" jhiTranslate="request.delete.dialog.title">Confirm deletion of request draft</h4>
+        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>

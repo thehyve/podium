@@ -15,17 +15,18 @@ import { Interactable } from '../protractor-stories/director';
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class RequestDetails {
+class RequestDetailsPage {
     public name: string;
     public url: string;
     public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
-        return browser.getCurrentUrl().then(function (currentUrl) {
-            console.log(browser.baseUrl + that.url, currentUrl);
-            return (browser.baseUrl + that.url) == currentUrl;
-        })
+        return new Promise<boolean>((resolve) =>
+            browser.getCurrentUrl().then(function (currentUrl) {
+                resolve((browser.baseUrl + that.url) == currentUrl);
+            })
+        );
     }
 
     constructor() {
@@ -68,4 +69,4 @@ class RequestDetails {
     }
 }
 
-export = RequestDetails;
+export = RequestDetailsPage;

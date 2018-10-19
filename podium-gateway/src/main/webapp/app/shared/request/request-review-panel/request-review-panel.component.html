@@ -14,7 +14,7 @@
             <th scope="row">{{feedback.reviewer.firstName}} {{feedback.reviewer.lastName}}</th>
             <td>{{feedback.date | date:'short'}}</td>
             <td>
-                <span class="tag" [ngClass]="toggleAdviseStyle(feedback.advice)">{{feedback.advice}}</span>
+                <span class="badge" [ngClass]="toggleAdviseStyle(feedback.advice)">{{feedback.advice}}</span>
             </td>
             <td class="feedback-comment">
                 <small>

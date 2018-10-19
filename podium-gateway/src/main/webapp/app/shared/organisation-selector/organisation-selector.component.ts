@@ -31,7 +31,7 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
 
     @ViewChild('orgModel') orgModel: NgModel;
 
-    @Input('form') parentForm: NgForm;
+    @Input('form') form: NgForm;
     @Input() requestTypes: RequestType[];
     @Input()
     get organisations() {
@@ -56,7 +56,7 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngAfterViewInit() {
-        this.parentForm.control.addControl('selectedOrganisationUuids', this.orgModel.control);
+        this.form.control.addControl('selectedOrganisationUuids', this.orgModel.control);
     }
 
     handleUserSelect() {

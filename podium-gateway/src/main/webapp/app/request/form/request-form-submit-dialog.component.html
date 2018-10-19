@@ -7,9 +7,9 @@
 
 <form name="submitForm" (ngSubmit)="confirmSubmit(request)">
     <div class="modal-header">
+        <h4 class="modal-title" jhiTranslate="request.submit.title">Confirm request submission</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
-        <h4 class="modal-title" jhiTranslate="request.submit.title">Confirm request submission</h4>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
