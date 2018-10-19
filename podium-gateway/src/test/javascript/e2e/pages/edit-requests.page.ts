@@ -23,9 +23,11 @@ class EditRequestsPage {
 
     public at() {
         let that = this;
-        return browser.getCurrentUrl().then(function (currentUrl) {
-            return currentUrl.startsWith(browser.baseUrl + that.url);
-        })
+        return new Promise<boolean>((resolve) =>
+            browser.getCurrentUrl().then(function (currentUrl) {
+                resolve(currentUrl.startsWith(browser.baseUrl + that.url));
+            })
+        );
     }
 
     constructor() {

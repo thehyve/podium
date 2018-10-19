@@ -49,7 +49,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
     Then(/^(.*) is on the '(.*)' page$/, function (personaName, pageName): Promise<any> {
         let director = this.director as Director;
-        return director.at(pageName);
+        return director.at(pageName).then(() => null);
     });
 
     When(/^(.*) edits the details '(.*)'$/, function (personaName, fieldString): Promise<any> {

@@ -21,9 +21,11 @@ class CreateOrganisationPage {
 
     public at() {
         let that = this;
-        return browser.getCurrentUrl().then(function (currentUrl) {
-            return (browser.baseUrl + that.url) == currentUrl;
-        })
+        return new Promise<boolean>((resolve) =>
+            browser.getCurrentUrl().then(function (currentUrl) {
+                resolve((browser.baseUrl + that.url) == currentUrl);
+            })
+        );
     }
 
     constructor() {

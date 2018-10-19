@@ -22,10 +22,6 @@
     <packaging>war</packaging>
     <name>Podium UAA</name>
 
-    <prerequisites>
-        <maven>${maven.version}</maven>
-    </prerequisites>
-
     <properties>
         <javax.inject.version>1</javax.inject.version>
     </properties>

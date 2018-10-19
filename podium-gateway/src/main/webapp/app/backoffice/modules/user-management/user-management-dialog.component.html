@@ -11,10 +11,10 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                (click)="clear()">&times;</button>
         <h4 class="modal-title" id="myUserLabel" jhiTranslate="userManagement.home.createOrEditLabel">
             Create or edit a User</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
@@ -166,7 +166,7 @@
         <div class="form-group">
             <label>Current authorities</label>
             <div *ngFor="let authority of user.authorities">
-                <span class="tag tag-info test-authority-modal">{{ userAuthorityMap[authority].name }}</span>
+                <span class="badge badge-info test-authority-modal">{{ userAuthorityMap[authority].name }}</span>
             </div>
         </div>
 

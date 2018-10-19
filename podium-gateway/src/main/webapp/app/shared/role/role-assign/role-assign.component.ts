@@ -8,9 +8,9 @@
  *
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { JhiLanguageService, JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
-import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
 import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';

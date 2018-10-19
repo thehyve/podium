@@ -8,7 +8,6 @@
  * See the file LICENSE in the root of this repository.
  */
 import { browser, ElementArrayFinder, ElementFinder } from 'protractor';
-import { Promise } from 'es6-promise';
 import { isUndefined } from 'util';
 
 export interface Persona {
@@ -164,10 +163,12 @@ export class Director {
     }
 
     public clickOnElement(element: ElementFinder | ElementArrayFinder): Promise<any> {
-        return browser.executeScript("arguments[0].scrollIntoView();", element.getWebElement()).then(() => {
-            browser.sleep(200);
-            return element.click();
-        });
+        return new Promise<any>((resolve) =>
+            browser.executeScript("arguments[0].scrollIntoView();", element.getWebElement()).then(() => {
+                browser.sleep(200);
+                return element.click().then(() => resolve(null))
+            })
+        );
     }
 
     public clickOn(elementName: string): Promise<any> {

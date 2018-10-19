@@ -11,14 +11,14 @@
 <div class="request-finalize-container">
     <form #finalizeRequestForm="ngForm" class="form" role="form" (ngSubmit)="confirmRequestFinalize()">
         <div class="modal-header finalize-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                    (click)="close()">&times;</button>
             <h4 class="modal-title">
                 <span class="material-icons">assignment</span>
                 <span jhiTranslate="request.finalize.header" translateValues="{{getHeaderTranslation()}}">
                     Finalize request header
                 </span>
             </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                    (click)="close()">&times;</button>
         </div>
         <div class="modal-body">
             <pdm-alert-error></pdm-alert-error>

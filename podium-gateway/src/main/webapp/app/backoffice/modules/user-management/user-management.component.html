@@ -11,7 +11,7 @@
 <div class="content-wrapper">
     <h2>
         <span jhiTranslate="userManagement.home.title">Users</span>
-        <button class="btn btn-primary float-xs-right"
+        <button class="btn btn-primary float-right"
                 [routerLink]="['./', { outlets: { popup: ['new'] } }]" skipLocationChange
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
             <span class="material-icons">add_circle_outline</span>
@@ -57,19 +57,19 @@
                 <td class="test-name">{{ user.firstName }} {{ user.lastName }}</td>
                 <td class="test-email">{{user.email}}</td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="tag tag-success test-emailVerified" *ngIf="user.emailVerified"
+                    <span class="badge badge-success test-emailVerified" *ngIf="user.emailVerified"
                           jhiTranslate="userManagement.emailVerified">Email verified</span>
-                    <span class="tag tag-danger test-emailVerified" *ngIf="!user.emailVerified"
+                    <span class="badge badge-danger test-emailVerified" *ngIf="!user.emailVerified"
                           jhiTranslate="userManagement.emailUnverified">Email unverified</span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="tag tag-success test-adminVerified" *ngIf="user.adminVerified"
+                    <span class="badge badge-success test-adminVerified" *ngIf="user.adminVerified"
                           jhiTranslate="userManagement.adminVerified">Account verified</span>
-                    <span class="tag tag-danger test-adminVerified" *ngIf="!user.adminVerified"
+                    <span class="badge badge-danger test-adminVerified" *ngIf="!user.adminVerified"
                           jhiTranslate="userManagement.adminUnverified">Account unverified</span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="tag tag-danger test-accountLocked" *ngIf="user.accountLocked"
+                    <span class="badge badge-danger test-accountLocked" *ngIf="user.accountLocked"
                           jhiTranslate="userManagement.accountLocked">Locked</span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
@@ -82,7 +82,7 @@
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/edit'} }]"
                                 class="btn btn-primary btn-sm test-edit-btn">
                             <span class="material-icons">edit</span>
-                            <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                            <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
@@ -90,7 +90,7 @@
                                 skipLocationChange
                                 class="btn btn-danger btn-sm test-unlock-btn" [disabled]="!user.accountLocked">
                             <span class="material-icons">lock_open</span>
-                            <span class="hidden-md-down" jhiTranslate="entity.action.unlock">Unlock</span>
+                            <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.unlock">Unlock</span>
                         </button>
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
@@ -98,7 +98,7 @@
                                 skipLocationChange
                                 class="btn btn-danger btn-sm test-delete-btn" [disabled]="currentAccount.login==user.login">
                             <span class="material-icons">remove_circle_outline</span>
-                            <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
+                            <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>
                 </td>
@@ -106,9 +106,13 @@
             </tbody>
         </table>
     </div>
-    <div class="text-xs-center" *ngIf="users">
-        <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page, transitionUsers.bind(this))"></ngb-pagination>
+    <div *ngIf="users && users.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page, transitionUsers.bind(this))"></ngb-pagination>
+        </div>
     </div>
     <template ngbModalContainer></template>
 </div>

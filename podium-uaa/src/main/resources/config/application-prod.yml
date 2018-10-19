@@ -25,7 +25,6 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/podiumUaa
         name: podiumUaa
 #        username: podiumUser
 #        password: podiumUser

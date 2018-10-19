@@ -29,7 +29,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
             'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
-            return director.enterText(key, request[key]);
+            return director.enterText(key, request[key]).then(() => null);
         }).then(() => {
             return doInOrder(request["requestType"], (type) => {
                 return director.clickOn(type);
@@ -44,7 +44,7 @@ defineSupportCode(({ Given, When, Then }) => {
                 }).then(() => {
                     if (request['files']) {
                         return doInOrder(request['files'], (filename) => {
-                            return director.uploadFile("uploadFile", filename);
+                            return director.uploadFile("uploadFile", filename).then(() => null);
                         })
                     }
                 }).then(() => {
@@ -390,7 +390,7 @@ defineSupportCode(({ Given, When, Then }) => {
         return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
             'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
             request[key] = request[key] + 'revision';
-            return director.enterText(key, request[key]);
+            return director.enterText(key, request[key]).then(() => null);
         }).then(() => {
             return director.clickOn(action)
         })
@@ -538,7 +538,7 @@ defineSupportCode(({ Given, When, Then }) => {
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
                 return director.clickOnElement(director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn')).then((): Promise<any> => {
-                    return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
+                    return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER).then(() => null)
                 })
             })
         })
