@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Response, Http } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
-import { EventManager, ParseLinks } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
 import { Principal } from '../../../shared';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
@@ -51,11 +51,11 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     constructor(
         private organisationService: OrganisationService,
         private overviewService: OverviewService,
-        private parseLinks: ParseLinks,
+        private parseLinks:  JhiParseLinks,
         private principal: Principal,
         protected activatedRoute: ActivatedRoute,
         protected router: Router,
-        private eventManager: EventManager
+        private eventManager:  JhiEventManager
     ) {
         super(router, activatedRoute);
 

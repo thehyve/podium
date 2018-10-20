@@ -8,7 +8,6 @@
  * See the file LICENSE in the root of this repository.
  */
 import { browser, ElementArrayFinder, ElementFinder } from 'protractor';
-import { Promise } from 'es6-promise';
 import { isUndefined } from 'util';
 
 export interface Persona {
@@ -136,7 +135,9 @@ export class Director {
                         resolve();
                     }
                     else {
-                        reject(Error('not at page: ' + pageName));
+                        browser.getCurrentUrl().then(function (currentUrl) {
+                            reject(Error(`not at page: ${pageName} (${page.url}), instead on ${currentUrl}`));
+                        });
                     }
                 })
             });
@@ -161,10 +162,19 @@ export class Director {
         }
     }
 
+    public clickOnElement(element: ElementFinder | ElementArrayFinder): Promise<any> {
+        return new Promise<any>((resolve) =>
+            browser.executeScript("arguments[0].scrollIntoView();", element.getWebElement()).then(() => {
+                browser.sleep(200);
+                return element.click().then(() => resolve(null))
+            })
+        );
+    }
+
     public clickOn(elementName: string): Promise<any> {
         let element = this.getElement(elementName);
         this.handleDestination(element);
-        return element.locator.click()
+        return this.clickOnElement(element.locator);
     }
 
     public enterText(fieldName: string, text: string, specialKey?: string) {
@@ -195,6 +205,6 @@ export class Director {
         let element = this.getElement(elementName);
         let file = this.getData(fileName);
 
-        return element.locator.sendKeys(file["path"]).then(() => browser.sleep((uploadTimer || 1000)))
+        return element.locator.sendKeys(this.searchDir + "/data/" + file["path"]).then(() => browser.sleep((uploadTimer || 1000)))
     }
 }

@@ -43,20 +43,7 @@ public class UserServiceIntTest {
     @Autowired
     private UserService userService;
 
-    @Test
-    public void assertThatUserMustExistToResetPassword() {
-        Optional<User> maybeUser = userService.requestPasswordReset("john.doe@localhost");
-        assertThat(maybeUser.isPresent()).isFalse();
-
-        maybeUser = userService.requestPasswordReset("admin@localhost");
-        assertThat(maybeUser.isPresent()).isTrue();
-
-        assertThat(maybeUser.get().getEmail()).isEqualTo("admin@localhost");
-        assertThat(maybeUser.get().getResetDate()).isNotNull();
-        assertThat(maybeUser.get().getResetKey()).isNotNull();
-    }
-
-    ManagedUserRepresentation createTestUser() {
+    static ManagedUserRepresentation createTestUser() {
         ManagedUserRepresentation userVM = new ManagedUserRepresentation();
         userVM.setLogin("johndoe");
         userVM.setLogin("johndoes");
@@ -65,6 +52,20 @@ public class UserServiceIntTest {
         userVM.setEmail("john.doe@localhost");
         userVM.setLangKey("en");
         return userVM;
+    }
+
+    @Test
+    public void assertThatUserMustExistToResetPassword() throws UserAccountException {
+        Optional<User> maybeUser = userService.requestPasswordReset("john.doe@localhost");
+        assertThat(maybeUser.isPresent()).isFalse();
+
+        userService.createUser(createTestUser());
+        maybeUser = userService.requestPasswordReset("john.doe@localhost");
+        assertThat(maybeUser.isPresent()).isTrue();
+
+        assertThat(maybeUser.get().getEmail()).isEqualTo("john.doe@localhost");
+        assertThat(maybeUser.get().getResetDate()).isNotNull();
+        assertThat(maybeUser.get().getResetKey()).isNotNull();
     }
 
     @Test

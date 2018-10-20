@@ -138,7 +138,11 @@
                 "requestDetails": "Request Details",
                 "additionalInformation": "Additional Information",
                 "organisations": "Organisation(s)",
-                "selectDraft": "Select draft or create new request"
+                "selectDraft": "Select draft or create new request",
+                "attachments": "Attachments"
+            },
+            "attachments": {
+                "label": "Attachments"
             },
             "title": {
                 "label": "Title",

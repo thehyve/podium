@@ -29,6 +29,14 @@
     -->
     <changeSet id="20170207104100-1" author="gijs@thehyve.nl">
         <loadData encoding="UTF-8"
+                  file="../roles.csv"
+                  relativeToChangelogFile="true"
+                  separator=";"
+                  tableName="podium_role"/>
+    </changeSet>
+
+    <changeSet id="20170207104100-2" author="gijs@thehyve.nl" context="dev">
+        <loadData encoding="UTF-8"
                   file="../organisations.csv"
                   relativeToChangelogFile="true"
                   separator=";"
@@ -38,7 +46,7 @@
         </loadData>
 
         <loadData encoding="UTF-8"
-                  file="../roles.csv"
+                  file="../organisation_roles.csv"
                   relativeToChangelogFile="true"
                   separator=";"
                   tableName="podium_role"/>

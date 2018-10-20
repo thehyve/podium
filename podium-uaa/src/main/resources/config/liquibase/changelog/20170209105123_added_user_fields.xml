@@ -41,7 +41,9 @@
             <column name="specialism" type="varchar(255)">
             </column>
         </addColumn>
+    </changeSet>
 
+    <changeSet id="20170209105123-2" author="gijs@thehyve.nl" context="dev">
         <loadUpdateData encoding="UTF-8"
                         file="../user_added_fields.csv"
                         relativeToChangelogFile="true"

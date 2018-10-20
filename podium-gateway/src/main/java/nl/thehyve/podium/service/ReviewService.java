@@ -73,6 +73,9 @@ public class ReviewService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private RequestFileService requestFileService;
+
     @PostConstruct
     private void init() {
         notificationService.setRequestService(requestService);
@@ -88,6 +91,10 @@ public class ReviewService {
      */
     public RequestRepresentation validateRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
+        if (requestFileService.hasUnsetFileType(request)){
+            throw new ActionNotAllowed("Cannot validate request with unset request file type.");
+        }
+
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
         OverviewStatus sourceStatus = request.getOverviewStatus();
@@ -138,7 +145,9 @@ public class ReviewService {
 
     public RequestRepresentation approveRequest(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
-
+        if (requestFileService.hasUnsetFileType(request)){
+            throw new ActionNotAllowed("Cannot approve request with unset request file type.");
+        }
         RequestAccessCheckHelper.checkStatus(request, RequestStatus.Review);
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Review);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);
@@ -166,6 +175,9 @@ public class ReviewService {
         AuthenticatedUser user, UUID uuid, MessageRepresentation message
     ) throws ActionNotAllowed {
         Request request = requestRepository.findOneByUuid(uuid);
+        if (requestFileService.hasUnsetFileType(request)){
+            throw new ActionNotAllowed("Cannot request revision with unset request file type.");
+        }
 
         RequestAccessCheckHelper.checkReviewStatus(request, RequestReviewStatus.Validation, RequestReviewStatus.Review);
         AccessCheckHelper.checkOrganisationAccess(user, request.getOrganisations(), AuthorityConstants.ORGANISATION_COORDINATOR);

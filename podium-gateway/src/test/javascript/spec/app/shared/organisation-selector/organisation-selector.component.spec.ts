@@ -81,12 +81,12 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
         });
 
         it('should update input value when selected organisations changed', () => {
-            comp.onChange();
+            comp.handleUserSelect();
             expect(comp.organisations).toEqual([new Organisation({id: 1001, uuid: '456', name: 'dummy'})]);
         });
 
         it('should emit value when selection changed', () => {
-            comp.onChange();
+            comp.handleUserSelect();
             expect(comp.organisationChange.emit).toHaveBeenCalled();
         });
 

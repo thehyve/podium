@@ -33,7 +33,9 @@ public class SecurityServiceUnitTest {
     @Test
     public void testgetCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(AuthorityConstants.BBMRI_ADMIN));
+        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin", authorities));
         SecurityContextHolder.setContext(securityContext);
         String login = SecurityService.getCurrentUserLogin();
         assertThat(login).isEqualTo("admin");
@@ -57,7 +59,10 @@ public class SecurityServiceUnitTest {
     @Test
     public void testIsAuthenticated() {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(new UsernamePasswordAuthenticationToken("admin", "admin"));
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(AuthorityConstants.BBMRI_ADMIN));
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("admin", "admin", authorities);
+        securityContext.setAuthentication(token);
         SecurityContextHolder.setContext(securityContext);
         boolean isAuthenticated = SecurityService.isAuthenticated();
         assertThat(isAuthenticated).isTrue();

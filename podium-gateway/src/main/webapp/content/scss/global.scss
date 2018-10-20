@@ -259,12 +259,12 @@ http://google.github.io/material-design-icons/
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(~material-design-icons/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+    src: url(~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
     src: local('Material Icons'),
     local('MaterialIcons-Regular'),
-    url(~material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
-    url(~material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
-    url(~material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+    url(~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+    url(~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.woff) format('woff'),
+    url(~material-design-icons-iconfont/dist/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
@@ -459,7 +459,7 @@ typeahead-container {
 #sidebar-wrapper {
     position: absolute;
     left: 250px;
-    width: 55px;
+    width: 53px;
     height: calc(100% - 121px);
     margin-left: -250px;
     overflow-y: auto;
@@ -535,7 +535,7 @@ typeahead-container {
     }
 
     #sidebar-wrapper {
-        width: 55px;
+        width: 53px;
     }
 
     #wrapper.toggled #sidebar-wrapper {

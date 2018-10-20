@@ -1,0 +1,3 @@
+[submodule "docs/podium-api-docs"]
+	path = docs/podium-api-docs
+	url = https://github.com/thehyve/podium-api-docs.git

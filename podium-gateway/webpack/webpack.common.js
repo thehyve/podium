@@ -114,7 +114,7 @@ module.exports = (options) => {
                     groupBy: [
                         {
                             pattern: "./src/main/webapp/i18n/en/*.json",
-                            fileName: "./target/www/i18n/en.json"
+                            fileName: "./i18n/en.json"
                         }
                     ]
                 }

@@ -26,13 +26,13 @@ eureka:
         status-page-url-path: ${management.context-path}/info
         health-check-url-path: ${management.context-path}/health
         metadata-map:
+            zone: primary # This is needed for the load balancer
             profile: ${spring.profiles.active}
             version: ${info.project.version}
 
 ribbon:
     eureka:
         enabled: true
-    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
 
 zuul:
     host:
@@ -40,6 +40,7 @@ zuul:
         max-per-route-connections: 100
     semaphore:
         max-semaphores: 500
+    retryable: true
 
 # See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
@@ -86,6 +87,10 @@ spring:
         elasticsearch:
             properties:
                 cluster.routing.allocation.disk.watermark.high: 99%
+    http:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
 
 security:
     basic:
@@ -113,7 +118,7 @@ podium:
         core-pool-size: 2
         max-pool-size: 50
         queue-capacity: 10000
-    # By default CORS is disabled. Uncomment to enable.
+    # By default CORS is enabled.
     cors:
         allowed-origins: "*"
         allowed-methods: GET, PUT, POST, DELETE, OPTIONS
@@ -122,20 +127,25 @@ podium:
         allow-credentials: true
         max-age: 1800
     mail:
-        from: podiumGateway@localhost
+        from: podium@localhost
+        # base-url: https://podium.example.com
     swagger:
         default-include-pattern: /api/.*
-        title: podiumGateway API
-        description: podiumGateway API documentation
+        title: Podium Gateway API
+        description: API documentation for the gateway component of the Podium request portal.
         version: 0.0.1
         terms-of-service-url:
         contact-name:
-        contact-url:
+        contact-url: https://github.com/thehyve/podium
         contact-email:
         license:
         license-url:
     ribbon:
         display-on-active-profiles: dev
+    files:
+        upload-dir: ./podium_uploads
+    access:
+        request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
 
 # ===================================================================
 # Application specific properties

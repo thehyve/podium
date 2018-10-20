@@ -7,14 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { HttpInterceptor } from 'ng-jhipster';
+import { JhiHttpInterceptor } from 'ng-jhipster';
 import { RequestOptionsArgs, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Injector } from '@angular/core';
 import { AuthService } from '../../shared/auth/auth.service';
 import { Principal } from '../../shared/auth/principal.service';
 
-export class AuthExpiredInterceptor extends HttpInterceptor {
+export class AuthExpiredInterceptor extends JhiHttpInterceptor {
 
     constructor(private injector: Injector) {
         super();

@@ -11,18 +11,18 @@
 <div class="request-status-update-container" *ngIf="panelStyles">
     <form #statusUpdateForm="ngForm" class="form" role="form" (ngSubmit)="confirmStatusUpdate()">
         <div class="modal-header" [ngClass]="panelStyles.headerStyle">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                    (click)="close()">&times;
-            </button>
             <h4 class="modal-title">
                 <span class="material-icons">warning</span>&nbsp;
                 <span jhiTranslate="request.statusupdate.{{status}}.question">
                       Are you sure you want to reject or request a revision for this request?
                 </span>
             </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                    (click)="close()">&times;
+            </button>
         </div>
         <div class="modal-body">
-            <jhi-alert-error></jhi-alert-error>
+            <pdm-alert-error></pdm-alert-error>
 
             <div class="form-group">
                 <label for="messageSummary"

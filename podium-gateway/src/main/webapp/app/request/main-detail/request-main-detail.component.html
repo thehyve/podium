@@ -21,12 +21,30 @@
                                      [request]="request">
             </pdm-linked-notification>
             <pdm-event-message-component *ngIf="request" [request]="request"></pdm-event-message-component>
-            <jhi-alert></jhi-alert>
-            <jhi-alert-error></jhi-alert-error>
+            <pdm-alert></pdm-alert>
+            <pdm-alert-error></pdm-alert-error>
 
             <tabset>
                 <tab heading="Details">
                     <pdm-request-detail></pdm-request-detail>
+                </tab>
+                <tab heading="Attachments{{asterisk}} ({{attachments.length}})" *ngIf="canViewAttachmentTab()">
+                    <div class="row">
+                        <div class="form-group">
+
+                            <pdm-attachment *ngIf="canChangeAttachments()"
+                                [request]="request"
+                                (onFinishedUpload)="onFinishedUploadAttachment($event)">
+                            </pdm-attachment>
+                            <pdm-attachment-list
+                                [request]="request"
+                                [attachments]="attachments"
+                                [canUpdate]="canChangeAttachments()"
+                                (onDeleteFile)="onDeleteAttachment($event)"
+                                (onFileTypeChange)="onAttachmentTypeChange($event)">
+                            </pdm-attachment-list>
+                        </div>
+                    </div>
                 </tab>
             </tabset>
         </div>

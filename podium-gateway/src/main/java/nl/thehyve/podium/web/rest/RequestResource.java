@@ -16,14 +16,11 @@ import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
-import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
-import nl.thehyve.podium.service.DraftService;
-import nl.thehyve.podium.service.RequestService;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
-import nl.thehyve.podium.service.ReviewService;
-import nl.thehyve.podium.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.web.rest.util.PaginationUtil;
+import nl.thehyve.podium.common.service.dto.*;
+import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
+import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
+import nl.thehyve.podium.service.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +32,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * REST controller for managing Request.
@@ -63,6 +59,7 @@ public class RequestResource {
 
     @Autowired
     private SecurityService securityService;
+
 
     /**
      * Fetch drafts for the current user
@@ -105,15 +102,13 @@ public class RequestResource {
      * Fetch the request draft
      *
      * @param uuid of the request draft
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> getDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) {
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation request = requestService.findRequestForRequester(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
@@ -124,14 +119,13 @@ public class RequestResource {
      *
      * @param request the request to be updated
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests/drafts")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(
-        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
+        @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = draftService.updateDraft(user, request);
@@ -159,7 +153,6 @@ public class RequestResource {
      * Submit the request draft
      *
      * @param uuid of the request draft to be saved
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      * @return The list of requestDTOs generated
      */
@@ -167,7 +160,7 @@ public class RequestResource {
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed, IOException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
         List<RequestRepresentation> requests = draftService.submitDraft(user, uuid);
@@ -235,14 +228,13 @@ public class RequestResource {
      *
      * @param request the request to be updated
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
      */
     @PutMapping("/requests")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateRevisionRequest(
-        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
+        @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests (user: {})", user);
         RequestRepresentation result = draftService.updateRevision(user, request);
@@ -255,7 +247,6 @@ public class RequestResource {
      *
      * @param uuid of the request to be saved
      * @return the updated request representation
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/submit")
@@ -263,7 +254,7 @@ public class RequestResource {
     @Timed
     public ResponseEntity<RequestRepresentation> submitRevisedRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid
-    ) throws URISyntaxException, ActionNotAllowed {
+    ) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
         RequestRepresentation request = requestService.submitRevision(user, uuid);
@@ -339,7 +330,6 @@ public class RequestResource {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.info("REST request to get a page of requests with status {} for coordinator {}", status, user.getName());
         Page<RequestRepresentation> page = requestService.findAllForCoordinatorInStatus(user, status, pageable);
-        log.info("REST request success: {}", page.getTotalElements());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,
             "/api/requests/status/" + status.name() + "/coordinator");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -400,7 +390,6 @@ public class RequestResource {
      * GET /requests/:uuid : Fetch the request
      *
      * @param uuid of the request
-     * @throws URISyntaxException Thrown in case of a malformed URI syntax
      * @return The list of requestDTOs
      */
     @RequestMapping(value = "/requests/{uuid}", method = RequestMethod.GET)
@@ -409,7 +398,7 @@ public class RequestResource {
     @SecuredByRequestOrganisationReviewer
     @Timed
     public ResponseEntity<RequestRepresentation> getRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) {
         RequestRepresentation request = requestService.findRequest(uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
     }

@@ -142,12 +142,12 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
 
         it('should give default style when no advice found', () => {
             let _adviseStyle = comp.toggleAdviseStyle(undefined);
-            expect(_adviseStyle).toEqual('tag-default');
+            expect(_adviseStyle).toEqual('badge-default');
         });
 
         it('should give success style when advise is approved', () => {
             let _adviseStyle = comp.toggleAdviseStyle(RequestReviewDecision.Approved);
-            expect(_adviseStyle).toEqual('tag-success');
+            expect(_adviseStyle).toEqual('badge-success');
         });
 
     });

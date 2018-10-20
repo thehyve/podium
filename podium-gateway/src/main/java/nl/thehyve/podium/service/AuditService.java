@@ -8,7 +8,8 @@ import nl.thehyve.podium.common.service.dto.AuditEventRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,11 @@ public class AuditService {
     @Autowired
     private InternalAuditClient internalAuditClient;
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
+    @Autowired(required = false)
+    private Registration registration;
+
+    @Value("${eureka.instance.appname}")
+    String appName;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -36,7 +40,11 @@ public class AuditService {
         data.put("sourceStatus", event.getSourceStatus());
         data.put("targetStatus", event.getTargetStatus());
         data.put("requestUuid", event.getRequestUuid());
-        data.put("service", discoveryClient.getLocalServiceInstance().getServiceId());
+        String serviceId = appName;
+        if (registration != null && registration.getServiceId() != null) {
+            serviceId = registration.getServiceId();
+        }
+        data.put("service", serviceId);
         AuditEventRepresentation representation = new AuditEventRepresentation();
         representation.setTimestamp(event.getEventDate());
         representation.setPrincipal(event.getUsername());

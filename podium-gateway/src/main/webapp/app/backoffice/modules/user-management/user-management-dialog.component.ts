@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { EventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { UserModalService } from './user-modal.service';
 import { JhiLanguageHelper, User, UserService } from '../../../shared';
 import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
@@ -33,7 +33,7 @@ export class UserMgmtDialogComponent implements OnInit {
         private languageHelper: JhiLanguageHelper,
         private languageService: JhiLanguageService,
         private userService: UserService,
-        private eventManager: EventManager,
+        private eventManager: JhiEventManager,
         private router: Router
     ) {}
 

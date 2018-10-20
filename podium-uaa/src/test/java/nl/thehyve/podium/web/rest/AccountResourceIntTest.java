@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;

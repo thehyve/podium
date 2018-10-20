@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.common.web.rest.errors;
 
+import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.security.annotations.Public;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartException;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;
@@ -69,6 +71,13 @@ public class ExceptionTranslator {
         return new ErrorRepresentation(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
     }
 
+    @ExceptionHandler(AccessDenied.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorRepresentation processAccessDenied(AccessDenied e) {
+        return new ErrorRepresentation(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
+    }
+
     private ErrorRepresentation processFieldErrors(List<FieldError> fieldErrors) {
         ErrorRepresentation dto = new ErrorRepresentation(ErrorConstants.ERR_VALIDATION);
 
@@ -92,6 +101,7 @@ public class ExceptionTranslator {
         ErrorRepresentation errorVM;
         ResponseStatus responseStatus = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class);
         log.error("[Internal server error] {} - {}", ex.getMessage(), ex.getClass().toString());
+        log.error("[Internal server error] Stack trace", ex);
         if (responseStatus != null) {
             builder = ResponseEntity.status(responseStatus.value());
             errorVM = new ErrorRepresentation("error." + responseStatus.value().value(), responseStatus.reason());
@@ -112,6 +122,14 @@ public class ExceptionTranslator {
             dto.add("request", violation.getPropertyPath().toString(), violation.getMessage());
         }
         return dto;
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ErrorRepresentation> processMultipartException(Exception e){
+        log.error("Error with a file upload: " + e.getMessage(), e);
+        BodyBuilder builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
+        ErrorRepresentation errorVM = new ErrorRepresentation(ErrorConstants.ERR_INTERNAL_SERVER_ERROR, e.getMessage());
+        return builder.body(errorVM);
     }
 
 }

@@ -29,7 +29,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
             'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
-            return director.enterText(key, request[key]);
+            return director.enterText(key, request[key]).then(() => null);
         }).then(() => {
             return doInOrder(request["requestType"], (type) => {
                 return director.clickOn(type);
@@ -41,6 +41,12 @@ defineSupportCode(({ Given, When, Then }) => {
                                 return director.clickOn('combinedRequestYes');
                             }
                         });
+                }).then(() => {
+                    if (request['files']) {
+                        return doInOrder(request['files'], (filename) => {
+                            return director.uploadFile("uploadFile", filename).then(() => null);
+                        })
+                    }
                 }).then(() => {
                     return director.clickOn("save")
                 });
@@ -129,6 +135,27 @@ defineSupportCode(({ Given, When, Then }) => {
                 });
             });
         });
+    });
+
+    Then(/^the draft has the files '(.*)' attached$/, function (fileNames): Promise<any> {
+        let director = this.director as Director;
+        let adminConsole = this.adminConsole as AdminConsole;
+        let expectedFiles = fileNames == '' ? [] : fileNames.split(", ");
+
+        let persona = director.getPersona('he');
+
+        return browser.sleep(500).then(() => {
+            return adminConsole.getDraft(persona, this.scenarioData).then((body) => {
+                return adminConsole.getFiles(persona, body).then((files: any[]) => {
+                    return promiseTrue(files.length == expectedFiles.length, "there are no expected number of files for this request: " + JSON.stringify(files));
+                });
+            });
+        });
+    });
+
+    When(/^the file is removed$/, function (): Promise<any> {
+        let director = this.director as Director;
+        return director.clickOn("removeFile");
     });
 
     Given(/^(.*) opens the draft '(.*)'$/, function (personaName, requestName) {
@@ -363,7 +390,7 @@ defineSupportCode(({ Given, When, Then }) => {
         return doInOrder(['title', 'background', 'researchQuestion', 'hypothesis', 'methods', 'relatedRequestNumber',
             'searchQuery', 'name', 'email', 'jobTitle', 'affiliation'], (key) => {
             request[key] = request[key] + 'revision';
-            return director.enterText(key, request[key]);
+            return director.enterText(key, request[key]).then(() => null);
         }).then(() => {
             return director.clickOn(action)
         })
@@ -500,7 +527,7 @@ defineSupportCode(({ Given, When, Then }) => {
     Then('the request cannot be edited', function (): Promise<any> {
         return Promise.all([
             countIs($$('textarea'), 0),
-            countIs($$('input'), 1) //only a checkbox for validationCheck
+            countIs($$('input'), 2) //only a checkbox for validationCheck and an upload input
         ])
     });
 
@@ -510,8 +537,8 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click().then((): Promise<any> => {
-                    return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER)
+                return director.clickOnElement(director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn')).then((): Promise<any> => {
+                    return director.enterText('reference', 'release Note ' + deliveryType, protractor.Key.ENTER).then(() => null)
                 })
             })
         })
@@ -523,7 +550,7 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-                return director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn').click()
+                return director.clickOnElement(director.getElement('deliveryrow' + deliveryType).locator.$('.test-delivery-action-btn'))
             })
         });
     });
@@ -544,8 +571,8 @@ defineSupportCode(({ Given, When, Then }) => {
 
         return doInOrder(deliveryTypes, (deliveryType) => {
             return browser.waitForAngular().then(() => { //wait for the popover to disappear from the previous step
-                return $('.test-dropdown-toggle-' + deliveryType).click().then(() => {
-                    return $('.test-dropdown-menu-' + deliveryType).$('.dropdown-item').click().then((): Promise<any> => {
+                return director.clickOnElement($('.test-dropdown-toggle-' + deliveryType)).then(() => {
+                    return director.clickOnElement($('.test-dropdown-menu-' + deliveryType).$('.dropdown-item')).then((): Promise<any> => {
                         return Promise.all([
                             director.enterText('messageSummary', 'cancels delivery messageSummary'),
                             director.enterText('messageDescription', 'cancels delivery messageDescription')

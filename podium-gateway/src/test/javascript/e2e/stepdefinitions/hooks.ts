@@ -16,9 +16,24 @@ import initDataDictionary = require("../data/data-dictionary");
 
 let { defineSupportCode } = require('cucumber');
 
-defineSupportCode(function ({ After, Before }) {
+defineSupportCode(function ({ After, Before, BeforeAll }) {
     let personaDictionary = initPersonaDictionary();
     let dataDictionary = initDataDictionary();
+
+    BeforeAll(function () {
+        let adminConsole = new AdminConsole();
+
+        return adminConsole.authenticate().then(() => {
+        }, () => {
+            browser.driver.quit(); //clean up the driver instance
+            return Promise.reject("\n\n" +
+                "   ==================================================\n" +
+                "   !!COULD NOT LOG INTO PODIUM. SKIPPING ALL TESTS !!\n" +
+                "   Make sure podium registry uaa and gateway are " +
+                "   running with the dev profile\n" +
+                "   ==================================================\n");
+        })
+    });
 
     function setupUsers(adminConsole: AdminConsole, personas: string[]) {
         let createUserCalls = [];

@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.cors.CorsConfiguration;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class PodiumProperties {
     private final Logging logging = new Logging();
 
     private final Registry registry = new Registry();
+
+    private final Files files = new Files();
+
+    private final Access access = new Access();
 
     public PodiumProperties() {
     }
@@ -85,6 +90,10 @@ public class PodiumProperties {
     public Logging getLogging() {
         return this.logging;
     }
+
+    public Files getFiles() {return this.files; }
+
+    public Access getAccess() { return access; }
 
     public static class Ribbon {
         private String[] displayOnActiveProfiles;
@@ -359,6 +368,8 @@ public class PodiumProperties {
         private String license;
         private String licenseUrl;
         private String defaultIncludePattern = "/api/.*";
+        private String host;
+        private String[] protocols;
 
         public Swagger() {
         }
@@ -441,6 +452,22 @@ public class PodiumProperties {
 
         public void setDefaultIncludePattern(String defaultIncludePattern) {
             this.defaultIncludePattern = defaultIncludePattern;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(final String host) {
+            this.host = host;
+        }
+
+        public String[] getProtocols() {
+            return protocols;
+        }
+
+        public void setProtocols(final String[] protocols) {
+            this.protocols = protocols;
         }
     }
 
@@ -753,6 +780,41 @@ public class PodiumProperties {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+    }
+
+    public static class Files {
+        private String uploadDir = "/tmp/podium_data";
+
+        public Files(){
+
+        }
+
+        public String getUploadDir() {
+            return uploadDir;
+        }
+
+        public void setUploadDir(String uploadDir) {
+            this.uploadDir = uploadDir;
+        }
+    }
+
+    /**
+     * Configuration for custom access tokens for endpoints.
+     */
+    public static class Access {
+
+        /**
+         * Access tokens for the /api/public/requests/template endpoint.
+         */
+        private List<String> requestTemplate = new ArrayList<>();
+
+        public List<String> getRequestTemplate() {
+            return requestTemplate;
+        }
+
+        public void setRequestTemplate(List<String> requestTemplate) {
+            this.requestTemplate = requestTemplate;
         }
     }
 }

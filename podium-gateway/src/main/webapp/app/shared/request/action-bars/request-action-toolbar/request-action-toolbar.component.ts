@@ -9,7 +9,7 @@
  */
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-import { Form } from '@angular/forms';
+import { Form, NgForm } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import {
     RequestStatusOptions, RequestReviewStatusOptions,
@@ -46,7 +46,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         RequestOverviewStatusOption.Validation
     ];
 
-    @Input() form: Form;
+    @Input() form: NgForm;
     @Input() request: RequestBase;
     @Input() isUpdating: false;
 
@@ -102,7 +102,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         if (!requestDeliveries) {
             this.checks.canFinalize = false;
         }
-
         this.checks.canFinalize = this.deliveryService.canFinalizeRequest(requestDeliveries);
     }
 
@@ -111,6 +110,18 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         if (this.request.requestReview) {
             this.reviewStatus = this.request.requestReview.status.toString();
         }
+    }
+
+    canProceedFromReview() {
+        return this.request.hasAttachmentsTypes;
+    }
+
+    canProceedFromValidation() {
+        return this.checks.validation && this.request.hasAttachmentsTypes;
+    }
+
+    canSubmitDraft() {
+        return this.form.form.valid && this.request.hasAttachmentsTypes;
     }
 
     isStatus(status): boolean {

@@ -15,7 +15,7 @@
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added fields to User: telephone, institute, department, job_title, specialism.
+        Added deleted flag, verification fields and account locking to User.
     -->
     <changeSet id="20170210162230-1" author="gijs@thehyve.nl">
         <addColumn tableName="podium_user">

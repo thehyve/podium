@@ -8,9 +8,9 @@
  *
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { JhiLanguageService, AlertService, EventManager } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
-import { TypeaheadMatch } from 'ng2-bootstrap/typeahead';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
 import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';
@@ -40,16 +40,16 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     public organisationRoles: Role[];
     public organisationUsers: any[] = [];
     public eventSubscriber: Subscription;
-    public usersPromises: Promise<Response>[] = [];
+    public usersPromises: Promise<User>[] = [];
 
     @Input() organisation;
 
     constructor(
         private roleService: RoleService,
         private userService: UserService,
-        private alertService: AlertService,
+        private alertService: JhiAlertService,
         private principal: Principal,
-        private eventManager: EventManager
+        private eventManager: JhiEventManager
     ) {
 
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
@@ -217,7 +217,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
 
                         // Map all the users in the role
                         role.users.map((user) => {
-
                             let promise = this.getPromiseForUserOfRole(user, role);
                             this.usersPromises.push(promise);
                         });
@@ -240,8 +239,8 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
      * @param role The role the user originated from
      * @returns {Promise<Response>}
      */
-    public getPromiseForUserOfRole(user: string, role: Role): Promise<Response> {
-        let promise: Promise<Response> = this.userService.findByUuid(user).toPromise();
+    public getPromiseForUserOfRole(user: string, role: Role): Promise<User> {
+        let promise: Promise<User> = this.userService.findByUuid(user).toPromise();
 
         promise.then(userRes => {
             let organisationUser = this.generateOrganisationUser(userRes, role);
@@ -277,7 +276,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                 // Perform update
                 this.roleService.update(role)
                     .subscribe(
-                        (res: Response) => {
+                        (res: Role) => {
                             observer.next(res);
                         },
                         (res: Response) => {
@@ -291,7 +290,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     private onSaveSuccess(res: Response, isDelete: boolean) {
-        let notification = isDelete ? 'podiumGatewayApp.roleAssign.deleted' : 'podiumGatewayApp.roleAssign.saved';
+        let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
         this.alertService.success(notification);
         this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }

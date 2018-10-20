@@ -16,12 +16,12 @@
                 <button type="button" class="btn btn-danger" id="reset-form-btn" (click)="resetForm()">
                     <span jhiTranslate="request.toolbar.reset">Reset</span>
                 </button>
-                <div class="float-xs-right">
+                <div class="float-right">
                     <button type="button" class="btn btn-primary" id="save-draft-btn" (click)="saveDraft()">
                         <span jhiTranslate="request.toolbar.saveDraft">Save draft</span>
                     </button>
                     <button type="submit" class="btn btn-success" id="submit-draft-btn"
-                            [disabled]="!form.form.valid" (click)="submitDraft()">
+                            [disabled]="!canSubmitDraft()" (click)="submitDraft()">
                         <span jhiTranslate="request.toolbar.submit">Submit</span>
                     </button>
                 </div>
@@ -49,10 +49,10 @@
 
                     <!-- Revision -->
                     <div *ngIf="isStatus(requestStatus.Revision)">
-                        <button type="button" class="btn btn-default" id="cancel-btn" (click)="cancel()">
+                        <button type="button" class="btn btn-outline-warning" id="cancel-btn" (click)="cancel()">
                             <span jhiTranslate="request.toolbar.cancel">Cancel</span>
                         </button>
-                        <div class="float-xs-right">
+                        <div class="float-right">
                             <button type="button" class="btn btn-primary" id="save-request-btn"
                                     (click)="saveRequest()">
                                 <span jhiTranslate="request.toolbar.save">Save</span>
@@ -89,16 +89,17 @@
                                 (click)="rejectRequest()">
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
-                        <div class="float-xs-right">
-                            <button type="button" class="btn btn-default test-request-revision-btn"
-                                    (click)="requireRevision()">
+                        <div class="float-right">
+                            <button type="button" class="btn btn-outline-primary test-request-revision-btn"
+                                    (click)="requireRevision()" [disabled]="!request.hasAttachmentsTypes">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
                             <button type="submit" class="btn btn-success" id="validate-request-btn"
-                                    (click)="validateRequest()" [disabled]="!checks.validation">
+                                    (click)="validateRequest()"
+                                    [disabled]="!canProceedFromValidation()">
                             <span jhiTranslate="request.toolbar.sendForReview"
                                   tooltip="Please validate the request by checking the box above."
-                                  [isDisabled]="checks.validation">Send for review</span>
+                                  [isDisabled]="!canProceedFromValidation()">Send for review</span>
                             </button>
                         </div>
                     </div>
@@ -116,13 +117,13 @@
                                 (click)="rejectRequest()">
                             <span jhiTranslate="request.toolbar.reject">Reject</span>
                         </button>
-                        <div class="float-xs-right">
-                            <button type="button" class="btn btn-default test-request-revision-btn"
-                                    (click)="requireRevision()">
+                        <div class="float-right">
+                            <button type="button" class="btn btn-outline-primary test-request-revision-btn"
+                                    (click)="requireRevision()" [disabled]="!canProceedFromReview()">
                                 <span jhiTranslate="request.toolbar.requestRevision">Request revision</span>
                             </button>
                             <button type="button" class="btn btn-success" id="approve-request-btn"
-                                    (click)="approveRequest()">
+                                    (click)="approveRequest()" [disabled]="!canProceedFromReview()">
                                 <span jhiTranslate="request.toolbar.approve">Approve</span>
                             </button>
                         </div>
@@ -132,7 +133,7 @@
                 <!-- Reviewer actions -->
                 <div *ngIf="isReviewable()">
                     <!-- Review -->
-                    <div class="float-xs-right">
+                    <div class="float-right">
                         <button type="button" class="btn btn-outline-danger" (click)="reviewRejected()">
                             <span jhiTranslate="request.toolbar.adviseReject">Advise Reject</span>
                         </button>
@@ -161,8 +162,8 @@
                         <span jhiTranslate="request.toolbar.close">Close</span>
                     </button>
 
-                    <div class="float-xs-right">
-                        <button type="button" class="btn btn-default test-request-start-delivery-btn"
+                    <div class="float-right">
+                        <button type="button" class="btn btn-outline-primary test-request-start-delivery-btn"
                                 (click)="startDelivery()">
                             <span jhiTranslate="request.toolbar.startDelivery">Start delivery process</span>
                         </button>
@@ -195,8 +196,8 @@
                         </span>
                     </div>
 
-                    <div class="float-xs-right">
-                        <button type="button" class="btn btn-default test-request-finalize-request-btn"
+                    <div class="float-right">
+                        <button type="button" class="btn btn-outline-primary test-request-finalize-request-btn"
                                 [disabled]="!checks.canFinalize"
                                 (click)="finalizeRequest()">
                             <span tooltip="Please mark all deliveries as Received or Cancelled above prior to finalizing a request."

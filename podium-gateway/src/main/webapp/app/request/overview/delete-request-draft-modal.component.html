@@ -10,11 +10,11 @@
 
 <form name="deleteDraftForm" ng-submit="confirmDelete()">
     <div class="modal-header">
-        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" jhiTranslate="request.delete.dialog.title">Confirm deletion of request draft</h4>
+        <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
     </div>
     <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
+        <pdm-alert-error></pdm-alert-error>
         <p jhiTranslate="request.delete.dialog.question">
             Are you sure you would like to delete this request draft?
         </p>

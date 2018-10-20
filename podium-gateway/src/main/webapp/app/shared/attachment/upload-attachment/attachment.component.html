@@ -1,0 +1,32 @@
+<div class="column is-8 is-offset-2">
+    <div class="drop-container" ngFileDrop [options]="options"
+         (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+        <p>
+            <span jhiTranslate="attachments.upload.dragHere">Drag a file here or</span>
+            <label class="upload-button">
+                <input type="file" ngFileSelect [options]="options"
+                       (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
+                       multiple>
+                <span jhiTranslate="attachments.upload.browse">browse</span>
+            </label>
+            <span jhiTranslate="attachments.upload.toUpload">to upload.</span>
+            <small class="form-text text-danger" *ngIf="error.length">
+                <div *ngFor="let err of error">{{err}}</div>
+            </small>
+        </p>
+    </div>
+</div>
+<div class="column is-8 is-offset-2">
+    <div class="upload-items">
+        <div class="upload-item" *ngFor="let f of files; let i = index;">
+            <div class="small filename">
+                <span>{{ f.name }} ({{ f.id }}) - {{ f.progress?.data?.percentage }}%</span>
+                <span>uploading with {{ f.progress?.data?.speedHuman }}</span>
+                <span>ETA {{ f.progress?.data?.etaHuman }}</span>
+            </div>
+            <div class="progress">
+                <span class="bar" [style.width]="f?.progress?.data?.percentage + '%'"></span>
+            </div>
+        </div>
+    </div>
+</div>

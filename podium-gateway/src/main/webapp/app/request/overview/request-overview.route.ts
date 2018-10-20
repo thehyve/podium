@@ -10,14 +10,14 @@
 import { Route, ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
 import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
 import { RequestOverviewComponent } from './request-overview.component';
-import { PaginationUtil } from 'ng-jhipster';
+import { JhiPaginationUtil } from 'ng-jhipster';
 import { Injectable } from '@angular/core';
 import { RequestOverviewPath } from './request-overview.constants';
 
 @Injectable()
 export class RequestResolvePagingParams implements Resolve<any> {
 
-    constructor(private paginationUtil: PaginationUtil) {}
+    constructor(private paginationUtil: JhiPaginationUtil) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';

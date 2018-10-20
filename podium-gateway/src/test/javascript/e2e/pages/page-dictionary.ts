@@ -12,7 +12,6 @@ import SigninPage = require("./signin.page");
 import DashboardPage = require("./dashboard.page");
 import ProfilePage = require("./profile.page");
 import RegistrationPage = require("./registration.page");
-import completedPage = require("./completed.page");
 import UserManagementPage = require("./user-management.page");
 import UserDetailsPage = require("./user-details.page");
 import OrganisationsManagementPage = require("./organisations-management.page");
@@ -21,11 +20,12 @@ import OrganisationsDetailsPage = require("./organisations-details.page");
 import OrganisationsEditPage = require("./organisations-edit.page");
 import CreateOrganisationPage = require("./create-organisation.page");
 import NewRequestsPage = require("./new-requests.page");
-import RequestsManagement = require("./requests-management.page");
-import RequestsDetails = require("./requests-details.page");
-import ReviseRequests = require("./revise-requests.page");
-import EditRequests = require("./edit-requests.page");
-import OrganisationRequestsManagement = require("./requests-management-org.page");
+import CompletedPage = require('./completed.page');
+import RequestsManagementPage = require('./requests-management.page');
+import ReviseRequestsPage = require('./revise-requests.page');
+import RequestDetailsPage = require('./requests-details.page');
+import EditRequestsPage = require('./edit-requests.page');
+import OrganisationRequestsManagementPage = require('./requests-management-org.page');
 
 
 /*
@@ -39,7 +39,7 @@ function initPages() {
     PageDictionary['Dashboard'] = new DashboardPage;
     PageDictionary['profile'] = new ProfilePage;
     PageDictionary['registration'] = new RegistrationPage;
-    PageDictionary['completed'] = new completedPage;
+    PageDictionary['completed'] = new CompletedPage;
     PageDictionary['user management'] = new UserManagementPage;
     PageDictionary['user details'] = new UserDetailsPage;
     PageDictionary['organisation overview'] = new OrganisationsManagementPage();
@@ -48,11 +48,11 @@ function initPages() {
     PageDictionary['organisation edit'] = new OrganisationsEditPage();
     PageDictionary['create organisation'] = new CreateOrganisationPage();
     PageDictionary['new requests'] = new NewRequestsPage();
-    PageDictionary['request overview'] = new RequestsManagement();
-    PageDictionary['request details'] = new RequestsDetails();
-    PageDictionary['revise requests'] = new ReviseRequests();
-    PageDictionary['edit requests'] = new EditRequests();
-    PageDictionary['organisation request overview'] = new OrganisationRequestsManagement();
+    PageDictionary['request overview'] = new RequestsManagementPage();
+    PageDictionary['request details'] = new RequestDetailsPage();
+    PageDictionary['revise requests'] = new ReviseRequestsPage();
+    PageDictionary['edit requests'] = new EditRequestsPage();
+    PageDictionary['organisation request overview'] = new OrganisationRequestsManagementPage();
 
     return PageDictionary;
 }

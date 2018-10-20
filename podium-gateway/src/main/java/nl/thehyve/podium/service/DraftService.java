@@ -17,6 +17,8 @@ import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestDetail;
+import nl.thehyve.podium.domain.RequestFile;
+import nl.thehyve.podium.repository.RequestFileRepository;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
@@ -29,6 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +60,9 @@ public class DraftService {
     private RequestDetailMapper requestDetailMapper;
 
     @Autowired
+    private RequestFileService requestFileService;
+
+    @Autowired
     private RequestReviewProcessService requestReviewProcessService;
 
     @Autowired
@@ -68,6 +76,9 @@ public class DraftService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private RequestFileRepository requestFileRepository;
 
     /**
      * Create a new draft request.
@@ -142,7 +153,7 @@ public class DraftService {
      * @return the list of generated requests to organisations.
      * @throws ActionNotAllowed if the request is not in status 'Draft'.
      */
-    public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed {
+    public List<RequestRepresentation> submitDraft(AuthenticatedUser user, UUID uuid) throws ActionNotAllowed, IOException {
         Request request = requestRepository.findOneByUuid(uuid);
 
         // Organisations should be selected during the process before organisation requests can be created.
@@ -156,6 +167,7 @@ public class DraftService {
         OverviewStatus sourceStatus = request.getOverviewStatus();
 
         RequestDetailRepresentation requestData = requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRequestDetail());
+        List<RequestFile> requestFiles = requestFileRepository.findDistinctByRequestAndDeletedFalse(request);
 
         log.debug("Validating request data.");
         RequestService.validateRequest(requestData);
@@ -196,6 +208,13 @@ public class DraftService {
                 requestReviewProcessService.start(user));
             organisationRequest = requestRepository.save(organisationRequest);
 
+            // Copy the attachments.
+            for (RequestFile requestFile : requestFiles) {
+                RequestFile copy = requestFileService.copyFile(requestFile);
+                copy.setRequest(organisationRequest);
+                requestFileRepository.save(copy);
+            }
+
             organisationRequests.add(organisationRequest);
 
             log.debug("Created new submitted request for organisation {}.", organisationUuid);
@@ -227,6 +246,13 @@ public class DraftService {
         notificationService.submissionNotificationToRequester(user, result);
 
         log.debug("Deleting draft request.");
+
+        // Delete old request files
+        for (RequestFile requestFile: requestFiles) {
+            requestFileService.deleteFileFromFileSystem(requestFile);
+            requestFileRepository.delete(requestFile.getId());
+        }
+
         requestService.deleteRequest(request.getId());
         return result;
     }

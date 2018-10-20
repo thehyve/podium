@@ -8,7 +8,6 @@
  *
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';

@@ -31,9 +31,9 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     request: RequestBase;
 
     private optionStyles = [
-        {style: 'tag-success', advise: RequestReviewDecision.Approved},
-        {style: 'tag-danger', advise: RequestReviewDecision.Rejected},
-        {style: 'tag-default', advise: RequestReviewDecision.None},
+        {style: 'badge-success', advise: RequestReviewDecision.Approved},
+        {style: 'badge-danger', advise: RequestReviewDecision.Rejected},
+        {style: 'badge-default', advise: RequestReviewDecision.None},
     ];
 
     constructor(
@@ -51,7 +51,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         let foundStyle = this.optionStyles.find((optionStyle) => {
             return optionStyle.advise === advise;
         });
-        return foundStyle ? foundStyle.style : 'tag-default';
+        return foundStyle ? foundStyle.style : 'badge-default';
     }
 
     ngOnInit(): void {

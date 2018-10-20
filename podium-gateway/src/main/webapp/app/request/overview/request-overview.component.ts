@@ -9,24 +9,24 @@
  */
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
-import { OverviewService } from '../../shared/overview/overview.service';
-import { RequestBase } from '../../shared/request/request-base';
+import { OverviewService } from '../../shared';
+import { RequestBase } from '../../shared/request';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RequestFormService } from '../form/request-form.service';
+import { RequestFormService } from '../form';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
 import { RequestOverviewPath } from './request-overview.constants';
 import { Response, Http } from '@angular/http';
-import { Overview } from '../../shared/overview/overview';
+import { Overview } from '../../shared';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
-import { UserGroupAuthority } from '../../shared/authority/authority.constants';
+import { UserGroupAuthority } from '../../shared';
 import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
-import { RequestType } from '../../shared/request/request-type';
-import { EventManager, ParseLinks } from 'ng-jhipster';
-import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
+import { RequestType } from '../../shared/request';
+import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
@@ -72,8 +72,8 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     constructor(
         private requestFormService: RequestFormService,
-        private eventManager: EventManager,
-        private parseLinks: ParseLinks,
+        private eventManager: JhiEventManager,
+        private parseLinks: JhiParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
@@ -144,7 +144,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     editRequest(request) {
         this.requestFormService.request = request;
-        this.router.navigate(['./requests/edit']);
+        this.router.navigate(['./requests/edit', request.uuid]);
     }
 
     deleteDraft(request) {
@@ -231,4 +231,5 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.success = null;
         window.scrollTo(0, 0);
     }
+
 }

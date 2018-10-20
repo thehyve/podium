@@ -17,26 +17,6 @@ function initPersonaDictionary() {
     let personaDictionary: { [key: string]: Persona } = Object.create(null);
 
     let personas = [
-        new Persona('System', {
-            "login": "system",
-            "password": "",
-            "firstName": "System",
-            "lastName": "System",
-            "email": "system@localhost",
-            "telephone": null,
-            "institute": null,
-            "department": "system@localhost",
-            "jobTitle": null,
-            "specialism": null,
-            "Other specialism": null,
-            "authority": [{
-                orgShortName: "none",
-                role: "ROLE_PODIUM_ADMIN"
-            }],
-            "emailVerified": true,
-            "adminVerified": true,
-            "accountLocked": false
-        }),
         new Persona("Admin", {
             "login": "admin",
             "password": "admin",

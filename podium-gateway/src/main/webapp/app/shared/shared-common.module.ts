@@ -10,19 +10,20 @@
 import { NgModule, Sanitizer } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
-    FindLanguageFromKeyPipe,
-    JhiAlertComponent,
-    JhiAlertErrorComponent
+    PdmAlertComponent,
+    PdmAlertErrorComponent
 } from './';
+import { JhiConfigService } from 'ng-jhipster/src/config.service';
 
 export function alertServiceProvider(sanitizer: Sanitizer, translateService: TranslateService) {
     // set below to true to make alerts look like toast
-    let isToast = false;
-    return new AlertService(sanitizer, isToast, translateService);
+    let jhiConfigService = new JhiConfigService();
+    jhiConfigService.CONFIG_OPTIONS.alertAsToast = false;
+    return new JhiAlertService(sanitizer, jhiConfigService, translateService);
 }
 
 @NgModule({
@@ -30,14 +31,13 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
         PodiumGatewaySharedLibsModule,
     ],
     declarations: [
-        FindLanguageFromKeyPipe,
-        JhiAlertComponent,
-        JhiAlertErrorComponent
+        PdmAlertComponent,
+        PdmAlertErrorComponent
     ],
     providers: [
         JhiLanguageHelper,
         {
-            provide: AlertService,
+            provide: JhiAlertService,
             useFactory: alertServiceProvider,
             deps: [Sanitizer, TranslateService]
         },
@@ -45,9 +45,8 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
     ],
     exports: [
         PodiumGatewaySharedLibsModule,
-        FindLanguageFromKeyPipe,
-        JhiAlertComponent,
-        JhiAlertErrorComponent
+        PdmAlertComponent,
+        PdmAlertErrorComponent
     ]
 })
 export class PodiumGatewaySharedCommonModule {}

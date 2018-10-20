@@ -13,10 +13,7 @@ import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
-import {
-    RequestReviewStatusOptions,
-    RequestStatusOptions, RequestOverviewStatusOption
-} from '../../../shared/request/request-status/request-status.constants';
+import { RequestOverviewStatusOption } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
 import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -30,7 +27,7 @@ import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/reque
 import { Delivery } from '../../../shared/delivery/delivery';
 import { Subscription } from 'rxjs';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
-import { AlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -59,7 +56,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         private requestFormService: RequestFormService,
         private modalService: NgbModal,
         private principal: Principal,
-        private alertService: AlertService
+        private alertService: JhiAlertService
     ) {
     }
 
@@ -138,7 +135,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
     /**
      * Submit the feedback of a reviewer for a request.
      *
-     * @param decision the reviewfeedback holding the advice and their findings.
+     * @param decision the review feedback holding the advice and their findings.
      */
     submitReview(decision: RequestReviewDecision) {
         let modalRef = this.modalService.open(RequestUpdateReviewDialogComponent, {size: 'lg', backdrop: 'static'});
@@ -170,7 +167,10 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         this.isUpdating = true;
         this.requestService.validateRequest(this.request.uuid)
             .subscribe(
-                (res) => this.onSuccess(res),
+                (res) => {
+                    this.onSuccess(res);
+                    this.registerChanges();
+                },
                 (err) => this.onError(err)
             );
     }

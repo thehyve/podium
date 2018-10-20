@@ -25,10 +25,9 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/podiumUaa
         name: podiumUaa
-        username: podiumUser
-        password: podiumUser
+#        username: podiumUser
+#        password: podiumUser
     jpa:
         database-platform: nl.thehyve.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
@@ -79,9 +78,6 @@ podium:
         client-authorization:
             clientId: internal
             clientSecret: internal
-    mail: # specific Podium mail property, for standard properties see MailProperties
-        from: podiumUaa@localhost
-        baseUrl: http://my-server-url-to-change # Modify according to your server's URL
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: false
         graphite:

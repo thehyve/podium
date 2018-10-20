@@ -7,7 +7,7 @@
  *
  * See the file LICENSE in the root of this repository.
  */
-import { Organisation, Request } from './templates';
+import { FileData, Organisation, Request } from './templates';
 
 function initDataDictionary() {
     let dataDictionary: { [key: string]: any } = Object.create(null);
@@ -199,6 +199,25 @@ function initDataDictionary() {
             "combinedRequest": false,
             "status": 'Draft',
         }),
+        new Request("DraftWithFile", {
+            "title": "DraftWithFile",
+            "background": "background DraftWithFile",
+            "researchQuestion": "research question DraftWithFile",
+            "hypothesis": "hypothesis DraftWithFile",
+            "methods": "methods DraftWithFile",
+            "relatedRequestNumber": "Draft01",
+            "name": "name DraftWithFile",
+            "email": "emailDraftWithFile@localhost",
+            "jobTitle": "jobTitle DraftWithFile",
+            "affiliation": "affiliation DraftWithFile",
+            "searchQuery": "searchQuery DraftWithFile",
+            "requestType": ["Data"],
+            "organisations": ["DataBank", "MultiBank"],
+            "combinedRequest": false,
+            "status": 'Draft',
+            "files": ["exampleFile"],
+        }),
+        new FileData("exampleFile", { path: "example.txt" }),
         {
             "dataID": "menuRoleMapping",
             "Organisation administrator": "ROLE_ORGANISATION_ADMIN",

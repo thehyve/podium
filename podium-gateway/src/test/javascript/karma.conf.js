@@ -68,6 +68,10 @@ module.exports = function (config) {
                         loaders: ['to-string-loader', 'css-loader', 'sass-loader']
                     },
                     {
+                        test: /\.(jpe?g|png|gif|svg|woff2?|ttf|eot)$/i,
+                        loaders: ['file-loader?hash=sha512&digest=hex&name=content/[hash].[ext]']
+                    },
+                    {
                         test: /src\/main\/webapp\/.+\.ts$/,
                         enforce: 'post',
                         exclude: /(test|node_modules)/,
@@ -125,6 +129,9 @@ module.exports = function (config) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: ['PhantomJS'],
+
+        browserDisconnectTolerance: 2,
+        browserNoActivityTimeout: 50000,
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits

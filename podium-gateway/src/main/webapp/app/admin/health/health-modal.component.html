@@ -9,12 +9,12 @@
   -->
 
 <div class="modal-header">
-    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span>
-    </button>
     <h4 class="modal-title" id="showHealthLabel">
 		{{'health.indicator.' + baseName(currentHealth.name) | translate}}
         {{subSystemName(currentHealth.name)}}
     </h4>
+    <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span>
+    </button>
 </div>
 <div class="modal-body pad">
     <div *ngIf="currentHealth.details">

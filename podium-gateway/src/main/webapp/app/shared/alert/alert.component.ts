@@ -8,10 +8,10 @@
  *
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
-    selector: 'jhi-alert',
+    selector: 'pdm-alert',
     template: `
         <div class="alerts" role="alert">
             <div *ngFor="let alert of alerts" [ngClass]="{\'alert.position\': true, \'toast\': alert.toast}">
@@ -19,10 +19,10 @@ import { AlertService } from 'ng-jhipster';
             </div>
         </div>`
 })
-export class JhiAlertComponent implements OnInit, OnDestroy {
+export class PdmAlertComponent implements OnInit, OnDestroy {
     alerts: any[];
 
-    constructor(private alertService: AlertService) { }
+    constructor(private alertService: JhiAlertService) { }
 
     ngOnInit() {
         this.alerts = this.alertService.get();

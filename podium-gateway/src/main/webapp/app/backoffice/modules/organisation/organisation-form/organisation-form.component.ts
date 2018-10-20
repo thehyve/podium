@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { EventManager, AlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Principal } from '../../../../shared';
 import { User } from '../../../../shared/user/user.model';
 import { Response } from '@angular/http';
@@ -33,9 +33,9 @@ export class OrganisationFormComponent implements OnInit {
 
     constructor(
         private organisationService: OrganisationService,
-        private alertService: AlertService,
+        private alertService: JhiAlertService,
         private principal: Principal,
-        private eventManager: EventManager,
+        private eventManager: JhiEventManager,
         private route: ActivatedRoute,
         private router: Router
     ) {
@@ -67,7 +67,7 @@ export class OrganisationFormComponent implements OnInit {
             this.organisation = result;
         }
 
-        let notification = isCreate ? 'podiumGatewayApp.organisation.saved' : 'podiumGatewayApp.organisation.updated';
+        let notification = isCreate ? 'organisation.saved' : 'organisation.updated';
 
         this.alertService.success(notification);
         this.isSaving = false;

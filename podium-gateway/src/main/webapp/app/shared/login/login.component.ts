@@ -9,13 +9,15 @@
  */
 import { Component, OnInit, AfterViewInit, Renderer, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { JhiLanguageService, EventManager } from 'ng-jhipster';
-import { LoginService } from '../login/login.service';
+import { JhiEventManager } from 'ng-jhipster';
+import { LoginService } from './login.service';
 import { StateStorageService } from '../auth/state-storage.service';
+import { RedirectService } from '../auth/redirect.service';
 
 @Component({
     selector: 'pdm-login',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    styleUrls: ['login.component.scss']
 })
 export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     authenticationError: boolean;
@@ -28,9 +30,10 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     credentials: any;
 
     constructor(
-        private eventManager: EventManager,
+        private eventManager: JhiEventManager,
         private loginService: LoginService,
         private stateStorageService: StateStorageService,
+        private redirectService: RedirectService,
         private elementRef: ElementRef,
         private renderer: Renderer,
         private router: Router
@@ -83,9 +86,9 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
             let previousState = this.stateStorageService.getPreviousState();
             if (previousState) {
                 this.stateStorageService.resetPreviousState();
-                this.router.navigate([previousState.name], { queryParams:  previousState.params });
+                this.router.navigateByUrl(previousState.name, {preserveQueryParams: true, preserveFragment: true});
             } else {
-                this.loginService.redirectUser();
+                this.redirectService.redirectUser();
             }
         }).catch(err => {
             this.authenticationError = true;

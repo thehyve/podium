@@ -16,16 +16,18 @@ import requestEditForm = require("./modules/request-edit-form");
  * Must follow the Page interface
  * pages hold all stateless information on a page.
  */
-class NewRequestsPage {
+class EditRequestsPage {
     public name: string;
     public url: string;
     public elements: { [name: string]: Interactable };
 
     public at() {
         let that = this;
-        return browser.getCurrentUrl().then(function (currentUrl) {
-            return (browser.baseUrl + that.url) == currentUrl;
-        })
+        return new Promise<boolean>((resolve) =>
+            browser.getCurrentUrl().then(function (currentUrl) {
+                resolve(currentUrl.startsWith(browser.baseUrl + that.url));
+            })
+        );
     }
 
     constructor() {
@@ -37,4 +39,4 @@ class NewRequestsPage {
     }
 }
 
-export = NewRequestsPage;
+export = EditRequestsPage;

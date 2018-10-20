@@ -9,12 +9,12 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
@@ -48,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
+@Transactional
 public class UserResourceIntTest {
 
     @Autowired
@@ -61,23 +61,18 @@ public class UserResourceIntTest {
 
     private MockMvc restUserMockMvc;
 
-    /**
-     * Create a User.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which has a required relationship to the User entity.
-     */
-    public static User createEntity(EntityManager em) {
-        User user = new User();
-        user.setLogin("test");
-        user.setPassword(RandomStringUtils.random(60));
-        user.setEmail("test@test.com");
-        user.setFirstName("test");
-        user.setLastName("test");
-        user.setLangKey("en");
-        em.persist(user);
-        em.flush();
-        return user;
+    private static ManagedUserRepresentation createTestUserData() {
+        ManagedUserRepresentation userData = new ManagedUserRepresentation();
+        AccountResourceIntTest.setMandatoryFields(userData);
+        userData.setId(null);
+        userData.setLogin("joe");
+        userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
+        userData.setFirstName("Joe");
+        userData.setLastName("Shmoe");
+        userData.setEmail("joe@example.com");
+        userData.setLangKey("en");
+        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
+        return userData;
     }
 
     @Before
@@ -94,11 +89,14 @@ public class UserResourceIntTest {
 
     @Test
     public void testGetExistingUser() throws Exception {
-        restUserMockMvc.perform(get("/api/users/admin")
+        ManagedUserRepresentation userData = createTestUserData();
+        userService.createUser(userData);
+
+        restUserMockMvc.perform(get("/api/users/joe")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.lastName").value("Administrator"));
+                .andExpect(jsonPath("$.lastName").value("Shmoe"));
     }
 
     @Test
@@ -109,18 +107,8 @@ public class UserResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void testCreateUser() throws Exception {
-        ManagedUserRepresentation userData = new ManagedUserRepresentation();
-        AccountResourceIntTest.setMandatoryFields(userData);
-        userData.setId(null);
-        userData.setLogin("joe");
-        userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
-        userData.setFirstName("Joe");
-        userData.setLastName("Shmoe");
-        userData.setEmail("joe@example.com");
-        userData.setLangKey("en");
-        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
+        ManagedUserRepresentation userData = createTestUserData();
 
         restUserMockMvc.perform(post("/api/users")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -132,18 +120,8 @@ public class UserResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void testCreateInvalidUser() throws Exception {
-        ManagedUserRepresentation userData = new ManagedUserRepresentation();
-        AccountResourceIntTest.setMandatoryFields(userData);
-        userData.setId(null);
-        userData.setLogin("joe");
-        userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
-        userData.setFirstName("Joe");
-        userData.setLastName("Shmoe");
-        userData.setEmail("joe@example.com");
-        userData.setLangKey("en");
-        userData.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.RESEARCHER)));
+        ManagedUserRepresentation userData = createTestUserData();
         userData.setInstitute(""); // Required
 
         restUserMockMvc.perform(post("/api/users")

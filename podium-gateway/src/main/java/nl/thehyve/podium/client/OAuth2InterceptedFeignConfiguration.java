@@ -27,11 +27,8 @@ public class OAuth2InterceptedFeignConfiguration {
 
     private final Logger log = LoggerFactory.getLogger(OAuth2InterceptedFeignConfiguration.class);
 
-    private final LoadBalancedResourceDetails loadBalancedResourceDetails;
-
-    public OAuth2InterceptedFeignConfiguration(LoadBalancedResourceDetails loadBalancedResourceDetails) {
-        this.loadBalancedResourceDetails = loadBalancedResourceDetails;
-    }
+    @Autowired(required = false)
+    private LoadBalancedResourceDetails loadBalancedResourceDetails;
 
     @Autowired
     @Qualifier("requestAuth2ClientContext")

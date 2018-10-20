@@ -13,17 +13,10 @@ import { SessionStorageService } from 'ng2-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
-    CSRFService,
-    AuthService,
-    AuthServerProvider,
-    AccountService,
     UserService,
-    StateStorageService,
     LoginService,
     LoginModalService,
     MessageService,
-    Principal,
-    HasAnyAuthorityDirective,
     EmailValidatorDirective,
     PasswordValidatorDirective,
     PasswordMatchesDirective,
@@ -38,13 +31,29 @@ import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
+import { PodiumAuthModule } from './auth/auth.module';
+import { FindLanguageFromKeyPipe } from './language/language.pipe';
+import { ActiveMenuDirective } from './navbar/active-menu.directive';
+import { CompletedComponent } from './completed/completed.component';
+import { PdmErrorComponent } from './error/error.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ProfileService } from './profiles/profile.service';
+import { RouterModule } from '@angular/router';
+import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
+import { NgUploaderModule } from 'ngx-uploader';
+import { AttachmentService } from './attachment/attachment.service';
+import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedLibsModule,
-        PodiumGatewaySharedCommonModule
+        PodiumGatewaySharedCommonModule,
+        PodiumAuthModule,
+        RouterModule,
+        NgUploaderModule,
     ],
     declarations: [
+        AttachmentComponent,
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
@@ -55,17 +64,36 @@ import { LinkedRequestNotificationComponent } from './linked-request-notificatio
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
-        HasAnyAuthorityDirective,
-        EnumKeysPipe
+        EnumKeysPipe,
+        FindLanguageFromKeyPipe,
+        ActiveMenuDirective,
+        CompletedComponent,
+        PdmErrorComponent,
+        NavbarComponent,
+        AttachmentListComponent,
     ],
-    providers: [],
+    providers: [
+        ProfileService,
+        LoginService,
+        LoginModalService,
+        MessageService,
+        SessionStorageService,
+        UserService,
+        RequestService,
+        RequestAccessService,
+        AttachmentService,
+        DatePipe
+    ],
     entryComponents: [PodiumLoginComponent],
     exports: [
+        PodiumAuthModule,
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
+        AttachmentComponent,
+        AttachmentListComponent,
         RequestReviewPanelComponent,
         PodiumEventMessageComponent,
         LinkedRequestNotificationComponent,
@@ -73,33 +101,14 @@ import { LinkedRequestNotificationComponent } from './linked-request-notificatio
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
-        HasAnyAuthorityDirective,
         DatePipe,
-        EnumKeysPipe
+        EnumKeysPipe,
+        ActiveMenuDirective,
+        FindLanguageFromKeyPipe,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
 })
 export class PodiumGatewaySharedModule {
-    static forRoot(): ModuleWithProviders {
-        return {
-            ngModule: PodiumGatewaySharedModule,
-            providers: [
-                LoginService,
-                LoginModalService,
-                MessageService,
-                AccountService,
-                SessionStorageService,
-                StateStorageService,
-                Principal,
-                CSRFService,
-                AuthServerProvider,
-                AuthService,
-                UserService,
-                RequestService,
-                RequestAccessService,
-                DatePipe
-            ]
-        };
-    }
+
 }

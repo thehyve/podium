@@ -10,13 +10,14 @@
 import request = require('request-promise-native');
 import initPersonaDictionary = require('../personas/persona-dictionary');
 import { isNullOrUndefined, isUndefined } from 'util';
-import { browser } from 'protractor';
 import { Persona } from '../personas/templates';
 import { Organisation, Request } from '../data/templates';
 
 let nonOrganisationAuthorities: string[] = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
 
 export class AdminConsole {
+
+    apiUrl = 'http://localhost:8080/';
 
     constructor() {
     }
@@ -35,7 +36,7 @@ export class AdminConsole {
 
         let options = {
             method: 'POST',
-            url: browser.baseUrl + 'podiumuaa/oauth/token',
+            url: this.apiUrl + 'podiumuaa/oauth/token',
             headers: {
                 'Authorization': 'Basic d2ViX2FwcDo='
             },
@@ -52,7 +53,7 @@ export class AdminConsole {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
+                url: this.apiUrl + 'podiumuaa/api/users/' + persona['login'],
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -81,7 +82,7 @@ export class AdminConsole {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/users/',
+                url: this.apiUrl + 'podiumuaa/api/users/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -96,7 +97,7 @@ export class AdminConsole {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
+                url: this.apiUrl + 'podiumuaa/api/users/' + persona['login'],
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -114,7 +115,7 @@ export class AdminConsole {
             token = parseJSON(body).access_token;
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/users/' + persona['login'],
+                url: this.apiUrl + 'podiumuaa/api/users/' + persona['login'],
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -125,7 +126,7 @@ export class AdminConsole {
 
                 let options = {
                     method: 'PUT',
-                    url: browser.baseUrl + 'podiumuaa/api/users/uuid/' + user.uuid + '/unlock',
+                    url: this.apiUrl + 'podiumuaa/api/users/uuid/' + user.uuid + '/unlock',
                     headers: {
                         'Authorization': 'Bearer ' + token
                     }
@@ -143,7 +144,7 @@ export class AdminConsole {
         return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                url: this.apiUrl + 'podiumuaa/api/organisations/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -166,7 +167,7 @@ export class AdminConsole {
         return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                url: this.apiUrl + 'podiumuaa/api/organisations/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -189,7 +190,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'api/requests/drafts',
+                url: this.apiUrl + 'api/requests/drafts',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -208,11 +209,27 @@ export class AdminConsole {
         });
     }
 
+    public getFiles(persona: Persona, req: Request) {
+        return this.authenticate(persona).then((body) => {
+            let token = parseJSON(body).access_token;
+            let options = {
+                method: 'GET',
+                url: this.apiUrl + 'api/requests/' + req['uuid'] + '/files',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            })
+        })
+    }
+
     public getRequests(persona: Persona, status, role: string) {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'api/requests/status/' + status + '/' + role,
+                url: this.apiUrl + 'api/requests/status/' + status + '/' + role,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -227,11 +244,28 @@ export class AdminConsole {
      *  status ['Review', 'Delivery']
      *  role ['requester', ]
      */
-    public getRequest(persona: Persona, status, role: string, filter: (body) => boolean) {
+    public getRequest(persona: Persona, status, role: string, filter: (body) => boolean): Promise<any> {
         return this.getRequests(persona, status, role).then((drafts) => {
-            return drafts.filter((value) => {
+            let req = drafts.filter((value) => {
                 return filter(value);
             })[0];
+            return this.getRequestDetails(persona, req);
+        });
+    }
+
+    public getRequestDetails(persona: Persona, req: Request): Promise<any> {
+        return this.authenticate(persona).then((body) => {
+            let token = parseJSON(body).access_token;
+            let options = {
+                method: 'GET',
+                url: this.apiUrl + 'api/requests/' + req['uuid'],
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            };
+            return request(options).then((body) => {
+                return parseJSON(body);
+            });
         });
     }
 
@@ -255,7 +289,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'api/requests/' + draft['uuid'] + '/' + action,
+                url: this.apiUrl + 'api/requests/' + draft['uuid'] + '/' + action,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -279,7 +313,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
-                url: browser.baseUrl + 'api/requests/' + draft['uuid'] + '/' + action,
+                url: this.apiUrl + 'api/requests/' + draft['uuid'] + '/' + action,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'content-type': 'application/json'
@@ -304,7 +338,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
-                url: browser.baseUrl + 'api/requests/' + delivery['historicEvents'][0]['data']['requestUuid'] + '/deliveries/' + delivery['uuid'] + '/' + action,
+                url: this.apiUrl + 'api/requests/' + delivery['historicEvents'][0]['data']['requestUuid'] + '/deliveries/' + delivery['uuid'] + '/' + action,
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'content-type': 'application/json'
@@ -349,7 +383,7 @@ export class AdminConsole {
             }
             let options = {
                 method: 'POST',
-                url: browser.baseUrl + 'podiumuaa/api/test/users',
+                url: this.apiUrl + 'podiumuaa/api/test/users',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -368,7 +402,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
-                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                url: this.apiUrl + 'podiumuaa/api/organisations/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -404,7 +438,7 @@ export class AdminConsole {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/test/clearDatabase',
+                url: this.apiUrl + 'podiumuaa/api/test/clearDatabase',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 },
@@ -420,7 +454,7 @@ export class AdminConsole {
         return this.authenticate().then((body) => {
             let options = {
                 method: 'POST',
-                url: browser.baseUrl + 'podiumuaa/api/test/roles/assign',
+                url: this.apiUrl + 'podiumuaa/api/test/roles/assign',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -445,7 +479,7 @@ export class AdminConsole {
         return this.authenticate(initPersonaDictionary()['BBMRI_Admin']).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/organisations/',
+                url: this.apiUrl + 'podiumuaa/api/organisations/',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token
                 }
@@ -476,7 +510,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'POST',
-                url: browser.baseUrl + 'api/requests/drafts',
+                url: this.apiUrl + 'api/requests/drafts',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -492,7 +526,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'PUT',
-                url: browser.baseUrl + 'api/requests/drafts',
+                url: this.apiUrl + 'api/requests/drafts',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -509,7 +543,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'api/requests/drafts/' + draft['uuid'] + '/submit',
+                url: this.apiUrl + 'api/requests/drafts/' + draft['uuid'] + '/submit',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -525,7 +559,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/account',
+                url: this.apiUrl + 'podiumuaa/api/account',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'
@@ -541,7 +575,7 @@ export class AdminConsole {
         return this.authenticate(persona).then((body) => {
             let options = {
                 method: 'GET',
-                url: browser.baseUrl + 'podiumuaa/api/organisations/available',
+                url: this.apiUrl + 'podiumuaa/api/organisations/available',
                 headers: {
                     'Authorization': 'Bearer ' + parseJSON(body).access_token,
                     'Content-Type': 'application/json'

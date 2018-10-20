@@ -30,7 +30,7 @@ class World {
         let Pages = initPages();
         let DataDictionary = initDataDictionary();
 
-        this.director = new Director(__dirname + '/..', Pages, initPersonaDictionary(), DataDictionary);
+        this.director = new Director(__dirname.replace("stepdefinitions", ""), Pages, initPersonaDictionary(), DataDictionary);
         this.adminConsole = new AdminConsole();
     }
 }

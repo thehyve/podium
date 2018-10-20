@@ -12,7 +12,7 @@ import { UserRouteAccessService } from '../../shared';
 import { RequestFormComponent } from './request-form.component';
 
 export const requestFormEditRoute: Route = {
-    path: 'edit',
+    path: 'edit/:uuid',
     component: RequestFormComponent,
     data: {
         authorities: ['ROLE_RESEARCHER'],

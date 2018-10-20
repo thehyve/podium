@@ -97,7 +97,7 @@ podium:
             time-to-live-seconds: 3600
             backup-count: 1
     mail: # specific Podium mail property, for standard properties see MailProperties
-        from: podiumGateway@localhost
+        from: podium@localhost
         base-url: http://127.0.0.1:8080
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
@@ -121,6 +121,10 @@ podium:
         spectator-metrics: # Reports Spectator Circuit Breaker metrics in the logs
             enabled: false
             # edit spring.metrics.export.delay-millis to set report frequency
+    access:
+        request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
+            - researcher:researcher
+            - test:test
 
 # ===================================================================
 # Application specific properties

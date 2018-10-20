@@ -80,7 +80,7 @@ export class SpecialismComponent implements OnInit, AfterContentInit {
                 // values must be equal
                 return 0;
         });
-        this.specialismOptions.push({value: 'Other', display: '-- Other --'})
+        this.specialismOptions.push({value: 'Other', display: '-- Other --'});
     }
 
 }

@@ -18,8 +18,7 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AccessCheckHelper;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
+import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.SummaryEntry;
@@ -27,7 +26,6 @@ import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +74,7 @@ public class RequestService {
 
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
+
 
     @PostConstruct
     private void init() {
@@ -177,7 +176,7 @@ public class RequestService {
                 result = requestRepository.findAllByRequesterAndStatus(requesterUuid, filterValues.getRequestStatus(), pageable);
                 break;
         }
-        return result.map(requestMapper::detailedRequestToRequestDTO);
+        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
     /**
@@ -345,7 +344,7 @@ public class RequestService {
     public Page<RequestRepresentation> findAllForRequester(IdentifiableUser requester, Pageable pageable) {
         log.debug("Request to get all Requests");
         Page<Request> result = requestRepository.findAllByRequester(requester.getUserUuid(), pageable);
-        return result.map(requestMapper::detailedRequestToRequestDTO);
+        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 
     /**
@@ -575,5 +574,4 @@ public class RequestService {
         Page<Request> result = requestSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(requestMapper::overviewRequestToRequestDTO);
     }
-
 }

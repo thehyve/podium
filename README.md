@@ -1,21 +1,44 @@
-[![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=master)](https://travis-ci.org/thehyve/podium)
 [![Build Status](https://travis-ci.org/thehyve/podium.svg?branch=dev)](https://travis-ci.org/thehyve/podium)
+[![codebeat badge](https://codebeat.co/badges/f225e930-5ea9-4cd0-95cd-9cf7a17169ed)](https://codebeat.co/projects/github-com-thehyve-podium-master)
+[![codecov](https://codecov.io/gh/thehyve/podium/branch/dev/graph/badge.svg)](https://codecov.io/gh/thehyve/podium)
 
 <img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png?raw=true" style="display:inline;" width="200" height="105">
 
-# Welcome to the Podium Request Portal
-Podium is the request portal for samples, data and images from BBMRI Biobanks, with the purpose to uniformize the request and review processes for all associated users and organisations.
 
-The application scaffold was generated using JHipster 4.0.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v4.0.0](https://jhipster.github.io/documentation-archive/v4.0.0).
+# Welcome to the Podium request portal
 
-This application is configured for Service Discovery and Configuration with the Podium-Registry. On launch, it will refuse to start if it is not able to connect to the Podium-Registry at [http://localhost:8761](http://localhost:8761).
+**Podium** is the request portal for samples, data and images from biobanks
+with the purpose to uniformize the request and review processes
+for all associated users and organisations.
 
 
-## What is Podium?
 
-## <a href="development"></a>Development
+## Microservices overview
 
-### Setup database
+Podium is built in a microservices architecture which works in following way:
+
+1. **Podium Registry**<br>
+The registry is a runtime application on which all applications registers and get their configuration from.
+It also provides runtime monitoring dashboards.
+The registry application is available in the [Podium Registry] repository. 
+
+2. **Podium UAA**<br>
+Podium UAA is  a user accounting and authorizing service for securing microservices using the OAuth2 
+authorization protocol. Podium UAA is an fully configured OAuth2 authorization server with the users and roles 
+endpoints inside, wrapped into a usual JHipster application. This allows the developer to deeply configure every aspect 
+of his user domain, without restricting on policies by other ready-to-use UAAs.
+
+3. **Podium Gateway**<br>
+The gateway serves the Angular frontend application, contains a component
+for handling requests and deliveries, and also handles web traffic
+
+The services have to be started in order.
+
+
+
+## Development
+
+### Database setup
 
 For development, you can create a Postgres database locally with `psql`:
 `sudo -u postgres psql`
@@ -30,125 +53,175 @@ grant all on database "podiumGateway" to "podiumUser";
 ### Dependencies
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
-1. [Node.js][]: We use Node to run a development web server and build the project.
+1. [Maven]: Maven is used to build the microservices and to publish them to a Nexus repository.
+1. [Node.js]: We use Node to run a development web server and build the project.
    Depending on your system, you can install Node either from source or as a pre-packaged bundle.
-2. [Yarn][]: We use Yarn to manage Node dependencies.
+2. [Yarn]: We use Yarn to manage Node dependencies.
    Depending on your system, you can install Yarn either from source or as a pre-packaged bundle.
 
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in `package.json`.
+Java dependencies are managed by Maven in the `pom.xml` files. Versions of packages are
+configured in the root [pom.xml](pom.xml).
+[Yarn] is used to manage CSS and JavaScript dependencies for the user interface application.
+You can upgrade dependencies by specifying a newer version in [package.json](podium-gateway/package.json).
+You can use `npm install`, `yarn update` and `yarn install` to manage dependencies.
 
-    yarn install
+### Install
 
-We use npm scripts and [Webpack][] as our build system.
+First everything should be installed by running the following in the root folder:
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
+```bash
+mvn clean install
+```
 
-    mvn
-    yarn start
+### Run
 
-[Npm][] is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in `package.json`. You can also run `yarn update` and `yarn install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `yarn help update`.
+1. **Start Podium Registry**<br>
+[Podium Registry] needs to be up and running before the UAA and Gateway services start.
+Go to your `podium-registry` folder and start the registry with `mvn`.
+The user interface of the registry will be available at [http://localhost:8761](http://localhost:8761).
 
-The `yarn run` command will list all of the scripts available to run for this project.
 
-### <a href="dependencies"></a>Adding dependencies
+2. **Start Podium UAA**<br>
+Open a new terminal and navigate to the `podium-uaa` folder and start the UAA service with 
+`mvn`. The UAA service will be listening to port 9999.
 
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+3. **Start Podium Gateway**<br>
+Open a new terminal and run the following commands in the `podium-gateway` folder:
+```bash
+# start the podium gateway service
+mvn
+```
+The application is now available at [http://localhost:8080](http://localhost:8080).
 
-    yarn add --exact leaflet
+To create a blissful development experience, where your browser auto-refreshes when files change on your hard drive,
+you can start a hot reloading user interface with:
+```bash
+# serve the user interface for hot reloading
+npm run start
+```
+This will open the application at [http://localhost:9000](http://localhost:9000) in your browser.
 
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
-
-    yarn add --dev --exact @types/leaflet
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-
-Edit `src/main/webapp/app/vendor.ts`file:
-~~~
-import 'leaflet/dist/leaflet.js';
-~~~
-
-Edit `src/main/webapp/content/css/vendor.css` file:
-~~~
-@import '~leaflet/dist/leaflet.css';
-~~~
-
-Note: there are still few other things remaining to do for Leaflet that we won't detail here.
-
-### <a href="building-for-production"></a> Building for production
+### Building for production
 
 To optimize the podiumGateway application for production, run:
+```bash
+# Build for production
+mvn -DskipTests -Pprod clean package
 
-    mvn -Pprod clean package
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
+# Publish to Nexus
+mvn -DskipTests -Pprod clean deploy
+```
+This will concatenate and minify the client CSS and JavaScript files.
+It will also modify `index.html` so it references these new files.
 To ensure everything worked, run:
-
+```bash
     java -jar target/*.war
-
+```
 Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
 
-### <a href="testing"></a> Testing
 
-To launch your application's tests, run:
 
-    mvn clean test
+## Installation
 
-#### <a href="testing-client"></a>Client tests
+For installing Podium for production use, there is an [installation manual](docs/installation.md).
 
-Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in `src/test/javascript/` and can be run with:
 
-    yarn test
 
-For UI end-to-end tests see the READMEs of the individual components
+## Testing
 
-#### <a href="testing-performance"></a>Performance tests
+### Microservice tests
 
-Performance tests are run by [Gatling][] and written in Scala. They're located in `src/test/gatling` and can be run with:
+To launch a service's tests, run in its folder:
+```bash
+mvn -Dspring.profiles.active=h2,test test
+```
+Tests are run automatically on [Travis](https://travis-ci.org/thehyve/podium/branches).
 
-    mvn gatling:execute
+### User interface tests
 
-For more information, refer to the [Running tests page][].
+User interface unit tests are run by [Karma] and written with [Jasmine].
+They're located in `src/test/javascript/` in each of the service folders and can be run with:
 
-### <a href="docker"></a>Using Docker to simplify development (optional)
+```bash
+npm run test
+```
 
-You can use Docker to improve your Podium development experience. A number of docker-compose configuration are available in the `src/main/docker` folder to launch required third party services.
-For example, to start a postgresql database in a docker container, run:
+### End to end (e2e) testing
 
-    docker-compose -f src/main/docker/postgresql.yml up -d
+#### Dependencies
 
-To stop it and remove the container, run:
+The end to end (e2e) tests use [Protractor], [Cucumber] and are by default configured to use Chrome.
+They can only be run against a development environment.
+The reason for this is that the setup steps makes use of routes from podium-uaa [TestResource]. These routes are excluded for production.
 
-    docker-compose -f src/main/docker/postgresql.yml down
+**1. Install protractor:**
+```bash
+npm install --global protractor
+```
 
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
+**2. Run a development [environment](#development)**
 
-    mvn package -Pprod docker:build
+**3. Run tests**
+```bash
+# Navigate to the test folder
+cd podium-gateway/src/test/javascript/
 
-Then run:
+# Run all tests
+protractor
 
-    docker-compose -f src/main/docker/app.yml up -d
+# Run tests for a specific feature file
+protractor --specs=e2e/features/bbmri-admin-organisations.feature
+```
 
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`yo podium:docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
+By default the test suite expects the user interface to be available at port 9000.
+To change this, set the `baseUrl` setting in [protractor.conf.js](podium-gateway/src/test/javascript/protractor.conf.js).
 
-### <a href="continuous-integration"></a>Continuous Integration (optional)
+#### Adding tests
+Test are made up out of three main components.
+- A scenario described in a feature file. `e2e/features/*.feature`
+- Step definitions `e2e/stepdefinitions/*.ts`
+- Test data `e2e/pages/*.ts` `e2e/data/data-dictionary.ts` `e2e/personas/persona-dictionary.ts`
 
-To set up a CI environment, consult the [Setting up Continuous Integration][] page.
+The director class is used to bind the test data to test scripts. dataIds that are in .feature files can be used to 
+retrieve test data from the appropriate dictionary.
+for examples on how to do this look at the .ts files in `e2e/stepdefinitions/*.ts`
+
+
+
+## License
+
+Copyright &copy; 2017, 2018 &nbsp; The Hyve and respective contributors.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the Apache 2.0 License
+published by the Apache Software Foundation, either version 2.0 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+Apache 2.0 License for more details.
+
+You should have received a copy of the [Apache 2.0 License](al-2.0.txt)
+along with this program. If not, see
+https://www.apache.org/licenses/LICENSE-2.0.txt.
+
 
 [JHipster Homepage and latest documentation]: https://jhipster.github.io
 [JHipster 4.0.0 archive]: https://podium.github.io/documentation-archive/v4.0.0
 [Setting up Continuous Integration]: https://jhipster.github.io/documentation-archive/v4.0.0/setting-up-ci/
 
-[Gatling]: http://gatling.io/
+[Maven]: https://maven.apache.org/
 [Node.js]: https://nodejs.org/
+[Npm]: https://www.npmjs.com/
 [Yarn]: https://yarnpkg.org/
 [Webpack]: https://webpack.github.io/
 [Karma]: http://karma-runner.github.io/
 [Jasmine]: http://jasmine.github.io/2.0/introduction.html
-[Protractor]: https://angular.github.io/protractor/
+[Protractor]: https://www.protractortest.org/
+[Cucumber]: https://github.com/cucumber/cucumber-js
 [Leaflet]: http://leafletjs.com/
 [DefinitelyTyped]: http://definitelytyped.org/
+
+[Podium Registry]: https://github.com/thehyve/podium-registry
+[TestResource]: https://github.com/thehyve/podium/blob/master/podium-uaa/src/main/java/nl/thehyve/podium/web/rest/TestResource.java

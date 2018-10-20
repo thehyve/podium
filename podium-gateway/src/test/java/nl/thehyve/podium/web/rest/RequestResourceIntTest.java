@@ -30,14 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.*;
@@ -61,7 +54,6 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
     @Autowired
     private ReviewFeedbackRepository reviewFeedbackRepository;
 
-
     @Test
     public void createDraft() throws Exception {
         long databaseSizeBeforeCreate = requestRepository
@@ -82,26 +74,13 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         RequestRepresentation request2 = newDraft(requester);
         Set<UUID> requestUuids = new TreeSet<>(Arrays.asList(request1.getUuid(), request2.getUuid()));
 
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/drafts",
-                null,
-                Collections.emptyMap())
-            .with(token(requester))
-            .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(requestUuids.size(), requests.size());
-            Set<UUID> resultUuids = new TreeSet<>();
-            for(RequestRepresentation req: requests) {
-                resultUuids.add(req.getUuid());
-            }
-            Assert.assertEquals(requestUuids, resultUuids);
-        });
+        List<RequestRepresentation> requests = fetchRequests(requester, "/drafts");
+        Assert.assertEquals(requestUuids.size(), requests.size());
+        Set<UUID> resultUuids = new TreeSet<>();
+        for(RequestRepresentation req: requests) {
+            resultUuids.add(req.getUuid());
+        }
+        Assert.assertEquals(requestUuids, resultUuids);
     }
 
     @Test
@@ -138,26 +117,13 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         verify(this.auditService, times(1)).publishEvent(any());
 
         // Fetch requests with status 'Validation'
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/requester",
-                null,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-                long historicEventCount = requestRepository.countHistoricEventsByRequestUuid(req.getUuid());
-                Assert.assertEquals(1, historicEventCount);
-            }
-        });
+        List<RequestRepresentation> requests = fetchRequests(requester, "/status/Validation/requester");
+        Assert.assertEquals(1, requests.size());
+        for(RequestRepresentation req: requests) {
+            Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
+            long historicEventCount = requestRepository.countHistoricEventsByRequestUuid(req.getUuid());
+            Assert.assertEquals(1, historicEventCount);
+        }
     }
 
     @Test
@@ -166,49 +132,38 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         initFetchTests();
 
         // Fetch requests with status 'Validation'
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/requester",
-                null,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                List<RequestRepresentation> requests =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
+        List<RequestRepresentation> requests = fetchRequests(requester, "/status/Validation/requester");
+        List<RequestRepresentation> twoOrganisationsRequests = requests.stream()
+            .filter(req -> req.getRequestDetail().getTitle().equals(TEST_TWO_ORGANISATIONS_TITLE))
+            .collect(Collectors.toList());
 
-                List<RequestRepresentation> twoOrganisationsRequests = requests.stream()
-                    .filter(req -> req.getRequestDetail().getTitle().equals(TEST_TWO_ORGANISATIONS_TITLE))
-                    .collect(Collectors.toList());
+        Assert.assertEquals(2, twoOrganisationsRequests.size());
+        // Test if each of the two requests contains a link to the other.
+        int i = 0;
+        for(RequestRepresentation req: twoOrganisationsRequests) {
+            int j = i == 0 ? 1 : 0;
+            RequestRepresentation other = twoOrganisationsRequests.get(j);
+            Assert.assertThat(other.getOrganisations(), hasSize(1));
+            OrganisationRepresentation otherOrganisation = other.getOrganisations().get(0);
 
-                Assert.assertEquals(2, twoOrganisationsRequests.size());
-                // Test if each of the two requests contains a link to the other.
-                int i = 0;
-                for(RequestRepresentation req: twoOrganisationsRequests) {
-                    int j = i == 0 ? 1 : 0;
-                    RequestRepresentation other = twoOrganisationsRequests.get(j);
-                    Assert.assertThat(other.getOrganisations(), hasSize(1));
-                    OrganisationRepresentation otherOrganisation = other.getOrganisations().get(0);
-                    Assert.assertThat(req.getRelatedRequests(), hasSize(1));
-                    Assert.assertThat(req.getRelatedRequests(), hasItem(
+            RequestRepresentation fullRequest = fetchRequest(requester, "/" + req.getUuid().toString());
+
+            Assert.assertThat(fullRequest.getRelatedRequests(), hasSize(1));
+            Assert.assertThat(fullRequest.getRelatedRequests(), hasItem(
+                allOf(
+                    hasProperty("uuid", equalTo(other.getUuid())),
+                    hasProperty("requestDetail",
+                        hasProperty("requestType", equalTo(other.getRequestDetail().getRequestType()))),
+                    hasProperty("organisations", hasItem(
                         allOf(
-                            hasProperty("uuid", equalTo(other.getUuid())),
-                            hasProperty("requestDetail",
-                                hasProperty("requestType", equalTo(other.getRequestDetail().getRequestType()))),
-                            hasProperty("organisations", hasItem(
-                                allOf(
-                                    hasProperty("uuid", equalTo(otherOrganisation.getUuid())),
-                                    hasProperty("name", equalTo(otherOrganisation.getName()))
-                                )
-                            ))
+                            hasProperty("uuid", equalTo(otherOrganisation.getUuid())),
+                            hasProperty("name", equalTo(otherOrganisation.getName()))
                         )
-                    ));
-                    i++;
-                }
-            });
+                    ))
+                )
+            ));
+            i++;
+        }
     }
 
     @Test
@@ -217,24 +172,11 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         initFetchTests();
 
         // Fetch requests with status 'Validation'
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/requester",
-                null,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(3, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-            }
-        });
+        List<RequestRepresentation> requests = fetchRequests(requester, "/status/Validation/requester");
+        Assert.assertEquals(3, requests.size());
+        for(RequestRepresentation req: requests) {
+            Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
+        }
     }
 
     @Test
@@ -251,23 +193,10 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         validateRequest(organisation1Request, coordinator1);
 
         // Fetch request counts
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/counts/requester",
-                null,
-                Collections.emptyMap())
-                .with(token(requester))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                Map<OverviewStatus, Long> counts =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), countsTypeReference);
-                Assert.assertEquals(3, counts.get(OverviewStatus.All).longValue());
-                Assert.assertEquals(1, counts.get(OverviewStatus.Review).longValue());
-                Assert.assertEquals(2, counts.get(OverviewStatus.Validation).longValue());
-            });
+        Map<OverviewStatus, Long> counts = fetchCounts(requester, "/counts/requester");
+        Assert.assertEquals(3, counts.get(OverviewStatus.All).longValue());
+        Assert.assertEquals(1, counts.get(OverviewStatus.Review).longValue());
+        Assert.assertEquals(2, counts.get(OverviewStatus.Validation).longValue());
     }
 
     @Test
@@ -276,64 +205,26 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         initFetchTests();
 
         // Fetch requests with status 'Validation' for coordinator 1: should return 1 request
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/coordinator",
-                null,
-                Collections.emptyMap())
-                .with(token(coordinator1))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-            }
-        });
+        List<RequestRepresentation> requests1 = fetchRequests(coordinator1, "/status/Validation/coordinator");
+        Assert.assertEquals(1, requests1.size());
+        for(RequestRepresentation req: requests1) {
+            Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
+        }
 
         // Fetch requests with status 'Validation' for coordinator 2: should return 3 requests
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/coordinator",
-                null,
-                Collections.emptyMap())
-                .with(token(coordinator2))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(3, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-            }
-        });
+        List<RequestRepresentation> requests2 = fetchRequests(coordinator2, "/status/Validation/coordinator");
+        Assert.assertEquals(3, requests2.size());
+        for(RequestRepresentation req: requests2) {
+            Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
+        }
 
         // Fetch requests with status 'Validation' for coordinator 2, organisation 2: should return 2 requests
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/status/Validation/organisation/" + organisationUuid2.toString() + "/coordinator",
-                null,
-                Collections.emptyMap())
-                .with(token(coordinator2))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(2, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
-            }
-        });
+        List<RequestRepresentation> requests3 = fetchRequests(coordinator2,
+                "/status/Validation/organisation/" + organisationUuid2.toString() + "/coordinator");
+        Assert.assertEquals(2, requests3.size());
+        for(RequestRepresentation req: requests3) {
+            Assert.assertEquals(OverviewStatus.Validation, req.getStatus());
+        }
     }
 
     @Test
@@ -355,40 +246,15 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         });
 
         // Fetch request counts for coordinator
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/counts/coordinator",
-                null,
-                Collections.emptyMap())
-                .with(token(coordinator2))
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Coordinator counts: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                Map<OverviewStatus, Long> counts =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), countsTypeReference);
-                Assert.assertEquals(3, counts.get(OverviewStatus.All).longValue());
-                Assert.assertEquals(2, counts.get(OverviewStatus.Review).longValue());
-                Assert.assertEquals(1, counts.get(OverviewStatus.Validation).longValue());
-            });
+        Map<OverviewStatus, Long> counts = fetchCounts(coordinator2, "/counts/coordinator");
+        Assert.assertEquals(3, counts.get(OverviewStatus.All).longValue());
+        Assert.assertEquals(2, counts.get(OverviewStatus.Review).longValue());
+        Assert.assertEquals(1, counts.get(OverviewStatus.Validation).longValue());
 
         // Fetch request counts for reviewer
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/counts/reviewer",
-                null,
-                Collections.emptyMap())
-                .with(token(reviewer2))
-                .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andDo(result -> {
-                log.info("Reviewer counts: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-                Map<OverviewStatus, Long> counts =
-                    mapper.readValue(result.getResponse().getContentAsByteArray(), countsTypeReference);
-                Assert.assertEquals(2, counts.get(OverviewStatus.All).longValue());
-                Assert.assertEquals(2, counts.get(OverviewStatus.Review).longValue());
-            });
-
+        Map<OverviewStatus, Long> reviewerCounts = fetchCounts(reviewer2, "/counts/reviewer");
+        Assert.assertEquals(2, reviewerCounts.get(OverviewStatus.All).longValue());
+        Assert.assertEquals(2, reviewerCounts.get(OverviewStatus.Review).longValue());
     }
 
     @Test
@@ -405,25 +271,12 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         performProcessAction(coordinator1, ACTION_VALIDATE, requestUuid, HttpMethod.GET, null);
 
         // Fetch requests with status 'Review' for reviewer 1: should return 1 request
-        mockMvc.perform(
-            getRequest(HttpMethod.GET,
-                REQUESTS_ROUTE + "/reviewer",
-                null,
-                Collections.emptyMap())
-                .with(token(reviewer1))
-                .accept(MediaType.APPLICATION_JSON)
-        )
-        .andExpect(status().isOk())
-        .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
-            List<RequestRepresentation> requests =
-                mapper.readValue(result.getResponse().getContentAsByteArray(), listTypeReference);
-            Assert.assertEquals(1, requests.size());
-            for(RequestRepresentation req: requests) {
-                Assert.assertEquals(requestUuid, req.getUuid());
-                Assert.assertEquals(OverviewStatus.Review, req.getStatus());
-            }
-        });
+        List<RequestRepresentation> requests = fetchRequests(reviewer1, "/reviewer");
+        Assert.assertEquals(1, requests.size());
+        for(RequestRepresentation req: requests) {
+            Assert.assertEquals(requestUuid, req.getUuid());
+            Assert.assertEquals(OverviewStatus.Review, req.getStatus());
+        }
     }
 
     @Test

@@ -14,17 +14,13 @@
     <parent>
         <artifactId>podium</artifactId>
         <groupId>nl.thehyve.podium</groupId>
-        <version>0.0.5</version>
+        <version>0.0.7</version>
         <relativePath>../</relativePath>
     </parent>
 
     <artifactId>podium-uaa</artifactId>
     <packaging>war</packaging>
     <name>Podium UAA</name>
-
-    <prerequisites>
-        <maven>${maven.version}</maven>
-    </prerequisites>
 
     <properties>
         <javax.inject.version>1</javax.inject.version>
@@ -170,22 +166,6 @@
             <version>${prometheus-simpleclient.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-bean-validators</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>mapstruct</artifactId>
-                    <groupId>org.mapstruct</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
         </dependency>
@@ -282,6 +262,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>android-json</artifactId>
+                    <groupId>com.vaadin.external.google</groupId>
+                </exclusion>
+            </exclusions>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -315,11 +301,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

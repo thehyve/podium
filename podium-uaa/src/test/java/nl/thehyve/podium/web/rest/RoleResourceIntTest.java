@@ -10,6 +10,7 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.Authority;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
@@ -20,9 +21,6 @@ import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
+@Transactional
 public class RoleResourceIntTest {
 
     @Autowired
@@ -141,7 +140,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void createRoleNotAllowed() throws Exception {
         int databaseSizeBeforeCreate = roleRepository.findAll().size();
 
@@ -158,7 +156,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void getAllRoles() throws Exception {
         // Initialize the database
         roleRepository.saveAndFlush(role);
@@ -171,7 +168,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void getRole() throws Exception {
         // Initialize the database
         roleRepository.saveAndFlush(role);
@@ -184,7 +180,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void getNonExistingRole() throws Exception {
         // Get the role
         restRoleMockMvc.perform(get("/api/roles/{id}", Long.MAX_VALUE))
@@ -192,7 +187,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void updateRole() throws Exception {
         // Initialize the database
         roleService.save(role);
@@ -218,7 +212,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void updateNonExistingRole() throws Exception {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
 
@@ -234,7 +227,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void deleteRoleNotAllowed() throws Exception {
         // Initialize the database
         roleService.save(role);
@@ -252,7 +244,6 @@ public class RoleResourceIntTest {
     }
 
     @Test
-    @Transactional
     public void searchRole() throws Exception {
         // Initialize the database
         roleService.save(role);

@@ -7,9 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterContentInit, ViewChild, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { EventManager } from 'ng-jhipster';
+
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { RequestFormService } from './request-form.service';
 import {
     RequestDetail,
@@ -24,12 +24,16 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
 import { RequestAccessService } from '../../shared/request/request-access.service';
-import {
-    RequestReviewStatusOptions,
-    RequestOverviewStatusOption
-} from '../../shared/request/request-status/request-status.constants';
-import { OrganisationService } from '../../shared/organisation/organisation.service';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 import { Organisation } from '../../shared/organisation/organisation.model';
+import { Attachment } from '../../shared/attachment/attachment.model';
+import { AttachmentService } from '../../shared/attachment/attachment.service';
+import { AttachmentComponent } from '../../shared/attachment/upload-attachment/attachment.component';
+import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
+import { NgForm } from '@angular/forms';
+import { OrganisationService } from '../../shared/organisation/organisation.service';
+import { Observable } from 'rxjs/Observable';
+import { RequestTemplate } from '../../shared/request/request-template';
 
 @Component({
     selector: 'pdm-request-form',
@@ -41,35 +45,47 @@ export class RequestFormComponent implements OnInit {
 
     private currentUser: User;
 
+    @ViewChild('requestForm') requestForm: NgForm;
+
+    @ViewChild(AttachmentComponent)
+    private attachmentComponent: AttachmentComponent;
+
+    @ViewChild(AttachmentListComponent)
+    private attachmentListComponent: AttachmentListComponent;
+
     @ViewChild(OrganisationSelectorComponent)
     private organisationSelectorComponent: OrganisationSelectorComponent;
 
     @Input() isInRevision: boolean;
 
     public error: string;
+    public listOfInvalidOrganisationUUID: string[];
     public success: string;
     public requestBase: RequestBase;
     public requestDetail?: RequestDetail;
     public requestTypeOptions: any;
-    public availableRequestDrafts: RequestBase[];
-    public selectDraft: boolean;
     public selectedDraft: any = null;
-    public requestDraftsAvailable: boolean;
-    private revisionId: string;
     public isUpdating = false;
+    public attachments: Attachment[];
 
-    constructor(
-        private requestFormService: RequestFormService,
-        private requestAccessService: RequestAccessService,
-        private requestService: RequestService,
-        private router: Router,
-        private principal: Principal,
-        private eventManager: EventManager,
-        private organisationService: OrganisationService,
-        private modalService: NgbModal
-    ) {
+    public templateUUID: string;
+
+    public searchQuery: string;
+
+    private revisionId: string;
+
+    constructor(private requestFormService: RequestFormService,
+                private requestAccessService: RequestAccessService,
+                private requestService: RequestService,
+                private router: Router,
+                private activatedRoute: ActivatedRoute,
+                private principal: Principal,
+                private modalService: NgbModal,
+                private attachmentService: AttachmentService,
+                private organisationService: OrganisationService) {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.selectRequest(request);
+            this.getAttachments(request);
         });
     }
 
@@ -81,27 +97,133 @@ export class RequestFormComponent implements OnInit {
         });
     }
 
-    initializeRequestForm() {
-        if (this.requestFormService.request) {
-            this.selectRequest(this.requestFormService.request);
-        } else if (!this.isInRevision) {
-            this.initializeBaseRequest();
+    onFinishedUploadAttachment(success: boolean) {
+        if (success) {
+            this.getAttachments(this.requestBase);
         }
+    }
+
+    onDeleteAttachment(isSuccess: boolean) {
+        if (isSuccess) {
+            this.getAttachments(this.requestBase);
+        }
+    }
+
+    onAttachmentTypeChange(attachment: Attachment) {
+        if (attachment) {
+            this.getAttachments(this.requestBase);
+        }
+    }
+
+    private getAttachments(request: RequestBase) {
+        this.attachmentService.getAttachments(request).subscribe(
+            (attachments) => {
+                this.attachments = attachments;
+                this.requestBase.hasAttachmentsTypes = !this.hasAttachmentsTypeNone();
+            },
+            (error) => {
+                console.error(error)
+            }
+        );
+    }
+
+    private hasAttachmentsTypeNone(): boolean {
+        return this.attachmentService.hasAttachmentsTypeNone(this.attachments);
+    }
+
+    initializeRequestForm() {
+        if (this.router.url.substring(0, 13) === '/requests/new' && !this.isInRevision) {
+            this.initializeBaseRequest();
+        } else {
+            this.activatedRoute.paramMap
+                .switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid')))
+                .subscribe(
+                    request => {
+                        this.requestFormService.request = request;
+                        this.selectRequest(this.requestFormService.request);
+                        this.getAttachments(this.requestFormService.request);
+                    },
+                    error => {
+                        this.onError(error);
+                        this.router.navigate(['404'])
+                    }
+                );
+        }
+
     }
 
     hasSelectedMultipleOrganisations() {
         return this.requestBase.organisations.length > 1;
     }
 
+    populateRequestDetails(requestTemplate: RequestTemplate) {
+
+        // map search query
+        this.requestDetail.searchQuery = requestTemplate.humanReadable;
+
+        if (requestTemplate.organisations) {
+
+            let organisationObservables: Observable<any>[] = [];
+            this.listOfInvalidOrganisationUUID = [];
+
+            // Select all types when organizations are passed
+            this.requestDetail.requestType = [
+                RequestType.Data, RequestType.Images, RequestType.Material
+            ];
+
+            // Get organisations by uuid
+            for (let collection of requestTemplate.organisations) {
+                let obx = this.organisationService.findByUuid(collection)
+                    .map((res: Organisation) => res)
+                    .catch((error, caught) => {
+                        this.listOfInvalidOrganisationUUID.push(collection);
+                        return Observable.of({});
+                    });
+                organisationObservables.push(obx);
+            }
+
+            // Display as selected organisation when uuids are matched
+            Observable.forkJoin(organisationObservables).subscribe(
+                dataArray => {
+                    this.requestBase.organisations = dataArray.filter(obj => {
+                        return Object.keys(obj).length > 0;
+                    });
+                    this.organisationSelectorComponent.organisations = this.requestBase.organisations;
+                },
+                error => {
+                },
+                () => {
+                    // TODO: Display invalid uuids in error alert
+                    if (this.listOfInvalidOrganisationUUID.length) {
+                        console.error('Invalid organisation uuids', this.listOfInvalidOrganisationUUID);
+                    }
+                }
+            );
+        } else {
+            this.requestDetail.requestType = this.requestBase.requestDetail.requestType || [];
+        }
+    }
+
     initializeBaseRequest() {
         this.requestService.createDraft()
             .subscribe(
                 (requestBase) => {
+
                     this.selectedDraft = requestBase;
                     this.requestBase = requestBase;
-                    this.requestBase.organisations = requestBase.organisations || [];
                     this.requestDetail = requestBase.requestDetail;
-                    this.requestDetail.requestType = requestBase.requestDetail.requestType || [];
+
+                    this.activatedRoute.queryParams.subscribe(params => {
+                        if ('template_uuid' in params) {
+                            this.templateUUID = params['template_uuid'];
+                            this.requestService.getTemplateByUuid(params['template_uuid'])
+                                .subscribe(
+                                    (requestTemplate) => this.populateRequestDetails(requestTemplate),
+                                    (error) => this.onError(error)
+                                )
+                        }
+                    });
+                    this.getAttachments(requestBase);
                 },
                 (error) => this.onError('Error initializing base request')
             );
@@ -137,7 +259,7 @@ export class RequestFormComponent implements OnInit {
 
     updateRequestType(selectedRequestType, event) {
         let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
-        if ( _idx < 0) {
+        if (_idx < 0) {
             this.requestDetail.requestType.push(selectedRequestType.value);
         } else {
             this.requestDetail.requestType.splice(_idx, 1);
@@ -157,7 +279,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     confirmSubmitModal(request: RequestBase) {
-        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, { size: 'lg', backdrop: 'static'});
+        let modalRef = this.modalService.open(RequestFormSubmitDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.result.then(result => {
             console.log(`Closed with: ${result}`);
@@ -201,7 +323,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail = this.requestDetail;
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveRequestRevision(this.requestBase)
-            // Submit the request
+        // Submit the request
             .flatMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid))
             .subscribe(
                 (res) => this.onSuccess(res),
@@ -234,7 +356,7 @@ export class RequestFormComponent implements OnInit {
 
     private onSuccess(result) {
         this.isUpdating = false;
-        this.error =  null;
+        this.error = null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
 
@@ -243,7 +365,7 @@ export class RequestFormComponent implements OnInit {
 
     private onError(error) {
         this.isUpdating = false;
-        this.error =  'ERROR';
+        this.error = 'ERROR';
         this.success = null;
         window.scrollTo(0, 0);
     }

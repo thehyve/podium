@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from '../../../shared';
-import { PaginationUtil } from 'ng-jhipster';
+import { JhiPaginationUtil } from 'ng-jhipster';
 import { OrganisationComponent } from './organisation.component';
 import { OrganisationDeletePopupComponent } from './organisation-delete-dialog.component';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
@@ -18,7 +18,7 @@ import { OrganisationFormComponent } from './organisation-form/organisation-form
 @Injectable()
 export class OrganisationResolvePagingParams implements Resolve<any> {
 
-    constructor(private paginationUtil: PaginationUtil) {}
+    constructor(private paginationUtil: JhiPaginationUtil) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
@@ -41,7 +41,7 @@ export const organisationRoute: Routes = [
         },
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title',
+            pageTitle: 'organisation.home.title',
             breadcrumb: 'overview'
         },
         canActivate: [UserRouteAccessService]
@@ -51,7 +51,7 @@ export const organisationRoute: Routes = [
         component: OrganisationFormComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title',
+            pageTitle: 'organisation.detail.title',
             breadcrumb: 'new organisation'
         },
         canActivate: [UserRouteAccessService]
@@ -61,7 +61,7 @@ export const organisationRoute: Routes = [
         component: OrganisationDeletePopupComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.home.title'
+            pageTitle: 'organisation.home.title'
         },
         outlet: 'popup',
         canActivate: [UserRouteAccessService]
@@ -71,7 +71,7 @@ export const organisationRoute: Routes = [
         component: OrganisationFormComponent,
         data: {
             authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
-            pageTitle: 'podiumGatewayApp.organisation.detail.title',
+            pageTitle: 'organisation.detail.title',
             breadcrumb: 'edit organisation'
         },
         canActivate: [UserRouteAccessService]

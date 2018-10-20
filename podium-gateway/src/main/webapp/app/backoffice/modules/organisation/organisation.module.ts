@@ -23,11 +23,12 @@ import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 import { RoleAssignComponent } from '../../../shared/role/role-assign/role-assign.component';
 import { RoleService } from '../../../shared/role/role.service';
-import { TypeaheadModule } from 'ng2-bootstrap/typeahead';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
 import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
+import { PodiumAuthModule } from '../../../shared/auth/auth.module';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
-        TypeaheadModule
+        TypeaheadModule,
+        PodiumAuthModule
     ],
     declarations: [
         OrganisationComponent,
