@@ -25,6 +25,8 @@ import { MockEventManager } from '../../../helpers/mock-event-manager.service';
 import { Observable } from 'rxjs';
 import { PodiumTestModule } from '../../../test.module';
 import { Organisation } from '../../../../../../main/webapp/app/shared/organisation/organisation.model';
+import { MockTranslateService } from '../../../helpers/MockTranslateService';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('RoleAssignComponent', () => {
 
@@ -83,7 +85,6 @@ describe('RoleAssignComponent', () => {
             providers: [
                 BaseRequestOptions,
                 MockBackend,
-                JhiLanguageService,
                 UserService,
                 {
                     provide: Http,
@@ -91,6 +92,10 @@ describe('RoleAssignComponent', () => {
                         return new Http(backendInstance, defaultOptions);
                     },
                     deps: [MockBackend, BaseRequestOptions]
+                },
+                {
+                    provide: TranslateService,
+                    useClass: MockTranslateService
                 },
                 {
                     provide: JhiLanguageService,

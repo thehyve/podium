@@ -34,7 +34,8 @@ export class RequestMainDetailComponent implements OnInit {
     @ViewChild(RequestDetailComponent)
     private requestDetail: RequestDetailComponent;
 
-    public request: RequestBase;
+    public _request: RequestBase;
+    public requestShortName = '';
     public asterisk = '';
     public attachments: Attachment[];
 
@@ -52,6 +53,15 @@ export class RequestMainDetailComponent implements OnInit {
         this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
             this.request = request;
         });
+    }
+
+    set request(request) {
+        this._request = request;
+        this.requestShortName = request.organisations[0].shortName.replace(/"/g, '\\"');
+    }
+
+    get request() {
+        return this._request;
     }
 
     ngOnInit() {
