@@ -20,6 +20,7 @@ import { Authority } from '../../../shared/authority/authority';
 import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { OrganisationUser } from '../../user/organisation-user.model';
 import { Response } from '@angular/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'pdm-role-assign',
@@ -48,6 +49,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         private roleService: RoleService,
         private userService: UserService,
         private alertService: JhiAlertService,
+        private translateService: TranslateService,
         private principal: Principal,
         private eventManager: JhiEventManager
     ) {
@@ -291,7 +293,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
 
     private onSaveSuccess(res: Response, isDelete: boolean) {
         let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
-        this.alertService.success(notification);
+        this.alertService.success(this.translateService.instant(notification));
         this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
