@@ -46,9 +46,11 @@ public class RequestSecurityService {
             return false;
         }
         try {
-            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequest(requestUuid);
-            if (response.getStatusCode() != HttpStatus.OK) {
-                log.error("Could not fetch request with uuid {}. Status code: {}", requestUuid, response.getStatusCode());
+            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequestBasic(requestUuid);
+            if (response == null || response.getStatusCode() != HttpStatus.OK) {
+                log.error("Could not fetch request with uuid {}. Status code: {}",
+                    requestUuid, response == null ? null : response.getStatusCode());
+                return false;
             }
             for(OrganisationRepresentation organisation: response.getBody().getOrganisations()) {
                 if (securityService.isCurrentUserInOrganisationRole(organisation.getUuid(), authority)) {
@@ -75,9 +77,11 @@ public class RequestSecurityService {
         }
         try {
             log.debug("Fetching request {} ... ", requestUuid);
-            ResponseEntity<RequestRepresentation> response = internalRequestResource.getDefaultRequest(requestUuid);
-            if (response.getStatusCode() != HttpStatus.OK) {
-                log.error("Could not fetch request with uuid {}. Status code: {}", requestUuid, response.getStatusCode());
+            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequestBasic(requestUuid);
+            if (response == null || response.getStatusCode() != HttpStatus.OK) {
+                log.error("Could not fetch request with uuid {}. Status code: {}",
+                    requestUuid, response == null ? null : response.getStatusCode());
+                return false;
             }
 
             if (response.getBody().getRequester() == null) {

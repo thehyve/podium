@@ -65,11 +65,11 @@ public class TestResource {
      * @param userData the user to create.
      * @return the ResponseEntity with status 201 (Created),
      *      or with status 400 (Bad Request) if the login or email is already in use.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws UserAccountException if login or email already in use.
      */
     @PostMapping("users")
     @Timed
-    public ResponseEntity<?> createUser(@Valid @RequestBody ManagedUserRepresentation userData) throws URISyntaxException, UserAccountException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody ManagedUserRepresentation userData) throws UserAccountException {
         log.debug("REST request to save test User : {}", userData);
 
         try {

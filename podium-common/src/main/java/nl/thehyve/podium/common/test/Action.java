@@ -18,7 +18,12 @@ public class Action {
     /**
      * The url to perform the action at.
      */
-    public String url;
+    public String url = null;
+    /**
+     * Map from user UUID to url, for when a unique url is required per user,
+     * e.g., when a side effect of an action makes the url unfit for use in another test.
+     */
+    public Map<UUID, String> urls = null;
     /**
      * The query parameters.
      */
@@ -47,6 +52,11 @@ public class Action {
 
     public Action setUrl(String url) {
         this.url = url;
+        return this;
+    }
+
+    public Action setUrls(Map<UUID, String> urls) {
+        this.urls = urls;
         return this;
     }
 

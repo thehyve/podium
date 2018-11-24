@@ -28,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -103,7 +104,7 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
     public void submitDraft() throws Exception {
         initMocks();
         // Setup a submitted draft
-        getSubmittedDraft();
+        getSubmittedDraft(requester, organisationUuid1);
 
         Thread.sleep(2000);
 

@@ -2,6 +2,8 @@ package nl.thehyve.podium.common.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import org.slf4j.Logger;
@@ -22,12 +24,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public abstract class AbstractAuthorisedUserIntTest {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    public Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private OAuth2TokenMockUtil tokenUtil;
+    public OAuth2TokenMockUtil tokenUtil;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    public ObjectMapper mapper = new ObjectMapper();
+    {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
 
     /**
      * The implementing class should create a mock mvc object in an initialisation
@@ -36,15 +42,35 @@ public abstract class AbstractAuthorisedUserIntTest {
      */
     protected abstract MockMvc getMockMvc();
 
-    protected RequestPostProcessor token(AuthenticatedUser user) {
+    public RequestPostProcessor token(AuthenticatedUser user) {
         if (user == null) {
             return SecurityMockMvcRequestPostProcessors.anonymous();
         }
-        return tokenUtil.oauth2Authentication(new UserAuthenticationToken(user));
+        UserAuthenticationToken token = new UserAuthenticationToken(user);
+        token.setAuthenticated(true);
+        return tokenUtil.oauth2Authentication(token);
     }
 
-    private MockHttpServletRequestBuilder getRequest(Action action) {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(action.method, action.url);
+    public RequestPostProcessor token(UserAuthenticationToken user) {
+        if (user == null) {
+            return SecurityMockMvcRequestPostProcessors.anonymous();
+        }
+        return tokenUtil.oauth2Authentication(user);
+    }
+
+    private String getUrl(Action action, AuthenticatedUser user) {
+        String url = action.url;
+        if (url == null) {
+            url = action.urls.get(user == null ? null : user.getUuid());
+        }
+        if (url == null) {
+            throw new IllegalArgumentException("Please supply either url or urls");
+        }
+        return url;
+    }
+
+    MockHttpServletRequestBuilder getRequest(Action action, AuthenticatedUser user) {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(action.method, getUrl(action, user));
         if (action.body != null) {
             try {
                 request = request
@@ -60,26 +86,26 @@ public abstract class AbstractAuthorisedUserIntTest {
         return request;
     }
 
-    protected void expectSuccess(Action action, AuthenticatedUser user) throws Exception {
+    private void expectSuccess(Action action, AuthenticatedUser user) throws Exception {
         getMockMvc().perform(
-            getRequest(action)
+            getRequest(action, user)
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
     }
 
-    protected void expectFail(Action action, AuthenticatedUser user) throws Exception {
+    private void expectFail(Action action, AuthenticatedUser user) throws Exception {
         getMockMvc().perform(
-            getRequest(action)
+            getRequest(action, user)
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(result -> log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString()))
             .andExpect(status().is4xxClientError());
     }
 
-    protected void expectStatus(Action action, HttpStatus status, AuthenticatedUser user) throws Exception {
+    private void expectStatus(Action action, HttpStatus status, AuthenticatedUser user) throws Exception {
         getMockMvc().perform(
-            getRequest(action)
+            getRequest(action, user)
                 .with(token(user))
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(result -> log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString()))
@@ -95,7 +121,7 @@ public abstract class AbstractAuthorisedUserIntTest {
         for (Action action: actions) {
             for (AuthenticatedUser user: allUsers) {
                 String login = user == null ? "anonymous" : user.getName();
-                log.info("Testing action {} {} for user {}", action.method, action.url, login);
+                log.info("Testing action {} {} for user {}", action.method, getUrl(action, user), login);
                 if (user == null) {
                     log.info("Expect failure for anonymous...");
                     expectFail(action, user);

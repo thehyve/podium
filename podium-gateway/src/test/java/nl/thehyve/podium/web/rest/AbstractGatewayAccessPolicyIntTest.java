@@ -1,13 +1,5 @@
-/*
- * Copyright (c) 2017  The Hyve and respective contributors.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * See the file LICENSE in the root of this repository.
- */
-
 package nl.thehyve.podium.web.rest;
 
-import nl.thehyve.podium.PodiumGatewayApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.resource.InternalUserResource;
@@ -16,82 +8,61 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
-import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
-import nl.thehyve.podium.common.test.Action;
-import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
-import nl.thehyve.podium.service.*;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.service.*;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.collections.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.mail.internet.MimeMessage;
 import java.net.URISyntaxException;
 import java.util.*;
 
-import static nl.thehyve.podium.common.test.Action.format;
-import static nl.thehyve.podium.common.test.Action.newAction;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-/**
- * Integration test for the access policy on controller methods.
- */
-@RunWith(SpringRunner.class)
-@ContextConfiguration
-@SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
-public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
+public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGatewayIntTest {
 
-    Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
+    static final String REQUEST_ROUTE = "/api/requests";
+
+    Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private TestService testService;
+    WebApplicationContext context;
 
     @Autowired
-    private DraftService draftService;
-
-    @Autowired
-    private WebApplicationContext context;
+    TestService testService;
 
     @MockBean
-    private OrganisationClientService organisationService;
+    OrganisationClientService organisationService;
 
     @MockBean
-    private UserClientService userClientService;
+    UserClientService userClientService;
 
     @MockBean
-    private InternalUserResource internalUserResource;
+    InternalUserResource internalUserResource;
 
     @MockBean
-    private AuditService auditService;
+    AuditService auditService;
 
     @MockBean
-    private InternalRequestResource internalRequestResource;
+    InternalRequestResource internalRequestResource;
 
-    private MockMvc mockMvc;
-
-    @Override
-    protected MockMvc getMockMvc() {
-        return mockMvc;
-    }
+    @MockBean
+    JavaMailSenderImpl javaMailSender;
 
     @Before
     public void setup() {
@@ -101,9 +72,9 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         MockitoAnnotations.initMocks(this);
 
         this.mockMvc = MockMvcBuilders
-            .webAppContextSetup(context)
-            .apply(springSecurity())
-            .build();
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
 
     @After
@@ -113,14 +84,18 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     }
 
 
-    private OrganisationRepresentation organisationA;
-    private OrganisationRepresentation organisationB;
-    private List<OrganisationRepresentation> organisations = new ArrayList<>();
-    private Map<UUID, Map<String, Set<UUID>>> organisationRoles = new HashMap<>();
+    //region Organisations test data
+
+    OrganisationRepresentation organisationA;
+    OrganisationRepresentation organisationB;
+    List<OrganisationRepresentation> organisations = new ArrayList<>();
+    Map<UUID, Map<String, Set<UUID>>> organisationRoles = new HashMap<>();
 
     private static OrganisationRepresentation createOrganisation(String organisationName, UUID organisationUuid) {
         Set<RequestType> requestTypes = new HashSet<>();
         requestTypes.add(RequestType.Data);
+        requestTypes.add(RequestType.Images);
+        requestTypes.add(RequestType.Material);
 
         OrganisationRepresentation organisation = new OrganisationRepresentation();
         organisation.setUuid(organisationUuid);
@@ -130,7 +105,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         return organisation;
     }
 
-    private void createOrganisations() {
+    void createOrganisations() {
         organisationA = createOrganisation("A", UUID.randomUUID());
         organisationB = createOrganisation("B", UUID.randomUUID());
         organisations.addAll(Arrays.asList(organisationA, organisationB));
@@ -143,23 +118,28 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         }
     }
 
-    private AuthenticatedUser podiumAdmin;
-    private AuthenticatedUser bbmriAdmin;
-    private AuthenticatedUser adminOrganisationA;
-    private AuthenticatedUser adminOrganisationB;
-    private AuthenticatedUser adminOrganisationAandB;
-    private AuthenticatedUser coordinatorOrganisationA;
-    private AuthenticatedUser coordinatorOrganisationB;
-    private AuthenticatedUser coordinatorOrganisationAandB;
-    private AuthenticatedUser reviewerAandB;
-    private AuthenticatedUser reviewerA;
-    private AuthenticatedUser researcher;
-    private AuthenticatedUser testUser1;
-    private AuthenticatedUser testUser2;
-    private AuthenticatedUser anonymous;
-    private Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
-    private Map<String, SerialisedUser> userStore = new HashMap<>();
-    private Map<UUID, UserRepresentation> userInfo = new HashMap<>();
+    //endregion
+
+
+    //region Users test data
+
+    AuthenticatedUser podiumAdmin;
+    AuthenticatedUser bbmriAdmin;
+    AuthenticatedUser adminOrganisationA;
+    AuthenticatedUser adminOrganisationB;
+    AuthenticatedUser adminOrganisationAandB;
+    AuthenticatedUser coordinatorOrganisationA;
+    AuthenticatedUser coordinatorOrganisationB;
+    AuthenticatedUser coordinatorOrganisationAandB;
+    AuthenticatedUser reviewerAandB;
+    AuthenticatedUser reviewerA;
+    AuthenticatedUser researcher;
+    AuthenticatedUser testUser1;
+    AuthenticatedUser testUser2;
+    AuthenticatedUser anonymous;
+    Set<AuthenticatedUser> allUsers = new LinkedHashSet<>();
+    Map<String, SerialisedUser> userStore = new HashMap<>();
+    Map<UUID, UserRepresentation> userInfo = new HashMap<>();
 
     private AuthenticatedUser createUser(String name, String authority, OrganisationRepresentation... organisations) {
         log.info("Creating user {}", name);
@@ -171,6 +151,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         userDetails.setEmail("test_" + name + "@localhost");
         userDetails.setFirstName("test_firstname_"+name);
         userDetails.setLastName("test_lastname_"+name);
+        userDetails.setLangKey("en");
         Set<String> authorities = new HashSet<>();
         Map<UUID, Collection<String>> roles = new HashMap<>();
         if (organisations.length > 0) {
@@ -200,7 +181,7 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         return user;
     }
 
-    private void createUsers() {
+    void createUsers() {
         podiumAdmin = createUser("podiumAdmin", AuthorityConstants.PODIUM_ADMIN);
         bbmriAdmin = createUser("bbmriAdmin", AuthorityConstants.BBMRI_ADMIN);
         adminOrganisationA = createUser("adminOrganisationA", AuthorityConstants.ORGANISATION_ADMIN, organisationA);
@@ -218,103 +199,60 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
         allUsers.add(anonymous);
     }
 
-    private RequestRepresentation draftRequest1;
+    //endregion
 
-    private void createRequests() {
-        draftRequest1 = draftService.createDraft(researcher);
-    }
+    private Collection<RequestRepresentation> allRequests = new ArrayList<>();
 
-    public static final String REQUEST_ROUTE = "/api/requests";
+    abstract Collection<RequestRepresentation> createRequests() throws Exception;
 
-    private List<Action> actions = new ArrayList<>();
-
-    private void createRequestActions() {
-        // GET /requests/drafts
-        actions.add(newAction()
-            .setUrl(REQUEST_ROUTE + "/drafts")
-            .allow(researcher, testUser1, testUser2));
-        // POST /requests/drafts
-        RequestRepresentation draft = new RequestRepresentation();
-        actions.add(newAction()
-            .setUrl(REQUEST_ROUTE + "/drafts")
-            .setMethod(HttpMethod.POST)
-            .body(draft)
-            .successStatus(HttpStatus.CREATED)
-            .allow(researcher, testUser1, testUser2));
-        // GET /requests/drafts/{uuid}
-        actions.add(newAction()
-            .setUrl(format(REQUEST_ROUTE, "/drafts/%s", draftRequest1.getUuid()))
-            .allow(researcher));
-        // PUT /requests/drafts
-        // POST /requests/drafts/validate
-        // GET /requests/drafts/{uuid}/submit
-        // GET /requests/requester
-        actions.add(newAction()
-            .setUrl(REQUEST_ROUTE + "/requester")
-            .allow(researcher, testUser1, testUser2));
-        // GET /requests/status/{status}/requester
-        // PUT /requests
-        // GET /requests/{uuid}/submit
-        // GET /requests/reviewer
-        // GET /requests/status/{status}/coordinator
-        // GET /requests/organisation/{uuid}/reviewer
-        // GET /requests/status/{status}/organisation/{uuid}/coordinator
-        // GET /requests/{uuid}
-        // DELETE /requests/drafts/{uuid}
-        // GET /requests/{uuid}/validate
-        // GET /requests/{uuid}/reject
-        // GET /requests/{uuid}/approve
-        // GET /requests/{uuid}/requestRevision
-        // GET /_search/requests
-
-    }
-
-    private void initMocks() throws URISyntaxException {
+    private void initMocks() {
         // Mock Feign client for organisations
         for(OrganisationRepresentation organisation: organisations) {
+            log.info("Mocking organisation endpoint for {}", organisation.getUuid());
             given(this.organisationService.findOrganisationByUuid(eq(organisation.getUuid())))
-                .willReturn(organisation);
+                    .willReturn(organisation);
         }
 
         // Don't return anything on findUsersByRole; only used for notification mails
         given(this.organisationService.findUsersByRole(any(), any()))
-            .willReturn(Collections.emptyList());
+                .willReturn(Collections.emptyList());
 
         // Mock Feign client for fetching user information
         for(Map.Entry<UUID, UserRepresentation> userEntry: userInfo.entrySet()) {
             given(this.userClientService.findUserByUuid(eq(userEntry.getKey())))
+                    .willReturn(userEntry.getValue());
+            given(this.userClientService.findUserByUuidCached(eq(userEntry.getKey())))
                 .willReturn(userEntry.getValue());
         }
 
         for(Map.Entry<String, SerialisedUser> userEntry: userStore.entrySet()) {
             given(this.internalUserResource.getAuthenticatedUserByLogin(eq(userEntry.getKey())))
-                .willReturn(ResponseEntity.ok(userEntry.getValue()));
+                    .willReturn(ResponseEntity.ok(userEntry.getValue()));
         }
 
-        // Return draft request 1
-        given(this.internalRequestResource.getDefaultRequest(eq(draftRequest1.getUuid())))
-            .willReturn(ResponseEntity.ok(draftRequest1));
-
         // Mock mail sending
-        //doNothing().when(this.mailService).sendEmail(any(), any(), any(), any(), any());
+        doNothing().when(this.javaMailSender).send(any(MimeMessage.class));
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());
 
     }
 
-    private void setupData() throws URISyntaxException {
-        createOrganisations();
-        createUsers();
-        createRequests();
-        createRequestActions();
-        initMocks();
+    void initRequestResourceMock(RequestRepresentation request) throws URISyntaxException {
+        // Return request for the request security service
+        given(this.internalRequestResource.getRequestBasic(eq(request.getUuid())))
+            .willReturn(ResponseEntity.ok(request));
     }
 
-    @Test
-    public void testAccessPolicy() throws Exception {
-        setupData();
-        runAll(actions, allUsers);
+    void setupData() throws Exception {
+        createOrganisations();
+        createUsers();
+        initMocks();
+        allRequests = createRequests();
+        // Return requests for the request security service
+        for(RequestRepresentation request: allRequests) {
+            initRequestResourceMock(request);
+        }
     }
 
 }

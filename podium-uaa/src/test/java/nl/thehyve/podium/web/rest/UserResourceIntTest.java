@@ -9,8 +9,8 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.test.web.rest.TestUtil;
-import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
@@ -34,6 +34,8 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -79,11 +81,13 @@ public class UserResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockMailService).sendVerificationEmail(anyObject());
+        doNothing().when(mockMailService).sendUserRegisteredEmail(
+            anyCollectionOf(UserRepresentation.class), any(UserRepresentation.class));
+
+        ReflectionTestUtils.setField(userService, "mailService", mockMailService);
 
         UserResource userResource = new UserResource();
         ReflectionTestUtils.setField(userResource, "userService", userService);
-        ReflectionTestUtils.setField(userResource, "mailService", mockMailService);
-        ReflectionTestUtils.setField(userResource, "userMapper", userMapper);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 
@@ -115,7 +119,7 @@ public class UserResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isCreated());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isTrue();
     }
 
@@ -129,7 +133,7 @@ public class UserResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isFalse();
     }
 

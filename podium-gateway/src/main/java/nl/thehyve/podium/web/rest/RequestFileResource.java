@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,7 +68,7 @@ public class RequestFileResource {
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestFileRepresentation> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
-                                          @RequestParam("file") MultipartFile file) throws ActionNotAllowed, IOException, URISyntaxException {
+                                          @RequestParam("file") MultipartFile file) throws ActionNotAllowed, IOException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to upload a file for request : {} ", uuid);
         if (file.isEmpty()) {

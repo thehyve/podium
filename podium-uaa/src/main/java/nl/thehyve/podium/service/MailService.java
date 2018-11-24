@@ -8,7 +8,7 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.common.service.AbstractMailService;
-import nl.thehyve.podium.domain.User;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -30,61 +30,49 @@ public class MailService extends AbstractMailService {
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     @Async
-    public void sendVerificationEmail(User user) {
+    public void sendVerificationEmail(UserRepresentation user) {
         log.debug("Sending verification e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(user);
         String content = templateEngine.process("verificationEmail", context);
-        String subject = messageSource.getMessage("email.verification.title", null, locale);
+        String subject = getMessage(user, "email.verification.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
     @Async
-    public void sendCreationEmail(User user) {
+    public void sendCreationEmail(UserRepresentation user) {
         log.debug("Sending creation e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(user);
         String content = templateEngine.process("creationEmail", context);
-        String subject = messageSource.getMessage("email.verification.title", null, locale);
+        String subject = getMessage(user, "email.verification.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
     @Async
-    public void sendUserRegisteredEmail(Collection<User> administrators, User registeredUser) {
+    public void sendUserRegisteredEmail(Collection<? extends UserRepresentation> administrators, UserRepresentation registeredUser) {
         log.debug("Notify BBRMI administrators of registered user: '{}'", registeredUser.getEmail());
-        for (User user: administrators) {
-            Locale locale = Locale.forLanguageTag(user.getLangKey());
-            Context context = new Context(locale);
-            context.setVariable(USER, user);
+        for (UserRepresentation user: administrators) {
+            Context context = getDefaultContextForUser(user);
             context.setVariable("registeredUser", registeredUser);
-            context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
             String content = templateEngine.process("userRegistered", context);
-            String subject = messageSource.getMessage("email.userRegistered.title", null, locale);
+            String subject = getMessage(user, "email.userRegistered.title");
             sendEmail(user.getEmail(), subject, content, false, true);
         }
     }
 
     @Async
-    public void sendPasswordResetMail(User user) {
+    public void sendPasswordResetMail(UserRepresentation user) {
         log.debug("Sending password reset e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(user);
         String content = templateEngine.process("passwordResetEmail", context);
-        String subject = messageSource.getMessage("email.reset.title", null, locale);
+        String subject = getMessage(user, "email.reset.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
     @Async
     public void sendPasswordResetMailNoUser(String email) {
         log.debug("Sending no user password reset e-mail to '{}'", email);
-        // Send email in english
-        Locale locale = Locale.forLanguageTag("en");
+        // Send email in default language
+        Locale locale = Locale.forLanguageTag(DEFAULT_LANG_KEY);
         Context context = new Context(locale);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         String content = templateEngine.process("passwordResetEmailNoUser", context);
@@ -93,25 +81,19 @@ public class MailService extends AbstractMailService {
     }
 
     @Async
-    public void sendAccountLockedMail(User user) {
+    public void sendAccountLockedMail(UserRepresentation user) {
         log.debug("Sending account locked e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(user);
         String content = templateEngine.process("accountLockedEmail", context);
-        String subject = messageSource.getMessage("email.accountLocked.title", null, locale);
+        String subject = getMessage(user, "email.accountLocked.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
-    public void sendAccountAlreadyExists(User user) {
+    public void sendAccountAlreadyExists(UserRepresentation user) {
         log.debug("Sending account already exists e-mail to '{}'", user.getEmail());
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        Context context = getDefaultContextForUser(user);
         String content = templateEngine.process("accountAlreadyExistsEmail", context);
-        String subject = messageSource.getMessage("email.accountAlreadyExists.title", null, locale);
+        String subject = getMessage(user, "email.accountAlreadyExists.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 

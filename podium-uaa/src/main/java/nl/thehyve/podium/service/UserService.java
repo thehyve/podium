@@ -34,6 +34,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,98 +86,108 @@ public class UserService {
 
     /**
      * Activate a user by a given key.
-     * If the activation key has expired return null
+     * If the activation key has expired an exception is thrown.
      *
      * @param key The activation key.
      * @throws VerificationKeyExpired Thrown when the used verification key has expired.
      *
-     * @return the user
+     * @return true iff the verification was successful.
      */
-    public Optional<User> verifyRegistration(String key) throws VerificationKeyExpired {
+    public boolean verifyRegistration(String key) throws VerificationKeyExpired {
         log.debug("Verifying user for activation key {}", key);
 
         Optional<User> foundUser = userRepository.findOneByDeletedIsFalseAndActivationKey(key);
+        if (!foundUser.isPresent()) {
+            return false;
+        }
         Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
         ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
 
-        if (foundUser.isPresent()) {
-            User user = foundUser.get();
+        User user = foundUser.get();
 
-            if(user.getActivationKeyDate().isBefore(keyValidPeriod)) {
-                throw new VerificationKeyExpired();
-            }
-            // activate given user for the registration key.
-            user.setEmailVerified(true);
-            user.setActivationKey(null);
-            user.setActivationKeyDate(null);
-
-            save(user);
-
-            // Notify BBMRI admin
-            Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
-            mailService.sendUserRegisteredEmail(administrators, user);
-
-            log.debug("Activated user: {}", user);
+        if (user.getActivationKeyDate().isBefore(keyValidPeriod)) {
+            throw new VerificationKeyExpired();
         }
+        // activate given user for the registration key.
+        user.setEmailVerified(true);
+        user.setActivationKey(null);
+        user.setActivationKeyDate(null);
+        user = save(user);
 
-        return foundUser;
+        UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
+        // Notify BBMRI admin
+        Collection<ManagedUserRepresentation> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+        mailService.sendUserRegisteredEmail(administrators, userRepresentation);
+
+        log.debug("Activated user: {}", user);
+        return true;
     }
 
-    public Optional<User> renewVerificationKey(String key) {
+    public boolean renewVerificationKey(String key) {
         log.debug("Renewing activation key ", key);
 
-        return userRepository.findOneByDeletedIsFalseAndActivationKey(key)
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndActivationKey(key)
             // Filter for expired activation keys
             .filter(user -> {
                 Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
                 ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
                 return user.getActivationKeyDate().isBefore(keyValidPeriod);
-            })
-            .map(user -> {
-                user.setActivationKey(RandomUtil.generateActivationKey());
-                user.setActivationKeyDate(ZonedDateTime.now());
-                save(user);
-                mailService.sendVerificationEmail(user);
-                return user;
             });
+        if (!userOptional.isPresent()) {
+            return false;
+        }
+        User user = userOptional.get();
+        user.setActivationKey(RandomUtil.generateActivationKey());
+        user.setActivationKeyDate(ZonedDateTime.now());
+        user = save(user);
+        UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
+        mailService.sendVerificationEmail(userRepresentation);
+        return true;
     }
 
-    public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
+    public boolean completePasswordReset(String newPassword, String key) {
+        log.debug("Reset user password for reset key {}", key);
 
-       return userRepository.findOneByDeletedIsFalseAndResetKey(key)
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndResetKey(key)
             .filter(user -> {
                 ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
-           })
-           .map(user -> {
-                if (!user.isEmailVerified()) {
-                    user.setEmailVerified(true);
-                    user.setActivationKey(null);
-                    user.setActivationKeyDate(null);
-
-                    SearchUser searchUser = userMapper.userToSearchUser(user);
-                    userSearchRepository.save(searchUser);
-                    log.debug("Activated user: {}", user);
-
-                    // Notify BBMRI admin
-                    Collection<User> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
-                    mailService.sendUserRegisteredEmail(administrators, user);
-                }
-                user.setPassword(passwordEncoder.encode(newPassword));
-                user.setResetKey(null);
-                user.setResetDate(null);
-                return user;
            });
+        if (!userOptional.isPresent()) {
+           return false;
+        }
+        User user = userOptional.get();
+        if (!user.isEmailVerified()) {
+            user.setEmailVerified(true);
+            user.setActivationKey(null);
+            user.setActivationKeyDate(null);
+
+            SearchUser searchUser = userMapper.userToSearchUser(user);
+            userSearchRepository.save(searchUser);
+            log.debug("Activated user: {}", user);
+
+            // Notify BBMRI admin
+            UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
+            Collection<ManagedUserRepresentation> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+            mailService.sendUserRegisteredEmail(administrators, userRepresentation);
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetKey(null);
+        user.setResetDate(null);
+        return true;
     }
 
-    public Optional<User> requestPasswordReset(String mail) {
-        return userRepository.findOneByDeletedIsFalseAndEmail(mail)
-            .map(user -> {
-                user.setResetKey(RandomUtil.generateResetKey());
-                user.setResetDate(ZonedDateTime.now());
-                return user;
-            });
+    public void requestPasswordReset(String mail) {
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndEmail(mail);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setResetKey(RandomUtil.generateResetKey());
+            user.setResetDate(ZonedDateTime.now());
+            ManagedUserRepresentation userVM = userMapper.userToManagedUserVM(user);
+            mailService.sendPasswordResetMail(userVM);
+        } else {
+            mailService.sendPasswordResetMailNoUser(mail);
+        }
     }
 
     /**
@@ -189,7 +201,7 @@ public class UserService {
      */
     private void checkForExistingLoginAndEmail(UserRepresentation updatedUserData, Long userId) throws UserAccountException {
         {
-            Optional<User> existingAccount = getUserWithAuthoritiesByLogin(updatedUserData.getLogin().toLowerCase());
+            Optional<ManagedUserRepresentation> existingAccount = getUserWithAuthoritiesByLogin(updatedUserData.getLogin().toLowerCase());
             if (existingAccount.isPresent()) {
                 if (userId != null || existingAccount.get().getId().equals(userId)) {
                     // It's okay, we found the user we are updating
@@ -199,7 +211,7 @@ public class UserService {
             }
         }
         {
-            Optional<User> existingAccount = getUserWithAuthoritiesByEmail(updatedUserData.getEmail().toLowerCase());
+            Optional<ManagedUserRepresentation> existingAccount = getUserWithAuthoritiesByEmail(updatedUserData.getEmail().toLowerCase());
             if (existingAccount.isPresent()) {
                 if (userId != null || existingAccount.get().getId().equals(userId)) {
                     // It's okay, we found the user we are updating
@@ -210,28 +222,42 @@ public class UserService {
         }
     }
 
-    public User registerUser(ManagedUserRepresentation managedUserRepresentation) throws UserAccountException {
-        checkForExistingLoginAndEmail(managedUserRepresentation, null);
-        User newUser = new User();
-        Role role = roleService.findRoleByAuthorityName(AuthorityConstants.RESEARCHER);
-        Set<Role> roles = new HashSet<>();
-        newUser.setLogin(managedUserRepresentation.getLogin());
-        newUser.setEmail(managedUserRepresentation.getEmail());
-        String encryptedPassword = passwordEncoder.encode(managedUserRepresentation.getPassword());
-        newUser.setPassword(encryptedPassword);
-        newUser = userMapper.safeUpdateUserWithUserDTO(managedUserRepresentation, newUser);
-        // new user is not active
-        newUser.setEmailVerified(false);
-        newUser.setAdminVerified(false);
-        // new user gets registration key
-        newUser.setActivationKey(RandomUtil.generateActivationKey());
-        newUser.setActivationKeyDate(ZonedDateTime.now());
-        roles.add(role);
-        newUser.setRoles(roles);
-        save(newUser);
+    /**
+     * Registers a new user account.
+     * @param managedUserRepresentation the user account details.
+     * @throws UserAccountException if the username or email address is already in use.
+     */
+    public void registerUser(ManagedUserRepresentation managedUserRepresentation) throws UserAccountException {
+        try {
+            checkForExistingLoginAndEmail(managedUserRepresentation, null);
+            User newUser = new User();
+            Role role = roleService.findRoleByAuthorityName(AuthorityConstants.RESEARCHER);
+            Set<Role> roles = new HashSet<>();
+            newUser.setLogin(managedUserRepresentation.getLogin());
+            newUser.setEmail(managedUserRepresentation.getEmail());
+            String encryptedPassword = passwordEncoder.encode(managedUserRepresentation.getPassword());
+            newUser.setPassword(encryptedPassword);
+            newUser = userMapper.safeUpdateUserWithUserDTO(managedUserRepresentation, newUser);
+            // new user is not active
+            newUser.setEmailVerified(false);
+            newUser.setAdminVerified(false);
+            // new user gets registration key
+            newUser.setActivationKey(RandomUtil.generateActivationKey());
+            newUser.setActivationKeyDate(ZonedDateTime.now());
+            roles.add(role);
+            newUser.setRoles(roles);
+            newUser = save(newUser);
 
-        log.debug("Created Information for User: {}", newUser);
-        return newUser;
+            ManagedUserRepresentation userRepresentation = userMapper.userToManagedUserVM(newUser);
+            log.debug("Created Information for User: {}", userRepresentation);
+            mailService.sendVerificationEmail(userRepresentation);
+        } catch (EmailAddressAlreadyInUse e) {
+            Optional<ManagedUserRepresentation> userOptional = getUserWithAuthoritiesByEmail(managedUserRepresentation.getEmail());
+            userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
+        } catch (LoginAlreadyInUse e) {
+            log.error("Login already in use: {}", managedUserRepresentation.getLogin());
+            throw e;
+        }
     }
 
     public User createUser(UserRepresentation userData) throws UserAccountException {
@@ -262,11 +288,25 @@ public class UserService {
         return user;
     }
 
+    public void createUserAccount(UserRepresentation userData) throws UserAccountException {
+        try {
+            User newUser = createUser(userData);
+            UserRepresentation userRepresentation = userMapper.userToUserDTO(newUser);
+            mailService.sendCreationEmail(userRepresentation);
+        } catch (EmailAddressAlreadyInUse e) {
+            Optional<ManagedUserRepresentation> userOptional = getUserWithAuthoritiesByEmail(userData.getEmail());
+            userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
+        } catch (LoginAlreadyInUse e) {
+            log.error("Login already in use: {}", userData.getLogin());
+            throw e;
+        }
+    }
+
     /**
      *
      * @param userData user data to update
      * @return Updated user data as UserRepresentation
-     * @throws UserAccountException
+     * @throws UserAccountException if login or email already in use.
      */
     public UserRepresentation updateUserAccount(UserRepresentation userData) throws UserAccountException {
         Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndLogin(SecurityService.getCurrentUserLogin());
@@ -326,11 +366,20 @@ public class UserService {
         });
     }
 
-    public User unlockAccount(User user) {
+    public ManagedUserRepresentation unlockAccount(UUID uuid) {
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndUuid(uuid);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFound("User not found.");
+        }
+        User user = userOptional.get();
+        entityManager.refresh(user);
+        user.getAuthorities().size();
+
         user.setAccountLocked(false);
         user.setAccountLockDate(null);
         user.resetFailedLoginAttempts();
-        return save(user);
+        user = save(user);
+        return userMapper.userToManagedUserVM(user);
     }
 
     /**
@@ -346,15 +395,19 @@ public class UserService {
         return updatedUser;
     }
 
-    public void delete(User user) {
+    public void deleteByLogin(String login) {
+        Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndLogin(login);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFound("User not found.");
+        }
+        User user = userOptional.get();
         user.setDeleted(true);
         save(user);
-
         log.debug("Deleted User: {}", user);
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
+    public Optional<User> getDomainUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneByDeletedIsFalseAndLogin(login).map(user -> {
             entityManager.refresh(user);
             user.getAuthorities().size();
@@ -363,7 +416,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserByUuid(UUID uuid) {
+    public Optional<ManagedUserRepresentation> getUserWithAuthoritiesByLogin(String login) {
+        return getDomainUserWithAuthoritiesByLogin(login).map(user ->
+            userMapper.userToManagedUserVM(user)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getDomainUserByUuid(UUID uuid) {
         return userRepository.findOneByDeletedIsFalseAndUuid(uuid).map(user -> {
             entityManager.refresh(user);
             user.getAuthorities().size();
@@ -372,20 +432,27 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> getUsersByAuthority(String authority) {
-        return userRepository.findAllByDeletedIsFalseAndAuthority(authority);
+    public Optional<ManagedUserRepresentation> getUserByUuid(UUID uuid) {
+        return getDomainUserByUuid(uuid).map(user ->
+            userMapper.userToManagedUserVM(user)
+        );
     }
 
     @Transactional(readOnly = true)
-    public User getUserWithAuthorities(Long id) {
+    public List<ManagedUserRepresentation> getUsersByAuthority(String authority) {
+        return userMapper.usersToManagedUserVMs(userRepository.findAllByDeletedIsFalseAndAuthority(authority));
+    }
+
+    @Transactional(readOnly = true)
+    public ManagedUserRepresentation getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
         entityManager.refresh(user);
         user.getAuthorities().size(); // eagerly load the association
-        return user;
+        return userMapper.userToManagedUserVM(user);
     }
 
     @Transactional(readOnly = true)
-    public User getUserWithAuthorities() {
+    public UserRepresentation getUserWithAuthorities() {
         String login = SecurityService.getCurrentUserLogin();
         log.debug("Fetching user with login {}", login);
         Optional<User> optionalUser = userRepository.findOneByDeletedIsFalseAndLogin(login);
@@ -395,21 +462,22 @@ public class UserService {
             entityManager.refresh(user);
             user.getAuthorities().size(); // eagerly load the association
         }
-        return user;
+        return userMapper.userToUserDTO(user);
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthoritiesByEmail(String email) {
+    public Optional<ManagedUserRepresentation> getUserWithAuthoritiesByEmail(String email) {
         return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
             entityManager.refresh(user);
             user.getAuthorities().size();
-            return user;
+            return userMapper.userToManagedUserVM(user);
         });
     }
 
     @Transactional(readOnly = true)
-    public Page<User> getUsers(Pageable pageable) {
-        return userRepository.findAllWithAuthorities(pageable);
+    public Page<ManagedUserRepresentation> getUsers(Pageable pageable) {
+        return userRepository.findAllWithAuthorities(pageable)
+            .map(user -> userMapper.userToManagedUserVM(user));
     }
 
     /**
@@ -421,8 +489,9 @@ public class UserService {
      * @return a page with users.
      */
     @Transactional(readOnly = true)
-    public Page<User> getUsersForOrganisations(Pageable pageable, UUID ... organisationUuids) {
-        return userRepository.findAllByOrganisations(Arrays.asList(organisationUuids), pageable);
+    public Page<ManagedUserRepresentation> getUsersForOrganisations(Pageable pageable, UUID ... organisationUuids) {
+        return userRepository.findAllByOrganisations(Arrays.asList(organisationUuids), pageable)
+            .map(user -> userMapper.userToManagedUserVM(user));
     }
 
     /**
@@ -451,8 +520,6 @@ public class UserService {
         CompletionSuggestion completionSuggestion = suggestResponse.getSuggest().getSuggestion("fullname-suggest");
         List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
 
-        List<SearchUser> suggestedUsers = userMapper.completionSuggestOptionsToSearchUsers(options);
-
-        return suggestedUsers;
+        return userMapper.completionSuggestOptionsToSearchUsers(options);
     }
 }

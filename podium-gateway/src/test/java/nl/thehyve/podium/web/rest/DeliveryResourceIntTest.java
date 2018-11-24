@@ -28,9 +28,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class for the RequestResource REST controller.
+ * Test class for the DeliveryResource REST controller.
  *
- * @see RequestResource
+ * @see DeliveryResource
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration
@@ -40,12 +40,12 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void startDeliveryProcesses() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
 
         Thread.sleep(1000);
         reset(this.auditService);
 
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(coordinator1, request);
         Assert.assertNotNull(deliveryRequest);
         Assert.assertEquals(deliveryRequest.getStatus(), OverviewStatus.Delivery);
 
@@ -77,10 +77,10 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void releaseDelivery() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
 
         // Setup delivery request
-        request = createDeliveryProcesses(request);
+        request = createDeliveryProcesses(coordinator1, request);
 
         // Fetch delivery processes
         ResultActions deliveryProcessesResult
@@ -132,9 +132,9 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void deliveryReceived() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
-        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(coordinator1, request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(coordinator1, deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         testRelease(request, deliveryProcess);
@@ -180,9 +180,9 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void cancelDeliveryAfterStart() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
-        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(coordinator1, request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(coordinator1, deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         Thread.sleep(1000);
@@ -202,9 +202,9 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void cancelReleasedDelivery() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
-        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(coordinator1, request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(coordinator1, deliveryRequest);
         DeliveryProcessRepresentation deliveryProcess = deliveryProcesses.get(0);
 
         Thread.sleep(1000);
@@ -255,9 +255,9 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void closeRequestAfterDeliveryCancel() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
-        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(coordinator1, request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(coordinator1, deliveryRequest);
 
         for (DeliveryProcessRepresentation deliveryProcess: deliveryProcesses) {
             testCancel(request, deliveryProcess);
@@ -279,9 +279,9 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void closeRequestAfterDeliveryReceived() throws Exception {
         initMocks();
-        RequestRepresentation request = getApprovedRequest();
-        RequestRepresentation deliveryRequest = createDeliveryProcesses(request);
-        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(deliveryRequest);
+        RequestRepresentation request = getApprovedRequest(requester, coordinator1, organisationUuid1);
+        RequestRepresentation deliveryRequest = createDeliveryProcesses(coordinator1, request);
+        List<DeliveryProcessRepresentation> deliveryProcesses = getDeliveryProcesses(coordinator1, deliveryRequest);
 
         for (DeliveryProcessRepresentation deliveryProcess: deliveryProcesses) {
             testRelease(request, deliveryProcess);

@@ -54,7 +54,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     public void rejectRequestFromValidation() throws Exception {
         initMocks();
         // Setup a submitted draft
-        RequestRepresentation requestRepresentation = getSubmittedDraft();
+        RequestRepresentation requestRepresentation = getSubmittedDraft(requester, organisationUuid1);
 
         MessageRepresentation rejectionMessage = new MessageRepresentation();
         rejectionMessage.setSummary("Test rejection");
@@ -77,7 +77,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     public void rejectRequestFromReview() throws Exception {
         initMocks();
         // Setup a submitted draft
-        RequestRepresentation requestRepresentation = getSubmittedDraft();
+        RequestRepresentation requestRepresentation = getSubmittedDraft(requester, organisationUuid1);
 
         // Send for review
         ResultActions validatedRequest
@@ -114,7 +114,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     public void validateRequest() throws Exception {
         initMocks();
         // Setup a submitted draft
-        RequestRepresentation requestRepresentation = getSubmittedDraft();
+        RequestRepresentation requestRepresentation = getSubmittedDraft(requester, organisationUuid1);
 
         // Send for review
         ResultActions validatedRequest
@@ -137,7 +137,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void approveReviewRequest() throws Exception {
         initMocks();
-        RequestRepresentation request = getSubmittedDraft();
+        RequestRepresentation request = getSubmittedDraft(requester, organisationUuid1);
 
         request = validateRequest(request, coordinator1);
 
@@ -147,7 +147,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void closeApprovedRequest() throws Exception {
         initMocks();
-        RequestRepresentation request = getSubmittedDraft();
+        RequestRepresentation request = getSubmittedDraft(requester, organisationUuid1);
 
         request = validateRequest(request, coordinator1);
 
@@ -178,7 +178,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     public void sendRequestForRevisionFromValidation() throws Exception {
         initMocks();
         // Setup a submitted draft
-        RequestRepresentation requestRepresentation = getSubmittedDraft();
+        RequestRepresentation requestRepresentation = getSubmittedDraft(requester, organisationUuid1);
 
         MessageRepresentation revisionMessage = new MessageRepresentation();
         revisionMessage.setSummary("Test revision. Please change fields xyz");
@@ -200,7 +200,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void submitReviewFeedback() throws Exception {
         initMocks();
-        RequestRepresentation request = getSubmittedDraft();
+        RequestRepresentation request = getSubmittedDraft(requester, organisationUuid1);
 
         // Send for review
         request = validateRequest(request, coordinator1);
@@ -279,7 +279,7 @@ public class RequestReviewResourceIntTest extends AbstractRequestDataIntTest {
     @Test
     public void submitReviewFeedbackForWrongUser() throws Exception {
         initMocks();
-        RequestRepresentation request = getSubmittedDraft();
+        RequestRepresentation request = getSubmittedDraft(requester, organisationUuid1);
 
         // Send for review
         request = validateRequest(request, coordinator1);
