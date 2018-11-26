@@ -153,7 +153,7 @@ public class TestService {
         Set<User> users = new HashSet<>();
         if (roleData.getUsers() != null) {
             for (String userLogin : roleData.getUsers()) {
-                userService.getUserWithAuthoritiesByLogin(userLogin).ifPresent(users::add);
+                userService.getDomainUserWithAuthoritiesByLogin(userLogin).ifPresent(users::add);
             }
         }
         role.setUsers(users);
@@ -196,6 +196,7 @@ public class TestService {
      * @param authority the authority the user should have.
      * @param organisations the (possibly empty) list of organisations for which the user should have that authority.
      * @return the created entity.
+     * @throws UserAccountException if login or email already in use.
      */
     public User createUser(String name, String authority, Organisation ... organisations) throws UserAccountException {
         log.info("Creating user {}", name);

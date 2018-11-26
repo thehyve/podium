@@ -11,21 +11,15 @@ import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.Public;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
-import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.exceptions.VerificationKeyExpired;
-import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.validation.PasswordValidator;
 import nl.thehyve.podium.web.rest.dto.KeyAndPasswordRepresentation;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.
@@ -52,12 +45,6 @@ public class AccountResource {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private MailService mailService;
-
-    @Autowired
-    private UserMapper userMapper;
-
     /**
      * POST  /register : register the user.
      *
@@ -70,18 +57,7 @@ public class AccountResource {
                     produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
     public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserRepresentation managedUserRepresentation) throws UserAccountException {
-        HttpHeaders textPlainHeaders = new HttpHeaders();
-        textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
-        try {
-            User user = userService.registerUser(managedUserRepresentation);
-            mailService.sendVerificationEmail(user);
-        } catch(EmailAddressAlreadyInUse e) {
-            Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(managedUserRepresentation.getEmail());
-            userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
-        } catch (LoginAlreadyInUse e) {
-            log.error("Login already in use: {}", managedUserRepresentation.getLogin());
-            throw e;
-        }
+        userService.registerUser(managedUserRepresentation);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -90,7 +66,7 @@ public class AccountResource {
      *
      * @param key the activation key
      * @return  the ResponseEntity with status
-     *          200 (OK) and the activated user in body,
+     *          200 (OK)
      *          500 (Internal Server Error) if the user couldn't be activated
      */
     @Public
@@ -98,10 +74,8 @@ public class AccountResource {
     @Timed
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
         try {
-            Optional<User> user = userService.verifyRegistration(key);
-
-            if (user.isPresent() && user.get().getActivationKey() == null) {
-                return new ResponseEntity<String>(HttpStatus.OK);
+            if (userService.verifyRegistration(key)) {
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("error", HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -114,9 +88,11 @@ public class AccountResource {
     @GetMapping("/reverify")
     @Timed
     public ResponseEntity<String> renewVerification(@RequestParam(value = "key") String key) {
-        return userService.renewVerificationKey(key)
-            .map(user -> new ResponseEntity<String>(HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        if (userService.renewVerificationKey(key)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -143,11 +119,11 @@ public class AccountResource {
     @GetMapping("/account")
     @Timed
     public ResponseEntity<UserRepresentation> getAccount() {
-        User user = userService.getUserWithAuthorities();
+        UserRepresentation user = userService.getUserWithAuthorities();
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok(userMapper.userToUserDTO(user));
+        return ResponseEntity.ok(user);
     }
 
     /**
@@ -155,6 +131,7 @@ public class AccountResource {
      *
      * @param userDTO the current user information
      * @return the ResponseEntity with status 200 (OK), or status 400 (Bad Request) or 500 (Internal Server Error) if the user couldn't be updated
+     * @throws UserAccountException if login or email already in use.
      */
     @AnyAuthorisedUser
     @PostMapping("/account")
@@ -192,14 +169,8 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> requestPasswordReset(@RequestBody String mail) {
-        return userService.requestPasswordReset(mail)
-            .map(user -> {
-                mailService.sendPasswordResetMail(user);
-                return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
-            }).orElseGet(() -> {
-                mailService.sendPasswordResetMailNoUser(mail);
-                return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
-            });
+        userService.requestPasswordReset(mail);
+        return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
     }
 
     /**
@@ -214,9 +185,11 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordRepresentation keyAndPassword) {
-        return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
-              .map(user -> new ResponseEntity<String>(HttpStatus.OK))
-              .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        if (userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

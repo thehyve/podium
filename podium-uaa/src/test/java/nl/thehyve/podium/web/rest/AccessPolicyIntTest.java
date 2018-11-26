@@ -17,10 +17,8 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
-import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.TestService;
-import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +36,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -58,14 +54,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @SpringBootTest(classes = PodiumUaaApp.class)
 public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
 
-    private Logger log = LoggerFactory.getLogger(AccessPolicyIntTest.class);
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private OrganisationService organisationService;
-
     @Autowired
     private RoleService roleService;
 
@@ -78,12 +66,8 @@ public class AccessPolicyIntTest extends AbstractAuthorisedUserIntTest {
     @Autowired
     private WebApplicationContext context;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     private MockMvc mockMvc;
 
-    @Override
     protected MockMvc getMockMvc() {
         return mockMvc;
     }

@@ -197,7 +197,7 @@ public class DraftService {
                 organisationRequest.getRequestDetail().setRequestType(organisationSupportedRequestTypes);
                 organisationRequest.getRevisionDetail().setRequestType(organisationSupportedRequestTypes);
             } catch (Exception e) {
-                log.error("Error fetching organisation", e);
+                log.error("Error fetching organisation : {}", organisationUuid, e);
                 throw new ServiceNotAvailable("Could not fetch organisation", e);
             }
 

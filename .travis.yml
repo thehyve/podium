@@ -1,10 +1,8 @@
 os:
   - linux
-services:
-  - docker
 language: java
 node_js:
-  - '7'
+  - '8'
 jdk:
   - oraclejdk8
 sudo: true
@@ -18,7 +16,7 @@ cache:
 
 env:
   global:
-    - NODE_VERSION=7.5.0
+    - NODE_VERSION=8.12.0
     - PROFILE=dev
     - RUN_PODIUM=1
     - PROTRACTOR=1
@@ -59,7 +57,6 @@ install:
   - popd
 
 script:
-  - $PODIUM_SCRIPTS/01-docker-compose.sh
   - if [ "$TASK" == "integration" ]; then "$PODIUM_SCRIPTS"/02-tests.sh; fi
   - if [ "$TASK" == "frontend" ]; then "$PODIUM_SCRIPTS"/02-tests-frontend.sh; fi
   - if [ "$TASK" == "e2e" ]; then "$PODIUM_SCRIPTS"/03-run.sh; fi

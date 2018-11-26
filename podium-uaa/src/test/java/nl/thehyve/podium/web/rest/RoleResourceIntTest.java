@@ -18,7 +18,6 @@ import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
-import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.RoleMapper;
@@ -37,7 +36,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -68,9 +66,6 @@ public class RoleResourceIntTest {
     private UserService userService;
 
     @Autowired
-    private OrganisationService organisationService;
-
-    @Autowired
     private RoleService roleService;
 
     @Autowired
@@ -84,9 +79,6 @@ public class RoleResourceIntTest {
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
-    @Autowired
-    private EntityManager em;
 
     private MockMvc restRoleMockMvc;
 
@@ -116,7 +108,7 @@ public class RoleResourceIntTest {
         }
         Role role = new Role(authority);
         User user;
-        Optional<User> object = userService.getUserWithAuthoritiesByLogin("test");
+        Optional<User> object = userService.getDomainUserWithAuthoritiesByLogin("test");
         if (object.isPresent()) {
             user = object.get();
         } else {

@@ -73,6 +73,9 @@ public class RequestTemplateResource {
         }
         // Turn base64 string into normal string with a username:password format
         String base64 = authorization.substring(6, authorization.length());
+        if (!Base64.isBase64(base64.getBytes())) {
+            throw new AccessDenied("Token is not base64 encoded.");
+        }
         String id = new String(Base64.decode(base64.getBytes()), Charset.forName("UTF-8"));
 
         List<String> allowedIds = podiumProperties.getAccess().getRequestTemplate();

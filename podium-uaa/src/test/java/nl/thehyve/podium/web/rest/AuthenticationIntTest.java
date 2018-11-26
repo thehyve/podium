@@ -9,6 +9,7 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.User;
@@ -86,13 +87,13 @@ public class AuthenticationIntTest {
 
     @Before
     public void setup() throws UserAccountException {
-        ManagedUserRepresentation testUser = new ManagedUserRepresentation();
+        UserRepresentation testUser = new UserRepresentation();
         testUser.setLogin(testUserName);
-        testUser.setPassword(testPassword);
         testUser.setEmail(testEmail);
         testUser.setFirstName("testFirstName");
         testUser.setLastName("testLastName");
-        User user = userService.registerUser(testUser);
+        User user = userService.createUser(testUser);
+        userService.changePassword(user, testPassword);
         user.setEmailVerified(true);
         user.setAdminVerified(true);
         user = userService.save(user);

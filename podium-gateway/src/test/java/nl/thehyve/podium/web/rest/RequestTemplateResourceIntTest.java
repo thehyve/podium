@@ -21,21 +21,19 @@ import java.net.URI;
 import java.util.*;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the RequestTemplateResource REST controller.
  *
- * @see RequestResource
+ * @see RequestTemplateResource
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration
 @SpringBootTest(classes = {PodiumGatewayApp.class, SecurityBeanOverrideConfiguration.class})
 public class RequestTemplateResourceIntTest extends AbstractRequestDataIntTest {
 
-    @Test
-    public void createRequestTemplate() throws Exception {
-        initMocks();
-
+    RequestTemplateRepresentation createTestTemplate() {
         // Create request template data
         RequestTemplateRepresentation requestTemplateRepresentation = new RequestTemplateRepresentation();
         requestTemplateRepresentation.setUrl("http://test.url");
@@ -56,7 +54,14 @@ public class RequestTemplateResourceIntTest extends AbstractRequestDataIntTest {
         collections.add(collect1);
         collections.add(collect2);
         requestTemplateRepresentation.setCollections(collections);
+        return requestTemplateRepresentation;
+    }
 
+    @Test
+    public void createRequestTemplate() throws Exception {
+        initMocks();
+
+        RequestTemplateRepresentation requestTemplateRepresentation = createTestTemplate();
         String authentication = "test:test";
 
         // Perform a POST request to create the request template
@@ -71,6 +76,30 @@ public class RequestTemplateResourceIntTest extends AbstractRequestDataIntTest {
         Assert.assertEquals(requestTemplateRepresentation.getUrl(), result.getUrl());
         Assert.assertEquals(requestTemplateRepresentation.getHumanReadable(), result.getHumanReadable());
         Assert.assertThat(result.getOrganisations(), contains(organisationUuid1));
+    }
+
+    @Test
+    public void accessDeniedWithUnknownToken() throws Exception {
+        initMocks();
+
+        RequestTemplateRepresentation requestTemplateRepresentation = createTestTemplate();
+        String authentication = "invalid:invalid";
+
+        // Perform a POST request to create the request template
+        performCreateRequestTemplate(requestTemplateRepresentation, authentication, true)
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void accessDeniedWithInvalidToken() throws Exception {
+        initMocks();
+
+        RequestTemplateRepresentation requestTemplateRepresentation = createTestTemplate();
+        String authentication = "Invalid authentication string!";
+
+        // Perform a POST request to create the request template
+        performCreateRequestTemplate(requestTemplateRepresentation, authentication, false)
+            .andExpect(status().isForbidden());
     }
 
 }

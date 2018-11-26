@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,20 +54,6 @@ public class UserServiceIntTest {
     }
 
     @Test
-    public void assertThatUserMustExistToResetPassword() throws UserAccountException {
-        Optional<User> maybeUser = userService.requestPasswordReset("john.doe@localhost");
-        assertThat(maybeUser.isPresent()).isFalse();
-
-        userService.createUser(createTestUser());
-        maybeUser = userService.requestPasswordReset("john.doe@localhost");
-        assertThat(maybeUser.isPresent()).isTrue();
-
-        assertThat(maybeUser.get().getEmail()).isEqualTo("john.doe@localhost");
-        assertThat(maybeUser.get().getResetDate()).isNotNull();
-        assertThat(maybeUser.get().getResetKey()).isNotNull();
-    }
-
-    @Test
     public void assertThatResetKeyMustNotBeOlderThan24Hours() throws UserAccountException {
         ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
@@ -80,9 +65,9 @@ public class UserServiceIntTest {
 
         userRepository.save(user);
 
-        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
+        boolean completed = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
 
-        assertThat(maybeUser.isPresent()).isFalse();
+        assertThat(completed).isFalse();
 
         userRepository.delete(user);
     }
@@ -96,8 +81,8 @@ public class UserServiceIntTest {
         user.setResetDate(daysAgo);
         user.setResetKey("1234");
         userRepository.save(user);
-        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
-        assertThat(maybeUser.isPresent()).isFalse();
+        boolean completed = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
+        assertThat(completed).isFalse();
         userRepository.delete(user);
     }
 
@@ -111,11 +96,12 @@ public class UserServiceIntTest {
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
         userRepository.save(user);
-        Optional<User> maybeUser = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
-        assertThat(maybeUser.isPresent()).isTrue();
-        assertThat(maybeUser.get().getResetDate()).isNull();
-        assertThat(maybeUser.get().getResetKey()).isNull();
-        assertThat(maybeUser.get().getPassword()).isNotEqualTo(oldPassword);
+        boolean completed = userService.completePasswordReset(VALID_PASSWORD, user.getResetKey());
+        assertThat(completed).isTrue();
+        User domainUser = userService.getDomainUserByUuid(user.getUuid()).get();
+        assertThat(domainUser.getResetDate()).isNull();
+        assertThat(domainUser.getResetKey()).isNull();
+        assertThat(domainUser.getPassword()).isNotEqualTo(oldPassword);
 
         userRepository.delete(user);
     }
