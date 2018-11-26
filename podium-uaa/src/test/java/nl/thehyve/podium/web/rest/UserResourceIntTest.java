@@ -34,9 +34,7 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -80,7 +78,7 @@ public class UserResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendVerificationEmail(anyObject());
+        doNothing().when(mockMailService).sendVerificationEmail(anyObject(), anyString());
         doNothing().when(mockMailService).sendUserRegisteredEmail(
             anyCollectionOf(UserRepresentation.class), any(UserRepresentation.class));
 

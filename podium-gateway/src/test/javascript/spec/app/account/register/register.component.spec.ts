@@ -95,7 +95,6 @@ describe('Component Tests', () => {
                   expect(comp.registerAccount.langKey).toEqual('en');
                   expect(mockTranslate.getCurrentSpy).toHaveBeenCalled();
                   expect(comp.errorUserExists).toBeNull();
-                  expect(comp.errorEmailExists).toBeNull();
                   expect(comp.error).toBeNull();
               })
             )
@@ -114,26 +113,6 @@ describe('Component Tests', () => {
                     tick();
 
                     expect(comp.errorUserExists).toEqual('ERROR');
-                    expect(comp.errorEmailExists).toBeNull();
-                    expect(comp.error).toBeNull();
-                })
-            )
-        );
-
-        it('should notify of email existence upon 400/email address already in use',
-            inject([Register],
-                fakeAsync((service: Register) => {
-                    spyOn(service, 'save').and.returnValue(Observable.throw({
-                        status: 400,
-                        _body: 'email address already in use'
-                    }));
-                    comp.registerAccount.password = comp.confirmPassword = 'password';
-
-                    comp.register();
-                    tick();
-
-                    expect(comp.errorEmailExists).toEqual('ERROR');
-                    expect(comp.errorUserExists).toBeNull();
                     expect(comp.error).toBeNull();
                 })
             )
@@ -151,7 +130,6 @@ describe('Component Tests', () => {
                     tick();
 
                     expect(comp.errorUserExists).toBeNull();
-                    expect(comp.errorEmailExists).toBeNull();
                     expect(comp.error).toEqual('ERROR');
                 })
             )

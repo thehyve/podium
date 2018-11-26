@@ -24,10 +24,6 @@
             <div class="alert alert-danger" *ngIf="errorUserExists" jhiTranslate="register.messages.error.userexists">
                 <strong>Login name already registered!</strong> Please choose another one.
             </div>
-
-            <div class="alert alert-danger" *ngIf="errorEmailExists" jhiTranslate="register.messages.error.emailexists">
-                <strong>E-mail is already in use!</strong> Please choose another one.
-            </div>
         </div>
         <div class="col-md-8 offset-md-2">
             <form name="form" role="form" (ngSubmit)="register()" #registerForm="ngForm">

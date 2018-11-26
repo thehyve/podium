@@ -35,11 +35,8 @@ public class PodiumProperties {
     private final Gateway gateway = new Gateway();
     private final Ribbon ribbon = new Ribbon();
     private final Logging logging = new Logging();
-
     private final Registry registry = new Registry();
-
     private final Files files = new Files();
-
     private final Access access = new Access();
 
     public PodiumProperties() {
@@ -91,9 +88,13 @@ public class PodiumProperties {
         return this.logging;
     }
 
-    public Files getFiles() {return this.files; }
+    public Files getFiles() {
+        return this.files;
+    }
 
-    public Access getAccess() { return access; }
+    public Access getAccess() {
+        return access;
+    }
 
     public static class Ribbon {
         private String[] displayOnActiveProfiles;
@@ -632,9 +633,16 @@ public class PodiumProperties {
         }
     }
 
+    /**
+     * Configuration for information in emails, such as base URL for links and contact information
+     * included in the email signature.
+     */
     public static class Mail {
+
         private String from = "";
         private String baseUrl = "";
+        private String supportEmail = "";
+        private List<String> signature = new ArrayList<>();
 
         public Mail() {
         }
@@ -654,6 +662,23 @@ public class PodiumProperties {
         public void setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
         }
+
+        public String getSupportEmail() {
+            return supportEmail;
+        }
+
+        public void setSupportEmail(String supportEmail) {
+            this.supportEmail = supportEmail;
+        }
+
+        public List<String> getSignature() {
+            return signature;
+        }
+
+        public void setSignature(List<String> signature) {
+            this.signature = signature;
+        }
+
     }
 
     public static class Cache {
@@ -817,4 +842,5 @@ public class PodiumProperties {
             this.requestTemplate = requestTemplate;
         }
     }
+
 }

@@ -43,6 +43,10 @@ public abstract class AbstractMailService {
 
     protected static final String BASE_URL = "baseUrl";
 
+    protected static final String SUPPORT_EMAIL = "supportEmail";
+
+    protected static final String SIGNATURE = "signature";
+
     protected static final String DEFAULT_LANG_KEY = "en";
 
     protected Context getDefaultContextForUser(UserRepresentation user) {
@@ -50,6 +54,8 @@ public abstract class AbstractMailService {
         Context context = new Context(locale);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
+        context.setVariable(SUPPORT_EMAIL, podiumProperties.getMail().getSupportEmail());
+        context.setVariable(SIGNATURE, podiumProperties.getMail().getSignature());
         return context;
     }
 

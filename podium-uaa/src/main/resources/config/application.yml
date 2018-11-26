@@ -103,6 +103,18 @@ podium:
     mail:
         from: podium@localhost
         # base-url: https://podium.example.com
+        supportEmail: servicedesk@health-ri.nl
+        signature:
+         - |
+            BBMRI Request Portal Podium
+         - |
+            E-mail: <a href="mailto:servicedesk@health-ri.nl">servicedesk@health-ri.nl</a>
+         - |
+            Selfservice: <a href="https://trait.topdesk.net">https://trait.topdesk.net</a>
+         - |
+            Website: <a href="https://trait.health-ri.nl">https://trait.health-ri.nl</a>
+         - |
+            Telefoon: +31 (0)881167500"
     swagger:
         title: Podium UAA API
         description: API documentation for the user manegement and authentication component of the Podium request portal.

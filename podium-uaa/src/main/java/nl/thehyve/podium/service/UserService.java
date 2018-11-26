@@ -34,8 +34,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,7 +139,7 @@ public class UserService {
         user.setActivationKeyDate(ZonedDateTime.now());
         user = save(user);
         UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
-        mailService.sendVerificationEmail(userRepresentation);
+        mailService.sendVerificationEmail(userRepresentation, user.getActivationKey());
         return true;
     }
 
@@ -184,7 +182,7 @@ public class UserService {
             user.setResetKey(RandomUtil.generateResetKey());
             user.setResetDate(ZonedDateTime.now());
             ManagedUserRepresentation userVM = userMapper.userToManagedUserVM(user);
-            mailService.sendPasswordResetMail(userVM);
+            mailService.sendPasswordResetMail(userVM, user.getResetKey());
         } else {
             mailService.sendPasswordResetMailNoUser(mail);
         }
@@ -250,7 +248,7 @@ public class UserService {
 
             ManagedUserRepresentation userRepresentation = userMapper.userToManagedUserVM(newUser);
             log.debug("Created Information for User: {}", userRepresentation);
-            mailService.sendVerificationEmail(userRepresentation);
+            mailService.sendVerificationEmail(userRepresentation, newUser.getActivationKey());
         } catch (EmailAddressAlreadyInUse e) {
             Optional<ManagedUserRepresentation> userOptional = getUserWithAuthoritiesByEmail(managedUserRepresentation.getEmail());
             userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
@@ -292,7 +290,7 @@ public class UserService {
         try {
             User newUser = createUser(userData);
             UserRepresentation userRepresentation = userMapper.userToUserDTO(newUser);
-            mailService.sendCreationEmail(userRepresentation);
+            mailService.sendCreationEmail(userRepresentation, newUser.getResetKey());
         } catch (EmailAddressAlreadyInUse e) {
             Optional<ManagedUserRepresentation> userOptional = getUserWithAuthoritiesByEmail(userData.getEmail());
             userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));

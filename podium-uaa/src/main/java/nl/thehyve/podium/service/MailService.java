@@ -29,21 +29,29 @@ public class MailService extends AbstractMailService {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
+    void prepareSignature(Context context) {
+        templateEngine.process("signature", context);
+    }
+
     @Async
-    public void sendVerificationEmail(UserRepresentation user) {
+    public void sendVerificationEmail(UserRepresentation user, String activationKey) {
         log.debug("Sending verification e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
+        context.setVariable("activationKey", activationKey);
         String content = templateEngine.process("verificationEmail", context);
         String subject = getMessage(user, "email.verification.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
     @Async
-    public void sendCreationEmail(UserRepresentation user) {
+    public void sendCreationEmail(UserRepresentation user, String resetKey) {
         log.debug("Sending creation e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
+        context.setVariable("resetKey", resetKey);
         String content = templateEngine.process("creationEmail", context);
-        String subject = getMessage(user, "email.verification.title");
+        String subject = getMessage(user, "email.creation.title");
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
@@ -52,6 +60,7 @@ public class MailService extends AbstractMailService {
         log.debug("Notify BBRMI administrators of registered user: '{}'", registeredUser.getEmail());
         for (UserRepresentation user: administrators) {
             Context context = getDefaultContextForUser(user);
+            prepareSignature(context);
             context.setVariable("registeredUser", registeredUser);
             String content = templateEngine.process("userRegistered", context);
             String subject = getMessage(user, "email.userRegistered.title");
@@ -60,9 +69,11 @@ public class MailService extends AbstractMailService {
     }
 
     @Async
-    public void sendPasswordResetMail(UserRepresentation user) {
+    public void sendPasswordResetMail(UserRepresentation user, String resetKey) {
         log.debug("Sending password reset e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
+        context.setVariable("resetKey", resetKey);
         String content = templateEngine.process("passwordResetEmail", context);
         String subject = getMessage(user, "email.reset.title");
         sendEmail(user.getEmail(), subject, content, false, true);
@@ -74,6 +85,7 @@ public class MailService extends AbstractMailService {
         // Send email in default language
         Locale locale = Locale.forLanguageTag(DEFAULT_LANG_KEY);
         Context context = new Context(locale);
+        prepareSignature(context);
         context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         String content = templateEngine.process("passwordResetEmailNoUser", context);
         String subject = messageSource.getMessage("email.reset.noUser.title", null, locale);
@@ -84,6 +96,7 @@ public class MailService extends AbstractMailService {
     public void sendAccountLockedMail(UserRepresentation user) {
         log.debug("Sending account locked e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
         String content = templateEngine.process("accountLockedEmail", context);
         String subject = getMessage(user, "email.accountLocked.title");
         sendEmail(user.getEmail(), subject, content, false, true);
@@ -92,6 +105,7 @@ public class MailService extends AbstractMailService {
     public void sendAccountAlreadyExists(UserRepresentation user) {
         log.debug("Sending account already exists e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
         String content = templateEngine.process("accountAlreadyExistsEmail", context);
         String subject = getMessage(user, "email.accountAlreadyExists.title");
         sendEmail(user.getEmail(), subject, content, false, true);

@@ -9,7 +9,7 @@
   -->
 <div class="content-wrapper">
     <div class="row">
-        <div class="message-container">
+        <div class="col-md-6 offset-md-3 message-container">
             <h2>{{completedTitle}}</h2>
             <p [innerHTML]="completedContent"></p>
             <a *ngIf="isCompletionType(completionTypes.Registration)" routerLink="/">Login</a>
