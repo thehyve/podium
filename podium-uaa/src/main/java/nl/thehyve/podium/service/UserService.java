@@ -325,11 +325,15 @@ public class UserService {
         if (!userOptional.isPresent()) {
             throw new ResourceNotFound("User does not exists");
         }
+        boolean userVerified = false;
         User user = userOptional.get();
         checkForExistingLoginAndEmail(userData, user.getId());
         user.setLogin(userData.getLogin());
         user.setEmail(userData.getEmail());
-        user.setAdminVerified(userData.isAdminVerified());
+        if (userData.isAdminVerified() && !user.isAdminVerified()) {
+            user.setAdminVerified(userData.isAdminVerified());
+            userVerified = true;
+        }
         Set<Role> managedRoles = user.getRoles();
         managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
         userData.getAuthorities().forEach( authority -> {
@@ -345,8 +349,12 @@ public class UserService {
         });
 
         user = userMapper.safeUpdateUserWithUserDTO(userData, user);
-        save(user);
-        log.debug("Changed Information for User: {}", user);
+        user = save(user);
+        ManagedUserRepresentation userRepresentation = userMapper.userToManagedUserVM(user);
+        if (userVerified) {
+            mailService.sendAccountVerifiedEmail(userRepresentation);
+        }
+        log.debug("Changed Information for User: {}", userRepresentation);
     }
 
     @Profile({"dev", "test"})

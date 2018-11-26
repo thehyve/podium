@@ -45,6 +45,16 @@ public class MailService extends AbstractMailService {
     }
 
     @Async
+    public void sendAccountVerifiedEmail(UserRepresentation user) {
+        log.debug("Sending account verified e-mail to '{}'", user.getEmail());
+        Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
+        String content = templateEngine.process("accountVerifiedEmail", context);
+        String subject = getMessage(user, "email.accountVerified.title");
+        sendEmail(user.getEmail(), subject, content, false, true);
+    }
+
+    @Async
     public void sendCreationEmail(UserRepresentation user, String resetKey) {
         log.debug("Sending creation e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);

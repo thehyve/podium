@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2018. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{email.accountVerified.title}">BBMRI Request Portal Podium &ndash; account verified</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+	<body>
+    <p th:text="#{email.greeting(${user.firstName}, ${user.lastName})}">
+        Dear
+    </p>
+    <p>
+        <span th:text="#{email.accountVerified.text1}">
+            Your BBMRI Request Portal account has been activated by the BBMRI Request Portal Admin.
+        </span>
+    </p>
+    <p>
+        <span th:text="#{email.accountVerified.text2}">Please follow this link to login:</span>
+        <br/>
+        <br/>
+        <a th:href="@{|${baseUrl}|}">
+            <span th:text="@{|${baseUrl}|}"></span>
+        </a>
+    </p>
+
+    <br/>
+
+    <div th:include="signature"></div>
+	</body>
+</html>
