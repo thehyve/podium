@@ -74,8 +74,8 @@ public class AccountResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockMailService).sendAccountAlreadyExists(anyObject());
-        doNothing().when(mockMailService).sendVerificationEmail(any(UserRepresentation.class));
-        doNothing().when(mockMailService).sendPasswordResetMail(any(UserRepresentation.class));
+        doNothing().when(mockMailService).sendVerificationEmail(any(UserRepresentation.class), anyString());
+        doNothing().when(mockMailService).sendPasswordResetMail(any(UserRepresentation.class), anyString());
         doNothing().when(mockMailService).sendUserRegisteredEmail(
             anyCollectionOf(ManagedUserRepresentation.class), any(ManagedUserRepresentation.class));
 
@@ -181,7 +181,7 @@ public class AccountResourceIntTest {
 
         Thread.sleep(1000);
 
-        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class));
+        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class), anyString());
     }
 
     @Test
@@ -415,7 +415,7 @@ public class AccountResourceIntTest {
             .andExpect(status().isCreated());
 
         Thread.sleep(1000);
-        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class));
+        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class), anyString());
         reset(mockMailService);
 
         userService.getDomainUserWithAuthoritiesByLogin("badguy")
@@ -457,7 +457,7 @@ public class AccountResourceIntTest {
             .andExpect(status().isCreated());
 
         Thread.sleep(1000);
-        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class));
+        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class), anyString());
         reset(mockMailService);
 
         restMvc.perform(
@@ -467,7 +467,7 @@ public class AccountResourceIntTest {
             .andExpect(status().isOk());
 
         Thread.sleep(1000);
-        verify(mockMailService).sendPasswordResetMail(any(ManagedUserRepresentation.class));
+        verify(mockMailService).sendPasswordResetMail(any(ManagedUserRepresentation.class), anyString());
         reset(mockMailService);
 
         userService.getDomainUserWithAuthoritiesByLogin("badguy")
