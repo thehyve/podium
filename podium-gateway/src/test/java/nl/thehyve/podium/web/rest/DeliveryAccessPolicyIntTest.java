@@ -50,22 +50,6 @@ public class DeliveryAccessPolicyIntTest extends AbstractGatewayAccessPolicyIntT
     private Map<UUID, DeliveryProcessRepresentation> delivery3 = new HashMap<>();
     private Map<UUID, RequestRepresentation> approvedRequests = new HashMap<>();
 
-    private RequestRepresentation createApprovedRequest() throws Exception {
-        RequestRepresentation request = newDraft(researcher);
-        setRequestData(request);
-        request.getRequestDetail().setRequestType(Sets.newSet(RequestType.Data, RequestType.Material, RequestType.Images));
-        initRequestResourceMock(request);
-        request = updateDraft(researcher, request);
-        initRequestResourceMock(request);
-        List<RequestRepresentation> submittedRequests = submitDraftToOrganisations(researcher, request, Arrays.asList(organisationA.getUuid()));
-        Assert.assertEquals(submittedRequests.size(), 1);
-        RequestRepresentation submittedRequest = submittedRequests.get(0);
-        initRequestResourceMock(submittedRequest);
-        submittedRequest = validateRequest(submittedRequest, coordinatorOrganisationA);
-        submittedRequest = approveRequest(submittedRequest, coordinatorOrganisationA);
-        return submittedRequest;
-    }
-
     Collection<RequestRepresentation> createRequests() throws Exception {
         List<RequestRepresentation> requests = new ArrayList<>();
         for(AuthenticatedUser user: allUsers) {

@@ -12,6 +12,7 @@ import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.service.*;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.collections.Sets;
@@ -28,6 +29,7 @@ import javax.mail.internet.MimeMessage;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -203,6 +205,32 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
 
     private Collection<RequestRepresentation> allRequests = new ArrayList<>();
 
+    RequestRepresentation createSubmittedRequest() throws Exception {
+        RequestRepresentation request = newDraft(researcher);
+        setRequestData(request);
+        request.getRequestDetail().setRequestType(Sets.newSet(RequestType.Data, RequestType.Material, RequestType.Images));
+        initRequestResourceMock(request);
+        request = updateDraft(researcher, request);
+        initRequestResourceMock(request);
+        List<RequestRepresentation> submittedRequests = submitDraftToOrganisations(researcher, request, Arrays.asList(organisationA.getUuid()));
+        Assert.assertEquals(submittedRequests.size(), 1);
+        RequestRepresentation submittedRequest = submittedRequests.get(0);
+        initRequestResourceMock(submittedRequest);
+        return submittedRequest;
+    }
+
+    RequestRepresentation createValidatedRequest() throws Exception {
+        RequestRepresentation request = createSubmittedRequest();
+        request = validateRequest(request, coordinatorOrganisationA);
+        return request;
+    }
+
+    RequestRepresentation createApprovedRequest() throws Exception {
+        RequestRepresentation request = createValidatedRequest();
+        request = approveRequest(request, coordinatorOrganisationA);
+        return request;
+    }
+
     abstract Collection<RequestRepresentation> createRequests() throws Exception;
 
     private void initMocks() {
@@ -216,6 +244,12 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
         // Don't return anything on findUsersByRole; only used for notification mails
         given(this.organisationService.findUsersByRole(any(), any()))
                 .willReturn(Collections.emptyList());
+        // Return reviewers of organisation A
+        List<UserRepresentation> reviewersA = Arrays.asList(
+            userInfo.get(reviewerA.getUuid()),
+            userInfo.get(reviewerAandB.getUuid()));
+        given(this.organisationService.findUsersByRole(organisationA.getUuid(), AuthorityConstants.REVIEWER))
+            .willReturn(reviewersA);
 
         // Mock Feign client for fetching user information
         for(Map.Entry<UUID, UserRepresentation> userEntry: userInfo.entrySet()) {
@@ -235,7 +269,6 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());
-
     }
 
     void initRequestResourceMock(RequestRepresentation request) throws URISyntaxException {
