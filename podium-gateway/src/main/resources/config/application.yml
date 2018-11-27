@@ -140,7 +140,7 @@ podium:
          - |
             Website: <a href="https://trait.health-ri.nl">https://trait.health-ri.nl</a>
          - |
-            Telefoon: +31 (0)881167500"
+            Telefoon: +31 (0)881167500
     swagger:
         default-include-pattern: /api/.*
         title: Podium Gateway API

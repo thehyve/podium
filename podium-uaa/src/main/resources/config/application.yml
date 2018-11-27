@@ -114,7 +114,7 @@ podium:
          - |
             Website: <a href="https://trait.health-ri.nl">https://trait.health-ri.nl</a>
          - |
-            Telefoon: +31 (0)881167500"
+            Telefoon: +31 (0)881167500
     swagger:
         title: Podium UAA API
         description: API documentation for the user manegement and authentication component of the Podium request portal.
@@ -125,9 +125,6 @@ podium:
         contactEmail:
         license:
         licenseUrl:
-    ribbon:
-        # comma separated list of profiles to show a ribbon on the GUI
-        displayOnActiveProfiles: dev
 
 uaa:
     security:
