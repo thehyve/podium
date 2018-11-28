@@ -118,14 +118,12 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
         Object organisationRoles = map.get(ORGANISATION_ROLES_KEY);
         if (organisationRoles instanceof String) {
             try {
-                log.debug("Mapping roles from: {}", organisationRoles);
                 Map roles = mapper.readValue((String)organisationRoles, Map.class);
                 return toOrganisationRolesMap(roles);
             } catch (IOException e) {
                 log.error("Error deserialising organisation roles.", e);
             }
         } else if (organisationRoles instanceof Map) {
-            log.debug("Mapping roles from map: {}", organisationRoles);
             return toOrganisationRolesMap((Map)organisationRoles);
         }
         log.error("Organisation role of wrong type: {}", organisationRoles);

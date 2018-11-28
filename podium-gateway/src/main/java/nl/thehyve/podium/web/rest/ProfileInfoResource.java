@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.web.rest;
 
+import lombok.Data;
 import nl.thehyve.podium.common.security.annotations.Public;
 import nl.thehyve.podium.common.config.DefaultProfileUtil;
 import nl.thehyve.podium.common.config.PodiumProperties;
@@ -56,6 +57,7 @@ public class ProfileInfoResource {
         return null;
     }
 
+    @Data
     class ProfileInfoVM {
 
         private String[] activeProfiles;
@@ -67,12 +69,6 @@ public class ProfileInfoResource {
             this.ribbonEnv = ribbonEnv;
         }
 
-        public String[] getActiveProfiles() {
-            return activeProfiles;
-        }
-
-        public String getRibbonEnv() {
-            return ribbonEnv;
-        }
     }
+
 }

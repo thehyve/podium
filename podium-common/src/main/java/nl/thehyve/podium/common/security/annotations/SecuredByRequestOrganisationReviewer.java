@@ -13,7 +13,8 @@ import java.lang.annotation.*;
 
 /**
  * Mark a controller method as accessible for any authorised user
- * that is reviewer of one of the organisations to which the request is associated .
+ * that is reviewer of one of the organisations to which the request is associated,
+ * if the request is in a review status.
  *
  * The request UUID parameter of the controller can be indicated with the
  * {@link RequestUuidParameter} annotation. Or, alternatively, an

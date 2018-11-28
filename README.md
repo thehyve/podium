@@ -42,10 +42,10 @@ For development, you can create a Postgres database locally with `psql`:
 `sudo -u postgres psql`
 ```sql
 create role "podiumUser" with password 'podiumUser' login;
-create database "podiumUaa";
-create database "podiumGateway";
-grant all on database "podiumUaa" to "podiumUser";
-grant all on database "podiumGateway" to "podiumUser";
+create database "podiumUaaDev";
+create database "podiumGatewayDev";
+grant all on database "podiumUaaDev" to "podiumUser";
+grant all on database "podiumGatewayDev" to "podiumUser";
 ```
 
 ### Dependencies
@@ -77,7 +77,6 @@ mvn clean install
 [Podium Registry] needs to be up and running before the UAA and Gateway services start.
 Go to your `podium-registry` folder and start the registry with `mvn`.
 The user interface of the registry will be available at [http://localhost:8761](http://localhost:8761).
-
 
 2. **Start Podium UAA**<br>
 Open a new terminal and navigate to the `podium-uaa` folder and start the UAA service with 
