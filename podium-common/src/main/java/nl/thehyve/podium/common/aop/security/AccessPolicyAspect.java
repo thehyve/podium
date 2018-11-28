@@ -93,30 +93,30 @@ public class AccessPolicyAspect {
      */
     @Before("controllersPointcut()")
     public void checkAccess(JoinPoint joinPoint) {
-        log.info("Checking access policy on {}", joinPoint.getSignature().toShortString());
+        log.debug("Checking access policy on {}", joinPoint.getSignature().toShortString());
         Collection<Annotation> methodAnnotations = getMethodAnnotations(joinPoint);
         if (!methodAnnotations.isEmpty()) {
             for (Annotation annotation : methodAnnotations) {
-                log.info("Checking security method annotation: {}", annotation);
+                log.debug("Checking security method annotation: {}", annotation);
                 if (accessPolicyService.checkSecurityAnnotation(annotation, joinPoint)) {
                     return;
                 }
             }
-            log.info("Access denied: no method level security rules are satisfied.");
+            log.debug("Access denied: no method level security rules are satisfied.");
             throw new AccessDeniedException("Access denied.");
         }
         Collection<Annotation> classAnnotations = getClassAnnotations(joinPoint);
         if (!classAnnotations.isEmpty()) {
             for (Annotation annotation : classAnnotations) {
-                log.info("Checking security class annotation: {}", annotation);
+                log.debug("Checking security class annotation: {}", annotation);
                 if (accessPolicyService.checkSecurityAnnotation(annotation, joinPoint)) {
                     return;
                 }
             }
-            log.info("Access denied: no class level security rules are satisfied.");
+            log.debug("Access denied: no class level security rules are satisfied.");
             throw new AccessDeniedException("Access denied.");
         }
-        log.info("Access denied: no method level or class level security rules found.");
+        log.debug("Access denied: no method level or class level security rules found.");
         throw new AccessDeniedException("Access denied.");
     }
 
