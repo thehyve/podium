@@ -33,12 +33,12 @@ class StatusUpdateEventService {
 
 
     @Transactional
-    private void persistAndPublishEvent(Request request, StatusUpdateEvent event) {
+    protected void persistAndPublishEvent(Request request, StatusUpdateEvent event) {
         PodiumEvent historicEvent = new PodiumEvent(event);
         entityManager.persist(historicEvent);
         request.addHistoricEvent(historicEvent);
         entityManager.persist(request);
-        log.info("About to publish event: {}", event);
+        log.debug("Publish event: {}", event);
         publisher.publishEvent(event);
     }
 
@@ -49,12 +49,12 @@ class StatusUpdateEventService {
     }
 
     @Transactional
-    private void persistAndPublishDeliveryEvent(DeliveryProcess deliveryProcess, StatusUpdateEvent event) {
+    protected void persistAndPublishDeliveryEvent(DeliveryProcess deliveryProcess, StatusUpdateEvent event) {
         PodiumEvent historicEvent = new PodiumEvent(event);
         entityManager.persist(historicEvent);
         deliveryProcess.addHistoricEvent(historicEvent);
         entityManager.persist(deliveryProcess);
-        log.info("About to publish delivery event: {}", event);
+        log.debug("Publish delivery event: {}", event);
         publisher.publishEvent(event);
     }
 

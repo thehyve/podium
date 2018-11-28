@@ -200,6 +200,11 @@ public class RequestResourceIntTest extends AbstractRequestDataIntTest {
         initMocks();
         initFetchTests();
 
+        // Fetch requests with status 'Draft' for coordinator 1: should return an empty list,
+        // coordinators should not see draft requests.
+        List<RequestRepresentation> requests0 = fetchRequests(coordinator1, "/status/Draft/coordinator");
+        Assert.assertEquals(0, requests0.size());
+
         // Fetch requests with status 'Validation' for coordinator 1: should return 1 request
         List<RequestRepresentation> requests1 = fetchRequests(coordinator1, "/status/Validation/coordinator");
         Assert.assertEquals(1, requests1.size());

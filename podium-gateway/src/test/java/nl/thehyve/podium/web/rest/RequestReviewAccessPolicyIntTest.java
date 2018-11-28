@@ -92,18 +92,6 @@ public class RequestReviewAccessPolicyIntTest extends AbstractGatewayAccessPolic
 
     private List<Action> actions = new ArrayList<>();
 
-    /**
-     * Creates a map from user UUID to a url with a URL with a request UUID specific for the user
-     * The query string should have a '%s' format specifier where the UUID should be placed.
-     */
-    private Map<UUID, String> getUrlsForUsers(Map<UUID, RequestRepresentation> requestMap, String query) {
-        return allUsers.stream()
-            .map(user -> user == null ? null : user.getUuid())
-            .collect(Collectors.toMap(Function.identity(),
-                userUuid -> format(REQUEST_ROUTE, query, requestMap.get(userUuid).getUuid())
-            ));
-    }
-
     private void createActions() {
         // GET /requests/{uuid}/validate
         actions.add(newAction()

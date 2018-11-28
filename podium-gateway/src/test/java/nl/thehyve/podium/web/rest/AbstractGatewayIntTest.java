@@ -86,6 +86,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
     final String ACTION_VALIDATE = "validate";
     final String ACTION_APPROVE = "approve";
     final String ACTION_REQUEST_REVISION = "requestRevision";
+    final String ACTION_SUBMIT_REVISION = "submit";
     final String ACTION_REJECT = "reject";
     final String ACTION_CLOSE = "close";
     final String ACTION_START_DELIVERY = "startDelivery";
@@ -178,22 +179,6 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         return request;
     }
 
-    MockMultipartHttpServletRequestBuilder getUploadRequest(
-            String url,
-            URL resource) {
-        MockMultipartHttpServletRequestBuilder request = MockMvcRequestBuilders.fileUpload(url);
-        try {
-            String[] filenameParts = resource.getFile().split("/");
-            String filename = filenameParts[filenameParts.length - 1];
-            InputStream input = resource.openStream();
-            MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.APPLICATION_OCTET_STREAM_VALUE, input);
-            log.info("Uploading file {}", file);
-            return request.file(file);
-        } catch (IOException e) {
-            throw new RuntimeException("Error uploading file", e);
-        }
-    }
-
     RequestRepresentation newDraft(AuthenticatedUser user) throws Exception {
         final RequestRepresentation[] request = new RequestRepresentation[1];
 
@@ -206,7 +191,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andDo(result -> {
-                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("New draft: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 request[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
             });
 
@@ -226,7 +211,24 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Updated draft: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                resultRequest[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+            });
+        return resultRequest[0];
+    }
+
+    RequestRepresentation updateRevision(AuthenticatedUser user, RequestRepresentation request) throws Exception {
+        final RequestRepresentation[] resultRequest = new RequestRepresentation[1];
+        mockMvc.perform(
+            getRequest(HttpMethod.PUT,
+                REQUESTS_ROUTE,
+                request,
+                Collections.emptyMap())
+                .with(token(user))
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.debug("Updated revision: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 resultRequest[0] = mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
             });
         return resultRequest[0];
@@ -279,7 +281,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
                         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andDo(result -> {
-            log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+            log.debug("Counts response: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
             Map<OverviewStatus, Long> counts =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), countsTypeReference);
             res[0] = counts;
@@ -371,10 +373,25 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         performProcessAction(coordinator, ACTION_VALIDATE, request.getUuid(), HttpMethod.GET, null)
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Validated request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(OverviewStatus.Review, requestResult.getStatus());
+                res[0] = requestResult;
+            });
+        return res[0];
+    }
+
+    RequestRepresentation requestRevision(RequestRepresentation request, AuthenticatedUser coordinator, MessageRepresentation message) throws Exception {
+        final RequestRepresentation[] res = new RequestRepresentation[1];
+        // Request revision
+        performProcessAction(coordinator, ACTION_REQUEST_REVISION, request.getUuid(), HttpMethod.POST, message)
+            .andExpect(status().isOk())
+            .andDo(result -> {
+                log.debug("Revision request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                RequestRepresentation requestResult =
+                    mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
+                Assert.assertEquals(OverviewStatus.Revision, requestResult.getStatus());
                 res[0] = requestResult;
             });
         return res[0];
@@ -386,7 +403,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         performProcessAction(coordinator, ACTION_APPROVE, request.getUuid(), HttpMethod.GET, null)
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result approved request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Approved request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(OverviewStatus.Approved, requestResult.getStatus());
@@ -401,7 +418,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         performProcessAction(coordinator, ACTION_START_DELIVERY, request.getUuid(), HttpMethod.GET, null)
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Delivery request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation deliveryRequest =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 res[0] = deliveryRequest;
@@ -415,7 +432,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         performProcessAction(coordinator, ACTION_GET_DELIVERIES, request.getUuid(), HttpMethod.GET, null)
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery processes: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Delivery processes: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 deliveryProcesses.addAll(
                     mapper.readValue(result.getResponse().getContentAsByteArray(), deliveryProcessListTypeReference));
             });
@@ -455,7 +472,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         releaseDeliveryResult
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Released delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 DeliveryProcessRepresentation resultDeliveryProcess =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
                 res[0] = resultDeliveryProcess;
@@ -476,7 +493,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(filename);
 
-        log.info("File: {} | {}", filename, resource);
+        log.debug("File: {} | {}", filename, resource);
 
         final RequestFileRepresentation[] resultRequestFile = new RequestFileRepresentation[1];
         mockMvc.perform(
@@ -499,7 +516,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
         performProcessAction(user, ACTION_GET_FILES, request.getUuid(), HttpMethod.GET, null)
                 .andExpect(status().isOk())
                 .andDo(result -> {
-                    log.info("Result files: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                    log.debug("Request files: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                     files.addAll(
                             mapper.readValue(result.getResponse().getContentAsByteArray(), requestFileListTypeReference));
                 });
@@ -546,7 +563,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
             requestTemplateRepresentation, authentication, true);
         createRequestTemplateRequest
                 .andDo(result -> {
-                    log.info("Result request template: {} ({})", result.getResponse().getStatus(),
+                    log.info("New request template: {} ({})", result.getResponse().getStatus(),
                             result.getResponse().getContentAsString());
                     Assert.assertEquals(result.getResponse().getStatus(), HttpStatus.ACCEPTED.value());
                     uri[0] = new URI(result.getResponse().getHeader("Location"));
@@ -566,7 +583,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(result -> {
-                    log.info("Result template: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                    log.debug("Request template: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                     template[0] =
                             mapper.readValue(result.getResponse().getContentAsByteArray(), RequestTemplateRepresentation.class);
                 });
