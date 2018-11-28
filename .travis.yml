@@ -27,14 +27,9 @@ env:
     - SPRING_JPA_SHOW_SQL=false
     - MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
     - PODIUM_UAA_RUN_PORT=8999
-    - BROWSERSTACK_DELAY=1000
-    - BROWSERSTACK_USER=thehyve1
-    - secure: L3gA8DJQ/lEqhY0TkuqEfQZZGZ+40gc7hIo3XMVcRyL9gwC9pYGF5iOBu79IqsnjK36VZ49Iicdc1v6vP1m8e1CW4XWKP7lQuv1Sc+AImENDt6/NzjBvP5BnEw2SZXEtIuS8WHeI8Y8NhZ8yS5nU8wzH9gRCl1TaUBdVgd413hKUUxHF0B1gKsZvmIaVDh5TBnfVOgb3UlIJuyWwZYlxBJ844W7FWlX3uMG36UQ2+Af/Ft53/rdVnUN0bi0i6aR9p2cnhri2pB9CfDe1yfORkt/940jt7ViyWEAXuPL8iPVshnQAlrn1sQcr9DuFOYRJ/K2KRTq/Sb5QAUFjbeXbchBotirRNUDve9R2rH8hQQujE/r7+0Od1iv2uA9lqKkGWu7XZhItzV29MBFSaTAv5OqMUamtL6YYuz8aOZACQ+EOHvyawO7U5AzdO91qWbmsSiwGIoZ8g6T2/0+awH68p8fjuHyvXektu4W2hp6lktTkdZGd8TW354sUE39DBjn3FOlfcKmaIpKlOM48luBrN7bMe0V8zUoJF/bLL1jm5mHUbkThMFcnTkmZS4R0xKK4PouWDO6a8k0sPnnIVbPl/eFO+/5uDIIGFDGqCcYmRWdF3Y1TzJgB2GII+l4hAjxEZIYLQEen1AukPNr9crJuxnji1XQWZScZsSGQK0OxcOU=
   matrix:
     - TASK=integration
     - TASK=frontend
-    #- TASK=e2e; BROWSER_NAME=chrome
-    # - TASK=e2e; BROWSER_NAME=firefox
 
 before_install:
   - nvm install $NODE_VERSION

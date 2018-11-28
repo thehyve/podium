@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 /**
- * REST controller for managing reviews.
+ * REST controller for managing the reviewing process.
  */
 @RestController
 @RequestMapping("/api")

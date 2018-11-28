@@ -11,12 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
@@ -69,7 +74,24 @@ public abstract class AbstractAuthorisedUserIntTest {
         return url;
     }
 
+    protected MockMultipartHttpServletRequestBuilder getUploadRequest(String url, URL resource) {
+        MockMultipartHttpServletRequestBuilder request = MockMvcRequestBuilders.fileUpload(url);
+        try {
+            String[] filenameParts = resource.getFile().split("/");
+            String filename = filenameParts[filenameParts.length - 1];
+            InputStream input = resource.openStream();
+            MockMultipartFile file = new MockMultipartFile("file", filename, MediaType.APPLICATION_OCTET_STREAM_VALUE, input);
+            log.debug("Uploading file {}", file);
+            return request.file(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Error uploading file", e);
+        }
+    }
+
     MockHttpServletRequestBuilder getRequest(Action action, AuthenticatedUser user) {
+        if (action.body != null && action.body instanceof URL) {
+            return getUploadRequest(getUrl(action, user), (URL)action.body);
+        }
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(action.method, getUrl(action, user));
         if (action.body != null) {
             try {

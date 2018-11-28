@@ -220,44 +220,6 @@ public class RequestResource {
     }
 
     /**
-     * Update a request
-     *
-     * @param request the request to be updated
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     * @return RequestRepresentation The updated request draft.
-     */
-    @PutMapping("/requests")
-    @SecuredByRequestOwner
-    @Timed
-    public ResponseEntity<RequestRepresentation> updateRevisionRequest(
-        @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
-        AuthenticatedUser user = securityService.getCurrentUser();
-        log.debug("PUT /requests (user: {})", user);
-        RequestRepresentation result = draftService.updateRevision(user, request);
-        log.debug("Result: {}", result.getUuid());
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * Submit the request
-     *
-     * @param uuid of the request to be saved
-     * @return the updated request representation
-     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
-     */
-    @GetMapping("/requests/{uuid}/submit")
-    @SecuredByRequestOwner
-    @Timed
-    public ResponseEntity<RequestRepresentation> submitRevisedRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid
-    ) throws ActionNotAllowed {
-        AuthenticatedUser user = securityService.getCurrentUser();
-        log.debug("GET /requests/{}/submit (user: {})", uuid, user);
-        RequestRepresentation request = requestService.submitRevision(user, uuid);
-        return new ResponseEntity<>(request, HttpStatus.OK);
-    }
-
-    /**
      * GET  /requests/counts/reviewer : get request counts for a reviewer.
      *
      * @return the ResponseEntity with status 200 (OK) and the map from overview status to number of requests in body

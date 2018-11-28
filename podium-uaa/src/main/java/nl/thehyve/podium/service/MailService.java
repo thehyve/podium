@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
 import java.util.Collection;
-import java.util.Locale;
 
 /**
  * Service for sending e-mails.
@@ -93,12 +92,10 @@ public class MailService extends AbstractMailService {
     public void sendPasswordResetMailNoUser(String email) {
         log.debug("Sending no user password reset e-mail to '{}'", email);
         // Send email in default language
-        Locale locale = Locale.forLanguageTag(DEFAULT_LANG_KEY);
-        Context context = new Context(locale);
+        Context context = getDefaultContext();
         prepareSignature(context);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
         String content = templateEngine.process("passwordResetEmailNoUser", context);
-        String subject = messageSource.getMessage("email.reset.noUser.title", null, locale);
+        String subject = messageSource.getMessage("email.reset.noUser.title", null, context.getLocale());
         sendEmail(email, subject, content, false, true);
     }
 

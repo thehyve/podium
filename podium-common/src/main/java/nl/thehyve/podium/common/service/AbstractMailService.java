@@ -15,6 +15,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
+import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 /**
@@ -49,18 +50,35 @@ public abstract class AbstractMailService {
 
     protected static final String DEFAULT_LANG_KEY = "en";
 
-    protected Context getDefaultContextForUser(UserRepresentation user) {
-        Locale locale = Locale.forLanguageTag(user.getLangKey() == null ? DEFAULT_LANG_KEY : user.getLangKey());
+    private void setDefaultVariables(Context context) {
+        PodiumProperties.Mail mailProperties = podiumProperties.getMail();
+        context.setVariable(BASE_URL, mailProperties.getBaseUrl());
+        context.setVariable(SUPPORT_EMAIL, mailProperties.getSupportEmail());
+        context.setVariable(SIGNATURE, mailProperties.getSignature());
+    }
+
+    protected Context getDefaultContext() {
+        Locale locale = Locale.forLanguageTag(DEFAULT_LANG_KEY);
         Context context = new Context(locale);
+        setDefaultVariables(context);
+        return context;
+    }
+
+    private Locale getLocaleForUser(@NotNull UserRepresentation user) {
+        String langKey = user.getLangKey() == null ? DEFAULT_LANG_KEY : user.getLangKey();
+        return Locale.forLanguageTag(langKey);
+    }
+
+    protected Context getDefaultContextForUser(UserRepresentation user) {
+        Locale locale = getLocaleForUser(user);
+        Context context = new Context(locale);
+        setDefaultVariables(context);
         context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
-        context.setVariable(SUPPORT_EMAIL, podiumProperties.getMail().getSupportEmail());
-        context.setVariable(SIGNATURE, podiumProperties.getMail().getSignature());
         return context;
     }
 
     protected String getMessage(UserRepresentation user, String messageKey, Object... parameters) {
-        Locale locale = Locale.forLanguageTag(user.getLangKey() == null ? DEFAULT_LANG_KEY : user.getLangKey());
+        Locale locale = getLocaleForUser(user);
         return messageSource.getMessage(messageKey, parameters, locale);
     }
 

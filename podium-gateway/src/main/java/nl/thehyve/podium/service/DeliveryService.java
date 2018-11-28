@@ -88,7 +88,7 @@ public class DeliveryService {
      * @param requestUuid the uuid of the request.
      * @return a list of representations of the delivery processes belonging to the request.
      */
-    public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID requestUuid) throws ActionNotAllowed {
+    public List<DeliveryProcessRepresentation> getDeliveriesForRequest(UUID requestUuid) {
         Request request = requestRepository.findOneByUuid(requestUuid);
         return request.getDeliveryProcesses().stream()
             .map(deliveryProcessMapper::deliveryProcessToDeliveryProcessRepresentation)
@@ -119,13 +119,10 @@ public class DeliveryService {
         Request request = requestRepository.findOneByUuid(uuid);
         RequestAccessCheckHelper.checkStatus(request, RequestStatus.Approved);
         OverviewStatus sourceStatus = request.getOverviewStatus();
-        List<DeliveryProcessRepresentation> deliveryProcesses = new ArrayList<>();
-        log.warn("START DELIVERY: #requestTypes: {}", request.getRequestDetail().getRequestType().size());
         for(RequestType type: request.getRequestDetail().getRequestType()) {
             DeliveryProcess deliveryProcess = deliveryProcessService.start(user, type);
             request.addDeliveryProcess(deliveryProcess);
             statusUpdateEventService.publishDeliveryStatusUpdate(user, DeliveryStatus.None, request, deliveryProcess, null);
-            deliveryProcesses.add(deliveryProcessMapper.deliveryProcessToDeliveryProcessRepresentation(deliveryProcess));
         }
         request.setStatus(RequestStatus.Delivery);
         request = requestRepository.save(request);

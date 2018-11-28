@@ -2,8 +2,6 @@
 [![codebeat badge](https://codebeat.co/badges/f225e930-5ea9-4cd0-95cd-9cf7a17169ed)](https://codebeat.co/projects/github-com-thehyve-podium-master)
 [![codecov](https://codecov.io/gh/thehyve/podium/branch/dev/graph/badge.svg)](https://codecov.io/gh/thehyve/podium)
 
-<img src="https://github.com/thehyve/podium/blob/master/assets/browserstack-logo.png?raw=true" style="display:inline;" width="200" height="105">
-
 
 # Welcome to the Podium request portal
 

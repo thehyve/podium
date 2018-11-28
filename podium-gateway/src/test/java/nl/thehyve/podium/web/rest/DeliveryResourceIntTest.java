@@ -66,7 +66,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         releaseDeliveryResult
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 DeliveryProcessRepresentation resultDeliveryProcess =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
                 Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
@@ -91,7 +91,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         deliveryProcessesResult
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery processes: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Result delivery processes: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 deliveryProcesses.addAll(
                     mapper.readValue(result.getResponse().getContentAsByteArray(), deliveryProcessListTypeReference)
                 );
@@ -164,7 +164,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         rejectDeliveryResult
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 DeliveryProcessRepresentation resultDeliveryProcess =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
                 Assert.assertEquals(DeliveryStatus.Closed, resultDeliveryProcess.getStatus());
@@ -218,7 +218,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         releaseDeliveryResult
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Result delivery process: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 DeliveryProcessRepresentation resultDeliveryProcess =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), DeliveryProcessRepresentation.class);
                 Assert.assertEquals(DeliveryStatus.Released, resultDeliveryProcess.getStatus());
@@ -245,7 +245,7 @@ public class DeliveryResourceIntTest extends AbstractRequestDataIntTest {
         res
             .andExpect(status().isOk())
             .andDo(result -> {
-                log.info("Result closed request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
+                log.debug("Result closed request: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString());
                 RequestRepresentation requestResult =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), RequestRepresentation.class);
                 Assert.assertEquals(expectedOverviewStatus, requestResult.getStatus());

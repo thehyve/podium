@@ -1,6 +1,8 @@
 package nl.thehyve.podium.web.rest;
 
+import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.enumeration.RequestType;
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.resource.InternalUserResource;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -8,10 +10,12 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
+import nl.thehyve.podium.common.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.service.*;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.collections.Sets;
@@ -27,10 +31,13 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.mail.internet.MimeMessage;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static nl.thehyve.podium.common.test.Action.format;
+import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -62,7 +69,7 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
     InternalRequestResource internalRequestResource;
 
     @MockBean
-    JavaMailSenderImpl javaMailSender;
+    MailService mailService;
 
     @Before
     public void setup() {
@@ -156,18 +163,18 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
         Map<UUID, Collection<String>> roles = new HashMap<>();
         if (organisations.length > 0) {
             for (OrganisationRepresentation organisation: organisations) {
-                log.info("Assigning role {} for organisation {}", authority, organisation.getName());
+                log.debug("Assigning role {} for organisation {}", authority, organisation.getName());
                 organisationRoles.get(organisation.getUuid()).get(authority).add(userUuid);
                 roles.put(organisation.getUuid(), Sets.newSet(authority));
             }
         }
         if (authority != null) {
-            log.info("Assigning role {}", authority);
+            log.debug("Assigning role {}", authority);
             authorities.add(authority);
         }
         SerialisedUser user = new SerialisedUser(userUuid, name, authorities, roles);
         {
-            log.info("Checking user {}", name);
+            log.debug("Checking user {}", name);
             // some sanity checks
             if (authority != null) {
                 assert (!user.getAuthorityNames().isEmpty());
@@ -203,6 +210,32 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
 
     private Collection<RequestRepresentation> allRequests = new ArrayList<>();
 
+    RequestRepresentation createSubmittedRequest() throws Exception {
+        RequestRepresentation request = newDraft(researcher);
+        setRequestData(request);
+        request.getRequestDetail().setRequestType(Sets.newSet(RequestType.Data, RequestType.Material, RequestType.Images));
+        initRequestResourceMock(request);
+        request = updateDraft(researcher, request);
+        initRequestResourceMock(request);
+        List<RequestRepresentation> submittedRequests = submitDraftToOrganisations(researcher, request, Arrays.asList(organisationA.getUuid()));
+        Assert.assertEquals(submittedRequests.size(), 1);
+        RequestRepresentation submittedRequest = submittedRequests.get(0);
+        initRequestResourceMock(submittedRequest);
+        return submittedRequest;
+    }
+
+    RequestRepresentation createValidatedRequest() throws Exception {
+        RequestRepresentation request = createSubmittedRequest();
+        request = validateRequest(request, coordinatorOrganisationA);
+        return request;
+    }
+
+    RequestRepresentation createApprovedRequest() throws Exception {
+        RequestRepresentation request = createValidatedRequest();
+        request = approveRequest(request, coordinatorOrganisationA);
+        return request;
+    }
+
     abstract Collection<RequestRepresentation> createRequests() throws Exception;
 
     private void initMocks() {
@@ -216,6 +249,12 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
         // Don't return anything on findUsersByRole; only used for notification mails
         given(this.organisationService.findUsersByRole(any(), any()))
                 .willReturn(Collections.emptyList());
+        // Return reviewers of organisation A
+        List<UserRepresentation> reviewersA = Arrays.asList(
+            userInfo.get(reviewerA.getUuid()),
+            userInfo.get(reviewerAandB.getUuid()));
+        given(this.organisationService.findUsersByRole(organisationA.getUuid(), AuthorityConstants.REVIEWER))
+            .willReturn(reviewersA);
 
         // Mock Feign client for fetching user information
         for(Map.Entry<UUID, UserRepresentation> userEntry: userInfo.entrySet()) {
@@ -231,17 +270,40 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
         }
 
         // Mock mail sending
-        doNothing().when(this.javaMailSender).send(any(MimeMessage.class));
+        doNothing().when(this.mailService).sendEmail(anyString(), anyString(), anyString(), anyBoolean(), anyBoolean());
+        doNothing().when(this.mailService).sendSubmissionNotificationToRequester(anyObject(), anyListOf(RequestRepresentation.class));
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());
-
     }
 
     void initRequestResourceMock(RequestRepresentation request) throws URISyntaxException {
         // Return request for the request security service
         given(this.internalRequestResource.getRequestBasic(eq(request.getUuid())))
             .willReturn(ResponseEntity.ok(request));
+    }
+
+    /**
+     * Creates a map from user UUID to a url with a URL with a request UUID specific for the user
+     * The query string should have a '%s' format specifier where the UUID should be placed.
+     */
+    Map<UUID, String> getUrlsForUsers(Map<UUID, ?> objectMap, String query) {
+        return allUsers.stream()
+            .map(user -> user == null ? null : user.getUuid())
+            .collect(Collectors.toMap(Function.identity(),
+                userUuid -> {
+                    UUID uuid;
+                    Object obj = objectMap.get(userUuid);
+                    if (obj instanceof IdentifiableRequest) {
+                        uuid = ((IdentifiableRequest)obj).getRequestUuid();
+                    } else if (obj instanceof RequestFileRepresentation) {
+                        uuid = ((RequestFileRepresentation)obj).getUuid();
+                    } else {
+                        throw new InvalidRequest("Object type not supported: " + obj.getClass().getSimpleName());
+                    }
+                    return format(REQUEST_ROUTE, query, uuid);
+                }
+            ));
     }
 
     void setupData() throws Exception {

@@ -61,7 +61,7 @@ public class SecurityService {
 
     public static String getCurrentUserLogin() {
         if (!isAuthenticated()) {
-            log.warn("User not authenticated.");
+            log.debug("User not authenticated.");
             return null;
         }
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -82,7 +82,7 @@ public class SecurityService {
 
     public UserAuthenticationToken getUserAuthenticationToken() {
         if (!isAuthenticated()) {
-            log.warn("User not authenticated.");
+            log.debug("User not authenticated.");
             return null;
         }
         String login = getCurrentUserLogin();
@@ -180,7 +180,7 @@ public class SecurityService {
      * @return true if the current user has any of the authorities, false otherwise
      */
     public boolean isCurrentUserInAnyOrganisationRole(UUID organisationUuid, String ... authorities) {
-        log.info("Checking access for organisation {}", organisationUuid);
+        log.debug("Checking access for organisation {}", organisationUuid);
         return isCurrentUserInAnyOrganisationRole(Collections.singleton(organisationUuid), Arrays.asList(authorities));
     }
 
@@ -192,7 +192,7 @@ public class SecurityService {
      * @return true if the current user has any of the authorities, false otherwise
      */
     public boolean isCurrentUserInAnyOrganisationRole(Collection<UUID> organisationUuids, String authority) {
-        log.info("Checking access for organisation {}", organisationUuids);
+        log.debug("Checking access for organisation {}", organisationUuids);
         return isCurrentUserInAnyOrganisationRole(organisationUuids, Collections.singleton(authority));
     }
 
@@ -204,14 +204,13 @@ public class SecurityService {
      * @return true if the current user has any of the authorities, false otherwise
      */
     public boolean isCurrentUserInAnyOrganisationRole(Collection<UUID> organisationUuids, Collection<String> authorities) {
-        log.info("Checking access for organisations {}", organisationUuids);
+        log.debug("Checking access for organisations {}", organisationUuids);
         AuthenticatedUser user = getCurrentUser();
         if (user == null) {
             return false;
         }
         return organisationUuids.stream().anyMatch(organisationUuid -> {
             Collection<String> organisationRoles = user.getOrganisationAuthorities().get(organisationUuid);
-            log.debug("Organisation roles: {}", organisationRoles);
             return organisationRoles != null &&
                 organisationRoles.stream().anyMatch(grantedAuthority ->
                     authorities.stream().anyMatch(authority ->
