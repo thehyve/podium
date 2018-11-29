@@ -1,8 +1,7 @@
 package nl.thehyve.podium.web.rest;
 
-import nl.thehyve.podium.common.IdentifiableRequest;
+import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestType;
-import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.resource.InternalRequestResource;
 import nl.thehyve.podium.common.resource.InternalUserResource;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -10,7 +9,6 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
-import nl.thehyve.podium.common.service.dto.RequestFileRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.service.*;
@@ -24,11 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.mail.internet.MimeMessage;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Function;
@@ -208,6 +204,14 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
 
     //endregion
 
+    /**
+     * Creates a map from user UUID to a url with a URL with a request UUID specific for the user
+     * The query string should have a '%s' format specifier where the UUID should be placed.
+     */
+    Map<UUID, String> getUrlsForUsers(Map<UUID, ?> objectMap, String query) {
+        return getUrlsForUsers(allUsers, REQUEST_ROUTE, query, objectMap);
+    }
+
     private Collection<RequestRepresentation> allRequests = new ArrayList<>();
 
     RequestRepresentation createSubmittedRequest() throws Exception {
@@ -281,29 +285,6 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
         // Return request for the request security service
         given(this.internalRequestResource.getRequestBasic(eq(request.getUuid())))
             .willReturn(ResponseEntity.ok(request));
-    }
-
-    /**
-     * Creates a map from user UUID to a url with a URL with a request UUID specific for the user
-     * The query string should have a '%s' format specifier where the UUID should be placed.
-     */
-    Map<UUID, String> getUrlsForUsers(Map<UUID, ?> objectMap, String query) {
-        return allUsers.stream()
-            .map(user -> user == null ? null : user.getUuid())
-            .collect(Collectors.toMap(Function.identity(),
-                userUuid -> {
-                    UUID uuid;
-                    Object obj = objectMap.get(userUuid);
-                    if (obj instanceof IdentifiableRequest) {
-                        uuid = ((IdentifiableRequest)obj).getRequestUuid();
-                    } else if (obj instanceof RequestFileRepresentation) {
-                        uuid = ((RequestFileRepresentation)obj).getUuid();
-                    } else {
-                        throw new InvalidRequest("Object type not supported: " + obj.getClass().getSimpleName());
-                    }
-                    return format(REQUEST_ROUTE, query, uuid);
-                }
-            ));
     }
 
     void setupData() throws Exception {

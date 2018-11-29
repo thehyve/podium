@@ -33,7 +33,7 @@ spring:
         database-platform: nl.thehyve.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         open-in-view: false
-        show-sql: true
+        show-sql: false
         hibernate:
             ddl-auto: none
             naming:
