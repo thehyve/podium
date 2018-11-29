@@ -8,18 +8,13 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumGatewayApp;
-import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.service.dto.DeliveryProcessRepresentation;
-import nl.thehyve.podium.common.service.dto.DeliveryReferenceRepresentation;
-import nl.thehyve.podium.common.service.dto.MessageRepresentation;
-import nl.thehyve.podium.common.service.dto.RequestRepresentation;
+import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.common.test.Action;
 import nl.thehyve.podium.config.SecurityBeanOverrideConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +28,6 @@ import java.util.stream.Collectors;
 
 import static nl.thehyve.podium.common.test.Action.format;
 import static nl.thehyve.podium.common.test.Action.newAction;
-import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
 
 /**
  * Integration test for the access policy on delivery actions.
@@ -75,61 +69,52 @@ public class DeliveryAccessPolicyIntTest extends AbstractGatewayAccessPolicyIntT
 
     private List<Action> actions = new ArrayList<>();
 
+
+    /**
+     * Creates a map from user UUID to a url with a URL with a request UUID specific for the user
+     * The query string should have a '%s' format specifier where the UUID should be placed.
+     */
+    Map<UUID, String> getUrlsForUsers(
+        Map<UUID, RequestRepresentation> requestMap,
+        Map<UUID, DeliveryProcessRepresentation> deliveryMap,
+        String query) {
+        return allUsers.stream()
+            .map(user -> user == null ? null : user.getUuid())
+            .collect(Collectors.toMap(Function.identity(),
+                userUuid -> {
+                    UUID requestUuid = requestMap.get(userUuid).getUuid();
+                    UUID deliveryUuid = deliveryMap.get(userUuid).getUuid();
+                    return format(REQUEST_ROUTE, query, requestUuid, deliveryUuid);
+                }
+            ));
+    }
+
     private void createActions() {
         // GET /requests/{requestUuid}/deliveries
         actions.add(newAction()
-            .setUrls(allUsers.stream()
-                .map(user -> user == null ? null : user.getUuid())
-                .collect(Collectors.toMap(Function.identity(),
-                    userUuid -> format(REQUEST_ROUTE, "/%s/deliveries",
-                        deliveryRequests.get(userUuid).getUuid())
-                    )))
+            .setUrls(getUrlsForUsers(deliveryRequests, "/%s/deliveries"))
             .allow(researcher, coordinatorOrganisationA, coordinatorOrganisationAandB));
         // POST /api/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/cancel
         actions.add(newAction()
-            .setUrls(allUsers.stream()
-                .map(user -> user == null ? null : user.getUuid())
-                .collect(Collectors.toMap(Function.identity(),
-                    userUuid -> format(REQUEST_ROUTE, "/%s/deliveries/%s/cancel",
-                        deliveryRequests.get(userUuid).getUuid(),
-                        delivery1.get(userUuid).getUuid())
-                    )))
+            .setUrls(getUrlsForUsers(deliveryRequests, delivery1, "/%s/deliveries/%s/cancel"))
             .setMethod(HttpMethod.POST)
             .body(new MessageRepresentation())
             .allow(coordinatorOrganisationA, coordinatorOrganisationAandB));
 
         // GET /api/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/received
         actions.add(newAction()
-            .setUrls(allUsers.stream()
-                .map(user -> user == null ? null : user.getUuid())
-                .collect(Collectors.toMap(Function.identity(),
-                    userUuid -> format(REQUEST_ROUTE, "/%s/deliveries/%s/received",
-                        deliveryRequests.get(userUuid).getUuid(),
-                        delivery2.get(userUuid).getUuid())
-                )))
+            .setUrls(getUrlsForUsers(deliveryRequests, delivery2, "/%s/deliveries/%s/received"))
             .allow(researcher, coordinatorOrganisationA, coordinatorOrganisationAandB));
         // POST /api/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/release
         actions.add(newAction()
-            .setUrls(allUsers.stream()
-                .map(user -> user == null ? null : user.getUuid())
-                .collect(Collectors.toMap(Function.identity(),
-                    userUuid -> format(REQUEST_ROUTE, "/%s/deliveries/%s/release",
-                        deliveryRequests.get(userUuid).getUuid(),
-                        delivery3.get(userUuid).getUuid())
-                )))
+            .setUrls(getUrlsForUsers(deliveryRequests, delivery3, "/%s/deliveries/%s/release"))
             .setMethod(HttpMethod.POST)
             .body(new MessageRepresentation())
             .allow(coordinatorOrganisationA, coordinatorOrganisationAandB));
         // GET /api/requests/{requestUuid}/startDelivery
         actions.add(newAction()
-            .setUrls(allUsers.stream()
-                .map(user -> user == null ? null : user.getUuid())
-                .collect(Collectors.toMap(Function.identity(),
-                    userUuid -> format(REQUEST_ROUTE, "/%s/startDelivery",
-                        approvedRequests.get(userUuid).getUuid())
-                )))
+            .setUrls(getUrlsForUsers(approvedRequests, "/%s/startDelivery"))
             .allow(coordinatorOrganisationA, coordinatorOrganisationAandB));
-
     }
 
     @Test

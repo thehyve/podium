@@ -4,8 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import nl.thehyve.podium.common.IdentifiableOrganisation;
+import nl.thehyve.podium.common.IdentifiableRequest;
+import nl.thehyve.podium.common.IdentifiableUser;
+import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.service.dto.RequestFileRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +29,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static nl.thehyve.podium.common.test.Action.format;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class AbstractAuthorisedUserIntTest {
@@ -132,6 +141,35 @@ public abstract class AbstractAuthorisedUserIntTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andDo(result -> log.info("Result: {} ({})", result.getResponse().getStatus(), result.getResponse().getContentAsString()))
             .andExpect(status().is(status.value()));
+    }
+
+    private static UUID getUUID(Object obj) {
+        if (obj instanceof IdentifiableRequest) {
+            return ((IdentifiableRequest) obj).getRequestUuid();
+        } else if (obj instanceof RequestFileRepresentation) {
+            return ((RequestFileRepresentation) obj).getUuid();
+        } else if (obj instanceof IdentifiableOrganisation) {
+            return ((IdentifiableOrganisation) obj).getOrganisationUuid();
+        } else if (obj instanceof IdentifiableUser) {
+            return ((IdentifiableUser) obj).getUserUuid();
+        } else {
+            throw new InvalidRequest("Object type not supported: " + obj.getClass().getSimpleName());
+        }
+    }
+
+    /**
+     * Creates a map from user UUID to a url with a URL with an object UUID specific for the user
+     * The query string should have a '%s' format specifier where the UUID should be placed.
+     */
+    protected static Map<UUID, String> getUrlsForUsers(Collection<? extends IdentifiableUser> users, String route, String query, Map<UUID, ?> objectMap) {
+        return users.stream()
+            .map(user -> user == null ? null : user.getUserUuid())
+            .collect(Collectors.toMap(Function.identity(),
+                userUuid -> {
+                    UUID uuid = getUUID(objectMap.get(userUuid));
+                    return format(route, query, uuid);
+                }
+            ));
     }
 
     /**

@@ -19,4 +19,4 @@ spring:
     jpa:
         database-platform: nl.thehyve.podium.domain.util.FixedH2Dialect
         database: H2
-        show-sql: true
+        show-sql: false
