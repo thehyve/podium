@@ -555,6 +555,8 @@ public class AccountResourceIntTest {
         assertThat(user.isPresent()).isFalse();
     }
 
+    // FIXME: Add test that tests editing of own account with existing email/login
+
     @Test
     @Transactional
     public void testIncompleteRegistrationForm() throws Exception {

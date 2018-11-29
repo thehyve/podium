@@ -97,20 +97,29 @@ public abstract class AbstractAuthorisedUserIntTest {
         }
     }
 
+    MockHttpServletRequestBuilder setBody(MockHttpServletRequestBuilder request, Action action) {
+        if (action.body == null) {
+            return request;
+        }
+        if (action.body instanceof String) {
+            return request.contentType(MediaType.TEXT_PLAIN)
+                .content(action.body.toString());
+        }
+        try {
+            return request
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(action.body));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON serialisation error", e);
+        }
+    }
+
     MockHttpServletRequestBuilder getRequest(Action action, AuthenticatedUser user) {
         if (action.body != null && action.body instanceof URL) {
             return getUploadRequest(getUrl(action, user), (URL)action.body);
         }
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(action.method, getUrl(action, user));
-        if (action.body != null) {
-            try {
-                request = request
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsBytes(action.body));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("JSON serialisation error", e);
-            }
-        }
+        setBody(request, action);
         for(Map.Entry<String, String> entry: action.parameters.entrySet()) {
             request = request.param(entry.getKey(), entry.getValue());
         }
