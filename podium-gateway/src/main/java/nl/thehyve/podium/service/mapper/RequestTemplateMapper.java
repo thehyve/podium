@@ -21,8 +21,11 @@ public abstract class RequestTemplateMapper {
 
     /**
      * The key used for extracting organisation uuids from {@link RequestTemplateRepresentation#collections}.
+     * Note that this key is slightly different from what is documented in the
+     * <a href="https://molgenis.gitbooks.io/molgenis/content/user_documentation/catalogues/biobank-directory.html"
+     * >Molgenis documentation</a> (where biobankID is used).
      */
-    public static String ORGANISATION_UUID_KEY = "biobankID";
+    public static String ORGANISATION_UUID_KEY = "biobankId";
 
     public abstract RequestTemplateRepresentation requestTemplateToRequestTemplateDto(RequestTemplate requestTemplate);
 

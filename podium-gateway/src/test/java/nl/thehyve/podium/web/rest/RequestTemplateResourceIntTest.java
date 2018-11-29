@@ -42,13 +42,13 @@ public class RequestTemplateResourceIntTest extends AbstractRequestDataIntTest {
 
         Map<String, String> collect1 = new HashMap<>();
 
-        collect1.put("biobankID", organisationUuid1.toString());
-        collect1.put("collectionID", "bbmri-eric:biobankID:BE_B0383");
+        collect1.put("biobankId", organisationUuid1.toString());
+        collect1.put("collectionId", "bbmri-eric:biobankID:BE_B0383");
 
         Map<String, String> collect2 = new HashMap<>();
 
-        collect2.put("biobankID", "bbmri-eric:biobankID:BE_B0383");
-        collect2.put("collectionID", organisationUuid1.toString());
+        collect2.put("biobankId", "bbmri-eric:biobankID:BE_B0383");
+        collect2.put("collectionId", organisationUuid1.toString());
 
         ArrayList<Map<String, String>> collections = new ArrayList<>();
         collections.add(collect1);
