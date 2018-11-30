@@ -11,12 +11,9 @@ import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.IdentifiableOrganisation;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestType;
-import nl.thehyve.podium.common.security.AuthenticatedUser;
-import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.test.Action;
 import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.service.dto.TestRoleRepresentation;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static nl.thehyve.podium.common.test.Action.format;
 import static nl.thehyve.podium.common.test.Action.newAction;
@@ -56,12 +52,10 @@ public class OrganisationAccessPolicyIntTest extends AbstractUaaAccessPolicyIntT
     }
 
     private OrganisationRepresentation organisationBRepresentation;
-    private Organisation activationOrganisation;
     private Map<UUID, Organisation> deleteOrganisations = new HashMap<>();
 
     private void createTestOrganisations() {
         organisationBRepresentation = organisationMapper.organisationToOrganisationDTO(organisationB);
-        activationOrganisation = testService.createOrganisation("Activation organisation");
         for (IdentifiableUser user: allUsers) {
             UUID userUuid = user == null ? null : user.getUserUuid();
             Organisation deleteOrganisation = testService.createOrganisation("Organisation " + userUuid);
@@ -111,18 +105,14 @@ public class OrganisationAccessPolicyIntTest extends AbstractUaaAccessPolicyIntT
             .setUrl(ORGANISATION_ROUTE + "/all")
             .allow(bbmriAdmin));
         // GET  /organisations/available
-        AuthenticatedUser[] allExceptAnonymous = allUsers.stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toSet())
-            .toArray(new AuthenticatedUser[]{});
         actions.add(newAction()
             .setUrl(ORGANISATION_ROUTE + "/available")
-            .allow(allExceptAnonymous));
+            .allow(getAllExceptAnonymous()));
         // GET  /organisations/uuid/{uuid}
         actions.add(newAction()
             .setUrl(ORGANISATION_ROUTE + "/uuid/" + organisationA.getUuid().toString())
-            .allow(allExceptAnonymous));
-        // GET  /organisations/{id}
+            .allow(getAllExceptAnonymous()));
+        // GET  /organisations/{id} (Deprecated!)
         actions.add(newAction()
             .setUrl(ORGANISATION_ROUTE + "/" + organisationA.getId().toString())
             .allow(bbmriAdmin));

@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -121,6 +122,13 @@ public abstract class AbstractUaaAccessPolicyIntTest extends AbstractAuthorisedU
             testUser2,
             anonymous
         ));
+    }
+
+    AuthenticatedUser[] getAllExceptAnonymous() {
+        return allUsers.stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet())
+            .toArray(new AuthenticatedUser[]{});
     }
 
     Role podiumAdminRole;

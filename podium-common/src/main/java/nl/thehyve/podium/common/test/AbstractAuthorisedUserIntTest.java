@@ -45,6 +45,7 @@ public abstract class AbstractAuthorisedUserIntTest {
 
     public ObjectMapper mapper = new ObjectMapper();
     {
+        mapper.findAndRegisterModules();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
@@ -74,7 +75,7 @@ public abstract class AbstractAuthorisedUserIntTest {
 
     private String getUrl(Action action, AuthenticatedUser user) {
         String url = action.url;
-        if (url == null) {
+        if (url == null && action.urls != null) {
             url = action.urls.get(user == null ? null : user.getUuid());
         }
         if (url == null) {
@@ -97,20 +98,36 @@ public abstract class AbstractAuthorisedUserIntTest {
         }
     }
 
+    MockHttpServletRequestBuilder setBody(MockHttpServletRequestBuilder request, Action action, AuthenticatedUser user) {
+        Object body = action.body;
+        if (body == null && action.bodyMap != null) {
+            body = action.bodyMap.get(user == null ? null : user.getUuid());
+        }
+        if (body == null) {
+            return request;
+        }
+        if (body instanceof String) {
+            return request
+                .contentType(MediaType.TEXT_PLAIN)
+                .content(body.toString());
+        }
+        try {
+            return request
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(body));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JSON serialisation error", e);
+        }
+    }
+
     MockHttpServletRequestBuilder getRequest(Action action, AuthenticatedUser user) {
         if (action.body != null && action.body instanceof URL) {
             return getUploadRequest(getUrl(action, user), (URL)action.body);
         }
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.request(action.method, getUrl(action, user));
-        if (action.body != null) {
-            try {
-                request = request
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(mapper.writeValueAsBytes(action.body));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("JSON serialisation error", e);
-            }
-        }
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .request(action.method, getUrl(action, user))
+            .accept(action.accept);
+        request = setBody(request, action, user);
         for(Map.Entry<String, String> entry: action.parameters.entrySet()) {
             request = request.param(entry.getKey(), entry.getValue());
         }
@@ -143,15 +160,17 @@ public abstract class AbstractAuthorisedUserIntTest {
             .andExpect(status().is(status.value()));
     }
 
-    private static UUID getUUID(Object obj) {
-        if (obj instanceof IdentifiableRequest) {
-            return ((IdentifiableRequest) obj).getRequestUuid();
+    private static String getIdentifier(Object obj) {
+        if (obj instanceof String) {
+            return (String)obj;
+        } else if (obj instanceof IdentifiableRequest) {
+            return ((IdentifiableRequest) obj).getRequestUuid().toString();
         } else if (obj instanceof RequestFileRepresentation) {
-            return ((RequestFileRepresentation) obj).getUuid();
+            return ((RequestFileRepresentation) obj).getUuid().toString();
         } else if (obj instanceof IdentifiableOrganisation) {
-            return ((IdentifiableOrganisation) obj).getOrganisationUuid();
+            return ((IdentifiableOrganisation) obj).getOrganisationUuid().toString();
         } else if (obj instanceof IdentifiableUser) {
-            return ((IdentifiableUser) obj).getUserUuid();
+            return ((IdentifiableUser) obj).getUserUuid().toString();
         } else {
             throw new InvalidRequest("Object type not supported: " + obj.getClass().getSimpleName());
         }
@@ -166,8 +185,8 @@ public abstract class AbstractAuthorisedUserIntTest {
             .map(user -> user == null ? null : user.getUserUuid())
             .collect(Collectors.toMap(Function.identity(),
                 userUuid -> {
-                    UUID uuid = getUUID(objectMap.get(userUuid));
-                    return format(route, query, uuid);
+                    String id = getIdentifier(objectMap.get(userUuid));
+                    return format(route, query, id);
                 }
             ));
     }

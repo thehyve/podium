@@ -90,8 +90,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         return mockMvc;
     }
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     private TypeReference<List<OrganisationRepresentation>> organisationListTypeReference =
         new TypeReference<List<OrganisationRepresentation>>(){};
 
@@ -100,7 +98,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
     @Before
     public void setup() {
-        mapper.findAndRegisterModules();
         this.mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
             .apply(springSecurity())
