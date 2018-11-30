@@ -112,7 +112,7 @@ public class OrganisationAccessPolicyIntTest extends AbstractUaaAccessPolicyIntT
         actions.add(newAction()
             .setUrl(ORGANISATION_ROUTE + "/uuid/" + organisationA.getUuid().toString())
             .allow(getAllExceptAnonymous()));
-        // GET  /organisations/{id}
+        // GET  /organisations/{id} (Deprecated!)
         actions.add(newAction()
             .setUrl(ORGANISATION_ROUTE + "/" + organisationA.getId().toString())
             .allow(bbmriAdmin));

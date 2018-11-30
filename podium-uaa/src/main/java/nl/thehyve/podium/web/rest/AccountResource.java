@@ -96,19 +96,6 @@ public class AccountResource {
     }
 
     /**
-     * GET  /authenticate : check if the user is authenticated, and return its login.
-     *
-     * @param request the HTTP request
-     * @return the login if the user is authenticated
-     */
-    @GetMapping("/authenticate")
-    @Timed
-    public String isAuthenticated(HttpServletRequest request) {
-        log.debug("REST request to check if the current user is authenticated");
-        return request.getRemoteUser();
-    }
-
-    /**
      * GET  /account : get the current user.
      *
      * @return  the ResponseEntity with status
@@ -148,6 +135,7 @@ public class AccountResource {
      */
     @AnyAuthorisedUser
     @PostMapping(path = "/account/change_password",
+        consumes = MediaType.TEXT_PLAIN_VALUE,
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> changePassword(@RequestBody String password) {
@@ -166,6 +154,7 @@ public class AccountResource {
      */
     @Public
     @PostMapping(path = "/account/reset_password/init",
+        consumes = MediaType.TEXT_PLAIN_VALUE,
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> requestPasswordReset(@RequestBody String mail) {
