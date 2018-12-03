@@ -15,10 +15,7 @@ import { ProfileInfo } from './profile-info.model';
     selector: 'pdm-page-ribbon',
     template: `
         <div class="ribbon" *ngIf="hasRibbon()">
-            <span [ngSwitch]="profileInfo.inProduction">
-                <a *ngSwitchCase="false" href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
-                <a *ngSwitchCase="true" href="" jhiTranslate="global.ribbon.prod">ALPHA</a>
-            </span>
+            <a href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
         </div>
     `,
     styleUrls: [
@@ -40,6 +37,6 @@ export class PageRibbonComponent implements OnInit {
     }
 
     hasRibbon(): boolean {
-        return this.profileInfo != null;
+        return this.profileInfo != null && !this.profileInfo.inProduction;
     }
 }
