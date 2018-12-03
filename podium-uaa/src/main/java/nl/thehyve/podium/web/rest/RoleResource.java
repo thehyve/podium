@@ -8,7 +8,6 @@
 package nl.thehyve.podium.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.collect.Sets;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -18,12 +17,7 @@ import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.domain.Role;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.RoleService;
-import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.mapper.RoleMapper;
 import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Role.
@@ -62,35 +53,6 @@ public class RoleResource {
     @Autowired
     private RoleService roleService;
 
-    @Autowired
-    private RoleMapper roleMapper;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private OrganisationService organisationService;
-
-    public RoleResource() {}
-
-    private void copyProperties(RoleRepresentation source, Role target) {
-        Set<UUID> currentUsers = target.getUsers().stream().map(User::getUuid).collect(Collectors.toSet());
-        Set<UUID> desiredUsers = source.getUsers();
-        Set<UUID> deleteUsers = Sets.difference(currentUsers, desiredUsers);
-        Set<UUID> addUsers = Sets.difference(desiredUsers, currentUsers);
-        Set<User> result = target.getUsers().stream().filter( u ->
-            !deleteUsers.contains(u.getUuid())
-        ).collect(Collectors.toSet());
-        for (UUID userUuid: addUsers) {
-            Optional<User> user = userService.getUserByUuid(userUuid);
-            if (user.isPresent()) {
-                result.add(user.get());
-            } else {
-                throw new ResourceNotFound(String.format("Could not find user with uuid %s", userUuid));
-            }
-        }
-        target.setUsers(result);
-    }
 
     /**
      * PUT  /roles : Updates an existing role.
@@ -99,26 +61,20 @@ public class RoleResource {
      * @return the ResponseEntity with status 200 (OK) and with body the updated role,
      * or with status 400 (Bad Request) if the role is not valid,
      * or with status 500 (Internal Server Error) if the role couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation(authorities= {AuthorityConstants.ORGANISATION_ADMIN})
     @PutMapping("/roles")
     @Timed
-    public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation roleRepresentation) throws URISyntaxException {
+    public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation roleRepresentation) {
         log.debug("REST request to update Role : {}", roleRepresentation);
         if (roleRepresentation.getId() == null) {
             throw new ResourceNotFound(String.format("Role not found with id: %s.", roleRepresentation.getId()));
         }
-        Role role = roleService.findOne(roleRepresentation.getId());
-        if (role == null) {
-            throw new ResourceNotFound(String.format("Role not found with id: %s.", roleRepresentation.getId()));
-        }
-        copyProperties(roleRepresentation, role);
-        roleService.save(role);
+        RoleRepresentation updatedRole = roleService.updateRole(roleRepresentation);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, role.getId().toString()))
-            .body(roleMapper.roleToRoleDTO(role));
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, updatedRole.getId().toString()))
+            .body(updatedRole);
     }
 
     /**
@@ -134,12 +90,9 @@ public class RoleResource {
     public ResponseEntity<List<RoleRepresentation>> getAllRoles(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Roles");
-        Page<Role> page = roleService.findAll(pageable);
-        List<Role> roles = page.getContent().stream()
-            .collect(Collectors.toList());
-        List<RoleRepresentation> roleDTOs = roleMapper.rolesToRoleDTOs(roles);
+        Page<RoleRepresentation> page = roleService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/roles");
-        return new ResponseEntity<>(roleDTOs, headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -169,11 +122,7 @@ public class RoleResource {
     @Timed
     public ResponseEntity<RoleRepresentation> getRole(@PathVariable Long id) {
         log.debug("REST request to get Role : {}", id);
-        Role role = roleService.findOne(id);
-        if (role == null) {
-            throw new ResourceNotFound(String.format("Role not found with id: %s.", id));
-        }
-        return ResponseEntity.ok(roleMapper.roleToRoleDTO(role));
+        return ResponseEntity.ok(roleService.findOne(id));
     }
 
     /**
@@ -188,10 +137,10 @@ public class RoleResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/_search/roles")
     @Timed
-    public ResponseEntity<List<Role>> searchRoles(@RequestParam String query, @ApiParam Pageable pageable)
+    public ResponseEntity<List<RoleRepresentation>> searchRoles(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of Roles for query {}", query);
-        Page<Role> page = roleService.search(query, pageable);
+        Page<RoleRepresentation> page = roleService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/roles");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

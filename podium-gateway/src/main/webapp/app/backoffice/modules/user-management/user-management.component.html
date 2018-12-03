@@ -24,10 +24,6 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transitionUsers.bind(this)">
-                <th jhiSortBy="id">
-                    <span jhiTranslate="global.field.id">ID</span>
-                    <span class="fa fa-sort"></span>
-                </th>
                 <th jhiSortBy="login">
                     <span jhiTranslate="userManagement.login">Login</span>
                     <span class="fa fa-sort"></span>
@@ -52,7 +48,6 @@
             </thead>
             <tbody *ngIf ="users">
             <tr [ngClass]="'test-row-'+user.login"  *ngFor="let user of users; trackBy: trackIdentity">
-                <td><a [routerLink]="['./detail', user.login]">{{user.id}}</a></td>
                 <td class="test-login">{{user.login}}</td>
                 <td class="test-name">{{ user.firstName }} {{ user.lastName }}</td>
                 <td class="test-email">{{user.email}}</td>

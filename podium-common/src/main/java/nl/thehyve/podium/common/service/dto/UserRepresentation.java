@@ -81,4 +81,10 @@ public class UserRepresentation implements IdentifiableUser, Serializable {
     public UUID getUserUuid() {
         return getUuid();
     }
+
+    @JsonIgnore
+    public boolean isActivated() {
+        return emailVerified && adminVerified;
+    }
+
 }

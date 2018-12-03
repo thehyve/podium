@@ -7,10 +7,13 @@
 
 package nl.thehyve.podium.service;
 
+import com.google.common.collect.Sets;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
+import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.search.RoleSearchRepository;
@@ -22,10 +25,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -52,7 +58,9 @@ public class RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public RoleService() { }
+    @Autowired
+    private UserService userService;
+
 
     /**
      * Save a role.
@@ -67,6 +75,41 @@ public class RoleService {
         return result;
     }
 
+    private void copyProperties(RoleRepresentation source, Role target) {
+        Set<UUID> currentUsers = target.getUsers().stream().map(User::getUuid).collect(Collectors.toSet());
+        Set<UUID> desiredUsers = source.getUsers();
+        Set<UUID> deleteUsers = Sets.difference(currentUsers, desiredUsers);
+        Set<UUID> addUsers = Sets.difference(desiredUsers, currentUsers);
+        Set<User> result = target.getUsers().stream().filter( u ->
+            !deleteUsers.contains(u.getUuid())
+        ).collect(Collectors.toSet());
+        for (UUID userUuid: addUsers) {
+            Optional<User> user = userService.getDomainUserByUuid(userUuid);
+            if (user.isPresent()) {
+                result.add(user.get());
+            } else {
+                throw new ResourceNotFound(String.format("Could not find user with uuid %s", userUuid));
+            }
+        }
+        target.setUsers(result);
+    }
+
+    /**
+     * Updates an existing role.
+     *
+     * @param roleRepresentation the role to update
+     * @return the updated role
+     */
+    public RoleRepresentation updateRole(RoleRepresentation roleRepresentation) {
+        Role role = findOneById(roleRepresentation.getId());
+        if (role == null) {
+            throw new ResourceNotFound(String.format("Role not found with id: %s.", roleRepresentation.getId()));
+        }
+        copyProperties(roleRepresentation, role);
+        save(role);
+        return roleMapper.roleToRoleDTO(role);
+    }
+
     /**
      * Get all the roles.
      *
@@ -74,9 +117,9 @@ public class RoleService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Role> findAll(Pageable pageable) {
+    public Page<RoleRepresentation> findAll(Pageable pageable) {
         log.debug("Request to get all Roles");
-        return roleRepository.findAllWithUsers(pageable);
+        return roleRepository.findAllWithUsers(pageable).map(role -> roleMapper.roleToRoleDTO(role));
     }
 
     /**
@@ -102,9 +145,25 @@ public class RoleService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Role findOne(Long id) {
+    public Role findOneById(Long id) {
         log.debug("Request to get Role : {}", id);
         return roleRepository.findOneWithUsers(id);
+    }
+
+    /**
+     * Get one role by id.
+     *
+     * @param id the id of the entity
+     * @return a representation of the entity
+     */
+    @Transactional(readOnly = true)
+    public RoleRepresentation findOne(Long id) {
+        log.debug("Request to get Role : {}", id);
+        Role role = findOneById(id);
+        if (role == null) {
+            throw new ResourceNotFound(String.format("Role not found with id: %s.", id));
+        }
+        return roleMapper.roleToRoleDTO(role);
     }
 
     /**
@@ -168,9 +227,9 @@ public class RoleService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Role> search(String query, Pageable pageable) {
+    public Page<RoleRepresentation> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Roles for query {}", query);
-        return roleSearchRepository.search(queryStringQuery(query), pageable);
+        return roleSearchRepository.search(queryStringQuery(query), pageable).map(role -> roleMapper.roleToRoleDTO(role));
     }
 
     @Transactional(readOnly = true)

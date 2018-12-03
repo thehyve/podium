@@ -30,9 +30,9 @@ sudo adduser --disabled-login podium
 
 ```commandline
 sudo -iu podium
-REPO=https://repo.thehyve.nl/service/local/artifact/maven/redirect?r=snapshots
-REGISTRY_VERSION=1.0.3-SNAPSHOT
-PODIUM_VERSION=0.0.7-SNAPSHOT
+REPO=https://repo.thehyve.nl/service/local/artifact/maven/redirect?r=releases
+REGISTRY_VERSION=1.0.4
+PODIUM_VERSION=1.0.0
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-registry&v=${REGISTRY_VERSION}&p=war" -o podium-registry.war
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-uaa&v=${PODIUM_VERSION}&p=war" -o podium-uaa.war
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-gateway&v=${PODIUM_VERSION}&p=war" -o podium-gateway.war
@@ -71,18 +71,11 @@ chmod +x start_*
 
 ### Configure the registry repository
 
-There are two ways to serve a configuration repository to the registry:
-- using a local directory;
-- using a (private) git repository.
+The preferred way to serve a configuration repository to the registry is _using a local directory_;
 
-In both cases, the structure of the repository has to be as in the [example configuration repository](https://github.com/thehyve/podium-example-config).
-The location can be specifier in the configuration file of the registry, see `registry-config.yml` below.
-To use a private github repository, you need to create an ssh keypair for the `podium` user and add the public key as deploy key on github.
-```bash
-sudo -iu podium
-ssh-keygen
-cat .ssh/id_rsa.pub
-```
+The structure of the repository has to be as in the [example configuration repository](https://github.com/thehyve/podium-example-config).
+The location can be specified in the configuration file of the registry, see `registry-config.yml` below.
+
 
 ### Config files
 - `/home/podium/registry-config.yml`:
@@ -90,12 +83,6 @@ cat .ssh/id_rsa.pub
     cloud:
         config:
             server:
-                git:
-                    # Prod config using the podium-example-config github repository.
-                    # Clone this repository and create a private repository based on it.
-                    # ssh keys with access to the (private) repository need to be present
-                    # in ~/.ssh.
-                    # uri: git@github.com:thehyve/podium-example-config.git
                 native:
                     search-locations: file:./central-config
     podium:
@@ -122,7 +109,9 @@ cat .ssh/id_rsa.pub
             password: change-admin-password-in-production
 
     ```
-- `/home/podium/gateway-config.yml`:
+- `/home/podium/gateway-config.yml`:<br>
+   Here also the token can be configured for the [Molgenis Biobank Directory] integration,
+   in the `podium.access.request-template` property.
     ```yaml
     spring:
         datasource:
@@ -135,6 +124,9 @@ cat .ssh/id_rsa.pub
             baseUrl: https://example.com
         registry:
             password: change-admin-password-in-production
+        access:
+            request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
+                - <username>:<password>
     ```
 
 
@@ -213,6 +205,8 @@ sudo journalctl -u podium-uaa.service -f
 sudo journalctl -u podium-gateway.service -f
 ```
 
+Log files are also written to the `/home/podium/logs` directory.
+
 The status of the services can also be checked using the web interface
 of the registry at http://localhost:8761.
 This port should not be accessible from outside. To view this page,
@@ -232,3 +226,4 @@ select u.id, r.id from podium_user u, podium_role r where u.login = '<login>' an
 update podium_user set admin_verified = true where login = '<login>';
 ```
 
+[Molgenis Biobank Directory]: https://molgenis.gitbooks.io/molgenis/content/user_documentation/catalogues/biobank-directory.html

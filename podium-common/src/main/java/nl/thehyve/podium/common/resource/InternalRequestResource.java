@@ -1,7 +1,7 @@
 package nl.thehyve.podium.common.resource;
 
 import nl.thehyve.podium.common.security.annotations.RequestUuidParameter;
-import nl.thehyve.podium.common.service.SecurityService;
+import nl.thehyve.podium.common.service.RequestSecurityService;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Resource for fetching requests.
  *
- * The implementing class should inject itself into the {@link SecurityService} in order
+ * The implementing class should inject itself into the {@link RequestSecurityService} in order
  * for that server to be able to check access policy rules based on request properties.
  */
 @RequestMapping("/internal")
@@ -31,6 +31,6 @@ public interface InternalRequestResource {
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException;
 
     @RequestMapping(value = "/requests/{uuid}/basic", method = RequestMethod.GET)
-    ResponseEntity<RequestRepresentation> getDefaultRequest(
+    ResponseEntity<RequestRepresentation> getRequestBasic(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException;
 }

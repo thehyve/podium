@@ -20,10 +20,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
+
 /**
  * Test class for the RequestFileResource REST controller.
  *
- * @see RequestResource
+ * @see RequestFileResource
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration

@@ -36,13 +36,15 @@ public class UserDetailsService implements org.springframework.security.core.use
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
-        Optional<User> userFromDatabase = userService.getUserWithAuthoritiesByLogin(lowercaseLogin);
-        return userFromDatabase.map(user -> {
-            if (!user.isActivated()) {
-                throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
-            }
-            return user;
-        }).orElseThrow(() -> new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the " +
-        "database"));
+        Optional<User> userFromDatabase = userService.getDomainUserWithAuthoritiesByLogin(lowercaseLogin);
+        if (!userFromDatabase.isPresent()) {
+            throw new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database");
+        }
+        User user = userFromDatabase.get();
+        if (!user.isActivated()) {
+            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
+        }
+        return user;
     }
+
 }

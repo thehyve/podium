@@ -1,18 +1,22 @@
 package nl.thehyve.podium.common.service;
 
 import nl.thehyve.podium.common.config.PodiumProperties;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.util.HtmlUtils;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
+import javax.validation.constraints.NotNull;
+import java.util.Locale;
 
 /**
  * Service for sending e-mails.
@@ -25,7 +29,7 @@ public abstract class AbstractMailService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private JavaMailSenderImpl javaMailSender;
+    private JavaMailSender javaMailSender;
 
     @Autowired
     protected PodiumProperties podiumProperties;
@@ -39,6 +43,44 @@ public abstract class AbstractMailService {
     protected static final String USER = "user";
 
     protected static final String BASE_URL = "baseUrl";
+
+    protected static final String SUPPORT_EMAIL = "supportEmail";
+
+    protected static final String SIGNATURE = "signature";
+
+    protected static final String DEFAULT_LANG_KEY = "en";
+
+    private void setDefaultVariables(Context context) {
+        PodiumProperties.Mail mailProperties = podiumProperties.getMail();
+        context.setVariable(BASE_URL, mailProperties.getBaseUrl());
+        context.setVariable(SUPPORT_EMAIL, mailProperties.getSupportEmail());
+        context.setVariable(SIGNATURE, mailProperties.getSignature());
+    }
+
+    protected Context getDefaultContext() {
+        Locale locale = Locale.forLanguageTag(DEFAULT_LANG_KEY);
+        Context context = new Context(locale);
+        setDefaultVariables(context);
+        return context;
+    }
+
+    private Locale getLocaleForUser(@NotNull UserRepresentation user) {
+        String langKey = user.getLangKey() == null ? DEFAULT_LANG_KEY : user.getLangKey();
+        return Locale.forLanguageTag(langKey);
+    }
+
+    protected Context getDefaultContextForUser(UserRepresentation user) {
+        Locale locale = getLocaleForUser(user);
+        Context context = new Context(locale);
+        setDefaultVariables(context);
+        context.setVariable(USER, user);
+        return context;
+    }
+
+    protected String getMessage(UserRepresentation user, String messageKey, Object... parameters) {
+        Locale locale = getLocaleForUser(user);
+        return messageSource.getMessage(messageKey, parameters, locale);
+    }
 
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {

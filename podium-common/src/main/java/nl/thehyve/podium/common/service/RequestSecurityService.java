@@ -7,7 +7,9 @@
 
 package nl.thehyve.podium.common.service;
 
+import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.resource.InternalRequestResource;
+import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import org.slf4j.Logger;
@@ -36,21 +38,36 @@ public class RequestSecurityService {
     /**
      * If the current user has the specified authority within one of the organisations
      * associated with the request with the specified uuid.
+     * Access is denied to draft requests.
+     * Access is denied to reviewers to requests that are not in a review status.
      * @param requestUuid the uuid of the request.
-     * @return true if current user has the specified authority within one of the organisations; false otherwise.
+     * @return true if current user has the specified authority within one of the organisations
+     * and the request is not a draft and the request is either in a review status or the authority is not reviewer;
+     * false otherwise.
      */
     public boolean isCurrentUserInOrganisationRoleForRequest(UUID requestUuid, String authority) {
-        log.info("Checking access for request {}, role {}", requestUuid, authority);
+        log.debug("Checking access for request {}, role {}", requestUuid, authority);
         if (internalRequestResource == null) {
             log.error("No request resource available.");
             return false;
         }
         try {
-            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequest(requestUuid);
-            if (response.getStatusCode() != HttpStatus.OK) {
-                log.error("Could not fetch request with uuid {}. Status code: {}", requestUuid, response.getStatusCode());
+            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequestBasic(requestUuid);
+            if (response == null || response.getStatusCode() != HttpStatus.OK) {
+                log.error("Could not fetch request with uuid {}. Status code: {}",
+                    requestUuid, response == null ? null : response.getStatusCode());
+                return false;
             }
-            for(OrganisationRepresentation organisation: response.getBody().getOrganisations()) {
+            OverviewStatus status = response.getBody().getStatus();
+            if (status == OverviewStatus.Draft) {
+                // Organisation users do not have access to draft requests.
+                return false;
+            }
+            if (authority.equals(AuthorityConstants.REVIEWER) && status != OverviewStatus.Review) {
+                // Organisation reviewers only have access to requests in review status.
+                return false;
+            }
+            for (OrganisationRepresentation organisation: response.getBody().getOrganisations()) {
                 if (securityService.isCurrentUserInOrganisationRole(organisation.getUuid(), authority)) {
                     return true;
                 }
@@ -68,16 +85,18 @@ public class RequestSecurityService {
      * @return true if current user is the owner (requester) of the request; false otherwise.
      */
     public boolean isCurrentUserOwnerOfRequest(UUID requestUuid) {
-        log.info("Checking access for requester of request {}", requestUuid);
+        log.debug("Checking access for requester of request {}", requestUuid);
         if (internalRequestResource == null) {
             log.error("No request resource available.");
             return false;
         }
         try {
             log.debug("Fetching request {} ... ", requestUuid);
-            ResponseEntity<RequestRepresentation> response = internalRequestResource.getDefaultRequest(requestUuid);
-            if (response.getStatusCode() != HttpStatus.OK) {
-                log.error("Could not fetch request with uuid {}. Status code: {}", requestUuid, response.getStatusCode());
+            ResponseEntity<RequestRepresentation> response = internalRequestResource.getRequestBasic(requestUuid);
+            if (response == null || response.getStatusCode() != HttpStatus.OK) {
+                log.error("Could not fetch request with uuid {}. Status code: {}",
+                    requestUuid, response == null ? null : response.getStatusCode());
+                return false;
             }
 
             if (response.getBody().getRequester() == null) {

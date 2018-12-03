@@ -1,6 +1,6 @@
 {
   "name": "podium-gateway",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "Podium Gateway Request Portal",
   "private": true,
   "cacheDirectories": [
@@ -18,7 +18,6 @@
     "@ng-bootstrap/ng-bootstrap": "^1.1.2",
     "angular2-ui-switch": "^1.2.0",
     "bootstrap": "^4.1.2",
-    "browserstack-local": "^1.3.0",
     "core-js": "2.5.7",
     "font-awesome": "4.7.0",
     "jquery": "3.3.1",
@@ -117,8 +116,6 @@
     "webpack:prod": "npm test && webpack -p --config webpack/webpack.vendor.js && webpack -p --config webpack/webpack.prod.js",
     "test": "npm run lint && karma start src/test/javascript/karma.conf.js",
     "test:watch": "karma start --watch",
-    "e2e": "protractor src/test/javascript/protractor.browserstack.conf.js",
-    "e2e:firefox": "protractor src/test/javascript/protractor.browserstack.conf.js --capabilities.browserName=firefox",
     "postinstall": "webdriver-manager update && npm run webpack:build"
   }
 }

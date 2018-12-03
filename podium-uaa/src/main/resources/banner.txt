@@ -1,9 +1,8 @@
 
-${AnsiColor.BLACK} ██████╗ ██████╗ ███╗   ███╗██████╗ ██╗  ${AnsiColor.BRIGHT_BLUE}  ██╗   ██╗ █████╗  █████╗
-${AnsiColor.BLACK} ██╔══██╗██╔══██╗████╗ ████║██╔══██╗██║  ${AnsiColor.BRIGHT_BLUE}  ██║   ██║██╔══██╗██╔══██╗
-${AnsiColor.BLACK} ██████╔╝██████╔╝██╔████╔██║██████╔╝██║  ${AnsiColor.BRIGHT_BLUE}  ██║   ██║███████║███████║
-${AnsiColor.BLACK} ██╔══██╗██╔══██╗██║╚██╔╝██║██╔══██╗██║  ${AnsiColor.BRIGHT_BLUE}  ██║   ██║██╔══██║██╔══██║
-${AnsiColor.BLACK} ██████╔╝██████╔╝██║ ╚═╝ ██║██║  ██║██║  ${AnsiColor.BRIGHT_BLUE}  ╚██████╔╝██║  ██║██║  ██║
-${AnsiColor.BLACK} ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ${AnsiColor.BRIGHT_BLUE}   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═
+${AnsiColor.BRIGHT_WHITE}    ____            ___                ${AnsiColor.CYAN}    __  _____    ___
+${AnsiColor.BRIGHT_WHITE}   / __ \____  ____/ (_)_  ______ ___  ${AnsiColor.CYAN}   / / / /   |  /   |
+${AnsiColor.BRIGHT_WHITE}  / /_/ / __ \/ __  / / / / / __ `__ \ ${AnsiColor.CYAN}  / / / / /| | / /| |
+${AnsiColor.BRIGHT_WHITE} / ____/ /_/ / /_/ / / /_/ / / / / / / ${AnsiColor.CYAN} / /_/ / ___ |/ ___ |
+${AnsiColor.BRIGHT_WHITE}/_/    \____/\__,_/_/\__,_/_/ /_/ /_/  ${AnsiColor.CYAN} \____/_/  |_/_/  |_|
 
-${AnsiColor.BRIGHT_BLUE}:: Podium UAA :: Running Spring Boot ${spring-boot.version} ::
+${AnsiColor.BRIGHT_WHITE}:: Podium UAA ${application.version} :: Running Spring Boot ${spring-boot.version} ::

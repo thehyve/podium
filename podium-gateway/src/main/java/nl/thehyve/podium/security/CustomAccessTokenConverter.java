@@ -38,7 +38,7 @@ public class CustomAccessTokenConverter extends DefaultAccessTokenConverter {
         if (requestAuth2ClientContext == null) {
             log.warn("OAuth2ClientContext not available.");
         } else {
-            log.info("Setting token in OAuth2ClientContext {}.", requestAuth2ClientContext);
+            log.debug("Setting token in OAuth2ClientContext {}.", requestAuth2ClientContext);
             requestAuth2ClientContext.setAccessToken(token);
         }
         return token;

@@ -39,7 +39,7 @@ public class OrganisationClientService {
 
     @Timed
     public List<OrganisationRepresentation> findAllOrganisations() throws URISyntaxException, FeignException {
-        log.info("Fetching all organisations through Feign ...");
+        log.debug("Fetching all organisations through Feign ...");
         ResponseEntity<List<OrganisationRepresentation>> response = organisationClient.getAllOrganisations();
         switch (response.getStatusCode()) {
             case OK:
@@ -51,7 +51,7 @@ public class OrganisationClientService {
 
     @Timed
     public OrganisationRepresentation findOrganisationByUuid(UUID organisationUuid) throws FeignException {
-        log.info("Fetching organisation through Feign ...");
+        log.debug("Fetching organisation through Feign ...");
         ResponseEntity<OrganisationRepresentation> response = organisationClient.getOrganisation(organisationUuid);
         switch (response.getStatusCode()) {
             case OK:
@@ -66,13 +66,13 @@ public class OrganisationClientService {
     @Timed
     @Cacheable("remoteOrganisations")
     public OrganisationRepresentation findOrganisationByUuidCached(UUID organisationUuid) throws FeignException {
-        log.info("Fetching organisation through Feign ...");
+        log.debug("Fetching organisation through Feign ...");
         return findOrganisationByUuid(organisationUuid);
     }
 
     @Timed
     public List<UserRepresentation> findUsersByRole(UUID organisationUuid, String authority) {
-        log.info("Fetching organisation users through Feign ...");
+        log.debug("Fetching organisation users through Feign ...");
         ResponseEntity<List<UserRepresentation>> response = internalRoleClient.getOrganisationRoleUsers(organisationUuid, authority);
         switch (response.getStatusCode()) {
             case OK:

@@ -16,6 +16,7 @@ import nl.thehyve.podium.exceptions.EmailNotVerifiedException;
 import nl.thehyve.podium.exceptions.UserAccountLockedException;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
+import nl.thehyve.podium.service.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    UserMapper userMapper;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -104,7 +108,7 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
         }
         String username = authentication.getName().toLowerCase(Locale.ENGLISH);
         log.debug("Username: " + username);
-        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(username);
+        Optional<User> userOptional = userService.getDomainUserWithAuthoritiesByLogin(username);
         if (!userOptional.isPresent()) {
             throw new BadCredentialsException("Invalid credentials.");
         }
@@ -154,7 +158,7 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
             user.setAccountLocked(true);
             user.setAccountLockDate(ZonedDateTime.now());
             userService.save(user);
-            mailService.sendAccountLockedMail(user);
+            mailService.sendAccountLockedMail(userMapper.userToUserDTO(user));
             throw new UserAccountLockedException("The user account is locked.");
         }
         userService.save(user);

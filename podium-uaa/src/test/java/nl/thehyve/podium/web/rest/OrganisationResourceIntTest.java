@@ -11,12 +11,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
+import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
@@ -86,12 +86,9 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
     private MockMvc mockMvc;
 
-    @Override
     protected MockMvc getMockMvc() {
         return mockMvc;
     }
-
-    private ObjectMapper mapper = new ObjectMapper();
 
     private TypeReference<List<OrganisationRepresentation>> organisationListTypeReference =
         new TypeReference<List<OrganisationRepresentation>>(){};
@@ -101,7 +98,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
     @Before
     public void setup() {
-        mapper.findAndRegisterModules();
         this.mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
             .apply(springSecurity())
@@ -130,13 +126,13 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         organisationRepresentation = createOrganisationDTO();
     }
 
-    private User podiumAdmin;
-    private User bbmriAdmin;
-    private User adminOrganisationA;
-    private User adminOrganisationB;
-    private User adminOrganisationAandB;
-    private User researcher;
-    private User anonymous;
+    private AuthenticatedUser podiumAdmin;
+    private AuthenticatedUser bbmriAdmin;
+    private AuthenticatedUser adminOrganisationA;
+    private AuthenticatedUser adminOrganisationB;
+    private AuthenticatedUser adminOrganisationAandB;
+    private AuthenticatedUser researcher;
+    private AuthenticatedUser anonymous;
 
     private void createUsers() throws UserAccountException {
         podiumAdmin = testService.createUser("podiumAdmin", AuthorityConstants.PODIUM_ADMIN);
@@ -265,8 +261,8 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisationA.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
     }
 
     @Test
@@ -285,8 +281,8 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
                 Assert.assertEquals(1, organisations.size());
             })
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisationA.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
     }
 
     @Test
@@ -353,8 +349,8 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             })
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisationA.getId().intValue())))
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisationB.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
     }
 
     @Test
@@ -368,8 +364,8 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(organisationA.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.shortName").value(DEFAULT_SHORT_NAME.toString()));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.shortName").value(DEFAULT_SHORT_NAME));
     }
 
     @Test

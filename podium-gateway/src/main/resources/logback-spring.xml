@@ -13,12 +13,11 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-<!-- The FILE and ASYNC appenders are here as examples for a production configuration -->
-<!--
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/podiumGateway.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>90</maxHistory>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/podium-gateway.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>9</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
         </rollingPolicy>
         <encoder>
             <charset>utf-8</charset>
@@ -30,7 +29,6 @@
         <queueSize>512</queueSize>
         <appender-ref ref="FILE"/>
     </appender>
--->
 
     <logger name="nl.thehyve.podium" level="#logback.loglevel#"/>
 
@@ -40,7 +38,6 @@
     <logger name="ch.qos.logback" level="WARN"/>
     <logger name="com.codahale.metrics" level="WARN"/>
     <logger name="com.netflix" level="WARN"/>
-    <logger name="com.netflix.discovery" level="INFO"/>
     <logger name="com.ryantenney" level="WARN"/>
     <logger name="com.sun" level="WARN"/>
     <logger name="com.zaxxer" level="WARN"/>
@@ -69,6 +66,7 @@
     <logger name="org.flowable.engine.impl.db" level="WARN"/>
     <logger name="org.flowable.engine.impl.interceptor" level="WARN"/>
     <logger name="org.flowable.spring.SpringTransactionInterceptor" level="WARN" />
+    <logger name="com.hazelcast.internal.diagnostics.HealthMonitor" level="WARN"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
@@ -88,7 +86,7 @@
     </springProfile>
     <logger name="nl.thehyve.podium" level="${default_level}"/>
     <root level="${default_level}">
-        <!--<appender-ref ref="FILE"/>-->
+        <appender-ref ref="ASYNC"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 

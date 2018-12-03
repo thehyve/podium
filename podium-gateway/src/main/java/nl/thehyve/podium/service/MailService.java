@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,17 +26,8 @@ public class MailService extends AbstractMailService {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
-    private Context getDefaultContextForUser(UserRepresentation user) {
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        Context context = new Context(locale);
-        context.setVariable(USER, user);
-        context.setVariable(BASE_URL, podiumProperties.getMail().getBaseUrl());
-        return context;
-    }
-
-    private String getMessage(UserRepresentation user, String messageKey, Object ... parameters) {
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
-        return messageSource.getMessage(messageKey, parameters, locale);
+    void prepareSignature(Context context) {
+        templateEngine.process("signature", context);
     }
 
     /**
@@ -53,10 +43,14 @@ public class MailService extends AbstractMailService {
         RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
-            request, organisation, coordinators == null ? null : coordinators.size());
+            request.getUuid(), organisation.getShortName(), coordinators == null ? null : coordinators.size());
+        if (coordinators == null) {
+            return;
+        }
         for (UserRepresentation user: coordinators) {
             log.debug("Sending request submitted e-mail to '{}'", user.getEmail());
             Context context = getDefaultContextForUser(user);
+            prepareSignature(context);
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestSubmitted", context);
@@ -76,9 +70,13 @@ public class MailService extends AbstractMailService {
     public void sendSubmissionNotificationToRequester(
         UserRepresentation requester, List<RequestRepresentation> organisationRequests) {
         log.info("Notifying requester: requester = {}, #requests = {}",
-            requester, organisationRequests == null ? null : organisationRequests.size());
+            requester.getLogin(), organisationRequests == null ? null : organisationRequests.size());
+        if (organisationRequests == null) {
+            return;
+        }
         log.debug("Sending request submitted e-mail to '{}'", requester.getEmail());
         Context context = getDefaultContextForUser(requester);
+        prepareSignature(context);
         context.setVariable("requests", organisationRequests);
         String requestList = organisationRequests.stream().map(RequestRepresentation::generateStringId).collect(Collectors.joining(", "));
         context.setVariable("requestList", requestList);
@@ -97,9 +95,10 @@ public class MailService extends AbstractMailService {
     public void sendRejectionNotificationToRequester(
         UserRepresentation requester, RequestRepresentation requestRepresentation
     ) {
-        log.info("Notifying requester: requester = {}, request = {}", requester, requestRepresentation);
+        log.info("Notifying requester: requester = {}, request = {}", requester.getLogin(), requestRepresentation.getUuid());
         log.debug("Sending request rejection e-mail to requester '{}'", requester.getEmail());
         Context context = getDefaultContextForUser(requester);
+        prepareSignature(context);
         context.setVariable("request", requestRepresentation);
         String content = templateEngine.process("requesterRequestRejected", context);
         String subject = getMessage(requester, "email.requesterRequestRejected.title",
@@ -119,10 +118,14 @@ public class MailService extends AbstractMailService {
         RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> coordinators
     ) {
         log.info("Notifying coordinators: request = {}, organisation = {}, #coordinators = {}",
-            request, organisation, coordinators == null ? null : coordinators.size());
+            request.getUuid(), organisation.getShortName(), coordinators == null ? null : coordinators.size());
+        if (coordinators == null) {
+            return;
+        }
         for (UserRepresentation user: coordinators) {
             log.debug("Sending request revision e-mail to '{}'", user.getEmail());
             Context context = getDefaultContextForUser(user);
+            prepareSignature(context);
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("organisationRequestRevisionSubmitted", context);
@@ -137,10 +140,14 @@ public class MailService extends AbstractMailService {
         RequestRepresentation request, OrganisationRepresentation organisation, List<UserRepresentation> reviewers
     ) {
         log.info("Notifying organisation reviewers: request = {}, organisation = {}, #reviewers = {}",
-            request, organisation, reviewers == null ? null : reviewers.size());
+            request.getUuid(), organisation.getShortName(), reviewers == null ? null : reviewers.size());
+        if (reviewers == null) {
+            return;
+        }
         for (UserRepresentation user : reviewers) {
             log.debug("Sending review request e-mail to '{}'", user.getEmail());
             Context context = getDefaultContextForUser(user);
+            prepareSignature(context);
             context.setVariable("request", request);
             context.setVariable("organisation", organisation);
             String content = templateEngine.process("reviewerRequestReview", context);
@@ -155,10 +162,14 @@ public class MailService extends AbstractMailService {
         List<UserRepresentation> coordinators, UserRepresentation reviewer
     ) {
         log.info("Notifying coordinators of request reviewed: request = {}, organisation = {}, #coordinators = {}",
-            request, organisation, coordinators == null ? null : coordinators.size());
+            request.getUuid(), organisation.getShortName(), coordinators == null ? null : coordinators.size());
+        if (coordinators == null) {
+            return;
+        }
         for (UserRepresentation user : coordinators) {
             log.debug("Sending request reviewed e-mail to '{}'", user.getEmail());
             Context context = getDefaultContextForUser(user);
+            prepareSignature(context);
             context.setVariable("request", request);
             context.setVariable("reviewer", reviewer);
             String content = templateEngine.process("organisationRequestReviewed", context);
@@ -179,9 +190,10 @@ public class MailService extends AbstractMailService {
     public void sendRequestApprovalNotificationToRequester(
         UserRepresentation requester, RequestRepresentation request
     ) {
-        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Notifying requester: requester = {}, request = {}", requester.getLogin(), request.getUuid());
         log.debug("Sending request approved e-mail to '{}'", requester.getEmail());
         Context context = getDefaultContextForUser(requester);
+        prepareSignature(context);
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestApproved", context);
         String subject = getMessage(requester, "email.requesterRequestApproved.title",
@@ -200,9 +212,10 @@ public class MailService extends AbstractMailService {
     public void sendRequestRevisionNotificationToRequester(
         UserRepresentation requester, RequestRepresentation request
     ) {
-        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Notifying requester: requester = {}, request = {}", requester.getLogin(), request.getUuid());
         log.debug("Sending request revision e-mail to '{}'", requester.getEmail());
         Context context = getDefaultContextForUser(requester);
+        prepareSignature(context);
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestRevision", context);
         String subject = getMessage(requester, "email.requesterRequestRevision.title",
@@ -220,8 +233,9 @@ public class MailService extends AbstractMailService {
     @Async
     public void sendDeliveryReleasedNotificationToRequester(
         UserRepresentation requester, RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess) {
-        log.info("Notifying requester: requester = {}, delivery = {}", requester, deliveryProcess);
+        log.info("Notifying requester: requester = {}, delivery = {}", requester.getLogin(), deliveryProcess.getUuid());
         Context context = getDefaultContextForUser(requester);
+        prepareSignature(context);
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryReleased", context);
@@ -246,10 +260,14 @@ public class MailService extends AbstractMailService {
         RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess,
         OrganisationRepresentation organisation, List<UserRepresentation> coordinators) {
         log.info("Notifying coordinators: delivery = {}, organisation = {}, #coordinators = {}",
-            deliveryProcess, organisation, coordinators == null ? null : coordinators.size());
+            deliveryProcess.getUuid(), organisation.getShortName(), coordinators == null ? null : coordinators.size());
+        if (coordinators == null) {
+            return;
+        }
         for (UserRepresentation user: coordinators) {
             log.debug("Sending delivery received e-mail to '{}'", user.getEmail());
             Context context = getDefaultContextForUser(user);
+            prepareSignature(context);
             context.setVariable("request", request);
             context.setVariable("deliveryProcess", deliveryProcess);
             context.setVariable("organisation", organisation);
@@ -269,8 +287,9 @@ public class MailService extends AbstractMailService {
      */
     @Async
     public void sendRequestClosedNotificationToRequester(UserRepresentation requester, RequestRepresentation request) {
-        log.info("Notifying requester: requester = {}, request = {}", requester, request);
+        log.info("Notifying requester: requester = {}, request = {}", requester.getLogin(), request.getUuid());
         Context context = getDefaultContextForUser(requester);
+        prepareSignature(context);
         context.setVariable("request", request);
         String content = templateEngine.process("requesterRequestClosed", context);
         String subject = getMessage(requester, "email.requesterRequestClosed.title",
@@ -289,9 +308,10 @@ public class MailService extends AbstractMailService {
     @Async
     public void sendDeliveryCancelledNotificationToRequester(RequestRepresentation request, DeliveryProcessRepresentation deliveryProcess, UserRepresentation user) {
         log.info("Notifying requester: delivery = {}, requester = {}",
-            deliveryProcess, user);
+            deliveryProcess.getUuid(), user.getLogin());
         log.debug("Sending delivery received e-mail to '{}'", user.getEmail());
         Context context = getDefaultContextForUser(user);
+        prepareSignature(context);
         context.setVariable("request", request);
         context.setVariable("deliveryProcess", deliveryProcess);
         String content = templateEngine.process("requesterDeliveryCancelled", context);

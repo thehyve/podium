@@ -2,8 +2,6 @@ package nl.thehyve.podium.event;
 
 import nl.thehyve.podium.common.enumeration.DeliveryStatus;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
-import nl.thehyve.podium.common.enumeration.RequestStatus;
 import nl.thehyve.podium.common.event.StatusUpdateEvent;
 import nl.thehyve.podium.service.AuditService;
 import nl.thehyve.podium.service.NotificationService;
@@ -33,14 +31,14 @@ public class StatusUpdateEventListener {
     @Async
     @TransactionalEventListener
     public void persistStatusUpdateEvent(StatusUpdateEvent event) {
-        log.info("Publish event to audit log: {}", event);
+        log.info(event.toString());
         auditService.publishEvent(event);
     }
 
     @Async
     @TransactionalEventListener
     public void notifyUsersOfStatusUpdateEvent(StatusUpdateEvent event) {
-        log.info("Notification handler for event: {}", event);
+        log.debug("Notification handler for event: {}", event);
         if (event.getSourceStatus() == OverviewStatus.Draft &&
             event.getTargetStatus() == OverviewStatus.Validation) {
             // sent draft submission notification to organisation coordinators for this request

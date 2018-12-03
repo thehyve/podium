@@ -10,12 +10,12 @@ package nl.thehyve.podium.web.rest;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
+import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.common.test.web.rest.TestUtil;
-import nl.thehyve.podium.domain.Authority;
-import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.service.MailService;
+import nl.thehyve.podium.service.TestService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.dto.KeyAndPasswordRepresentation;
@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -54,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PodiumUaaApp.class)
-public class AccountResourceIntTest {
+public class AccountResourceIntTest extends AbstractAuthorisedUserIntTest {
 
     static final String VALID_PASSWORD = "johndoe2!";
 
@@ -62,10 +64,16 @@ public class AccountResourceIntTest {
     private AuthorityRepository authorityRepository;
 
     @Autowired
+    private TestService testService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private WebApplicationContext context;
 
     @Mock
     private UserService mockUserService;
@@ -77,62 +85,49 @@ public class AccountResourceIntTest {
 
     private MockMvc restMvc;
 
+    private MockMvc mockMvc;
+
+    @Override
+    protected MockMvc getMockMvc() {
+        return mockMvc;
+    }
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendVerificationEmail(any(User.class));
-        doNothing().when(mockMailService).sendPasswordResetMail(any(User.class));
-        doNothing().when(mockMailService).sendUserRegisteredEmail(anyCollectionOf(User.class), any(User.class));
+        doNothing().when(mockMailService).sendAccountAlreadyExists(anyObject());
+        doNothing().when(mockMailService).sendVerificationEmail(any(UserRepresentation.class), anyString());
+        doNothing().when(mockMailService).sendPasswordResetMail(any(UserRepresentation.class), anyString());
+        doNothing().when(mockMailService).sendUserRegisteredEmail(
+            anyCollectionOf(ManagedUserRepresentation.class), any(ManagedUserRepresentation.class));
 
         ReflectionTestUtils.setField(userService, "mailService", mockMailService);
 
         AccountResource accountResource = new AccountResource();
         ReflectionTestUtils.setField(accountResource, "userService", userService);
-        ReflectionTestUtils.setField(accountResource, "userMapper", userMapper);
-        ReflectionTestUtils.setField(accountResource, "mailService", mockMailService);
 
         AccountResource accountUserMockResource = new AccountResource();
         ReflectionTestUtils.setField(accountUserMockResource, "userService", mockUserService);
-        ReflectionTestUtils.setField(accountUserMockResource, "userMapper", userMapper);
-        ReflectionTestUtils.setField(accountUserMockResource, "mailService", mockMailService);
 
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(accountUserMockResource).build();
-    }
-
-    @Test
-    public void testNonAuthenticatedUser() throws Exception {
-        restUserMockMvc.perform(get("/api/authenticate")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
-    }
-
-    @Test
-    public void testAuthenticatedUser() throws Exception {
-        restUserMockMvc.perform(get("/api/authenticate")
-                .with(request -> {
-                    request.setRemoteUser("test");
-                    return request;
-                })
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("test"));
+        this.mockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
     }
 
     @Test
     public void testGetExistingAccount() throws Exception {
-        Set<Role> roles = new HashSet<>();
-        Authority authority = new Authority(AuthorityConstants.PODIUM_ADMIN);
-        Role role = new Role(authority);
-        roles.add(role);
+        Set<String> authorities = new HashSet<>();
+        authorities.add(AuthorityConstants.PODIUM_ADMIN);
 
-        User user = new User();
+        ManagedUserRepresentation user = new ManagedUserRepresentation();
         user.setLogin("test");
         user.setFirstName("john");
         user.setLastName("doe");
         user.setEmail("john.doe@bbmri-podium.com");
-        user.setRoles(roles);
+        user.setAuthorities(authorities);
         when(mockUserService.getUserWithAuthorities()).thenReturn(user);
 
         restUserMockMvc.perform(get("/api/account")
@@ -187,12 +182,12 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isTrue();
 
         Thread.sleep(1000);
 
-        verify(mockMailService).sendVerificationEmail(any(User.class));
+        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class), anyString());
     }
 
     @Test
@@ -215,7 +210,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
     }
 
@@ -239,27 +234,30 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByLogin("bob");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("bob");
         assertThat(user.isPresent()).isFalse();
     }
+
+    StringBuilder tooLongPassword = new StringBuilder();
+    {
+        for (int i = 0; i < 100; i++) {
+            tooLongPassword.append("Abcdef12345%^&*");
+        }
+    }
+    String[] invalidPasswords = {
+        null, // empty password
+        "", // empty password
+        "1234567", // password with less than 8 characters
+        "12345678", // password with only numbers
+        "abcde123", // password without special characters
+        "abc&%$;.Y", // password without numbers
+        "123456^&*(", // password without alphabetical symbols
+        tooLongPassword.toString() // password larger than 1000 characters
+    };
 
     @Test
     @Transactional
     public void testRegisterInvalidPassword() throws Exception {
-        StringBuilder tooLongPassword = new StringBuilder();
-        for (int i=0; i < 100; i++) {
-            tooLongPassword.append("Abcdef12345%^&*");
-        }
-        String[] invalidPasswords = {
-            null, // empty password
-            "", // empty password
-            "1234567", // password with less than 8 characters
-            "12345678", // password with only numbers
-            "abcde123", // password without special characters
-            "abc&%$;.Y", // password without numbers
-            "123456^&*(", // password without alphabetical symbols
-            tooLongPassword.toString() // password larger than 1000 characters
-        };
         for(String password: invalidPasswords) {
             ManagedUserRepresentation invalidUser = new ManagedUserRepresentation();
             setMandatoryFields(invalidUser);
@@ -278,7 +276,7 @@ public class AccountResourceIntTest {
                     .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
                 .andExpect(status().isBadRequest());
 
-            Optional<User> user = userService.getUserWithAuthoritiesByLogin("bob");
+            Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("bob");
             assertThat(user.isPresent()).isFalse();
         }
     }
@@ -334,7 +332,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().is4xxClientError());
 
-        Optional<User> userDup = userService.getUserWithAuthoritiesByEmail("alicejr@example.com");
+        Optional<ManagedUserRepresentation> userDup = userService.getUserWithAuthoritiesByEmail("alicejr@example.com");
         assertThat(userDup.isPresent()).isFalse();
     }
 
@@ -373,9 +371,9 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(duplicatedUser)))
             .andExpect(status().isCreated());
 
-        verify(mockMailService).sendAccountAlreadyExists((User)anyObject());
+        verify(mockMailService).sendAccountAlreadyExists(anyObject());
 
-        Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("johnjr");
+        Optional<ManagedUserRepresentation> userDup = userService.getUserWithAuthoritiesByLogin("johnjr");
         assertThat(userDup.isPresent()).isFalse();
     }
 
@@ -399,9 +397,9 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        Optional<User> userDup = userService.getUserWithAuthoritiesByLogin("badguy");
+        Optional<ManagedUserRepresentation> userDup = userService.getUserWithAuthoritiesByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
-        assertThat(userDup.get().getAuthorityNames()).hasSize(1)
+        assertThat(userDup.get().getAuthorities()).hasSize(1)
             .containsExactly(authorityRepository.findOne(AuthorityConstants.RESEARCHER).getName());
     }
 
@@ -426,10 +424,10 @@ public class AccountResourceIntTest {
             .andExpect(status().isCreated());
 
         Thread.sleep(1000);
-        verify(mockMailService).sendVerificationEmail(any(User.class));
+        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class), anyString());
         reset(mockMailService);
 
-        userService.getUserWithAuthoritiesByLogin("badguy")
+        userService.getDomainUserWithAuthoritiesByLogin("badguy")
             .map(user -> {
                 assertThat(user.getActivationKey() != null);
 
@@ -443,7 +441,8 @@ public class AccountResourceIntTest {
             });
 
         Thread.sleep(1000);
-        verify(mockMailService).sendUserRegisteredEmail(anyCollectionOf(User.class), any(User.class));
+        verify(mockMailService).sendUserRegisteredEmail(
+            anyCollectionOf(ManagedUserRepresentation.class), any(ManagedUserRepresentation.class));
     }
 
     @Test
@@ -467,20 +466,20 @@ public class AccountResourceIntTest {
             .andExpect(status().isCreated());
 
         Thread.sleep(1000);
-        verify(mockMailService).sendVerificationEmail(any(User.class));
+        verify(mockMailService).sendVerificationEmail(any(ManagedUserRepresentation.class), anyString());
         reset(mockMailService);
 
         restMvc.perform(
             post("/api/account/reset_password/init")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.TEXT_PLAIN)
                 .content("badguy@example.com"))
             .andExpect(status().isOk());
 
         Thread.sleep(1000);
-        verify(mockMailService).sendPasswordResetMail(any(User.class));
+        verify(mockMailService).sendPasswordResetMail(any(ManagedUserRepresentation.class), anyString());
         reset(mockMailService);
 
-        userService.getUserWithAuthoritiesByLogin("badguy")
+        userService.getDomainUserWithAuthoritiesByLogin("badguy")
             .map(user -> {
                 assertThat(user.getResetKey() != null);
 
@@ -499,7 +498,8 @@ public class AccountResourceIntTest {
             });
 
         Thread.sleep(1000);
-        verify(mockMailService).sendUserRegisteredEmail(anyCollectionOf(User.class), any(User.class));
+        verify(mockMailService).sendUserRegisteredEmail(
+            anyCollectionOf(ManagedUserRepresentation.class), any(ManagedUserRepresentation.class));
     }
 
     @Test
@@ -522,7 +522,7 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(validUser)))
             .andExpect(status().isCreated());
 
-        userService.getUserWithAuthoritiesByLogin("badguy")
+        userService.getDomainUserWithAuthoritiesByLogin("badguy")
             .map(user -> {
                 assertThat(user.getActivationKey() != null);
 
@@ -539,7 +539,6 @@ public class AccountResourceIntTest {
 
                 return user;
             });
-
     }
 
     @Test
@@ -560,8 +559,71 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
+    }
+
+    /**
+     * Test that changes to email, login and authorities of own account are not saved.
+     */
+    @Test
+    @Transactional
+    public void testSensitiveFieldsNotSaved() throws Exception {
+        User protectedUser = testService.createUser("protectedUser", AuthorityConstants.RESEARCHER);
+        ManagedUserRepresentation userVM = userMapper.userToManagedUserVM(protectedUser);
+        ManagedUserRepresentation updatedUserVM = userMapper.userToManagedUserVM(protectedUser);
+
+        // Change non-sensitive user data
+        updatedUserVM.setDepartment("New department");
+        updatedUserVM.setInstitute("Test institute");
+        updatedUserVM.setSpecialism("Testing");
+        updatedUserVM.setJobTitle("Tester");
+        updatedUserVM.setTelephone("0123456789");
+
+        // Change sensitive user data
+        updatedUserVM.setLogin("protectedUser_changed");
+        updatedUserVM.setEmail("protectedUser_changed@localhost");
+        updatedUserVM.setAuthorities(new HashSet<>(Arrays.asList(AuthorityConstants.BBMRI_ADMIN)));
+        updatedUserVM.setEmailVerified(true);
+
+        mockMvc.perform(post("/api/account")
+            .with(token(protectedUser))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedUserVM)))
+            .andExpect(status().isOk());
+
+        // Check that no user 'protectedUser_changed' exists
+        Optional<User> userWithChangedLogin = userService.getDomainUserWithAuthoritiesByLogin("protectedUser_changed");
+        assertThat(userWithChangedLogin.isPresent()).isFalse();
+
+        Optional<User> updatedUser = userService.getDomainUserWithAuthoritiesByLogin(userVM.getLogin());
+        assertThat(updatedUser.isPresent()).isTrue();
+        updatedUser.map(user -> {
+            // Check that some fields have been changed
+            assertThat(user.getDepartment()).isEqualTo(updatedUserVM.getDepartment());
+
+            // Check that sensitive fields have not been changed.
+            assertThat(user.getEmail()).isEqualTo(userVM.getEmail());
+            assertThat(user.getAuthorityNames()).isEqualTo(userVM.getAuthorities());
+            assertThat(user.isEmailVerified()).isFalse();
+            return user;
+        });
+    }
+
+    /**
+     * Test that changes to email, login and authorities of own account are not saved.
+     */
+    @Test
+    @Transactional
+    public void testPasswordUpdateValidation() throws Exception {
+        for (String password: invalidPasswords) {
+            if (password != null) {
+                restUserMockMvc.perform(post("/api/account/change_password")
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .content(password))
+                    .andExpect(status().isBadRequest());
+            }
+        }
     }
 
     @Test
@@ -583,9 +645,8 @@ public class AccountResourceIntTest {
                 .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByEmail("badguy@example.com");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByEmail("badguy@example.com");
         assertThat(user.isPresent()).isFalse();
     }
-
 
 }

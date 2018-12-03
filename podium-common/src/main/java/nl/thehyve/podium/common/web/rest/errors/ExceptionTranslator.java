@@ -9,6 +9,8 @@ package nl.thehyve.podium.common.web.rest.errors;
 
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
+import nl.thehyve.podium.common.exceptions.ResourceNotFound;
+import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.annotations.Public;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,20 @@ public class ExceptionTranslator {
     @ResponseBody
     public ErrorRepresentation processAccessDenied(AccessDenied e) {
         return new ErrorRepresentation(ErrorConstants.ERR_ACCESS_DENIED, e.getMessage());
+    }
+
+    @ExceptionHandler(ResourceNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorRepresentation processResourceNotFound(ResourceNotFound e) {
+        return new ErrorRepresentation(ErrorConstants.ERR_RESOURCE_NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(ServiceNotAvailable.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ResponseBody
+    public ErrorRepresentation processServiceNotAvailable(ServiceNotAvailable e) {
+        return new ErrorRepresentation(ErrorConstants.ERR_SERVICE_NOT_AVAILABLE, e.getMessage());
     }
 
     private ErrorRepresentation processFieldErrors(List<FieldError> fieldErrors) {

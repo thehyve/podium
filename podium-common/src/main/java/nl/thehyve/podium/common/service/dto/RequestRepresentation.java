@@ -13,6 +13,7 @@ import lombok.Data;
 import nl.thehyve.podium.common.IdentifiableRequest;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -37,6 +38,7 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
 
     private RequestDetailRepresentation revisionDetail;
 
+    @NotNull
     @Valid
     private RequestDetailRepresentation requestDetail;
 

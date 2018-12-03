@@ -33,7 +33,7 @@ spring:
         database-platform: nl.thehyve.podium.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         open-in-view: false
-        show-sql: true
+        show-sql: false
         hibernate:
             ddl-auto: none
             naming:
@@ -105,6 +105,9 @@ podium:
         contactEmail:
         license:
         licenseUrl:
+    mail:
+        from: podiumUaa@localhost
+        base-url: http://127.0.0.1:10344
 
 uaa:
     security:

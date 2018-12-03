@@ -19,14 +19,9 @@ import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.exceptions.EmailAddressAlreadyInUse;
-import nl.thehyve.podium.exceptions.LoginAlreadyInUse;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -84,13 +79,7 @@ public class UserResource {
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
     @Autowired
-    private MailService mailService;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private SecurityService securityService;
@@ -104,7 +93,6 @@ public class UserResource {
      * </p>
      *
      * @param userData the user to create
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws UserAccountException when the login already exists.
      * @return the ResponseEntity with status
      * 201 (Created) and with body the new user,
@@ -113,19 +101,10 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
     @Timed
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRepresentation userData) throws URISyntaxException, UserAccountException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to save User : {}", userData);
 
-        try {
-            User newUser = userService.createUser(userData);
-            mailService.sendCreationEmail(newUser);
-        } catch(EmailAddressAlreadyInUse e) {
-            Optional<User> userOptional = userService.getUserWithAuthoritiesByEmail(userData.getEmail());
-            userOptional.ifPresent(user -> mailService.sendAccountAlreadyExists(user));
-        } catch (LoginAlreadyInUse e) {
-            log.error("Login already in use: {}", userData.getLogin());
-            throw e;
-        }
+        userService.createUserAccount(userData);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -144,9 +123,9 @@ public class UserResource {
     public ResponseEntity<ManagedUserRepresentation> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to update User : {}", userData);
         userService.updateUser(userData);
-        Optional<User> userOptional =  userService.getUserByUuid(userData.getUuid());
+        Optional<ManagedUserRepresentation> userOptional =  userService.getUserByUuid(userData.getUuid());
         if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
+            return ResponseEntity.ok(userOptional.get());
         }
         throw new ResourceNotFound("User not found.");
     }
@@ -163,15 +142,11 @@ public class UserResource {
     @Timed
     public ResponseEntity<ManagedUserRepresentation> unlockUser(@PathVariable UUID uuid) {
         log.debug("REST request to unlock User : {}", uuid);
-        Optional<User> userOptional = userService.getUserByUuid(uuid);
-        if (!userOptional.isPresent()) {
-            throw new ResourceNotFound("User not found.");
-        }
-        User user = userService.unlockAccount(userOptional.get());
+        ManagedUserRepresentation user = userService.unlockAccount(uuid);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createAlert("userManagement.unlocked", user.getLogin()))
-            .body(userMapper.userToManagedUserVM(userOptional.get()));
+            .body(user);
     }
 
     /**
@@ -186,10 +161,9 @@ public class UserResource {
     @Timed
     public ResponseEntity<List<ManagedUserRepresentation>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        Page<User> page = userService.getUsers(pageable);
-        List<ManagedUserRepresentation> managedUserRepresentations = userMapper.usersToManagedUserVMs(page.getContent());
+        Page<ManagedUserRepresentation> page = userService.getUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
-        return new ResponseEntity<>(managedUserRepresentations, headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -207,10 +181,9 @@ public class UserResource {
         throws URISyntaxException {
         UUID[] organisationUuids = AccessCheckHelper.getOrganisationUuidsForUserAndRole(
             securityService.getCurrentUser(), AuthorityConstants.ORGANISATION_ADMIN);
-        Page<User> page = userService.getUsersForOrganisations(pageable, organisationUuids);
-        List<ManagedUserRepresentation> managedUserVMs = userMapper.usersToManagedUserVMs(page.getContent());
+        Page<ManagedUserRepresentation> page = userService.getUsersForOrganisations(pageable, organisationUuids);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/organisations");
-        return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -229,10 +202,9 @@ public class UserResource {
         @OrganisationUuidParameter @PathVariable UUID uuid,
         @ApiParam Pageable pageable)
         throws URISyntaxException {
-        Page<User> page = userService.getUsersForOrganisations(pageable, uuid);
-        List<ManagedUserRepresentation> managedUserVMs = userMapper.usersToManagedUserVMs(page.getContent());
+        Page<ManagedUserRepresentation> page = userService.getUsersForOrganisations(pageable, uuid);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users/organisations/" + uuid.toString());
-        return new ResponseEntity<>(managedUserVMs, headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -246,9 +218,9 @@ public class UserResource {
     @Timed
     public ResponseEntity<ManagedUserRepresentation> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
-        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
+        Optional<ManagedUserRepresentation> userOptional = userService.getUserWithAuthoritiesByLogin(login);
         if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
+            return ResponseEntity.ok(userOptional.get());
         }
         throw new ResourceNotFound("User not found.");
     }
@@ -264,9 +236,9 @@ public class UserResource {
     @Timed
     public ResponseEntity<ManagedUserRepresentation> getUserByUuid(@PathVariable UUID uuid) {
         log.debug("REST request to get User : {}", uuid);
-        Optional<User> userOptional = userService.getUserByUuid(uuid);
+        Optional<ManagedUserRepresentation> userOptional = userService.getUserByUuid(uuid);
         if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userMapper.userToManagedUserVM(userOptional.get()));
+            return ResponseEntity.ok(userOptional.get());
         }
         throw new ResourceNotFound("User not found.");
     }
@@ -282,11 +254,7 @@ public class UserResource {
     @Timed
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
-        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(login);
-        if (!userOptional.isPresent()) {
-            throw new ResourceNotFound("User not found.");
-        }
-        userService.delete(userOptional.get());
+        userService.deleteByLogin(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
     }
 

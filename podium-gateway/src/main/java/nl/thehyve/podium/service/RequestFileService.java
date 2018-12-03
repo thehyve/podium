@@ -86,19 +86,19 @@ public class RequestFileService {
     private void checkAllowedToUpdateFile(AuthenticatedUser user, RequestFile requestFile, Request request) throws AccessDenied {
         final Set<UUID> organisationUuids = request.getOrganisations();
         if (requestFile.getOwner() != null) {
-            log.info("File owner not null: {}", requestFile.getOwner());
+            log.debug("File owner not null: {}", requestFile.getOwner());
             if (requestFile.getOwner().equals(user.getUserUuid()) &&
                     Status.isCurrentStatusAllowed(request.getOverviewStatus(), OverviewStatus.Draft, OverviewStatus.Revision)) {
                 // Researchers can update their own files in Draft or Revision status
                 return;
             }
         } else {
-            log.info("Checking organisation access for file with request status {}, organisation UUIDs {}",
+            log.debug("Checking organisation access for file with request status {}, organisation UUIDs {}",
                     request.getOverviewStatus(),
                     Arrays.toString(organisationUuids.toArray(new UUID[] {})));
 
             for (UUID organisationUuid: user.getOrganisationAuthorities().keySet()) {
-                log.info("Organisation {}: {}", organisationUuid,
+                log.debug("Organisation {}: {}", organisationUuid,
                         Arrays.toString(user.getOrganisationAuthorities().get(organisationUuid).toArray(new String[] {})));
             }
             if (user.getOrganisationAuthorities().entrySet().stream().anyMatch(entry ->

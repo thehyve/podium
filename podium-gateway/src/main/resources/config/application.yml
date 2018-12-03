@@ -48,6 +48,7 @@ hystrix:
         default:
             execution:
                 isolation:
+                    strategy: THREAD
                     thread:
                         timeoutInMilliseconds: 10000
 
@@ -129,11 +130,23 @@ podium:
     mail:
         from: podium@localhost
         # base-url: https://podium.example.com
+        supportEmail: servicedesk@health-ri.nl
+        signature:
+         - |
+            BBMRI Request Portal Podium
+         - |
+            E-mail: <a href="mailto:servicedesk@health-ri.nl">servicedesk@health-ri.nl</a>
+         - |
+            Selfservice: <a href="https://trait.topdesk.net">https://trait.topdesk.net</a>
+         - |
+            Website: <a href="https://trait.health-ri.nl">https://trait.health-ri.nl</a>
+         - |
+            Telefoon: +31 (0)881167500
     swagger:
         default-include-pattern: /api/.*
         title: Podium Gateway API
         description: API documentation for the gateway component of the Podium request portal.
-        version: 0.0.1
+        version: 1.0.0
         terms-of-service-url:
         contact-name:
         contact-url: https://github.com/thehyve/podium

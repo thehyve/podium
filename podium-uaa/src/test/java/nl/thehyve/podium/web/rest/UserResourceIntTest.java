@@ -9,11 +9,10 @@ package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.test.web.rest.TestUtil;
-import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.service.MailService;
 import nl.thehyve.podium.service.UserService;
-import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,11 +32,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
+import static nl.thehyve.podium.web.rest.AccountResourceIntTest.setMandatoryFields;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -53,17 +55,17 @@ public class UserResourceIntTest {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserMapper userMapper;
-
     @Mock
     private MailService mockMailService;
 
     private MockMvc restUserMockMvc;
 
+    private MockMvc restAccountMockMvc;
+
+
     private static ManagedUserRepresentation createTestUserData() {
         ManagedUserRepresentation userData = new ManagedUserRepresentation();
-        AccountResourceIntTest.setMandatoryFields(userData);
+        setMandatoryFields(userData);
         userData.setId(null);
         userData.setLogin("joe");
         userData.setPassword(AccountResourceIntTest.VALID_PASSWORD);
@@ -78,12 +80,19 @@ public class UserResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        doNothing().when(mockMailService).sendVerificationEmail(anyObject());
+        doNothing().when(mockMailService).sendVerificationEmail(anyObject(), anyString());
+        doNothing().when(mockMailService).sendUserRegisteredEmail(
+            anyCollectionOf(UserRepresentation.class), any(UserRepresentation.class));
+        doNothing().when(mockMailService).sendAccountVerifiedEmail(anyObject());
+
+        ReflectionTestUtils.setField(userService, "mailService", mockMailService);
+
+        AccountResource accountResource = new AccountResource();
+        ReflectionTestUtils.setField(accountResource, "userService", userService);
+        this.restAccountMockMvc = MockMvcBuilders.standaloneSetup(accountResource).build();
 
         UserResource userResource = new UserResource();
         ReflectionTestUtils.setField(userResource, "userService", userService);
-        ReflectionTestUtils.setField(userResource, "mailService", mockMailService);
-        ReflectionTestUtils.setField(userResource, "userMapper", userMapper);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource).build();
     }
 
@@ -115,7 +124,7 @@ public class UserResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isCreated());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isTrue();
     }
 
@@ -129,8 +138,40 @@ public class UserResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isBadRequest());
 
-        Optional<User> user = userService.getUserWithAuthoritiesByLogin("joe");
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(user.isPresent()).isFalse();
+    }
+
+    @Test
+    public void testVerifyAccount() throws Exception {
+        ManagedUserRepresentation userData = createTestUserData();
+        setMandatoryFields(userData);
+
+        restAccountMockMvc.perform(
+            post("/api/register")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(userData)))
+            .andExpect(status().isCreated());
+
+        Optional<ManagedUserRepresentation> user = userService.getUserWithAuthoritiesByLogin("joe");
+        assertThat(user.isPresent()).isTrue();
+
+        Thread.sleep(1000);
+
+        verify(mockMailService).sendVerificationEmail(anyObject(), anyString());
+
+        userData = user.get();
+        userData.setAdminVerified(true);
+
+        restUserMockMvc.perform(
+            put("/api/users")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(userData)))
+            .andExpect(status().isOk());
+
+        Thread.sleep(1000);
+
+        verify(mockMailService).sendAccountVerifiedEmail(anyObject());
     }
 
 }

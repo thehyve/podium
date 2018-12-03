@@ -27,7 +27,7 @@ export class PdmMainComponent implements OnInit {
     private getPageTitle(routeSnapshot: ActivatedRouteSnapshot) {
         let title: string = (routeSnapshot.data && routeSnapshot.data['pageTitle'])
             ? routeSnapshot.data['pageTitle']
-            : 'BBMRI Podium Request Portal';
+            : 'BBMRI Request Portal Podium';
         if (routeSnapshot.firstChild) {
             title = this.getPageTitle(routeSnapshot.firstChild) || title;
         }

@@ -136,19 +136,19 @@ public class TestResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(userData)))
             .andExpect(status().isCreated());
 
-        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin("bbmri_admin");
+        Optional<ManagedUserRepresentation> userOptional = userService.getUserWithAuthoritiesByLogin("bbmri_admin");
         assertThat(userOptional.isPresent()).isTrue();
-        User user = userOptional.get();
-        assertThat(user.getAuthorityNames()).containsExactly(AuthorityConstants.BBMRI_ADMIN);
+        ManagedUserRepresentation user = userOptional.get();
+        assertThat(user.getAuthorities()).containsExactly(AuthorityConstants.BBMRI_ADMIN);
     }
 
     @Test
     @Transactional
     public void testCreateValidatedUser() throws Exception {
         createJoe();
-        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin("joe");
+        Optional<ManagedUserRepresentation> userOptional = userService.getUserWithAuthoritiesByLogin("joe");
         assertThat(userOptional.isPresent()).isTrue();
-        User user = userOptional.get();
+        ManagedUserRepresentation user = userOptional.get();
         assertThat(user.isAdminVerified());
         assertThat(user.isEmailVerified());
     }
@@ -158,7 +158,7 @@ public class TestResourceIntTest {
         organisationData.setName("Test organisation");
         organisationData.setShortName("Test");
         organisationData.setActivated(true);
-        organisationData.setRequestTypes(new HashSet<RequestType>(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material)));
+        organisationData.setRequestTypes(new HashSet<>(Arrays.asList(RequestType.Data, RequestType.Images, RequestType.Material)));
 
         final OrganisationRepresentation[] organisation = new OrganisationRepresentation[1];
 
@@ -197,7 +197,7 @@ public class TestResourceIntTest {
         assertThat(role.getUsers()).isEmpty();
 
         createJoe();
-        User joe = userService.getUserWithAuthoritiesByLogin("joe").get();
+        ManagedUserRepresentation joe = userService.getUserWithAuthoritiesByLogin("joe").get();
         TestRoleRepresentation assignment = new TestRoleRepresentation();
         assignment.setAuthority(AuthorityConstants.ORGANISATION_COORDINATOR);
         assignment.setOrganisation(testOrganisation.getShortName());
@@ -215,7 +215,7 @@ public class TestResourceIntTest {
             organisation,
             AuthorityConstants.ORGANISATION_COORDINATOR);
         assertThat(role.getUsers()).isNotEmpty();
-        assertThat(role.getUsers()).containsExactly(joe);
+        assertThat(role.getUsers().stream().map(User::getUuid)).containsExactly(joe.getUuid());
     }
 
     @Test
@@ -269,7 +269,7 @@ public class TestResourceIntTest {
         createBbmriAdmin();
 
         // Assign bbmri_admin user to bbrmi_admin role
-        User bbmriAdmin = userService.getUserWithAuthoritiesByLogin("bbmri_admin").get();
+        ManagedUserRepresentation bbmriAdmin = userService.getUserWithAuthoritiesByLogin("bbmri_admin").get();
         TestRoleRepresentation assignment = new TestRoleRepresentation();
         assignment.setAuthority(AuthorityConstants.BBMRI_ADMIN);
         Set<String> users = new HashSet<>();

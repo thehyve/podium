@@ -97,13 +97,12 @@ public class OrganisationServer implements OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
      * or with status 400 (Bad Request) if the organisation is not valid,
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_ADMIN)
     @SecuredByAuthority({AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/organisations")
     public ResponseEntity<OrganisationRepresentation> updateOrganisation(@OrganisationParameter @Valid @RequestBody OrganisationRepresentation organisationRepresentation)
-        throws ResourceNotFound, URISyntaxException {
+        throws ResourceNotFound {
             log.debug("REST request to update Organisation : {}", organisationRepresentation);
             if (organisationRepresentation.getId() == null) {
                 throw new ResourceNotFound("ID not defined for organisation.");
@@ -137,11 +136,9 @@ public class OrganisationServer implements OrganisationResource {
      * GET  /organisations/all : get all the organisations.
      *
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @Override
-    public ResponseEntity<List<OrganisationRepresentation>> getAllOrganisations()
-        throws URISyntaxException {
+    public ResponseEntity<List<OrganisationRepresentation>> getAllOrganisations() {
         log.debug("REST request to get all Organisations");
         Page<OrganisationRepresentation> page = organisationService.findAll(null);
         List<OrganisationRepresentation> result = page.getContent();
@@ -242,12 +239,10 @@ public class OrganisationServer implements OrganisationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the updated organisation,
      * or with status 400 (Bad Request) if the organisation is not valid,
      * or with status 500 (Internal Server Error) if the organisation couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/organisations/{uuid}/activation")
     public ResponseEntity<OrganisationRepresentation> setOrganisationActivation(
-        @PathVariable UUID uuid,  @RequestParam(value = "value", required = true) boolean activation) throws
-        URISyntaxException {
+        @PathVariable UUID uuid,  @RequestParam(value = "value") boolean activation) {
 
         log.debug("REST request to activate/deactivate Organisation : {}", uuid, activation);
         OrganisationRepresentation updatedOrganisationRepresentation = organisationService.activation(uuid, activation);

@@ -70,14 +70,6 @@ public class OAuth2TokenMockUtil {
         return new OAuth2PostProcessor(uuid);
     }
 
-    public RequestPostProcessor oauth2Authentication(String username, Set<String> scopes) {
-        return oauth2Authentication(username, scopes, Collections.emptySet());
-    }
-
-    public RequestPostProcessor oauth2Authentication(String username) {
-        return oauth2Authentication(username, Collections.emptySet());
-    }
-
     private OAuth2Authentication createAuthentication(UserAuthenticationToken authentication) {
         authentication.setAuthenticated(true);
 

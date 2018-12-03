@@ -8,7 +8,11 @@
 package nl.thehyve.podium.web.rest;
 
 import nl.thehyve.podium.PodiumUaaApp;
+import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
+import nl.thehyve.podium.common.security.SerialisedUser;
+import nl.thehyve.podium.common.security.UserAuthenticationToken;
+import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.common.test.OAuth2TokenMockUtil;
 import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.User;
@@ -78,21 +82,22 @@ public class AuthenticationIntTest {
     }
 
     private RequestPostProcessor bbmriAdminToken() {
-        return tokenUtil.oauth2Authentication(
-            "bbmri_admin",
-            Sets.newSet("some-client"),
-            Sets.newSet(AuthorityConstants.BBMRI_ADMIN));
+        AuthenticatedUser user = new SerialisedUser(UUID.randomUUID(),
+            "bbmri_admin", Sets.newSet(AuthorityConstants.BBMRI_ADMIN), null);
+        UserAuthenticationToken token = new UserAuthenticationToken(user);
+        token.setAuthenticated(true);
+        return tokenUtil.oauth2Authentication(token);
     }
 
     @Before
     public void setup() throws UserAccountException {
-        ManagedUserRepresentation testUser = new ManagedUserRepresentation();
+        UserRepresentation testUser = new UserRepresentation();
         testUser.setLogin(testUserName);
-        testUser.setPassword(testPassword);
         testUser.setEmail(testEmail);
         testUser.setFirstName("testFirstName");
         testUser.setLastName("testLastName");
-        User user = userService.registerUser(testUser);
+        User user = userService.createUser(testUser);
+        userService.changePassword(user, testPassword);
         user.setEmailVerified(true);
         user.setAdminVerified(true);
         user = userService.save(user);
