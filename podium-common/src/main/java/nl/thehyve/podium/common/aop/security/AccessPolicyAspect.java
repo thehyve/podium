@@ -13,6 +13,7 @@ import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.security.annotations.SecuredByCurrentUser;
 import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.service.AccessPolicyService;
+import nl.thehyve.podium.common.service.SecurityService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,13 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +54,9 @@ public class AccessPolicyAspect {
 
     @Autowired
     AccessPolicyService accessPolicyService;
+
+    @Autowired
+    SecurityService securityService;
 
     /**
      * Pointcut that matches all Web REST endpoints in the <code>nl.thehyve.podium.web.rest</code> package.
@@ -85,6 +90,48 @@ public class AccessPolicyAspect {
             .collect(Collectors.toList());
     }
 
+    private boolean hasAccess(JoinPoint joinPoint) {
+        Collection<Annotation> methodAnnotations = getMethodAnnotations(joinPoint);
+        if (!methodAnnotations.isEmpty()) {
+            for (Annotation annotation : methodAnnotations) {
+                log.debug("Checking security method annotation: {}", annotation);
+                if (accessPolicyService.checkSecurityAnnotation(annotation, joinPoint)) {
+                    return true;
+                }
+            }
+            log.debug("Access denied: no method level security rules are satisfied.");
+            return false;
+        }
+        Collection<Annotation> classAnnotations = getClassAnnotations(joinPoint);
+        if (!classAnnotations.isEmpty()) {
+            for (Annotation annotation : classAnnotations) {
+                log.debug("Checking security class annotation: {}", annotation);
+                if (accessPolicyService.checkSecurityAnnotation(annotation, joinPoint)) {
+                    return true;
+                }
+            }
+            log.debug("Access denied: no class level security rules are satisfied.");
+            throw new AccessDeniedException("Access denied.");
+        }
+        log.debug("Access denied: no method level or class level security rules found.");
+        return false;
+    }
+
+    private String formatRequest(JoinPoint joinPoint) {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+            UUID objectUuid = null;
+            if (request.getMethod().equals("PUT")) {
+                // Get UUID from request body
+                objectUuid = accessPolicyService.getSecuredObjectUuid(joinPoint);
+            }
+            return request.getMethod() + " " + request.getRequestURI() +
+                (objectUuid == null ? "" : " (object UUID: " + objectUuid + ")");
+        }
+        return joinPoint.getSignature().toShortString();
+    }
+
     /**
      * Before execution of the method, check if any security rule for the method is satisfied.
      * Throws an {@link AccessDeniedException} if not.
@@ -93,30 +140,13 @@ public class AccessPolicyAspect {
      */
     @Before("controllersPointcut()")
     public void checkAccess(JoinPoint joinPoint) {
-        log.debug("Checking access policy on {}", joinPoint.getSignature().toShortString());
-        Collection<Annotation> methodAnnotations = getMethodAnnotations(joinPoint);
-        if (!methodAnnotations.isEmpty()) {
-            for (Annotation annotation : methodAnnotations) {
-                log.debug("Checking security method annotation: {}", annotation);
-                if (accessPolicyService.checkSecurityAnnotation(annotation, joinPoint)) {
-                    return;
-                }
-            }
-            log.debug("Access denied: no method level security rules are satisfied.");
-            throw new AccessDeniedException("Access denied.");
+        UUID currentUserUuid = securityService.getCurrentUserUuid();
+        log.debug("Checking access for user {} on {}", currentUserUuid, formatRequest(joinPoint));
+        if (hasAccess(joinPoint)) {
+            log.info("Access granted to user {} on {}", currentUserUuid, formatRequest(joinPoint));
+            return;
         }
-        Collection<Annotation> classAnnotations = getClassAnnotations(joinPoint);
-        if (!classAnnotations.isEmpty()) {
-            for (Annotation annotation : classAnnotations) {
-                log.debug("Checking security class annotation: {}", annotation);
-                if (accessPolicyService.checkSecurityAnnotation(annotation, joinPoint)) {
-                    return;
-                }
-            }
-            log.debug("Access denied: no class level security rules are satisfied.");
-            throw new AccessDeniedException("Access denied.");
-        }
-        log.debug("Access denied: no method level or class level security rules found.");
+        log.info("Access denied to user {} on {}", currentUserUuid, formatRequest(joinPoint));
         throw new AccessDeniedException("Access denied.");
     }
 

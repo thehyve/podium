@@ -18,7 +18,6 @@ import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
 import nl.thehyve.podium.service.RoleService;
-import nl.thehyve.podium.service.mapper.RoleMapper;
 import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +52,6 @@ public class RoleResource {
 
     @Autowired
     private RoleService roleService;
-
-    @Autowired
-    private RoleMapper roleMapper;
 
 
     /**
