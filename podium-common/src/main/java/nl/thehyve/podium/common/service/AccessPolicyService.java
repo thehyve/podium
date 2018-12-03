@@ -49,7 +49,7 @@ public class AccessPolicyService {
     private static final Logger log = LoggerFactory.getLogger(AccessPolicyService.class);
 
     private static final Set<Class> SECURITY_ANNOTATION_TYPES = new HashSet<>();
-    {
+    static {
         SECURITY_ANNOTATION_TYPES.add(Public.class);
         SECURITY_ANNOTATION_TYPES.add(AnyAuthorisedUser.class);
         SECURITY_ANNOTATION_TYPES.add(SecuredByAuthority.class);
@@ -79,14 +79,14 @@ public class AccessPolicyService {
      */
     private boolean checkSecuredByAuthority(SecuredByAuthority annotation) {
         for (String authority: annotation.value()) {
-            log.info("Annotation authority: {}", authority);
+            log.debug("Annotation authority: {}", authority);
         }
         if (securityService.isCurrentUserInAnyRole(annotation.value())) {
-            log.info("Access granted to user based on authorities {}",
+            log.debug("Access granted to user based on authorities {}",
                 Arrays.toString(annotation.value()));
             return true;
         } else {
-            log.info("Access denied to user based on authorities {}",
+            log.debug("Access denied to user based on authorities {}",
                 Arrays.toString(annotation.value()));
             return false;
         }
@@ -128,18 +128,7 @@ public class AccessPolicyService {
         return request.getRequestUuid();
     }
 
-    /**
-     * Gets the parameter with name {@code name} from the current execution context ({@code joinPoint})
-     * and returns the value with type {@code parameterType}.
-     * Returns null if the parameter is not of a compatible type or if the metadata of the function cannot
-     * be found (e.g., multiple methods with the same name).
-     *
-     * @param joinPoint the current execution context.
-     * @return the value of the parameter with name @{code name} as type {@code parameterType} if
-     * the value is of compatible type and the metadata can be found; null otherwise.
-     */
-    private UUID getUuid(JoinPoint joinPoint, Function<Object, UUID> getObjectUuid,
-                             Class<? extends Annotation> objectAnnotation, Class<? extends Annotation> uuidAnnotation) {
+    private static Method getMethod(JoinPoint joinPoint) {
         Signature signature = joinPoint.getStaticPart().getSignature();
         Class type = signature.getDeclaringType();
         List<Method> methods = Arrays.stream(type.getDeclaredMethods()).filter(m ->
@@ -157,6 +146,26 @@ public class AccessPolicyService {
             log.error("Unexpected argument list length: {} (expected {}).",
                 joinPoint.getArgs().length,
                 method.getParameterCount());
+            return null;
+        }
+
+        return method;
+    }
+
+    /**
+     * Gets the parameter with name {@code name} from the current execution context ({@code joinPoint})
+     * and returns the value with type {@code parameterType}.
+     * Returns null if the parameter is not of a compatible type or if the metadata of the function cannot
+     * be found (e.g., multiple methods with the same name).
+     *
+     * @param joinPoint the current execution context.
+     * @return the value of the parameter with name @{code name} as type {@code parameterType} if
+     * the value is of compatible type and the metadata can be found; null otherwise.
+     */
+    private UUID getUuid(JoinPoint joinPoint, Function<Object, UUID> getObjectUuid,
+                             Class<? extends Annotation> objectAnnotation, Class<? extends Annotation> uuidAnnotation) {
+        Method method = getMethod(joinPoint);
+        if (method == null) {
             return null;
         }
         for(int i=0; i < method.getParameterCount(); i++) {
@@ -189,7 +198,42 @@ public class AccessPolicyService {
                 log.debug("No annotation of type {} found on {}", objectAnnotation.getSimpleName(), parameter.getName());
             }
         }
-        log.info("No match... returning null.");
+        log.error("No match... returning null.");
+        return null;
+    }
+
+    /**
+     * Gets the first parameter with a secured object annotation from the current execution context ({@code joinPoint})
+     * and returns the UUID of the object.
+     * Returns null if the parameter is not of a compatible type or if the metadata of the function cannot
+     * be found (e.g., multiple methods with the same name).
+     *
+     * Intended for gathering data for logging of actions.
+     *
+     * @param joinPoint the current execution context.
+     * @return the UUID of the secured object if the value is of compatible type and the metadata can be found;
+     * null otherwise.
+     */
+    public UUID getSecuredObjectUuid(JoinPoint joinPoint) {
+        Method method = getMethod(joinPoint);
+        if (method == null) {
+            return null;
+        }
+        for(int i=0; i < method.getParameterCount(); i++) {
+            Parameter parameter = method.getParameters()[i];
+            if (parameter.getAnnotationsByType(UserParameter.class).length > 0) {
+                Object value = joinPoint.getArgs()[i];
+                return getUserUuid(value);
+            }
+            if (parameter.getAnnotationsByType(OrganisationParameter.class).length > 0) {
+                Object value = joinPoint.getArgs()[i];
+                return getOrganisationUuid(value);
+            }
+            if (parameter.getAnnotationsByType(RequestParameter.class).length > 0) {
+                Object value = joinPoint.getArgs()[i];
+                return getRequestUuid(value);
+            }
+        }
         return null;
     }
 

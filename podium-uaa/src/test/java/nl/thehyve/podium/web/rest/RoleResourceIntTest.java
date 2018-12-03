@@ -90,7 +90,6 @@ public class RoleResourceIntTest {
 
         RoleResource roleResource = new RoleResource();
         ReflectionTestUtils.setField(roleResource, "roleService", roleService);
-        ReflectionTestUtils.setField(roleResource, "roleMapper", roleMapper);
 
         this.restRoleMockMvc = MockMvcBuilders.standaloneSetup(roleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

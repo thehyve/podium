@@ -46,7 +46,7 @@ public class RequestSecurityService {
      * false otherwise.
      */
     public boolean isCurrentUserInOrganisationRoleForRequest(UUID requestUuid, String authority) {
-        log.info("Checking access for request {}, role {}", requestUuid, authority);
+        log.debug("Checking access for request {}, role {}", requestUuid, authority);
         if (internalRequestResource == null) {
             log.error("No request resource available.");
             return false;
@@ -85,7 +85,7 @@ public class RequestSecurityService {
      * @return true if current user is the owner (requester) of the request; false otherwise.
      */
     public boolean isCurrentUserOwnerOfRequest(UUID requestUuid) {
-        log.info("Checking access for requester of request {}", requestUuid);
+        log.debug("Checking access for requester of request {}", requestUuid);
         if (internalRequestResource == null) {
             log.error("No request resource available.");
             return false;

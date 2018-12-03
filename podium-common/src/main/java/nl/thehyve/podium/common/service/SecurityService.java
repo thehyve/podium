@@ -104,8 +104,8 @@ public class SecurityService {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
         if (authentication != null) {
-            if (authentication.getPrincipal() instanceof SerialisedUser) {
-                return ((SerialisedUser) authentication.getPrincipal());
+            if (authentication.getPrincipal() instanceof AuthenticatedUser) {
+                return ((AuthenticatedUser) authentication.getPrincipal());
             }
         }
         // Otherwise extract it from the authentication token
