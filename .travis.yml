@@ -25,7 +25,6 @@ env:
     - PODIUM_SCRIPTS=$PODIUM_TRAVIS/scripts
     - SPRING_OUTPUT_ANSI_ENABLED=ALWAYS
     - SPRING_JPA_SHOW_SQL=false
-    - MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cl‌​i.transfer.Slf4jMave‌​nTransferListener=wa‌​rn"
     - PODIUM_UAA_RUN_PORT=8999
   matrix:
     - TASK=integration
