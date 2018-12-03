@@ -97,6 +97,17 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${javax-servlet-api.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>android-json</artifactId>
+                    <groupId>com.vaadin.external.google</groupId>
+                </exclusion>
+            </exclusions>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Discovery client -->
         <dependency>
