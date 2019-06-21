@@ -15,7 +15,7 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
         <version>1.5.17.RELEASE</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>nl.thehyve.podium</groupId>
@@ -79,8 +79,8 @@
         <node.version>v8.12.0</node.version>
         <postgresql.version>9.4.1212</postgresql.version>
         <!-- These remain empty unless the corresponding profile is active -->
-        <profile.no-liquibase />
-        <profile.swagger />
+        <profile.no-liquibase/>
+        <profile.swagger/>
         <!-- Sonar properties -->
         <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
         <prometheus-simpleclient.version>0.0.20</prometheus-simpleclient.version>
@@ -121,7 +121,7 @@
 
         <!-- Spring properties -->
         <spring-cloud.version>Dalston.SR2</spring-cloud.version>
-        <spring-security.version>4.2.8.RELEASE</spring-security.version>
+        <spring-security.version>4.2.13.RELEASE</spring-security.version>
         <spring-security-oauth.version>2.0.15.RELEASE</spring-security-oauth.version>
         <springfox.version>2.7.0</springfox.version>
         <yarn.version>v1.10.1</yarn.version>
