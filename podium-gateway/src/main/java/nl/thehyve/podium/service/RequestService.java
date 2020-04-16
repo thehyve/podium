@@ -271,7 +271,7 @@ public class RequestService {
         RequestDetailRepresentation requestData = requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRevisionDetail());
         validateRequest(requestData);
 
-        request.setRequestDetail(request.getRevisionDetail());
+        request.setRequestDetail(requestDetailMapper.clone(request.getRevisionDetail()));
 
         // Update the request details with the updated revision details
         requestRepository.save(request);
