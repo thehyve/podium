@@ -17,7 +17,7 @@ const ENV = 'prod';
 const path = require('path');
 
 module.exports = webpackMerge(commonConfig({env: ENV}), {
-        devtool: 'source-map',
+        devtool: '',
         output: {
         path: path.resolve('target/www') ,
         filename: '[hash].[name].bundle.js',

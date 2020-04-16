@@ -33,28 +33,28 @@
             <br/>
             You will be notified by email when your account is verified.
         </div>
+        <form class="form-signin" role="form" (ngSubmit)="login()">
+            <h2 class="form-signin-heading">Sign in</h2>
+            <label for="username" class="sr-only">Username</label>
+            <input  type="text" class="form-control" name="username" id="username" autocomplete="off"
+                    placeholder="{{'global.form.username.placeholder' | translate}}"
+                    [(ngModel)]="username">
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" class="form-control" name="password" id="password" autocomplete="off"
+                   placeholder="{{'login.form.password.placeholder' | translate}}"
+                   [(ngModel)]="password">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="rememberMe" id="rememberMe"
+                           [(ngModel)]="rememberMe" checked> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <hr>
+            <button class="btn btn-secondary btn-block" type="button" (click)="register()">Register a new account</button>
+            <br>
+            Forgot your password? <br>
+            <a tabindex="" (click)="requestResetPassword()">Request a password reset link</a>.
+        </form>
     </div>
-    <form class="form-signin" role="form" (ngSubmit)="login()">
-        <h2 class="form-signin-heading">Sign in</h2>
-        <label for="username" class="sr-only">Username</label>
-        <input  type="text" class="form-control" name="username" id="username" autocomplete="off"
-                placeholder="{{'global.form.username.placeholder' | translate}}"
-                [(ngModel)]="username">
-        <label for="password" class="sr-only">Password</label>
-        <input type="password" class="form-control" name="password" id="password" autocomplete="off"
-               placeholder="{{'login.form.password.placeholder' | translate}}"
-               [(ngModel)]="password">
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" name="rememberMe" id="rememberMe"
-                       [(ngModel)]="rememberMe" checked> Remember me
-            </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        <hr>
-        <button class="btn btn-secondary btn-block" type="button" (click)="register()">Register a new account</button>
-        <br>
-        Forgot your password? <br>
-        <a tabindex="" (click)="requestResetPassword()">Request a password reset link</a>.
-    </form>
 </div>

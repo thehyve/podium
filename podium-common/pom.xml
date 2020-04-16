@@ -7,7 +7,7 @@
     <parent>
         <groupId>nl.thehyve.podium</groupId>
         <artifactId>podium</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <relativePath>../</relativePath>
     </parent>
 
@@ -299,7 +299,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
+            <version>${lombok.version}</version>
         </dependency>
 
         <!-- Springfox / Swagger -->
