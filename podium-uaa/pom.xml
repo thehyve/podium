@@ -14,7 +14,7 @@
     <parent>
         <artifactId>podium</artifactId>
         <groupId>nl.thehyve.podium</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
         <relativePath>../</relativePath>
     </parent>
 

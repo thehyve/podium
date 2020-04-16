@@ -118,7 +118,7 @@ podium:
     swagger:
         title: Podium UAA API
         description: API documentation for the user management and authentication component of the Podium request portal.
-        version: 1.0.0
+        version: 1.0.1
         termsOfServiceUrl:
         contactName:
         contactUrl: https://github.com/thehyve/podium
