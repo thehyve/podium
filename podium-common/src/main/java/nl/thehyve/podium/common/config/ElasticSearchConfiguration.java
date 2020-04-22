@@ -17,9 +17,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.EntityMapper;
+import org.springframework.data.mapping.model.MappingException;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class ElasticSearchConfiguration {
@@ -40,13 +43,21 @@ public class ElasticSearchConfiguration {
         }
 
         @Override
-        public String mapToString(Object object) throws IOException {
-            return objectMapper.writeValueAsString(object);
+        public String mapToString(Object object) {
+            try {
+                return objectMapper.writeValueAsString(object);
+            } catch (IOException e) {
+                throw new MappingException(e.getMessage(), e);
+            }
         }
 
         @Override
-        public <T> T mapToObject(String source, Class<T> clazz) throws IOException {
+        public <T> T mapToObject(String source, Class<T> clazz) {
+            try {
             return objectMapper.readValue(source, clazz);
+            } catch (IOException e) {
+                throw new MappingException(e.getMessage(), e);
+            }
         }
     }
 }
