@@ -70,7 +70,7 @@ public class RequestReviewProcessService {
     }
 
     private static final Map<RequestReviewStatus, ReviewTask> taskForStatus = new HashMap<>(3);
-    {
+    static {
         taskForStatus.put(RequestReviewStatus.Validation, ReviewTask.Validation);
         taskForStatus.put(RequestReviewStatus.Review, ReviewTask.Review);
         taskForStatus.put(RequestReviewStatus.Revision, ReviewTask.Revision);
