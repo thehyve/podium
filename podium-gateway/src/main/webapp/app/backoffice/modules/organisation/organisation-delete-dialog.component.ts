@@ -38,8 +38,8 @@ export class OrganisationDeleteDialogComponent {
         this.router.navigate([RouterHelper.getNavUrlForRouterPopup(this.router)], { replaceUrl: true });
     }
 
-    confirmDelete (id: number) {
-        this.organisationService.delete(id).subscribe(response => {
+    confirmDelete (uuid: string) {
+        this.organisationService.delete(uuid).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'organisationListModification',
                 content: 'Deleted an organisation'

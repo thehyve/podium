@@ -15,7 +15,7 @@
                 [routerLink]="['./', { outlets: { popup: ['new'] } }]" skipLocationChange
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
             <span class="material-icons">add_circle_outline</span>
-            <span jhiTranslate="userManagement.home.createLabel">Create a new User</span>
+            <span jhiTranslate="userManagement.home.createLabel">Create a new user</span>
         </button>
     </h2>
     <pdm-alert></pdm-alert>
@@ -40,7 +40,7 @@
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']" jhiSortBy="createdDate">
-                    <span jhiTranslate="userManagement.createdDate">Created Date</span>
+                    <span jhiTranslate="userManagement.createdDate">Created date</span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th></th>
