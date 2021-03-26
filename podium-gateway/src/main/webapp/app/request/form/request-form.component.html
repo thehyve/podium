@@ -10,8 +10,8 @@
 
 <div class="content-wrapper" *ngIf="requestBase">
     <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
-        <h1 *ngIf="requestBase.status === 'Draft'" jhiTranslate="request.form.header.new">New Request</h1>
-        <h1 *ngIf="requestBase.status !== 'Draft'" jhiTranslate="request.form.header.edit">Edit Request</h1>
+        <h1 *ngIf="requestBase.status === 'Draft'" jhiTranslate="request.form.header.new">New request</h1>
+        <h1 *ngIf="requestBase.status !== 'Draft'" jhiTranslate="request.form.header.edit">Edit request</h1>
     </div>
 
     <div class="card-container"
@@ -55,12 +55,12 @@
                     </div>
                 </div>
 
-                <h3 jhiTranslate="request.form.header.requestDetails">Request Details</h3>
+                <h3 jhiTranslate="request.form.header.requestDetails">Request details</h3>
 
                 <!-- Request type -->
                 <div class="form-group">
                     <label for="requestTypes" jhiTranslate="request.form.requestType.label">
-                        Request Type(s)*
+                        Request type(s)*
                     </label>
                     <span tooltip="{{'request.form.requestType.tooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
@@ -111,7 +111,7 @@
 
                 <!-- Linked Request-->
                 <div class="form-group">
-                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked Request</label>
+                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked request</label>
                     <span tooltip="{{'request.form.isLinked.tooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
                     </span>
@@ -133,7 +133,7 @@
                 <!-- Search Query -->
                 <div class="form-group">
                     <label for="methods"
-                           jhiTranslate="request.form.searchQuery.label">Search Criteria</label>
+                           jhiTranslate="request.form.searchQuery.label">Search criteria</label>
                     <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
                               autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
                               required minlength="1" rows="4" #searchQuery="ngModel"
@@ -157,7 +157,7 @@
                 </div>
                 <h3>
                     <span jhiTranslate="request.form.header.researchProposal">
-                        Research Proposal
+                        Research proposal
                     </span>
                     <span tooltip="{{'request.form.header.researchProposalTooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
@@ -196,7 +196,7 @@
                 <!-- Research Question -->
                 <div class="form-group">
                     <label for="researchQuestion"
-                           jhiTranslate="request.form.researchQuestion.label">Research Question</label>
+                           jhiTranslate="request.form.researchQuestion.label">Research question</label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off"
                               placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
@@ -287,7 +287,7 @@
                 <!-- Related Request Number -->
                 <div class="form-group">
                     <label for="relatedRequestNumber"
-                           jhiTranslate="request.form.relatedRequestNumber.label">Related Request Number</label>
+                           jhiTranslate="request.form.relatedRequestNumber.label">Related request number</label>
                     <input type="text" class="form-control" name="relatedRequestNumber" id="relatedRequestNumber"
                            maxlength="50" autocomplete="off" #relatedRequestNumber="ngModel"
                            placeholder="{{'request.form.relatedRequestNumber.placeholder' | translate}}"
@@ -301,7 +301,7 @@
                     </div>
                 </div>
 
-                <h3 jhiTranslate="request.form.header.principalInvestigator">Principal Investigator Details</h3>
+                <h3 jhiTranslate="request.form.header.principalInvestigator">Principal investigator details</h3>
 
                 <div class="row">
                     <div class="col-md-6 col-sm-12">

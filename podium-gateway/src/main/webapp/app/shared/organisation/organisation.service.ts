@@ -64,8 +64,8 @@ export class OrganisationService {
         });
     }
 
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(uuid: string): Observable<Response> {
+        return this.http.delete(`${this.resourceUrl}/${uuid}`);
     }
 
     search(req?: any): Observable<Response> {

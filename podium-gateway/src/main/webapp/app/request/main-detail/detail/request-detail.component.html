@@ -22,7 +22,7 @@
                         {{ organisation.name | capitalize }}
                     </span>
                 </dd>
-                <dt><span jhiTranslate="request.detail.requestTypes">Request Types</span></dt>
+                <dt><span jhiTranslate="request.detail.requestTypes">Request types</span></dt>
                 <dd>
                     <ul>
                         <li class="test-requestType" *ngFor="let requestType of requestDetails.requestType">
@@ -30,11 +30,11 @@
                         </li>
                     </ul>
                 </dd>
-                <dt><span jhiTranslate="request.detail.isLinked">Linked Request</span></dt>
+                <dt><span jhiTranslate="request.detail.isLinked">Linked request</span></dt>
                 <dd>
                     <strong><span class="test-combinedRequest">{{requestDetails.combinedRequest ? 'Yes' : 'No' }}</span></strong>
                 </dd>
-                <dt><span jhiTranslate="request.detail.searchQuery">Search Query</span></dt>
+                <dt><span jhiTranslate="request.detail.searchQuery">Search query</span></dt>
                 <dd>
                     <span class="test-searchQuery">{{requestDetails.searchQuery}}</span>
                 </dd>
@@ -43,7 +43,7 @@
                 <dd>
                     <span class="test-background">{{requestDetails.background}}</span>
                 </dd>
-                <dt><span jhiTranslate="request.detail.researchQuestion">Research Question</span></dt>
+                <dt><span jhiTranslate="request.detail.researchQuestion">Research question</span></dt>
                 <dd>
                     <span class="test-researchQuestion">{{requestDetails.researchQuestion}}</span>
                 </dd>
@@ -55,11 +55,11 @@
                 <dd>
                     <span class="test-methods">{{requestDetails.methods}}</span>
                 </dd>
-                <dt><span jhiTranslate="request.detail.relatedRequestNumber">Related Request Number</span></dt>
+                <dt><span jhiTranslate="request.detail.relatedRequestNumber">Related request number</span></dt>
                 <dd>
                     <span class="test-relatedRequestNumber">{{requestDetails.relatedRequestNumber || '-'}}</span>
                 </dd>
-                <dt><span jhiTranslate="request.detail.principalInvestigator">Principal Investigator</span></dt>
+                <dt><span jhiTranslate="request.detail.principalInvestigator">Principal investigator</span></dt>
                 <dd>
                     <address>
                         <strong class="small test-piName">{{ requestDetails.principalInvestigator.name}}</strong><br/>

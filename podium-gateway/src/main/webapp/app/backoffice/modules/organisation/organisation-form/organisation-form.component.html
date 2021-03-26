@@ -16,7 +16,7 @@
             </h2>
 
             <tabset>
-                <tab heading="Organisation Details">
+                <tab heading="Organisation details">
                         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
                             <pdm-alert></pdm-alert>
                             <pdm-alert-error></pdm-alert-error>
@@ -62,7 +62,7 @@
 
                             <!-- Request type -->
                             <div class="form-group">
-                                <label for="requestTypes">Request Type(s): </label>
+                                <label for="requestTypes">Request type(s): </label>
                                 <div class="checkbox-group">
                                     <div *ngFor="let requestType of requestTypes | enumKeys">
                                         <label>
@@ -87,7 +87,7 @@
                                            [disabled]="isOrganisationAdmin(currentAccount)"
                                            ngDefaultControl size="small" class="float-xs-right"></ui-switch>
 
-                                <div *ngIf="isOrganisationAdmin() && !organisation.activated">
+                                <div *ngIf="isOrganisationAdmin(currentAccount) && !organisation.activated">
                                     <small class="form-text text-danger"
                                            jhiTranslate="organisation.organisationAdminInactive">
                                         Your organisation requires all fields to be filled in and has a user assigned
