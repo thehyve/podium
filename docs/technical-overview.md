@@ -93,7 +93,7 @@ Current Podium Registry version: 1.0.4; supported JDK version: 8.
 
 The UAA component is a Spring Boot application that defines user roles (Admin, Researcher etc), provides methods for user creation, password management, user search, authentication (username/password, OAuth2) etc.
 
-UAA server sends out emails to request email verification and send passwort reset links, to inform Podium administrators of user creation/registration etc.
+UAA server sends out emails to request email verification and send password reset links, to inform Podium administrators of user creation/registration etc.
 
 Special users that always exist: "admin", "system".
 
