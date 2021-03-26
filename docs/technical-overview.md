@@ -177,7 +177,7 @@ It consists of a number of sub-views:
 Gateway server is a Java/Spring app that serves as the core component of the Podium system.
 It contains entirety of the business-logic for handling Requests and Reviews, including sending emails to involved parties.
 
-Concrete steps of the Review and Delivery processes are defined with Flowable in BPMN 2.0 format.
+Concrete steps of the Review and Delivery processes are defined with [Flowable] in [BPMN 2.0] format.
 
 Gateway server uses ElasticSearch index for Delivery and Review Process info, Request Details and Review Feedback.
 
@@ -198,7 +198,7 @@ It includes shared DTOs, request type and status enums, event definitions, excep
 
 ## Workflows
 
-Request review workflow:
+[Request review workflow]:
 ```plantuml
 @startuml
 
@@ -213,7 +213,7 @@ Request review workflow:
 @enduml
 ```
 
-Delivery workflow:
+[Delivery workflow]:
 
 ```plantuml
 @startuml
@@ -239,3 +239,11 @@ The Registry Backend might also be considered redundand, since both UAA and Gate
 
 A note on ElasticSearch usage: it is possible to query ES index via the exposed API endpoints, but it seems that most, if not all, ES methods are not used within the app. E.g. `RequestService` class of the Gateway Frontend includes a `search` method calling `GET api/_search/requests` — but this method is never invoked.
 It might be possible to get rid of the ElasticSearch dependency.
+
+
+[//]: # (References)
+
+[Flowable]: https://flowable.com/open-source/docs/
+[BPMN 2.0]: https://www.omg.org/spec/BPMN/2.0/About-BPMN/
+[Request review workflow]: ../podium-gateway/src/main/resources/processes/podium_request_review.001.bpmn20.xml
+[Delivery workflow]: ../podium-gateway/src/main/resources/processes/podium_delivery.001.bpmn20.xml
