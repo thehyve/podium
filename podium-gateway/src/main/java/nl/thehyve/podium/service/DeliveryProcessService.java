@@ -69,7 +69,7 @@ public class DeliveryProcessService {
     }
 
     private static final Map<DeliveryStatus, DeliveryTask> taskForStatus = new HashMap<>(3);
-    {
+    static {
         taskForStatus.put(DeliveryStatus.Preparation, DeliveryTask.Preparation);
         taskForStatus.put(DeliveryStatus.Released, DeliveryTask.Released);
     }
