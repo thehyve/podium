@@ -77,11 +77,11 @@ RequestES -[hidden]-> RequestDB
 
 The registry is a system administration component that plays a role of a service discovery hub and a configuration provider used by the other components of the Podium system.
 
-Registry webapp displays the system health status, lists running component instances, shows configuration options & environment variables, and gives access to various metrics that might be useful to monitor the system status.
+Registry frontend is an AngularJS webapp that displays the system health status, lists running component instances, shows configuration options & environment variables, and gives access to various metrics that might be useful to monitor the system status.
 The webapp fetches all data from the registry backend only, it does not interact with any other components.
 Since the webapp is not supposed to be accessible to end users and is not essential to run the Podium system; it is reasonable to assume that non-backward compatible changes are completely acceptable during the upgrade as long as a technical user can find metrics necessary for operations & maintenance.
 
-Supported NodeJS version: 8.12.0+; supported AngularJS version: 1.7.5.
+Supported NodeJS version: 8.12.0+.
 
 
 The registry Backend is a Spring Boot application, based on Netflix Eureka for service discovery and using Spring Cloud Config to fetch git-based configuration data. The API provided by the registry Backend is essential to run the Podium, but the concrete functionality can better be described in the context of the dependent components, as certain endpoints, e.g. `/config/*`, are not implemented explicitly as a part of the project — see Spring documentation for details.
@@ -111,7 +111,8 @@ Current Podium UAA version: 1.0.2; supported JDK version: 8.
 
 ### Gateway Frontend
 
-Supported NodeJS version: 8.12.0+; supported Angular version: 4.4.7.
+Gateway Frontend is a user-facing Angular application.
+Supported NodeJS version: 8.12.0+.
 Internationalization is supported, but only English translations are present.
 
 #### General Pages
