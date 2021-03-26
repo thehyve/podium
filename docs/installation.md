@@ -226,4 +226,4 @@ select u.id, r.id from podium_user u, podium_role r where u.login = '<login>' an
 update podium_user set admin_verified = true where login = '<login>';
 ```
 
-[Molgenis Biobank Directory]: https://molgenis.gitbooks.io/molgenis/content/user_documentation/catalogues/biobank-directory.html
+[Molgenis Biobank Directory]: https://molgenis.gitbooks.io/molgenis/content/v/7.4/user_documentation/catalogues/biobank-directory.html
