@@ -9,7 +9,7 @@ Project source code is available in the following repositories:
 - https://github.com/thehyve/podium — core functionality.
 
 Project codebase is maintained by The Hyve.
-For technical questions you can contact alexey@thehyve.nl or gijs@thehyve.nl
+To report technical issues and provide feedback you can use the Github Issues page: https://github.com/thehyve/podium/issues
 
 
 ## Purpose of the document
@@ -41,7 +41,7 @@ node "Gateway" {
 
 cloud {
   [Github Config]
-  [Registry API] --> [Github Config]
+  [Registry API] --> [Github Config] : (if Cloud Config enabled)
 }
 
 rectangle Common [
@@ -79,7 +79,7 @@ The registry is a system administration component that plays a role of a service
 
 Registry frontend is an AngularJS webapp that displays the system health status, lists running component instances, shows configuration options & environment variables, and gives access to various metrics that might be useful to monitor the system status.
 The webapp fetches all data from the registry backend only, it does not interact with any other components.
-Since the webapp is not supposed to be accessible to end users and is not essential to run the Podium system; it is reasonable to assume that non-backward compatible changes are completely acceptable during the upgrade as long as a technical user can find metrics necessary for operations & maintenance.
+Since the webapp is not supposed to be accessible to end users and is not essential to run the Podium system; it is reasonable to assume that non-backward compatible changes are acceptable during the upgrade as long as a technical user can find metrics necessary for operations & maintenance. The registry webapp might even be completely removed since its functionality overlaps with the one provided by the Gateway webapp.
 
 Supported NodeJS version: 8.12.0+.
 
@@ -91,7 +91,13 @@ Current Podium Registry version: 1.0.4; supported JDK version: 8.
 
 ### User Accounts & Authentication Server
 
-The UAA component is a Spring Boot application that defines user roles (Admin, Researcher etc), provides methods for user creation, password management, user search, authentication (username/password, OAuth2) etc.
+The UAA component is a Spring Boot application that provides methods for user creation, password management, user search, authentication (username/password, OAuth2) etc, and defines a number of user roles:
+- Podium administrator — technical top-level admin role for users who are responsible for keeping the system up and running;
+- BBMRI administrator — business top-level admin role for users who are responsible for maintaining the list of active organizations within the system;
+- Organisation administrator — role for users who are responsible for keeping organization data up-to-date within the Podium system;
+- Organisation coordinator — role for users who are responsible for the progress of data requests (coordinators receive notifications about new / updated data requests, and are able to approve / reject / mark requests for review);
+- Reviewer — role for users who are supposed to give feedback / advice on data requests;
+- Researcher - the most basic role, able to create and submit data requests.
 
 UAA server sends out emails to request email verification and send password reset links, to inform Podium administrators of user creation/registration etc.
 
