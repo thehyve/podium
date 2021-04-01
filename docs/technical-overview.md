@@ -23,54 +23,7 @@ High-level architecture overview, component interactions and major dependencies 
 ### Overview
 
 
-```plantuml
-@startuml
-node "Registry" {
-  [Registry API]
-  [Admin Webapp] --> [Registry API]
-}
-
-node "UAA" {
-  [User Auth API] --> [Registry API]
-}
-
-node "Gateway" {
-  [Gateway API] --> [Registry API]
-  [Podium Webapp] --> [Gateway API]
-}
-
-cloud {
-  [Github Config]
-  [Registry API] --> [Github Config] : (if Cloud Config enabled)
-}
-
-rectangle Common [
-  podium-common
-  * Shared DTOs
-  * Request type and status enums
-  * Event definitions
-  * Exception classes
-  * etc
-]
-
-[Gateway API] ..> Common
-[User Auth API] ..> Common
-
-
-database "PostgreSQL" {
-  frame "Auth DB" as AuthDB {
-  }
-  frame "Request DB" as RequestDB {
-  }
-}
-
-rectangle "Auth ES Index" as AuthES
-AuthES -[hidden]-> AuthDB
-rectangle "Request ES Index" as RequestES
-RequestES -[hidden]-> RequestDB
-
-@enduml
-```
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/system-overview.puml)
 
 
 ### Registry
@@ -206,32 +159,12 @@ It includes shared DTOs, request type and status enums, event definitions, excep
 ## Workflows
 
 [Request review workflow]:
-```plantuml
-@startuml
 
-(*) --> "Validation"
-"Revision" ->[Resubmit] "Validation"
-"Validation" ->[Invalid] "Closed"
-"Validation" --> "Review"
-"Review" ->[Approve/reject] "Closed"
-"Review" ->[Revise] "Revision"
-"Validation" ->[Revise] "Revision"
-
-@enduml
-```
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/request-review-workflow.puml)
 
 [Delivery workflow]:
 
-```plantuml
-@startuml
-
-(*) --> "Preparation"
-"Preparation" ->[Cancel] "Closed"
-"Preparation" ->[Release] "Released"
-"Released" ->[Received/cancelled] "Closed"
-
-@enduml
-```
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/delivery-workflow.puml)
 
 
 ## Extra notes and upgrade suggestions
