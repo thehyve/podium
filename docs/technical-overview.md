@@ -23,7 +23,7 @@ High-level architecture overview, component interactions and major dependencies 
 ### Overview
 
 
-![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/system-overview.puml)
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/system-overview.iuml)
 
 
 ### Registry
@@ -160,11 +160,11 @@ It includes shared DTOs, request type and status enums, event definitions, excep
 
 [Request review workflow]:
 
-![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/request-review-workflow.puml)
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/request-review-workflow.iuml)
 
 [Delivery workflow]:
 
-![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/delivery-workflow.puml)
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/thehyve/podium/docs/docs/diagrams/delivery-workflow.iuml)
 
 
 ## Extra notes and upgrade suggestions
