@@ -156,6 +156,60 @@ The podium-common package contains a number of shared methods and constants used
 It includes shared DTOs, request type and status enums, event definitions, exception classes and various helper methods that are necessary as "plumbing" / glue code, but do not contain any business-logic.
 
 
+#### Communication between services
+
+The resources are defined as [interfaces in podium-common](../podium-common/src/main/java/nl/thehyve/podium/common/resource).
+The servers implement the resources, clients are defined using Feign.
+
+- `InternalUserResource` (server in podium-uaa)
+- `InternalRoleResource` (server in podium-uaa)
+- `OrganisationResource` (server in podium-uaa)
+- `InterhalRequestResource` (server in podium-gateway, required for the RequestSecurityService)
+- `InternalAuditResource`: audit events (e.g., status change of requests) are communicated to the UAA component that store the events in the database (server in podium-uaa).
+
+[Clients](../podium-gateway/src/main/java/nl/thehyve/podium/client) defined using [Feign]-annotated interfaces extending the resource interfaces.
+
+UUIDs: Entities are stored using an autoincremented bigint as identifier, but this is not exposed externally. Instead, a uuid is used.
+
+
+#### Security/access control
+
+Podium-common defines an [access policy aspect](../podium-common/src/main/java/nl/thehyve/podium/common/aop/security/AccessPolicyAspect.java) to enforce access policy for controller methods based on custom security annotations.
+The policy is enforced on all classes in the package nl.thehyve.podium.web.rest.
+For the annotations, see `Public`, `AnyAuthorisedUser`, `SecuredByAuthority`,
+`SecuredByOrganisation`, and `SecuredByCurrentUser`.
+
+The annotations can be applied both on class and on method level. If a method is annotated, the class annotations will be ignored for that method. If a methods is not annotated, the class annotations will be used instead.
+If a user tries to access a method for which no rule is satisfied, the advice throws an `AccessDeniedException`.
+The annotations are interpreted disjunctively: at least one of the rules needs to be satisfied.
+
+Implemented in the `AccessPolicyService`, which depends on the `SecurityService` and `RequestSecurityService`.
+
+##### Security annotations
+
+[Permission annotations](../podium-common/src/main/java/nl/thehyve/podium/common/security/annotations):
+
+- Public
+- AnyAuthorisedUser
+- SecuredByAuthority
+- SecuredByCurrentUser
+- SecuredByOrganisation
+- SecuredByRequestOrganisationCoordinator
+- SecuredByRequestOrganisationReviewer
+- SecuredByRequestOwner
+
+Parameters annotations:
+
+- `OrganisationParameter` / `OrganisationUuidParameter`
+- `RequestParameter` / `RequestUuidParameter`
+- `UserParameter` / `UserUuidParameter`
+  
+These parameters point to objects that implement one of `IdentifiableOrganisation`, `IdentifiableRequest` or `IdentifiableUser`.
+
+
+##### Permission matrix
+
+
 ## Workflows
 
 [Request review workflow]:
@@ -187,3 +241,4 @@ It might be possible to get rid of the ElasticSearch dependency.
 [BPMN 2.0]: https://www.omg.org/spec/BPMN/2.0/About-BPMN/
 [Request review workflow]: ../podium-gateway/src/main/resources/processes/podium_request_review.001.bpmn20.xml
 [Delivery workflow]: ../podium-gateway/src/main/resources/processes/podium_delivery.001.bpmn20.xml
+[Feign]: https://github.com/OpenFeign/feign
