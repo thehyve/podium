@@ -209,6 +209,31 @@ These parameters point to objects that implement one of `IdentifiableOrganisatio
 
 ##### Permission matrix
 
+|                                                                                                               | Coordinator | Reviewer | Researcher |
+|---------------------------------------------------------------------------------------------------------------|-------------|----------|------------|
+| Fetch delivery processes for a request                                                                        | ✔           | *1       | *1         |
+| Start delivery processes for a request                                                                        | ✔           | ✘        | ✘          |
+| Release the delivery                                                                                          | ✔           | ✘        | ✘          |
+| Cancel a already released delivery                                                                            | ✔           | ✘        | ✘          |
+| Mark the delivery as received                                                                                 | ✔           | *1       | *1         |
+| Accept a RequestFile and add it to the request                                                                | ✔           | *1       | *1         |
+| Return the resource for a file for a given request                                                            | ✔           | ✔        | *1         |
+| Return the list of files for a given request                                                                  | ✔           | ✔        | *1         |
+| Delete a file from a request                                                                                  | ✔           | *1       | *1         |
+| Update the file type for a request file                                                                       | ✔           | *1       | *1         |
+| Fetch drafts for the current user                                                                             | ✘           | ✘        | ✔          |
+| Create a new request draft                                                                                    | ✘           | ✘        | ✔          |
+| Fetch the request draft                                                                                       | *1          | *1       | *1         |
+| Update a request draft                                                                                        | *1          | *1       | *1         |
+| Validate the request draft                                                                                    | ✔           | ✔        | ✔          |
+| Submit the request draft                                                                                      | *1          | *1       | *1         |
+| Get all the requests for which the current user is the requester                                              | ✘           | ✘        | ✔          |
+| Get all the requests for a requester with a given status                                                      | ✘           | ✘        | ✔          |
+| Get request counts for a requester                                                                            | ✘           | ✘        | ✔          |
+| Get request counts for a reviewer                                                                             | ✘           | ✔        | ✘          |
+| Get all the organisation requests in review status for the organisations where the current user is a reviewer | ✘           | ✔        | ✘          |
+
+*1 — only if a user is an owner of the given request.
 
 ## Workflows
 
