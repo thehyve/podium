@@ -9,15 +9,12 @@
  */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { JhiLanguageService } from 'ng-jhipster';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { PasswordComponent } from '../../../../../../main/webapp/app/account/password/password.component';
-import { Password } from '../../../../../../main/webapp/app/account/password/password.service';
-import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
-import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
-import { PodiumTestModule } from '../../../test.module';
+import { PasswordComponent } from './password.component';
+import { Password } from './password.service';
+import { AccountService } from '../../../app/shared/auth/account.service';
+import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
 
 describe('Component Tests', () => {
@@ -34,7 +31,6 @@ describe('Component Tests', () => {
                 declarations: [PasswordComponent],
                 providers: [
                     MockBackend,
-                    Principal,
                     AccountService,
                     BaseRequestOptions,
                     Password
