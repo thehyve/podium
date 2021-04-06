@@ -10,7 +10,7 @@
 import { Observable } from 'rxjs/Observable';
 import { RequestOptionsArgs, Response } from '@angular/http';
 import { JhiHttpInterceptor } from 'ng-jhipster';
-import { LocalStorageService, SessionStorageService } from 'ng2-webstorage';
+import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
 export class AuthInterceptor extends JhiHttpInterceptor {
 
