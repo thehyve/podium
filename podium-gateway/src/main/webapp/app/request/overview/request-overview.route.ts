@@ -8,7 +8,7 @@
  *
  */
 import { Route, ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
-import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
+import { UserRouteAccessService } from '../../core/auth/user-route-access-service';
 import { RequestOverviewComponent } from './request-overview.component';
 import { JhiPaginationUtil } from 'ng-jhipster';
 import { Injectable } from '@angular/core';

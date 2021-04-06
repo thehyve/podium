@@ -8,7 +8,7 @@
  *
  */
 import { Routes } from '@angular/router';
-import { UserRouteAccessService } from '../';
+import { UserRouteAccessService } from '../../core/auth/user-route-access-service';
 import { CompletedComponent } from './completed.component';
 
 export const completedRoute: Routes = [
