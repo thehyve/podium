@@ -11,7 +11,7 @@ import { JhiHttpInterceptor } from 'ng-jhipster';
 import { RequestOptionsArgs, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Injector } from '@angular/core';
-import { AuthService } from '../../shared/auth/auth.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { AccountService } from  '../../core/auth/account.service';
 
 export class AuthExpiredInterceptor extends JhiHttpInterceptor {

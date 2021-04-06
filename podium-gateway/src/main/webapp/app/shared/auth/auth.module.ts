@@ -13,8 +13,8 @@ import { AccountService } from '../../core/auth/account.service';
 import { SessionStorageService } from 'ngx-webstorage';
 import { StateStorageService } from './state-storage.service';
 import { AuthServerProvider } from './auth-jwt.service';
-import { AuthService } from './auth.service';
-import { UserRouteAccessService } from './user-route-access-service';
+import { AuthService } from '../../core/auth/auth.service';
+import { UserRouteAccessService } from '../../core/auth/user-route-access-service';
 
 @NgModule({
     providers: [
