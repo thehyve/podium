@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { AccountService } from '../core/auth/account.service';
-import { AuthServerProvider } from '../shared/auth/auth-jwt.service';
+import { AuthServerProvider } from '../core/auth/auth-jwt.service';
 
 @Injectable()
 export class LoginService {

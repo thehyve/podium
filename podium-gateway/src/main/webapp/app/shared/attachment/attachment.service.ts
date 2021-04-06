@@ -14,7 +14,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Attachment } from './attachment.model';
 import { AttachmentTypes } from './attachment.constants';
 import { UploadInput } from 'ngx-uploader';
-import { AuthServerProvider } from '../auth/auth-jwt.service';
+import { AuthServerProvider } from '../../core/auth/auth-jwt.service';
 import { RequestBase } from '../request';
 
 @Injectable()
