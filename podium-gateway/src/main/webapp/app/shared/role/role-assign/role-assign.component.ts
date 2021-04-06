@@ -17,7 +17,7 @@ import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
 import { AccountService } from '../../auth/account.service';
-import { Account } from '../../user/account.model';
+import { Account } from '../../../core/auth/account.model';
 import { Authority } from '../../../shared/authority/authority';
 import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { OrganisationUser } from '../../user/organisation-user.model';

@@ -10,7 +10,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
-import { Account, AccountService } from '../shared';
+import { Account } from '../core/auth/account.model';
+import { AccountService } from '../shared/auth/account.service';
 import { RedirectService } from '../shared/auth/redirect.service';
 
 @Component({

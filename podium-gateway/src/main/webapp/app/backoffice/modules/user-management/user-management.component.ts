@@ -12,7 +12,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { AccountService } from '../../../shared/auth/account.service';
-import { Account } from '../../../shared/user/account.model';
+import { Account } from '../../../core/auth/account.model';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { Overview } from '../../../shared/overview/overview';

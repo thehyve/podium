@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
 import { AccountService } from '../../../shared/auth/account.service';
-import { Account } from '../../../shared/user/account.model';
+import { Account } from '../../../core/auth/account.model';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
 import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
