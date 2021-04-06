@@ -9,7 +9,6 @@
  */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginModalService } from '../login/login-modal.service';
 import { AccountService } from './account.service';
 import { StateStorageService } from './state-storage.service';
 
@@ -19,7 +18,6 @@ export class AuthService {
     constructor(
         private accountService: AccountService,
         private stateStorageService: StateStorageService,
-        private loginModalService: LoginModalService,
         private router: Router
     ) {}
 

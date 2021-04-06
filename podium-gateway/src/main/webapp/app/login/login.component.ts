@@ -11,8 +11,8 @@ import { Component, OnInit, AfterViewInit, Renderer, ElementRef } from '@angular
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
 import { LoginService } from './login.service';
-import { StateStorageService } from '../auth/state-storage.service';
-import { RedirectService } from '../auth/redirect.service';
+import { StateStorageService } from '../shared/auth/state-storage.service';
+import { RedirectService } from '../shared/auth/redirect.service';
 
 @Component({
     selector: 'pdm-login',

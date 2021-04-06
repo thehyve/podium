@@ -14,14 +14,11 @@ import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
     UserService,
-    LoginService,
-    LoginModalService,
     MessageService,
     EmailValidatorDirective,
     PasswordValidatorDirective,
     PasswordMatchesDirective,
     WordLengthValidatorDirective,
-    PodiumLoginComponent,
     SpecialismComponent
 } from './';
 import { RequestService } from './request/request.service';
@@ -43,6 +40,9 @@ import { AttachmentComponent } from './attachment/upload-attachment/attachment.c
 import { NgUploaderModule } from 'ngx-uploader';
 import { AttachmentService } from './attachment/attachment.service';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
+import { PodiumLoginComponent } from '../login/login.component';
+import { LoginService } from '../login/login.service';
+import { LoginModalService } from '../login/login-modal.service';
 
 @NgModule({
     imports: [
