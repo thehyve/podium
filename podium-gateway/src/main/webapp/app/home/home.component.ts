@@ -11,7 +11,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 import { Account, AccountService } from '../shared';
-import { Ng2DeviceService } from 'ng2-device-detector';
 import { RedirectService } from '../shared/auth/redirect.service';
 
 @Component({
@@ -25,13 +24,11 @@ import { RedirectService } from '../shared/auth/redirect.service';
 export class PdmHomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
-    deviceInfo: any;
 
     constructor(
         private accountService: AccountService,
         private eventManager: JhiEventManager,
         private redirectService: RedirectService,
-        private deviceService: Ng2DeviceService
     ) {
 
     }
@@ -45,8 +42,6 @@ export class PdmHomeComponent implements OnInit {
         if (this.isAuthenticated()) {
             this.redirectService.redirectUser();
         }
-
-        this.deviceInfo = this.deviceService.getDeviceInfo();
     }
 
     registerAuthenticationSuccess() {
@@ -60,9 +55,4 @@ export class PdmHomeComponent implements OnInit {
     isAuthenticated() {
         return this.accountService.isAuthenticated();
     }
-
-    isBrowserIE(): boolean {
-        return this.deviceInfo.browser === 'ie';
-    }
-
 }
