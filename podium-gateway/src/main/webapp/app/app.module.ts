@@ -2,7 +2,7 @@ import './vendor.ts';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { Ng2Webstorage } from 'ngx-webstorage';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 import { TypeaheadModule } from 'ngx-bootstrap';
@@ -34,7 +34,7 @@ import { RedirectService } from './core/auth/redirect.service';
         CommonModule,
         TypeaheadModule.forRoot(),
         BreadcrumbsModule.forRoot(),
-        Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
+        NgxWebstorageModule.forRoot({ prefix: 'pdm', separator: '-'}),
         AppRoutingModule,
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,

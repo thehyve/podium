@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
 import { Account } from './account.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AccountService  {
     private _identity: Account;
     private authenticationState = new BehaviorSubject<any>(null);

@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthServerProvider {
     constructor(
         private http: HttpClient,

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { AccountService } from './account.service';
 import { StateStorageService } from './state-storage.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
     constructor(

@@ -12,7 +12,7 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { AuthService } from './auth.service';
 import { StateStorageService } from './state-storage.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserRouteAccessService implements CanActivate {
 
     constructor(
