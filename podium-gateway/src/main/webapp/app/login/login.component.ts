@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterViewInit, Renderer, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
 import { LoginService } from './login.service';
@@ -20,6 +20,8 @@ import { RedirectService } from '../shared/auth/redirect.service';
     styleUrls: ['login.component.scss']
 })
 export class  PodiumLoginComponent implements OnInit, AfterViewInit {
+    @ViewChild("usernameField") usernameField: ElementRef;
+
     authenticationError: boolean;
     userAccountLocked: boolean;
     emailNotVerified: boolean;
@@ -34,8 +36,6 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         private loginService: LoginService,
         private stateStorageService: StateStorageService,
         private redirectService: RedirectService,
-        private elementRef: ElementRef,
-        private renderer: Renderer,
         private router: Router
     ) {
         this.credentials = {};
@@ -45,7 +45,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#username'), 'focus', []);
+        this.usernameField.nativeElement.focus();
     }
 
     cancel () {
