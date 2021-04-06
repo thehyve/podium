@@ -8,6 +8,7 @@
  *
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
@@ -19,7 +20,6 @@ import { Principal } from '../../../shared';
 import { Authority } from '../../../shared/authority/authority';
 import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { OrganisationUser } from '../../user/organisation-user.model';
-import { Response } from '@angular/http';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -149,7 +149,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         // Find and Update role by authority
         let role = this.getRoleByAuthority(user.authority);
         this.updateRole(role, user, false).subscribe(
-            (res) => { this.onSaveSuccess(res, false); },
+            () => { this.onSaveSuccess(false); },
             (err) => { this.onError(err); }
         );
     }
@@ -166,15 +166,15 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         let previousRole = this.getRoleByAuthority(user.previousAuthority);
 
         this.updateRole(previousRole, user, true).subscribe(
-            (previousRes: Response) => {
+            () => {
                 // Add new role
                 let role = this.getRoleByAuthority(user.authority);
                 this.updateRole(role, user, false).subscribe(
-                    (res: Response) => { this.onSaveSuccess(res, false); },
-                    (err: Response) => { this.onError(err); },
+                    () => { this.onSaveSuccess(false); },
+                    (err) => { this.onError(err); },
                 );
             },
-            (err: Response) => { this.onError(err); }
+            (err) => { this.onError(err); }
         );
     }
 
@@ -187,8 +187,8 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         let role = this.getRoleByAuthority(user.authority);
 
         this.updateRole(role, user, true).subscribe(
-            (res: Response) => { this.onSaveSuccess(res, true); },
-            (err: Response) => { this.onError(err); }
+            () => { this.onSaveSuccess(true); },
+            (err) => { this.onError(err); }
         );
     }
 
@@ -239,7 +239,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
      *
      * @param user The UUID of the user
      * @param role The role the user originated from
-     * @returns {Promise<Response>}
      */
     public getPromiseForUserOfRole(user: string, role: Role): Promise<User> {
         let promise: Promise<User> = this.userService.findByUuid(user).toPromise();
@@ -281,8 +280,8 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                         (res: Role) => {
                             observer.next(res);
                         },
-                        (res: Response) => {
-                            return Observable.throw(res.json());
+                        (res: HttpErrorResponse) => {
+                            return Observable.throw(res.error);
                         }
                     );
             } else {
@@ -291,17 +290,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
     }
 
-    private onSaveSuccess(res: Response, isDelete: boolean) {
+    private onSaveSuccess(isDelete: boolean) {
         let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
         this.alertService.success(this.translateService.instant(notification));
         this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
     }
 
-    private onError (error) {
-        this.alertService.error(error.message, null, null);
-    }
-
-    private onSaveError (error) {
+    private onError (error: { message: string }) {
         this.alertService.error(error.message, null, null);
     }
 

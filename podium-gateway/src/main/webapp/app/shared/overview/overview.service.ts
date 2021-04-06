@@ -9,12 +9,12 @@
  */
 
 import { Injectable, Optional } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
-import { HttpHelper } from '../util/http-helper';
 import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
+import { RequestBase } from '../request';
 
 @Injectable()
 export class OverviewService {
@@ -23,10 +23,10 @@ export class OverviewService {
     resourceSearchUrl: string;
 
     public activeStatus: RequestOverviewStatusOption;
-    public onOverviewUpdate: Subject<Response> = new Subject();
+    public onOverviewUpdate: Subject<HttpResponseBase> = new Subject();
 
     constructor(
-        private http: Http,
+        private http: HttpClient,
         @Optional() config: OverviewServiceConfig
     ) {
         if (config) {
@@ -41,10 +41,7 @@ export class OverviewService {
         requestOptions: any,
         requestStatus: RequestOverviewStatusOption,
         userGroup: UserGroupAuthority
-    ): Observable<Response> {
-        let options = HttpHelper.createRequestOption(requestOptions);
-        let requestsUrl;
-
+    ): Observable<HttpResponse<RequestBase[]>> {
         if (!requestStatus || !userGroup) {
             return;
         }
@@ -54,8 +51,9 @@ export class OverviewService {
 
         // When we have to filter for Drafts
         if (requestStatus === RequestOverviewStatusOption.Draft) {
-            return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
-                return res;
+            return this.http.get<RequestBase[]>(`${baseUrl}/drafts`, {
+                params: requestOptions,
+                observe: 'response'
             });
         }
 
@@ -70,8 +68,9 @@ export class OverviewService {
             return;
         }
 
-        return this.http.get(requestsUrl, options).map((res: Response) => {
-            return res;
+        return this.http.get<RequestBase[]>(requestUrl, {
+            params: requestOptions,
+            observe: 'response',
         });
     }
 
@@ -79,13 +78,14 @@ export class OverviewService {
      * Fetch organisations using pagination and search parameters
      *
      * @param requestOptions search parameters
-     * @returns {Observable<Response>} the response
      */
     findOrganisationsForOverview(
         requestOptions: any
-    ): Observable<Response> {
-        let options = HttpHelper.createRequestOption(requestOptions);
-        return this.http.get(`${this.resourceUrl}/admin`, options);
+    ): Observable<HttpResponseBase> {
+        return this.http.get(`${this.resourceUrl}/admin`, {
+            params: requestOptions,
+            observe: 'response'
+        });
     }
 
     /**
@@ -98,8 +98,7 @@ export class OverviewService {
     findUsersForOverview(
         userGroupAuthority: UserGroupAuthority,
         requestOptions: any
-    ): Observable<Response> {
-        let options = HttpHelper.createRequestOption(requestOptions);
+    ): Observable<HttpResponseBase> {
         let usersUrl;
         switch (userGroupAuthority) {
             case UserGroupAuthority.OrganisationAdmin:
@@ -113,16 +112,18 @@ export class OverviewService {
                 console.error('No user group authority set for this overview!');
                 return Observable.throw('No user group authority set for this overview!');
         }
-        return this.http.get(`${usersUrl}`, options);
-    }
-
-    getRequestCountsForUserGroupAuthority(userGroupAuthority: UserGroupAuthority): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/counts/${userGroupAuthority}`).map((res: Response) => {
-            return res;
+        return this.http.get(`${usersUrl}`, {
+            params: requestOptions,
+            observe: 'response'
         });
     }
 
-    public overviewUpdateEvent(response: Response) {
+    getRequestCountsForUserGroupAuthority(userGroupAuthority: UserGroupAuthority) {
+        type R = { [status: string]: number };
+        return this.http.get<R>(`${this.resourceUrl}/counts/${userGroupAuthority}`);
+    }
+
+    public overviewUpdateEvent(response: HttpResponseBase) {
         this.onOverviewUpdate.next(response);
     }
 

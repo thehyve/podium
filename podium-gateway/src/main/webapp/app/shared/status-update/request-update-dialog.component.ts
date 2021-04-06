@@ -9,11 +9,11 @@
  */
 
 import { Component } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { JhiLanguageService } from 'ng-jhipster';
 import { RequestService } from '../request/request.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestBase } from '../request/request-base';
-import { Response } from '@angular/http';
 import { RequestStatusUpdateAction } from './request-update-action';
 import { RequestReviewDecision } from '../request/request-review-decision';
 
@@ -41,8 +41,8 @@ export class RequestUpdateDialogComponent {
         this.activeModal.dismiss(err);
     }
 
-    onSuccess(res: Response) {
-        this.request = res.json();
+    onSuccess(res: HttpResponse<RequestBase>) {
+        this.request = res.body;
         this.requestService.requestUpdateEvent(this.request);
         this.activeModal.close();
     }

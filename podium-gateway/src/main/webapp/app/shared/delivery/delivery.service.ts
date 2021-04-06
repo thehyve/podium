@@ -8,7 +8,7 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, BaseRequestOptions, URLSearchParams, Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Delivery } from './delivery';
 import { DeliveryReference } from './delivery-reference';
@@ -30,34 +30,26 @@ export class DeliveryService {
         }).length;
     }
 
-    constructor(private http: Http) {}
+    constructor(private http: HttpClient) {}
 
     getDeliveries(uuid?: string): Observable<Delivery[]> {
-        return this.http.get(`${this.resourceUrl}/${uuid}/deliveries`).map((res: Response) => {
-            this.deliveriesFetchEvent(res.json());
-            return res.json();
+        return this.http.get<Delivery[]>(`${this.resourceUrl}/${uuid}/deliveries`)
+        .map((res) => {
+            this.deliveriesFetchEvent(res);
+            return res;
         });
     }
 
-    releaseDelivery(requestUuid: string, deliveryUuid: string, deliveryReference: DeliveryReference): Observable<Response> {
-        return this.http.post(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/release`, deliveryReference)
-            .map((res: Response) => {
-                return res.json();
-            });
+    releaseDelivery(requestUuid: string, deliveryUuid: string, deliveryReference: DeliveryReference): Observable<any> {
+        return this.http.post(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/release`, deliveryReference);
     }
 
-    cancelDelivery(requestUuid: string, deliveryUuid: string, message: PodiumEventMessage): Observable<Response> {
-        return this.http.post(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/cancel`, message)
-            .map((res: Response) => {
-                return res.json();
-            });
+    cancelDelivery(requestUuid: string, deliveryUuid: string, message: PodiumEventMessage): Observable<any> {
+        return this.http.post(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/cancel`, message);
     }
 
-    receiveDelivery(requestUuid: string, deliveryUuid: string): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/received`)
-            .map((res: Response) => {
-                return res.json();
-            });
+    receiveDelivery(requestUuid: string, deliveryUuid: string): Observable<any> {
+        return this.http.get(`${this.resourceUrl}/${requestUuid}/deliveries/${deliveryUuid}/received`);
     }
 
     public deliveriesFetchEvent(deliveries: Delivery[]) {

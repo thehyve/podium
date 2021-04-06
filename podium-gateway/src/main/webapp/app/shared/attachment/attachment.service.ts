@@ -10,7 +10,7 @@
 
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Http, Response, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Attachment } from './attachment.model';
 import { AttachmentTypes } from './attachment.constants';
 import { UploadInput } from 'ngx-uploader';
@@ -22,7 +22,7 @@ export class AttachmentService {
 
     private resourceUrl = 'api/requests';
 
-    constructor(private http: Http, private authServerProvider: AuthServerProvider) {
+    constructor(private http: HttpClient, private authServerProvider: AuthServerProvider) {
     }
 
     /**
@@ -41,53 +41,42 @@ export class AttachmentService {
 
     /**
      * Remove an attachment
-     * @returns {Observable<Response>}
      */
-    remove(attachment: Attachment): Observable<Response> {
-        return this.http.delete(
-            `${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}`);
+    remove(attachment: Attachment): Observable<HttpResponse<any>> {
+        return this.http.delete(`${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}`, {
+            observe: 'response'
+        });
     }
 
     /**
      * Download an attachment
      * @param {string} request - request
      * @param {string} fileUuid - file uuid
-     * @returns {Observable<Attachment[]>}
      */
     downloadAttachment(request: RequestBase, fileUuid: string) {
         return this.http.get(`${this.resourceUrl}/${request.uuid}/files/${fileUuid}/download`, {
-            responseType: ResponseContentType.Blob
-        }).map((response: Response) => {
-            return <Attachment[]> response.json();
+            responseType: 'blob'
         });
     }
 
     /**
      * Get all attachments for a request
      * @param {string} request - request uuid
-     * @returns {Observable<Response>}
      */
     getAttachments(request: RequestBase): Observable<Attachment[]> {
-        return this.http.get(`${this.resourceUrl}/${request.uuid}/files`).map((response: Response) => {
-            return <Attachment[]> response.json();
-        });
+        return this.http.get<Attachment[]>(`${this.resourceUrl}/${request.uuid}/files`);
     }
 
     /**
      * Set attachment type
-     * @param {Attachment} attachment
-     * @returns {Observable<Response>}
      */
-    setAttachmentType(attachment: Attachment): Observable<Response> {
-        return this.http.put(
-            `${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}/type`, attachment)
-            .map((response: Response) => { return response.json(); });
+    setAttachmentType(attachment: Attachment): Observable<any> {
+        let url = `${this.resourceUrl}/${attachment.request.uuid}/files/${attachment.uuid}/type`;
+        return this.http.put(url, attachment);
     }
 
     /**
      * Tests if at least one attachment does not have attachment type
-     * @param {Attachment[]} attachments
-     * @returns {boolean}
      */
     hasAttachmentsTypeNone(attachments: Attachment[]): boolean {
         return attachments.some( attachment => {

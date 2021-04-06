@@ -8,7 +8,7 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Role } from './role.model';
 
@@ -17,24 +17,18 @@ export class RoleService {
 
     private resourceUrl = 'podiumuaa/api/roles';
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
     update(role: Role): Observable<Role> {
         let copy: Role = Object.assign({}, role);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
+        return this.http.put<Role>(this.resourceUrl, copy);
     }
 
     find(id: number): Observable<Role> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
-        });
+        return this.http.get<Role>(`${this.resourceUrl}/${id}`);
     }
 
     findAllRolesForOrganisation(uuid: string): Observable<Role[]> {
-        return this.http.get(`${this.resourceUrl}/organisation/${uuid}`).map((res: Response) => {
-            return res.json();
-        });
+        return this.http.get<Role[]>(`${this.resourceUrl}/organisation/${uuid}`);
     }
 }

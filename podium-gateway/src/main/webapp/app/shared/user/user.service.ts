@@ -8,7 +8,7 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './user.model';
 
@@ -17,34 +17,35 @@ export class UserService {
     private resourceUrl = 'podiumuaa/api/users';
     private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
-    create(user: User): Observable<Response> {
+    create(user: User): Observable<any> {
         return this.http.post(this.resourceUrl, user);
     }
 
-    update(user: User): Observable<Response> {
+    update(user: User): Observable<any> {
         return this.http.put(this.resourceUrl, user);
     }
 
-    unlock(user: User): Observable<Response> {
+    unlock(user: User): Observable<any> {
         return this.http.put(`${this.resourceUrl}/uuid/${user.uuid}/unlock`, {});
     }
 
     find(login: string): Observable<User> {
-        return this.http.get(`${this.resourceUrl}/${login}`).map((res: Response) => res.json());
+        return this.http.get<User>(`${this.resourceUrl}/${login}`);
     }
 
     findByUuid(uuid: string): Observable<User> {
-        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => res.json());
+        return this.http.get<User>(`${this.resourceUrl}/uuid/${uuid}`);
     }
 
-    suggest(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceSuggestUrl}`, options).map((res: Response) => res.json());
+    suggest(req?: any): Observable<any> {
+        return this.http.get(`${this.resourceSuggestUrl}`, {
+            params: req
+        });
     }
 
-    delete(login: string): Observable<Response> {
+    delete(login: string): Observable<any> {
         return this.http.delete(`${this.resourceUrl}/${login}`);
     }
 }
