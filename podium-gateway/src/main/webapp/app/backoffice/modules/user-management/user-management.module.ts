@@ -27,7 +27,6 @@ import { UserMgmtRoutingModule } from './user-management.routing';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
 import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
-import { PodiumAuthModule } from '../../../shared/auth/auth.module';
 
 @NgModule({
     imports: [
@@ -41,7 +40,6 @@ import { PodiumAuthModule } from '../../../shared/auth/auth.module';
         PodiumGatewayAdminModule,
         PodiumGatewaySharedModule,
         UserMgmtRoutingModule,
-        PodiumAuthModule
     ],
     declarations: [
         UserMgmtComponent,

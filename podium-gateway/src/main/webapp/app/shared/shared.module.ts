@@ -28,7 +28,6 @@ import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
-import { PodiumAuthModule } from './auth/auth.module';
 import { FindLanguageFromKeyPipe } from './language/language.pipe';
 import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
@@ -49,7 +48,6 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
     imports: [
         PodiumGatewaySharedLibsModule,
         PodiumGatewaySharedCommonModule,
-        PodiumAuthModule,
         RouterModule,
         NgUploaderModule,
     ],
@@ -88,7 +86,6 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
     ],
     entryComponents: [PodiumLoginComponent],
     exports: [
-        PodiumAuthModule,
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
