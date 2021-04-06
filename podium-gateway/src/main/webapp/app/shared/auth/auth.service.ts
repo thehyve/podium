@@ -47,24 +47,23 @@ export class AuthService {
             }
 
             if (toStateInfo.data.authorities && toStateInfo.data.authorities.length > 0) {
-                return self.accountService.hasAnyAuthority(toStateInfo.data.authorities).then(hasAnyAuthority => {
-                    if (!hasAnyAuthority) {
-                        if (isAuthenticated) {
-                            // user is signed in but not authorized for desired state
-                            self.router.navigate(['accessdenied']);
-                        } else {
-                            // user is not authenticated. Show the state they wanted before you
-                            // send them to the login service, so you can return them when you're done
-                            let toStateParamsInfo = self.stateStorageService.getDestinationState().params;
-                            self.stateStorageService.storePreviousState(toStateInfo.name, toStateParamsInfo);
-                            // now, send them to the signin state so they can log in
-                            self.router.navigate(['accessdenied']).then(() => {
-                                self.router.navigate(['/']);
-                            });
-                        }
+                let hasAnyAuthority = self.accountService.hasAnyAuthority(toStateInfo.data.authorities);
+                if (!hasAnyAuthority) {
+                    if (isAuthenticated) {
+                        // user is signed in but not authorized for desired state
+                        self.router.navigate(['accessdenied']);
+                    } else {
+                        // user is not authenticated. Show the state they wanted before you
+                        // send them to the login service, so you can return them when you're done
+                        let toStateParamsInfo = self.stateStorageService.getDestinationState().params;
+                        self.stateStorageService.storePreviousState(toStateInfo.name, toStateParamsInfo);
+                        // now, send them to the signin state so they can log in
+                        self.router.navigate(['accessdenied']).then(() => {
+                            self.router.navigate(['/']);
+                        });
                     }
-                    return hasAnyAuthority;
-                });
+                }
+                return hasAnyAuthority;
             }
 
             return true;

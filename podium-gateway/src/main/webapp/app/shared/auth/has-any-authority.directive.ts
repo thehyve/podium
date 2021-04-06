@@ -30,11 +30,10 @@ export class HasAnyAuthorityDirective {
     }
 
     private updateView(): void {
-        this.accountService.hasAnyAuthority(this.authorities).then(result => {
-            this.viewContainerRef.clear();
-            if (result) {
-                this.viewContainerRef.createEmbeddedView(this.templateRef);
-            }
-        });
+        let hasAnyAuthority = this.accountService.hasAnyAuthority(this.authorities);
+        this.viewContainerRef.clear();
+        if (hasAnyAuthority) {
+            this.viewContainerRef.createEmbeddedView(this.templateRef);
+        }
     }
 }
