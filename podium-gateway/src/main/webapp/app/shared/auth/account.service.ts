@@ -24,18 +24,11 @@ export class AccountService  {
         this.authenticationState.next(this._identity);
     }
 
-    hasAnyAuthority (authorities: string[]): Promise<boolean> {
+    hasAnyAuthority(authorities: string[]): boolean {
         if (!this._identity || !this._identity.authorities) {
-            return Promise.resolve(false);
+            return false;
         }
-
-        for (let i = 0; i < authorities.length; i++) {
-            if (this._identity.authorities.indexOf(authorities[i]) !== -1) {
-                return Promise.resolve(true);
-            }
-        }
-
-        return Promise.resolve(false);
+        return this._identity.authorities.some((authority: string) => authorities.includes(authority));
     }
 
     hasAuthority (authority: string): Promise<boolean> {
