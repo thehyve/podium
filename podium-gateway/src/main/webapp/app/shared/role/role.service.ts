@@ -11,13 +11,11 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Role } from './role.model';
-import { HttpHelper } from '../util/http-helper';
 
 @Injectable()
 export class RoleService {
 
     private resourceUrl = 'podiumuaa/api/roles';
-    private resourceSearchUrl = 'podiumuaa/api/_search/roles';
 
     constructor(private http: Http) { }
 
@@ -38,17 +36,5 @@ export class RoleService {
         return this.http.get(`${this.resourceUrl}/organisation/${uuid}`).map((res: Response) => {
             return res.json();
         });
-    }
-
-    query(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-        ;
-    }
-
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-        ;
     }
 }

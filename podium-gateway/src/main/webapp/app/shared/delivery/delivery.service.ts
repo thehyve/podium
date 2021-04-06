@@ -60,10 +60,6 @@ export class DeliveryService {
             });
     }
 
-    public deliveryUpdateEvent(delivery: Delivery) {
-        this.onDeliveryUpdate.next([delivery]);
-    }
-
     public deliveriesFetchEvent(deliveries: Delivery[]) {
         this.onDeliveries.next(deliveries);
     }

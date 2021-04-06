@@ -11,13 +11,11 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Organisation } from './organisation.model';
-import { HttpHelper } from '../util/http-helper';
 
 @Injectable()
 export class OrganisationService {
 
     private resourceUrl = 'podiumuaa/api/organisations';
-    private resourceSearchUrl = 'podiumuaa/api/_search/organisations';
 
     constructor(private http: Http) { }
 
@@ -35,12 +33,6 @@ export class OrganisationService {
         });
     }
 
-    find(id: number): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
-        });
-    }
-
     findAllAvailable(): Observable<Organisation> {
         return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
             return res.json();
@@ -53,11 +45,6 @@ export class OrganisationService {
         });
     }
 
-    query(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/admin`, options);
-    }
-
     activate(uuid: string, activate: boolean): Observable<Response> {
         return this.http.put(`${this.resourceUrl}/${uuid}/activation?value=${activate}`, {}).map((res: Response) => {
             return res.json();
@@ -66,17 +53,6 @@ export class OrganisationService {
 
     delete(uuid: string): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${uuid}`);
-    }
-
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options);
-    }
-
-    findAll(): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}`).map((res: Response) => {
-            return res.json();
-        });
     }
 
     jsonArrayToOrganisations(arr: any) {

@@ -11,12 +11,10 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './user.model';
-import { HttpHelper } from '../util/http-helper';
 
 @Injectable()
 export class UserService {
     private resourceUrl = 'podiumuaa/api/users';
-    private resourceSearchUrl = 'podiumuaa/api/_search/users';
     private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
 
     constructor(private http: Http) { }
@@ -39,16 +37,6 @@ export class UserService {
 
     findByUuid(uuid: string): Observable<User> {
         return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => res.json());
-    }
-
-    query(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options);
-    }
-
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
     }
 
     suggest(req?: any): Observable<Response> {
