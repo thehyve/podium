@@ -11,7 +11,7 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angula
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
 import { LoginService } from './login.service';
-import { StateStorageService } from '../shared/auth/state-storage.service';
+import { StateStorageService } from '../core/auth/state-storage.service';
 import { RedirectService } from '../shared/auth/redirect.service';
 
 @Component({
