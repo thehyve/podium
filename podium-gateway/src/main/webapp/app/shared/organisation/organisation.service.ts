@@ -8,7 +8,7 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Organisation } from './organisation.model';
 
@@ -17,41 +17,33 @@ export class OrganisationService {
 
     private resourceUrl = 'podiumuaa/api/organisations';
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
-    create(organisation: Organisation): Observable<Response> {
+    create(organisation: Organisation): Observable<Organisation> {
         let copy: Organisation = Object.assign({}, organisation);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
+        return this.http.post<Organisation>(this.resourceUrl, copy);
     }
 
-    update(organisation: Organisation): Observable<Response> {
+    update(organisation: Organisation): Observable<Organisation> {
         let copy: Organisation = Object.assign({}, organisation);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
+        return this.http.put<Organisation>(this.resourceUrl, copy);
     }
 
     findAllAvailable(): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
-            return res.json();
-        });
+        return this.http.get<Organisation>(`${this.resourceUrl}/available`);
     }
 
     findByUuid(uuid: string): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
-            return res.json();
+        return this.http.get<Organisation>(`${this.resourceUrl}/uuid/${uuid}`);
+    }
+
+    activate(uuid: string, activate: boolean): Observable<HttpResponse<any>> {
+        return this.http.put(`${this.resourceUrl}/${uuid}/activation?value=${activate}`, {}, {
+            observe: 'response'
         });
     }
 
-    activate(uuid: string, activate: boolean): Observable<Response> {
-        return this.http.put(`${this.resourceUrl}/${uuid}/activation?value=${activate}`, {}).map((res: Response) => {
-            return res.json();
-        });
-    }
-
-    delete(uuid: string): Observable<Response> {
+    delete(uuid: string): Observable<any> {
         return this.http.delete(`${this.resourceUrl}/${uuid}`);
     }
 

@@ -8,14 +8,14 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Headers, URLSearchParams } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { LocalStorageService, SessionStorageService } from 'ng2-webstorage';
 
 @Injectable()
 export class AuthServerProvider {
     constructor(
-        private http: Http,
+        private http: HttpClient,
         private $localStorage: LocalStorageService,
         private $sessionStorage: SessionStorageService
     ) {}
@@ -30,15 +30,15 @@ export class AuthServerProvider {
         data.append('username', credentials.username);
         data.append('password', credentials.password);
 
-        let headers = new Headers ({
+        let headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization' : 'Basic d2ViX2FwcDo='
-        });
+        };
 
         return this.http.post('podiumuaa/oauth/token', data, {
-            headers: headers
+            headers
         }).map((resp) => {
-            let accessToken = resp.json()['access_token'];
+            let accessToken = resp['access_token'];
             if (accessToken) {
                 this.storeAuthenticationToken(accessToken, credentials.rememberMe);
             }
