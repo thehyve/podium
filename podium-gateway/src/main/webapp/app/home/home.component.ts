@@ -12,7 +12,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 import { Account } from '../core/auth/account.model';
 import { AccountService } from '../core/auth/account.service';
-import { RedirectService } from '../shared/auth/redirect.service';
+import { RedirectService } from '../core/auth/redirect.service';
 
 @Component({
     selector: 'pdm-home',

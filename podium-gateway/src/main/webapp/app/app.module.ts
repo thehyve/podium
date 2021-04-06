@@ -25,7 +25,7 @@ import { PdmHomeComponent } from './home/home.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
-import { RedirectService } from './shared/auth/redirect.service';
+import { RedirectService } from './core/auth/redirect.service';
 
 @NgModule({
     imports: [
