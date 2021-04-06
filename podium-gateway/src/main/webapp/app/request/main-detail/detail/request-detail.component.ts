@@ -9,13 +9,13 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestOverviewStatusOption } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
-import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
@@ -338,8 +338,8 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         return this.isRequestCoordinator() || this.isRequestingResearcher();
     }
 
-    onSuccess(response: Response) {
-        this.request = response.json();
+    onSuccess(response: HttpResponse<RequestBase>) {
+        this.request = response.body;
         this.isUpdating = false;
         this.requestService.requestUpdateEvent(this.request);
     }

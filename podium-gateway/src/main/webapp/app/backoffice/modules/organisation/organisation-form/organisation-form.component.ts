@@ -8,10 +8,10 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Principal } from '../../../../shared';
 import { User } from '../../../../shared/user/user.model';
-import { Response } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestType } from '../../../../shared/request/request-type';
 import { Organisation } from '../../../../shared/organisation/organisation.model';
@@ -73,12 +73,12 @@ export class OrganisationFormComponent implements OnInit {
         this.isSaving = false;
     }
 
-    onSaveError (error) {
+    onSaveError (error: HttpErrorResponse) {
         this.isSaving = false;
         this.onError(error);
     }
 
-    onError (error) {
+    onError (error: HttpErrorResponse) {
         this.alertService.error(error.message, null, null);
     }
 
@@ -87,14 +87,14 @@ export class OrganisationFormComponent implements OnInit {
         if (this.organisation.uuid) {
             this.organisationService.update(this.organisation)
                 .subscribe(
-                    (res: Response) => this.onSaveSuccess(res, false),
-                    (res: Response) => this.onSaveError(res.json())
+                    (res) => this.onSaveSuccess(res, false),
+                    (res: HttpErrorResponse) => this.onSaveError(res)
                 );
         } else {
             this.organisationService.create(this.organisation)
                 .subscribe(
-                    (res: Response) => this.onSaveSuccess(res, true),
-                    (res: Response) => this.onSaveError(res.json())
+                    (res) => this.onSaveSuccess(res, true),
+                    (res: HttpErrorResponse) => this.onSaveError(res)
                 );
         }
     }

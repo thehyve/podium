@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Response, Http } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
@@ -30,11 +30,11 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: Http) => {
+            useFactory: (http: HttpClient) => {
                 return new OverviewService(http, overviewConfig);
             },
             deps: [
-                Http
+                HttpClient
             ]
         }
     ]
@@ -60,7 +60,8 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         super(router, activatedRoute);
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
-            (res: Response) => this.processAvailableOrganisations(res.json(), res.headers)
+            (res: HttpResponse<Organisation[]>) =>
+                this.processAvailableOrganisations(res.body, res.headers)
         );
     }
 
@@ -96,7 +97,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     fetchOrganisations() {
         this.overviewService
             .findOrganisationsForOverview(this.getPageParams())
-            .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
+            .subscribe((res) => this.overviewService.overviewUpdateEvent(res));
     }
 
     transitionOrganisations() {
@@ -107,7 +108,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     toggleActivated (organisation) {
         organisation.activated = !organisation.activated;
         this.organisationService.activate(organisation.uuid, organisation.activated).subscribe(
-            (res: Response) => {
+            (res) => {
                 if (res.status === 200) {
                     this.error = null;
                     this.success = 'OK';
@@ -120,7 +121,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         );
     }
 
-    private processAvailableOrganisations(organisations, headers) {
+    private processAvailableOrganisations(organisations: Organisation[], headers) {
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;

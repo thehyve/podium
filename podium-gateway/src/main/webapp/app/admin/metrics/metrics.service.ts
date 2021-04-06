@@ -8,19 +8,19 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class PdmMetricsService {
 
-    constructor (private http: Http) {}
+    constructor (private http: HttpClient) {}
 
     getMetrics(): Observable<any> {
-        return this.http.get('management/metrics').map((res: Response) => res.json());
+        return this.http.get('management/metrics');
     }
 
     threadDump(): Observable<any> {
-        return this.http.get('management/dump').map((res: Response) => res.json());
+        return this.http.get('management/dump');
     }
 }
