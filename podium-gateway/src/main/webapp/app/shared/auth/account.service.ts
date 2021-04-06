@@ -15,19 +15,17 @@ import { Account } from '../user/account.model';
 @Injectable()
 export class AccountService  {
     private _identity: Account;
-    private authenticated = false;
     private authenticationState = new BehaviorSubject<any>(null);
 
     constructor(private http: HttpClient) { }
 
-    authenticate (_identity) {
+    authenticate(_identity: Account | null) {
         this._identity = _identity;
-        this.authenticated = _identity !== null;
         this.authenticationState.next(this._identity);
     }
 
     hasAnyAuthority (authorities: string[]): Promise<boolean> {
-        if (!this.authenticated || !this._identity || !this._identity.authorities) {
+        if (!this._identity || !this._identity.authorities) {
             return Promise.resolve(false);
         }
 
@@ -41,7 +39,7 @@ export class AccountService  {
     }
 
     hasAuthority (authority: string): Promise<boolean> {
-        if (!this.authenticated) {
+        if (!this._identity) {
            return Promise.resolve(false);
         }
 
@@ -65,25 +63,16 @@ export class AccountService  {
 
         // retrieve the _identity data from the server, update the _identity object, and then resolve.
         return this.get().toPromise().then(account => {
-            if (account) {
-                this._identity = account;
-                this.authenticated = true;
-            } else {
-                this._identity = null;
-                this.authenticated = false;
-            }
-            this.authenticationState.next(this._identity);
+            this.authenticate(account);
             return this._identity;
         }).catch(err => {
-            this._identity = null;
-            this.authenticated = false;
-            this.authenticationState.next(this._identity);
+            this.authenticate(null);;
             return null;
         });
     }
 
     isAuthenticated (): boolean {
-        return this.authenticated;
+        return this._identity !== null;
     }
 
     getAuthenticationState(): BehaviorSubject<any> {
@@ -98,8 +87,8 @@ export class AccountService  {
         return this.isIdentityResolved () ? this._identity.imageUrl : null;
     }
 
-    get(): Observable<any> {
-        return this.http.get('podiumuaa/api/account');
+    private get(): Observable<Account> {
+        return this.http.get<Account>('podiumuaa/api/account');
     }
 
     save(account: any): Observable<any> {
