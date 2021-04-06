@@ -17,7 +17,11 @@ import { PdmHealthService } from './health.service';
 })
 export class PdmHealthModalComponent {
 
-    currentHealth: any;
+    currentHealth: {
+        details: { [key: string]: any },
+        error: any,
+        name: any,
+    };
 
     constructor(private healthService: PdmHealthService, public activeModal: NgbActiveModal) {}
 
