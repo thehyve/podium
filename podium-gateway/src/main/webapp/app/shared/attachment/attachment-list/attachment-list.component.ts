@@ -12,7 +12,8 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, S
 import { AttachmentService } from '../attachment.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
-import { Principal, User } from '../../';
+import { User } from '../../user/user.model';
+import { AccountService } from '../../auth/account.service';
 import { FormatHelper } from '../../util/format-helper';
 import { Subscription } from 'rxjs/Rx';
 import { RequestAccessService, RequestBase } from '../../request';
@@ -49,7 +50,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
         return attachment.owner && (user.uuid === attachment.owner.uuid);
     }
 
-    constructor(private principal: Principal,
+    constructor(private accountService: AccountService,
                 private attachmentService: AttachmentService,
                 private requestAccessService: RequestAccessService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
@@ -59,7 +60,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.accountSubscription = this.principal.getAuthenticationState()
+        this.accountSubscription = this.accountService.getAuthenticationState()
             .subscribe(
                 (identity) => this.account = identity
             );

@@ -10,7 +10,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
 import { JhiLanguageHelper } from '../shared';
-import { Principal } from '../shared/auth/principal.service';
+import { AccountService } from '../shared/auth/account.service';
 
 @Component({
     selector: 'pdm-main',
@@ -21,7 +21,7 @@ export class PdmMainComponent implements OnInit {
     constructor(
         private jhiLanguageHelper: JhiLanguageHelper,
         private router: Router,
-        private principal: Principal
+        private accountService: AccountService
     ) { }
 
     private getPageTitle(routeSnapshot: ActivatedRouteSnapshot) {
@@ -45,6 +45,6 @@ export class PdmMainComponent implements OnInit {
     }
 
     isAuthenticated() {
-        return this.principal.isAuthenticated();
+        return this.accountService.isAuthenticated();
     }
 }

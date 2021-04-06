@@ -16,7 +16,7 @@ import { Role } from '../role.model';
 import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
-import { Principal } from '../../../shared';
+import { AccountService } from '../../auth/account.service';
 import { Authority } from '../../../shared/authority/authority';
 import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { OrganisationUser } from '../../user/organisation-user.model';
@@ -50,7 +50,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         private userService: UserService,
         private alertService: JhiAlertService,
         private translateService: TranslateService,
-        private principal: Principal,
+        private accountService: AccountService,
         private eventManager: JhiEventManager
     ) {
 
@@ -60,7 +60,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.principal.identity().then((account: User) => {
+        this.accountService.identity().then((account: User) => {
             this.currentAccount = account;
         });
 

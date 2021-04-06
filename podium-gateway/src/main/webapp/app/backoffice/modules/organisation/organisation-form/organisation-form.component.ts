@@ -10,7 +10,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import { Principal } from '../../../../shared';
+import { AccountService } from '../../../../shared';
 import { User } from '../../../../shared/user/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestType } from '../../../../shared/request/request-type';
@@ -34,7 +34,7 @@ export class OrganisationFormComponent implements OnInit {
     constructor(
         private organisationService: OrganisationService,
         private alertService: JhiAlertService,
-        private principal: Principal,
+        private accountService: AccountService,
         private eventManager: JhiEventManager,
         private route: ActivatedRoute,
         private router: Router
@@ -43,7 +43,7 @@ export class OrganisationFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then((account) => {
             this.currentAccount = account;
         });
 

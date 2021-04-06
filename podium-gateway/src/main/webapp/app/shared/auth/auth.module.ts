@@ -12,7 +12,6 @@ import { NgModule } from '@angular/core';
 import { AccountService } from './account.service';
 import { SessionStorageService } from 'ngx-webstorage';
 import { StateStorageService } from './state-storage.service';
-import { Principal } from './principal.service';
 import { CSRFService } from './csrf.service';
 import { AuthServerProvider } from './auth-jwt.service';
 import { AuthService } from './auth.service';
@@ -31,7 +30,6 @@ import { UserRouteAccessService } from './user-route-access-service';
         AuthServerProvider,
         AuthService,
         CSRFService,
-        Principal,
         SessionStorageService,
         StateStorageService,
         UserRouteAccessService

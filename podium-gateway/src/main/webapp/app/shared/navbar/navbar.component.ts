@@ -12,7 +12,8 @@ import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { ProfileService } from '../profiles/profile.service';
-import { JhiLanguageHelper, Principal, LoginService } from '../';
+import { JhiLanguageHelper, LoginService } from '../';
+import { AccountService } from '../auth/account.service';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
 import { User } from '../user/user.model';
 import { Subscription } from 'rxjs';
@@ -39,7 +40,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         private loginService: LoginService,
         private languageHelper: JhiLanguageHelper,
         private languageService: JhiLanguageService,
-        private principal: Principal,
+        private accountService: AccountService,
         private profileService: ProfileService,
         private router: Router
     ) {
@@ -57,7 +58,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
 
-        this.accountSubscription = this.principal.getAuthenticationState()
+        this.accountSubscription = this.accountService.getAuthenticationState()
             .subscribe(
                 (identity) => this.account = identity
             );
@@ -78,7 +79,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     isAuthenticated() {
-        return this.principal.isAuthenticated();
+        return this.accountService.isAuthenticated();
     }
 
     login() {
@@ -96,6 +97,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     getImageUrl() {
-        return this.isAuthenticated() ? this.principal.getImageUrl() : null;
+        return this.isAuthenticated() ? this.accountService.getImageUrl() : null;
     }
 }

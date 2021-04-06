@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
-import { Principal } from '../../../shared/auth/principal.service';
+import { AccountService } from '../../../shared/auth/account.service';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { Overview } from '../../../shared/overview/overview';
@@ -54,7 +54,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
         private userService: UserService,
         private parseLinks: JhiParseLinks,
         private alertService: JhiAlertService,
-        private principal: Principal,
+        private accountService: AccountService,
         private eventManager: JhiEventManager,
         private overviewService: OverviewService,
         protected activatedRoute: ActivatedRoute,
@@ -70,7 +70,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.userGroupAuthority = this.activatedRoute.snapshot.data['userAuthorityGroup'];
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then((account) => {
             this.currentAccount = account;
             this.fetchUsers();
             this.registerChangeInUsers();

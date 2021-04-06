@@ -9,7 +9,7 @@
  */
 
 import { Injectable, OnInit, OnDestroy } from '@angular/core';
-import { Principal } from '../auth/principal.service';
+import { AccountService } from '../auth/account.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';
@@ -58,7 +58,7 @@ export class RequestAccessService implements OnDestroy {
     }
 
     constructor(
-        private principal: Principal
+        private accountService: AccountService
     ) {
         this.registerChangeInAuthentication();
     }
@@ -70,7 +70,7 @@ export class RequestAccessService implements OnDestroy {
     }
 
     registerChangeInAuthentication() {
-        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+        this.authenticationSubscription = this.accountService.getAuthenticationState().subscribe(
             (identity) => {
                 this.currentUser = identity;
             },

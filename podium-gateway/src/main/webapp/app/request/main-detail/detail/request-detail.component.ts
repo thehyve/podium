@@ -21,7 +21,7 @@ import { RequestReviewDecision } from '../../../shared/request/request-review-de
 import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-update-action';
 import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
-import { Principal } from '../../../shared/auth/principal.service';
+import { AccountService } from '../../../shared/auth/account.service';
 import { User } from '../../../shared/user/user.model';
 import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/request-finalize-dialog.component';
 import { Delivery } from '../../../shared/delivery/delivery';
@@ -55,7 +55,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         private requestAccessService: RequestAccessService,
         private requestFormService: RequestFormService,
         private modalService: NgbModal,
-        private principal: Principal,
+        private accountService: AccountService,
         private alertService: JhiAlertService
     ) {
     }
@@ -95,7 +95,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+        this.authenticationSubscription = this.accountService.getAuthenticationState().subscribe(
             (identity: User) => {
                 this.currentUser = identity;
                 this.checkIsInRevision(this.request);

@@ -12,7 +12,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
-import { Principal } from '../../../shared';
+import { AccountService } from '../../../shared';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
 import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
@@ -52,7 +52,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         private organisationService: OrganisationService,
         private overviewService: OverviewService,
         private parseLinks:  JhiParseLinks,
-        private principal: Principal,
+        private accountService: AccountService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router,
         private eventManager:  JhiEventManager
@@ -67,7 +67,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
 
     ngOnInit() {
         this.fetchOrganisations();
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then((account) => {
             this.currentAccount = account;
         });
 
