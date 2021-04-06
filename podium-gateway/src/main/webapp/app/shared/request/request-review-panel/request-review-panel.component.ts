@@ -15,7 +15,7 @@ import { RequestService } from '../request.service';
 import { RequestBase } from '../request-base';
 import { Subscription } from 'rxjs';
 import { RequestAccessService } from '../request-access.service';
-import { AccountService } from '../../auth/account.service';
+import { AccountService } from '../../../core/auth/account.service';
 
 @Component({
     selector: 'pdm-request-review-panel',

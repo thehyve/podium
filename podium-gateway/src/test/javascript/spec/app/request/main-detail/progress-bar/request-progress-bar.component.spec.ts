@@ -26,8 +26,6 @@ import { PodiumTestModule } from '../../../../test.module';
 describe('RequestProgressBarComponent', () => {
     let comp: RequestProgressBarComponent;
     let fixture: ComponentFixture<RequestProgressBarComponent>;
-    let de: DebugElement;
-    let el: HTMLElement;
 
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {

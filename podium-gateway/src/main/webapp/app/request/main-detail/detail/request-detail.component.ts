@@ -21,7 +21,7 @@ import { RequestReviewDecision } from '../../../shared/request/request-review-de
 import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-update-action';
 import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
-import { AccountService } from '../../../shared/auth/account.service';
+import { AccountService } from '../../../core/auth/account.service';
 import { User } from '../../../shared/user/user.model';
 import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/request-finalize-dialog.component';
 import { Delivery } from '../../../shared/delivery/delivery';

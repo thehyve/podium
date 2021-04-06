@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
-import { Account } from '../../core/auth/account.model';
+import { Account } from './account.model';
 
 @Injectable()
 export class AccountService  {

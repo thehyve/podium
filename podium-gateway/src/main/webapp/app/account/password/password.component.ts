@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../../shared/auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { Account } from '../../core/auth/account.model';
 import { Password } from './password.service';
 

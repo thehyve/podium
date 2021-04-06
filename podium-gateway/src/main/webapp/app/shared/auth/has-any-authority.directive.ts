@@ -8,7 +8,7 @@
  *
  */
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
-import { AccountService } from './account.service';
+import { AccountService } from '../../core/auth/account.service';
 
 @Directive({
     selector: '[pdmHasAnyAuthority]'

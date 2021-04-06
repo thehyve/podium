@@ -19,7 +19,7 @@ import { BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { MockPrincipal } from '../../../helpers/mock-principal.service';
 import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
-import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
+import { AccountService } from '../../../../../../main/webapp/app/core/auth/account.service';
 import { RequestReviewProcess } from '../../../../../../main/webapp/app/shared/request/request-review-process';
 import {
     RequestOverviewStatusOption
