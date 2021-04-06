@@ -21,7 +21,7 @@ import { PdmMainComponent } from './main/main.component';
 import { PageRibbonComponent } from './shared/profiles/page-ribbon.component';
 import { AppRoutingModule } from './app.route';
 import { PdmHomeComponent } from './home/home.component';
-import { FooterComponent } from './shared/footer/footer.component';
+import { FooterComponent } from './layouts/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
 import { RedirectService } from './shared/auth/redirect.service';
