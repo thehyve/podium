@@ -9,8 +9,8 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
-import { JhiLanguageHelper } from '../shared';
-import { AccountService } from '../shared/auth/account.service';
+import { JhiLanguageHelper } from '../../shared';
+import { AccountService } from '../../shared/auth/account.service';
 
 @Component({
     selector: 'pdm-main',
