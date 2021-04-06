@@ -50,6 +50,7 @@ export class OverviewService {
         }
 
         this.activeStatus = requestStatus;
+        let baseUrl = this.resourceUrl;
 
         // When we have to filter for Drafts
         if (requestStatus === RequestOverviewStatusOption.Draft) {
@@ -58,18 +59,15 @@ export class OverviewService {
             });
         }
 
-        switch (userGroup) {
-            case UserGroupAuthority.Requester:
-                requestsUrl = `${this.resourceUrl}/status/${requestStatus}/${UserGroupAuthority.Requester}/`;
-                break;
-            case UserGroupAuthority.Coordinator:
-                requestsUrl = `${this.resourceUrl}/status/${requestStatus}/${UserGroupAuthority.Coordinator}`;
-                break;
-            case UserGroupAuthority.Reviewer:
-                requestsUrl = `${this.resourceUrl}/reviewer`;
-                break;
-            default:
-                return;
+        let UGA = UserGroupAuthority;
+        let urlByGroup = {
+            [UGA.Requester]: `${baseUrl}/status/${requestStatus}/${UGA.Requester}/`,
+            [UGA.Coordinator]: `${baseUrl}/status/${requestStatus}/${UGA.Coordinator}`,
+            [UGA.Reviewer]: `${baseUrl}/reviewer`,
+        };
+        let requestUrl = urlByGroup[userGroup];
+        if (!requestUrl) {
+            return;
         }
 
         return this.http.get(requestsUrl, options).map((res: Response) => {
