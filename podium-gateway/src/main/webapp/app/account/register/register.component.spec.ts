@@ -9,17 +9,18 @@
  */
 import { ComponentFixture, TestBed, async, inject, tick, fakeAsync } from '@angular/core/testing';
 import { Renderer, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs/Rx';
 import { JhiLanguageService } from 'ng-jhipster';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { LoginModalService } from '../../../../../../main/webapp/app/shared';
-import { Register } from '../../../../../../main/webapp/app/account/register/register.service';
-import { RegisterComponent } from '../../../../../../main/webapp/app/account/register/register.component';
-import { PodiumTestModule } from '../../../test.module';
-import { Router } from '@angular/router';
-import { MockRouter } from '../../../helpers/mock-route.service';
-import { TranslateService } from '@ngx-translate/core';
-import { MessageService } from '../../../../../../main/webapp/app/shared/message/message.service';
+
+import { MockLanguageService } from '../../../../../test/javascript/spec/helpers/mock-language.service';
+import { LoginModalService } from '../../shared';
+import { Register } from './register.service';
+import { RegisterComponent } from './register.component';
+import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
+import { MockRouter } from '../../../../../test/javascript/spec/helpers/mock-route.service';
+import { MessageService } from '../../shared/message/message.service';
 
 describe('Component Tests', () => {
 
