@@ -9,15 +9,12 @@
  */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper, Principal, AccountService } from '../../../../../../main/webapp/app/shared';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { SettingsComponent } from '../../../../../../main/webapp/app/account/settings/settings.component';
-import { MockAccountService } from '../../../helpers/mock-account.service';
-import { MockPrincipal } from '../../../helpers/mock-principal.service';
-import { PodiumTestModule } from '../../../test.module';
+import { JhiLanguageHelper, AccountService } from '../../shared';
+import { SettingsComponent } from './settings.component';
+import { MockAccountService } from '../../../../../test/javascript/spec/helpers/mock-account.service';
+import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
 
 describe('Component Tests', () => {
@@ -27,7 +24,6 @@ describe('Component Tests', () => {
         let comp: SettingsComponent;
         let fixture: ComponentFixture<SettingsComponent>;
         let mockAuth: any;
-        let mockPrincipal: any;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -35,10 +31,6 @@ describe('Component Tests', () => {
                 declarations: [SettingsComponent],
                 providers: [
                     MockBackend,
-                    {
-                        provide: Principal,
-                        useClass: MockPrincipal
-                    },
                     {
                         provide: AccountService,
                         useClass: MockAccountService
@@ -57,7 +49,6 @@ describe('Component Tests', () => {
             fixture = TestBed.createComponent(SettingsComponent);
             comp = fixture.componentInstance;
             mockAuth = fixture.debugElement.injector.get(AccountService);
-            mockPrincipal = fixture.debugElement.injector.get(Principal);
         });
 
         it('should send the current identity upon save', function () {
@@ -71,14 +62,14 @@ describe('Component Tests', () => {
                 langKey: 'en',
                 login: 'john'
             };
-            mockPrincipal.setResponse(accountValues);
+            mockAuth.setResponse(accountValues);
 
             // WHEN
             comp.settingsAccount = accountValues;
             comp.save();
 
             // THEN
-            expect(mockPrincipal.identitySpy).toHaveBeenCalled();
+            expect(mockAuth.identitySpy).toHaveBeenCalled();
             expect(mockAuth.saveSpy).toHaveBeenCalledWith(accountValues);
             expect(comp.settingsAccount).toEqual(accountValues);
         });
@@ -89,7 +80,7 @@ describe('Component Tests', () => {
                 firstName: 'John',
                 lastName: 'Doe'
             };
-            mockPrincipal.setResponse(accountValues);
+            mockAuth.setResponse(accountValues);
 
             // WHEN
             comp.save();
