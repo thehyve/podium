@@ -12,7 +12,7 @@ import { RequestOptionsArgs, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Injector } from '@angular/core';
 import { AuthService } from '../../shared/auth/auth.service';
-import { Principal } from '../../shared/auth/principal.service';
+import { AccountService } from  '../../shared/auth/account.service';
 
 export class AuthExpiredInterceptor extends JhiHttpInterceptor {
 
@@ -29,9 +29,9 @@ export class AuthExpiredInterceptor extends JhiHttpInterceptor {
 
         return <Observable<Response>> observable.catch((error, source) => {
             if (error.status === 401) {
-                let principal: Principal = self.injector.get(Principal);
+                let accountService: AccountService = self.injector.get(AccountService);
 
-                if (principal.isAuthenticated()) {
+                if (accountService.isAuthenticated()) {
                     let auth: AuthService = self.injector.get(AuthService);
                     auth.authorize(true);
                 }

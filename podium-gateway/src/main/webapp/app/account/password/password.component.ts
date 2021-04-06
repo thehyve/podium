@@ -9,7 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-import { Principal } from '../../shared';
+import { AccountService } from '../../shared';
 import { Password } from './password.service';
 
 @Component({
@@ -26,13 +26,13 @@ export class PasswordComponent implements OnInit {
 
     constructor(
         private passwordService: Password,
-        private principal: Principal
+        private accountService: AccountService
     ) {
 
     }
 
     ngOnInit () {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then((account) => {
             this.account = account;
         });
     }

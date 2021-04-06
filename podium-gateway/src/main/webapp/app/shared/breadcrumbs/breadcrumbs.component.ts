@@ -9,7 +9,7 @@
  */
 import { Component } from '@angular/core';
 import { Breadcrumb, BreadcrumbService } from './breadcrumbs.service';
-import { Principal } from '../auth/principal.service';
+import { AccountService } from '../auth/account.service';
 
 @Component({
     selector: 'pdm-breadcrumb',
@@ -34,7 +34,7 @@ export class BreadcrumbComponent {
 
     constructor(
         private breadcrumbService: BreadcrumbService,
-        private principal: Principal
+        private accountService: AccountService
     ) {
         breadcrumbService.onBreadcrumbChange.subscribe((crumbs: Breadcrumb[]) => {
             this.breadcrumbs = crumbs;
@@ -42,6 +42,6 @@ export class BreadcrumbComponent {
     }
 
     isAuthenticated() {
-        return this.principal.isAuthenticated();
+        return this.accountService.isAuthenticated();
     }
 }

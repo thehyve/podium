@@ -9,11 +9,93 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class AccountService  {
+    private _identity: Identity;
+    private authenticated = false;
+    private authenticationState = new BehaviorSubject<any>(null);
+
     constructor(private http: HttpClient) { }
+
+    authenticate (_identity) {
+        this._identity = _identity;
+        this.authenticated = _identity !== null;
+        this.authenticationState.next(this._identity);
+    }
+
+    hasAnyAuthority (authorities: string[]): Promise<boolean> {
+        if (!this.authenticated || !this._identity || !this._identity.authorities) {
+            return Promise.resolve(false);
+        }
+
+        for (let i = 0; i < authorities.length; i++) {
+            if (this._identity.authorities.indexOf(authorities[i]) !== -1) {
+                return Promise.resolve(true);
+            }
+        }
+
+        return Promise.resolve(false);
+    }
+
+    hasAuthority (authority: String): Promise<boolean> {
+        if (!this.authenticated) {
+           return Promise.resolve(false);
+        }
+
+        return this.identity().then(id => {
+            return Promise.resolve(id.authorities && id.authorities.indexOf(authority) !== -1);
+        }, () => {
+            return Promise.resolve(false);
+        });
+    }
+
+    identity (force?: boolean): Promise<any> {
+        if (force === true) {
+            this._identity = undefined;
+        }
+
+        // check and see if we have retrieved the _identity data from the server.
+        // if we have, reuse it by immediately resolving
+        if (this._identity) {
+            return Promise.resolve(this._identity);
+        }
+
+        // retrieve the _identity data from the server, update the _identity object, and then resolve.
+        return this.get().toPromise().then(account => {
+            if (account) {
+                this._identity = account;
+                this.authenticated = true;
+            } else {
+                this._identity = null;
+                this.authenticated = false;
+            }
+            this.authenticationState.next(this._identity);
+            return this._identity;
+        }).catch(err => {
+            this._identity = null;
+            this.authenticated = false;
+            this.authenticationState.next(this._identity);
+            return null;
+        });
+    }
+
+    isAuthenticated (): boolean {
+        return this.authenticated;
+    }
+
+    getAuthenticationState(): BehaviorSubject<any> {
+        return this.authenticationState;
+    }
+
+    isIdentityResolved (): boolean {
+        return this._identity !== undefined;
+    }
+
+    getImageUrl(): String {
+        return this.isIdentityResolved () ? this._identity.imageUrl : null;
+    }
 
     get(): Observable<any> {
         return this.http.get('podiumuaa/api/account');
@@ -22,4 +104,9 @@ export class AccountService  {
     save(account: any): Observable<any> {
         return this.http.post('podiumuaa/api/account', account);
     }
+}
+
+interface Identity {
+    authorities: string[];
+    imageUrl: string;
 }

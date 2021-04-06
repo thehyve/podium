@@ -10,14 +10,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginModalService } from '../login/login-modal.service';
-import { Principal } from './principal.service';
+import { AccountService } from './account.service';
 import { StateStorageService } from './state-storage.service';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private principal: Principal,
+        private accountService: AccountService,
         private stateStorageService: StateStorageService,
         private loginModalService: LoginModalService,
         private router: Router
@@ -25,12 +25,12 @@ export class AuthService {
 
     authorize (force): Promise<boolean> {
         let self = this;
-        let authReturn = self.principal.identity(force).then(authThen);
+        let authReturn = self.accountService.identity(force).then(authThen);
 
         return authReturn;
 
         function authThen () {
-            let isAuthenticated = self.principal.isAuthenticated();
+            let isAuthenticated = self.accountService.isAuthenticated();
             let toStateInfo = self.stateStorageService.getDestinationState().destination;
 
             // an authenticated user can't access to login and register pages
@@ -49,7 +49,7 @@ export class AuthService {
             }
 
             if (toStateInfo.data.authorities && toStateInfo.data.authorities.length > 0) {
-                return self.principal.hasAnyAuthority(toStateInfo.data.authorities).then(hasAnyAuthority => {
+                return self.accountService.hasAnyAuthority(toStateInfo.data.authorities).then(hasAnyAuthority => {
                     if (!hasAnyAuthority) {
                         if (isAuthenticated) {
                             // user is signed in but not authorized for desired state

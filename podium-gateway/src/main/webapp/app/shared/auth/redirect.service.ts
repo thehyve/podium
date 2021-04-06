@@ -9,25 +9,25 @@
  */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Principal } from './principal.service';
+import { AccountService } from './account.service';
 
 @Injectable()
 export class RedirectService {
 
     constructor (
-        private principal: Principal,
+        private accountService: AccountService,
         private router: Router
     ) {}
 
 
     redirectUser() {
         Promise.all([
-            this.principal.hasAuthority('ROLE_PODIUM_ADMIN'),
-            this.principal.hasAuthority('ROLE_BBMRI_ADMIN'),
-            this.principal.hasAuthority('ROLE_ORGANISATION_ADMIN'),
-            this.principal.hasAuthority('ROLE_ORGANISATION_COORDINATOR'),
-            this.principal.hasAuthority('ROLE_REVIEWER'),
-            this.principal.hasAuthority('ROLE_RESEARCHER')
+            this.accountService.hasAuthority('ROLE_PODIUM_ADMIN'),
+            this.accountService.hasAuthority('ROLE_BBMRI_ADMIN'),
+            this.accountService.hasAuthority('ROLE_ORGANISATION_ADMIN'),
+            this.accountService.hasAuthority('ROLE_ORGANISATION_COORDINATOR'),
+            this.accountService.hasAuthority('ROLE_REVIEWER'),
+            this.accountService.hasAuthority('ROLE_RESEARCHER')
         ]).then(res => {
             if (res[0] || res[1]) {
                 this.router.navigate(['/admin/user-management']);

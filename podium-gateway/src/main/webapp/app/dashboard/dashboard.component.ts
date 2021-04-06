@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { Principal } from '../shared';
+import { AccountService } from '../shared';
 import { User } from '../shared/user/user.model';
 import { JhiLanguageService } from 'ng-jhipster';
 
@@ -24,13 +24,13 @@ export class DashboardComponent implements OnInit {
     user: User;
 
     constructor(
-        private principal: Principal
+        private accountServie: AccountService
     ) {
 
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.accountServie.identity().then((account) => {
             this.user = account;
         });
     }

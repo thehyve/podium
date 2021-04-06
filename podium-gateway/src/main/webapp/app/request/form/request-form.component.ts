@@ -17,7 +17,7 @@ import {
     PrincipalInvestigator,
     RequestBase,
     RequestService,
-    Principal,
+    AccountService,
     User
 } from '../../shared';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -79,7 +79,7 @@ export class RequestFormComponent implements OnInit {
                 private requestService: RequestService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute,
-                private principal: Principal,
+                private accountService: AccountService,
                 private modalService: NgbModal,
                 private attachmentService: AttachmentService,
                 private organisationService: OrganisationService) {
@@ -90,7 +90,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then((account) => {
             this.currentUser = account;
             this.requestTypeOptions = RequestType;
             this.initializeRequestForm();

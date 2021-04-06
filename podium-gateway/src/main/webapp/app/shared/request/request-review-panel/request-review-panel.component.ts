@@ -15,7 +15,7 @@ import { RequestService } from '../request.service';
 import { RequestBase } from '../request-base';
 import { Subscription } from 'rxjs';
 import { RequestAccessService } from '../request-access.service';
-import { Principal } from '../../auth/principal.service';
+import { AccountService } from '../../auth/account.service';
 
 @Component({
     selector: 'pdm-request-review-panel',
@@ -38,7 +38,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
 
     constructor(
         private requestService: RequestService,
-        private principal: Principal,
+        private accountService: AccountService,
         private requestAccessService: RequestAccessService
     ) {
         this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
@@ -71,7 +71,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     setRequestReviewFeedback() {
         if (this.request.reviewRound) {
             if (this.requestAccessService.isReviewerFor(this.request)) {
-                this.principal.identity().then((account) => {
+                this.accountService.identity().then((account) => {
                     this.lastReviewFeedback = [
                         this.requestService.getLastReviewFeedbackByUser(this.request, account)
                     ];

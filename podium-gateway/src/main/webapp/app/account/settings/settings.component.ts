@@ -9,7 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
-import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
+import { AccountService, JhiLanguageHelper } from '../../shared';
 import { User } from '../../shared/user/user.model';
 
 @Component({
@@ -42,14 +42,14 @@ export class SettingsComponent implements OnInit {
 
     constructor(
         private account: AccountService,
-        private principal: Principal,
+        private accountService: AccountService,
         private languageService: JhiLanguageService,
         private languageHelper: JhiLanguageHelper
     ) {
     }
 
     ngOnInit () {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().then((account) => {
             this.settingsAccount = SettingsComponent.copyAccount(account);
         });
         this.languageHelper.getAll().then((languages) => {
@@ -61,7 +61,7 @@ export class SettingsComponent implements OnInit {
         this.account.save(this.settingsAccount).subscribe(() => {
             this.error = null;
             this.success = 'OK';
-            this.principal.identity(true).then((account) => {
+            this.accountService.identity(true).then((account) => {
                 this.settingsAccount = SettingsComponent.copyAccount(account);
             });
             this.languageService.getCurrent().then((current) => {
