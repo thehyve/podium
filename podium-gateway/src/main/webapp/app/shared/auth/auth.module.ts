@@ -10,7 +10,7 @@
 
 import { NgModule } from '@angular/core';
 import { AccountService } from './account.service';
-import { SessionStorageService } from 'ng2-webstorage';
+import { SessionStorageService } from 'ngx-webstorage';
 import { StateStorageService } from './state-storage.service';
 import { Principal } from './principal.service';
 import { CSRFService } from './csrf.service';

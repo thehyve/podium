@@ -9,7 +9,7 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { SessionStorageService } from 'ng2-webstorage';
+import { SessionStorageService } from 'ngx-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
