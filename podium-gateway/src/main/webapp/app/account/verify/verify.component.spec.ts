@@ -9,15 +9,13 @@
  */
 import { TestBed, async, tick, fakeAsync, inject } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
-import { JhiLanguageService } from 'ng-jhipster';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { MockActivatedRoute, MockRouter } from '../../../helpers/mock-route.service';
-import { Verify } from '../../../../../../main/webapp/app/account/verify/verify.service';
-import { VerifyComponent } from '../../../../../../main/webapp/app/account/verify/verify.component';
-import { PodiumTestModule } from '../../../test.module';
+import { MockActivatedRoute, MockRouter } from '../../../../../test/javascript/spec/helpers/mock-route.service';
+import { Verify } from './verify.service';
+import { VerifyComponent } from './verify.component';
+import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
 
 describe('Component Tests', () => {
