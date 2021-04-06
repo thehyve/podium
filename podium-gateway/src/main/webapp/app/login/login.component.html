@@ -36,7 +36,8 @@
         <form class="form-signin" role="form" (ngSubmit)="login()">
             <h2 class="form-signin-heading">Sign in</h2>
             <label for="username" class="sr-only">Username</label>
-            <input  type="text" class="form-control" name="username" id="username" autocomplete="off"
+            <input  type="text" class="form-control" #usernameField
+                    name="username" id="username" autocomplete="off"
                     placeholder="{{'global.form.username.placeholder' | translate}}"
                     [(ngModel)]="username">
             <label for="password" class="sr-only">Password</label>
