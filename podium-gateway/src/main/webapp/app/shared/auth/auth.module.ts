@@ -12,7 +12,7 @@ import { NgModule } from '@angular/core';
 import { AccountService } from '../../core/auth/account.service';
 import { SessionStorageService } from 'ngx-webstorage';
 import { StateStorageService } from '../../core/auth/state-storage.service';
-import { AuthServerProvider } from './auth-jwt.service';
+import { AuthServerProvider } from '../../core/auth/auth-jwt.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { UserRouteAccessService } from '../../core/auth/user-route-access-service';
 
