@@ -10,6 +10,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { AccountService, JhiLanguageHelper } from '../../shared';
+import { Account } from '../../shared/user/account.model';
 import { User } from '../../shared/user/user.model';
 
 @Component({
@@ -23,21 +24,8 @@ export class SettingsComponent implements OnInit {
     settingsAccount: User;
     languages: any[];
 
-    static copyAccount (account): any {
-        return {
-            activated: account.activated,
-            specialism: account.specialism,
-            jobTitle: account.jobTitle,
-            department: account.department,
-            institute: account.institute,
-            telephone: account.telephone,
-            email: account.email,
-            firstName: account.firstName,
-            langKey: account.langKey,
-            lastName: account.lastName,
-            login: account.login,
-            imageUrl: account.imageUrl
-        };
+    static copyAccount(account: Account): User {
+        return { ...account };
     }
 
     constructor(

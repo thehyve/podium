@@ -8,8 +8,8 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { AccountService } from '../../shared';
+import { AccountService } from '../../shared/auth/account.service';
+import { Account } from '../../shared/user/account.model';
 import { Password } from './password.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class PasswordComponent implements OnInit {
     doNotMatch: string;
     error: string;
     success: string;
-    account: any;
+    account: Account;
     password: string;
     confirmPassword: string;
 
@@ -31,13 +31,13 @@ export class PasswordComponent implements OnInit {
 
     }
 
-    ngOnInit () {
+    ngOnInit() {
         this.accountService.identity().then((account) => {
             this.account = account;
         });
     }
 
-    changePassword () {
+    changePassword() {
         if (this.password !== this.confirmPassword) {
             this.error = null;
             this.success = null;

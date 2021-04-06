@@ -17,6 +17,7 @@ import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
 import { AccountService } from '../../auth/account.service';
+import { Account } from '../../user/account.model';
 import { Authority } from '../../../shared/authority/authority';
 import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { OrganisationUser } from '../../user/organisation-user.model';
@@ -29,7 +30,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class RoleAssignComponent implements OnInit, OnDestroy {
 
-    currentAccount: any;
+    currentAccount: Account;
     users: { [uuid: string]: User; };
 
     authoritiesMap: { [token: string]: Authority; };
@@ -60,7 +61,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.accountService.identity().then((account: User) => {
+        this.accountService.identity().then((account) => {
             this.currentAccount = account;
         });
 

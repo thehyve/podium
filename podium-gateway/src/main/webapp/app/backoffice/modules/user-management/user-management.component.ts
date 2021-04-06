@@ -12,6 +12,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { AccountService } from '../../../shared/auth/account.service';
+import { Account } from '../../../shared/user/account.model';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { Overview } from '../../../shared/overview/overview';
@@ -42,7 +43,7 @@ let overviewConfig: OverviewServiceConfig = {
 })
 export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
-    currentAccount: any;
+    currentAccount: Account;
     users: User[];
     error: any;
     success: any;
