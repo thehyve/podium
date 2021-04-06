@@ -17,9 +17,9 @@ import {
     PrincipalInvestigator,
     RequestBase,
     RequestService,
-    AccountService,
     User
 } from '../../shared';
+import { AccountService } from '../../shared/auth/account.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';

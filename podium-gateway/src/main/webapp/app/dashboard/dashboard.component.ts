@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../shared';
+import { AccountService } from '../shared/auth/account.service';
 import { User } from '../shared/user/user.model';
 import { JhiLanguageService } from 'ng-jhipster';
 
