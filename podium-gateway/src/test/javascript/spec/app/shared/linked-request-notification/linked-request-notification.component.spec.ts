@@ -15,7 +15,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RequestAccessService } from '../../../../../../main/webapp/app/shared/request/request-access.service';
 import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
-import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
+import { AccountService } from '../../../../../../main/webapp/app/core/auth/account.service';
 import { PodiumTestModule } from '../../../test.module';
 import { Subscription } from 'rxjs/Subscription';
 

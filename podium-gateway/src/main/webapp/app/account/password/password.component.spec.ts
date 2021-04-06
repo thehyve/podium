@@ -13,7 +13,7 @@ import { BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { PasswordComponent } from './password.component';
 import { Password } from './password.service';
-import { AccountService } from '../../../app/shared/auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
 

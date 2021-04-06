@@ -10,7 +10,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { JhiLanguageHelper } from '../../shared';
-import { AccountService } from '../../shared/auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { Account } from '../../core/auth/account.model';
 import { User } from '../../shared/user/user.model';
 

@@ -14,7 +14,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { ProfileService } from '../profiles/profile.service';
 import { JhiLanguageHelper } from '../';
 import { LoginService } from '../../login/login.service';
-import { AccountService } from '../auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
 import { User } from '../user/user.model';
 import { Subscription } from 'rxjs';

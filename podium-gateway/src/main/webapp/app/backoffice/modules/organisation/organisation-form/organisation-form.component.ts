@@ -10,7 +10,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import { AccountService } from '../../../../shared/auth/account.service';
+import { AccountService } from '../../../../core/auth/account.service';
 import { User } from '../../../../shared/user/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RequestType } from '../../../../shared/request/request-type';

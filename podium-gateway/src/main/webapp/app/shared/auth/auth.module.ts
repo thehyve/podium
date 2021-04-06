@@ -9,7 +9,7 @@
  */
 
 import { NgModule } from '@angular/core';
-import { AccountService } from './account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { SessionStorageService } from 'ngx-webstorage';
 import { StateStorageService } from './state-storage.service';
 import { AuthServerProvider } from './auth-jwt.service';

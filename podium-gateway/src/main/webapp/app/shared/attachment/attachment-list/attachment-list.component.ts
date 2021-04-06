@@ -13,7 +13,7 @@ import { AttachmentService } from '../attachment.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
 import { User } from '../../user/user.model';
-import { AccountService } from '../../auth/account.service';
+import { AccountService } from '../../../core/auth/account.service';
 import { FormatHelper } from '../../util/format-helper';
 import { Subscription } from 'rxjs/Rx';
 import { RequestAccessService, RequestBase } from '../../request';

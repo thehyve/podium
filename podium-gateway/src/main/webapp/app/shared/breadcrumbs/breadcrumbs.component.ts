@@ -9,7 +9,7 @@
  */
 import { Component } from '@angular/core';
 import { Breadcrumb, BreadcrumbService } from './breadcrumbs.service';
-import { AccountService } from '../auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 
 @Component({
     selector: 'pdm-breadcrumb',

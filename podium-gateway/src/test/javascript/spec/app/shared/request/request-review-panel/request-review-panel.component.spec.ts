@@ -22,7 +22,7 @@ import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { PodiumEventMessage } from '../../../../../../../main/webapp/app/shared/event/podium-event-message';
 import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
-import { AccountService } from '../../../../../../../main/webapp/app/shared/auth/account.service';
+import { AccountService } from '../../../../../../../main/webapp/app/core/auth/account.service';
 import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
 import { PodiumTestModule } from '../../../../test.module';
 

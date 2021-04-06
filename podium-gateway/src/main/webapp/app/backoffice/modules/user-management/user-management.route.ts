@@ -14,7 +14,7 @@ import { UserMgmtComponent } from './user-management.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
-import { AccountService } from '../../../shared/auth/account.service';
+import { AccountService } from '../../../core/auth/account.service';
 import { UserRouteAccessService } from '../../../shared/auth/user-route-access-service';
 
 

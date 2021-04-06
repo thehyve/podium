@@ -28,7 +28,6 @@ export * from './validators/word-length-validator.directive';
 export * from './alert/alert.component';
 export * from './alert/alert-error.component';
 export * from './auth/state-storage.service';
-export * from './auth/account.service';
 export * from './auth/auth-jwt.service';
 export * from './auth/auth.service';
 export * from './auth/has-any-authority.directive';

@@ -9,7 +9,7 @@
  */
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { AccountService } from '../auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';

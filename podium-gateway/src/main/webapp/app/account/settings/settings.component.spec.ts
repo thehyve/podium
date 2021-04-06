@@ -12,7 +12,7 @@ import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { JhiLanguageHelper } from '../../shared';
-import { AccountService } from '../../shared/auth/account.service';
+import { AccountService } from '../../core/auth/account.service';
 import { SettingsComponent } from './settings.component';
 import { MockAccountService } from '../../../../../test/javascript/spec/helpers/mock-account.service';
 import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';

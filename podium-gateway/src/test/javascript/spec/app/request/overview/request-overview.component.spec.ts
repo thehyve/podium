@@ -19,7 +19,7 @@ import { RequestService } from '../../../../../../main/webapp/app/shared/request
 import { RequestFormService } from '../../../../../../main/webapp/app/request/form/request-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MockRouter } from '../../../helpers/mock-route.service';
-import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
+import { AccountService } from '../../../../../../main/webapp/app/core/auth/account.service';
 import { Observable } from 'rxjs';
 import { PodiumTestModule } from '../../../test.module';
 
