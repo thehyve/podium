@@ -9,13 +9,11 @@
  */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiLanguageService } from 'ng-jhipster';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { PdmHealthCheckComponent } from '../../../../../../main/webapp/app/admin/health/health.component';
-import { PdmHealthService } from '../../../../../../main/webapp/app/admin/health/health.service';
-import { PodiumTestModule } from '../../../test.module';
+import { PdmHealthCheckComponent } from './health.component';
+import { PdmHealthService } from './health.service';
+import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
 
 describe('Component Tests', () => {
