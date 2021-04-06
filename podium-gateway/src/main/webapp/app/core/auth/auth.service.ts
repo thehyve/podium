@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from './account.service';
-import { StateStorageService } from '../../shared/auth/state-storage.service';
+import { StateStorageService } from './state-storage.service';
 
 @Injectable()
 export class AuthService {
