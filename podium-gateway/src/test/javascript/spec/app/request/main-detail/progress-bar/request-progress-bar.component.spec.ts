@@ -9,26 +9,18 @@
  */
 
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { TranslateService, TranslateLoader, TranslateParser } from '@ngx-translate/core';
 import { RequestProgressBarComponent }
     from '../../../../../../../main/webapp/app/request/main-detail/progress-bar/request-progress-bar.component';
 import { JhiLanguageService } from 'ng-jhipster';
-import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
-import { MockLanguageService } from '../../../../helpers/mock-language.service';
-import { MockPrincipal } from '../../../../helpers/mock-principal.service';
 import { RequestBase } from '../../../../../../../main/webapp/app/shared/request/request-base';
 import { RequestReviewProcess } from '../../../../../../../main/webapp/app/shared/request/request-review-process';
 import { RequestService } from '../../../../../../../main/webapp/app/shared/request/request.service';
 import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
 import {
-    RequestReviewStatusOptions,
-    RequestStatusOptions, RequestOverviewStatusOption,
+    RequestOverviewStatusOption,
 } from '../../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
-import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
-import { RequestOutcome } from '../../../../../../../main/webapp/app/shared/request/request-outcome';
 import { PodiumTestModule } from '../../../../test.module';
 
 describe('RequestProgressBarComponent', () => {
@@ -45,11 +37,7 @@ describe('RequestProgressBarComponent', () => {
                 BaseRequestOptions,
                 MockBackend,
                 RequestService,
-                RequestAccessService,
-                {
-                    provide: Principal,
-                    useClass: MockPrincipal
-                }
+                RequestAccessService
             ],
             declarations: [RequestProgressBarComponent], // declare the test component
         }).overrideTemplate(RequestProgressBarComponent, '')

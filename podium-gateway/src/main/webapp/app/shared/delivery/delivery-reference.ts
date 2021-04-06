@@ -8,11 +8,6 @@
  *
  */
 
-import { DeliveryStatus } from './delivery-status.constants';
-import { DeliveryOutcome } from './delivery-outcome.constants';
-import { RequestType } from '../request/request-type';
-import { PodiumEvent } from '../event/podium-event';
-
 export class DeliveryReference {
     reference?: string;
 

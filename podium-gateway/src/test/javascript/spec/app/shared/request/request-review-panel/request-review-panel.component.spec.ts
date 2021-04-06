@@ -11,7 +11,6 @@
 import { RequestReviewPanelComponent }
     from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RequestDetail } from '../../../../../../../main/webapp/app/shared/request/request-detail';
 import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
@@ -20,7 +19,7 @@ import { RequestReviewFeedback } from '../../../../../../../main/webapp/app/shar
 import { ReviewRound } from '../../../../../../../main/webapp/app/shared/request/review-round';
 import { RequestService } from '../../../../../../../main/webapp/app/shared/request/request.service';
 import { MockBackend } from '@angular/http/testing';
-import { BaseRequestOptions, Http } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { PodiumEventMessage } from '../../../../../../../main/webapp/app/shared/event/podium-event-message';
 import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
 import { AccountService } from '../../../../../../../main/webapp/app/shared/auth/account.service';
@@ -31,8 +30,6 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
 
     let comp: RequestReviewPanelComponent;
     let fixture: ComponentFixture<RequestReviewPanelComponent>;
-    let de: DebugElement;
-    let el: HTMLElement;
 
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
