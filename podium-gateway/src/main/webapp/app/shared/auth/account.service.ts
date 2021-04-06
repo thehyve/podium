@@ -10,10 +10,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { Account } from '../user/account.model';
 
 @Injectable()
 export class AccountService  {
-    private _identity: Identity;
+    private _identity: Account;
     private authenticated = false;
     private authenticationState = new BehaviorSubject<any>(null);
 
@@ -39,7 +40,7 @@ export class AccountService  {
         return Promise.resolve(false);
     }
 
-    hasAuthority (authority: String): Promise<boolean> {
+    hasAuthority (authority: string): Promise<boolean> {
         if (!this.authenticated) {
            return Promise.resolve(false);
         }
@@ -51,7 +52,7 @@ export class AccountService  {
         });
     }
 
-    identity (force?: boolean): Promise<any> {
+    identity(force?: boolean): Promise<Account | null> {
         if (force === true) {
             this._identity = undefined;
         }
@@ -104,9 +105,4 @@ export class AccountService  {
     save(account: any): Observable<any> {
         return this.http.post('podiumuaa/api/account', account);
     }
-}
-
-interface Identity {
-    authorities: string[];
-    imageUrl: string;
 }
