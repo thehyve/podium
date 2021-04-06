@@ -8,17 +8,12 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { RequestBase } from '../../shared/request/request-base';
 
 @Injectable()
 export class RequestFormService {
 
     request: RequestBase;
-
-    constructor(private http: Http) {
-
-    }
 }
 
 

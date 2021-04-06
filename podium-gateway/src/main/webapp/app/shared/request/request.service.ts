@@ -24,7 +24,6 @@ export class RequestService {
 
     // FIX ME Please refactor me.
     private resourceUrl = 'api/requests';
-    private resourceSearchUrl = 'api/_search/requests';
 
     public onRequestUpdate: Subject<RequestBase> = new Subject();
 
@@ -36,66 +35,10 @@ export class RequestService {
         });
     }
 
-    findDrafts(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/drafts`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
     saveDraft(requestBase: RequestBase): Observable<RequestBase> {
         let draftCopy: RequestBase = Object.assign({}, requestBase);
         return this.http.put(`${this.resourceUrl}/drafts`, draftCopy).map((res: Response) => {
             return res.json();
-        });
-    }
-
-    findMyReviewRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review/requester`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findMyApprovedRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Approved/requester`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findMyDeliveryRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Delivery/requester`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findCoordinatorReviewRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review/coordinator`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findCoordinatorApprovedRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Approved/coordinator`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findCoordinatorDeliveryRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Delivery/coordinator`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findAllReviewerRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/reviewer`, options).map((res: Response) => {
-            return res;
         });
     }
 
@@ -128,19 +71,6 @@ export class RequestService {
     submitRequestRevision(uuid: string): Observable<Response> {
         return this.http.get(`${this.resourceUrl}/${uuid}/submit`).map((response: Response) => {
             return response.json();
-        });
-    }
-
-    findSubmittedRequests(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/status/Review`, options).map((res: Response) => {
-            return res;
-        });
-    }
-
-    findDraftByUuid(uuid: string): Observable<RequestDetail> {
-        return this.http.get(`${this.resourceUrl}/drafts/${uuid}`).map((res: Response) => {
-            return res.json();
         });
     }
 
@@ -190,11 +120,6 @@ export class RequestService {
 
     closeRequest(uuid: string, message?: PodiumEventMessage) {
         return this.http.post(`${this.resourceUrl}/${uuid}/close`, message);
-    }
-
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options);
     }
 
     public requestUpdateEvent(requestBase: RequestBase) {
