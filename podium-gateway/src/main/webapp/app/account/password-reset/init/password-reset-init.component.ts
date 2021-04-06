@@ -8,7 +8,6 @@
  *
  */
 import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { PasswordResetInit } from './password-reset-init.service';
 
 @Component({

@@ -9,31 +9,26 @@
  */
 
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
 import { PodiumEventMessageComponent } from '../../../../../../main/webapp/app/shared/event/podium-event-message.component';
 import { PodiumEvent } from '../../../../../../main/webapp/app/shared/event/podium-event';
 import { RequestBase } from '../../../../../../main/webapp/app/shared/request/request-base';
 import { RequestDetail } from '../../../../../../main/webapp/app/shared/request/request-detail';
 import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
 import { RequestAccessService } from '../../../../../../main/webapp/app/shared/request/request-access.service';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { MockPrincipal } from '../../../helpers/mock-principal.service';
-import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
 import { AccountService } from '../../../../../../main/webapp/app/shared/auth/account.service';
 import { RequestReviewProcess } from '../../../../../../main/webapp/app/shared/request/request-review-process';
 import {
-    RequestReviewStatusOptions,
-    RequestStatusOptions, RequestOverviewStatusOption
+    RequestOverviewStatusOption
 } from '../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
 import { PodiumTestModule } from '../../../test.module';
 
 describe('PodiumEventMessageComponent (templateUrl)', () => {
     let comp: PodiumEventMessageComponent;
     let fixture: ComponentFixture<PodiumEventMessageComponent>;
-    let de: DebugElement;
-    let el: HTMLElement;
 
     // async beforeEach, since we use external templates & styles
     beforeEach(async(() => {
@@ -46,10 +41,6 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
                 AccountService,
                 RequestService,
                 RequestAccessService,
-                {
-                    provide: Principal,
-                    useClass: MockPrincipal
-                }
             ],
             declarations: [PodiumEventMessageComponent], // declare the test component
         }).overrideTemplate(PodiumEventMessageComponent, '')

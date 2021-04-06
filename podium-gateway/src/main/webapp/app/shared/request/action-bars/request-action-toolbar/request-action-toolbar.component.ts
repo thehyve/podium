@@ -8,11 +8,9 @@
  *
  */
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { Form, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import {
-    RequestStatusOptions, RequestReviewStatusOptions,
     RequestOverviewStatusOption
 } from '../../request-status/request-status.constants';
 import { RequestAccessService } from '../../request-access.service';

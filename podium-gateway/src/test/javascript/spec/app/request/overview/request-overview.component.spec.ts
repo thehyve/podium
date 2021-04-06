@@ -10,11 +10,10 @@
 
 import { ComponentFixture, TestBed, async, inject, fakeAsync } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
-import { Http, BaseRequestOptions } from '@angular/http';
+import { BaseRequestOptions } from '@angular/http';
 import { RequestOverviewComponent } from '../../../../../../main/webapp/app/request/overview/request-overview.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService, JhiParseLinks, JhiEventManager } from 'ng-jhipster';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
+import { JhiParseLinks, JhiEventManager } from 'ng-jhipster';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
 import { RequestFormService } from '../../../../../../main/webapp/app/request/form/request-form.service';

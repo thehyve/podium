@@ -10,7 +10,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { RequestBase } from '../../../shared/request/request-base';
 import {
-    RequestStatusOptions, RequestOverviewStatusOption,
+    RequestOverviewStatusOption,
     REQUEST_PROGRESSBAR_STATUSES_MAP, REQUEST_PROGRESSBAR_STATUSES, REQUEST_STATUSES
 } from '../../../shared/request/request-status/request-status.constants';
 import { RequestService } from '../../../shared/request/request.service';

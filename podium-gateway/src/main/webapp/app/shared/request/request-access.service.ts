@@ -8,13 +8,13 @@
  *
  */
 
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AccountService } from '../auth/account.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';
 import {
-    RequestStatusOptions, RequestReviewStatusOptions,
+    RequestReviewStatusOptions,
     RequestOverviewStatusOption
 } from './request-status/request-status.constants';
 import { RequestReviewFeedback } from './request-review-feedback';

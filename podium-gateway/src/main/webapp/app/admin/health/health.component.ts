@@ -9,7 +9,6 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiLanguageService } from 'ng-jhipster';
 import { PdmHealthService } from './health.service';
 import { PdmHealthModalComponent } from './health-modal.component';
 

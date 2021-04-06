@@ -8,7 +8,6 @@
  *
  */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
 import { SpecialismComponent } from '../../../../../../main/webapp/app/shared/specialism/specialism.component';
 import { FormsModule } from '@angular/forms';
 import { PodiumTestModule } from '../../../test.module';
