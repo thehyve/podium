@@ -43,6 +43,7 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
 import { PodiumLoginComponent } from '../login/login.component';
 import { LoginService } from '../login/login.service';
 import { LoginModalService } from '../login/login-modal.service';
+import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
 
 @NgModule({
     imports: [
@@ -61,6 +62,7 @@ import { LoginModalService } from '../login/login-modal.service';
         EmailValidatorDirective,
         PodiumEventMessageComponent,
         LinkedRequestNotificationComponent,
+        HasAnyAuthorityDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
@@ -98,6 +100,7 @@ import { LoginModalService } from '../login/login-modal.service';
         PodiumEventMessageComponent,
         LinkedRequestNotificationComponent,
         EmailValidatorDirective,
+        HasAnyAuthorityDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
