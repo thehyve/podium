@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AccountService } from '../../core/auth/account.service';
+import { AccountService } from './account.service';
 
 @Injectable()
 export class RedirectService {

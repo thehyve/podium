@@ -29,7 +29,6 @@ export * from './alert/alert.component';
 export * from './alert/alert-error.component';
 export * from './auth/auth-jwt.service';
 export * from './auth/has-any-authority.directive';
-export * from './auth/redirect.service';
 export * from './language/language.constants';
 export * from './language/language.helper';
 export * from './language/language.pipe';
