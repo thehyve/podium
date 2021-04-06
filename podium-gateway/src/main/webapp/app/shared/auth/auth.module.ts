@@ -12,24 +12,15 @@ import { NgModule } from '@angular/core';
 import { AccountService } from './account.service';
 import { SessionStorageService } from 'ngx-webstorage';
 import { StateStorageService } from './state-storage.service';
-import { CSRFService } from './csrf.service';
 import { AuthServerProvider } from './auth-jwt.service';
 import { AuthService } from './auth.service';
-import { HasAnyAuthorityDirective } from './has-any-authority.directive';
 import { UserRouteAccessService } from './user-route-access-service';
 
 @NgModule({
-    declarations: [
-        HasAnyAuthorityDirective
-    ],
-    exports: [
-        HasAnyAuthorityDirective
-    ],
     providers: [
         AccountService,
         AuthServerProvider,
         AuthService,
-        CSRFService,
         SessionStorageService,
         StateStorageService,
         UserRouteAccessService
