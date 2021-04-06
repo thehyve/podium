@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Response, Http } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 import { Principal } from '../../../shared/auth/principal.service';
@@ -31,11 +31,11 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: Http) => {
+            useFactory: (http: HttpClient) => {
                 return new OverviewService(http, overviewConfig);
             },
             deps: [
-                Http
+                HttpClient
             ]
         }
     ]
@@ -63,7 +63,8 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
         super(router, activatedRoute);
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
-            (res: Response) => this.processAvailableUsers(res.json(), res.headers)
+            (res: HttpResponse<User[]>) =>
+                this.processAvailableUsers(res.body, res.headers)
         );
     }
 
@@ -113,7 +114,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     fetchUsers() {
         this.overviewService.findUsersForOverview(this.userGroupAuthority, this.getPageParams())
-            .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
+            .subscribe((res) => this.overviewService.overviewUpdateEvent(res));
     }
 
     processAvailableUsers (users: User[], headers) {

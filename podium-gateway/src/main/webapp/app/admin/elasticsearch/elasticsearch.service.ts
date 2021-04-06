@@ -8,16 +8,18 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class PdmElasticsearchService {
 
-    constructor (private http: Http) {}
+    constructor (private http: HttpClient) {}
 
-    reindex(): Observable<Response> {
-        return this.http.get('podiumuaa/api/elasticsearch/index').map((res: Response) => res);
+    reindex(): Observable<HttpResponse<any>> {
+        return this.http.get('podiumuaa/api/elasticsearch/index', {
+            observe: 'response'
+        });
     }
 
 }

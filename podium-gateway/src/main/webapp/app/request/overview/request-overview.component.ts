@@ -8,6 +8,8 @@
  *
  */
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
 import { OverviewService } from '../../shared';
 import { RequestBase } from '../../shared/request';
@@ -17,7 +19,6 @@ import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
 import { RequestOverviewPath } from './request-overview.constants';
-import { Response, Http } from '@angular/http';
 import { Overview } from '../../shared';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
 import { UserGroupAuthority } from '../../shared';
@@ -44,11 +45,11 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: Http) => {
+            useFactory: (http: HttpClient) => {
                 return new OverviewService(http, overviewConfig);
             },
             deps: [
-                Http
+                HttpClient
             ]
         }
     ]
@@ -84,7 +85,8 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.activeStatus = this.overviewService.activeStatus || RequestOverviewStatusOption.All;
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
-            (res: Response) => this.processAvailableRequests(res.json(), res.headers),
+            (res: HttpResponse<RequestBase[]>) =>
+                this.processAvailableRequests(res.body, res.headers),
             (err): any => this.onError(err)
         );
     }
@@ -161,7 +163,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.router.navigate(['./requests/detail', request.uuid]);
     }
 
-    processAvailableRequests(requests, headers) {
+    processAvailableRequests(requests: RequestBase[], headers) {
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
@@ -185,7 +187,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
         this.overviewService
             .findRequestsForOverview(this.getPageParams(), option, this.userGroupAuthority)
-            .subscribe((res: Response) => {
+            .subscribe((res) => {
                 this.overviewService.overviewUpdateEvent(res);
                 this.activeStatus = this.overviewService.activeStatus;
             });

@@ -8,20 +8,18 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
 @Injectable()
 export class PdmConfigurationService {
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     get(): Observable<any> {
-        return this.http.get('management/configprops').map((res: Response) => {
+        return this.http.get('management/configprops').map((propertiesObject) => {
             let properties: any[] = [];
-
-            const propertiesObject = res.json();
 
             for (let key in propertiesObject) {
                 if (propertiesObject.hasOwnProperty(key)) {
@@ -37,10 +35,8 @@ export class PdmConfigurationService {
     }
 
     getEnv(): Observable<any> {
-        return this.http.get('management/env').map((res: Response) => {
+        return this.http.get('management/env').map((propertiesObject) => {
             let properties: any = {};
-
-            const propertiesObject = res.json();
 
             for (let key in propertiesObject) {
                 if (propertiesObject.hasOwnProperty(key)) {
