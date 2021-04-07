@@ -15,7 +15,7 @@ import { AttachmentTypes } from '../attachment.constants';
 import { User } from '../../user/user.model';
 import { AccountService } from '../../../core/auth/account.service';
 import { FormatHelper } from '../../util/format-helper';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { RequestAccessService, RequestBase } from '../../request';
 
 const ATTACHMENT_TYPES = [

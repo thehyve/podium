@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { GatewayRoute } from './gateway-route.model';
 
 @Injectable({ providedIn: 'root' })

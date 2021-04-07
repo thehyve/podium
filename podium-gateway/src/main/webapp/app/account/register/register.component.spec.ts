@@ -11,7 +11,7 @@ import { ComponentFixture, TestBed, async, inject, tick, fakeAsync } from '@angu
 import { Renderer, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { MockLanguageService } from '../../../../../test/javascript/spec/helpers/mock-language.service';

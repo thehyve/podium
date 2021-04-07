@@ -10,7 +10,7 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { PasswordComponent } from './password.component';
 import { Password } from './password.service';
 import { AccountService } from '../../core/auth/account.service';
