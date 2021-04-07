@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
     selector: 'pdm-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: [
-        'navbar.scss'
+        './navbar.component.scss'
     ]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
