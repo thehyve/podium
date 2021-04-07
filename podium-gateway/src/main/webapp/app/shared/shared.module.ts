@@ -27,7 +27,6 @@ import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
-import { FindLanguageFromKeyPipe } from './language/language.pipe';
 import { ActiveMenuDirective } from '../layouts/navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
 import { PdmErrorComponent } from '../layouts/error/error.component';
@@ -61,7 +60,6 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
         EnumKeysPipe,
-        FindLanguageFromKeyPipe,
         ActiveMenuDirective,
         CompletedComponent,
         PdmErrorComponent,
@@ -96,7 +94,6 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         DatePipe,
         EnumKeysPipe,
         ActiveMenuDirective,
-        FindLanguageFromKeyPipe,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
