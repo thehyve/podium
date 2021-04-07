@@ -22,7 +22,6 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'podiumuaa/api/organisations',
-    resourceSearchUrl: 'podiumuaa/api/_search/organisations'
 };
 
 @Component({

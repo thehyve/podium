@@ -20,7 +20,6 @@ import { RequestBase } from '../request/request-base';
 export class OverviewService {
 
     resourceUrl: string;
-    resourceSearchUrl: string;
 
     public activeStatus: RequestOverviewStatusOption;
     public onOverviewUpdate: Subject<HttpResponseBase> = new Subject();
@@ -31,7 +30,6 @@ export class OverviewService {
     ) {
         if (config) {
             this.resourceUrl = config.resourceUrl;
-            this.resourceSearchUrl = config.resourceSearchUrl;
         } else {
             console.error('No overview config set!');
         }

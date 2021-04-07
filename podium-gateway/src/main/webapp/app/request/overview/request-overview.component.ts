@@ -31,7 +31,6 @@ import { RequestOverviewStatusOption } from '../../shared/request/request-status
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
-    resourceSearchUrl: 'api/_search/requests'
 };
 
 /**
