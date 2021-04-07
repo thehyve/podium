@@ -15,7 +15,7 @@ import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
 import { AccountService } from '../../../core/auth/account.service';
-import { UserRouteAccessService } from '../../../core/auth/user-route-access-service';
+import { UserRouteAccessService } from '../../../core/auth/user-route-access.service';
 
 
 @Injectable()

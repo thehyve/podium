@@ -8,7 +8,7 @@
  *
  */
 import { Routes } from '@angular/router';
-import { UserRouteAccessService } from '../core/auth/user-route-access-service';
+import { UserRouteAccessService } from '../core/auth/user-route-access.service';
 import { requestFormEditRoute } from './form/request-form-edit.route';
 import {
     requestOverviewRoute, organisationRequestOverviewRoute,

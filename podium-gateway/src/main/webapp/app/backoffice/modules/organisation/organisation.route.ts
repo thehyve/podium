@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from '../../../core/auth/user-route-access-service';
+import { UserRouteAccessService } from '../../../core/auth/user-route-access.service';
 import { JhiPaginationUtil } from 'ng-jhipster';
 import { OrganisationComponent } from './organisation.component';
 import { OrganisationDeletePopupComponent } from './organisation-delete-dialog.component';

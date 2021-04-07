@@ -8,7 +8,7 @@
  *
  */
 import { Route } from '@angular/router';
-import { UserRouteAccessService } from '../../core/auth/user-route-access-service';
+import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { VerifyComponent } from './verify.component';
 
 export const verifyRoute: Route = {

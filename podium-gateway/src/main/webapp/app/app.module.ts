@@ -11,7 +11,7 @@ import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-bac
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
 import { PodiumGatewayPodiumBackofficeModule } from './backoffice/podium/podium-backoffice.module';
 import { PodiumGatewaySharedModule } from './shared';
-import { UserRouteAccessService } from './core/auth/user-route-access-service';
+import { UserRouteAccessService } from './core/auth/user-route-access.service';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
 import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
