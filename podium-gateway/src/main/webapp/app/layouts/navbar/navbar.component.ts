@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { ProfileService } from '../../shared/profiles/profile.service';
+import { ProfileService } from '../profiles/profile.service';
 import { LoginService } from '../../login/login.service';
 import { AccountService } from '../../core/auth/account.service';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
