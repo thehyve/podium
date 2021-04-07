@@ -17,7 +17,7 @@ import { UploadInput } from 'ngx-uploader';
 import { AuthServerProvider } from '../../core/auth/auth-jwt.service';
 import { RequestBase } from '../request';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AttachmentService {
 
     private resourceUrl = 'api/requests';

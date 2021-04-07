@@ -22,7 +22,6 @@ import { RouterModule } from '@angular/router';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 import { RoleAssignComponent } from '../../../shared/role/role-assign/role-assign.component';
-import { RoleService } from '../../../shared/role/role.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
@@ -61,7 +60,6 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
         OrganisationService,
         OrganisationPopupService,
         OrganisationResolvePagingParams,
-        RoleService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [

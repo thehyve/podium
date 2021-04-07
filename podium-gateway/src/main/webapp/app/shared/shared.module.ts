@@ -32,11 +32,9 @@ import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
 import { PdmErrorComponent } from './error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { ProfileService } from './profiles/profile.service';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
 import { NgUploaderModule } from 'ngx-uploader';
-import { AttachmentService } from './attachment/attachment.service';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 import { PodiumLoginComponent } from '../login/login.component';
 import { LoginModalService } from '../login/login-modal.service';
@@ -71,13 +69,11 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         AttachmentListComponent,
     ],
     providers: [
-        ProfileService,
         LoginModalService,
         MessageService,
         SessionStorageService,
         RequestService,
         RequestAccessService,
-        AttachmentService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
