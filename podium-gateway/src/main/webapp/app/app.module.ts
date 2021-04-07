@@ -17,7 +17,6 @@ import { PodiumGatewayAccountModule } from './account/account.module';
 import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
 import { OrganisationService } from './shared/organisation/organisation.service';
 import { CommonModule } from '@angular/common';
-import { RoleService } from './shared/role/role.service';
 import { PdmMainComponent } from './layouts/main/main.component';
 import { PageRibbonComponent } from './shared/profiles/page-ribbon.component';
 import { AppRoutingModule } from './app.route';
@@ -60,7 +59,6 @@ import { RedirectService } from './core/auth/redirect.service';
         UserRouteAccessService,
         OrganisationService,
         RedirectService,
-        RoleService
     ],
     bootstrap: [ PdmMainComponent ],
     exports: []

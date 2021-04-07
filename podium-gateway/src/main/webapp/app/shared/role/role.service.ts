@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Role } from './role.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RoleService {
 
     private resourceUrl = 'podiumuaa/api/roles';

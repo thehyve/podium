@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { ProfileInfo } from './profile-info.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProfileService {
 
     private profileInfoUrl = 'api/profile-info';
