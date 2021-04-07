@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PdmElasticsearchService {
 
     constructor (private http: HttpClient) {}

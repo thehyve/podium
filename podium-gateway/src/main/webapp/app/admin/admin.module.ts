@@ -20,15 +20,10 @@ import {
     PdmHealthCheckComponent,
     PdmConfigurationComponent,
     PdmDocsComponent,
-    AuditsService,
-    PdmConfigurationService,
-    PdmMetricsService,
-    GatewayRoutesService,
     PdmGatewayComponent,
 } from './';
 import { PdmElasticsearchComponent } from './elasticsearch/elasticsearch.component';
 import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-modal.component';
-import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
 
 @NgModule({
     imports: [
@@ -52,13 +47,6 @@ import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
         PdmHealthModalComponent,
         PdmElasticsearchModalComponent,
         PdmMetricsMonitoringModalComponent,
-    ],
-    providers: [
-        AuditsService,
-        PdmConfigurationService,
-        PdmMetricsService,
-        GatewayRoutesService,
-        PdmElasticsearchService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
