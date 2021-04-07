@@ -8,7 +8,6 @@
  *
  */
 import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -31,7 +30,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     successMessage: Message;
 
     constructor(
-        private languageService: JhiLanguageService,
         private translate: TranslateService,
         private registerService: Register,
         private messageService: MessageService,
@@ -58,13 +56,11 @@ export class RegisterComponent implements OnInit, AfterViewInit {
             this.doNotMatch = null;
             this.error = null;
             this.errorUserExists = null;
-            this.languageService.getCurrent().then((key) => {
-                this.registerAccount.langKey = key;
-                this.registerService.save(this.registerAccount).subscribe(
-                    (response) => this.processSuccess(),
-                    (error) => this.processError(error)
-                );
-            });
+            this.registerAccount.langKey = this.translate.currentLang;
+            this.registerService.save(this.registerAccount).subscribe(
+                () => this.processSuccess(),
+                (error) => this.processError(error)
+            );
         }
     }
 
