@@ -10,7 +10,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../../shared';
 import {
-    OrganisationPopupService,
     OrganisationComponent,
     OrganisationDeleteDialogComponent,
     OrganisationDeletePopupComponent,
@@ -58,7 +57,6 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
     providers: [
         customHttpProvider(),
         OrganisationService,
-        OrganisationPopupService,
         OrganisationResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

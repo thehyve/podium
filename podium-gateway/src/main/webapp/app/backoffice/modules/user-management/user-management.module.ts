@@ -20,7 +20,6 @@ import {
     UserMgmtDeleteDialogComponent,
     UserUnlockDialogComponent,
     UserMgmtUnlockDialogComponent,
-    UserModalService
 } from './';
 import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
 import { UserMgmtRoutingModule } from './user-management.routing';
@@ -59,7 +58,6 @@ import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
         customHttpProvider(),
         UserResolvePagingParams,
         UserResolve,
-        UserModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
