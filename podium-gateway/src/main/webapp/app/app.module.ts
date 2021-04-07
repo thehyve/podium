@@ -19,7 +19,7 @@ import { OrganisationService } from './shared/organisation/organisation.service'
 import { CommonModule } from '@angular/common';
 import { PdmMainComponent } from './layouts/main/main.component';
 import { PageRibbonComponent } from './shared/profiles/page-ribbon.component';
-import { AppRoutingModule } from './app.route';
+import { AppRoutingModule } from './app-routing.module';
 import { PdmHomeComponent } from './home/home.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
