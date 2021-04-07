@@ -11,9 +11,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../shared';
 import {
-    Register,
-    PasswordResetInit,
-    PasswordResetFinish,
     PasswordStrengthBarComponent,
     RegisterComponent,
     PasswordComponent,
@@ -37,11 +34,6 @@ import {
         PasswordResetInitComponent,
         PasswordResetFinishComponent,
         SettingsComponent
-    ],
-    providers: [
-        Register,
-        PasswordResetInit,
-        PasswordResetFinish
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
