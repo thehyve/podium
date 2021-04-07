@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
 import { RequestReviewFeedback } from './request-review-feedback';

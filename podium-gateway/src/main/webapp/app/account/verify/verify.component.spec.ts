@@ -11,7 +11,7 @@ import { TestBed, async, tick, fakeAsync, inject } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { MockActivatedRoute, MockRouter } from '../../../../../test/javascript/spec/helpers/mock-route.service';
 import { Verify } from './verify.service';
 import { VerifyComponent } from './verify.component';
