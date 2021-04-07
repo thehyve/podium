@@ -10,9 +10,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { TranslateService } from '@ngx-translate/core';
+import { JhiEventManager } from 'ng-jhipster';
 import { UserModalService } from './user-modal.service';
-import { JhiLanguageHelper } from '../../../shared';
 import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
 import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
@@ -32,8 +32,7 @@ export class UserMgmtDialogComponent implements OnInit {
 
     constructor (
         public activeModal: NgbActiveModal,
-        private languageHelper: JhiLanguageHelper,
-        private languageService: JhiLanguageService,
+        private translateService: TranslateService,
         private userService: UserService,
         private eventManager: JhiEventManager,
         private router: Router
@@ -42,9 +41,7 @@ export class UserMgmtDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.authorities = ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_RESEARCHER'];
-        this.languageHelper.getAll().then((languages) => {
-            this.languages = languages;
-        });
+        this.languages = this.translateService.getLangs();
 
         this.userAuthorityMap = AUTHORITIES_MAP;
     }
@@ -62,11 +59,10 @@ export class UserMgmtDialogComponent implements OnInit {
                 () => this.onSaveError()
             );
         } else {
-            this.languageService.getCurrent().then((key) => {
-                this.user.langKey = key;
-                this.userService.create(this.user).subscribe(
-                    (response) => this.onSaveSuccess(response),
-                    () => this.onSaveError());
+            this.user.langKey = this.translateService.currentLang;
+            this.userService.create(this.user).subscribe(
+                (response) => this.onSaveSuccess(response),
+                () => this.onSaveError());
             });
         }
     }
