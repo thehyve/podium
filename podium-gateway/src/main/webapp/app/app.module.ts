@@ -10,7 +10,7 @@ import { PodiumGatewayRequestModule } from './request/request.module';
 import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
 import { PodiumGatewayPodiumBackofficeModule } from './backoffice/podium/podium-backoffice.module';
-import { PodiumGatewaySharedModule } from './shared';
+import { PodiumGatewaySharedModule } from './shared/shared.module';
 import { UserRouteAccessService } from './core/auth/user-route-access.service';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
