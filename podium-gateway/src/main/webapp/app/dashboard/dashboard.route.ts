@@ -8,7 +8,7 @@
  *
  */
 import { Route } from '@angular/router';
-import { UserRouteAccessService } from '../core/auth/user-route-access-service';
+import { UserRouteAccessService } from '../core/auth/user-route-access.service';
 import { DashboardComponent } from './';
 
 export const dashboardRoute: Route = {

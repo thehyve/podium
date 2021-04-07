@@ -8,7 +8,7 @@
  *
  */
 import { Routes } from '@angular/router';
-import { UserRouteAccessService } from '../../core/auth/user-route-access-service';
+import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { PdmErrorComponent } from './error.component';
 
 export const errorRoute: Routes = [
