@@ -8,6 +8,7 @@
  *
  */
 
+import { RequestType } from '../request';
 import { Role } from '../role/role.model';
 export interface IOrganisation {
     hasRequestTypes(requestTypes: RequestType[]): boolean;

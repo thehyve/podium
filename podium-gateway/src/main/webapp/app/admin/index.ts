@@ -38,6 +38,3 @@ export * from './elasticsearch/elasticsearch.component';
 export * from './elasticsearch/elasticsearch.service';
 export * from './elasticsearch/elasticsearch-modal.component';
 export * from './elasticsearch/elasticsearch.route';
-
-
-export * from './admin.route';
