@@ -9,7 +9,6 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { RequestService } from '../request';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PodiumEventMessage } from '../event/podium-event-message';
@@ -28,11 +27,10 @@ export class RequestUpdateStatusDialogComponent extends RequestUpdateDialogCompo
     public message: PodiumEventMessage = new PodiumEventMessage();
 
     constructor(
-        protected jhiLanguageService: JhiLanguageService,
         protected requestService: RequestService,
         protected activeModal: NgbActiveModal
     ) {
-        super(jhiLanguageService, requestService, activeModal);
+        super(requestService, activeModal);
     }
 
     ngOnInit() {

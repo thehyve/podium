@@ -9,7 +9,7 @@
  */
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { JhiParseLinks, JhiLanguageService } from 'ng-jhipster';
+import { JhiParseLinks } from 'ng-jhipster';
 import { Audit } from './audit.model';
 import { AuditsService } from './audits.service';
 import { ITEMS_PER_PAGE } from '../../shared';

@@ -8,7 +8,6 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-not-found',
@@ -17,7 +16,6 @@ import { JhiLanguageService } from 'ng-jhipster';
 export class NotFoundComponent implements OnInit {
 
     constructor(
-        private jhiLanguageService: JhiLanguageService
     ) {
 
     }
