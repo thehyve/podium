@@ -35,7 +35,6 @@ import { AttachmentComponent } from './attachment/upload-attachment/attachment.c
 import { NgUploaderModule } from 'ngx-uploader';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 import { PodiumLoginComponent } from '../login/login.component';
-import { LoginModalService } from '../login/login-modal.service';
 import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
 
 @NgModule({
@@ -66,7 +65,6 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         AttachmentListComponent,
     ],
     providers: [
-        LoginModalService,
         SessionStorageService,
         RequestService,
         RequestAccessService,

@@ -11,7 +11,7 @@ import { Injectable, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { User, UserService } from '../../../shared';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserModalService {
     private isOpen = false;
     constructor (

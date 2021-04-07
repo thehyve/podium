@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { PodiumLoginComponent } from './login.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LoginModalService {
     private isOpen = false;
     constructor (
