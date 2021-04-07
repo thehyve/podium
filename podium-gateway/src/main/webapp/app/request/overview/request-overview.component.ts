@@ -12,7 +12,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
 import { OverviewService } from '../../shared';
-import { RequestBase } from '../../shared/request';
+import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RequestFormService } from '../form';
 import { Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ import { UserGroupAuthority } from '../../shared';
 import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
-import { RequestType } from '../../shared/request';
+import { RequestType } from '../../shared/request/request-type';
 import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
 import { RequestOverviewStatusOption } from '../../shared/request/request-status';
 

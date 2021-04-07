@@ -9,7 +9,7 @@
  */
 import { Component } from '@angular/core';
 import { DeliveryStatusUpdateAction } from './delivery-update-action';
-import { RequestBase } from '../request';
+import { RequestBase } from '../request/request-base';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeliveryReference } from '../delivery/delivery-reference';
 import { Delivery } from '../delivery/delivery';
