@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Password {
 
     constructor (private http: HttpClient) {}

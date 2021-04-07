@@ -13,7 +13,6 @@ import { SessionStorageService } from 'ngx-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
-    UserService,
     MessageService,
     EmailValidatorDirective,
     PasswordValidatorDirective,
@@ -40,7 +39,6 @@ import { NgUploaderModule } from 'ngx-uploader';
 import { AttachmentService } from './attachment/attachment.service';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 import { PodiumLoginComponent } from '../login/login.component';
-import { LoginService } from '../login/login.service';
 import { LoginModalService } from '../login/login-modal.service';
 import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
 
@@ -74,11 +72,9 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
     ],
     providers: [
         ProfileService,
-        LoginService,
         LoginModalService,
         MessageService,
         SessionStorageService,
-        UserService,
         RequestService,
         RequestAccessService,
         AttachmentService,

@@ -22,11 +22,9 @@ import {
     PdmDocsComponent,
     AuditsService,
     PdmConfigurationService,
-    PdmHealthService,
     PdmMetricsService,
     GatewayRoutesService,
     PdmGatewayComponent,
-    LogsService
 } from './';
 import { PdmElasticsearchComponent } from './elasticsearch/elasticsearch.component';
 import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-modal.component';
@@ -58,10 +56,8 @@ import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
     providers: [
         AuditsService,
         PdmConfigurationService,
-        PdmHealthService,
         PdmMetricsService,
         GatewayRoutesService,
-        LogsService,
         PdmElasticsearchService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

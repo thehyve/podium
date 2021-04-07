@@ -12,7 +12,6 @@ import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../shared';
 import {
     Register,
-    Password,
     PasswordResetInit,
     PasswordResetFinish,
     PasswordStrengthBarComponent,
@@ -22,7 +21,6 @@ import {
     PasswordResetFinishComponent,
     SettingsComponent,
     VerifyComponent,
-    Verify,
     accountState
 } from './';
 
@@ -42,8 +40,6 @@ import {
     ],
     providers: [
         Register,
-        Verify,
-        Password,
         PasswordResetInit,
         PasswordResetFinish
     ],
