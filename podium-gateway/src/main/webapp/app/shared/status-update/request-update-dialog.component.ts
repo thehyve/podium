@@ -17,9 +17,8 @@ import { RequestStatusUpdateAction } from './request-update-action';
 import { RequestReviewDecision } from '../request/request-review-decision';
 
 @Component({
-
+    templateUrl: './request-update-dialog.component.html'
 })
-
 export class RequestUpdateDialogComponent {
 
     request: RequestBase;
