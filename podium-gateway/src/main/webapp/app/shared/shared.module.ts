@@ -13,7 +13,6 @@ import { SessionStorageService } from 'ngx-webstorage';
 import {
     PodiumGatewaySharedLibsModule,
     PodiumGatewaySharedCommonModule,
-    MessageService,
     EmailValidatorDirective,
     PasswordValidatorDirective,
     PasswordMatchesDirective,
@@ -68,7 +67,6 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
     ],
     providers: [
         LoginModalService,
-        MessageService,
         SessionStorageService,
         RequestService,
         RequestAccessService,

@@ -11,14 +11,12 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { RequestFormService } from './request-form.service';
-import {
-    RequestDetail,
-    RequestType,
-    PrincipalInvestigator,
-    RequestBase,
-    RequestService,
-    User
-} from '../../shared';
+import { RequestDetail } from '../../shared/request/request-detail';
+import { RequestType } from '../../shared/request/request-type';
+import { PrincipalInvestigator } from '../../shared/request/principal-investigator';
+import { RequestBase } from '../../shared/request/request-base';
+import { RequestService } from '../../shared/request/request.service';
+import { User } from '../../shared/user/user.model';
 import { AccountService } from '../../core/auth/account.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
