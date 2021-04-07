@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Log } from './log.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LogsService {
     constructor(private http: HttpClient) { }
 

@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { User } from './user.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService {
     private resourceUrl = 'podiumuaa/api/users';
     private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
