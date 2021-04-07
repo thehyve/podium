@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
-import { OverviewService } from '../../shared';
+import { OverviewService } from '../../shared/overview/overview.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RequestFormService } from '../form';
@@ -19,9 +19,9 @@ import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
 import { RequestOverviewPath } from './request-overview.constants';
-import { Overview } from '../../shared';
+import { Overview } from '../../shared/overview/overview';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
-import { UserGroupAuthority } from '../../shared';
+import { UserGroupAuthority } from '../../shared/authority/authority.constants';
 import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';

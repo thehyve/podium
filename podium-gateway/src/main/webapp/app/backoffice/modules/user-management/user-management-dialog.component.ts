@@ -12,7 +12,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { UserModalService } from './user-modal.service';
-import { JhiLanguageHelper, User, UserService } from '../../../shared';
+import { JhiLanguageHelper } from '../../../shared';
+import { User } from '../../../shared/user/user.model';
+import { UserService } from '../../../shared/user/user.service';
 import { AUTHORITIES_MAP } from '../../../shared/authority/authority.constants';
 import { RouterHelper } from '../../../shared/util/router-helper';
 
