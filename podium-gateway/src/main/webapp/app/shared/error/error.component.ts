@@ -8,7 +8,6 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-error',
@@ -19,7 +18,6 @@ export class PdmErrorComponent implements OnInit {
     error403: boolean;
 
     constructor(
-        private jhiLanguageService: JhiLanguageService
     ) {
 
     }
