@@ -11,7 +11,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UploadOutput, UploadFile, UploadInput, humanizeBytes, UploaderOptions } from 'ngx-uploader';
 import { MAX_UPLOAD_SIZE } from '../attachment.constants';
-import { RequestBase } from '../../request';
+import { RequestBase } from '../../request/request-base';
 import { AttachmentService } from '../attachment.service';
 
 @Component({

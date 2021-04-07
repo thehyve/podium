@@ -15,7 +15,7 @@ import { Attachment } from './attachment.model';
 import { AttachmentTypes } from './attachment.constants';
 import { UploadInput } from 'ngx-uploader';
 import { AuthServerProvider } from '../../core/auth/auth-jwt.service';
-import { RequestBase } from '../request';
+import { RequestBase } from '../request/request-base';
 
 @Injectable({ providedIn: 'root' })
 export class AttachmentService {

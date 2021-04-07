@@ -9,7 +9,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { RequestService } from '../request';
+import { RequestService } from '../request/request.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PodiumEventMessage } from '../event/podium-event-message';
 import { RequestUpdateDialogComponent } from './request-update-dialog.component';

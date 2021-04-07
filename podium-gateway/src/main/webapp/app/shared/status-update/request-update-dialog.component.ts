@@ -10,7 +10,6 @@
 
 import { Component } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { JhiLanguageService } from 'ng-jhipster';
 import { RequestService } from '../request/request.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestBase } from '../request/request-base';
@@ -26,7 +25,6 @@ export class RequestUpdateDialogComponent {
     request: RequestBase;
 
     constructor(
-        protected jhiLanguageService: JhiLanguageService,
         protected requestService: RequestService,
         protected activeModal: NgbActiveModal
     ) {

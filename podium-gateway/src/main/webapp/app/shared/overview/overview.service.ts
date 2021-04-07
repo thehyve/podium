@@ -14,7 +14,7 @@ import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
 import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
-import { RequestBase } from '../request';
+import { RequestBase } from '../request/request-base';
 
 @Injectable()
 export class OverviewService {
