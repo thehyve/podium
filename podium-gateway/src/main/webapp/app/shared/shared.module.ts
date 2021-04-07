@@ -28,10 +28,10 @@ import { RequestReviewPanelComponent } from './request/request-review-panel/requ
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
 import { FindLanguageFromKeyPipe } from './language/language.pipe';
-import { ActiveMenuDirective } from './navbar/active-menu.directive';
+import { ActiveMenuDirective } from '../layouts/navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
 import { PdmErrorComponent } from '../layouts/error/error.component';
-import { NavbarComponent } from './navbar/navbar.component';
+import { NavbarComponent } from '../layouts/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
 import { NgUploaderModule } from 'ngx-uploader';
