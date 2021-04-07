@@ -10,9 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiLanguageService } from 'ng-jhipster';
 import { ProfileService } from '../../shared/profiles/profile.service';
-import { JhiLanguageHelper } from '../../shared';
 import { LoginService } from '../../login/login.service';
 import { AccountService } from '../../core/auth/account.service';
 import { VERSION, DEBUG_INFO_ENABLED } from '../../app.constants';
@@ -30,7 +28,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     inProduction: boolean;
     isNavbarCollapsed: boolean;
-    languages: any[];
     swaggerEnabled: boolean;
     modalRef: NgbModalRef;
     version: string;
@@ -39,8 +36,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     constructor(
         private loginService: LoginService,
-        private languageHelper: JhiLanguageHelper,
-        private languageService: JhiLanguageService,
         private accountService: AccountService,
         private profileService: ProfileService,
         private router: Router
@@ -50,10 +45,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.languageHelper.getAll().then((languages) => {
-            this.languages = languages;
-        });
-
         this.profileService.getProfileInfo().subscribe(profileInfo => {
             this.inProduction = profileInfo.inProduction;
             this.swaggerEnabled = profileInfo.swaggerEnabled;
@@ -69,10 +60,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         if (this.accountSubscription) {
             this.accountSubscription.unsubscribe();
         }
-    }
-
-    changeLanguage(languageKey: string) {
-      this.languageService.changeLanguage(languageKey);
     }
 
     collapseNavbar() {

@@ -209,23 +209,6 @@
                     </li>
                 </ul>
             </li>
-            <li ngbDropdown class="nav-item dropdown pointer d-inline-flex" *ngIf="languages && languages.length > 1">
-                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="languages.length > 1">
-                    <span>
-                        <i class="material-icons">language</i>
-                        <span class="d-none d-md-inline-flex" jhiTranslate="global.menu.language">Language</span>
-                        <b class="caret"></b>
-                    </span>
-                </a>
-                <ul class="dropdown-menu" ngbDropdownMenu>
-                    <li *ngFor="let language of languages">
-                        <a class="dropdown-item" [pdmActiveMenu]="language" href="javascript:void(0);"
-                           (click)="changeLanguage(language);collapseNavbar();">
-                            {{language | findLanguageFromKey}}
-                        </a>
-                    </li>
-                </ul>
-            </li>
             <li [ngSwitch]="isAuthenticated()" ngbDropdown class="nav-item dropdown pointer d-inline-flex" placement="bottom-right">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">
