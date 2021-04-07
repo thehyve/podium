@@ -35,7 +35,6 @@ export * from './specialism/specialism.component';
 export * from './organisation-selector/organisation-selector.component';
 export * from './shared-libs.module';
 export * from './shared-common.module';
-export * from './shared.module';
 export * from './breadcrumbs/breadcrumbs.module';
 export * from './delivery/delivery';
 export * from './delivery/delivery.service';

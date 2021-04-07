@@ -8,7 +8,7 @@
  *
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { PodiumGatewaySharedModule } from '../../../shared';
+import { PodiumGatewaySharedModule } from '../../../shared/shared.module';
 import {
     OrganisationComponent,
     OrganisationDeleteDialogComponent,
