@@ -11,7 +11,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from './account.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RedirectService {
 
     constructor (

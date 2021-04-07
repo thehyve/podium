@@ -17,7 +17,7 @@ import { PodiumEventMessage } from '../event/podium-event-message';
 import { User } from '../user/user.model';
 import { RequestTemplate } from './request-template';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RequestService {
 
     // FIX ME Please refactor me.

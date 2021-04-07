@@ -15,7 +15,7 @@ import { Observable } from 'rxjs/Rx';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { MockLanguageService } from '../../../../../test/javascript/spec/helpers/mock-language.service';
-import { LoginModalService } from '../../shared';
+import { LoginModalService } from '../../login/login-modal.service';
 import { Register } from './register.service';
 import { RegisterComponent } from './register.component';
 import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';

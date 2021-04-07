@@ -8,8 +8,6 @@
  *
  */
 
-export * from './message/message.model';
-export * from './message/message.service';
 export * from './request/request-base';
 export * from './request/request-detail';
 export * from './request/request-type';
@@ -30,7 +28,6 @@ export * from './alert/alert-error.component';
 export * from './auth/has-any-authority.directive';
 export * from './language/language.constants';
 export * from './language/language.helper';
-export * from './language/language.pipe';
 export * from './constants/pagination.constants';
 export * from './user/user.model';
 export * from './user/user.service';
