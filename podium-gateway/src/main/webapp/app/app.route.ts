@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
 import { homeRoute } from './home/home.route';
 import { dashboardRoute } from './dashboard/dashboard.route';
 import { navbarRoute } from './shared/navbar/navbar.route';
-import { errorRoute } from './shared/error/error.route';
+import { errorRoute } from './layouts/error/error.route';
 import { completedRoute } from './shared/completed/completed.route';
 
 let LAYOUT_ROUTES = [

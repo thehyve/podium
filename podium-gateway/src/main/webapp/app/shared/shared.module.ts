@@ -30,7 +30,7 @@ import { LinkedRequestNotificationComponent } from './linked-request-notificatio
 import { FindLanguageFromKeyPipe } from './language/language.pipe';
 import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
-import { PdmErrorComponent } from './error/error.component';
+import { PdmErrorComponent } from '../layouts/error/error.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
