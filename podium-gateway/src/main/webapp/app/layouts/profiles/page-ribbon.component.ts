@@ -19,7 +19,7 @@ import { ProfileInfo } from './profile-info.model';
         </div>
     `,
     styleUrls: [
-        'page-ribbon.scss'
+        './page-ribbon.component.scss'
     ]
 })
 export class PageRibbonComponent implements OnInit {
