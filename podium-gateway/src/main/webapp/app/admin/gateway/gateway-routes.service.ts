@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { GatewayRoute } from './gateway-route.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class GatewayRoutesService {
     constructor(private http: HttpClient) { }
 

@@ -13,7 +13,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { Audit } from './audit.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AuditsService  {
     constructor(private http: HttpClient) { }
 
