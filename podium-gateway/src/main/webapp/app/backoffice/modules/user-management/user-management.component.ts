@@ -23,7 +23,6 @@ import { UserGroupAuthority } from '../../../shared/authority/authority.constant
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'podiumuaa/api/users',
-    resourceSearchUrl: 'podiumuaa/api/_search/users'
 };
 
 @Component({
