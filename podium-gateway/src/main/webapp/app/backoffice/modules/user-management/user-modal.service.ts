@@ -9,7 +9,8 @@
  */
 import { Injectable, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { User, UserService } from '../../../shared';
+import { User } from '../../../shared/user/user.model';
+import { UserService } from '../../../shared/user/user.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserModalService {
