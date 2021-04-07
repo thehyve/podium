@@ -8,7 +8,7 @@
  *
  */
 import { Routes } from '@angular/router';
-import { auditsRoute, configurationRoute, docsRoute, healthRoute, logsRoute, metricsRoute, gatewayRoute } from './';
+import { auditsRoute, configurationRoute, docsRoute, healthRoute, logsRoute, metricsRoute, gatewayRoute } from '.';
 import { UserRouteAccessService } from '../core/auth/user-route-access.service';
 import { elasticsearchRoute } from './elasticsearch/elasticsearch.route';
 

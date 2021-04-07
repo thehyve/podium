@@ -10,8 +10,8 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../shared';
+import { adminRoute } from './admin-routing.module';
 import {
-    adminRoute,
     AuditsComponent,
     LogsComponent,
     PdmMetricsMonitoringModalComponent,
