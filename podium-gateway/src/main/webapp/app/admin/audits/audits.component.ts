@@ -94,7 +94,7 @@ export class AuditsComponent implements OnInit {
         audits = audits.slice(0).sort((a, b) => {
             if (a[this.orderProp] < b[this.orderProp]) {
                 return -1;
-            } else if ([b[this.orderProp] < a[this.orderProp]]) {
+            } else if (b[this.orderProp] < a[this.orderProp]) {
                 return 1;
             } else {
                 return 0;
