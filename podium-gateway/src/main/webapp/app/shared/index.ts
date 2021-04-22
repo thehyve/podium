@@ -27,7 +27,6 @@ export * from './alert/alert.component';
 export * from './alert/alert-error.component';
 export * from './auth/has-any-authority.directive';
 export * from './language/language.helper';
-export * from './constants/pagination.constants';
 export * from './specialism/specialism.component';
 export * from './organisation-selector/organisation-selector.component';
 export * from './shared-libs.module';
