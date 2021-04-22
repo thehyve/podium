@@ -20,6 +20,7 @@ import { SpecialismComponent } from './specialism/specialism.component';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
+import { TranslateDirective } from './language/translate.directive';
 import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
@@ -46,6 +47,7 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         AttachmentComponent,
         PodiumLoginComponent,
         SpecialismComponent,
+        TranslateDirective,
         OrganisationSelectorComponent,
         RequestReviewPanelComponent,
         EmailValidatorDirective,
@@ -72,6 +74,7 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
     exports: [
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
+        TranslateDirective,
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
