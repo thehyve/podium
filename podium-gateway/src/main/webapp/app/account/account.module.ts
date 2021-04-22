@@ -10,16 +10,14 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewaySharedModule } from '../shared/shared.module';
-import {
-    PasswordStrengthBarComponent,
-    RegisterComponent,
-    PasswordComponent,
-    PasswordResetInitComponent,
-    PasswordResetFinishComponent,
-    SettingsComponent,
-    VerifyComponent,
-    accountState
-} from './';
+import { accountState } from './account.route';
+import { PasswordResetFinishComponent } from './password-reset/finish/password-reset-finish.component';
+import { PasswordResetInitComponent } from './password-reset/init/password-reset-init.component';
+import { PasswordStrengthBarComponent } from './password/password-strength-bar.component';
+import { PasswordComponent } from './password/password.component';
+import { RegisterComponent } from './register/register.component';
+import { SettingsComponent } from './settings/settings.component';
+import { VerifyComponent } from './verify/verify.component';
 
 @NgModule({
     imports: [
