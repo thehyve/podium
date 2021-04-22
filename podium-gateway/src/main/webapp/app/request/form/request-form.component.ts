@@ -189,8 +189,7 @@ export class RequestFormComponent implements OnInit {
                     });
                     this.organisationSelectorComponent.organisations = this.requestBase.organisations;
                 },
-                error => {
-                },
+                () => {},
                 () => {
                     // TODO: Display invalid uuids in error alert
                     if (this.listOfInvalidOrganisationUUID.length) {
@@ -224,7 +223,7 @@ export class RequestFormComponent implements OnInit {
                     });
                     this.getAttachments(requestBase);
                 },
-                (error) => this.onError('Error initializing base request')
+                () => this.onError('Error initializing base request')
             );
     }
 
@@ -256,7 +255,7 @@ export class RequestFormComponent implements OnInit {
             && RequestAccessService.isRequestStatus(requestBase, RequestOverviewStatusOption.Revision);
     }
 
-    updateRequestType(selectedRequestType, event) {
+    updateRequestType(selectedRequestType) {
         let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
         if (_idx < 0) {
             this.requestDetail.requestType.push(selectedRequestType.value);
@@ -362,7 +361,7 @@ export class RequestFormComponent implements OnInit {
         this.requestService.requestUpdateEvent(result);
     }
 
-    private onError(error) {
+    private onError() {
         this.isUpdating = false;
         this.error = 'ERROR';
         this.success = null;

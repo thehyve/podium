@@ -137,7 +137,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
      */
     receiveType(delivery: Delivery) {
         this.deliveryService.receiveDelivery(this.request.uuid, delivery.uuid)
-            .subscribe((res) => this.onSuccessUpdate());
+            .subscribe(() => this.onSuccessUpdate());
     }
 
     /**

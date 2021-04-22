@@ -96,7 +96,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
         attachment.requestFileType = newType;
         this.attachmentService.setAttachmentType(attachment).subscribe(
-            response => {
+            () => {
                 this.onFileTypeChange.emit(attachment);
             }
         );

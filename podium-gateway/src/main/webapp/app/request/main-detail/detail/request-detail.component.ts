@@ -142,7 +142,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.request = this.request;
         modalRef.componentInstance.currentUser = this.currentUser;
         modalRef.componentInstance.reviewStatus = decision;
-        modalRef.result.then(result => {
+        modalRef.result.then(() => {
             this.requestService.requestUpdateEvent(this.request);
             this.isUpdating = false;
         }, (reason) => {
