@@ -9,7 +9,7 @@
  */
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { ITEMS_PER_PAGE } from '../constants/pagination.constants';
+import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
 import { RequestOverviewPath } from '../../request/overview/request-overview.constants';
 import { RouterHelper } from '../util/router-helper';
 

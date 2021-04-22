@@ -7,9 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { ITEMS_PER_PAGE } from '../../shared';
 import { Injectable } from '@angular/core';
 import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
+import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
 
 @Injectable()
 export class PaginationConfig {

@@ -12,7 +12,7 @@ import { DatePipe } from '@angular/common';
 import { parseLinks } from '../../shared/util/parse-links-util';
 import { Audit } from './audit.model';
 import { AuditsService } from './audits.service';
-import { ITEMS_PER_PAGE } from '../../shared';
+import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
 import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
 
 @Component({
