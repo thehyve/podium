@@ -10,15 +10,13 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { SessionStorageService } from 'ngx-webstorage';
-import {
-    PodiumGatewaySharedLibsModule,
-    PodiumGatewaySharedCommonModule,
-    EmailValidatorDirective,
-    PasswordValidatorDirective,
-    PasswordMatchesDirective,
-    WordLengthValidatorDirective,
-    SpecialismComponent
-} from './';
+import { PodiumGatewaySharedCommonModule } from './shared-common.module';
+import { PodiumGatewaySharedLibsModule } from './shared-libs.module';
+import { EmailValidatorDirective } from './validators/email-validator.directive';
+import { PasswordMatchesDirective } from './validators/password-matches.directive';
+import { PasswordValidatorDirective } from './validators/password-validator.directive';
+import { WordLengthValidatorDirective } from './validators/word-length-validator.directive';
+import { SpecialismComponent } from './specialism/specialism.component';
 import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
