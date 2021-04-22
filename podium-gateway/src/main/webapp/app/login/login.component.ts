@@ -19,7 +19,7 @@ import { RedirectService } from '../core/auth/redirect.service';
     templateUrl: './login.component.html',
     styleUrls: ['login.component.scss']
 })
-export class  PodiumLoginComponent implements AfterViewInit {
+export class PodiumLoginComponent implements AfterViewInit {
     @ViewChild("usernameField") usernameField: ElementRef;
 
     authenticationError: boolean;
