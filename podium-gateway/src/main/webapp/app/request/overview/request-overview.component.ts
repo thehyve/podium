@@ -86,7 +86,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
             (res: HttpResponse<RequestBase[]>) =>
                 this.processAvailableRequests(res.body, res.headers),
-            (err): any => this.onError(err)
+            () => this.onError()
         );
     }
 
@@ -130,7 +130,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     registerChanges() {
         this.eventSubscriber = this.eventManager
             .subscribe('requestListModification',
-                (response) => this.fetchRequestsFor(this.activeStatus));
+                () => this.fetchRequestsFor(this.activeStatus));
 
 
         this.sidebarSubscription = this.requestSidebarComponent.onStatusChange.subscribe(
@@ -221,13 +221,13 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         return this.activeStatus === activeStatus.option;
     }
 
-    private onSuccess(result) {
+    private onSuccess() {
         this.error = null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
     }
 
-    private onError(error) {
+    private onError() {
         this.error = 'ERROR';
         this.success = null;
         window.scrollTo(0, 0);

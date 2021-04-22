@@ -61,7 +61,7 @@ export class RequestUpdateReviewDialogComponent extends RequestUpdateDialogCompo
         this.requestService.submitReview(this.request.uuid, this.composeReviewFeedback())
             .subscribe(
                 (res) => this.onSuccess(res),
-                (err) => this.onUnknownStatus()
+                () => this.onUnknownStatus()
             );
     }
 }

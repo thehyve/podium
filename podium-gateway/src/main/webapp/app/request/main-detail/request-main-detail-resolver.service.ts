@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { RequestService } from '../../shared/request/request.service';
@@ -18,9 +18,9 @@ import { RequestDetail } from '../../shared/request/request-detail';
 
 @Injectable()
 export class RequestDetailResolver implements Resolve<RequestBase> {
-    constructor(private requestService: RequestService, private router: Router) {}
+    constructor(private requestService: RequestService) {}
 
-    resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RequestDetail> {
+    resolve (route: ActivatedRouteSnapshot): Observable<RequestDetail> {
         let uuid = route.params['uuid'];
         return this.requestService.findByUuid(uuid)
             .pipe(map(requestDetail => {

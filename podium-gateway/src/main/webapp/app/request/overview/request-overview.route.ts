@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Route, ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
+import { Route, ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { RequestOverviewComponent } from './request-overview.component';
 import { parseAscending, parsePage, parsePredicate } from '../../shared/util/pagination-util';
@@ -19,7 +19,7 @@ export class RequestResolvePagingParams implements Resolve<any> {
 
     constructor() {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
         let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'createdDate,desc';
         return {

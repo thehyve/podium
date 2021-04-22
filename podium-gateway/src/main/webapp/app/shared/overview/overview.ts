@@ -82,8 +82,6 @@ export abstract class Overview {
     protected transition() {
         // Transition with queryParams
         // Update the URL with the new parameters
-        let params = this.getPageParams();
-
         this.router.navigate([RouterHelper.getNavUrlForRouter(this.router)], {
             queryParams: {
                 page: this.page,
