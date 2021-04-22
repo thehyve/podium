@@ -10,8 +10,8 @@
 
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { RequestFormService } from './request-form.service';
 import { RequestDetail } from '../../shared/request/request-detail';
 import { RequestType } from '../../shared/request/request-type';
@@ -135,15 +135,15 @@ export class RequestFormComponent implements OnInit {
             this.initializeBaseRequest();
         } else {
             this.activatedRoute.paramMap
-                .switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid')))
+                .pipe(switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid'))))
                 .subscribe(
                     request => {
                         this.requestFormService.request = request;
                         this.selectRequest(this.requestFormService.request);
                         this.getAttachments(this.requestFormService.request);
                     },
-                    error => {
-                        this.onError(error);
+                    (err) => {
+                        this.onError(err);
                         this.router.navigate(['404'])
                     }
                 );
@@ -176,13 +176,13 @@ export class RequestFormComponent implements OnInit {
                     map((res: Organisation) => res),
                     catchError(() => {
                         this.listOfInvalidOrganisationUUID.push(collection);
-                        return Observable.of({});
+                        return of({});
                     }));
                 organisationObservables.push(obx);
             }
 
             // Display as selected organisation when uuids are matched
-            Observable.forkJoin(organisationObservables).subscribe(
+            forkJoin(organisationObservables).subscribe(
                 dataArray => {
                     this.requestBase.organisations = dataArray.filter(obj => {
                         return Object.keys(obj).length > 0;
@@ -217,7 +217,7 @@ export class RequestFormComponent implements OnInit {
                             this.requestService.getTemplateByUuid(params['template_uuid'])
                                 .subscribe(
                                     (requestTemplate) => this.populateRequestDetails(requestTemplate),
-                                    (error) => this.onError(error)
+                                    (err) => this.onError(err)
                                 )
                         }
                     });
@@ -322,7 +322,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveRequestRevision(this.requestBase)
         // Submit the request
-            .flatMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid))
+            .pipe(mergeMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid)))
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
@@ -361,7 +361,8 @@ export class RequestFormComponent implements OnInit {
         this.requestService.requestUpdateEvent(result);
     }
 
-    private onError() {
+    private onError(err: any) {
+        console.error(err);
         this.isUpdating = false;
         this.error = 'ERROR';
         this.success = null;
