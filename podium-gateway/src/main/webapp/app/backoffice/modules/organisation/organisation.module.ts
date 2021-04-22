@@ -25,7 +25,6 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
 import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
-import { OrganisationService } from '../../../shared/organisation/organisation.service';
 
 @NgModule({
     imports: [
@@ -56,7 +55,6 @@ import { OrganisationService } from '../../../shared/organisation/organisation.s
     ],
     providers: [
         customHttpProvider(),
-        OrganisationService,
         OrganisationResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

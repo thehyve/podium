@@ -15,7 +15,6 @@ import { UserRouteAccessService } from './core/auth/user-route-access.service';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
 import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
-import { OrganisationService } from './shared/organisation/organisation.service';
 import { CommonModule } from '@angular/common';
 import { PdmMainComponent } from './layouts/main/main.component';
 import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
@@ -56,7 +55,6 @@ import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
         customHttpProvider(),
         PaginationConfig,
         UserRouteAccessService,
-        OrganisationService,
     ],
     bootstrap: [ PdmMainComponent ],
     exports: []
