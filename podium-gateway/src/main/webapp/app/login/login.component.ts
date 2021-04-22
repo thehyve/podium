@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { EventManager } from '../core/util/event-manager.service';
 import { LoginService } from './login.service';
@@ -19,7 +19,7 @@ import { RedirectService } from '../core/auth/redirect.service';
     templateUrl: './login.component.html',
     styleUrls: ['login.component.scss']
 })
-export class  PodiumLoginComponent implements OnInit, AfterViewInit {
+export class  PodiumLoginComponent implements AfterViewInit {
     @ViewChild("usernameField") usernameField: ElementRef;
 
     authenticationError: boolean;
@@ -39,9 +39,6 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
         private router: Router
     ) {
         this.credentials = {};
-    }
-
-    ngOnInit() {
     }
 
     ngAfterViewInit() {

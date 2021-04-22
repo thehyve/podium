@@ -53,7 +53,7 @@ export class VerifyComponent implements OnInit {
         this.verify.renew(this.verifyKey).subscribe(() => {
             this.error = null;
             this.renewSuccess = 'OK';
-        }, (error) => {
+        }, () => {
             this.success = null;
             this.renewError = 'ERROR';
         });
