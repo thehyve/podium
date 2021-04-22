@@ -9,7 +9,7 @@
  */
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { JhiParseLinks } from 'ng-jhipster';
+import { parseLinks } from '../../shared/util/parse-links-util';
 import { Audit } from './audit.model';
 import { AuditsService } from './audits.service';
 import { ITEMS_PER_PAGE } from '../../shared';
@@ -33,7 +33,6 @@ export class AuditsComponent implements OnInit {
 
     constructor(
         private auditsService: AuditsService,
-        private parseLinks: JhiParseLinks,
         @Inject(LOCALE_ID) private locale: string,
         private paginationConfig: PaginationConfig
     ) {
@@ -64,7 +63,7 @@ export class AuditsComponent implements OnInit {
             fromDate: this.fromDate, toDate: this.toDate}).subscribe(res => {
 
             this.audits = res.body;
-            this.links = this.parseLinks.parse(res.headers.get('link'));
+            this.links = parseLinks(res.headers.get('link'));
             this.totalItems = + res.headers.get('X-Total-Count');
         });
     }

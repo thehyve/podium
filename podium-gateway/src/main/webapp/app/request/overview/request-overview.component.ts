@@ -26,7 +26,7 @@ import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
 import { RequestType } from '../../shared/request/request-type';
-import { JhiParseLinks } from 'ng-jhipster';
+import { parseLinks } from '../../shared/util/parse-links-util';
 import { EventManager } from '../../core/util/event-manager.service';
 import { RequestOverviewStatusOption } from '../../shared/request/request-status';
 
@@ -74,7 +74,6 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     constructor(
         private requestFormService: RequestFormService,
         private eventManager: EventManager,
-        private parseLinks: JhiParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
@@ -164,7 +163,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     }
 
     processAvailableRequests(requests: RequestBase[], headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+        this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.availableRequests = requests;
