@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PodiumGatewaySharedModule } from '../shared/shared.module';
 import { requestRoute, RequestFormService, RequestFormComponent, RequestFormSubmitDialogComponent } from './';
-import { RequestOverviewComponent } from './overview';
+import { RequestOverviewComponent } from './overview/request-overview.component';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
 import { RequestActionToolbarComponent } from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';

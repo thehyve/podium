@@ -21,32 +21,6 @@
         </button>
     </h2>
     <pdm-alert></pdm-alert>
-    <!-- FIXME
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-8 no-padding-right">
-                <div class="input-group pull-right">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch"
-                           name="currentSearch"
-                           placeholder="{{ 'organisation.home.search' | translate }}">
-                    <span class="input-group-btn width-min">
-                        <button class="btn btn-info"
-                                (click)="search(currentSearch, transitionOrganisations.bind(this))"
-                                [disabled]="!currentSearch.length">
-                            <span class="material-icons">search</span>
-                        </button>
-                    </span>
-                    <span class="input-group-btn width-min" *ngIf="currentSearch">
-                        <button class="btn btn-info" (click)="clear(transitionOrganisations.bind(this))">
-                            <span class="material-icons">clear</span>
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br/>
-    -->
     <div class="table-responsive" *ngIf="organisations">
         <table class="table table-striped">
             <thead>
