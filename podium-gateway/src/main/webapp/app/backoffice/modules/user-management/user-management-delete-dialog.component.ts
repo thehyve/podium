@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../../../core/util/event-manager.service';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { UserModalService } from './user-modal.service';

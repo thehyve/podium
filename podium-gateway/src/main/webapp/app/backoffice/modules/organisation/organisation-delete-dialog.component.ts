@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../../../core/util/event-manager.service';
 import { OrganisationPopupService } from './organisation-popup.service';
 import { Organisation } from '../../../shared/organisation/organisation.model';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
@@ -27,7 +27,7 @@ export class OrganisationDeleteDialogComponent {
     constructor(
         private organisationService: OrganisationService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private router: Router
     ) {
 

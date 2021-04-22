@@ -9,7 +9,7 @@
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../../../core/util/event-manager.service';
 import { AlertService } from '../../../core/util/alert.service';
 import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
@@ -53,7 +53,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         private alertService: AlertService,
         private translateService: TranslateService,
         private accountService: AccountService,
-        private eventManager: JhiEventManager
+        private eventManager: EventManager
     ) {
 
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;

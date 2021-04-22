@@ -10,8 +10,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
-import { AlertService } from '../../../core/util/alert.service';
+import { JhiParseLinks } from 'ng-jhipster';
+import { EventManager } from '../../../core/util/event-manager.service';
 import { AccountService } from '../../../core/auth/account.service';
 import { Account } from '../../../core/auth/account.model';
 import { UserService } from '../../../shared/user/user.service';
@@ -54,9 +54,8 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     constructor(
         private userService: UserService,
         private parseLinks: JhiParseLinks,
-        private alertService: AlertService,
         private accountService: AccountService,
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private overviewService: OverviewService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router

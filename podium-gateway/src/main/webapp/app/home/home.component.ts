@@ -9,7 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../core/util/event-manager.service';
 import { Account } from '../core/auth/account.model';
 import { AccountService } from '../core/auth/account.service';
 import { RedirectService } from '../core/auth/redirect.service';
@@ -28,7 +28,7 @@ export class PdmHomeComponent implements OnInit {
 
     constructor(
         private accountService: AccountService,
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private redirectService: RedirectService,
     ) {
 

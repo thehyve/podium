@@ -7,9 +7,10 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { JhiHttpInterceptor, JhiEventManager } from 'ng-jhipster';
+import { JhiHttpInterceptor } from 'ng-jhipster';
 import { RequestOptionsArgs, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { EventManager } from '../../core/util/event-manager.service';
 
 export class ErrorHandlerInterceptor extends JhiHttpInterceptor {
 
