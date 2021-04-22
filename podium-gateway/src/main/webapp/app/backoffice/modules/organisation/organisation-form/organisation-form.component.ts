@@ -9,7 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { AlertService } from '../../../../shared/alert/alert.service';
 import { AccountService } from '../../../../core/auth/account.service';
 import { User } from '../../../../shared/user/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,9 +33,8 @@ export class OrganisationFormComponent implements OnInit {
 
     constructor(
         private organisationService: OrganisationService,
-        private alertService: JhiAlertService,
+        private alertService: AlertService,
         private accountService: AccountService,
-        private eventManager: JhiEventManager,
         private route: ActivatedRoute,
         private router: Router
     ) {

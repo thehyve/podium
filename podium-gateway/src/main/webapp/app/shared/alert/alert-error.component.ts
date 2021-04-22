@@ -9,8 +9,9 @@
  */
 import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
+import { AlertService } from './alert.service';
 import { FieldError } from './field-error';
 
 @Component({
@@ -27,7 +28,7 @@ export class PdmAlertErrorComponent implements OnDestroy {
     alerts: any[];
     cleanHttpErrorListener: Subscription;
 
-    constructor(private alertService: JhiAlertService,
+    constructor(private alertService: AlertService,
                 private eventManager: JhiEventManager,
                 private translateService: TranslateService) {
         this.alerts = [];

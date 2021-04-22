@@ -9,7 +9,8 @@
  */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { JhiLanguageService, JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
+import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
@@ -110,7 +111,7 @@ describe('RoleAssignComponent', () => {
                     useClass: RoleService
                 },
                 {
-                    provide: JhiAlertService,
+                    provide: AlertService,
                     useClass: MockAlertService
                 },
                 {

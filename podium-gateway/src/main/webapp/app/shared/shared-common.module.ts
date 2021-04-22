@@ -7,24 +7,14 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { NgModule, Sanitizer } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { JhiAlertService } from 'ng-jhipster';
 import {
     PodiumGatewaySharedLibsModule,
     JhiLanguageHelper,
     PdmAlertComponent,
     PdmAlertErrorComponent
 } from './';
-import { JhiConfigService } from 'ng-jhipster/src/config.service';
-
-export function alertServiceProvider(sanitizer: Sanitizer, translateService: TranslateService) {
-    // set below to true to make alerts look like toast
-    let jhiConfigService = new JhiConfigService();
-    jhiConfigService.CONFIG_OPTIONS.alertAsToast = false;
-    return new JhiAlertService(sanitizer, jhiConfigService, translateService);
-}
 
 @NgModule({
     imports: [
@@ -36,11 +26,6 @@ export function alertServiceProvider(sanitizer: Sanitizer, translateService: Tra
     ],
     providers: [
         JhiLanguageHelper,
-        {
-            provide: JhiAlertService,
-            useFactory: alertServiceProvider,
-            deps: [Sanitizer, TranslateService]
-        },
         Title
     ],
     exports: [

@@ -27,7 +27,7 @@ import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/reque
 import { Delivery } from '../../../shared/delivery/delivery';
 import { Subscription } from 'rxjs';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
-import { JhiAlertService } from 'ng-jhipster';
+import { AlertService } from '../../../shared/alert/alert.service';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -56,7 +56,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         private requestFormService: RequestFormService,
         private modalService: NgbModal,
         private accountService: AccountService,
-        private alertService: JhiAlertService
+        private alertService: AlertService
     ) {
     }
 
