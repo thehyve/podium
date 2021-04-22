@@ -18,7 +18,7 @@ import { RedirectService } from '../core/auth/redirect.service';
     selector: 'pdm-home',
     templateUrl: './home.component.html',
     styleUrls: [
-        'home.scss'
+        'home.component.scss'
     ]
 
 })
