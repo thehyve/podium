@@ -14,7 +14,7 @@ import { OverviewServiceConfig } from '../../shared/overview/overview.service.co
 import { OverviewService } from '../../shared/overview/overview.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RequestFormService } from '../form';
+import { RequestFormService } from '../form/request-form.service';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
@@ -73,7 +73,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     constructor(
         private requestFormService: RequestFormService,
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private parseLinks: JhiParseLinks,
         private modalService: NgbModal,
         private overviewService: OverviewService,
