@@ -11,7 +11,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
-import { AlertService } from './alert.service';
+import { AlertService } from '../../core/util/alert.service';
 import { FieldError } from './field-error';
 
 @Component({

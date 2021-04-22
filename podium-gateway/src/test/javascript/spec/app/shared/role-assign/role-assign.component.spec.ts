@@ -10,7 +10,7 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
-import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
+import { AlertService } from '../../../../../../main/webapp/app/core/util/alert.service';
 import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { BaseRequestOptions, Http } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';

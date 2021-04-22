@@ -9,7 +9,7 @@
  */
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlertService } from '../../shared/alert/alert.service';
+import { AlertService } from '../../core/util/alert.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';

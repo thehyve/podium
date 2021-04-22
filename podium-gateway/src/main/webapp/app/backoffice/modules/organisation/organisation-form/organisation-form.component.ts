@@ -9,7 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AlertService } from '../../../../shared/alert/alert.service';
+import { AlertService } from '../../../../core/util/alert.service';
 import { AccountService } from '../../../../core/auth/account.service';
 import { User } from '../../../../shared/user/user.model';
 import { ActivatedRoute, Router } from '@angular/router';

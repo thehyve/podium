@@ -27,7 +27,7 @@ import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/reque
 import { Delivery } from '../../../shared/delivery/delivery';
 import { Subscription } from 'rxjs';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
-import { AlertService } from '../../../shared/alert/alert.service';
+import { AlertService } from '../../../core/util/alert.service';
 
 @Component({
     selector: 'pdm-request-detail',
