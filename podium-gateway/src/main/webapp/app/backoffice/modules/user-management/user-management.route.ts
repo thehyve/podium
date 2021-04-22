@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes, CanActivate } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
+import { parseAscending, parsePage, parsePredicate } from '../../../shared/util/pagination-util';
 import { UserMgmtComponent } from './user-management.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
@@ -31,15 +31,15 @@ export class UserResolve implements CanActivate {
 @Injectable()
 export class UserResolvePagingParams implements Resolve<any> {
 
-  constructor(private paginationUtil: JhiPaginationUtil) {}
+  constructor() {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
       let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
       let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'createdDate,desc';
       return {
-          page: this.paginationUtil.parsePage(page),
-          predicate: this.paginationUtil.parsePredicate(sort),
-          ascending: this.paginationUtil.parseAscending(sort)
+          page: parsePage(page),
+          predicate: parsePredicate(sort),
+          ascending: parseAscending(sort)
     };
   }
 }
