@@ -29,7 +29,7 @@ export class PdmAlertErrorComponent implements OnDestroy {
     cleanHttpErrorListener: Subscription;
 
     constructor(private alertService: AlertService,
-                private eventManager: JhiEventManager,
+                private eventManager: EventManager,
                 private translateService: TranslateService) {
         this.alerts = [];
 
