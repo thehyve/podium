@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { PasswordResetInit } from './password-reset-init.service';
 
 @Component({
@@ -15,6 +15,8 @@ import { PasswordResetInit } from './password-reset-init.service';
     templateUrl: './password-reset-init.component.html'
 })
 export class PasswordResetInitComponent implements OnInit, AfterViewInit {
+    @ViewChild("emailField") emailField: ElementRef;
+
     error: string;
     errorEmailNotExists: string;
     resetAccount: any;
@@ -22,8 +24,6 @@ export class PasswordResetInitComponent implements OnInit, AfterViewInit {
 
     constructor(
         private passwordResetInit: PasswordResetInit,
-        private elementRef: ElementRef,
-        private renderer: Renderer
     ) {
 
     }
@@ -33,7 +33,7 @@ export class PasswordResetInitComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#email'), 'focus', []);
+        this.emailField.nativeElement.focus();
     }
 
     requestReset () {
