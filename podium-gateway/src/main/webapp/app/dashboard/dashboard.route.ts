@@ -9,7 +9,7 @@
  */
 import { Route } from '@angular/router';
 import { UserRouteAccessService } from '../core/auth/user-route-access.service';
-import { DashboardComponent } from './';
+import { DashboardComponent } from './dashboard.component';
 
 export const dashboardRoute: Route = {
     path: 'dashboard',
