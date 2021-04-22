@@ -9,7 +9,8 @@
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
+import { AlertService } from '../../alert/alert.service';
 import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
@@ -49,7 +50,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     constructor(
         private roleService: RoleService,
         private userService: UserService,
-        private alertService: JhiAlertService,
+        private alertService: AlertService,
         private translateService: TranslateService,
         private accountService: AccountService,
         private eventManager: JhiEventManager

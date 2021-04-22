@@ -8,7 +8,7 @@
  *
  */
 import { SpyObject } from './spyobject';
-import { JhiAlertService } from 'ng-jhipster';
+import { AlertService } from '../../../../main/webapp/app/shared/alert/alert.service';
 import Spy = jasmine.Spy;
 
 export class MockAlertService extends SpyObject {
@@ -16,7 +16,7 @@ export class MockAlertService extends SpyObject {
     successSpy: Spy;
 
     constructor() {
-        super(JhiAlertService);
+        super(AlertService);
 
         this.successSpy = this.spy('success').andReturn(true);
     }
