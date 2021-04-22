@@ -26,7 +26,6 @@ export * from './validators/word-length-validator.directive';
 export * from './alert/alert.component';
 export * from './alert/alert-error.component';
 export * from './auth/has-any-authority.directive';
-export * from './language/language.constants';
 export * from './language/language.helper';
 export * from './constants/pagination.constants';
 export * from './specialism/specialism.component';
