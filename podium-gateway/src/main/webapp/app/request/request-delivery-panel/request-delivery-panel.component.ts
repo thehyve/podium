@@ -182,7 +182,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
          */
         if (delivery.status === DeliveryStatus.Closed) {
             switch (delivery.outcome) {
-                case DeliveryOutcome.Cancelled:
+                case DeliveryOutcome.Cancelled: {
                     let cancelledEvents
                         = this.getHistoricEventForTargetStatus(delivery, DeliveryStatus.Closed.toString());
                     if (cancelledEvents) {
@@ -192,6 +192,7 @@ export class RequestDeliveryPanelComponent implements OnInit, OnDestroy {
                         };
                     }
                     break;
+                }
                 case DeliveryOutcome.Received:
                     return {
                         'summary': delivery.reference
