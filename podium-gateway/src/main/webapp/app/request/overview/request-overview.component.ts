@@ -28,7 +28,7 @@ import {
 import { RequestType } from '../../shared/request/request-type';
 import { parseLinks } from '../../shared/util/parse-links-util';
 import { EventManager } from '../../core/util/event-manager.service';
-import { RequestOverviewStatusOption } from '../../shared/request/request-status';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
 
 let overviewConfig: OverviewServiceConfig = {
     resourceUrl: 'api/requests',
