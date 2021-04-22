@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { LANGUAGES } from './language.constants';
+import { LANGUAGES } from '../../config/language.constants';
 
 @Injectable()
 export class JhiLanguageHelper {
