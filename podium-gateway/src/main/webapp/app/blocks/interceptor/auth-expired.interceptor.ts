@@ -9,7 +9,7 @@
  */
 import { JhiHttpInterceptor } from 'ng-jhipster';
 import { RequestOptionsArgs, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Injector } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { AccountService } from  '../../core/auth/account.service';

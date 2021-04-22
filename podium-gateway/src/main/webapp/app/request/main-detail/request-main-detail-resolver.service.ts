@@ -10,7 +10,7 @@
 
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestBase } from '../../shared/request/request-base';

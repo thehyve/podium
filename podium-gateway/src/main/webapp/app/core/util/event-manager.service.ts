@@ -1,6 +1,6 @@
 // Based on JhiEventManager
 import { Injectable } from '@angular/core';
-import { Observable, Observer, Subscription } from 'rxjs/Rx';
+import { Observable, Observer, Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class EventManager {

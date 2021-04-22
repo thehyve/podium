@@ -9,7 +9,7 @@
  */
 import { JhiHttpInterceptor } from 'ng-jhipster';
 import { RequestOptionsArgs, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { EventManager } from '../../core/util/event-manager.service';
 
 export class ErrorHandlerInterceptor extends JhiHttpInterceptor {

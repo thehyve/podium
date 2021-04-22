@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter, Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Attachment } from './attachment.model';
 import { AttachmentTypes } from './attachment.constants';

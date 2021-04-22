@@ -10,7 +10,7 @@
 
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { RequestFormService } from './request-form.service';
 import { RequestDetail } from '../../shared/request/request-detail';
