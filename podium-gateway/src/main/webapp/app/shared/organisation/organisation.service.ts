@@ -12,7 +12,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Organisation } from './organisation.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OrganisationService {
 
     private resourceUrl = 'podiumuaa/api/organisations';
