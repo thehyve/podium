@@ -10,6 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
 @Injectable({ providedIn: 'root' })
@@ -37,14 +38,14 @@ export class AuthServerProvider {
 
         return this.http.post('podiumuaa/oauth/token', data, {
             headers
-        }).map((resp) => {
+        }).pipe(map((resp) => {
             let accessToken = resp['access_token'];
             if (accessToken) {
                 this.storeAuthenticationToken(accessToken, credentials.rememberMe);
             }
 
             return accessToken;
-        });
+        }));
     }
 
     loginWithToken(jwt, rememberMe) {

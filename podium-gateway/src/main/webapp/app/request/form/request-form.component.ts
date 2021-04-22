@@ -10,6 +10,8 @@
 
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { catchError, map } from 'rxjs/operators';
 import { RequestFormService } from './request-form.service';
 import { RequestDetail } from '../../shared/request/request-detail';
 import { RequestType } from '../../shared/request/request-type';
@@ -30,7 +32,6 @@ import { AttachmentComponent } from '../../shared/attachment/upload-attachment/a
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 import { NgForm } from '@angular/forms';
 import { OrganisationService } from '../../shared/organisation/organisation.service';
-import { Observable } from 'rxjs/Observable';
 import { RequestTemplate } from '../../shared/request/request-template';
 
 @Component({
@@ -171,12 +172,12 @@ export class RequestFormComponent implements OnInit {
 
             // Get organisations by uuid
             for (let collection of requestTemplate.organisations) {
-                let obx = this.organisationService.findByUuid(collection)
-                    .map((res: Organisation) => res)
-                    .catch((error, caught) => {
+                let obx = this.organisationService.findByUuid(collection).pipe(
+                    map((res: Organisation) => res),
+                    catchError(() => {
                         this.listOfInvalidOrganisationUUID.push(collection);
                         return Observable.of({});
-                    });
+                    }));
                 organisationObservables.push(obx);
             }
 

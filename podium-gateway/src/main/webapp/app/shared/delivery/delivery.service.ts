@@ -10,6 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Delivery } from './delivery';
 import { DeliveryReference } from './delivery-reference';
 import { PodiumEventMessage } from '../event/podium-event-message';
@@ -34,10 +35,10 @@ export class DeliveryService {
 
     getDeliveries(uuid?: string): Observable<Delivery[]> {
         return this.http.get<Delivery[]>(`${this.resourceUrl}/${uuid}/deliveries`)
-        .map((res) => {
+        .pipe(map((res) => {
             this.deliveriesFetchEvent(res);
             return res;
-        });
+        }));
     }
 
     releaseDelivery(requestUuid: string, deliveryUuid: string, deliveryReference: DeliveryReference): Observable<any> {
