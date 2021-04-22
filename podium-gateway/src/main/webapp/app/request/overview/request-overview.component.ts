@@ -26,7 +26,8 @@ import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
 import { RequestType } from '../../shared/request/request-type';
-import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { JhiParseLinks } from 'ng-jhipster';
+import { EventManager } from '../../core/util/event-manager.service';
 import { RequestOverviewStatusOption } from '../../shared/request/request-status';
 
 let overviewConfig: OverviewServiceConfig = {

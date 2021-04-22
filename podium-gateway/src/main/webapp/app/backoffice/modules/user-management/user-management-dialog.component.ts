@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../../../core/util/event-manager.service';
 import { UserModalService } from './user-modal.service';
 import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
@@ -34,7 +34,7 @@ export class UserMgmtDialogComponent implements OnInit {
         public activeModal: NgbActiveModal,
         private translateService: TranslateService,
         private userService: UserService,
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private router: Router
     ) {}
 

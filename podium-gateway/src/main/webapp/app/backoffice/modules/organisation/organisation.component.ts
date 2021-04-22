@@ -11,7 +11,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { JhiParseLinks } from 'ng-jhipster';
+import { EventManager } from '../../../core/util/event-manager.service';
 import { AccountService } from '../../../core/auth/account.service';
 import { Account } from '../../../core/auth/account.model';
 import { Overview } from '../../../shared/overview/overview';
@@ -55,7 +56,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         private accountService: AccountService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router,
-        private eventManager:  JhiEventManager
+        private eventManager: EventManager
     ) {
         super(router, activatedRoute);
 

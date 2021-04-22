@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { RequestService } from '../../shared/request/request.service';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../../core/util/event-manager.service';
 import { RequestBase } from '../../shared/request/request-base';
 
 @Component({
@@ -26,7 +26,7 @@ export class RequestDraftDeleteModalComponent {
     constructor(
         private requestService: RequestService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
+        private eventManager: EventManager
     ) {}
 
     confirmDelete() {

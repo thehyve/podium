@@ -9,7 +9,7 @@
  */
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { JhiEventManager } from 'ng-jhipster';
+import { EventManager } from '../core/util/event-manager.service';
 import { LoginService } from './login.service';
 import { StateStorageService } from '../core/auth/state-storage.service';
 import { RedirectService } from '../core/auth/redirect.service';
@@ -32,7 +32,7 @@ export class  PodiumLoginComponent implements OnInit, AfterViewInit {
     credentials: any;
 
     constructor(
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private loginService: LoginService,
         private stateStorageService: StateStorageService,
         private redirectService: RedirectService,
