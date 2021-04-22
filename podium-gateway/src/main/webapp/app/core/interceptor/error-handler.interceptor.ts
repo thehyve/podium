@@ -7,28 +7,26 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { JhiHttpInterceptor } from 'ng-jhipster';
-import { RequestOptionsArgs, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpErrorResponse, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
 import { EventManager } from '../util/event-manager.service';
 
-export class ErrorHandlerInterceptor extends JhiHttpInterceptor {
+@Injectable()
+export class ErrorHandlerInterceptor implements HttpInterceptor {
+  constructor(private eventManager: EventManager) {}
 
-    constructor(private eventManager: JhiEventManager) {
-        super();
-    }
-
-    requestIntercept(options?: RequestOptionsArgs): RequestOptionsArgs {
-        return options;
-    }
-
-    responseIntercept(observable: Observable<Response>): Observable<Response> {
-        return <Observable<Response>> observable.catch(error => {
-            if (!(error.status === 401 && (error.text() === '' ||
-                (error.json().path && error.json().path.indexOf('/api/account') === 0 )))) {
-                this.eventManager.broadcast( {name: 'podiumGatewayApp.httpError', content: error});
-            }
-            return Observable.throw(error);
-        });
-    }
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    return next.handle(request).pipe(
+      tap({
+        error: (err: HttpErrorResponse) => {
+          if (!(err.status === 401 && (err.message === '' || err.url?.includes('api/account')))) {
+            this.eventManager.broadcast({ name: 'podiumGatewayApp.httpError', content: err });
+          }
+        },
+      })
+    );
+  }
 }
