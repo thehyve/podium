@@ -10,22 +10,22 @@
 import { Route, ActivatedRouteSnapshot, RouterStateSnapshot, Resolve } from '@angular/router';
 import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { RequestOverviewComponent } from './request-overview.component';
-import { JhiPaginationUtil } from 'ng-jhipster';
+import { parseAscending, parsePage, parsePredicate } from '../../shared/util/pagination-util';
 import { Injectable } from '@angular/core';
 import { RequestOverviewPath } from './request-overview.constants';
 
 @Injectable()
 export class RequestResolvePagingParams implements Resolve<any> {
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
+    constructor() {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
         let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'createdDate,desc';
         return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
+            page: parsePage(page),
+            predicate: parsePredicate(sort),
+            ascending: parseAscending(sort)
         };
     }
 }

@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from '../../../core/auth/user-route-access.service';
-import { JhiPaginationUtil } from 'ng-jhipster';
+import { parseAscending, parsePage, parsePredicate } from '../../../shared/util/pagination-util';
 import { OrganisationComponent } from './organisation.component';
 import { OrganisationDeletePopupComponent } from './organisation-delete-dialog.component';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
@@ -18,16 +18,16 @@ import { OrganisationFormComponent } from './organisation-form/organisation-form
 @Injectable()
 export class OrganisationResolvePagingParams implements Resolve<any> {
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
+    constructor() {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
         let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'shortName,asc';
 
         return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
+            page: parsePage(page),
+            predicate: parsePredicate(sort),
+            ascending: parseAscending(sort)
         };
     }
 }
