@@ -23,7 +23,7 @@ export class HasAnyAuthorityDirective {
     ) {}
 
     @Input() set pdmHasAnyAuthority(value: string|string[]) {
-        this.authorities = typeof value === 'string' ? [ <string> value ] : <string[]> value;
+        this.authorities = [value].flat();
         this.updateView();
         // Get notified each time authentication state changes.
         this.accountService.getAuthenticationState().subscribe(() => this.updateView());

@@ -94,7 +94,7 @@ export abstract class Overview {
         });
     }
 
-    protected loadPage(page: number, callback: Function) {
+    protected loadPage(page: number, callback: () => any) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             callback();
@@ -128,7 +128,7 @@ export abstract class Overview {
         callback();
     }
 
-    protected clear(callback: Function) {
+    protected clear(callback: () => any) {
         this.page = 0;
         this.currentSearch = '';
         this.router.navigate([RouterHelper.getNavUrlForRouter(this.router), {
