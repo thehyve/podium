@@ -10,10 +10,11 @@
 
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { first, map } from 'rxjs/operators';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { RequestDetail } from '../../shared/request/request-detail';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class RequestDetailResolver implements Resolve<RequestBase> {
@@ -22,13 +23,12 @@ export class RequestDetailResolver implements Resolve<RequestBase> {
     resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RequestDetail> {
         let uuid = route.params['uuid'];
         return this.requestService.findByUuid(uuid)
-            .map(requestDetail => {
+            .pipe(map(requestDetail => {
                 if (requestDetail) {
                     return requestDetail;
                 } else {
                     return null;
                 }
-            })
-            .first();
+            }), first());
     }
 }

@@ -10,6 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class PdmConfigurationService {
@@ -18,7 +19,7 @@ export class PdmConfigurationService {
     }
 
     get(): Observable<any> {
-        return this.http.get('management/configprops').map((propertiesObject) => {
+        return this.http.get('management/configprops').pipe(map((propertiesObject) => {
             let properties: any[] = [];
 
             for (let key in propertiesObject) {
@@ -31,11 +32,11 @@ export class PdmConfigurationService {
                 return (propertyA.prefix === propertyB.prefix) ? 0 :
                        (propertyA.prefix < propertyB.prefix) ? -1 : 1;
             });
-        });
+        }));
     }
 
     getEnv(): Observable<any> {
-        return this.http.get('management/env').map((propertiesObject) => {
+        return this.http.get('management/env').pipe(map((propertiesObject) => {
             let properties: any = {};
 
             for (let key in propertiesObject) {
@@ -53,6 +54,6 @@ export class PdmConfigurationService {
             }
 
             return properties;
-        });
+        }));
     }
 }
