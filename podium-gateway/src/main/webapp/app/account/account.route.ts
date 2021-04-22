@@ -8,14 +8,12 @@
  *
  */
 import { Routes } from '@angular/router';
-import {
-    verifyRoute,
-    passwordRoute,
-    passwordResetFinishRoute,
-    passwordResetInitRoute,
-    registerRoute,
-    settingsRoute
-} from './';
+import { passwordResetFinishRoute } from './password-reset/finish/password-reset-finish.route';
+import { passwordResetInitRoute } from './password-reset/init/password-reset-init.route';
+import { passwordRoute } from './password/password.route';
+import { registerRoute } from './register/register.route';
+import { settingsRoute } from './settings/settings.route';
+import { verifyRoute } from './verify/verify.route';
 
 let ACCOUNT_ROUTES = [
    verifyRoute,
