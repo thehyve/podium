@@ -8,7 +8,7 @@
  *
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AlertService } from './alert.service';
+import { AlertService } from '../../core/util/alert.service';
 
 @Component({
     selector: 'pdm-alert',

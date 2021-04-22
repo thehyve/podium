@@ -8,7 +8,7 @@
  *
  */
 import { SpyObject } from './spyobject';
-import { AlertService } from '../../../../main/webapp/app/shared/alert/alert.service';
+import { AlertService } from '../../../../main/webapp/app/core/util/alert.service';
 import Spy = jasmine.Spy;
 
 export class MockAlertService extends SpyObject {

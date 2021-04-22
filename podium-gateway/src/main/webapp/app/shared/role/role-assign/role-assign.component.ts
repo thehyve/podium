@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { JhiEventManager } from 'ng-jhipster';
-import { AlertService } from '../../alert/alert.service';
+import { AlertService } from '../../../core/util/alert.service';
 import { Observable, Subscription } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
