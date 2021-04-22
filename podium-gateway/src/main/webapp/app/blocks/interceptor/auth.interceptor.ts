@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { RequestOptionsArgs, Response } from '@angular/http';
 import { JhiHttpInterceptor } from 'ng-jhipster';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';

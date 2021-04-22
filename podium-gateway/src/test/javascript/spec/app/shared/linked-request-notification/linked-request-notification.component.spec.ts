@@ -17,7 +17,7 @@ import { RequestService } from '../../../../../../main/webapp/app/shared/request
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
 import { AccountService } from '../../../../../../main/webapp/app/core/auth/account.service';
 import { PodiumTestModule } from '../../../test.module';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 describe('LinkedRequestNotificationComponent (templateUrl)', () => {
 
