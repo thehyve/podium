@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { JhiParseLinks } from 'ng-jhipster';
+import { parseLinks } from '../../../shared/util/parse-links-util';
 import { EventManager } from '../../../core/util/event-manager.service';
 import { AccountService } from '../../../core/auth/account.service';
 import { Account } from '../../../core/auth/account.model';
@@ -52,7 +52,6 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     constructor(
         private organisationService: OrganisationService,
         private overviewService: OverviewService,
-        private parseLinks:  JhiParseLinks,
         private accountService: AccountService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router,
@@ -123,7 +122,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     }
 
     private processAvailableOrganisations(organisations: Organisation[], headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+        this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.organisations = organisations;

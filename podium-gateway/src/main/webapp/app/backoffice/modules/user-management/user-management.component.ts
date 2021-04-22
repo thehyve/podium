@@ -10,7 +10,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiParseLinks } from 'ng-jhipster';
+import { parseLinks } from '../../../shared/util/parse-links-util';
 import { EventManager } from '../../../core/util/event-manager.service';
 import { AccountService } from '../../../core/auth/account.service';
 import { Account } from '../../../core/auth/account.model';
@@ -53,7 +53,6 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     constructor(
         private userService: UserService,
-        private parseLinks: JhiParseLinks,
         private accountService: AccountService,
         private eventManager: EventManager,
         private overviewService: OverviewService,
@@ -118,7 +117,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
     }
 
     processAvailableUsers (users: User[], headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+        this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.users = users;
