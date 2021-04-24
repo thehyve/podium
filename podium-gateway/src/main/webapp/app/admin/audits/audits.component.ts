@@ -9,11 +9,9 @@
  */
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { parseLinks } from '../../shared/util/parse-links-util';
 import { Audit } from './audit.model';
 import { AuditsService } from './audits.service';
 import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
-import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
 
 @Component({
   selector: 'pdm-audit',
@@ -23,7 +21,6 @@ export class AuditsComponent implements OnInit {
     audits: Audit[];
     fromDate: string;
     itemsPerPage: any;
-    links: any;
     page: number;
     orderProp: string;
     reverse: boolean;
@@ -34,7 +31,6 @@ export class AuditsComponent implements OnInit {
     constructor(
         private auditsService: AuditsService,
         @Inject(LOCALE_ID) private locale: string,
-        private paginationConfig: PaginationConfig
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.page = 1;
@@ -63,7 +59,6 @@ export class AuditsComponent implements OnInit {
             fromDate: this.fromDate, toDate: this.toDate}).subscribe(res => {
 
             this.audits = res.body;
-            this.links = parseLinks(res.headers.get('link'));
             this.totalItems = + res.headers.get('X-Total-Count');
         });
     }
