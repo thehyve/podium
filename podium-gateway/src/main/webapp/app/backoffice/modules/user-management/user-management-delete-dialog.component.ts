@@ -26,7 +26,7 @@ export class UserMgmtDeleteDialogComponent {
     constructor(
         private userService: UserService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager,
+        private eventManager: EventManager,
         private router: Router
     ) {
 
