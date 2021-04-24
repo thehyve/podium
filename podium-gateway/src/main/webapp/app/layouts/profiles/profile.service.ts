@@ -10,25 +10,35 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
+
 import { ProfileInfo } from './profile-info.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
 
     private profileInfoUrl = 'api/profile-info';
+    private profileInfo$?: Observable<ProfileInfo>;
 
     constructor(private http: HttpClient) { }
 
     getProfileInfo(): Observable<ProfileInfo> {
-        return this.http.get<ProfileInfo>(this.profileInfoUrl)
-            .pipe(map((data) => {
-                let pi = new ProfileInfo();
-                pi.activeProfiles = data.activeProfiles;
-                pi.ribbonEnv = data.ribbonEnv;
-                pi.inProduction = data.activeProfiles.indexOf('prod') !== -1;
-                pi.swaggerEnabled = data.activeProfiles.indexOf('swagger') !== -1;
-                return pi;
-            }));
+        if (this.profileInfo$) {
+            return this.profileInfo$;
+        }
+
+        this.profileInfo$ = this.http.get<ProfileInfo>(this.profileInfoUrl).pipe(
+            map((response) => {
+                let profileInfo: ProfileInfo = {
+                    activeProfiles: response.activeProfiles,
+                    ribbonEnv: response.ribbonEnv,
+                    inProduction: response.activeProfiles?.includes('prod'),
+                    swaggerEnabled: response.activeProfiles?.includes('api-docs'),
+                };
+                return profileInfo;
+            }),
+            shareReplay()
+        );
+        return this.profileInfo$;
     }
 }
