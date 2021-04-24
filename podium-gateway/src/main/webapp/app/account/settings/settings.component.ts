@@ -8,8 +8,6 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from '../../shared';
 import { AccountService } from '../../core/auth/account.service';
 import { Account } from '../../core/auth/account.model';
 import { User } from '../../shared/user/user.model';
@@ -23,7 +21,6 @@ export class SettingsComponent implements OnInit {
     error: string;
     success: string;
     settingsAccount: User;
-    languages: any[];
 
     static copyAccount(account: Account): User {
         return { ...account };
@@ -32,17 +29,12 @@ export class SettingsComponent implements OnInit {
     constructor(
         private account: AccountService,
         private accountService: AccountService,
-        private languageService: JhiLanguageService,
-        private languageHelper: JhiLanguageHelper
     ) {
     }
 
     ngOnInit () {
         this.accountService.identity().then((account) => {
             this.settingsAccount = SettingsComponent.copyAccount(account);
-        });
-        this.languageHelper.getAll().then((languages) => {
-            this.languages = languages;
         });
     }
 
@@ -52,11 +44,6 @@ export class SettingsComponent implements OnInit {
             this.success = 'OK';
             this.accountService.identity(true).then((account) => {
                 this.settingsAccount = SettingsComponent.copyAccount(account);
-            });
-            this.languageService.getCurrent().then((current) => {
-                if (this.settingsAccount.langKey !== current) {
-                    this.languageService.changeLanguage(this.settingsAccount.langKey);
-                }
             });
         }, () => {
             this.success = null;

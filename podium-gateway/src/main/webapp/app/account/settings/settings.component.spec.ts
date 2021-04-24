@@ -11,7 +11,6 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-import { JhiLanguageHelper } from '../../shared';
 import { AccountService } from '../../core/auth/account.service';
 import { SettingsComponent } from './settings.component';
 import { MockAccountService } from '../../../../../test/javascript/spec/helpers/mock-account.service';
@@ -37,10 +36,6 @@ describe('Component Tests', () => {
                         useClass: MockAccountService
                     },
                     BaseRequestOptions,
-                    {
-                        provide: JhiLanguageHelper,
-                        useValue: null
-                    }
                 ]
             }).overrideTemplate(SettingsComponent, '')
                 .compileComponents();

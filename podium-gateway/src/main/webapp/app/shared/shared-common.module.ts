@@ -11,7 +11,6 @@ import { NgModule } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
     PodiumGatewaySharedLibsModule,
-    JhiLanguageHelper,
     PdmAlertComponent,
     PdmAlertErrorComponent
 } from './';
@@ -25,7 +24,6 @@ import {
         PdmAlertErrorComponent
     ],
     providers: [
-        JhiLanguageHelper,
         Title
     ],
     exports: [
