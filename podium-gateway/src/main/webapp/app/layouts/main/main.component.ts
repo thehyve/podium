@@ -8,8 +8,9 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router, ActivatedRouteSnapshot, NavigationEnd } from '@angular/router';
-import { JhiLanguageHelper } from '../../shared';
+import { TranslateService } from '@ngx-translate/core';
 import { AccountService } from '../../core/auth/account.service';
 
 @Component({
@@ -19,8 +20,9 @@ import { AccountService } from '../../core/auth/account.service';
 export class PdmMainComponent implements OnInit {
 
     constructor(
-        private jhiLanguageHelper: JhiLanguageHelper,
+        private titleService: Title,
         private router: Router,
+        private translateService: TranslateService,
         private accountService: AccountService
     ) { }
 
@@ -34,10 +36,18 @@ export class PdmMainComponent implements OnInit {
         return title;
     }
 
+    private updateTitle(): void {
+        let pageTitle = this.getPageTitle(this.router.routerState.snapshot.root);
+        if (!pageTitle) {
+            pageTitle = 'global.title';
+        }
+        this.translateService.get(pageTitle).subscribe(title => this.titleService.setTitle(title));
+    }
+
     ngOnInit() {
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
-                this.jhiLanguageHelper.updateTitle(this.getPageTitle(this.router.routerState.snapshot.root));
+                this.updateTitle();
                 // Scroll to top of page after page navigation
                 window.scrollTo(0, 0);
             }

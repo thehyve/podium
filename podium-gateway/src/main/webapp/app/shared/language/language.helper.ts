@@ -24,22 +24,4 @@ export class JhiLanguageHelper {
     getAll(): Promise<any> {
         return Promise.resolve(LANGUAGES);
     }
-
-    /**
-     * Update the window title using params in the following
-     * order:
-     * 1. titleKey parameter
-     * 2. $state.$current.data.pageTitle (current state page title)
-     * 3. 'global.title'
-     */
-    updateTitle(titleKey?: string) {
-
-        if (!titleKey && this.titleService.getTitle() ) {
-            titleKey = this.titleService.getTitle();
-        }
-
-        this.translateService.get(titleKey || 'global.title').subscribe(title => {
-            this.titleService.setTitle(title);
-        });
-    }
 }
