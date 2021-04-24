@@ -13,26 +13,26 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Account } from './account.model';
 
 @Injectable({ providedIn: 'root' })
-export class AccountService  {
-    private _identity: Account;
+export class AccountService {
+    private userIdentity: Account | null = null;
     private authenticationState = new BehaviorSubject<any>(null);
 
     constructor(private http: HttpClient) { }
 
     authenticate(_identity: Account | null) {
-        this._identity = _identity;
-        this.authenticationState.next(this._identity);
+        this.userIdentity = _identity;
+        this.authenticationState.next(this.userIdentity);
     }
 
     hasAnyAuthority(authorities: string[]): boolean {
-        if (!this._identity || !this._identity.authorities) {
+        if (!this.userIdentity || !this.userIdentity.authorities) {
             return false;
         }
-        return this._identity.authorities.some((authority: string) => authorities.includes(authority));
+        return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
     }
 
     hasAuthority (authority: string): Promise<boolean> {
-        if (!this._identity) {
+        if (!this.userIdentity) {
            return Promise.resolve(false);
         }
 
@@ -45,19 +45,19 @@ export class AccountService  {
 
     identity(force?: boolean): Promise<Account | null> {
         if (force === true) {
-            this._identity = undefined;
+            this.userIdentity = undefined;
         }
 
         // check and see if we have retrieved the _identity data from the server.
         // if we have, reuse it by immediately resolving
-        if (this._identity) {
-            return Promise.resolve(this._identity);
+        if (this.userIdentity) {
+            return Promise.resolve(this.userIdentity);
         }
 
         // retrieve the _identity data from the server, update the _identity object, and then resolve.
         return this.get().toPromise().then(account => {
             this.authenticate(account);
-            return this._identity;
+            return this.userIdentity;
         }).catch(err => {
             this.authenticate(null);;
             return null;
@@ -65,7 +65,7 @@ export class AccountService  {
     }
 
     isAuthenticated (): boolean {
-        return this._identity !== null;
+        return this.userIdentity !== null;
     }
 
     getAuthenticationState(): BehaviorSubject<any> {
@@ -73,11 +73,11 @@ export class AccountService  {
     }
 
     isIdentityResolved (): boolean {
-        return this._identity !== undefined;
+        return this.userIdentity !== undefined;
     }
 
     getImageUrl(): String {
-        return this.isIdentityResolved () ? this._identity.imageUrl : null;
+        return this.isIdentityResolved () ? this.userIdentity.imageUrl : null;
     }
 
     private get(): Observable<Account> {
