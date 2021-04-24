@@ -12,16 +12,19 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../../shared/shared.module';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { RouterModule } from '@angular/router';
+import { UserMgmtComponent } from './user-management.component';
 import {
-    UserMgmtComponent,
     UserDialogComponent,
-    UserMgmtDialogComponent,
+    UserMgmtDialogComponent
+} from './user-management-dialog.component';
+import {
     UserDeleteDialogComponent,
-    UserMgmtDeleteDialogComponent,
+    UserMgmtDeleteDialogComponent
+} from './user-management-delete-dialog.component';
+import {
     UserUnlockDialogComponent,
     UserMgmtUnlockDialogComponent,
-} from './';
-import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
+} from './user-management-unlock-dialog.component';
 import { UserMgmtRoutingModule } from './user-management.routing';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { Http } from '@angular/http';
