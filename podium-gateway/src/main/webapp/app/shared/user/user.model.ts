@@ -20,9 +20,9 @@ export class User {
     public department?: string;
     public jobTitle?: string;
     public specialism?: string;
-    public emailVerified?: Boolean;
-    public adminVerified?: Boolean;
-    public accountLocked?: Boolean;
+    public emailVerified?: boolean;
+    public adminVerified?: boolean;
+    public accountLocked?: boolean;
     public langKey?: string;
     public authorities?: any[];
     public organisationAuthorities?: { [uuid: string]: string[] };
