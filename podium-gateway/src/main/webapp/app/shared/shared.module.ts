@@ -25,7 +25,6 @@ import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
-import { ActiveMenuDirective } from '../layouts/navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
 import { PdmErrorComponent } from '../layouts/error/error.component';
 import { NavbarComponent } from '../layouts/navbar/navbar.component';
@@ -61,7 +60,6 @@ import { ItemCountComponent } from './pagination/item-count.component';
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
         EnumKeysPipe,
-        ActiveMenuDirective,
         CompletedComponent,
         PdmErrorComponent,
         NavbarComponent,
@@ -99,7 +97,6 @@ import { ItemCountComponent } from './pagination/item-count.component';
         DatePipe,
         EnumKeysPipe,
         ItemCountComponent,
-        ActiveMenuDirective,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
