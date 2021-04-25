@@ -37,6 +37,7 @@ import { PodiumLoginComponent } from '../login/login.component';
 import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
 import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
+import { ItemCountComponent } from './pagination/item-count.component';
 
 @NgModule({
     imports: [
@@ -67,6 +68,7 @@ import { SortDirective } from './sort/sort.directive';
         AttachmentListComponent,
         SortByDirective,
         SortDirective,
+        ItemCountComponent,
     ],
     providers: [
         SessionStorageService,
@@ -96,6 +98,7 @@ import { SortDirective } from './sort/sort.directive';
         SortDirective,
         DatePipe,
         EnumKeysPipe,
+        ItemCountComponent,
         ActiveMenuDirective,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
