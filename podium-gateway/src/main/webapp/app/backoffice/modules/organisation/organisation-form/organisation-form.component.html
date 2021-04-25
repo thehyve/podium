@@ -71,7 +71,7 @@
                                                    id="requestTypes"
                                                    value="{{requestType.value}}"
                                                    [checked]="organisation.requestTypes.indexOf(requestType.value) !== -1"
-                                                   (change)="updateRequestType(requestType, $event)"
+                                                   (change)="updateRequestType(requestType)"
                                                    required />
                                             {{requestType.value | capitalize}}
                                         </label>

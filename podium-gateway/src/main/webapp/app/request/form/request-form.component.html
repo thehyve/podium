@@ -74,7 +74,7 @@
                                        value="{{requestType.value}}"
                                        [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
-                                       (change)="updateRequestType(requestType, $event)"/>
+                                       (change)="updateRequestType(requestType)"/>
                                 {{requestType.value | capitalize}}
                             </label>
                         </div>

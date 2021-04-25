@@ -39,7 +39,7 @@ export class OrganisationDeleteDialogComponent {
     }
 
     confirmDelete (uuid: string) {
-        this.organisationService.delete(uuid).subscribe(response => {
+        this.organisationService.delete(uuid).subscribe(() => {
             this.eventManager.broadcast({
                 name: 'organisationListModification',
                 content: 'Deleted an organisation'
