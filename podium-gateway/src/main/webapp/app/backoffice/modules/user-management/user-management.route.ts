@@ -33,7 +33,7 @@ export class UserResolvePagingParams implements Resolve<any> {
 
   constructor() {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  resolve(route: ActivatedRouteSnapshot) {
       let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
       let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'createdDate,desc';
       return {
