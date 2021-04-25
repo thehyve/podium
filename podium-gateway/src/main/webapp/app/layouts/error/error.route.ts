@@ -8,7 +8,6 @@
  *
  */
 import { Routes } from '@angular/router';
-import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { PdmErrorComponent } from './error.component';
 
 export const errorRoute: Routes = [
@@ -16,18 +15,14 @@ export const errorRoute: Routes = [
         path: 'error',
         component: PdmErrorComponent,
         data: {
-            authorities: [],
             pageTitle: 'error.title'
         },
-        canActivate: [UserRouteAccessService]
     },
     {
         path: 'accessdenied',
         component: PdmErrorComponent,
         data: {
-            authorities: [],
             pageTitle: 'error.title'
         },
-        canActivate: [UserRouteAccessService]
     }
 ];
