@@ -102,7 +102,7 @@ export class OrganisationFormComponent implements OnInit {
         return this.router.navigate(['/bbmri/organisation']);
     }
 
-    updateRequestType(selectedRequestType, event) {
+    updateRequestType(selectedRequestType) {
         let _idx = this.organisation.requestTypes.indexOf(selectedRequestType.value);
         if ( _idx < 0) {
             this.organisation.requestTypes.push(selectedRequestType.value);
