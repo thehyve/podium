@@ -7,21 +7,18 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'pdm-error',
     templateUrl: './error.component.html'
 })
-export class PdmErrorComponent implements OnInit {
+export class PdmErrorComponent {
     errorMessage: string;
     error403: boolean;
 
     constructor(
     ) {
 
-    }
-
-    ngOnInit() {
     }
 }
