@@ -311,14 +311,14 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     /**
      * Template features
      */
-    public userAuthorityChange(orgUser: OrganisationUser, event: any) {
+    public userAuthorityChange(orgUser: OrganisationUser) {
         orgUser.isDirty = false;
         if ((orgUser.authority !== orgUser.previousAuthority) && orgUser.isSaved) {
             orgUser.isDirty = true;
         }
     }
 
-    public canAdd(orgUser: OrganisationUser, currentUser: User): boolean {
+    public canAdd(orgUser: OrganisationUser): boolean {
         if (orgUser.uuid && orgUser.previousAuthority !== orgUser.authority && !orgUser.isSaved) {
             return true;
         }

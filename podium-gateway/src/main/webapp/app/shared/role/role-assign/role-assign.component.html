@@ -46,7 +46,7 @@
                                 <!-- Authority select -->
                                 <select class="form-control field-user-authority"
                                         name="authority-{{ user.uuid }}-{{i}}"
-                                        (change)="userAuthorityChange(user, $event)"
+                                        (change)="userAuthorityChange(user)"
                                         [(ngModel)]="user.authority"
                                         [disabled]="isAdminOfOrganisation(user, currentAccount)">
                                     <option [ngValue]="undefined" disabled selected>Please select a role</option>
@@ -62,7 +62,7 @@
                                     (click)="update(user)">
                                     <i class="material-icons">update</i>
                                 </span>
-                                <span class="role-option success test-add" tooltip="Add user role" *ngIf="canAdd(user, currentAccount)"
+                                <span class="role-option success test-add" tooltip="Add user role" *ngIf="canAdd(user)"
                                     (click)="save(user)">
                                     <i class="material-icons">add</i>
                                 </span>

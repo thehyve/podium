@@ -8,7 +8,7 @@
  *
  */
 import { Route } from '@angular/router';
-import { PdmHomeComponent } from './';
+import { PdmHomeComponent } from './home.component';
 
 export const homeRoute: Route = {
     path: '',

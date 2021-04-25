@@ -8,7 +8,7 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from '../../../core/auth/user-route-access.service';
 import { parseAscending, parsePage, parsePredicate } from '../../../shared/util/pagination-util';
 import { OrganisationComponent } from './organisation.component';
