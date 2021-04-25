@@ -35,6 +35,8 @@ import { NgUploaderModule } from 'ngx-uploader';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 import { PodiumLoginComponent } from '../login/login.component';
 import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import { SortByDirective } from './sort/sort-by.directive';
+import { SortDirective } from './sort/sort.directive';
 
 @NgModule({
     imports: [
@@ -63,6 +65,8 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         PdmErrorComponent,
         NavbarComponent,
         AttachmentListComponent,
+        SortByDirective,
+        SortDirective,
     ],
     providers: [
         SessionStorageService,
@@ -88,6 +92,8 @@ import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
+        SortByDirective,
+        SortDirective,
         DatePipe,
         EnumKeysPipe,
         ActiveMenuDirective,
