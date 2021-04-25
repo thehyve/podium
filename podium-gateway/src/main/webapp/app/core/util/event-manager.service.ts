@@ -1,6 +1,7 @@
 // Based on JhiEventManager
 import { Injectable } from '@angular/core';
 import { Observable, Observer, Subscription } from 'rxjs';
+import { filter, share } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class EventManager {
@@ -9,9 +10,9 @@ export class EventManager {
     observer: Observer<any>;
 
     constructor() {
-        this.observable = Observable.create((observer: Observer<any>) => {
+        this.observable = new Observable((observer: Observer<any>) => {
             this.observer = observer;
-        }).share();
+        }).pipe(share());
     }
 
     /**
@@ -27,9 +28,9 @@ export class EventManager {
      * Method to subscribe to an event with callback
      */
     subscribe(eventName, callback) {
-        const subscriber: Subscription = this.observable.filter((event) => {
+        const subscriber: Subscription = this.observable.pipe(filter((event) => {
             return event.name === eventName;
-        }).subscribe(callback);
+        })).subscribe(callback);
         return subscriber;
     }
 
