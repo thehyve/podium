@@ -231,7 +231,7 @@ describe('RoleAssignComponent', () => {
         bbmriOrgUser.authority = 'ROLE_ORGANISATION_REVIEWER';
         bbmriOrgUser.isSaved = false;
 
-        let canAdd = comp.canAdd(bbmriOrgUser, dummyBbmriAdmin);
+        let canAdd = comp.canAdd(bbmriOrgUser);
         expect(canAdd).toBeTruthy();
     });
 
@@ -240,7 +240,7 @@ describe('RoleAssignComponent', () => {
         let role = dummyRoles[0];
         let bbmriOrgUser = comp.generateOrganisationUser(dummyBbmriAdmin, role);
 
-        let canNotAdd = comp.canAdd(bbmriOrgUser, dummyBbmriAdmin);
+        let canNotAdd = comp.canAdd(bbmriOrgUser);
         expect(canNotAdd).toBeFalsy();
     });
 
