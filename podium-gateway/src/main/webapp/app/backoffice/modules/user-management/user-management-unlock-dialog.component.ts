@@ -38,7 +38,7 @@ export class UserMgmtUnlockDialogComponent {
     }
 
     confirmUnlock (user) {
-        this.userService.unlock(user).subscribe(response => {
+        this.userService.unlock(user).subscribe(() => {
             this.eventManager.broadcast({ name: 'userListModification',
                 content: 'Unlock a user'});
             this.activeModal.dismiss(true);

@@ -38,7 +38,7 @@ export class UserMgmtDeleteDialogComponent {
     }
 
     confirmDelete (login) {
-        this.userService.delete(login).subscribe(response => {
+        this.userService.delete(login).subscribe(() => {
             this.eventManager.broadcast({ name: 'userListModification',
                 content: 'Deleted a user'});
             this.activeModal.dismiss(true);
