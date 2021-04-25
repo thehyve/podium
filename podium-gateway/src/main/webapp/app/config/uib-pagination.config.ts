@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { NgbPaginationConfig } from '@ng-bootstrap/ng-bootstrap';
-import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
+import { ITEMS_PER_PAGE } from './pagination.constants';
 
 @Injectable()
 export class PaginationConfig {
