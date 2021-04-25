@@ -1,5 +1,5 @@
 import './vendor.ts';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxWebstorageModule } from 'ngx-webstorage';
@@ -53,6 +53,7 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
     providers: [
         { provide: Window, useValue: window },
         { provide: Document, useValue: document },
+        { provide: LOCALE_ID, useValue: 'en' },
         customHttpProvider(),
         PaginationConfig,
         UserRouteAccessService,
