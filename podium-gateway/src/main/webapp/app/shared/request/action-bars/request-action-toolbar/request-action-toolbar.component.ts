@@ -46,7 +46,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     @Input() form: NgForm;
     @Input() request: RequestBase;
-    @Input() isUpdating: false;
+    @Input() isUpdating: boolean;
 
     @Output() resetChange = new EventEmitter();
     @Output() cancelChange = new EventEmitter();
