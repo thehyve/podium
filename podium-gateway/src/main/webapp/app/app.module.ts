@@ -1,9 +1,13 @@
 import './vendor.ts';
 import { NgModule, LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import locale from '@angular/common/locales/en';
 import { BrowserModule, Title } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateModule, TranslateService, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
+import { translatePartialLoader, missingTranslationHandler } from './config/translation.config';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { PodiumGatewayRequestModule } from './request/request.module';
 import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
@@ -40,6 +44,17 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
         PodiumGatewayBbmriBackofficeModule,
         PodiumGatewayOrganisationBackofficeModule,
         PodiumGatewayPodiumBackofficeModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: translatePartialLoader,
+                deps: [HttpClient],
+            },
+            missingTranslationHandler: {
+                provide: MissingTranslationHandler,
+                useFactory: missingTranslationHandler,
+            },
+        }),
         NotFoundRoutingModule
     ],
     declarations: [
