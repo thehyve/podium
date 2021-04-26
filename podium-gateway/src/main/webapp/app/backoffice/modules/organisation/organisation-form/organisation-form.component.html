@@ -54,7 +54,7 @@
                                     </small>
                                     <small class="form-text text-danger"
                                            [hidden]="!editForm.controls.shortName?.errors?.maxlength"
-                                           jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
+                                           jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: 50 }">
                                         This field cannot be longer than 50 characters.
                                     </small>
                                 </div>
@@ -73,7 +73,7 @@
                                                    [checked]="organisation.requestTypes.indexOf(requestType.value) !== -1"
                                                    (change)="updateRequestType(requestType)"
                                                    required />
-                                            {{requestType.value | capitalize}}
+                                            {{requestType.value | titlecase}}
                                         </label>
                                     </div>
                                 </div>
