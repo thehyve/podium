@@ -16,9 +16,9 @@
             <h4 jhiTranslate="audits.filter.title">Filter by date</h4>
             <p class="input-group">
                 <span jhiTranslate="audits.filter.from" class="input-group-addon">from</span>
-                <input type="date" class="input-sm form-control" name="start" [(ngModel)]="fromDate" (ngModelChange)="onChangeDate($event)" required/>
+                <input type="date" class="input-sm form-control" name="start" [(ngModel)]="fromDate" (ngModelChange)="onChangeDate()" required/>
                 <span jhiTranslate="audits.filter.to" class="input-group-addon">to</span>
-                <input type="date" class="input-sm form-control" name="end" [(ngModel)]="toDate" (ngModelChange)="onChangeDate($event)" required/>
+                <input type="date" class="input-sm form-control" name="end" [(ngModel)]="toDate" (ngModelChange)="onChangeDate()" required/>
             </p>
         </div>
     </div>
