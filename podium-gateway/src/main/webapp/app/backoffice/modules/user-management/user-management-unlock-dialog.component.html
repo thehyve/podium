@@ -16,7 +16,7 @@
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
-        <p jhiTranslate="userManagement.unlock.question" translateValues="{login: '{{user.login}}'}">Are you sure you want to unlock this User?</p>
+        <p jhiTranslate="userManagement.unlock.question" [translateValues]="{login: '{{user.login}}'}">Are you sure you want to unlock this User?</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

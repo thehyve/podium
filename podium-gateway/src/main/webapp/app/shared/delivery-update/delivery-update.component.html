@@ -14,7 +14,7 @@
             <h4 class="modal-title">
                 <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">warning</span>
                 <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
-                <span jhiTranslate="delivery.update.{{statusUpdateAction}}.{{delivery.type}}.header" translateValues="{{getHeaderTranslation()}}">
+                <span jhiTranslate="delivery.update.{{statusUpdateAction}}.{{delivery.type}}.header" [translateValues]="{{getHeaderTranslation()}}">
                     Delivery update header
                 </span>
             </h4>
