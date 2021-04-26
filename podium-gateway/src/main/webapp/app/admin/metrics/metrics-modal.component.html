@@ -22,7 +22,7 @@
     <div class="voffset2">&nbsp;</div>
     Filter
     <input type="text" [(ngModel)]="threadDumpFilter" class="form-control">
-    <div class="row pad" *ngFor="let entry of threadDump | pureFilter:threadDumpFilter:'lockName' | keys">
+    <div class="row pad" *ngFor="let entry of threadDump | pureFilter:threadDumpFilter:'lockName' | keyvalue">
         <h5><span class="badge" [ngClass]="getBadgeClass(entry.value.threadState)">{{entry.value.threadState}}</span>&nbsp;{{entry.value.threadName}} (ID {{entry.value.threadId}})
             <a (click)="entry.show = !entry.show" href="javascript:void(0);">
                <span [hidden]="entry.show" jhiTranslate="metrics.jvm.threads.dump.show">Show StackTrace</span>
@@ -30,7 +30,7 @@
             </a>
         </h5>
         <div class="well" [hidden]="!entry.show">
-            <div *ngFor="let st of entry.value.stackTrace | keys">
+            <div *ngFor="let st of entry.value.stackTrace | keyvalue">
                 {{st.value.className}}.{{st.value.methodName}}({{st.value.fileName}}:{{st.value.lineNumber}})
                 <span class="voffset1"></span>
             </div>
