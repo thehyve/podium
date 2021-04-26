@@ -19,14 +19,14 @@
                 <dt><span jhiTranslate="request.detail.organisation">Organisation</span></dt>
                 <dd>
                     <span class="test-organisations" *ngFor="let organisation of request.organisations">
-                        {{ organisation.name | capitalize }}
+                        {{ organisation.name | titlecase }}
                     </span>
                 </dd>
                 <dt><span jhiTranslate="request.detail.requestTypes">Request types</span></dt>
                 <dd>
                     <ul>
                         <li class="test-requestType" *ngFor="let requestType of requestDetails.requestType">
-                            <span class="test-requestType-text">{{ requestType | capitalize }}</span>
+                            <span class="test-requestType-text">{{ requestType | titlecase }}</span>
                         </li>
                     </ul>
                 </dd>
@@ -93,14 +93,14 @@
                             <td>
                                 <ul>
                                     <li *ngFor="let requestType of relatedRequest.requestDetail.requestType">
-                                        {{ requestType | capitalize }}
+                                        {{ requestType | titlecase }}
                                     </li>
                                 </ul>
 
                             </td>
                             <td>
                                 <span *ngFor="let organisation of relatedRequest.organisations">
-                                    {{ organisation.name | capitalize }}
+                                    {{ organisation.name | titlecase }}
                                 </span>
                             </td>
                         </tr>
