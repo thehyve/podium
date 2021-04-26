@@ -8,6 +8,7 @@
  *
  */
 import { waitForAsync, inject, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OrganisationService } from './organisation.service';
 import { Organisation } from './organisation.model';
 
@@ -15,6 +16,7 @@ import { Organisation } from './organisation.model';
 describe('OrganisationService (Mocked)', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
             providers: [
                 OrganisationService,
             ]
