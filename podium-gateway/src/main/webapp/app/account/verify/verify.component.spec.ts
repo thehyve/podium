@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { TestBed, async, tick, fakeAsync, inject } from '@angular/core/testing';
+import { TestBed, waitForAsync, tick, fakeAsync, inject } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +24,7 @@ describe('Component Tests', () => {
 
         let comp: VerifyComponent;
 
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             TestBed.configureTestingModule({
                 imports: [PodiumTestModule],
                 declarations: [VerifyComponent],

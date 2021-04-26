@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { PasswordStrengthBarComponent } from './password-strength-bar.component';
 
 describe('Component Tests', () => {
@@ -17,7 +17,7 @@ describe('Component Tests', () => {
         let comp: PasswordStrengthBarComponent;
         let fixture: ComponentFixture<PasswordStrengthBarComponent>;
 
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             TestBed.configureTestingModule({
                 declarations: [PasswordStrengthBarComponent]
             }).overrideTemplate(PasswordStrengthBarComponent, '')

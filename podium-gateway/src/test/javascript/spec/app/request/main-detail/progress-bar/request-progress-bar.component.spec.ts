@@ -8,7 +8,7 @@
  *
  */
 
-import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync, inject } from '@angular/core/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { RequestProgressBarComponent }
@@ -28,7 +28,7 @@ describe('RequestProgressBarComponent', () => {
     let fixture: ComponentFixture<RequestProgressBarComponent>;
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [PodiumTestModule],
             providers: [
@@ -59,7 +59,7 @@ describe('RequestProgressBarComponent', () => {
         comp = fixture.componentInstance;
     });
 
-    it('should construct', async(
+    it('should construct', waitForAsync(
         inject([JhiLanguageService, RequestService, RequestAccessService],
             (jhiLanguageService, requestService, requestAccessService) => {
                 expect(jhiLanguageService).toBeDefined();

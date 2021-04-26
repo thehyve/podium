@@ -8,7 +8,7 @@
  *
  */
 
-import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync, inject } from '@angular/core/testing';
 import { PodiumEventMessageComponent } from '../../../../../../main/webapp/app/shared/event/podium-event-message.component';
 import { PodiumEvent } from '../../../../../../main/webapp/app/shared/event/podium-event';
 import { RequestBase } from '../../../../../../main/webapp/app/shared/request/request-base';
@@ -31,7 +31,7 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
     let fixture: ComponentFixture<PodiumEventMessageComponent>;
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [PodiumTestModule],
             providers: [
@@ -89,7 +89,7 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
         comp = fixture.componentInstance;
     });
 
-    it('should construct', async(
+    it('should construct', waitForAsync(
         inject([RequestService, RequestAccessService],
             (requestService, requestAccessService) => {
                 expect(requestService).toBeDefined();

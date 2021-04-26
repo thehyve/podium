@@ -11,7 +11,7 @@
 import {
     LinkedRequestNotificationComponent
 } from '../../../../../../main/webapp/app/shared/linked-request-notification/linked-request-notification.component';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RequestAccessService } from '../../../../../../main/webapp/app/shared/request/request-access.service';
 import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
 import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
@@ -27,7 +27,7 @@ describe('LinkedRequestNotificationComponent (templateUrl)', () => {
     let requestAccessService: RequestAccessService;
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
 
 
         TestBed.configureTestingModule({

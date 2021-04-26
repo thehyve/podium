@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
 import { AlertService } from '../../../../../../main/webapp/app/core/util/alert.service';
@@ -77,7 +77,7 @@ describe('RoleAssignComponent', () => {
         }];
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,

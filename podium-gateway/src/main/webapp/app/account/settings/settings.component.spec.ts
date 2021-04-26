@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
@@ -25,7 +25,7 @@ describe('Component Tests', () => {
         let fixture: ComponentFixture<SettingsComponent>;
         let mockAuth: any;
 
-        beforeEach(async(() => {
+        beforeEach(waitForAsync(() => {
             TestBed.configureTestingModule({
                 imports: [PodiumTestModule],
                 declarations: [SettingsComponent],

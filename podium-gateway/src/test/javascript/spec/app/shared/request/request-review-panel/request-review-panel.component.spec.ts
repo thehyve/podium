@@ -10,7 +10,7 @@
 
 import { RequestReviewPanelComponent }
     from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RequestDetail } from '../../../../../../../main/webapp/app/shared/request/request-detail';
 import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
@@ -32,7 +32,7 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
     let fixture: ComponentFixture<RequestReviewPanelComponent>;
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,
