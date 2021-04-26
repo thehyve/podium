@@ -51,8 +51,6 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
         ActiveMenuDirective,
     ],
     providers: [
-        { provide: Window, useValue: window },
-        { provide: Document, useValue: document },
         { provide: LOCALE_ID, useValue: 'en' },
         customHttpProvider(),
         PaginationConfig,
