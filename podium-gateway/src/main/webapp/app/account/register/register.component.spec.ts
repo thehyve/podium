@@ -15,7 +15,6 @@ import { Observable } from 'rxjs';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { MockLanguageService } from '../../../../../test/javascript/spec/helpers/mock-language.service';
-import { LoginModalService } from '../../login/login-modal.service';
 import { Register } from './register.service';
 import { RegisterComponent } from './register.component';
 import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
@@ -38,10 +37,6 @@ describe('Component Tests', () => {
                     {
                         provide: Router,
                         useClass: MockRouter
-                    },
-                    {
-                        provide: LoginModalService,
-                        useValue: null
                     },
                     {
                         provide: Renderer,
