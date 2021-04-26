@@ -75,7 +75,7 @@
                                        [disabled]="isInRevision"
                                        [checked]="requestDetail.requestType.indexOf(requestType.value) !== -1"
                                        (change)="updateRequestType(requestType)"/>
-                                {{requestType.value | capitalize }}
+                                {{requestType.value | titlecase }}
                             </label>
                         </div>
                     </div>
