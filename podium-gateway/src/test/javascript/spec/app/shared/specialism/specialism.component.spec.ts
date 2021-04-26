@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SpecialismComponent } from '../../../../../../main/webapp/app/shared/specialism/specialism.component';
 import { FormsModule } from '@angular/forms';
 import { PodiumTestModule } from '../../../test.module';
@@ -18,7 +18,7 @@ describe('SpecialismComponent (templateUrl)', () => {
     let fixture: ComponentFixture<SpecialismComponent>;
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,

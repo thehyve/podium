@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { OrganisationSelectorComponent }
     from '../../../../../../main/webapp/app/shared/organisation-selector/organisation-selector.component';
@@ -27,7 +27,7 @@ describe('OrganisationSelectorComponent (templateUrl)', () => {
     let fixture: ComponentFixture<OrganisationSelectorComponent>;
 
     // async beforeEach, since we use external templates & styles
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,

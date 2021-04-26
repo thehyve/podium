@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { async, inject, TestBed } from '@angular/core/testing';
+import { waitForAsync, inject, TestBed } from '@angular/core/testing';
 import { BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { PodiumTestModule } from '../../../test.module';
@@ -27,7 +27,7 @@ describe('OrganisationService (Mocked)', () => {
         });
     });
 
-    it('should construct', async(
+    it('should construct', waitForAsync(
         inject([OrganisationService, MockBackend],
             (service, mockBackend) => {
                 expect(service).toBeDefined();
@@ -51,7 +51,7 @@ describe('OrganisationService (Mocked)', () => {
             "organisationUuid" : "549d67f8-7720-423a-ada9-bea83760e06a"
         }];
 
-        it('should parse response', async(inject(
+        it('should parse response', waitForAsync(inject(
             [OrganisationService, MockBackend], (service, mockBackend) => {
 
                 mockBackend.connections.subscribe(conn => {
@@ -91,7 +91,7 @@ describe('OrganisationService (Mocked)', () => {
             organisationUuid: "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a"
         })];
 
-        it('should convert array of json object to organisations', async(inject([OrganisationService], (service) => {
+        it('should convert array of json object to organisations', waitForAsync(inject([OrganisationService], (service) => {
             let _jsonArray = [{
                 "id" : 1,
                 "uuid" : "12dd08b3-eb8b-476e-a0b3-716cb6b5df7a",
