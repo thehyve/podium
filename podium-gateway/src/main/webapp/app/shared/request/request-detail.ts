@@ -14,6 +14,7 @@ export class RequestDetail {
 
     principalInvestigator: PrincipalInvestigator = new PrincipalInvestigator();
     relatedRequest: string;
+    relatedRequestNumber: string;
 
     id?: string;
     title: string;
