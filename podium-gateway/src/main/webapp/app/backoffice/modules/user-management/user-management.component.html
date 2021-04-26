@@ -12,7 +12,7 @@
     <h2>
         <span jhiTranslate="userManagement.home.title">Users</span>
         <button class="btn btn-primary float-right"
-                [routerLink]="['./', { outlets: { popup: ['new'] } }]" skipLocationChange
+                [routerLink]="['./', { outlets: { popup: ['new'] } }]" [skipLocationChange]
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
             <span class="material-icons">add_circle_outline</span>
             <span jhiTranslate="userManagement.home.createLabel">Create a new user</span>
@@ -82,7 +82,7 @@
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/unlock'} }]"
-                                skipLocationChange
+                                [skipLocationChange]
                                 class="btn btn-danger btn-sm test-unlock-btn" [disabled]="!user.accountLocked">
                             <span class="material-icons">lock_open</span>
                             <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.unlock">Unlock</span>
@@ -90,7 +90,7 @@
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/delete'} }]"
-                                skipLocationChange
+                                [skipLocationChange]
                                 class="btn btn-danger btn-sm test-delete-btn" [disabled]="currentAccount.login==user.login">
                             <span class="material-icons">remove_circle_outline</span>
                             <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.delete">Delete</span>
