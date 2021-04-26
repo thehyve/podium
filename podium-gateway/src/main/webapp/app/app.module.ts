@@ -75,4 +75,12 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
     bootstrap: [ PdmMainComponent ],
     exports: []
 })
-export class PodiumGatewayAppModule {}
+export class PodiumGatewayAppModule {
+    constructor(
+        translateService: TranslateService
+    ) {
+        registerLocaleData(locale);
+        translateService.setDefaultLang('en');
+        translateService.use('en');
+    }
+}
