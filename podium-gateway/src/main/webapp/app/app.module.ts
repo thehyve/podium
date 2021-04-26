@@ -1,6 +1,6 @@
 import './vendor.ts';
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { customHttpProvider } from './blocks/interceptor/http.provider';
@@ -51,6 +51,7 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
         ActiveMenuDirective,
     ],
     providers: [
+        Title,
         { provide: LOCALE_ID, useValue: 'en' },
         customHttpProvider(),
         PaginationConfig,
