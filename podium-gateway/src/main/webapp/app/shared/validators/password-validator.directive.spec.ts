@@ -8,7 +8,7 @@
  *
  */
 import { FormControl } from '@angular/forms';
-import { PasswordValidatorDirective } from '../../../../../../main/webapp/app/shared/validators/password-validator.directive';
+import { PasswordValidatorDirective } from './password-validator.directive';
 
 describe('PasswordValidatorDirective (simple)', () => {
 

@@ -8,7 +8,7 @@
  *
  */
 import { FormControl } from '@angular/forms';
-import { EmailValidatorDirective } from '../../../../../../main/webapp/app/shared/validators/email-validator.directive';
+import { EmailValidatorDirective } from './email-validator.directive';
 
 describe('EmailValidatorDirective (simple)', () => {
 
