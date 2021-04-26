@@ -8,7 +8,6 @@
  *
  */
 import { NgModule } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import {
     PodiumGatewaySharedLibsModule,
     PdmAlertComponent,
@@ -22,9 +21,6 @@ import {
     declarations: [
         PdmAlertComponent,
         PdmAlertErrorComponent
-    ],
-    providers: [
-        Title
     ],
     exports: [
         PodiumGatewaySharedLibsModule,
