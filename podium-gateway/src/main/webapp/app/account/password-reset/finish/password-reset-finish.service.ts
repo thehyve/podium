@@ -10,13 +10,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApplicationConfigService } from '../../../core/config/application-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class PasswordResetFinish {
 
-    constructor (private http: HttpClient) {}
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
     save(keyAndPassword: any): Observable<any> {
-        return this.http.post('podiumuaa/api/account/reset_password/finish', keyAndPassword);
+        let url = this.config.getUaaEndpoint('api/account/reset_password/finish');
+        return this.http.post(url, keyAndPassword);
     }
 }

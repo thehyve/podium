@@ -10,13 +10,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class Register {
 
-    constructor (private http: HttpClient) {}
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
     save(account: any): Observable<any> {
-        return this.http.post('podiumuaa/api/register', account);
+        let url = this.config.getUaaEndpoint('api/register');
+        return this.http.post(url, account);
     }
 }

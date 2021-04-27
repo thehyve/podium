@@ -10,6 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ApplicationConfigService } from '../config/application-config.service';
 import { Account } from './account.model';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +18,10 @@ export class AccountService {
     private userIdentity: Account | null = null;
     private authenticationState = new BehaviorSubject<any>(null);
 
-    constructor(private http: HttpClient) { }
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
     authenticate(_identity: Account | null) {
         this.userIdentity = _identity;
@@ -81,10 +85,12 @@ export class AccountService {
     }
 
     private get(): Observable<Account> {
-        return this.http.get<Account>('podiumuaa/api/account');
+        let url = this.config.getUaaEndpoint('api/account');
+        return this.http.get<Account>(url);
     }
 
     save(account: any): Observable<any> {
-        return this.http.post('podiumuaa/api/account', account);
+        let url = this.config.getUaaEndpoint('api/account');
+        return this.http.post(url, account);
     }
 }

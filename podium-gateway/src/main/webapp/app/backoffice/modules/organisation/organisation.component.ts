@@ -17,13 +17,9 @@ import { AccountService } from '../../../core/auth/account.service';
 import { Account } from '../../../core/auth/account.model';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
-import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
 import { Organisation } from '../../../shared/organisation/organisation.model';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
-
-let overviewConfig: OverviewServiceConfig = {
-    resourceUrl: 'podiumuaa/api/organisations',
-};
+import { ApplicationConfigService } from '../../../core/config/application-config.service';
 
 @Component({
     selector: 'pdm-organisation',
@@ -31,8 +27,16 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: HttpClient) => {
-                return new OverviewService(http, overviewConfig);
+            useFactory: (
+                config: ApplicationConfigService,
+                http: HttpClient,
+            ) => {
+                let serviceConfig = {
+                    getUaaEndpoint(path: string) {
+                        return config.getUaaEndpoint(`api/organisations/${path}`);
+                    },
+                } as ApplicationConfigService;
+                return new OverviewService(serviceConfig, http);
             },
             deps: [
                 HttpClient

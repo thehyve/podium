@@ -16,4 +16,8 @@ export class ApplicationConfigService {
         }
         return `${this.endpointPrefix}${api}`;
     }
+
+    getUaaEndpoint(path: string) {
+        return `podiumuaa/${path}`;
+    }
 }

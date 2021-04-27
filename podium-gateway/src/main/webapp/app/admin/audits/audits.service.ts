@@ -11,14 +11,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 import { Audit } from './audit.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuditsService  {
-    constructor(private http: HttpClient) { }
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
     query(req: any): Observable<HttpResponse<Audit[]>> {
-        return this.http.get<Audit[]>('podiumuaa/management/audits', {
+        let url = this.config.getUaaEndpoint('management/audits');
+        return this.http.get<Audit[]>(url, {
             params: req,
             observe: 'response'
         });

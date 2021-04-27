@@ -10,14 +10,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class PdmElasticsearchService {
 
-    constructor (private http: HttpClient) {}
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
     reindex(): Observable<HttpResponse<any>> {
-        return this.http.get('podiumuaa/api/elasticsearch/index', {
+        let url = this.config.getUaaEndpoint('api/elasticsearch/index');
+        return this.http.get(url, {
             observe: 'response'
         });
     }

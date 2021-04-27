@@ -18,13 +18,9 @@ import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
-import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
 import { Subscription } from 'rxjs';
 import { UserGroupAuthority } from '../../../shared/authority/authority.constants';
-
-let overviewConfig: OverviewServiceConfig = {
-    resourceUrl: 'podiumuaa/api/users',
-};
+import { ApplicationConfigService } from '../../../core/config/application-config.service';
 
 @Component({
     selector: 'pdm-user-mgmt',
@@ -32,8 +28,16 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: HttpClient) => {
-                return new OverviewService(http, overviewConfig);
+            useFactory: (
+                config: ApplicationConfigService,
+                http: HttpClient,
+            ) => {
+                let serviceConfig = {
+                    getUaaEndpoint(path: string) {
+                        return config.getUaaEndpoint(`api/users/${path}`);
+                    },
+                } as ApplicationConfigService;
+                return new OverviewService(serviceConfig, http);
             },
             deps: [
                 HttpClient
