@@ -11,153 +11,170 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myUserLabel" jhiTranslate="userManagement.home.createOrEditLabel">
-            Create or edit a User</h4>
+        <h4 class="modal-title" id="myUserLabel"
+            [translate]="'userManagement.home.createOrEditLabel'">
+        </h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
         <div class="form-group">
-            <label jhiTranslate="global.field.id">ID</label>
+            <label [translate]="'global.field.id'"></label>
             <input type="text" class="form-control" name="id"
                    [(ngModel)]="user.id" readonly>
         </div>
 
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="userManagement.login">Login</label>
-            <input type="text" class="form-control test-login-modal" name="login" #loginInput="ngModel"
-                   [(ngModel)]="user.login" required minlength=1 maxlength=50 pattern="^[_'.@A-Za-z0-9-]*$">
+            <label class="form-control-label"
+                [translate]="'userManagement.login'">
+            </label>
+            <input type="text" class="form-control test-login-modal"
+                name="login" #loginInput="ngModel"
+                [(ngModel)]="user.login" required
+                minlength=1 maxlength=50 pattern="^[_'.@A-Za-z0-9-]*$">
 
             <div *ngIf="loginInput.dirty && loginInput.invalid">
                 <small class="form-text text-danger"
-                   *ngIf="loginInput.errors.required" jhiTranslate="entity.validation.required">
-                    This field is required.
+                   *ngIf="loginInput.errors.required"
+                   [translate]="'entity.validation.required'">
                 </small>
 
                 <small class="form-text text-danger"
-                   *ngIf="loginInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
+                   *ngIf="loginInput.errors.maxlength"
+                   [translate]="'entity.validation.maxlength'"
                    translate-value-max="50">
-                    This field cannot be longer than 50 characters.
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="userManagement.firstName">First name</label>
-            <input type="text" class="form-control test-firstName-modal" name="firstName" #firstNameInput="ngModel"
-                   [(ngModel)]="user.firstName" required maxlength="50">
+            <label class="form-control-label"
+                [translate]="'userManagement.firstName'">
+            </label>
+            <input type="text" class="form-control test-firstName-modal"
+                name="firstName" #firstNameInput="ngModel"
+                [(ngModel)]="user.firstName" required maxlength="50">
 
             <div *ngIf="firstNameInput.dirty && firstNameInput.invalid">
                 <small class="form-text text-danger"
-                   *ngIf="firstNameInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
+                   *ngIf="firstNameInput.errors.maxlength"
+                   [translate]="'entity.validation.maxlength'"
                    translate-value-max="50">
-                    This field cannot be longer than 50 characters.
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label jhiTranslate="userManagement.lastName">Last Name</label>
-            <input type="text" class="form-control test-lastName-modal" name="lastName" #lastNameInput="ngModel"
-                   [(ngModel)]="user.lastName" required maxlength="50">
+            <label [translate]="'userManagement.lastName'"></label>
+            <input type="text" class="form-control test-lastName-modal"
+                name="lastName" #lastNameInput="ngModel"
+                [(ngModel)]="user.lastName" required maxlength="50">
 
             <div *ngIf="lastNameInput.dirty && lastNameInput.invalid">
                 <small class="form-text text-danger"
-                   *ngIf="lastNameInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
+                   *ngIf="lastNameInput.errors.maxlength"
+                   [translate]="'entity.validation.maxlength'"
                    translate-value-max="50">
-                    This field cannot be longer than 50 characters.
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="userManagement.email">Email</label>
-            <input type="email" class="form-control test-email-modal" name="email" #emailInput="ngModel"
-                   [(ngModel)]="user.email" required maxlength="100">
+            <label class="form-control-label"
+                [translate]="'userManagement.email'">
+            </label>
+            <input type="email" class="form-control test-email-modal"
+                name="email" #emailInput="ngModel"
+                [(ngModel)]="user.email" required maxlength="100">
 
             <div *ngIf="emailInput.dirty && emailInput.invalid">
                 <small class="form-text text-danger"
-                   *ngIf="emailInput.errors.required" jhiTranslate="entity.validation.required">
-                    This field is required.
+                   *ngIf="emailInput.errors.required"
+                   [translate]="'entity.validation.required'">
                 </small>
 
                 <small class="form-text text-danger"
-                   *ngIf="emailInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
+                   *ngIf="emailInput.errors.maxlength"
+                   [translate]="'entity.validation.maxlength'"
                    translate-value-max="100">
-                    This field cannot be longer than 100 characters.
                 </small>
-		<small class="form-text text-danger"
-                   *ngIf="emailInput.errors.email" jhiTranslate="global.messages.validate.email.invalid">
-                    Your e-mail is invalid.
-                 </small>
+		        <small class="form-text text-danger"
+                   *ngIf="emailInput.errors.email"
+                   [translate]="'global.messages.validate.email.invalid'">
+                </small>
             </div>
         </div>
         <div class="form-group">
-            <label jhiTranslate="userManagement.telephone">Telephone</label>
-            <input type="text" class="form-control test-telephone-modal" name="telephone" #telephoneInput="ngModel"
-                   [(ngModel)]="user.telephone" required maxlength="50">
+            <label [translate]="'userManagement.telephone'"></label>
+            <input type="text" class="form-control test-telephone-modal"
+                name="telephone" #telephoneInput="ngModel"
+                [(ngModel)]="user.telephone" required maxlength="50">
 
             <div *ngIf="telephoneInput.dirty && telephoneInput.invalid">
                 <small class="form-text text-danger"
-                       *ngIf="telephoneInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
-                       translate-value-max="50">
-                    This field cannot be longer than 50 characters.
+                    *ngIf="telephoneInput.errors.maxlength"
+                    [translate]="'entity.validation.maxlength'"
+                    translate-value-max="50">
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label jhiTranslate="userManagement.institute">Institute</label>
-            <input type="text" class="form-control test-institute-modal" name="institute" #instituteInput="ngModel"
-                   [(ngModel)]="user.institute" required maxlength="50">
+            <label [translate]="'userManagement.institute'"></label>
+            <input type="text" class="form-control test-institute-modal"
+                name="institute" #instituteInput="ngModel"
+                [(ngModel)]="user.institute" required maxlength="50">
 
             <div *ngIf="instituteInput.dirty && instituteInput.invalid">
                 <small class="form-text text-danger"
-                       *ngIf="instituteInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
-                       translate-value-max="50">
-                    This field cannot be longer than 50 characters.
+                    *ngIf="instituteInput.errors.maxlength"
+                    [translate]="'entity.validation.maxlength'"
+                    translate-value-max="50">
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label jhiTranslate="userManagement.department">Department</label>
-            <input type="text" class="form-control test-department-modal" name="department" #departmentInput="ngModel"
-                   [(ngModel)]="user.department" required maxlength="50">
+            <label [translate]="'userManagement.department'"></label>
+            <input type="text" class="form-control test-department-modal"
+                name="department" #departmentInput="ngModel"
+                [(ngModel)]="user.department" required maxlength="50">
 
             <div *ngIf="departmentInput.dirty && departmentInput.invalid">
                 <small class="form-text text-danger"
-                       *ngIf="departmentInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
-                       translate-value-max="50">
-                    This field cannot be longer than 50 characters.
+                    *ngIf="departmentInput.errors.maxlength"
+                    [translate]="'entity.validation.maxlength'"
+                    translate-value-max="50">
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label jhiTranslate="userManagement.jobTitle">Function</label>
-            <input type="text" class="form-control test-jobTitle-modal" name="jobTitle" #jobTitleInput="ngModel"
-                   [(ngModel)]="user.jobTitle" required maxlength="50">
+            <label [translate]="'userManagement.jobTitle'"></label>
+            <input type="text" class="form-control test-jobTitle-modal"
+                name="jobTitle" #jobTitleInput="ngModel"
+                [(ngModel)]="user.jobTitle" required maxlength="50">
 
             <div *ngIf="jobTitleInput.dirty && jobTitleInput.invalid">
                 <small class="form-text text-danger"
-                       *ngIf="jobTitleInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
-                       translate-value-max="50">
-                    This field cannot be longer than 50 characters.
+                    *ngIf="jobTitleInput.errors.maxlength"
+                    [translate]="'entity.validation.maxlength'"
+                    translate-value-max="50">
                 </small>
             </div>
         </div>
         <div class="form-group">
-            <label jhiTranslate="userManagement.specialism">Specialism</label>
-            <input type="text" class="form-control test-specialism-modal" name="specialism" #specialismInput="ngModel"
-                   [(ngModel)]="user.specialism" required maxlength="50">
+            <label [translate]="'userManagement.specialism'"></label>
+            <input type="text" class="form-control test-specialism-modal"
+                name="specialism" #specialismInput="ngModel"
+                [(ngModel)]="user.specialism" required maxlength="50">
 
             <div *ngIf="specialismInput.dirty && specialismInput.invalid">
                 <small class="form-text text-danger"
-                       *ngIf="specialismInput.errors.maxlength" jhiTranslate="entity.validation.maxlength"
-                       translate-value-max="50">
-                    This field cannot be longer than 50 characters.
+                    *ngIf="specialismInput.errors.maxlength"
+                    [translate]="'entity.validation.maxlength'"
+                    translate-value-max="50">
                 </small>
             </div>
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="userManagement.profiles">Profiles</label>
+            <label [translate]="'userManagement.profiles'"></label>
             <select class="form-control" multiple name="authority" [(ngModel)]="user.authorities">
                 <option *ngFor="let authority of authorities" [value]="authority">{{authority}}</option>
             </select>
@@ -173,18 +190,18 @@
         <div class="form-check">
             <label class="form-check-label" for="adminVerified">
                 <input class="form-check-input" [disabled]="user.id === null || !user.emailVerified" type="checkbox" id="adminVerified" name="adminVerified" [(ngModel)]="user.adminVerified">
-                <span jhiTranslate="userManagement.adminVerified">Admin verified</span>
+                <span [translate]="'userManagement.adminVerified'"></span>
             </label>
         </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary test-cancel-btn" data-dismiss="modal" (click)="clear()">
             <span class="material-icons">cancel</span>&nbsp;
-            <span jhiTranslate="entity.action.cancel">Cancel</span>
+            <span [translate]="'entity.action.cancel'"></span>
         </button>
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary test-save-btn">
             <span class="material-icons">save</span>&nbsp;
-            <span jhiTranslate="entity.action.save">Save</span>
+            <span [translate]="'entity.action.save'"></span>
         </button>
     </div>
 </form>
