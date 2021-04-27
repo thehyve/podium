@@ -12,48 +12,26 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { ApplicationConfigService } from '../../core/config/application-config.service';
+import { Bean, Beans, ConfigProps, Env, PropertySource } from './configuration.model';
+
 @Injectable({ providedIn: 'root' })
-export class PdmConfigurationService {
+export class ConfigurationService {
+    constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) { }
 
-    constructor(private http: HttpClient) {
+    getBeans(): Observable<Bean[]> {
+        return this.http.get<ConfigProps>(this.applicationConfigService.getEndpointFor('management/configprops')).pipe(
+            map(configProps =>
+                Object.values(
+                    Object.values(configProps.contexts)
+                        .map(context => context.beans)
+                        .reduce((allBeans: Beans, contextBeans: Beans) => ({ ...allBeans, ...contextBeans }))
+                )
+            )
+        );
     }
 
-    get(): Observable<any> {
-        return this.http.get('management/configprops').pipe(map((propertiesObject) => {
-            let properties: any[] = [];
-
-            for (let key in propertiesObject) {
-                if (propertiesObject.hasOwnProperty(key)) {
-                    properties.push(propertiesObject[key]);
-                }
-            }
-
-            return properties.sort((propertyA, propertyB) => {
-                return (propertyA.prefix === propertyB.prefix) ? 0 :
-                       (propertyA.prefix < propertyB.prefix) ? -1 : 1;
-            });
-        }));
-    }
-
-    getEnv(): Observable<any> {
-        return this.http.get('management/env').pipe(map((propertiesObject) => {
-            let properties: any = {};
-
-            for (let key in propertiesObject) {
-                if (propertiesObject.hasOwnProperty(key)) {
-                    let valsObject = propertiesObject[key];
-                    let vals: any[] = [];
-
-                    for (let valKey in valsObject) {
-                        if (valsObject.hasOwnProperty(valKey)) {
-                            vals.push({key: valKey, val: valsObject[valKey]});
-                        }
-                    }
-                    properties[key] = vals;
-                }
-            }
-
-            return properties;
-        }));
+    getPropertySources(): Observable<PropertySource[]> {
+        return this.http.get<Env>(this.applicationConfigService.getEndpointFor('management/env')).pipe(map(env => env.propertySources));
     }
 }

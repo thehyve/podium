@@ -8,13 +8,13 @@
  *
  */
 import { Route } from '@angular/router';
-import { PdmConfigurationComponent } from './configuration.component';
+
+import { ConfigurationComponent } from './configuration.component';
 
 export const configurationRoute: Route = {
-    path: 'pdm-configuration',
-    component: PdmConfigurationComponent,
+    path: '',
+    component: ConfigurationComponent,
     data: {
-        pageTitle: 'configuration.title',
-        breadcrumb: 'configuration'
-    }
+        pageTitle: 'Configuration',
+    },
 };
