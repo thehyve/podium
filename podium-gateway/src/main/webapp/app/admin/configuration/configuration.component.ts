@@ -1,54 +1,35 @@
-/*
- * Copyright (c) 2017. The Hyve and respective contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- *
- * See the file LICENSE in the root of this repository.
- *
- */
 import { Component, OnInit } from '@angular/core';
-import { PdmConfigurationService } from './configuration.service';
+
+import { ConfigurationService } from './configuration.service';
+import { Bean, PropertySource } from './configuration.model';
 
 @Component({
-    selector: 'pdm-configuration',
-    templateUrl: './configuration.component.html'
+    selector: 'jhi-configuration',
+    templateUrl: './configuration.component.html',
 })
-export class PdmConfigurationComponent implements OnInit {
-    allConfiguration: any = null;
-    configuration: any = null;
-    configKeys: any[];
-    filter: string;
-    orderProp: string;
-    reverse: boolean;
+export class ConfigurationComponent implements OnInit {
+    allBeans!: Bean[];
+    beans: Bean[] = [];
+    beansFilter = '';
+    beansAscending = true;
+    propertySources: PropertySource[] = [];
 
-    constructor(
-        private configurationService: PdmConfigurationService
-    ) {
+    constructor(private configurationService: ConfigurationService) { }
 
-        this.configKeys = [];
-        this.filter = '';
-        this.orderProp = 'prefix';
-        this.reverse = false;
-    }
-
-    keys(dict): Array<string> {
-        return (dict === undefined) ? [] : Object.keys(dict);
-    }
-
-    ngOnInit() {
-        this.configurationService.get().subscribe((configuration) => {
-            this.configuration = configuration;
-
-            for (let config of configuration) {
-                if (config.properties !== undefined) {
-                    this.configKeys.push(Object.keys(config.properties));
-                }
-            }
+    ngOnInit(): void {
+        this.configurationService.getBeans().subscribe(beans => {
+            this.allBeans = beans;
+            this.filterAndSortBeans();
         });
 
-        this.configurationService.getEnv().subscribe((configuration) => {
-            this.allConfiguration = configuration;
-        });
+        this.configurationService.getPropertySources().subscribe(propertySources => (this.propertySources = propertySources));
+    }
+
+    filterAndSortBeans(): void {
+        const beansAscendingValue = this.beansAscending ? -1 : 1;
+        const beansAscendingValueReverse = this.beansAscending ? 1 : -1;
+        this.beans = this.allBeans
+            .filter(bean => !this.beansFilter || bean.prefix.toLowerCase().includes(this.beansFilter.toLowerCase()))
+            .sort((a, b) => (a.prefix < b.prefix ? beansAscendingValue : beansAscendingValueReverse));
     }
 }
