@@ -8,34 +8,38 @@
   ~
   -->
 
-<div class="content-wrapper">
+  <div>
     <h2>
-        <span jhiTranslate="health.title">Health Checks</span>
-        <button class="btn btn-primary float-xs-right" (click)="refresh()">
-            <span class="material-icons">refresh</span>
-            <span jhiTranslate="health.refresh.button">Refresh</span>
-        </button>
+        <span id="health-page-heading" data-cy="healthPageHeading">Health Checks</span>
+
+        <button class="btn btn-primary float-right" (click)="refresh()"><fa-icon icon="sync"></fa-icon> <span>Refresh</span></button>
     </h2>
     <div class="table-responsive">
-        <table id="healthCheck" class="table table-striped">
+        <table id="healthCheck" class="table table-striped" aria-describedby="health-page-heading">
             <thead>
-                <tr>
-                    <th class="col-md-7" jhiTranslate="health.table.service">Service Name</th>
-                    <th class="col-md-2 text-xs-center" jhiTranslate="health.table.status">Status</th>
-                    <th class="col-md-2 text-xs-center" jhiTranslate="health.details.details">Details</th>
-                </tr>
+            <tr>
+                <th scope="col">Service Name</th>
+                <th scope="col" class="text-center">Status</th>
+                <th scope="col" class="text-center">Details</th>
+            </tr>
             </thead>
-            <tbody>
-                <tr *ngFor="let health of healthData">
-                    <td>{{'health.indicator.' + baseName(health.name) | translate}} {{subSystemName(health.name)}}</td>
-                    <td class="text-xs-center">
-                        <span class="badge" [ngClass]="getBadgeClass(health.status)" jhiTranslate="{{'health.status.' + health.status}}">
-                            {{health.status}}
+            <tbody *ngIf="health">
+                <tr *ngFor="let componentHealth of health.components | keyvalue">
+                    <td>
+                        <span class="text-capitalize">{{ componentHealth.key }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge" [ngClass]="getBadgeClass(componentHealth.value!.status)">
+                            {{ componentHealth.value!.status }}
                         </span>
                     </td>
-                    <td class="text-xs-center">
-                        <a class="hand" (click)="showHealth(health)" *ngIf="health.details || health.error">
-                            <span class="material-icons">assignment</span>
+                    <td class="text-center">
+                        <a
+                            class="hand"
+                            (click)="showHealth({ key: componentHealth.key, value: componentHealth.value! })"
+                            *ngIf="componentHealth.value!.details"
+                        >
+                            <fa-icon icon="eye"></fa-icon>
                         </a>
                     </td>
                 </tr>
