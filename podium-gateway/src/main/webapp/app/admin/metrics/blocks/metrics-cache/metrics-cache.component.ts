@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { CacheMetrics } from 'app/admin/metrics/metrics.model';
+import { CacheMetrics } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-metrics-cache',

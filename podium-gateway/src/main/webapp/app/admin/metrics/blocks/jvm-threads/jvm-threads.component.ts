@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Thread } from 'app/admin/metrics/metrics.model';
+import { Thread } from '../../metrics.model';
 import { MetricsModalThreadsComponent } from '../metrics-modal-threads/metrics-modal-threads.component';
 
 @Component({

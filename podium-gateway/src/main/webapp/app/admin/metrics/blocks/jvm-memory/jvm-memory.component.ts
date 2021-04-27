@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { JvmMetrics } from 'app/admin/metrics/metrics.model';
+import { JvmMetrics } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-jvm-memory',

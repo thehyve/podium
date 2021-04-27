@@ -11,39 +11,37 @@
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h1 jhiTranslate="verify.title">Activation</h1>
+            <h1 [translate]="'verify.title'"></h1>
 
             <div class="alert alert-success" *ngIf="success">
-                <span jhiTranslate="verify.messages.success">
-                    <strong>Your email address has been verified.</strong> You will be notified when a BBMRI admin has verified your account.
-                </span>
+                <span [translate]="'verify.messages.success'"></span>
                 <a class="alert-link"
-                   (click)="login()" jhiTranslate="verify.messages.loginPage">Go to login page</a>.
+                   (click)="login()"
+                   [translate]="'verify.messages.loginPage'">
+                </a>.
             </div>
 
             <div class="alert alert-success" *ngIf="renewSuccess">
-                <span jhiTranslate="verify.messages.renew.success">
-                    <strong>A new verification key has been sent to your email. Please follow the instructions.</strong>
+                <span [translate]="'verify.messages.renew.success'">
                 </span>
             </div>
 
-            <div class="alert alert-danger" *ngIf="error && errorMsg != 'renew'" jhiTranslate="verify.messages.error">
-                <strong>Your email address could not be verified.</strong> Please use the registration form to sign up.
+            <div class="alert alert-danger"
+                *ngIf="error && errorMsg != 'renew'"
+                [translate]="'verify.messages.error'">
             </div>
 
             <div class="alert alert-danger" *ngIf="error && errorMsg == 'renew'">
-                <span jhiTranslate="verify.messages.renew.message">
-                    <strong>Your verification key has expired.</strong> Please
+                <span [translate]="'verify.messages.renew.message'">
                 </span>
                 <a class="alert-link"
-                   (click)="requestNewVerificationKey()" jhiTranslate="verify.messages.renew.requestNew">
-                    request a new verification key
+                   (click)="requestNewVerificationKey()"
+                   [translate]="'verify.messages.renew.requestNew'">
                 </a>.
             </div>
 
             <div class="alert alert-danger" *ngIf="renewError">
-                <span jhiTranslate="verify.messages.renew.error">
-                    <strong>Unable to renew the verification key.</strong>
+                <span [translate]="'verify.messages.renew.error'">
                 </span>
             </div>
         </div>

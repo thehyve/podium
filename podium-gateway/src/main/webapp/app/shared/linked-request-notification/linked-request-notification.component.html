@@ -12,10 +12,16 @@
     <div class="alert alert-warning">
         <span class="material-icons">link</span>
         <div class="message-text-container">
-            <h6 jhiTranslate="request.linkedRequest.title"></h6>
-            <div *ngIf="isRequester() && !isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.researcher"></div>
-            <div *ngIf="isOrganisationCoordinator()" jhiTranslate="request.linkedRequest.organisationCoordinator"></div>
-            <div *ngIf="isReviewer() && !isRequester()" jhiTranslate="request.linkedRequest.reviewer"></div>
+            <h6 [translate]="'request.linkedRequest.title'"></h6>
+            <div *ngIf="isRequester() && !isOrganisationCoordinator()"
+                [translate]="'request.linkedRequest.researcher'">
+            </div>
+            <div *ngIf="isOrganisationCoordinator()"
+                [translate]="'request.linkedRequest.organisationCoordinator'">
+            </div>
+            <div *ngIf="isReviewer() && !isRequester()"
+                [translate]="'request.linkedRequest.reviewer'">
+            </div>
         </div>
     </div>
 </div>
