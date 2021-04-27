@@ -233,4 +233,8 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         window.scrollTo(0, 0);
     }
 
+    getRequestId(_index, request: RequestBase) {
+        return request.id;
+    }
+
 }
