@@ -37,7 +37,7 @@ export class RequestStatusSidebarComponent implements OnInit {
     public userGroupAuthority: UserGroupAuthority;
 
     @Input()
-    public pageParams: Function;
+    public pageParams: any;
 
     @Input()
     public toggled: boolean;
