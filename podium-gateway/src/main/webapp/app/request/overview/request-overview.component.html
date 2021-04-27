@@ -76,7 +76,7 @@
                 </thead>
                 <tbody>
                 <tr [ngClass]="'test-request-row-'+ request.requestDetail.title"
-                    *ngFor="let request of availableRequests; trackBy: trackId">
+                    *ngFor="let request of availableRequests; trackBy: getRequestId">
                     <td>
                             <span class="material-icons md-18"
                                   *ngIf="getIconForLinkedRequest(request.requestDetail.combinedRequest)">link</span>
