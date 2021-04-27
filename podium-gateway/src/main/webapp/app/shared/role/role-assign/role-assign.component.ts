@@ -11,7 +11,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EventManager } from '../../../core/util/event-manager.service';
 import { AlertService } from '../../../core/util/alert.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, throwError } from 'rxjs';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
 import { RoleService } from '../role.service';
@@ -283,7 +283,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                             observer.next(res);
                         },
                         (res: HttpErrorResponse) => {
-                            return Observable.throw(res.error);
+                            return throwError(res.error);
                         }
                     );
             } else {
