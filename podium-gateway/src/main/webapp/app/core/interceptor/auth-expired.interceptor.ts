@@ -9,7 +9,7 @@
  */
 import { JhiHttpInterceptor } from 'ng-jhipster';
 import { RequestOptionsArgs, Response } from '@angular/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Injector } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { AccountService } from  '../../core/auth/account.service';
@@ -36,7 +36,7 @@ export class AuthExpiredInterceptor extends JhiHttpInterceptor {
                     auth.authorize(true);
                 }
             }
-            return Observable.throw(error);
+            return throwError(error);
         });
     }
 }

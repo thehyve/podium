@@ -11,7 +11,7 @@
 import { Injectable, Optional } from '@angular/core';
 import { HttpClient, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { UserGroupAuthority } from '../authority/authority.constants';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { OverviewServiceConfig } from './overview.service.config';
 import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
 import { RequestBase } from '../request/request-base';
@@ -108,7 +108,7 @@ export class OverviewService {
                 break;
             default:
                 console.error('No user group authority set for this overview!');
-                return Observable.throw('No user group authority set for this overview!');
+                return throwError('No user group authority set for this overview!');
         }
         return this.http.get(`${usersUrl}`, {
             params: requestOptions,

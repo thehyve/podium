@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RequestType } from '../request/request-type';
-import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 import { OrganisationService } from '../organisation/organisation.service';
 import { NgForm, NgModel } from '@angular/forms';
 
@@ -47,7 +47,7 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
     @Output() organisationChange = new EventEmitter();
 
     private static onError (error) {
-        return Observable.throw(new Error(error.status));
+        return throwError(new Error(error.status));
     }
 
     constructor(
