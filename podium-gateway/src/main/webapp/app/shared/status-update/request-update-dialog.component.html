@@ -13,9 +13,7 @@
         <div class="modal-header" [ngClass]="panelStyles.headerStyle">
             <h4 class="modal-title">
                 <span class="material-icons">warning</span>&nbsp;
-                <span jhiTranslate="request.statusupdate.{{status}}.question">
-                      Are you sure you want to reject or request a revision for this request?
-                </span>
+                <span [translate]="'request.statusupdate.' + status + '.question'"></span>
             </h4>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                     (click)="close()">&times;
@@ -26,7 +24,7 @@
 
             <div class="form-group">
                 <label for="messageSummary"
-                       jhiTranslate="request.statusupdate.form.summary.label">Summary</label>
+                       [translate]="'request.statusupdate.form.summary.label'"></label>
 
                 <input type="text" class="form-control" name="messageSummary" id="messageSummary"
                        required minlength="1" maxlength="50" #messageSummary="ngModel"
@@ -35,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label for="messageDescription"
-                       jhiTranslate="request.statusupdate.form.description.label">Description</label>
+                       [translate]="'request.statusupdate.form.description.label'"></label>
 
                 <textarea type="text" class="form-control" name="messageDescription" id="messageDescription"
                           autocomplete="off"
@@ -48,14 +46,14 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary test-cancel-btn" data-dismiss="modal" (click)="close()">
                 <span class="material-icons">cancel</span>&nbsp;
-                <span jhiTranslate="request.action.cancel">Cancel</span>
+                <span [translate]="'request.action.cancel'"></span>
             </button>
             <button type="submit" [disabled]="!statusUpdateForm.form.valid" class="btn test-submit-btn"
                     [ngClass]="panelStyles.buttonStyle">
                 <span class="material-icons">send</span>&nbsp;
-                <span jhiTranslate="request.action.submit"
+                <span [translate]="'request.action.submit'"
                       tooltip="Please provide at least a summary of your message."
-                      [isDisabled]="statusUpdateForm.form.valid">Submit</span>
+                      [isDisabled]="statusUpdateForm.form.valid"></span>
             </button>
         </div>
     </form>
