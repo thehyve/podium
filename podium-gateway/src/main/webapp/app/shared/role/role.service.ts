@@ -10,25 +10,35 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 import { Role } from './role.model';
 
 @Injectable({ providedIn: 'root' })
 export class RoleService {
 
-    private resourceUrl = 'podiumuaa/api/roles';
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private http: HttpClient) { }
+    private getUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/roles/${path}`);
+    }
 
     update(role: Role): Observable<Role> {
         let copy: Role = Object.assign({}, role);
-        return this.http.put<Role>(this.resourceUrl, copy);
+        let url = this.getUrl('');
+        return this.http.put<Role>(url, copy);
     }
 
     find(id: number): Observable<Role> {
-        return this.http.get<Role>(`${this.resourceUrl}/${id}`);
+        let url = this.getUrl(String(id));
+        return this.http.get<Role>(url);
     }
 
     findAllRolesForOrganisation(uuid: string): Observable<Role[]> {
-        return this.http.get<Role[]>(`${this.resourceUrl}/organisation/${uuid}`);
+        let url = this.getUrl(`organisation/${uuid}`);
+        return this.http.get<Role[]>(url);
     }
 }

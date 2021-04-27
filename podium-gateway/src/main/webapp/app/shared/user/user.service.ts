@@ -11,41 +11,57 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from './user.model';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    private resourceUrl = 'podiumuaa/api/users';
-    private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private http: HttpClient) { }
+    private getUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/users/${path}`);
+    }
+
+    private getSuggestUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/_suggest/users/${path}`);
+    }
 
     create(user: User): Observable<any> {
-        return this.http.post(this.resourceUrl, user);
+        let url = this.getUrl('');
+        return this.http.post(url, user);
     }
 
     update(user: User): Observable<any> {
-        return this.http.put(this.resourceUrl, user);
+        let url = this.getUrl('');
+        return this.http.put(url, user);
     }
 
     unlock(user: User): Observable<any> {
-        return this.http.put(`${this.resourceUrl}/uuid/${user.uuid}/unlock`, {});
+        let url = this.getUrl(`uuid/${user.uuid}/unlock`);
+        return this.http.put(url, {});
     }
 
     find(login: string): Observable<User> {
-        return this.http.get<User>(`${this.resourceUrl}/${login}`);
+        let url = this.getUrl(login);
+        return this.http.get<User>(url);
     }
 
     findByUuid(uuid: string): Observable<User> {
-        return this.http.get<User>(`${this.resourceUrl}/uuid/${uuid}`);
+        let url = this.getUrl(`uuid/${uuid}`);
+        return this.http.get<User>(url);
     }
 
     suggest(req?: any): Observable<any> {
-        return this.http.get(`${this.resourceSuggestUrl}`, {
+        let url = this.getSuggestUrl('');
+        return this.http.get(url, {
             params: req
         });
     }
 
     delete(login: string): Observable<any> {
-        return this.http.delete(`${this.resourceUrl}/${login}`);
+        let url = this.getUrl(login);
+        return this.http.delete(url);
     }
 }

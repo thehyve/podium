@@ -10,41 +10,53 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 import { Organisation } from './organisation.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrganisationService {
 
-    private resourceUrl = 'podiumuaa/api/organisations';
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private http: HttpClient) { }
+    private getUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/organisations/${path}`);
+    }
 
     create(organisation: Organisation): Observable<Organisation> {
         let copy: Organisation = Object.assign({}, organisation);
-        return this.http.post<Organisation>(this.resourceUrl, copy);
+        let url = this.getUrl('')
+        return this.http.post<Organisation>(url, copy);
     }
 
     update(organisation: Organisation): Observable<Organisation> {
         let copy: Organisation = Object.assign({}, organisation);
-        return this.http.put<Organisation>(this.resourceUrl, copy);
+        let url = this.getUrl('');
+        return this.http.put<Organisation>(url, copy);
     }
 
     findAllAvailable(): Observable<Organisation> {
-        return this.http.get<Organisation>(`${this.resourceUrl}/available`);
+        let url = this.getUrl('available');
+        return this.http.get<Organisation>(url);
     }
 
     findByUuid(uuid: string): Observable<Organisation> {
-        return this.http.get<Organisation>(`${this.resourceUrl}/uuid/${uuid}`);
+        let url = this.getUrl(`uuid/${uuid}`);
+        return this.http.get<Organisation>(url);
     }
 
     activate(uuid: string, activate: boolean): Observable<HttpResponse<any>> {
-        return this.http.put(`${this.resourceUrl}/${uuid}/activation?value=${activate}`, {}, {
+        let url = this.getUrl(`${uuid}/activation?value=${activate}`)
+        return this.http.put(url, {}, {
             observe: 'response'
         });
     }
 
     delete(uuid: string): Observable<any> {
-        return this.http.delete(`${this.resourceUrl}/${uuid}`);
+        let url = this.getUrl(uuid);
+        return this.http.delete(url);
     }
 
     jsonArrayToOrganisations(arr: any) {

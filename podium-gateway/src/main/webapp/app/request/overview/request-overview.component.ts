@@ -10,7 +10,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
-import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
 import { OverviewService } from '../../shared/overview/overview.service';
 import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -29,10 +28,7 @@ import { RequestType } from '../../shared/request/request-type';
 import { parseLinks } from '../../shared/util/parse-links-util';
 import { EventManager } from '../../core/util/event-manager.service';
 import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
-
-let overviewConfig: OverviewServiceConfig = {
-    resourceUrl: 'api/requests',
-};
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
 /**
  * Request overview component.
@@ -45,8 +41,16 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: HttpClient) => {
-                return new OverviewService(http, overviewConfig);
+            useFactory: (
+                config: ApplicationConfigService,
+                http: HttpClient,
+            ) => {
+                let serviceConfig = {
+                    getUaaEndpoint(path: string) {
+                        return config.getUaaEndpoint(`api/requests/${path}`);
+                    },
+                } as ApplicationConfigService;
+                return new OverviewService(serviceConfig, http);
             },
             deps: [
                 HttpClient
