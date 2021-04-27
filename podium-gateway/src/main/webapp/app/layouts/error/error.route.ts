@@ -22,7 +22,20 @@ export const errorRoute: Routes = [
         path: 'accessdenied',
         component: PdmErrorComponent,
         data: {
-            pageTitle: 'error.title'
+            pageTitle: 'error.title',
+            errorMessage: 'You are not authorized to access this page.',
         },
-    }
+    },
+    {
+        path: '404',
+        component: PdmErrorComponent,
+        data: {
+            pageTitle: 'Error page!',
+            errorMessage: 'The page does not exist.',
+        },
+    },
+    {
+        path: '**',
+        redirectTo: '/404',
+    },
 ];

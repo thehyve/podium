@@ -25,7 +25,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { PdmHomeComponent } from './home/home.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 
 @NgModule({
@@ -55,7 +54,6 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
                 useFactory: missingTranslationHandler,
             },
         }),
-        NotFoundRoutingModule
     ],
     declarations: [
         DashboardComponent,
