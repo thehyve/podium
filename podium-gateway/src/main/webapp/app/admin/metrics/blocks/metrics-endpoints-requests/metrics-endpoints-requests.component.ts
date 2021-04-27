@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { Services } from 'app/admin/metrics/metrics.model';
+import { Services } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-metrics-endpoints-requests',

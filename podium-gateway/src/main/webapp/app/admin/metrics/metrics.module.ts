@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { SharedModule } from 'app/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { MetricsComponent } from './metrics.component';
 import { metricsRoute } from './metrics.route';
 import { JvmMemoryComponent } from './blocks/jvm-memory/jvm-memory.component';

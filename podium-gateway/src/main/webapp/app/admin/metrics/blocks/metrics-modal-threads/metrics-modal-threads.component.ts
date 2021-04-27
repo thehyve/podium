@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Thread, ThreadState } from 'app/admin/metrics/metrics.model';
+import { Thread, ThreadState } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-thread-modal',

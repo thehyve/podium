@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { HttpServerRequests } from 'app/admin/metrics/metrics.model';
+import { HttpServerRequests } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-metrics-request',

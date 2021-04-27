@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { GarbageCollector } from 'app/admin/metrics/metrics.model';
+import { GarbageCollector } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-metrics-garbagecollector',

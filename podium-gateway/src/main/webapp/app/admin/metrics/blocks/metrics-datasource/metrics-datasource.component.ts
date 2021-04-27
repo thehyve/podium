@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { Databases } from 'app/admin/metrics/metrics.model';
+import { Databases } from '../../metrics.model';
 
 @Component({
   selector: 'jhi-metrics-datasource',

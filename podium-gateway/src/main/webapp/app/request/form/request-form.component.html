@@ -10,8 +10,12 @@
 
 <div class="content-wrapper" *ngIf="requestBase">
     <div class="col-md-6 offset-md-3" *ngIf="!isInRevision">
-        <h1 *ngIf="requestBase.status === 'Draft'" jhiTranslate="request.form.header.new">New request</h1>
-        <h1 *ngIf="requestBase.status !== 'Draft'" jhiTranslate="request.form.header.edit">Edit request</h1>
+        <h1 *ngIf="requestBase.status === 'Draft'"
+            [translate]="'request.form.header.new'">
+        </h1>
+        <h1 *ngIf="requestBase.status !== 'Draft'"
+            [translate]="'request.form.header.edit'">
+        </h1>
     </div>
 
     <div class="card-container"
@@ -23,17 +27,19 @@
         <form #requestForm="ngForm" class="form" role="form">
             <fieldset [disabled]="isUpdating">
 
-                <div class="alert alert-success" *ngIf="success" jhiTranslate="request.form.messages.success">
-                    Changes are saved.
+                <div class="alert alert-success" *ngIf="success"
+                    [translate]="'request.form.messages.success'">
                 </div>
 
-                <div class="alert alert-danger" *ngIf="error" jhiTranslate="request.form.messages.error">
-                    Saving failed.
+                <div class="alert alert-danger" *ngIf="error"
+                    [translate]="'request.form.messages.error'">
                 </div>
 
                 <!-- Title -->
                 <div class="form-group">
-                    <label for="title" jhiTranslate="request.form.title.label">Title</label>
+                    <label for="title"
+                        [translate]="'request.form.title.label'">
+                    </label>
                     <input type="text" class="form-control" name="title" id="title"
                            required minlength="1" maxlength="50" #title="ngModel"
                            autocomplete="off" placeholder="{{'request.form.title.placeholder' | translate}}"
@@ -41,26 +47,22 @@
 
                     <div *ngIf="title.dirty && title.invalid">
                         <small class="form-text text-danger" *ngIf="title.errors.required"
-                               jhiTranslate="request.form.messages.validate.title.required">
-                            A title is required.
+                            [translate]="'request.form.messages.validate.title.required'">
                         </small>
                         <small class="form-text text-danger" *ngIf="title.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.title.minlength">
-                            The title has to be at least 1 character long.
+                            [translate]="'request.form.messages.validate.title.minlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="title.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.title.maxlength">
-                            The title cannot be longer than 50 characters.
+                            [translate]="'request.form.messages.validate.title.maxlength'">
                         </small>
                     </div>
                 </div>
 
-                <h3 jhiTranslate="request.form.header.requestDetails">Request details</h3>
+                <h3 [translate]="'request.form.header.requestDetails'"></h3>
 
                 <!-- Request type -->
                 <div class="form-group">
-                    <label for="requestTypes" jhiTranslate="request.form.requestType.label">
-                        Request type(s)*
+                    <label for="requestTypes" [translate]="'request.form.requestType.label'">
                     </label>
                     <span tooltip="{{'request.form.requestType.tooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
@@ -79,15 +81,13 @@
                             </label>
                         </div>
                     </div>
-                    <small jhiTranslate="request.form.requestType.footnote">* Changing this value will clear
-                        organisation selection.
+                    <small [translate]="'request.form.requestType.footnote'">
                     </small>
                 </div>
 
                 <!-- Organisations -->
                 <div class="form-group">
-                    <label jhiTranslate="request.form.organisations.label">
-                        Organisation(s)
+                    <label [translate]="'request.form.organisations.label'">
                     </label>
                     <span tooltip="{{'request.form.organisations.tooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
@@ -111,7 +111,9 @@
 
                 <!-- Linked Request-->
                 <div class="form-group">
-                    <label for="requestTypes" jhiTranslate="request.form.isLinked.label">Linked request</label>
+                    <label for="requestTypes"
+                        [translate]="'request.form.isLinked.label'">
+                    </label>
                     <span tooltip="{{'request.form.isLinked.tooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
                     </span>
@@ -119,11 +121,11 @@
                         <input class="test-combinedRequestYes" type="radio" [value]="true" name="islinked"
                                [(ngModel)]="requestDetail.combinedRequest"
                                required [disabled]="!hasSelectedMultipleOrganisations()">
-                        <span jhiTranslate="request.form.isLinked.yes">Yes</span>
+                        <span [translate]="'request.form.isLinked.yes'"></span>
                         &nbsp;
                         <input type="radio" [value]="false" name="islinked" [(ngModel)]="requestDetail.combinedRequest"
                                required [disabled]="!hasSelectedMultipleOrganisations()">
-                        <span jhiTranslate="request.form.isLinked.no">No</span>
+                        <span [translate]="'request.form.isLinked.no'"></span>
                     </div>
                     <span *ngIf="isInRevision">
                         {{requestDetail.combinedRequest ? 'Yes' : 'No' }}
@@ -133,7 +135,8 @@
                 <!-- Search Query -->
                 <div class="form-group">
                     <label for="methods"
-                           jhiTranslate="request.form.searchQuery.label">Search criteria</label>
+                        [translate]="'request.form.searchQuery.label'">
+                    </label>
                     <textarea type="text" class="form-control" name="searchQuery" id="searchQuery"
                               autocomplete="off" placeholder="{{'request.form.searchQuery.placeholder' | translate}}"
                               required minlength="1" rows="4" #searchQuery="ngModel"
@@ -142,22 +145,18 @@
 
                     <div *ngIf="searchQuery.dirty && searchQuery.invalid">
                         <small class="form-text text-danger" *ngIf="searchQuery.errors.required"
-                               jhiTranslate="request.form.messages.validate.searchQuery.required">
-                            Search query is required.
+                            [translate]="'request.form.messages.validate.searchQuery.required'">
                         </small>
                         <small class="form-text text-danger" *ngIf="searchQuery.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.searchQuery.minlength">
-                            Search query has to be at least 1 character long.
+                            [translate]="'request.form.messages.validate.searchQuery.minlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="searchQuery.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.searchQuery.maxlength">
-                            Search query cannot be longer than 500 characters.
+                            [translate]="'request.form.messages.validate.searchQuery.maxlength'">
                         </small>
                     </div>
                 </div>
                 <h3>
-                    <span jhiTranslate="request.form.header.researchProposal">
-                        Research proposal
+                    <span [translate]="'request.form.header.researchProposal'">
                     </span>
                     <span tooltip="{{'request.form.header.researchProposalTooltip' | translate }}">
                         <i class="material-icons">info_outline</i>
@@ -166,7 +165,9 @@
 
                 <!-- Background -->
                 <div class="form-group">
-                    <label for="background" jhiTranslate="request.form.background.label">Background</label>
+                    <label for="background"
+                        [translate]="'request.form.background.label'">
+                    </label>
                     <textarea type="text" class="form-control" name="background" id="background" #background="ngModel"
                               autocomplete="off" placeholder="{{'request.form.background.placeholder' | translate}}"
                               required minlength="1" maxlength="2000" rows="5" [pdmWordLengthValidator]="750"
@@ -175,20 +176,16 @@
 
                     <div *ngIf="background.dirty && background.invalid">
                         <small class="form-text text-danger" *ngIf="background.errors.required"
-                               jhiTranslate="request.form.messages.validate.background.required">
-                            A background description is required.
+                               [translate]="'request.form.messages.validate.background.required'">
                         </small>
                         <small class="form-text text-danger" *ngIf="background.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.background.minlength">
-                            The background description has to be at least 1 character long.
+                               [translate]="'request.form.messages.validate.background.minlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="background.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.background.maxlength">
-                            The background description cannot be longer than 2000 characters.
+                               [translate]="'request.form.messages.validate.background.maxlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="background.errors.wordLengthValidator"
-                               jhiTranslate="request.form.messages.validate.background.wordLength">
-                            The background description cannot be longer than 750 words.
+                               [translate]="'request.form.messages.validate.background.wordLength'">
                         </small>
                     </div>
                 </div>
@@ -196,7 +193,8 @@
                 <!-- Research Question -->
                 <div class="form-group">
                     <label for="researchQuestion"
-                           jhiTranslate="request.form.researchQuestion.label">Research question</label>
+                           [translate]="'request.form.researchQuestion.label'">
+                    </label>
                     <textarea type="text" class="form-control" name="researchQuestion" id="researchQuestion"
                               autocomplete="off"
                               placeholder="{{'request.form.researchQuestion.placeholder' | translate}}"
@@ -206,20 +204,16 @@
 
                     <div *ngIf="researchQuestion.dirty && researchQuestion.invalid">
                         <small class="form-text text-danger" *ngIf="researchQuestion.errors.required"
-                               jhiTranslate="request.form.messages.validate.researchQuestion.required">
-                            A research question is required.
+                               [translate]="'request.form.messages.validate.researchQuestion.required'">
                         </small>
                         <small class="form-text text-danger" *ngIf="researchQuestion.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.researchQuestion.minlength">
-                            The research question has to be at least 1 character long.
+                               [translate]="'request.form.messages.validate.researchQuestion.minlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="researchQuestion.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.researchQuestion.maxlength">
-                            The research question cannot be longer than 300 characters.
+                               [translate]="'request.form.messages.validate.researchQuestion.maxlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="researchQuestion.errors.wordLengthValidator"
-                               jhiTranslate="request.form.messages.validate.researchQuestion.wordLength">
-                            The research question cannot be longer than 30 words.
+                               [translate]="'request.form.messages.validate.researchQuestion.wordLength'">
                         </small>
                     </div>
                 </div>
@@ -227,7 +221,7 @@
                 <!-- Hypothesis / Goals -->
                 <div class="form-group">
                     <label for="hypothesis"
-                           jhiTranslate="request.form.hypothesis.label">Hypothesis / Goals</label>
+                           [translate]="'request.form.hypothesis.label'">Hypothesis / Goals</label>
                     <textarea type="text" class="form-control" name="hypothesis" id="hypothesis"
                               autocomplete="off" placeholder="{{'request.form.hypothesis.placeholder' | translate}}"
                               required minlength="1" maxlength="5000" rows="7" #hypothesis="ngModel"
@@ -236,20 +230,16 @@
 
                     <div *ngIf="hypothesis.dirty && hypothesis.invalid">
                         <small class="form-text text-danger" *ngIf="hypothesis.errors.required"
-                               jhiTranslate="request.form.messages.validate.hypothesis.required">
-                            Hypothesis and / or goals are required.
+                               [translate]="'request.form.messages.validate.hypothesis.required'">
                         </small>
                         <small class="form-text text-danger" *ngIf="hypothesis.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.hypothesis.minlength">
-                            The hypothesis has to be at least 1 character long.
+                               [translate]="'request.form.messages.validate.hypothesis.minlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="hypothesis.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.hypothesis.maxlength">
-                            The hypothesis cannot be longer than 5000 characters.
+                               [translate]="'request.form.messages.validate.hypothesis.maxlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="hypothesis.errors.wordLengthValidator"
-                               jhiTranslate="request.form.messages.validate.hypothesis.wordLength">
-                            The hypothesis cannot be longer than 30 words.
+                               [translate]="'request.form.messages.validate.hypothesis.wordLength'">
                         </small>
                     </div>
                 </div>
@@ -257,7 +247,7 @@
                 <!-- Methods -->
                 <div class="form-group">
                     <label for="methods"
-                           jhiTranslate="request.form.methods.label">Methods</label>
+                           [translate]="'request.form.methods.label'"></label>
                     <textarea type="text" class="form-control" name="methods" id="methods"
                               autocomplete="off" placeholder="{{'request.form.methods.placeholder' | translate}}"
                               required minlength="1" maxlength="10000" rows="7" #methods="ngModel"
@@ -266,20 +256,16 @@
 
                     <div *ngIf="methods.dirty && methods.invalid">
                         <small class="form-text text-danger" *ngIf="methods.errors.required"
-                               jhiTranslate="request.form.messages.validate.methods.required">
-                            Description of methods is required.
+                               [translate]="'request.form.messages.validate.methods.required'">
                         </small>
                         <small class="form-text text-danger" *ngIf="methods.errors.minlength"
-                               jhiTranslate="request.form.messages.validate.methods.minlength">
-                            Description of methods has to be at least 1 character long.
+                               [translate]="'request.form.messages.validate.methods.minlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="methods.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.methods.maxlength">
-                            Description of methods cannot be longer than 10000 characters.
+                               [translate]="'request.form.messages.validate.methods.maxlength'">
                         </small>
                         <small class="form-text text-danger" *ngIf="methods.errors.wordLengthValidator"
-                               jhiTranslate="request.form.messages.validate.methods.wordLength">
-                            Description of methods cannot be longer than 500 words.
+                               [translate]="'request.form.messages.validate.methods.wordLength'">
                         </small>
                     </div>
                 </div>
@@ -287,7 +273,7 @@
                 <!-- Related Request Number -->
                 <div class="form-group">
                     <label for="relatedRequestNumber"
-                           jhiTranslate="request.form.relatedRequestNumber.label">Related request number</label>
+                           [translate]="'request.form.relatedRequestNumber.label'"></label>
                     <input type="text" class="form-control" name="relatedRequestNumber" id="relatedRequestNumber"
                            maxlength="50" autocomplete="off" #relatedRequestNumber="ngModel"
                            placeholder="{{'request.form.relatedRequestNumber.placeholder' | translate}}"
@@ -295,13 +281,12 @@
 
                     <div *ngIf="relatedRequestNumber.dirty && relatedRequestNumber.invalid">
                         <small class="form-text text-danger" *ngIf="relatedRequestNumber.errors.maxlength"
-                               jhiTranslate="request.form.messages.validate.relatedRequestNumber.maxlength">
-                            The related request number cannot be longer than 50 characters.
+                               [translate]="'request.form.messages.validate.relatedRequestNumber.maxlength'">
                         </small>
                     </div>
                 </div>
 
-                <h3 jhiTranslate="request.form.header.principalInvestigator">Principal investigator details</h3>
+                <h3 [translate]="'request.form.header.principalInvestigator'"></h3>
 
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
@@ -309,8 +294,7 @@
                         <!-- Principal Investigator Name -->
                         <div class="form-group">
                             <label for="piName"
-                                   jhiTranslate="request.form.principalInvestigator.name.label">
-                                Name
+                                   [translate]="'request.form.principalInvestigator.name.label'">
                             </label>
                             <input type="text" class="form-control" name="piName" id="piName"
                                    required minlength="1" maxlength="150"
@@ -320,16 +304,13 @@
 
                             <div *ngIf="piName.dirty && piName.invalid">
                                 <small class="form-text text-danger" *ngIf="piName.errors.required"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.name.required">
-                                    A principal investigator name is required.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.name.required'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piName.errors.minlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.name.minlength">
-                                    The principal investigator name has to be at least 1 character long.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.name.minlength'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piName.errors.maxlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.name.maxlength">
-                                    The principal investigator name cannot be longer than 150 characters.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.name.maxlength'">
                                 </small>
                             </div>
                         </div>
@@ -340,8 +321,7 @@
                         <!-- Principal Investigator Email -->
                         <div class="form-group">
                             <label for="piEmail"
-                                   jhiTranslate="request.form.principalInvestigator.email.label">
-                                Email
+                                   [translate]="'request.form.principalInvestigator.email.label'">
                             </label>
                             <input type="text" class="form-control" name="piEmail" id="piEmail"
                                    required minlength="1" maxlength="150"
@@ -351,20 +331,16 @@
 
                             <div *ngIf="piEmail.dirty && piEmail.invalid">
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.required"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.email.required">
-                                    A principal investigator email is required.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.email.required'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.minlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.email.minlength">
-                                    The principal investigator email has to be at least 1 character long.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.email.minlength'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.emailValidator"
-                                       jhiTranslate="global.messages.validate.email.invalid">
-                                    Your e-mail is invalid.
+                                       [translate]="'global.messages.validate.email.invalid'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piEmail.errors.maxlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.email.maxlength">
-                                    The principal investigator email cannot be longer than 150 characters.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.email.maxlength'">
                                 </small>
                             </div>
                         </div>
@@ -377,8 +353,7 @@
                         <!-- Principal Investigator Function -->
                         <div class="form-group">
                             <label for="piFunction"
-                                   jhiTranslate="request.form.principalInvestigator.function.label">
-                                Function
+                                   [translate]="'request.form.principalInvestigator.function.label'">
                             </label>
                             <input type="text" class="form-control" name="piFunction" id="piFunction"
                                    required minlength="1" maxlength="150"
@@ -388,16 +363,13 @@
 
                             <div *ngIf="piFunction.dirty && piFunction.invalid">
                                 <small class="form-text text-danger" *ngIf="piFunction.errors.required"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.function.required">
-                                    A principal investigator function is required.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.function.required'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piFunction.errors.minlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.function.minlength">
-                                    The principal investigator function has to be at least 1 character long.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.function.minlength'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piFunction.errors.maxlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.function.maxlength">
-                                    The principal investigator function cannot be longer than 150 characters.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.function.maxlength'">
                                 </small>
                             </div>
                         </div>
@@ -408,8 +380,7 @@
                         <!-- Principal Investigator Affiliation -->
                         <div class="form-group">
                             <label for="piAffiliation"
-                                   jhiTranslate="request.form.principalInvestigator.affiliation.label">
-                                Affiliation
+                                   [translate]="'request.form.principalInvestigator.affiliation.label'">
                             </label>
                             <input type="text" class="form-control" name="piAffiliation" id="piAffiliation"
                                    required minlength="1" maxlength="150"
@@ -419,23 +390,20 @@
 
                             <div *ngIf="piAffiliation.dirty && piAffiliation.invalid">
                                 <small class="form-text text-danger" *ngIf="piAffiliation.errors.required"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.affiliation.required">
-                                    A principal investigator affiliation is required.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.affiliation.required'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piAffiliation.errors.minlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.affiliation.minlength">
-                                    The principal investigator affiliation has to be at least 1 character long.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.affiliation.minlength'">
                                 </small>
                                 <small class="form-text text-danger" *ngIf="piAffiliation.errors.maxlength"
-                                       jhiTranslate="request.form.messages.validate.principalInvestigator.affiliation.maxlength">
-                                    The principal investigator affiliation cannot be longer than 150 characters.
+                                       [translate]="'request.form.messages.validate.principalInvestigator.affiliation.maxlength'">
                                 </small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h3 jhiTranslate="attachments.title">Attachments</h3>
+                <h3 [translate]="'attachments.title'"></h3>
                 <div class="row">
                     <div class="form-group">
                         <pdm-attachment

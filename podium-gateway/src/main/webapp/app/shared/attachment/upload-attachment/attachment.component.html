@@ -2,14 +2,14 @@
     <div class="drop-container" ngFileDrop [options]="options"
          (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
         <p>
-            <span jhiTranslate="attachments.upload.dragHere">Drag a file here or</span>
+            <span [translate]="'attachments.upload.dragHere'"></span>
             <label class="upload-button">
                 <input type="file" ngFileSelect [options]="options"
                        (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput"
                        multiple>
-                <span jhiTranslate="attachments.upload.browse">browse</span>
+                <span [translate]="'attachments.upload.browse'"></span>
             </label>
-            <span jhiTranslate="attachments.upload.toUpload">to upload.</span>
+            <span [translate]="'attachments.upload.toUpload'"></span>
             <small class="form-text text-danger" *ngIf="error.length">
                 <div *ngFor="let err of error">{{err}}</div>
             </small>
