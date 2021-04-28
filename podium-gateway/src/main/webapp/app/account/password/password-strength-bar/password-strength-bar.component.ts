@@ -13,7 +13,7 @@ import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
     selector: 'pdm-password-strength-bar',
     template: `
         <div id="strength">
-            <small jhiTranslate="global.messages.validate.newpassword.strength">Password strength:</small>
+            <small [translate]="'global.messages.validate.newpassword.strength'"></small>
             <ul id="strengthBar">
                 <li class="point"></li>
                 <li class="point"></li>
