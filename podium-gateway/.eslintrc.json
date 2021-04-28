@@ -1,0 +1,83 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@angular-eslint/eslint-plugin", "@typescript-eslint"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@angular-eslint/recommended",
+        "prettier",
+        "eslint-config-prettier"
+    ],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "commonjs": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
+    "rules": {
+        "@angular-eslint/component-selector": "off",
+        "@angular-eslint/directive-selector": "off",
+        "@angular-eslint/relative-url-prefix": "off",
+        "@angular-eslint/no-input-rename": "off",
+        "@angular-eslint/no-output-on-prefix": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/ban-types": [
+            "error",
+            {
+                "extendDefaults": true,
+                "types": {
+                    "{}": false
+                }
+            }
+        ],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/member-ordering": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-parameter-properties": [
+            "warn",
+            { "allows": ["public", "private", "protected"] }
+        ],
+        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/no-this-alias": "off",
+        "@typescript-eslint/no-unnecessary-condition": "off",
+        "@typescript-eslint/no-unnecessary-type-assertion": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-unsafe-call": "off",
+        "@typescript-eslint/no-unsafe-member-access": "off",
+        "@typescript-eslint/no-unsafe-return": "off",
+        "@typescript-eslint/prefer-nullish-coalescing": "off",
+        "@typescript-eslint/prefer-optional-chain": "off",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/unbound-method": "off",
+        "arrow-body-style": "off",
+        "curly": "error",
+        "eqeqeq": ["error", "always", { "null": "ignore" }],
+        "guard-for-in": "error",
+        "no-bitwise": "error",
+        "no-caller": "error",
+        "no-console": "off",
+        "no-eval": "error",
+        "no-irregular-whitespace": "off",
+        "no-labels": "error",
+        "no-new": "error",
+        "no-new-wrappers": "error",
+        "no-prototype-builtins": "off",
+        "no-useless-escape": "off",
+        "object-shorthand": "off",
+        "prefer-const": "off",
+        "radix": "error",
+        "spaced-comment": ["warn", "always"]
+    }
+}
