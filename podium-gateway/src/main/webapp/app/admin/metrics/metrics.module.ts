@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { SharedModule } from '../../shared/shared.module';
+import { PodiumGatewaySharedModule } from '../../shared/shared.module';
 import { MetricsComponent } from './metrics.component';
 import { metricsRoute } from './metrics.route';
 import { JvmMemoryComponent } from './blocks/jvm-memory/jvm-memory.component';
@@ -15,7 +15,7 @@ import { MetricsRequestComponent } from './blocks/metrics-request/metrics-reques
 import { MetricsSystemComponent } from './blocks/metrics-system/metrics-system.component';
 
 @NgModule({
-  imports: [SharedModule, RouterModule.forChild([metricsRoute])],
+  imports: [PodiumGatewaySharedModule, RouterModule.forChild([metricsRoute])],
   declarations: [
     MetricsComponent,
     JvmMemoryComponent,
