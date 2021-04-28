@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Thread, ThreadState } from '../../metrics.model';
 
 @Component({
-  selector: 'jhi-thread-modal',
+  selector: 'pdm-thread-modal',
   templateUrl: './metrics-modal-threads.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
