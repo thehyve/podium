@@ -19,8 +19,12 @@
             }"
             *ngFor="let requestStatus of requestStatusOptions">
             <span [ngSwitch]="isRevisionStatus(request) && requestStatus.name == 'Validation'">
-                <span *ngSwitchCase="true" jhiTranslate="requestStatus.Revision">{{ requestStatus.name }}</span>
-                <span *ngSwitchCase="false" jhiTranslate="requestStatus.{{requestStatus.status}}">{{ requestStatus.name }}</span>
+                <span *ngSwitchCase="true"
+                    [translate]="'requestStatus.Revision'">
+                </span>
+                <span *ngSwitchCase="false"
+                    [translate]="'requestStatus.' + requestStatus.status">
+                </span>
             </span>
         </li>
     </ul>
