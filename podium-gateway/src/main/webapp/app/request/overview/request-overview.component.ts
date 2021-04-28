@@ -53,6 +53,7 @@ import { ApplicationConfigService } from '../../core/config/application-config.s
                 return new OverviewService(serviceConfig, http);
             },
             deps: [
+                ApplicationConfigService,
                 HttpClient
             ]
         }
