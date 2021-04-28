@@ -81,9 +81,9 @@
                                 <label class="form-control-label"
                                     [translate]="'organisation.activated'">
                                 </label>
-                                <ui-switch [(ngModel)]="organisation.activated" name="organisation_active"
-                                           [disabled]="isOrganisationAdmin(currentAccount)"
-                                           ngDefaultControl size="small" class="float-xs-right"></ui-switch>
+                                <input type="checkbox"
+                                    [(ngModel)]="organisation.activated" name="organisation_active"
+                                    [disabled]="isOrganisationAdmin(currentAccount)" />
 
                                 <div *ngIf="isOrganisationAdmin(currentAccount) && !organisation.activated">
                                     <small class="form-text text-danger"
