@@ -11,6 +11,7 @@ import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { Register } from './register.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Message } from '../../shared/message/message.model';
 import { MessageService } from '../../shared/message/message.service';
@@ -32,10 +33,30 @@ export class RegisterComponent implements AfterViewInit {
     successMessage: Message;
     specialism = '';
 
+    registerForm = this.fb.group({
+        login: [
+            '',
+            [
+                Validators.required,
+                Validators.minLength(1),
+                Validators.maxLength(50),
+                Validators.pattern('^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$'),
+            ],
+        ],
+        email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+        confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+        telephone: ['', [Validators.required, Validators.maxLength(15), Validators.pattern('^[0-9]+$')]],
+        institute: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]],
+        department: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]],
+        jobTitle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]],
+    });
+
     constructor(
         private translate: TranslateService,
         private registerService: Register,
         private messageService: MessageService,
+        private fb: FormBuilder,
         private router: Router
     ) {
     }
