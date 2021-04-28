@@ -15,7 +15,7 @@ import { ProfileInfo } from './profile-info.model';
     selector: 'pdm-page-ribbon',
     template: `
         <div class="ribbon" *ngIf="hasRibbon()">
-            <a href="" jhiTranslate="global.ribbon.{{ribbonEnv}}">{{ribbonEnv}}</a>
+            <a href="" [translate]="'global.ribbon.' + ribbonEnv"></a>
         </div>
     `,
     styleUrls: [

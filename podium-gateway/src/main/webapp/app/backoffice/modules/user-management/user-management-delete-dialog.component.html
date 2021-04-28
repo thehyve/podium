@@ -10,22 +10,26 @@
 
 <form name="deleteForm" (ngSubmit)="confirmDelete(user.login)">
     <div class="modal-header">
-        <h4 class="modal-title" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
+        <h4 class="modal-title"
+            [translate]="'entity.delete.title'">
+        </h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
-        <p jhiTranslate="userManagement.delete.question" [translateValues]="{login: '{{user.login}}'}">Are you sure you want to delete this User?</p>
+        <p [translate]="'userManagement.delete.question'"
+            [translateParams]="{login: user.login}">
+        </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary test-cancel-btn-modal" data-dismiss="modal" (click)="clear()">
             <span class="material-icons">cancel</span>&nbsp;
-            <span jhiTranslate="entity.action.cancel">Cancel</span>
+            <span [translate]="'entity.action.cancel'">Cancel</span>
         </button>
         <button type="submit" class="btn btn-danger test-delete-btn-modal">
             <span class="material-icons">remove_circle_outline</span>&nbsp;
-            <span jhiTranslate="entity.action.delete">Delete</span>
+            <span [translate]="'entity.action.delete'"></span>
         </button>
     </div>
 </form>

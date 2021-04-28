@@ -11,9 +11,10 @@
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="col-md-12 col-sm-12 col-lg-10 col-xl-8 offset-lg-1 offset-xl-2 card-container">
-            <h3 *ngIf="request" jhiTranslate="request.detail.pageHeader" class="main-detail-header"
-              translateValues='{requestId: "{{request.id}}", organisation: "{{requestShortName}}"}'>
-                Request header
+            <h3 *ngIf="request"
+                [translate]="'request.detail.pageHeader'"
+                class="main-detail-header"
+                [translateParams]='{requestId: request.id, organisation: requestShortName}'>
             </h3>
 
             <pdm-request-progress-bar *ngIf="request" [request]="request"></pdm-request-progress-bar>

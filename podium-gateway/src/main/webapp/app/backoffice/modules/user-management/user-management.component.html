@@ -10,12 +10,12 @@
 
 <div class="content-wrapper">
     <h2>
-        <span jhiTranslate="userManagement.home.title">Users</span>
+        <span [translate]="'userManagement.home.title'"></span>
         <button class="btn btn-primary float-right"
                 [routerLink]="['./', { outlets: { popup: ['new'] } }]" [skipLocationChange]
                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
             <span class="material-icons">add_circle_outline</span>
-            <span jhiTranslate="userManagement.home.createLabel">Create a new user</span>
+            <span [translate]="'userManagement.home.createLabel'"></span>
         </button>
     </h2>
     <pdm-alert></pdm-alert>
@@ -25,22 +25,23 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transitionUsers.bind(this)">
                 <th jhiSortBy="login">
-                    <span jhiTranslate="userManagement.login">Login</span>
+                    <span [translate]="'userManagement.login'"></span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th jhiSortBy="firstName">
-                    <span jhiTranslate="userManagement.name">Name</span>
+                    <span [translate]="'userManagement.name'"></span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th jhiSortBy="email">
-                    <span jhiTranslate="userManagement.email">Email</span>
+                    <span [translate]="'userManagement.email'"></span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"></th>
                 <th *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']" jhiSortBy="createdDate">
-                    <span jhiTranslate="userManagement.createdDate">Created date</span>
+                    <span [translate]="'userManagement.createdDate'">
+                    </span>
                     <span class="fa fa-sort"></span>
                 </th>
                 <th></th>
@@ -52,20 +53,30 @@
                 <td class="test-name">{{ user.firstName }} {{ user.lastName }}</td>
                 <td class="test-email">{{user.email}}</td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="badge badge-success test-emailVerified" *ngIf="user.emailVerified"
-                          jhiTranslate="userManagement.emailVerified">Email verified</span>
-                    <span class="badge badge-danger test-emailVerified" *ngIf="!user.emailVerified"
-                          jhiTranslate="userManagement.emailUnverified">Email unverified</span>
+                    <span class="badge badge-success test-emailVerified"
+                        *ngIf="user.emailVerified"
+                        [translate]="'userManagement.emailVerified'">
+                    </span>
+                    <span class="badge badge-danger test-emailVerified"
+                        *ngIf="!user.emailVerified"
+                        [translate]="'userManagement.emailUnverified'">
+                    </span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="badge badge-success test-adminVerified" *ngIf="user.adminVerified"
-                          jhiTranslate="userManagement.adminVerified">Account verified</span>
-                    <span class="badge badge-danger test-adminVerified" *ngIf="!user.adminVerified"
-                          jhiTranslate="userManagement.adminUnverified">Account unverified</span>
+                    <span class="badge badge-success test-adminVerified"
+                        *ngIf="user.adminVerified"
+                        [translate]="'userManagement.adminVerified'">
+                    </span>
+                    <span class="badge badge-danger test-adminVerified"
+                        *ngIf="!user.adminVerified"
+                        [translate]="'userManagement.adminUnverified'">
+                    </span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
-                    <span class="badge badge-danger test-accountLocked" *ngIf="user.accountLocked"
-                          jhiTranslate="userManagement.accountLocked">Locked</span>
+                    <span class="badge badge-danger test-accountLocked"
+                        *ngIf="user.accountLocked"
+                        [translate]="'userManagement.accountLocked'">
+                    </span>
                 </td>
                 <td *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']">
                     {{user.createdDate | date:'dd/MM/yy HH:mm'}}
@@ -77,7 +88,9 @@
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ user.login + '/edit'} }]"
                                 class="btn btn-primary btn-sm test-edit-btn">
                             <span class="material-icons">edit</span>
-                            <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.edit">Edit</span>
+                            <span class="d-none d-lg-inline-flex"
+                                [translate]="'entity.action.edit'">
+                            </span>
                         </button>
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
@@ -85,7 +98,9 @@
                                 [skipLocationChange]
                                 class="btn btn-danger btn-sm test-unlock-btn" [disabled]="!user.accountLocked">
                             <span class="material-icons">lock_open</span>
-                            <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.unlock">Unlock</span>
+                            <span class="d-none d-lg-inline-flex"
+                                [translate]="'entity.action.unlock'">
+                            </span>
                         </button>
                         <button type="submit"
                                 *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
@@ -93,7 +108,9 @@
                                 [skipLocationChange]
                                 class="btn btn-danger btn-sm test-delete-btn" [disabled]="currentAccount.login==user.login">
                             <span class="material-icons">remove_circle_outline</span>
-                            <span class="d-none d-lg-inline-flex" jhiTranslate="entity.action.delete">Delete</span>
+                            <span class="d-none d-lg-inline-flex"
+                                [translate]="'entity.action.delete'">
+                            </span>
                         </button>
                     </div>
                 </td>
