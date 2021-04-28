@@ -12,23 +12,21 @@ import { Register } from './register.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { Message } from '../../shared/message/message.model';
 import { MessageService } from '../../shared/message/message.service';
 import { CompletionType } from '../../shared/completed/completion-type';
 
 @Component({
-    templateUrl: './register.component.html'
+    templateUrl: './register.component.html',
 })
 export class RegisterComponent implements AfterViewInit {
     @ViewChild('login', { static: false })
     login?: ElementRef;
 
-    confirmPassword: string;
     doNotMatch: string;
     error: string;
     errorUserExists: string;
-    registerAccount = {};
     success = false;
     successMessage: Message;
     specialism = '';
@@ -67,15 +65,27 @@ export class RegisterComponent implements AfterViewInit {
         }
     }
 
-    register() {
-        if (this.registerAccount.password !== this.confirmPassword) {
+    register(): void {
+        let password = this.registerForm.get(['password'])!.value;
+        if (password !== this.registerForm.get(['confirmPassword'])!.value) {
             this.doNotMatch = 'ERROR';
         } else {
             this.doNotMatch = null;
             this.error = null;
             this.errorUserExists = null;
-            this.registerAccount.langKey = this.translate.currentLang;
-            this.registerService.save(this.registerAccount).subscribe(
+        
+            let userData = {
+                password,
+                langKey: this.translate.currentLang || 'en',
+                login: this.registerForm.get(['login'])!.value,
+                email: this.registerForm.get(['email'])!.value,
+                telephone: this.registerForm.get(['telephone'])!.value,
+                institute: this.registerForm.get(['institute'])!.value,
+                department: this.registerForm.get(['department'])!.value,
+                jobTitle: this.registerForm.get(['jobTitle'])!.value,
+                specialism: this.specialism,
+            };
+            this.registerService.save(userData).subscribe(
                 () => this.processSuccess(),
                 (error) => this.processError(error)
             );
@@ -89,7 +99,7 @@ export class RegisterComponent implements AfterViewInit {
         let successTitle = this.translate.get('register.messages.successTitle');
         let successContent = this.translate.get('register.messages.success');
 
-        Observable.forkJoin(successTitle, successContent).subscribe(
+        forkJoin([successTitle, successContent]).subscribe(
             messages => {
                 this.successMessage = new Message(CompletionType.Registration, messages[0], messages[1]);
                 this.messageService.store(this.successMessage);
