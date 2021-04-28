@@ -7,106 +7,96 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AccountService } from '../core/auth/account.service';
 import { EventManager } from '../core/util/event-manager.service';
 import { LoginService } from './login.service';
-import { StateStorageService } from '../core/auth/state-storage.service';
-import { RedirectService } from '../core/auth/redirect.service';
 
 @Component({
     selector: 'pdm-login',
     templateUrl: './login.component.html',
-    styleUrls: ['login.component.scss']
+    styleUrls: ['./login.component.scss']
 })
-export class PodiumLoginComponent implements AfterViewInit {
-    @ViewChild("usernameField") usernameField: ElementRef;
+export class LoginComponent implements OnInit, AfterViewInit {
+    @ViewChild('username', { static: false })
+    username?: ElementRef;
 
-    authenticationError: boolean;
-    userAccountLocked: boolean;
-    emailNotVerified: boolean;
-    accountNotVerified: boolean;
-    password: string;
-    rememberMe: boolean;
-    username: string;
-    credentials: any;
+    authenticationError = false;
+    userAccountLocked = false;
+    emailNotVerified = false;
+    accountNotVerified = false;
+
+    loginForm = this.fb.group({
+        username: [null, [Validators.required]],
+        password: [null, [Validators.required]],
+        rememberMe: [false],
+    });
 
     constructor(
+        private accountService: AccountService,
         private eventManager: EventManager,
         private loginService: LoginService,
-        private stateStorageService: StateStorageService,
-        private redirectService: RedirectService,
-        private router: Router
-    ) {
-        this.credentials = {};
-    }
+        private router: Router,
+        private fb: FormBuilder
+    ) { }
 
-    ngAfterViewInit() {
-        this.usernameField.nativeElement.focus();
-    }
-
-    cancel () {
-        this.credentials = {
-            username: null,
-            password: null,
-            rememberMe: true
-        };
-        this.authenticationError = false;
-        this.userAccountLocked = false;
-        this.emailNotVerified = false;
-        this.accountNotVerified = false;
-    }
-
-    login () {
-        this.loginService.login({
-            username: this.username,
-            password: this.password,
-            rememberMe: this.rememberMe
-        }).then(() => {
-            this.authenticationError = false;
-            this.userAccountLocked = false;
-            this.emailNotVerified = false;
-            this.accountNotVerified = false;
-
-            if (this.router.url === '/register' || this.router.url === '/verify' ||
-                this.router.url === '/finishReset' || this.router.url === '/requestReset') {
+    ngOnInit(): void {
+        // if already authenticated then navigate to home page
+        this.accountService.identity().subscribe(() => {
+            if (this.accountService.isAuthenticated()) {
                 this.router.navigate(['']);
             }
+        });
+    }
 
-            this.eventManager.broadcast({
-                name: 'authenticationSuccess',
-                content: 'Sending Authentication Success'
-            });
+    ngAfterViewInit(): void {
+        if (this.username) {
+            this.username.nativeElement.focus();
+        }
+    }
 
-            // previousState was set in the authExpiredInterceptor before being redirected to login modal.
-            // since login is succesful, go to stored previousState and clear previousState
-            let previousState = this.stateStorageService.getPreviousState();
-            if (previousState) {
-                this.stateStorageService.resetPreviousState();
-                this.router.navigateByUrl(previousState.name, {preserveQueryParams: true, preserveFragment: true});
-            } else {
-                this.redirectService.redirectUser();
-            }
-        }).catch(err => {
-            this.authenticationError = true;
-            this.userAccountLocked = false;
-            this.emailNotVerified = false;
-            this.accountNotVerified = false;
-            if (err && err._body) {
-                let response =  JSON.parse(err._body);
-                switch (response.error_description) {
-                    case 'The user account is locked.':
-                        this.userAccountLocked = true;
-                        break;
-                    case 'Email address has not been verified yet.':
-                        this.emailNotVerified = true;
-                        break;
-                    case 'The user account has not been verified yet.':
-                        this.accountNotVerified = true;
-                        break;
+    login(): void {
+        this.loginService.login({
+            username: this.loginForm.get('username')!.value,
+            password: this.loginForm.get('password')!.value,
+            rememberMe: this.loginForm.get('rememberMe')!.value,
+        })
+        .subscribe(
+            () => {
+                this.authenticationError = false;
+                if (!this.router.getCurrentNavigation()) {
+                    // There were no routing during login (eg from navigationToStoredUrl)
+                    this.router.navigate(['']);
+                }
+
+                this.eventManager.broadcast({
+                    name: 'authenticationSuccess',
+                    content: 'Sending Authentication Success'
+                });
+            },
+            (err) => {
+                this.authenticationError = true;
+                this.userAccountLocked = false;
+                this.emailNotVerified = false;
+                this.accountNotVerified = false;
+                if (err && err._body) {
+                    let response =  JSON.parse(err._body);
+                    switch (response.error_description) {
+                        case 'The user account is locked.':
+                            this.userAccountLocked = true;
+                            break;
+                        case 'Email address has not been verified yet.':
+                            this.emailNotVerified = true;
+                            break;
+                        case 'The user account has not been verified yet.':
+                            this.accountNotVerified = true;
+                            break;
+                    }
                 }
             }
-        });
+        );
     }
 
     register () {
