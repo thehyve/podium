@@ -22,38 +22,38 @@
 
         <pdm-jvm-threads class="col-md-4" [threads]="threads"></pdm-jvm-threads>
 
-        <jhi-metrics-system class="col-md-4" [updating]="updatingMetrics" [systemMetrics]="metrics.processMetrics"></jhi-metrics-system>
+        <pdm-metrics-system class="col-md-4" [updating]="updatingMetrics" [systemMetrics]="metrics.processMetrics"></pdm-metrics-system>
     </div>
 
-    <jhi-metrics-garbagecollector
+    <pdm-metrics-garbagecollector
         *ngIf="metrics && metricsKeyExists('garbageCollector')"
         [updating]="updatingMetrics"
         [garbageCollectorMetrics]="metrics.garbageCollector"
-    ></jhi-metrics-garbagecollector>
+    ></pdm-metrics-garbagecollector>
 
     <div class="well well-lg" *ngIf="updatingMetrics">Updating...</div>
 
-    <jhi-metrics-request
+    <pdm-metrics-request
         *ngIf="metrics && metricsKeyExists('http.server.requests')"
         [updating]="updatingMetrics"
         [requestMetrics]="metrics['http.server.requests']"
-    ></jhi-metrics-request>
+    ></pdm-metrics-request>
 
-    <jhi-metrics-endpoints-requests
+    <pdm-metrics-endpoints-requests
         *ngIf="metrics && metricsKeyExists('services')"
         [updating]="updatingMetrics"
         [endpointsRequestsMetrics]="metrics.services"
-    ></jhi-metrics-endpoints-requests>
+    ></pdm-metrics-endpoints-requests>
 
-    <jhi-metrics-cache
+    <pdm-metrics-cache
         *ngIf="metrics && metricsKeyExists('cache')"
         [updating]="updatingMetrics"
         [cacheMetrics]="metrics.cache"
-    ></jhi-metrics-cache>
+    ></pdm-metrics-cache>
 
-    <jhi-metrics-datasource
+    <pdm-metrics-datasource
         *ngIf="metrics && metricsKeyExistsAndObjectNotEmpty('databases')"
         [updating]="updatingMetrics"
         [datasourceMetrics]="metrics.databases"
-    ></jhi-metrics-datasource>
+    ></pdm-metrics-datasource>
 </div>

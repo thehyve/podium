@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProcessMetrics } from '../../metrics.model';
 
 @Component({
-  selector: 'jhi-metrics-system',
+  selector: 'pdm-metrics-system',
   templateUrl: './metrics-system.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
