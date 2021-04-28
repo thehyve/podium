@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HealthKey, HealthDetails } from '../health.model';
 
 @Component({
-  selector: 'jhi-health-modal',
+  selector: 'pdm-health-modal',
   templateUrl: './health-modal.component.html',
 })
 export class HealthModalComponent {
