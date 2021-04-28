@@ -89,7 +89,7 @@ export class RequestFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.accountService.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentUser = account;
             this.requestTypeOptions = RequestType;
             this.initializeRequestForm();

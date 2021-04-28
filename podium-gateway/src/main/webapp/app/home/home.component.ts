@@ -35,7 +35,7 @@ export class PdmHomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.accountService.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.account = account;
         });
         this.registerAuthenticationSuccess();
@@ -47,7 +47,7 @@ export class PdmHomeComponent implements OnInit {
 
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
-            this.accountService.identity().then((account) => {
+            this.accountService.identity().subscribe((account) => {
                 this.account = account;
             });
         });

@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.accountServie.identity().then((account) => {
+        this.accountServie.identity().subscribe((account) => {
             this.user = account;
         });
     }

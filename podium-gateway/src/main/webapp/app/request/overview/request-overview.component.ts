@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { OverviewService } from '../../shared/overview/overview.service';
@@ -59,7 +59,7 @@ import { ApplicationConfigService } from '../../core/config/application-config.s
         }
     ]
 })
-export class RequestOverviewComponent extends Overview implements OnInit, OnDestroy {
+export class RequestOverviewComponent extends Overview implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild(RequestStatusSidebarComponent)
     private requestSidebarComponent: RequestStatusSidebarComponent;
@@ -109,7 +109,9 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
             default:
                 console.error('No user group authority', this.routePath);
         }
+    }
 
+    ngAfterViewInit() {
         this.registerChanges();
 
         this.fetchRequestsFor(this.activeStatus);

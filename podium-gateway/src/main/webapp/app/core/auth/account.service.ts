@@ -9,7 +9,7 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, map, catchError } from 'rxjs';
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Account } from './account.model';
 
@@ -40,14 +40,14 @@ export class AccountService {
            return Promise.resolve(false);
         }
 
-        return this.identity().then(id => {
+        return this.identity().toPromise().then(id => {
             return Promise.resolve(id.authorities && id.authorities.indexOf(authority) !== -1);
         }, () => {
             return Promise.resolve(false);
         });
     }
 
-    identity(force?: boolean): Promise<Account | null> {
+    identity(force?: boolean): Observable<Account | null> {
         if (force === true) {
             this.userIdentity = undefined;
         }
@@ -55,17 +55,19 @@ export class AccountService {
         // check and see if we have retrieved the _identity data from the server.
         // if we have, reuse it by immediately resolving
         if (this.userIdentity) {
-            return Promise.resolve(this.userIdentity);
+            return of(this.userIdentity);
         }
 
         // retrieve the _identity data from the server, update the _identity object, and then resolve.
-        return this.get().toPromise().then(account => {
-            this.authenticate(account);
-            return this.userIdentity;
-        }).catch(err => {
-            this.authenticate(null);;
-            return null;
-        });
+        return this.get().pipe(
+            map(account => {
+                this.authenticate(account);
+                return this.userIdentity;
+            }),
+            catchError(() => {
+                this.authenticate(null);;
+                return null;
+            }));
     }
 
     isAuthenticated (): boolean {
