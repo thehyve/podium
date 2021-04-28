@@ -16,7 +16,7 @@ import { PodiumGatewaySharedModule } from '../shared/shared.module';
 import { accountState } from './account.route';
 import { PasswordResetFinishComponent } from './password-reset/finish/password-reset-finish.component';
 import { PasswordResetInitComponent } from './password-reset/init/password-reset-init.component';
-import { PasswordStrengthBarComponent } from './password/password-strength-bar.component';
+import { PasswordStrengthBarComponent } from './password/password-strength-bar/password-strength-bar.component';
 import { PasswordComponent } from './password/password.component';
 import { RegisterComponent } from './register/register.component';
 import { SettingsComponent } from './settings/settings.component';
