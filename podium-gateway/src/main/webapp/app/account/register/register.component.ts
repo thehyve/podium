@@ -64,10 +64,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         }
     }
 
-    gotoLogin() {
-        this.router.navigate(['/']);
-    }
-
     public processSuccess() {
         this.success = true;
 
