@@ -17,7 +17,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieModule } from 'ngx-cookie';
-import { UiSwitchModule } from 'angular2-ui-switch';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
 
@@ -31,7 +30,6 @@ import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
         InfiniteScrollModule,
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
-        UiSwitchModule,
         BsDropdownModule.forRoot(),
         CookieModule.forRoot(),
         Ng2DeviceDetectorModule.forRoot()
