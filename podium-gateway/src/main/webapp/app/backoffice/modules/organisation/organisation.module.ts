@@ -8,33 +8,24 @@
  *
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { PodiumGatewaySharedModule } from '../../../shared/shared.module';
+import { OrganisationComponent } from './organisation.component';
 import {
-    OrganisationComponent,
     OrganisationDeleteDialogComponent,
-    OrganisationDeletePopupComponent,
-    OrganisationResolvePagingParams
-} from './';
+    OrganisationDeletePopupComponent
+} from './organisation-delete-dialog.component';
+import { OrganisationResolvePagingParams } from './organisation.route';
 import { OrganisationRoutingModule } from './organisation.routing';
-import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
 import { RouterModule } from '@angular/router';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { OrganisationFormComponent } from './organisation-form/organisation-form.component';
 import { RoleAssignComponent } from '../../../shared/role/role-assign/role-assign.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { Http } from '@angular/http';
-import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
 
 @NgModule({
     imports: [
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [Http]
-            }
-        }),
+        TranslateModule.forChild(),
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
         OrganisationRoutingModule,
@@ -54,7 +45,6 @@ import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
         OrganisationDeletePopupComponent,
     ],
     providers: [
-        customHttpProvider(),
         OrganisationResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
