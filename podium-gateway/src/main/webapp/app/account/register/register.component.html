@@ -68,6 +68,56 @@
                     </div>
                 </div>
 
+                <!--First name-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="firstName" >First name</label>
+                    <input type="text" class="form-control"
+                        id="firstName" name="firstName"
+                        placeholder="{{'global.form.firstName.placeholder' | translate}}"
+                        formControlName="firstName"
+                    />
+                    <div *ngIf="registerForm.get('firstName')!.invalid && (registerForm.get('firstName')!.dirty || registerForm.get('firstName')!.touched)">
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('firstName')?.errors?.required">
+                            Your first name is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('firstName')?.errors?.minlength">
+                            Your first name is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('firstName')?.errors?.maxlength">
+                            Your first name cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
+                <!--Last name-->
+                <div class="form-group">
+                    <label  class="form-control-label" for="lastName" >Last name</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="lastName" name="lastName"
+                        placeholder="{{'global.form.lastName.placeholder' | translate}}"
+                        formControlName="lastName"
+                    />
+                    <div *ngIf="registerForm.get('lastName')!.invalid && (registerForm.get('lastName')!.dirty || registerForm.get('lastName')!.touched)">
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('lastName')?.errors?.required">
+                            Your last name is required.
+                        </small>
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('lastName')?.errors?.minlength">
+                            Your last name is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('lastName')?.errors?.maxlength">
+                            Your last name cannot be longer than 50 characters.
+                        </small>
+                    </div>
+                </div>
+
                 <!--E-mail-->
                 <div class="form-group">
                     <label class="form-control-label" for="email">Email</label>
