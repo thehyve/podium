@@ -8,43 +8,27 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+
+import { Account } from '../core/auth/account.model';
 import { AccountService } from '../core/auth/account.service';
 import { AuthServerProvider } from '../core/auth/auth-jwt.service';
+import { Login } from './login.model';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
 
-    constructor (
-        private translateService: TranslateService,
+    constructor(
         private accountService: AccountService,
         private authServerProvider: AuthServerProvider
     ) {}
 
-    login (credentials, callback?) {
-        let cb = callback || function() {};
-
-        return new Promise((resolve, reject) => {
-            this.authServerProvider.login(credentials).subscribe(data => {
-                this.accountService.identity(true).subscribe(account => {
-                    // After the login the language will be changed to
-                    // the language selected by the user during his registration
-                    if (account !== null) {
-                        this.translateService.currentLang = account.langKey;
-                    }
-                    resolve(data);
-                });
-                return cb();
-            }, err => {
-                this.logout();
-                reject(err);
-                return cb(err);
-            });
-        });
+    login(credentials: Login): Observable<Account | null> {
+        return this.authServerProvider.login(credentials).pipe(mergeMap(() => this.accountService.identity(true)));
     }
 
-    logout () {
-        this.authServerProvider.logout().subscribe();
-        this.accountService.authenticate(null);
+    logout(): void {
+        this.authServerProvider.logout().subscribe({ complete: () => this.accountService.authenticate(null) });
     }
 }
