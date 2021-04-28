@@ -26,19 +26,11 @@ import {
     UserMgmtUnlockDialogComponent,
 } from './user-management-unlock-dialog.component';
 import { UserMgmtRoutingModule } from './user-management.routing';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { Http } from '@angular/http';
-import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [Http]
-            }
-        }),
+        TranslateModule.forChild(),
         PodiumGatewayAdminModule,
         PodiumGatewaySharedModule,
         UserMgmtRoutingModule,
@@ -58,7 +50,6 @@ import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
         UserMgmtUnlockDialogComponent,
     ],
     providers: [
-        customHttpProvider(),
         UserResolvePagingParams,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
