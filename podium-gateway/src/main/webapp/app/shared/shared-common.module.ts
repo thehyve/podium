@@ -8,11 +8,9 @@
  *
  */
 import { NgModule } from '@angular/core';
-import {
-    PodiumGatewaySharedLibsModule,
-    PdmAlertComponent,
-    PdmAlertErrorComponent
-} from './';
+import { PdmAlertComponent } from './alert/alert.component';
+import { PdmAlertErrorComponent } from './alert/alert-error.component';
+import { PodiumGatewaySharedLibsModule } from './shared-libs.module';
 
 @NgModule({
     imports: [

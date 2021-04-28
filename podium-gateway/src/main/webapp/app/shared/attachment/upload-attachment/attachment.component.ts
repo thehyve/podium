@@ -28,7 +28,7 @@ export class AttachmentComponent {
     uploadInput = new EventEmitter<UploadInput>();
     options: UploaderOptions;
     files: UploadFile[];
-    humanizeBytes: Function;
+    humanizeBytes: any;
     dragOver: boolean;
     error: any[];
 

@@ -19,7 +19,7 @@ import { LoginService } from './login.service';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class PodiumLoginComponent implements OnInit, AfterViewInit {
     @ViewChild('username', { static: false })
     username?: ElementRef;
 
