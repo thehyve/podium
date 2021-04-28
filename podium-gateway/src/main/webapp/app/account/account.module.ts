@@ -7,8 +7,11 @@
  * See the file LICENSE in the root of this repository.
  *
  */
+import { HttpClient } from '@angular/common/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { translatePartialLoader } from '../config/translation.config';
 import { PodiumGatewaySharedModule } from '../shared/shared.module';
 import { accountState } from './account.route';
 import { PasswordResetFinishComponent } from './password-reset/finish/password-reset-finish.component';
@@ -22,6 +25,13 @@ import { VerifyComponent } from './verify/verify.component';
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
+        TranslateModule.forChild({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: translatePartialLoader,
+                deps: [HttpClient],
+            }
+        }),
         RouterModule.forChild(accountState)
     ],
     declarations: [
