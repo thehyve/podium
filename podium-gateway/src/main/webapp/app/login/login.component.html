@@ -11,7 +11,8 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div class="alert alert-danger"
-             *ngIf="authenticationError && !(userAccountLocked || emailNotVerified || accountNotVerified)">
+            *ngIf="authenticationError && !(userAccountLocked || emailNotVerified || accountNotVerified)"
+        >
             <strong>Failed to sign in!</strong>
             Please check your credentials and try again.
             <br/>
@@ -33,29 +34,45 @@
             <br/>
             You will be notified by email when your account is verified.
         </div>
-        <form class="form-signin" role="form" (ngSubmit)="login()">
+        <form class="form-signin" role="form"
+            (ngSubmit)="login()"
+            [formGroup]="loginForm"
+        >
             <h2 class="form-signin-heading">Sign in</h2>
             <label for="username" class="sr-only">Username</label>
-            <input  type="text" class="form-control" #usernameField
-                    name="username" id="username" autocomplete="off"
-                    placeholder="{{'global.form.username.placeholder' | translate}}"
-                    [(ngModel)]="username">
+            <input
+                type="text"
+                class="form-control"
+                name="username"
+                id="username"
+                placeholder="Your username"
+                formControlName="username"
+                #username
+            />
+
             <label for="password" class="sr-only">Password</label>
-            <input type="password" class="form-control" name="password" id="password" autocomplete="off"
-                   placeholder="{{'login.form.password.placeholder' | translate}}"
-                   [(ngModel)]="password">
+            <input
+                type="password"
+                class="form-control"
+                name="password"
+                id="password"
+                placeholder="Your password"
+                formControlName="password"
+            />
+
             <div class="checkbox">
-                <label>
+                <label class="form-check-label" for="rememberMe">
                     <input type="checkbox" name="rememberMe" id="rememberMe"
-                           [(ngModel)]="rememberMe" checked> Remember me
+                        class="form-check-input" formControlName="rememberMe" />
+                    <span>Remember me</span>
                 </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
             <hr>
-            <button class="btn btn-secondary btn-block" type="button" (click)="register()">Register a new account</button>
+            <a class="btn btn-secondary btn-block" routerLink="/register">Register a new account</a>
             <br>
             Forgot your password? <br>
-            <a tabindex="" (click)="requestResetPassword()">Request a password reset link</a>.
+            <a tabindex="" class="alert-link" routerLink="/reset/request">Request a password reset link</a>.
         </form>
     </div>
 </div>
