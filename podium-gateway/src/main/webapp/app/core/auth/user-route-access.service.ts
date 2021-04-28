@@ -7,42 +7,43 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from './auth.service';
+import { Injectable, isDevMode } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { AccountService } from './account.service';
 import { StateStorageService } from './state-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserRouteAccessService implements CanActivate {
-
     constructor(
         private router: Router,
-        private auth: AuthService,
-        private stateStorageService: StateStorageService) {}
+        private accountService: AccountService,
+        private stateStorageService: StateStorageService
+    ) { }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
-        this.setStateStorage(route, state);
-        return this.auth.authorize(false).then( canActivate => {
-            return canActivate;
-        });
-    }
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+        return this.accountService.identity().pipe(
+            map(account => {
+                if (account) {
+                    const authorities = route.data['authorities'];
 
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Promise<boolean> {
-        return this.canActivate(route, state);
-    }
+                    if (!authorities || authorities.length === 0 || this.accountService.hasAnyAuthority(authorities)) {
+                        return true;
+                    }
 
-    setStateStorage(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        let params = {};
-        let destinationData = {};
-        let destinationName = '';
-        let destinationEvent = route;
-        if (destinationEvent !== undefined) {
-            params = destinationEvent.params;
-            destinationData = destinationEvent.data;
-            destinationName = state.url;
-        }
-        let from = {name: this.router.url.slice(1)};
-        let destination = {name: destinationName, data: destinationData};
-        this.stateStorageService.storeDestinationState(destination, params, from);
+                    if (isDevMode()) {
+                        console.error('User has not any of required authorities: ', authorities);
+                    }
+                    this.router.navigate(['accessdenied']);
+                    return false;
+                }
+
+                this.stateStorageService.storeUrl(state.url);
+                this.router.navigate(['/login']);
+                return false;
+            })
+        );
     }
 }
