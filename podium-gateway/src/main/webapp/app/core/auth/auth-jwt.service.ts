@@ -13,63 +13,50 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
+import { ApplicationConfigService } from '../config/application-config.service';
+import { Login } from '../../login/login.model';
+
+type JwtToken = {
+    id_token: string;
+};
+
 @Injectable({ providedIn: 'root' })
 export class AuthServerProvider {
     constructor(
         private http: HttpClient,
         private $localStorage: LocalStorageService,
-        private $sessionStorage: SessionStorageService
-    ) {}
+        private $sessionStorage: SessionStorageService,
+        private applicationConfigService: ApplicationConfigService
+    ) { }
 
-    getToken () {
-        return this.$localStorage.retrieve('authenticationToken') || this.$sessionStorage.retrieve('authenticationToken');
+    getToken(): string {
+        const tokenInLocalStorage: string | null = this.$localStorage.retrieve('authenticationToken');
+        const tokenInSessionStorage: string | null = this.$sessionStorage.retrieve('authenticationToken');
+        return tokenInLocalStorage ?? tokenInSessionStorage ?? '';
     }
 
-    login (credentials): Observable<any> {
-        let data = new URLSearchParams();
-        data.append('grant_type', 'password');
-        data.append('username', credentials.username);
-        data.append('password', credentials.password);
-
-        let headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization' : 'Basic d2ViX2FwcDo='
-        };
-
-        return this.http.post('podiumuaa/oauth/token', data, {
-            headers
-        }).pipe(map((resp) => {
-            let accessToken = resp['access_token'];
-            if (accessToken) {
-                this.storeAuthenticationToken(accessToken, credentials.rememberMe);
-            }
-
-            return accessToken;
-        }));
+    login(credentials: Login): Observable<void> {
+        return this.http
+            .post<JwtToken>(this.applicationConfigService.getEndpointFor('api/authenticate'), credentials)
+            .pipe(map(response => this.authenticateSuccess(response, credentials.rememberMe)));
     }
 
-    loginWithToken(jwt, rememberMe) {
-        if (jwt) {
-            this.storeAuthenticationToken(jwt, rememberMe);
-            return Promise.resolve(jwt);
-        } else {
-            return Promise.reject('auth-jwt-service Promise reject'); // Put appropriate error message here
-        }
-    }
-
-    storeAuthenticationToken(jwt, rememberMe) {
-        if (rememberMe) {
-            this.$localStorage.store('authenticationToken', jwt);
-        } else {
-            this.$sessionStorage.store('authenticationToken', jwt);
-        }
-    }
-
-    logout (): Observable<any> {
+    logout(): Observable<void> {
         return new Observable(observer => {
             this.$localStorage.clear('authenticationToken');
             this.$sessionStorage.clear('authenticationToken');
             observer.complete();
         });
+    }
+
+    private authenticateSuccess(response: JwtToken, rememberMe: boolean): void {
+        const jwt = response.id_token;
+        if (rememberMe) {
+            this.$localStorage.store('authenticationToken', jwt);
+            this.$sessionStorage.clear('authenticationToken');
+        } else {
+            this.$sessionStorage.store('authenticationToken', jwt);
+            this.$localStorage.clear('authenticationToken');
+        }
     }
 }
