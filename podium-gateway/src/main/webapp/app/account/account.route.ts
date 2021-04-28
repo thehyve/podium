@@ -15,16 +15,18 @@ import { registerRoute } from './register/register.route';
 import { settingsRoute } from './settings/settings.route';
 import { verifyRoute } from './verify/verify.route';
 
-let ACCOUNT_ROUTES = [
-   verifyRoute,
-   passwordRoute,
-   passwordResetFinishRoute,
-   passwordResetInitRoute,
-   registerRoute,
-   settingsRoute
+const ACCOUNT_ROUTES = [
+    verifyRoute,
+    passwordRoute,
+    passwordResetFinishRoute,
+    passwordResetInitRoute,
+    registerRoute,
+    settingsRoute
 ];
 
-export const accountState: Routes = [{
-    path: '',
-    children: ACCOUNT_ROUTES
-}];
+export const accountState: Routes = [
+    {
+        path: '',
+        children: ACCOUNT_ROUTES,
+    },
+];

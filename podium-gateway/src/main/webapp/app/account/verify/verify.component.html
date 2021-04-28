@@ -14,7 +14,7 @@
             <h1 [translate]="'verify.title'"></h1>
 
             <div class="alert alert-success" *ngIf="success">
-                <span [translate]="'verify.messages.success'"></span>
+                <span [innerHTML]="'verify.messages.success' | translate"></span>
                 <a class="alert-link"
                    (click)="login()"
                    [translate]="'verify.messages.loginPage'">
@@ -22,17 +22,17 @@
             </div>
 
             <div class="alert alert-success" *ngIf="renewSuccess">
-                <span [translate]="'verify.messages.renew.success'">
+                <span [innerHTML]="'verify.messages.renew.success'| translate">
                 </span>
             </div>
 
             <div class="alert alert-danger"
                 *ngIf="error && errorMsg != 'renew'"
-                [translate]="'verify.messages.error'">
+                [innerHTML]="'verify.messages.error' | translate">
             </div>
 
             <div class="alert alert-danger" *ngIf="error && errorMsg == 'renew'">
-                <span [translate]="'verify.messages.renew.message'">
+                <span [innerHTML]="'verify.messages.renew.message' | translate">
                 </span>
                 <a class="alert-link"
                    (click)="requestNewVerificationKey()"
@@ -41,7 +41,7 @@
             </div>
 
             <div class="alert alert-danger" *ngIf="renewError">
-                <span [translate]="'verify.messages.renew.error'">
+                <span [innerHTML]="'verify.messages.renew.error' | translate">
                 </span>
             </div>
         </div>
