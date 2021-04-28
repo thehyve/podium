@@ -5,7 +5,7 @@ import { Thread } from '../../metrics.model';
 import { MetricsModalThreadsComponent } from '../metrics-modal-threads/metrics-modal-threads.component';
 
 @Component({
-  selector: 'jhi-jvm-threads',
+  selector: 'pdm-jvm-threads',
   templateUrl: './jvm-threads.component.html',
 })
 export class JvmThreadsComponent {

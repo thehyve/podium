@@ -18,9 +18,9 @@
     <h3>JVM Metrics</h3>
 
     <div class="row" *ngIf="metrics && !updatingMetrics">
-        <jhi-jvm-memory class="col-md-4" [updating]="updatingMetrics" [jvmMemoryMetrics]="metrics.jvm"></jhi-jvm-memory>
+        <pdm-jvm-memory class="col-md-4" [updating]="updatingMetrics" [jvmMemoryMetrics]="metrics.jvm"></pdm-jvm-memory>
 
-        <jhi-jvm-threads class="col-md-4" [threads]="threads"></jhi-jvm-threads>
+        <pdm-jvm-threads class="col-md-4" [threads]="threads"></pdm-jvm-threads>
 
         <jhi-metrics-system class="col-md-4" [updating]="updatingMetrics" [systemMetrics]="metrics.processMetrics"></jhi-metrics-system>
     </div>

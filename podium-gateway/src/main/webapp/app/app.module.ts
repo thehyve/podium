@@ -21,7 +21,10 @@ import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
 import { CommonModule } from '@angular/common';
 import { PdmMainComponent } from './layouts/main/main.component';
 import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
-import { AppRoutingModule } from './app-routing.module';
+import {
+    AppRoutingModule,
+    AppErrorRoutingModule
+} from './app-routing.module';
 import { PdmHomeComponent } from './home/home.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -43,6 +46,7 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
         PodiumGatewayBbmriBackofficeModule,
         PodiumGatewayOrganisationBackofficeModule,
         PodiumGatewayPodiumBackofficeModule,
+        AppErrorRoutingModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
