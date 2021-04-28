@@ -71,7 +71,7 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     setRequestReviewFeedback() {
         if (this.request.reviewRound) {
             if (this.requestAccessService.isReviewerFor(this.request)) {
-                this.accountService.identity().then((account) => {
+                this.accountService.identity().subscribe((account) => {
                     this.lastReviewFeedback = [
                         this.requestService.getLastReviewFeedbackByUser(this.request, account)
                     ];

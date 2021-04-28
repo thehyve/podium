@@ -72,7 +72,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
 
     ngOnInit() {
         this.fetchOrganisations();
-        this.accountService.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentAccount = account;
         });
 

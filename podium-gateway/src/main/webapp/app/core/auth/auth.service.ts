@@ -23,7 +23,7 @@ export class AuthService {
 
     authorize (force): Promise<boolean> {
         let self = this;
-        let authReturn = self.accountService.identity(force).then(authThen);
+        let authReturn = self.accountService.identity(force).toPromise().then(authThen);
 
         return authReturn;
 

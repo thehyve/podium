@@ -32,7 +32,7 @@ export class PasswordComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.accountService.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.account = account;
         });
     }

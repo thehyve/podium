@@ -74,7 +74,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.userGroupAuthority = this.activatedRoute.snapshot.data['userAuthorityGroup'];
-        this.accountService.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentAccount = account;
             this.fetchUsers();
             this.registerChangeInUsers();
