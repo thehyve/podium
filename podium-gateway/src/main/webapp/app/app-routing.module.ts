@@ -20,7 +20,6 @@ let LAYOUT_ROUTES = [
     homeRoute,
     dashboardRoute,
     navbarRoute,
-    ...errorRoute,
     ...completedRoute
 ];
 
@@ -33,3 +32,11 @@ let LAYOUT_ROUTES = [
     ]
 })
 export class AppRoutingModule {}
+
+@NgModule({
+    imports: [
+        RouterModule.forRoot(errorRoute, {useHash: true})
+    ],
+    exports: [RouterModule]
+})
+export class AppErrorRoutingModule {}

@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { JvmMetrics } from '../../metrics.model';
 
 @Component({
-  selector: 'jhi-jvm-memory',
+  selector: 'pdm-jvm-memory',
   templateUrl: './jvm-memory.component.html',
 })
 export class JvmMemoryComponent {
