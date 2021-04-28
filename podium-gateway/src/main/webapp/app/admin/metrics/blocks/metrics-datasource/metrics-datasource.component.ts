@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Databases } from '../../metrics.model';
 
 @Component({
-  selector: 'jhi-metrics-datasource',
+  selector: 'pdm-metrics-datasource',
   templateUrl: './metrics-datasource.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

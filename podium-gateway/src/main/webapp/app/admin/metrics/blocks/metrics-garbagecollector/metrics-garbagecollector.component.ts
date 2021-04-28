@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { GarbageCollector } from '../../metrics.model';
 
 @Component({
-  selector: 'jhi-metrics-garbagecollector',
+  selector: 'pdm-metrics-garbagecollector',
   templateUrl: './metrics-garbagecollector.component.html',
 })
 export class MetricsGarbageCollectorComponent {

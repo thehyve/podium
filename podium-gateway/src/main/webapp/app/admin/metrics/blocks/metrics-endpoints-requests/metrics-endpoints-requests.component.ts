@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { Services } from '../../metrics.model';
 
 @Component({
-  selector: 'jhi-metrics-endpoints-requests',
+  selector: 'pdm-metrics-endpoints-requests',
   templateUrl: './metrics-endpoints-requests.component.html',
 })
 export class MetricsEndpointsRequestsComponent {
