@@ -7,18 +7,23 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'pdm-error',
-    templateUrl: './error.component.html'
+    templateUrl: './error.component.html',
 })
-export class PdmErrorComponent {
-    errorMessage: string;
-    error403: boolean;
+export class PdmErrorComponent implements OnInit {
+    errorMessage?: string;
 
-    constructor(
-    ) {
+    constructor(private route: ActivatedRoute) { }
 
+    ngOnInit(): void {
+        this.route.data.subscribe(routeData => {
+            if (routeData.errorMessage) {
+                this.errorMessage = routeData.errorMessage;
+            }
+        });
     }
 }
