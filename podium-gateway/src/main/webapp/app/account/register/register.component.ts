@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { Register } from './register.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
@@ -19,34 +19,31 @@ import { CompletionType } from '../../shared/completed/completion-type';
 @Component({
     templateUrl: './register.component.html'
 })
-export class RegisterComponent implements OnInit, AfterViewInit {
+export class RegisterComponent implements AfterViewInit {
+    @ViewChild('login', { static: false })
+    login?: ElementRef;
 
     confirmPassword: string;
     doNotMatch: string;
     error: string;
     errorUserExists: string;
-    registerAccount: any;
-    success: boolean;
+    registerAccount = {};
+    success = false;
     successMessage: Message;
+    specialism = '';
 
     constructor(
         private translate: TranslateService,
         private registerService: Register,
         private messageService: MessageService,
-        private elementRef: ElementRef,
-        private renderer: Renderer,
         private router: Router
     ) {
     }
 
-    ngOnInit() {
-        this.success = false;
-        this.registerAccount = {};
-        this.registerAccount.specialism = '';
-    }
-
-    ngAfterViewInit() {
-        this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#login'), 'focus', []);
+    ngAfterViewInit(): void {
+        if (this.login) {
+            this.login.nativeElement.focus();
+        }
     }
 
     register() {
