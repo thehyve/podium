@@ -23,7 +23,7 @@ import { Component, ElementRef, Input, Renderer2 } from '@angular/core';
             </ul>
         </div>`,
     styleUrls: [
-        'password-strength-bar.scss'
+        'password-strength-bar.component.scss'
     ]
 })
 export class PasswordStrengthBarComponent {
