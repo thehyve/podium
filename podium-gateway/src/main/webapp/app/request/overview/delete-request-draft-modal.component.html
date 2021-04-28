@@ -10,23 +10,24 @@
 
 <form name="deleteDraftForm" ng-submit="confirmDelete()">
     <div class="modal-header">
-        <h4 class="modal-title" jhiTranslate="request.delete.dialog.title">Confirm deletion of request draft</h4>
+        <h4 class="modal-title"
+            [translate]="'request.delete.dialog.title'">
+        </h4>
         <button aria-label="Close" data-dismiss="modal" class="close" type="button" (click)="activeModal.dismiss('closed')"><span aria-hidden="true">&times;</span></button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
-        <p jhiTranslate="request.delete.dialog.question">
-            Are you sure you would like to delete this request draft?
+        <p [translate]="'request.delete.dialog.question'">
         </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default float-xs-left" data-dismiss="modal" (click)="activeModal.dismiss('cancelled')">
             <i class="material-icons">keyboard_backspace</i>
-            <span jhiTranslate="request.delete.dialog.cancel">Cancel</span>
+            <span [translate]="'request.delete.dialog.cancel'"></span>
         </button>
         <button type="submit" class="btn btn-danger" (click)="confirmDelete()">
             <i class="material-icons">remove_circle</i>
-            <span jhiTranslate="request.delete.dialog.confirm">Confirm</span>
+            <span [translate]="'request.delete.dialog.confirm'"></span>
         </button>
     </div>
 </form>

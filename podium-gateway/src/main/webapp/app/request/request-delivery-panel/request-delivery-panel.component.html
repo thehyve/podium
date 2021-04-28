@@ -9,13 +9,13 @@
   -->
 
 <div class="request-action-wrapper" *ngIf="hasDeliveries()">
-    <h3 jhiTranslate="delivery.title">Delivery</h3>
+    <h3 [translate]="'delivery.title'"></h3>
     <table class="table delivery-overview">
         <thead>
             <tr>
-                <th jhiTranslate="delivery.type">Type</th>
-                <th jhiTranslate="delivery.status">Status</th>
-                <th jhiTranslate="delivery.notes">Notes on delivery</th>
+                <th [translate]="'delivery.type'"></th>
+                <th [translate]="'delivery.status'"></th>
+                <th [translate]="'delivery.notes'"></th>
                 <th></th>
             </tr>
         </thead>
@@ -28,16 +28,16 @@
                 }">
                 <td>
                     <span class="material-icons">{{ iconStateOptions.type[delivery.type] }}</span>
-                    <span jhiTranslate="requestType.{{delivery.type}}">Delivery Type</span>
+                    <span [translate]="'requestType.' + delivery.type"></span>
                 </td>
                 <td class="status-cell">
                     <span *ngIf="delivery.status == deliveryStatusOptions.Closed">
                         <span class="material-icons">{{ iconStateOptions.outcome[delivery.outcome] }}</span>
-                        <span jhiTranslate="deliveryOutcome.{{delivery.outcome}}">Delivery outcome</span>
+                        <span [translate]="'deliveryOutcome.' + delivery.outcome"></span>
                     </span>
                     <span *ngIf="delivery.status != deliveryStatusOptions.Closed">
                         <span class="material-icons">{{ iconStateOptions.status[delivery.status] }}</span>
-                        <span jhiTranslate="deliveryStatus.{{delivery.status}}">Delivery status</span>
+                        <span [translate]="'deliveryStatus.' + delivery.status"></span>
                     </span>
                 </td>
                 <td class="feedback-comment">
