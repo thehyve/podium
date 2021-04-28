@@ -7,36 +7,36 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { JhiHttpInterceptor } from 'ng-jhipster';
-import { RequestOptionsArgs, Response } from '@angular/http';
-import { Observable, throwError } from 'rxjs';
-import { Injector } from '@angular/core';
-import { AuthService } from '../../core/auth/auth.service';
-import { AccountService } from  '../../core/auth/account.service';
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
-export class AuthExpiredInterceptor extends JhiHttpInterceptor {
+import { LoginService } from '../../login/login.service';
+import { StateStorageService } from '../auth/state-storage.service';
+import { AccountService } from '../auth/account.service';
 
-    constructor(private injector: Injector) {
-        super();
-    }
+@Injectable()
+export class AuthExpiredInterceptor implements HttpInterceptor {
+    constructor(
+        private loginService: LoginService,
+        private stateStorageService: StateStorageService,
+        private router: Router,
+        private accountService: AccountService
+    ) { }
 
-    requestIntercept(options?: RequestOptionsArgs): RequestOptionsArgs {
-        return options;
-    }
-
-    responseIntercept(observable: Observable<Response>): Observable<Response> {
-        let self = this;
-
-        return <Observable<Response>> observable.catch((error, source) => {
-            if (error.status === 401) {
-                let accountService: AccountService = self.injector.get(AccountService);
-
-                if (accountService.isAuthenticated()) {
-                    let auth: AuthService = self.injector.get(AuthService);
-                    auth.authorize(true);
-                }
-            }
-            return throwError(error);
-        });
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        return next.handle(request).pipe(
+            tap({
+                error: (err: HttpErrorResponse) => {
+                    if (err.status === 401 && err.url && !err.url.includes('zapi/account') && this.accountService.isAuthenticated()) {
+                        this.stateStorageService.storeUrl(this.router.routerState.snapshot.url);
+                        this.loginService.logout();
+                        this.router.navigate(['/login']);
+                    }
+                },
+            })
+        );
     }
 }
