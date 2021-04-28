@@ -8,25 +8,13 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes, CanActivate } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
 import { parseAscending, parsePage, parsePredicate } from '../../../shared/util/pagination-util';
 import { UserMgmtComponent } from './user-management.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
-import { AccountService } from '../../../core/auth/account.service';
 import { UserRouteAccessService } from '../../../core/auth/user-route-access.service';
-
-
-@Injectable()
-export class UserResolve implements CanActivate {
-
-  constructor(private accountService: AccountService) { }
-
-  canActivate() {
-    return this.accountService.identity().then(() => this.accountService.hasAnyAuthority(['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']));
-  }
-}
 
 @Injectable()
 export class UserResolvePagingParams implements Resolve<any> {

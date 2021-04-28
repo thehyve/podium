@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { UserResolvePagingParams, UserResolve } from './user-management.route';
+import { UserResolvePagingParams } from './user-management.route';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../../shared/shared.module';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
@@ -60,7 +60,6 @@ import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
     providers: [
         customHttpProvider(),
         UserResolvePagingParams,
-        UserResolve,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [
