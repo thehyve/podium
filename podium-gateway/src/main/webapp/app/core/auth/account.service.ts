@@ -10,7 +10,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of, map } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
 import { StateStorageService } from './state-storage.service';
 import { ApplicationConfigService } from '../config/application-config.service';
