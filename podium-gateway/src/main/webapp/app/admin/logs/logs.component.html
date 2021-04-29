@@ -8,7 +8,7 @@
   ~
   -->
 
-<div class="content-wrapper table-responsive" *ngIf="loggers">
+  <div class="content-wrapper table-responsive" *ngIf="loggers">
     <h2 [translate]="'logs.title'">Logs</h2>
 
     <p [translate]="'logs.nbloggers'" [translateParams]="{total: loggers.length}"></p>
@@ -27,7 +27,7 @@
         </tr>
         </thead>
 
-        <tr *ngFor="let logger of (loggers | pureFilter:filter:'name' | orderBy:orderProp:reverse)">
+        <tr *ngFor="let logger of (loggers)">
             <td><small>{{logger.name | slice:0:140}}</small></td>
             <td>
                 <button (click)="changeLevel(logger.name, 'TRACE')" [ngClass]="(logger.level=='TRACE') ? 'btn-danger' : 'btn-secondary'" class="btn btn-sm">TRACE</button>

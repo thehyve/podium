@@ -14,9 +14,8 @@ import { PodiumGatewaySharedModule } from '../shared/shared.module';
 import { adminRoute } from './admin-routing.module';
 import { AuditsComponent } from './audits/audits.component';
 import { LogsComponent } from './logs/logs.component';
-import { PdmMetricsMonitoringModalComponent } from './metrics/metrics-modal.component';
+import { MetricsModalThreadsComponent } from './metrics/blocks/metrics-modal-threads/metrics-modal-threads.component';
 import { PdmMetricsMonitoringComponent } from './metrics/metrics.component';
-import { PdmHealthModalComponent } from './health/health-modal.component';
 import { PdmHealthCheckComponent } from './health/health.component';
 import { PdmConfigurationComponent } from './configuration/configuration.component';
 import { PdmDocsComponent } from './docs/docs.component';
@@ -35,19 +34,17 @@ import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-mo
         LogsComponent,
         PdmConfigurationComponent,
         PdmHealthCheckComponent,
-        PdmHealthModalComponent,
         PdmDocsComponent,
         PdmGatewayComponent,
         PdmMetricsMonitoringComponent,
-        PdmMetricsMonitoringModalComponent,
+        MetricsModalThreadsComponent,
         PdmElasticsearchComponent,
         PdmElasticsearchModalComponent
     ],
     entryComponents: [
-        PdmHealthModalComponent,
         PdmElasticsearchModalComponent,
-        PdmMetricsMonitoringModalComponent,
+        MetricsModalThreadsComponent,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PodiumGatewayAdminModule { }
