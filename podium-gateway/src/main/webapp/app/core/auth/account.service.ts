@@ -10,8 +10,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
+
 import { StateStorageService } from './state-storage.service';
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Account } from './account.model';
@@ -19,7 +20,7 @@ import { Account } from './account.model';
 @Injectable({ providedIn: 'root' })
 export class AccountService {
     private userIdentity: Account | null = null;
-    private authenticationState = new BehaviorSubject<any>(null);
+    private authenticationState = new ReplaySubject<Account | null>(1);
     private accountCache$?: Observable<Account | null>;
 
     constructor(
@@ -29,16 +30,17 @@ export class AccountService {
         private router: Router,
     ) {}
 
-    authenticate(_identity: Account | null) {
-        this.userIdentity = _identity;
+    authenticate(identity: Account | null): void {
+        this.userIdentity = identity;
         this.authenticationState.next(this.userIdentity);
     }
 
-    hasAnyAuthority(authorities: string[]): boolean {
+    hasAnyAuthority(authorities: string[] | string): boolean {
         if (!this.userIdentity || !this.userIdentity.authorities) {
             return false;
         }
-        return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
+        let authorityList = [authorities].flat();
+        return this.userIdentity.authorities.some((e) => authorityList.includes(e));
     }
 
     hasAuthority (authority: string): Promise<boolean> {
@@ -73,7 +75,7 @@ export class AccountService {
         return this.userIdentity !== null;
     }
 
-    getAuthenticationState(): BehaviorSubject<any> {
+    getAuthenticationState(): ReplaySubject<any> {
         return this.authenticationState;
     }
 
@@ -81,7 +83,7 @@ export class AccountService {
         return this.userIdentity !== undefined;
     }
 
-    getImageUrl(): String {
+    getImageUrl(): string {
         return this.isIdentityResolved () ? this.userIdentity.imageUrl : null;
     }
 
