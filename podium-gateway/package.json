@@ -86,8 +86,8 @@
     "node": ">=14.16.0"
   },
   "scripts": {
-    "lint": "tslint src/main/webapp/app/**/*.ts --force",
-    "lint:fix": "tslint src/main/webapp/app/**/*.ts --fix --force",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "npm run lint -- --fix",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "start": "npm run webpack:dev",
