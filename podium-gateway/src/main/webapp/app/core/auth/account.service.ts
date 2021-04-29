@@ -61,7 +61,7 @@ export class AccountService {
         }
 
         // retrieve the _identity data from the server, update the _identity object, and then resolve.
-        this.accountCache$ = this.get().pipe(
+        this.accountCache$ = this.fetch().pipe(
             map(account => {
                 this.authenticate(account);
                 return this.userIdentity;
@@ -91,7 +91,7 @@ export class AccountService {
         return this.isIdentityResolved () ? this.userIdentity.imageUrl : null;
     }
 
-    private get(): Observable<Account> {
+    private fetch(): Observable<Account> {
         let url = this.config.getUaaEndpoint('api/account');
         return this.http.get<Account>(url);
     }
