@@ -6,7 +6,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateService, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
 import { NgxWebstorageModule } from 'ngx-webstorage';
-import { customHttpProvider } from './blocks/interceptor/http.provider';
+import { httpInterceptorProviders } from './core/interceptor/http.provider';
 import { translatePartialLoader, missingTranslationHandler } from './config/translation.config';
 import { TypeaheadModule } from 'ngx-bootstrap';
 import { PodiumGatewayRequestModule } from './request/request.module';
@@ -37,7 +37,7 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
         CommonModule,
         TypeaheadModule.forRoot(),
         BreadcrumbsModule.forRoot(),
-        NgxWebstorageModule.forRoot({ prefix: 'pdm', separator: '-'}),
+        NgxWebstorageModule.forRoot({ prefix: 'pdm', separator: '-' }),
         AppRoutingModule,
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
@@ -70,11 +70,10 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
     providers: [
         Title,
         { provide: LOCALE_ID, useValue: 'en' },
-        customHttpProvider(),
-        PaginationConfig,
+        httpInterceptorProviders,
         UserRouteAccessService,
     ],
-    bootstrap: [ PdmMainComponent ],
+    bootstrap: [PdmMainComponent],
     exports: []
 })
 export class PodiumGatewayAppModule {
