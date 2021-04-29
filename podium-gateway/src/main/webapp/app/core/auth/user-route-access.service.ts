@@ -26,13 +26,13 @@ export class UserRouteAccessService implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         return this.accountService.identity().pipe(
             map(account => {
+                const authorities = route.data['authorities'];
+
+                if (!authorities || authorities.length === 0 || this.accountService.hasAnyAuthority(authorities)) {
+                    return true;
+                }
+
                 if (account) {
-                    const authorities = route.data['authorities'];
-
-                    if (!authorities || authorities.length === 0 || this.accountService.hasAnyAuthority(authorities)) {
-                        return true;
-                    }
-
                     if (isDevMode()) {
                         console.error('User has not any of required authorities: ', authorities);
                     }
@@ -41,7 +41,7 @@ export class UserRouteAccessService implements CanActivate {
                 }
 
                 this.stateStorageService.storeUrl(state.url);
-                this.router.navigate(['/login']);
+                this.router.navigate(['/']);
                 return false;
             })
         );
