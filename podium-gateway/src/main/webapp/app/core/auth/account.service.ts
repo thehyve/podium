@@ -9,7 +9,8 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, map, catchError } from 'rxjs';
+import { BehaviorSubject, Observable, of, map } from 'rxjs';
+import { shareReplay, tap, catchError } from 'rxjs/operators';
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Account } from './account.model';
 
@@ -17,6 +18,7 @@ import { Account } from './account.model';
 export class AccountService {
     private userIdentity: Account | null = null;
     private authenticationState = new BehaviorSubject<any>(null);
+    private accountCache$?: Observable<Account | null>;
 
     constructor (
         private config: ApplicationConfigService,
@@ -59,7 +61,7 @@ export class AccountService {
         }
 
         // retrieve the _identity data from the server, update the _identity object, and then resolve.
-        return this.get().pipe(
+        this.accountCache$ = this.get().pipe(
             map(account => {
                 this.authenticate(account);
                 return this.userIdentity;
@@ -67,7 +69,10 @@ export class AccountService {
             catchError(() => {
                 this.authenticate(null);;
                 return null;
-            }));
+            }),
+            shareReplay()
+        );
+        return this.accountCache$;
     }
 
     isAuthenticated (): boolean {
