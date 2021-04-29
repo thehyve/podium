@@ -1,5 +1,5 @@
 // Based on JhiAlertService
-import { Injectable, Sanitizer, SecurityContext } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 export type AlertType = 'success' | 'danger' | 'warning' | 'info';
@@ -26,7 +26,6 @@ export class AlertService {
     private i18nEnabled: boolean;
 
     constructor(
-        private sanitizer: Sanitizer,
         private translateService: TranslateService
     ) {
         this.toast = true;
@@ -91,7 +90,7 @@ export class AlertService {
     private factory(alertOptions: Alert): Alert {
         const alert: Alert = {
             type: alertOptions.type,
-            msg: this.sanitizer.sanitize(SecurityContext.HTML, alertOptions.msg),
+            msg: alertOptions.msg,
             id: alertOptions.id,
             timeout: alertOptions.timeout,
             toast: alertOptions.toast,
@@ -107,7 +106,7 @@ export class AlertService {
         return alert;
     }
 
-    addAlert(alertOptions: Alert, extAlerts: Alert[]): Alert {
+    addAlert(alertOptions: Alert, extAlerts?: Alert[]): Alert {
         alertOptions.id = this.alertId++;
         if (this.i18nEnabled && alertOptions.msg) {
             alertOptions.msg = this.translateService.instant(alertOptions.msg, alertOptions.params);
