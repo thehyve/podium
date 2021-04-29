@@ -7,39 +7,39 @@ import { Health, HealthDetails, HealthStatus } from './health.model';
 import { HealthModalComponent } from './modal/health-modal.component';
 
 @Component({
-  selector: 'pdm-health',
-  templateUrl: './health.component.html',
+    selector: 'pdm-health',
+    templateUrl: './health.component.html',
 })
-export class HealthComponent implements OnInit {
-  health?: Health;
+export class PdmHealthCheckComponent implements OnInit {
+    health?: Health;
 
-  constructor(private modalService: NgbModal, private healthService: HealthService) {}
+    constructor(private modalService: NgbModal, private healthService: HealthService) { }
 
-  ngOnInit(): void {
-    this.refresh();
-  }
-
-  getBadgeClass(statusState: HealthStatus): string {
-    if (statusState === 'UP') {
-      return 'badge-success';
-    } else {
-      return 'badge-danger';
+    ngOnInit(): void {
+        this.refresh();
     }
-  }
 
-  refresh(): void {
-    this.healthService.checkHealth().subscribe(
-      health => (this.health = health),
-      (error: HttpErrorResponse) => {
-        if (error.status === 503) {
-          this.health = error.error;
+    getBadgeClass(statusState: HealthStatus): string {
+        if (statusState === 'UP') {
+            return 'badge-success';
+        } else {
+            return 'badge-danger';
         }
-      }
-    );
-  }
+    }
 
-  showHealth(health: { key: string; value: HealthDetails }): void {
-    const modalRef = this.modalService.open(HealthModalComponent);
-    modalRef.componentInstance.health = health;
-  }
+    refresh(): void {
+        this.healthService.checkHealth().subscribe(
+            health => (this.health = health),
+            (error: HttpErrorResponse) => {
+                if (error.status === 503) {
+                    this.health = error.error;
+                }
+            }
+        );
+    }
+
+    showHealth(health: { key: string; value: HealthDetails; }): void {
+        const modalRef = this.modalService.open(HealthModalComponent);
+        modalRef.componentInstance.health = health;
+    }
 }
