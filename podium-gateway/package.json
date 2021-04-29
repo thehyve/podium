@@ -88,15 +88,12 @@
   "scripts": {
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "tsc": "tsc",
-    "tsc:w": "tsc -w",
     "start": "npm run webpack:dev",
     "webpack:build": "npm run clean-www && npm run webapp:build:dev",
     "webpack:build:dev": "ng build",
     "webpack:dev": "ng serve",
     "webpack:prod": "ng build --prod",
-    "test": "npm run lint && karma start src/test/javascript/karma.conf.js",
-    "test:watch": "karma start --watch",
-    "postinstall": "webdriver-manager update && npm run webpack:build"
+    "test": "ng test --coverage --log-heap-usage -w=2",
+    "test:watch": "npm run test -- --watch"
   }
 }
