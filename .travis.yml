@@ -17,7 +17,7 @@ cache:
 
 env:
   global:
-    - NODE_VERSION=10.20.0
+    - NODE_VERSION=15
     - PROFILE=dev
     - RUN_PODIUM=1
     - PROTRACTOR=1
