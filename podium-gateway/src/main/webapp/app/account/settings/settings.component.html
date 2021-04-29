@@ -11,8 +11,7 @@
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h2 [translate]="'settings.title'"
-                [translateParams]="{username: settingsAccount.login}"
+            <h2 [innerHTML]="'settings.title' | translate:{username: settingsAccount.login}"
                 *ngIf="settingsAccount">
             </h2>
 
