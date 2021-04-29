@@ -22,6 +22,6 @@ export class PasswordResetInit {
 
     save(mail: string): Observable<any> {
         let url = this.config.getUaaEndpoint('api/account/reset_password/init');
-        return this.http.post(url, mail);
+        return this.http.post(url, mail, { responseType: 'text' });
     }
 }
