@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { EventManager } from '../../../core/util/event-manager.service';
 import { AlertService } from '../../../core/util/alert.service';
 import { Observable, Subscription, throwError } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
 import { RoleService } from '../role.service';
@@ -67,7 +68,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         });
 
         this.registerChangeInRoles();
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK' });
     }
 
     ngOnDestroy() {
@@ -107,13 +108,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     public generateOrganisationUser(user: User, role: Role): OrganisationUser {
         let orgUser: OrganisationUser = new OrganisationUser();
 
-        if ( user ) {
+        if (user) {
             orgUser.fullName = user.firstName + ' ' + user.lastName;
             orgUser.uuid = user.uuid;
             orgUser.searchTerm = orgUser.fullName;
         }
 
-        if ( role ) {
+        if (role) {
             orgUser.previousAuthority = role.authority;
             orgUser.authority = role.authority;
             orgUser.isSaved = user.uuid != null;
@@ -134,12 +135,12 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         /**
          * User typeahead datasource observable
          */
-        return Observable.create((observer: any) => {
+        return new Observable((observer: any) => {
             // Runs on every search
             // each organisation user has a 'searchTerm' property that is used as the input and is bound to [(ngModel)]
             // when user types into the input .next is called with the value from the input
-            observer.next({query: organisationUser.searchTerm });
-        }).mergeMap((term: any) => this.userService.suggest(term));
+            observer.next({ query: organisationUser.searchTerm });
+        }).pipe(mergeMap((term: any) => this.userService.suggest(term)));
     }
 
     /**
@@ -270,7 +271,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                 } else {
                     // Check if role already has user
                     if (userIdx > -1) {
-                        this.onError({message: 'Cannot add user ' + user.fullName + ' to the same role twice.'});
+                        this.onError({ message: 'Cannot add user ' + user.fullName + ' to the same role twice.' });
                     } else {
                         role.users.push(user.uuid);
                     }
@@ -287,7 +288,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                         }
                     );
             } else {
-                this.onError({message: 'Cannot find role for authority ' + user.authority });
+                this.onError({ message: 'Cannot find role for authority ' + user.authority });
             }
         });
     }
@@ -295,10 +296,10 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     private onSaveSuccess(isDelete: boolean) {
         let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
         this.alertService.success(this.translateService.instant(notification));
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK' });
     }
 
-    private onError (error: { message: string }) {
+    private onError(error: { message: string; }) {
         this.alertService.error(error.message, null, null);
     }
 
