@@ -9,6 +9,7 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { PodiumGatewaySharedModule } from '../shared/shared.module';
 import { adminRoute } from './admin-routing.module';
 import { AuditsComponent } from './audits/audits.component';
@@ -26,6 +27,7 @@ import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-mo
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
+        TranslateModule.forChild(),
         RouterModule.forChild(adminRoute)
     ],
     declarations: [
@@ -48,4 +50,4 @@ import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-mo
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PodiumGatewayAdminModule {}
+export class PodiumGatewayAdminModule { }
