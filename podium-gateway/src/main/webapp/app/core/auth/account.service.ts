@@ -50,28 +50,19 @@ export class AccountService {
     }
 
     identity(force?: boolean): Observable<Account | null> {
-        if (force === true) {
-            this.userIdentity = undefined;
+        if (!this.accountCache$ || force || !this.isAuthenticated()) {
+            this.accountCache$ = this.fetch().pipe(
+                map(account => {
+                    this.authenticate(account);
+                    return this.userIdentity;
+                }),
+                catchError(() => {
+                    this.authenticate(null);;
+                    return null;
+                }),
+                shareReplay()
+            );
         }
-
-        // check and see if we have retrieved the _identity data from the server.
-        // if we have, reuse it by immediately resolving
-        if (this.userIdentity) {
-            return of(this.userIdentity);
-        }
-
-        // retrieve the _identity data from the server, update the _identity object, and then resolve.
-        this.accountCache$ = this.fetch().pipe(
-            map(account => {
-                this.authenticate(account);
-                return this.userIdentity;
-            }),
-            catchError(() => {
-                this.authenticate(null);;
-                return null;
-            }),
-            shareReplay()
-        );
         return this.accountCache$;
     }
 
