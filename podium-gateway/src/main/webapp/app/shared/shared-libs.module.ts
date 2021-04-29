@@ -8,44 +8,32 @@
  *
  */
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule, Http } from '@angular/http';
 import { CommonModule } from '@angular/common';
-import { NgJhipsterModule } from 'ng-jhipster';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CookieModule } from 'ngx-cookie';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
     imports: [
-        NgbModule.forRoot(),
-        NgJhipsterModule.forRoot({
-            i18nEnabled: true,
-            defaultI18nLang: 'en'
-        }),
-        InfiniteScrollModule,
+        CommonModule,
+        FormsModule,
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
-        BsDropdownModule.forRoot(),
-        CookieModule.forRoot(),
-        Ng2DeviceDetectorModule.forRoot()
     ],
     exports: [
+        CommonModule,
         NgbModule,
         FormsModule,
-        HttpModule,
         CommonModule,
-        NgJhipsterModule,
         InfiniteScrollModule,
         TooltipModule,
         TabsModule,
-        UiSwitchModule,
-        BsDropdownModule
-    ]
+        FontAwesomeModule,
+        ReactiveFormsModule,
+    ],
 })
-export class PodiumGatewaySharedLibsModule {
-}
+export class PodiumGatewaySharedLibsModule { }
+
