@@ -9,8 +9,10 @@
  */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, map } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
+import { StateStorageService } from './state-storage.service';
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Account } from './account.model';
 
@@ -20,9 +22,11 @@ export class AccountService {
     private authenticationState = new BehaviorSubject<any>(null);
     private accountCache$?: Observable<Account | null>;
 
-    constructor (
+    constructor(
         private config: ApplicationConfigService,
         private http: HttpClient,
+        private stateStorageService: StateStorageService,
+        private router: Router,
     ) {}
 
     authenticate(_identity: Account | null) {
@@ -52,13 +56,12 @@ export class AccountService {
     identity(force?: boolean): Observable<Account | null> {
         if (!this.accountCache$ || force || !this.isAuthenticated()) {
             this.accountCache$ = this.fetch().pipe(
-                map(account => {
+                catchError(() => of(null)),
+                tap((account: Account | null) => {
                     this.authenticate(account);
-                    return this.userIdentity;
-                }),
-                catchError(() => {
-                    this.authenticate(null);;
-                    return null;
+                    if (account) {
+                        this.navigateToStoredUrl();
+                    }
                 }),
                 shareReplay()
             );
@@ -85,6 +88,16 @@ export class AccountService {
     private fetch(): Observable<Account> {
         let url = this.config.getUaaEndpoint('api/account');
         return this.http.get<Account>(url);
+    }
+
+    private navigateToStoredUrl(): void {
+        // previousState can be set in the authExpiredInterceptor and in the userRouteAccessService
+        // if login is successful, go to stored previousState and clear previousState
+        const previousUrl = this.stateStorageService.getUrl();
+        if (previousUrl) {
+            this.stateStorageService.clearUrl();
+            this.router.navigateByUrl(previousUrl);
+        }
     }
 
     save(account: any): Observable<any> {
