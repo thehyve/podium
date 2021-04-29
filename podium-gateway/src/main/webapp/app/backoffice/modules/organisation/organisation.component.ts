@@ -33,7 +33,7 @@ import { ApplicationConfigService } from '../../../core/config/application-confi
             ) => {
                 let serviceConfig = {
                     getEndpoint(path: string) {
-                        return config.getEndpointFor(`api/organisations/${path}`);
+                        return config.getUaaEndpoint(`api/organisations/${path}`);
                     },
                 };
                 return new OverviewService(serviceConfig, http);
