@@ -21,7 +21,7 @@ import { RequestReviewFeedback } from './request-review-feedback';
 import { RequestReviewDecision } from './request-review-decision';
 import { Subscription } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RequestAccessService implements OnDestroy {
 
     private currentUser: User;

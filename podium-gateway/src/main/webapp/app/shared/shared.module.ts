@@ -17,11 +17,9 @@ import { PasswordMatchesDirective } from './validators/password-matches.directiv
 import { PasswordValidatorDirective } from './validators/password-validator.directive';
 import { WordLengthValidatorDirective } from './validators/word-length-validator.directive';
 import { SpecialismComponent } from './specialism/specialism.component';
-import { RequestService } from './request/request.service';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
 import { TranslateDirective } from './language/translate.directive';
-import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
@@ -70,8 +68,6 @@ import { ItemCountComponent } from './pagination/item-count.component';
     ],
     providers: [
         SessionStorageService,
-        RequestService,
-        RequestAccessService,
         DatePipe
     ],
     entryComponents: [PodiumLoginComponent],
