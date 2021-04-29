@@ -96,5 +96,14 @@
     "webpack:prod": "ng build --prod",
     "test": "ng test --coverage --log-heap-usage -w=2",
     "test:watch": "npm run test -- --watch"
+  },
+  "config": {
+    "backend_port": "8080",
+    "default_environment": "prod",
+    "packaging": "jar"
+  },
+  "jestSonar": {
+    "reportPath": "target/test-results/jest",
+    "reportFile": "TESTS-results-sonar.xml"
   }
 }
