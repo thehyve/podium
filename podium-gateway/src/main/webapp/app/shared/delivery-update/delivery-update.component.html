@@ -10,10 +10,10 @@
 
 <div class="delivery-status-update-container">
     <form #statusUpdateForm="ngForm" class="form" role="form" (ngSubmit)="confirmStatusUpdate()">
-        <div class="modal-header" [ngClass]="{'cancel-header': statusUpdateAction == 'Cancel', 'release-header': statusUpdateAction == 'Release'}">
+        <div class="modal-header" [ngClass]="{'cancel-header': isCancel, 'release-header': isRelease}">
             <h4 class="modal-title">
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">warning</span>
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
+                <span class="material-icons" *ngIf="isCancel">warning</span>
+                <span class="material-icons" *ngIf="isRelease">local_shipping</span>
                 <span [translate]="'delivery.update.' + statusUpdateAction + '.' + delivery.type + '.header'"
                     [translateParams]="getHeaderTranslation()">
                 </span>
@@ -74,11 +74,11 @@
                     tooltip="{{getSubmitTooltip()}}"
                     [isDisabled]="statusUpdateForm.form.valid" class="btn"
                     [ngClass]="{
-                        'btn-danger': statusUpdateAction == 'Cancel',
-                        'btn-success': statusUpdateAction == 'Release'
+                        'btn-danger': isCancel,
+                        'btn-success': isRelease
                     }">
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">cancel</span>
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
+                <span class="material-icons" *ngIf="isCancel">cancel</span>
+                <span class="material-icons" *ngIf="isRelease">local_shipping</span>
                 &nbsp;
                 <span [translate]="'delivery.actions.submit'" class="test-submit-btn"></span>
             </button>
