@@ -2,12 +2,13 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import locale from '@angular/common/locales/en';
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateService, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
 import { NgxWebstorageModule } from 'ngx-webstorage';
 import { httpInterceptorProviders } from './core/interceptor/http.provider';
 import { translatePartialLoader, missingTranslationHandler } from './config/translation.config';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { PodiumGatewayRequestModule } from './request/request.module';
 import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
@@ -73,7 +74,9 @@ import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
         UserRouteAccessService,
     ],
     bootstrap: [PdmMainComponent],
-    exports: []
+    exports: [
+        BrowserAnimationsModule
+    ]
 })
 export class PodiumGatewayAppModule {
     constructor(
