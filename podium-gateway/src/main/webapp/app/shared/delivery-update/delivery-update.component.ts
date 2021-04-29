@@ -62,8 +62,7 @@ export class DeliveryStatusUpdateDialogComponent {
     }
 
     getHeaderTranslation() {
-        let requestId = this.request.id;
-        return '{requestId: \'' + requestId + '\'}';
+        return { requestId: this.request.id };
     };
 
     getSubmitTooltip(): string {
@@ -78,5 +77,13 @@ export class DeliveryStatusUpdateDialogComponent {
 
     onSuccess() {
         this.activeModal.close(true);
+    }
+
+    get isCancel() {
+        return this.statusUpdateAction === DeliveryStatusUpdateAction.Cancel;
+    }
+
+    get isRelease() {
+        return this.statusUpdateAction === DeliveryStatusUpdateAction.Release;
     }
 }
