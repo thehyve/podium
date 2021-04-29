@@ -9,6 +9,7 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { SessionStorageService } from 'ngx-webstorage';
 import { PodiumGatewaySharedCommonModule } from './shared-common.module';
 import { PodiumGatewaySharedLibsModule } from './shared-libs.module';
@@ -19,7 +20,6 @@ import { WordLengthValidatorDirective } from './validators/word-length-validator
 import { SpecialismComponent } from './specialism/specialism.component';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
-import { TranslateDirective } from './language/translate.directive';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
@@ -28,7 +28,7 @@ import { PdmErrorComponent } from '../layouts/error/error.component';
 import { NavbarComponent } from '../layouts/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
-import { NgUploaderModule } from 'ngx-uploader';
+import { NgxUploaderModule } from 'ngx-uploader';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
 import { PodiumLoginComponent } from '../login/login.component';
 import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
@@ -41,13 +41,13 @@ import { ItemCountComponent } from './pagination/item-count.component';
         PodiumGatewaySharedLibsModule,
         PodiumGatewaySharedCommonModule,
         RouterModule,
-        NgUploaderModule,
+        TranslateModule.forChild(),
+        NgxUploaderModule,
     ],
     declarations: [
         AttachmentComponent,
         PodiumLoginComponent,
         SpecialismComponent,
-        TranslateDirective,
         OrganisationSelectorComponent,
         RequestReviewPanelComponent,
         EmailValidatorDirective,
@@ -70,11 +70,9 @@ import { ItemCountComponent } from './pagination/item-count.component';
         SessionStorageService,
         DatePipe
     ],
-    entryComponents: [PodiumLoginComponent],
     exports: [
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
-        TranslateDirective,
         PodiumLoginComponent,
         SpecialismComponent,
         OrganisationSelectorComponent,
