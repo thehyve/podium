@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '../../core/util/alert.service';
 import { RequestBase } from '../../shared/request/request-base';
@@ -25,7 +25,7 @@ import { RequestOverviewStatusOption } from '../../shared/request/request-status
     encapsulation: ViewEncapsulation.None
 })
 
-export class RequestMainDetailComponent implements OnInit {
+export class RequestMainDetailComponent implements AfterViewInit {
 
     /**
      * Setup component as ViewChild to access methods inside child.
@@ -64,7 +64,7 @@ export class RequestMainDetailComponent implements OnInit {
         return this._request;
     }
 
-    ngOnInit() {
+    ngAfterViewInit() {
         this.attachments = [];
         this.route.data
             .subscribe((data: { request: RequestBase }) => {
@@ -126,6 +126,9 @@ export class RequestMainDetailComponent implements OnInit {
      * @returns {boolean}
      */
     canChangeAttachments() {
+        if (!this.request) {
+            return false;
+        }
         let isRequester = this.requestAccessService.isRequesterOf(this.request);
         let isCoordinator = this.requestAccessService.isCoordinatorFor(this.request);
         let isInRevision = this.isInRevision();
@@ -135,6 +138,9 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     canViewAttachmentTab() {
+        if (!this.request) {
+            return false;
+        }
         return !this.isInRevision() || this.requestAccessService.isCoordinatorFor(this.request);
     }
 

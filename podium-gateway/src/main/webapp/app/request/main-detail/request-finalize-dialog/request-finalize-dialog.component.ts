@@ -81,8 +81,7 @@ export class RequestFinalizeDialogComponent implements OnInit {
      * @returns {string} the formatted object holding the requestId
      */
     getHeaderTranslation() {
-        let requestId = this.request.id;
-        return '{requestId: \'' + requestId + '\'}';
+        return { requestId: this.request.id };
     };
 
 
