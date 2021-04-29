@@ -1,19 +1,26 @@
+/*
+ * Copyright (c) 2017. The Hyve and respective contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * See the file LICENSE in the root of this repository.
+ *
+ */
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { ApplicationConfigService } from '../../core/config/application-config.service';
-import { Metrics, ThreadDump } from './metrics.model';
-
 @Injectable({ providedIn: 'root' })
-export class MetricsService {
-    constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) { }
+export class PdmMetricsService {
 
-    getMetrics(): Observable<Metrics> {
-        return this.http.get<Metrics>(this.applicationConfigService.getEndpointFor('management/jhimetrics'));
+    constructor(private http: HttpClient) { }
+
+    getMetrics(): Observable<any> {
+        return this.http.get('management/metrics');
     }
 
-    threadDump(): Observable<ThreadDump> {
-        return this.http.get<ThreadDump>(this.applicationConfigService.getEndpointFor('management/threaddump'));
+    threadDump(): Observable<any> {
+        return this.http.get('management/dump');
     }
 }
