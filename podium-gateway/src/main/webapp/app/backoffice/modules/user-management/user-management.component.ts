@@ -33,10 +33,10 @@ import { ApplicationConfigService } from '../../../core/config/application-confi
                 http: HttpClient,
             ) => {
                 let serviceConfig = {
-                    getUaaEndpoint(path: string) {
+                    getEndpoint(path: string) {
                         return config.getUaaEndpoint(`api/users/${path}`);
                     },
-                } as ApplicationConfigService;
+                };
                 return new OverviewService(serviceConfig, http);
             },
             deps: [
@@ -97,7 +97,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
         });
     }
 
-    unlock (user) {
+    unlock(user) {
         this.userService.unlock(user).subscribe(
             response => {
                 if (response.status === 200) {
@@ -121,14 +121,14 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
             .subscribe((res) => this.overviewService.overviewUpdateEvent(res));
     }
 
-    processAvailableUsers (users: User[], headers) {
+    processAvailableUsers(users: User[], headers) {
         this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.users = users;
     }
 
-    trackIdentity (index, item: User) {
+    trackIdentity(index, item: User) {
         return item.id;
     }
 }

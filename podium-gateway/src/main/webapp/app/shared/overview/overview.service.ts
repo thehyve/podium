@@ -8,13 +8,16 @@
  *
  */
 
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { UserGroupAuthority } from '../authority/authority.constants';
 import { Observable, Subject, throwError } from 'rxjs';
-import { ApplicationConfigService } from '../../core/config/application-config.service';
 import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
 import { RequestBase } from '../request/request-base';
+
+export interface OverviewServiceConfig {
+    getEndpoint(path: string): string;
+}
 
 @Injectable()
 export class OverviewService {
@@ -23,12 +26,12 @@ export class OverviewService {
     public onOverviewUpdate: Subject<HttpResponseBase> = new Subject();
 
     constructor(
-        private config: ApplicationConfigService,
+        private config: OverviewServiceConfig,
         private http: HttpClient,
     ) {}
 
     private getUrl(path: string) {
-        return this.config.getUaaEndpoint(path);
+        return this.config.getEndpoint(path);
     }
 
     findRequestsForOverview(

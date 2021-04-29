@@ -46,10 +46,10 @@ import { ApplicationConfigService } from '../../core/config/application-config.s
                 http: HttpClient,
             ) => {
                 let serviceConfig = {
-                    getUaaEndpoint(path: string) {
-                        return config.getUaaEndpoint(`api/requests/${path}`);
+                    getEndpoint(path: string) {
+                        return config.getEndpointFor(`api/requests/${path}`);
                     },
-                } as ApplicationConfigService;
+                };
                 return new OverviewService(serviceConfig, http);
             },
             deps: [

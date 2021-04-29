@@ -32,10 +32,10 @@ import { ApplicationConfigService } from '../../../core/config/application-confi
                 http: HttpClient,
             ) => {
                 let serviceConfig = {
-                    getUaaEndpoint(path: string) {
-                        return config.getUaaEndpoint(`api/organisations/${path}`);
+                    getEndpoint(path: string) {
+                        return config.getEndpointFor(`api/organisations/${path}`);
                     },
-                } as ApplicationConfigService;
+                };
                 return new OverviewService(serviceConfig, http);
             },
             deps: [
@@ -89,7 +89,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         }
     }
 
-    trackUuid (index: number, item: Organisation) {
+    trackUuid(index: number, item: Organisation) {
         return item.uuid;
     }
 
@@ -110,7 +110,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         this.fetchOrganisations();
     }
 
-    toggleActivated (organisation) {
+    toggleActivated(organisation) {
         organisation.activated = !organisation.activated;
         this.organisationService.activate(organisation.uuid, organisation.activated).subscribe(
             (res) => {
