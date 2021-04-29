@@ -126,6 +126,9 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
      * @param request the request
      */
     private checkIsInRevision(request) {
+        if (!request) {
+            return;
+        }
         if (this.isRevisionStatusForRequester(request)) {
             this.isInRevision = true;
             this.requestFormService.request = request;
