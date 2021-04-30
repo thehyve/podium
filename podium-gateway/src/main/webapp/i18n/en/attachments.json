@@ -13,15 +13,15 @@
             "owner": "Owner",
             "size": "Size",
             "uploader": "Uploader",
-            "uploadDate": "Upload Date",
+            "uploadDate": "Upload date",
             "validate": {
                 "fileTypes": "Please set file types for "
             }
         },
         "option": {
             "NONE": "<em>&ndash; None &ndash;</em>",
-            "METC_LETTER": "METC Letter",
-            "ORG_CONDITIONS": "Organisation Conditions",
+            "METC_LETTER": "METC letter",
+            "ORG_CONDITIONS": "Organisation conditions",
             "MTA": "MTA",
             "DTA": "DTA",
             "OTHER": "Other"

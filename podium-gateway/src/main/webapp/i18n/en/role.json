@@ -2,12 +2,12 @@
     "role" : {
         "home": {
             "title": "Roles",
-            "createLabel": "Create a new Role",
-            "createOrEditLabel": "Create or edit a Role",
-            "search": "Search for Role"
+            "createLabel": "Create a new role",
+            "createOrEditLabel": "Create or edit a role",
+            "search": "Search for role"
         },
         "delete": {
-            "question": "Are you sure you want to delete Role {{ id }}?"
+            "question": "Are you sure you want to delete role {{ id }}?"
         },
         "detail": {
             "title": "Role"
@@ -18,9 +18,9 @@
         "organisation": "Organisation",
         "authority": "Authority",
         "options": "Options",
-        "created": "A new Role is created with identifier {{ param }}",
-        "updated": "A Role is updated with identifier {{ param }}",
-        "deleted": "A Role is deleted with identifier {{ param }}"
+        "created": "A new role is created with identifier {{ param }}",
+        "updated": "A role is updated with identifier {{ param }}",
+        "deleted": "A role is deleted with identifier {{ param }}"
     },
     "roleAssign": {
         "saved": "Successfully saved",
