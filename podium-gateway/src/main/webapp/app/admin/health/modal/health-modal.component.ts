@@ -19,7 +19,7 @@ export class HealthModalComponent {
       if (val > 1) {
         return val.toFixed(2) + ' GB';
       } else {
-        return (value / 1048576).toFixed(2) + ' MB';
+        return (value / 1000000).toFixed(2) + ' MB';
       }
     }
 
