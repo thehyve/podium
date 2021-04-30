@@ -3,7 +3,7 @@
         "reindex": {
             "accepted": "Request accepted, performing full Elasticsearch reindexing.",
             "dialog": {
-                "title": "Confirm Elasticsearch Reindex",
+                "title": "Confirm Elasticsearch reindex",
                 "question": "Are you sure you want to reindex Elasticsearch? This could take a while!",
                 "cancel": "Cancel",
                 "confirm": "Reindex"

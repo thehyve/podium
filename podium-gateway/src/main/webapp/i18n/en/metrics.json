@@ -1,15 +1,15 @@
 {
     "metrics": {
-        "title": "Application Metrics",
+        "title": "Application metrics",
         "refresh.button": "Refresh",
         "updating": "Updating...",
         "jvm": {
-            "title": "JVM Metrics",
+            "title": "JVM metrics",
             "memory": {
                 "title": "Memory",
-                "total": "Total Memory",
-                "heap": "Heap Memory",
-                "nonheap": "Non-Heap Memory"
+                "total": "Total memory",
+                "heap": "Heap memory",
+                "nonheap": "Non-heap memory"
             },
             "threads": {
                 "title": "Threads",
@@ -21,20 +21,20 @@
                 "dump": {
                     "title": "Threads dump",
                     "id": "Id: ",
-                    "blockedtime": "Blocked Time",
-                    "blockedcount": "Blocked Count",
-                    "waitedtime": "Waited Time",
-                    "waitedcount": "Waited Count",
+                    "blockedtime": "Blocked time",
+                    "blockedcount": "Blocked count",
+                    "waitedtime": "Waited time",
+                    "waitedcount": "Waited count",
                     "lockname": "Lock name",
                     "stacktrace": "Stacktrace",
-                    "show": "Show Stacktrace",
-                    "hide": "Hide Stacktrace"
+                    "show": "Show stacktrace",
+                    "hide": "Hide stacktrace"
                 }
             },
             "gc": {
                 "title": "Garbage collections",
-                "marksweepcount": "Mark Sweep count",
-                "marksweeptime": "Mark Sweep time",
+                "marksweepcount": "Mark sweep count",
+                "marksweeptime": "Mark sweep time",
                 "scavengecount": "Scavenge count",
                 "scavengetime": "Scavenge time"
             },
@@ -51,7 +51,7 @@
                 "code": {
                     "ok": "Ok",
                     "notfound": "Not found",
-                    "servererror": "Server Error"
+                    "servererror": "Server error"
                 }
             }
         },
@@ -72,14 +72,14 @@
         "cache": {
             "title": "Cache statistics",
             "cachename": "Cache name",
-            "hits": "Cache Hits",
-            "misses": "Cache Misses",
-            "gets": "Cache Gets",
-            "puts": "Cache Puts",
-            "removals": "Cache Removals",
-            "evictions": "Cache Evictions",
-            "hitPercent": "Cache Hit %",
-            "missPercent": "Cache Miss %",
+            "hits": "Cache hits",
+            "misses": "Cache misses",
+            "gets": "Cache gets",
+            "puts": "Cache puts",
+            "removals": "Cache removals",
+            "evictions": "Cache evictions",
+            "hitPercent": "Cache hit %",
+            "missPercent": "Cache miss %",
             "averageGetTime": "Average get time (µs)",
             "averagePutTime": "Average put time (µs)",
             "averageRemoveTime": "Average remove time (µs)"
