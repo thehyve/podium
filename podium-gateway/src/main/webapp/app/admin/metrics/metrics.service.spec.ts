@@ -1,19 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { MetricsService } from './metrics.service';
+import { PdmMetricsService } from './metrics.service';
 import { ThreadDump, ThreadState } from './metrics.model';
 
 describe('Service Tests', () => {
-  describe('Logs Service', () => {
-    let service: MetricsService;
+  describe('Metrics Service', () => {
+    let service: PdmMetricsService;
     let httpMock: HttpTestingController;
 
     beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
       });
-      service = TestBed.inject(MetricsService);
+      service = TestBed.inject(PdmMetricsService);
       httpMock = TestBed.inject(HttpTestingController);
     });
 

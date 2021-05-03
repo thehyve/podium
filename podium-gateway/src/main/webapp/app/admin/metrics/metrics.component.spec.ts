@@ -2,30 +2,30 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 
-import { MetricsComponent } from './metrics.component';
-import { MetricsService } from './metrics.service';
+import { PdmMetricsMonitoringComponent } from './metrics.component';
+import { PdmMetricsService } from './metrics.service';
 
 describe('Component Tests', () => {
   describe('MetricsComponent', () => {
-    let comp: MetricsComponent;
-    let fixture: ComponentFixture<MetricsComponent>;
-    let service: MetricsService;
+    let comp: PdmMetricsMonitoringComponent;
+    let fixture: ComponentFixture<PdmMetricsMonitoringComponent>;
+    let service: PdmMetricsService;
 
     beforeEach(
       waitForAsync(() => {
         TestBed.configureTestingModule({
           imports: [HttpClientTestingModule],
-          declarations: [MetricsComponent],
+          declarations: [PdmMetricsMonitoringComponent],
         })
-          .overrideTemplate(MetricsComponent, '')
+          .overrideTemplate(PdmMetricsMonitoringComponent, '')
           .compileComponents();
       })
     );
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(MetricsComponent);
+      fixture = TestBed.createComponent(PdmMetricsMonitoringComponent);
       comp = fixture.componentInstance;
-      service = TestBed.inject(MetricsService);
+      service = TestBed.inject(PdmMetricsService);
     });
 
     describe('refresh', () => {

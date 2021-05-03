@@ -87,7 +87,7 @@
                 "test": {
                     "builder": "@angular-builders/jest:run",
                     "options": {
-                        "configPath": "jest.conf.js"
+                        "configPath": "src/test/javascript/jest.conf.js"
                     }
                 }
             },

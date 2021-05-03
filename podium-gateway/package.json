@@ -73,6 +73,7 @@
     "prettier-plugin-java": "1.0.2",
     "prettier-plugin-packagejson": "2.2.10",
     "protractor": "7.0.0",
+    "protractor-cucumber-framework": "^8.0.3",
     "rimraf": "3.0.2",
     "simple-progress-webpack-plugin": "1.1.2",
     "ts-node": "9.1.1",
