@@ -136,7 +136,7 @@
                             [translate]="'global.messages.validate.email.required'">
                         </small>
                         <small class="form-text text-danger"
-                            *ngIf="registerForm.get('email')?.errors?.invalid"
+                            *ngIf="registerForm.get('email')?.errors?.email"
                             [translate]="'global.messages.validate.email.invalid'">
                         </small>
                         <small class="form-text text-danger"
