@@ -19,6 +19,6 @@ if (!DEBUG_INFO_ENABLED) {
 }
 
 platformBrowserDynamic()
-    .bootstrapModule(PodiumGatewayAppModule, { preserveWhitespaces: false })
+    .bootstrapModule(PodiumGatewayAppModule, { preserveWhitespaces: true })
     .then(() => console.log('Application started'))
     .catch(err => console.error(err));

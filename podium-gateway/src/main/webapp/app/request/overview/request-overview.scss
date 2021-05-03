@@ -13,10 +13,6 @@ ul.overview-list-cell {
     margin-bottom: 0;
     list-style-type: none;
 
-    li {
-        white-space: pre;
-    }
-
     &.draft-request {
         list-style-type: circle;
     }

@@ -19,14 +19,14 @@
                 <dt><span [translate]="'request.detail.organisation'"></span></dt>
                 <dd>
                     <span class="test-organisations" *ngFor="let organisation of request.organisations">
-                        {{ organisation.name | titlecase }}
+                        {{ organisation.name }}
                     </span>
                 </dd>
                 <dt><span [translate]="'request.detail.requestTypes'"></span></dt>
                 <dd>
                     <ul>
                         <li class="test-requestType" *ngFor="let requestType of requestDetails.requestType">
-                            <span class="test-requestType-text">{{ requestType | titlecase }}</span>
+                            <span class="test-requestType-text">{{ requestType }}</span>
                         </li>
                     </ul>
                 </dd>
@@ -93,14 +93,14 @@
                             <td>
                                 <ul>
                                     <li *ngFor="let requestType of relatedRequest.requestDetail.requestType">
-                                        {{ requestType | titlecase }}
+                                        {{ requestType }}
                                     </li>
                                 </ul>
 
                             </td>
                             <td>
                                 <span *ngFor="let organisation of relatedRequest.organisations">
-                                    {{ organisation.name | titlecase }}
+                                    {{ organisation.name }}
                                 </span>
                             </td>
                         </tr>
