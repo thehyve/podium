@@ -3,29 +3,29 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 
-import { HealthComponent } from './health.component';
+import { PdmHealthCheckComponent } from './health.component';
 import { HealthService } from './health.service';
 import { Health } from './health.model';
 
 describe('Component Tests', () => {
   describe('HealthComponent', () => {
-    let comp: HealthComponent;
-    let fixture: ComponentFixture<HealthComponent>;
+    let comp: PdmHealthCheckComponent;
+    let fixture: ComponentFixture<PdmHealthCheckComponent>;
     let service: HealthService;
 
     beforeEach(
       waitForAsync(() => {
         TestBed.configureTestingModule({
           imports: [HttpClientTestingModule],
-          declarations: [HealthComponent],
+          declarations: [PdmHealthCheckComponent],
         })
-          .overrideTemplate(HealthComponent, '')
+          .overrideTemplate(PdmHealthCheckComponent, '')
           .compileComponents();
       })
     );
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(HealthComponent);
+      fixture = TestBed.createComponent(PdmHealthCheckComponent);
       comp = fixture.componentInstance;
       service = TestBed.inject(HealthService);
     });

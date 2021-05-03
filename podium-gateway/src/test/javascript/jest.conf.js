@@ -1,4 +1,4 @@
-const tsconfig = require("./tsconfig.json");
+const tsconfig = require("../../../tsconfig.json");
 
 module.exports = {
     setupFiles: ["jest-date-mock"],

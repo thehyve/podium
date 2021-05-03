@@ -9,15 +9,14 @@
  */
 import { SpyObject } from './spyobject';
 import { Subscriber } from 'rxjs';
-import { JhiEventManager } from 'ng-jhipster';
-import Spy = jasmine.Spy;
+import {EventManager} from "app/core/util/event-manager.service";
 
 export class MockEventManager extends SpyObject {
 
     subscriber: Subscriber<any>;
 
     constructor() {
-        super(JhiEventManager);
+        super(EventManager);
 
         this.subscriber = new Subscriber();
     }

@@ -2,32 +2,32 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 
-import { ConfigurationComponent } from './configuration.component';
-import { ConfigurationService } from './configuration.service';
-import { Bean, PropertySource } from './configuration.model';
+import { PdmConfigurationComponent } from './configuration.component';
+import { PdmConfigurationService } from './configuration.service';
+import {Bean, PropertySource} from "app/admin/configuration/configuration.model";
 
 describe('Component Tests', () => {
   describe('ConfigurationComponent', () => {
-    let comp: ConfigurationComponent;
-    let fixture: ComponentFixture<ConfigurationComponent>;
-    let service: ConfigurationService;
+    let comp: PdmConfigurationComponent;
+    let fixture: ComponentFixture<PdmConfigurationComponent>;
+    let service: PdmConfigurationService;
 
     beforeEach(
       waitForAsync(() => {
         TestBed.configureTestingModule({
           imports: [HttpClientTestingModule],
-          declarations: [ConfigurationComponent],
-          providers: [ConfigurationService],
+          declarations: [PdmConfigurationComponent],
+          providers: [PdmConfigurationService],
         })
-          .overrideTemplate(ConfigurationComponent, '')
+          .overrideTemplate(PdmConfigurationComponent, '')
           .compileComponents();
       })
     );
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(ConfigurationComponent);
+      fixture = TestBed.createComponent(PdmConfigurationComponent);
       comp = fixture.componentInstance;
-      service = TestBed.inject(ConfigurationService);
+      service = TestBed.inject(PdmConfigurationService);
     });
 
     describe('OnInit', () => {
@@ -53,18 +53,17 @@ describe('Component Tests', () => {
             },
           },
         ];
-        spyOn(service, 'getBeans').and.returnValue(of(beans));
-        spyOn(service, 'getPropertySources').and.returnValue(of(propertySources));
+        spyOn(service, 'get').and.returnValue(of(beans));
+        spyOn(service, 'getEnv').and.returnValue(of(propertySources));
 
         // WHEN
         comp.ngOnInit();
 
         // THEN
-        expect(service.getBeans).toHaveBeenCalled();
-        expect(service.getPropertySources).toHaveBeenCalled();
-        expect(comp.allBeans).toEqual(beans);
-        expect(comp.beans).toEqual(beans);
-        expect(comp.propertySources).toEqual(propertySources);
+        expect(service.get).toHaveBeenCalled();
+        expect(service.getEnv).toHaveBeenCalled();
+        expect(comp.configuration).toEqual(beans);
+        expect(comp.allConfiguration).toEqual(propertySources);
       });
     });
   });
