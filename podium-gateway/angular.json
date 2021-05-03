@@ -14,7 +14,7 @@
                         "customWebpackConfig": {
                             "path": "./webpack/webpack.custom.js"
                         },
-                        "outputPath": "target/classes/static/",
+                        "outputPath": "target/www",
                         "index": "src/main/webapp/index.html",
                         "main": "src/main/webapp/main.ts",
                         "polyfills": "src/main/webapp/polyfills.ts",

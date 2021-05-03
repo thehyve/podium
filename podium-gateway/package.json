@@ -90,13 +90,13 @@
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "start": "npm run webpack:dev",
-    "webpack:build": "npm run clean-www && npm run webapp:build:dev",
+    "webpack:build": "npm run clean-www && npm run webpack:build:dev",
     "webpack:build:dev": "ng build",
     "webpack:dev": "ng serve",
     "webpack:prod": "ng build --prod",
     "test": "ng test --coverage --log-heap-usage -w=2",
     "test:watch": "npm run test -- --watch",
-    "clean-www": "rimraf target/classes/static/app/{src,target/}"
+    "clean-www": "rimraf target/www"
   },
   "config": {
     "backend_port": "8080",
