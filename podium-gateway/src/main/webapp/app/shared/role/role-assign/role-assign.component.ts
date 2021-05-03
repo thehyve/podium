@@ -261,7 +261,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     public updateRole(role: Role, user: OrganisationUser, remove: boolean) {
-        return Observable.create((observer) => {
+        return new Observable((observer) => {
             if (role) {
                 let userIdx = role.users.indexOf(user.uuid);
 
