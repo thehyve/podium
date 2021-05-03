@@ -16,6 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RequestType } from '../../../../shared/request/request-type';
 import { Organisation } from '../../../../shared/organisation/organisation.model';
 import { OrganisationService } from '../../../../shared/organisation/organisation.service';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
     selector: 'pdm-organisation-form',
@@ -34,6 +35,7 @@ export class OrganisationFormComponent implements OnInit {
     constructor(
         private organisationService: OrganisationService,
         private alertService: AlertService,
+        private translateService: TranslateService,
         private accountService: AccountService,
         private route: ActivatedRoute,
         private router: Router
@@ -68,7 +70,7 @@ export class OrganisationFormComponent implements OnInit {
 
         let notification = isCreate ? 'organisation.saved' : 'organisation.updated';
 
-        this.alertService.success(notification);
+        this.alertService.success(this.translateService.instant(notification));
         this.isSaving = false;
     }
 
