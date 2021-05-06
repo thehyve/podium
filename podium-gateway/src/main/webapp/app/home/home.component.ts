@@ -7,12 +7,13 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager } from '../core/util/event-manager.service';
 import { Account } from '../core/auth/account.model';
 import { AccountService } from '../core/auth/account.service';
 import { RedirectService } from '../core/auth/redirect.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-home',
@@ -20,11 +21,11 @@ import { RedirectService } from '../core/auth/redirect.service';
     styleUrls: [
         'home.component.scss'
     ]
-
 })
-export class PdmHomeComponent implements OnInit {
+export class PdmHomeComponent implements OnInit, OnDestroy {
     account: Account;
     modalRef: NgbModalRef;
+    authenticationSuccessEvents: Subscription;
 
     constructor(
         private accountService: AccountService,
@@ -37,16 +38,22 @@ export class PdmHomeComponent implements OnInit {
     ngOnInit() {
         this.accountService.identity().subscribe((account) => {
             this.account = account;
+            if (this.isAuthenticated()) {
+                this.redirectService.redirectUser();
+            }
         });
         this.registerAuthenticationSuccess();
+    }
 
-        if (this.isAuthenticated()) {
-            this.redirectService.redirectUser();
-        }
+    ngOnDestroy() {
+        this.authenticationSuccessEvents.unsubscribe();
     }
 
     registerAuthenticationSuccess() {
-        this.eventManager.subscribe('authenticationSuccess', (message) => {
+        this.authenticationSuccessEvents = this.eventManager.subscribe('authenticationSuccess', (message) => {
+            if (this.isAuthenticated()) {
+                this.redirectService.redirectUser();
+            }
             this.accountService.identity().subscribe((account) => {
                 this.account = account;
             });

@@ -8,13 +8,16 @@
  *
  */
 import { SpyObject } from './spyobject';
-import { AccountService } from '../../../../main/webapp/app/core/auth/account.service';
+import { AccountService } from 'app/core/auth/account.service';
 import Spy = jasmine.Spy;
+import {of} from "rxjs";
 
 export class MockAccountService extends SpyObject {
 
     getSpy: Spy;
     saveSpy: Spy;
+    identitySpy: Spy;
+    authenticationSpy: Spy;
     fakeResponse: any;
 
     constructor() {
@@ -23,6 +26,8 @@ export class MockAccountService extends SpyObject {
         this.fakeResponse = null;
         this.getSpy = this.spy('get').andReturn(this);
         this.saveSpy = this.spy('save').andReturn(this);
+        this.identitySpy = this.spy('identity').andReturn(of(this.fakeResponse));
+        this.authenticationSpy = this.spy('getAuthenticationState').andReturn(of(this.fakeResponse));
     }
 
     subscribe(callback: any) {

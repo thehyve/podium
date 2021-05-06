@@ -8,10 +8,8 @@
  *
  */
 import { TestBed, waitForAsync, tick, fakeAsync, inject } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
-import { BaseRequestOptions } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { MockActivatedRoute, MockRouter } from '../../../../../test/javascript/spec/helpers/mock-route.service';
 import { Verify } from './verify.service';
 import { VerifyComponent } from './verify.component';
@@ -28,9 +26,8 @@ describe('Component Tests', () => {
             TestBed.configureTestingModule({
                 imports: [PodiumTestModule],
                 declarations: [VerifyComponent],
-                providers: [MockBackend,
+                providers: [
                     Verify,
-                    BaseRequestOptions,
                     {
                         provide: ActivatedRoute,
                         useValue: new MockActivatedRoute({'key': 'ABC123'})
@@ -52,7 +49,7 @@ describe('Component Tests', () => {
         it('calls activate.get with the key from params',
             inject([Verify],
                 fakeAsync((service: Verify) => {
-                    spyOn(service, 'get').and.returnValue(Observable.of());
+                    spyOn(service, 'get').and.returnValue(of());
 
                     comp.ngOnInit();
                     tick();
@@ -65,7 +62,7 @@ describe('Component Tests', () => {
         it('should set set success to OK upon successful activation',
             inject([Verify],
                 fakeAsync((service: Verify) => {
-                    spyOn(service, 'get').and.returnValue(Observable.of({}));
+                    spyOn(service, 'get').and.returnValue(of({}));
 
                     comp.ngOnInit();
                     tick();
@@ -79,7 +76,7 @@ describe('Component Tests', () => {
         it('should set set error to ERROR upon activation failure',
             inject([Verify],
                 fakeAsync((service: Verify) => {
-                    spyOn(service, 'get').and.returnValue(Observable.throw('ERROR'));
+                    spyOn(service, 'get').and.returnValue(throwError('ERROR'));
 
                     comp.ngOnInit();
                     tick();

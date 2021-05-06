@@ -36,11 +36,9 @@ export class UserModalService {
     userModalRef(component: Component, user: User): NgbModalRef {
         let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.user = user;
-        modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
+        modalRef.result.then(() => {
             this.isOpen = false;
-        }, (reason) => {
-            console.log(`Dismissed ${reason}`);
+        }, () => {
             this.isOpen = false;
         });
         return modalRef;

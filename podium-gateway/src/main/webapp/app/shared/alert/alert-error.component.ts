@@ -88,7 +88,6 @@ export class PdmAlertErrorComponent implements OnDestroy {
                     msg: key,
                     params: data,
                     timeout: 5000,
-                    toast: this.alertService.isToast(),
                     scoped: true
                 },
                 this.alerts
