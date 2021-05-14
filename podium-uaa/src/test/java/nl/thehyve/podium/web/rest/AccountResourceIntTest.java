@@ -400,7 +400,7 @@ public class AccountResourceIntTest extends AbstractAuthorisedUserIntTest {
         Optional<ManagedUserRepresentation> userDup = userService.getUserWithAuthoritiesByLogin("badguy");
         assertThat(userDup.isPresent()).isTrue();
         assertThat(userDup.get().getAuthorities()).hasSize(1)
-            .containsExactly(authorityRepository.findOne(AuthorityConstants.RESEARCHER).getName());
+            .containsExactly(authorityRepository.findById(AuthorityConstants.RESEARCHER).get().getName());
     }
 
     @Test

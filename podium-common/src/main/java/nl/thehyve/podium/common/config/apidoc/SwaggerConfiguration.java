@@ -8,7 +8,7 @@
 package nl.thehyve.podium.common.config.apidoc;
 
 import com.fasterxml.classmate.TypeResolver;
-import io.github.jhipster.config.apidoc.PageableParameterBuilderPlugin;
+// import io.github.jhipster.config.apidoc.PageableParameterBuilderPlugin;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ import java.util.HashSet;
  */
 @Configuration
 @ConditionalOnClass({ ApiInfo.class, BeanValidatorPluginsConfiguration.class })
-@EnableSwagger2
+@EnableSwagger2WebMvc
 @Import(BeanValidatorPluginsConfiguration.class)
 @Profile(PodiumConstants.SPRING_PROFILE_SWAGGER)
 public class SwaggerConfiguration {
@@ -111,7 +111,7 @@ public class SwaggerConfiguration {
      */
     @Bean
     public Docket swaggerSpringfoxManagementDocket(@Value("${spring.application.name}") String appName,
-                                                   @Value("${management.context-path}") String managementContextPath,
+                                                   @Value("${management.server.servlet.context-path}") String managementContextPath,
                                                    @Value("${info.project.version}") String appVersion) {
         String host = podiumProperties.getSwagger().getHost();
         String[] protocols = podiumProperties.getSwagger().getProtocols();
@@ -129,11 +129,11 @@ public class SwaggerConfiguration {
                 .build();
     }
 
-    @Bean
-    PageableParameterBuilderPlugin pageableParameterBuilderPlugin(TypeNameExtractor nameExtractor,
-                                                                  TypeResolver resolver) {
+    // @Bean
+    // PageableParameterBuilderPlugin pageableParameterBuilderPlugin(TypeNameExtractor nameExtractor,
+    //                                                               TypeResolver resolver) {
 
-        return new PageableParameterBuilderPlugin(nameExtractor, resolver);
-    }
+    //     return new PageableParameterBuilderPlugin(nameExtractor, resolver);
+    // }
 
 }

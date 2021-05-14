@@ -177,7 +177,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         log.info("testOrganisation: {}", testOrganisation);
 
         // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
 
         log.info("organisationEs: {}", organisationEs);
 
@@ -405,7 +405,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
 
         // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
         assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
         assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
@@ -437,7 +437,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         int databaseSizeBeforeUpdate = organisationRepository.findAll().size();
 
         // Update the organisation
-        Organisation updatedOrganisation = organisationRepository.findOne(organisationA.getId());
+        Organisation updatedOrganisation = organisationRepository.findById(organisationA.getId()).get();
 
         mockMvc.perform(
             put("/api/organisations/{uuid}/activation?value={activate}", organisationA.getUuid(),
@@ -454,7 +454,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
 
         // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
         assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
         assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
@@ -473,7 +473,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .andExpect(status().isOk());
 
         // Validate Elasticsearch is empty
-        boolean organisationExistsInEs = organisationSearchRepository.exists(organisationA.getId());
+        boolean organisationExistsInEs = organisationSearchRepository.existsById(organisationA.getId());
         assertThat(organisationExistsInEs).isFalse();
 
         // Validate the database is empty

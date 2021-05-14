@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.config.cassandra;
 
-import com.codahale.metrics.MetricRegistry;
+// import com.codahale.metrics.MetricRegistry;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.QueryOptions;
@@ -16,7 +16,8 @@ import com.datastax.driver.core.SocketOptions;
 import com.datastax.driver.core.policies.LoadBalancingPolicy;
 import com.datastax.driver.core.policies.ReconnectionPolicy;
 import com.datastax.driver.core.policies.RetryPolicy;
-import com.datastax.driver.extras.codecs.jdk8.LocalDateCodec;
+// import com.datastax.driver.extras.codecs.jdk8.LocalDateCodec;
+import java.util.List;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +41,8 @@ public class CassandraConfiguration {
     @Value("${spring.data.cassandra.protocolVersion:V4}")
     private ProtocolVersion protocolVersion;
 
-    @Autowired(required = false)
-    MetricRegistry metricRegistry;
+    // @Autowired(required = false)
+    // MetricRegistry metricRegistry;
 
     private final Logger log = LoggerFactory.getLogger(CassandraConfiguration.class);
 
@@ -55,39 +56,39 @@ public class CassandraConfiguration {
         if (properties.getUsername() != null) {
             builder.withCredentials(properties.getUsername(), properties.getPassword());
         }
-        if (properties.getCompression() != null) {
-            builder.withCompression(properties.getCompression());
-        }
-        if (properties.getLoadBalancingPolicy() != null) {
-            LoadBalancingPolicy policy = instantiate(properties.getLoadBalancingPolicy());
-            builder.withLoadBalancingPolicy(policy);
-        }
+        // if (properties.getCompression() != null) {
+        //     builder.withCompression(properties.getCompression());
+        // }
+        // if (properties.getLoadBalancingPolicy() != null) {
+        //     LoadBalancingPolicy policy = instantiate(properties.getLoadBalancingPolicy());
+        //     builder.withLoadBalancingPolicy(policy);
+        // }
         builder.withQueryOptions(getQueryOptions(properties));
-        if (properties.getReconnectionPolicy() != null) {
-            ReconnectionPolicy policy = instantiate(properties.getReconnectionPolicy());
-            builder.withReconnectionPolicy(policy);
-        }
-        if (properties.getRetryPolicy() != null) {
-            RetryPolicy policy = instantiate(properties.getRetryPolicy());
-            builder.withRetryPolicy(policy);
-        }
+        // if (properties.getReconnectionPolicy() != null) {
+        //     ReconnectionPolicy policy = instantiate(properties.getReconnectionPolicy());
+        //     builder.withReconnectionPolicy(policy);
+        // }
+        // if (properties.getRetryPolicy() != null) {
+        //     RetryPolicy policy = instantiate(properties.getRetryPolicy());
+        //     builder.withRetryPolicy(policy);
+        // }
         builder.withSocketOptions(getSocketOptions(properties));
         if (properties.isSsl()) {
             builder.withSSL();
         }
-        String points = properties.getContactPoints();
-        builder.addContactPoints(StringUtils.commaDelimitedListToStringArray(points));
+        List<String> points = properties.getContactPoints();
+        builder.addContactPoints(points.toArray(new String[0]));
 
         Cluster cluster = builder.build();
 
         cluster.getConfiguration().getCodecRegistry()
-                .register(LocalDateCodec.instance)
+                // .register(LocalDateCodec.instance)
                 .register(CustomZonedDateTimeCodec.instance);
 
-        if (metricRegistry != null) {
-            cluster.init();
-            metricRegistry.registerAll(cluster.getMetrics().getRegistry());
-        }
+        // if (metricRegistry != null) {
+        //     cluster.init();
+        //     metricRegistry.registerAll(cluster.getMetrics().getRegistry());
+        // }
 
         return cluster;
     }
@@ -102,20 +103,20 @@ public class CassandraConfiguration {
 
     private QueryOptions getQueryOptions(CassandraProperties properties) {
         QueryOptions options = new QueryOptions();
-        if (properties.getConsistencyLevel() != null) {
-            options.setConsistencyLevel(properties.getConsistencyLevel());
-        }
-        if (properties.getSerialConsistencyLevel() != null) {
-            options.setSerialConsistencyLevel(properties.getSerialConsistencyLevel());
-        }
+        // if (properties.getConsistencyLevel() != null) {
+        //     options.setConsistencyLevel(properties.getConsistencyLevel());
+        // }
+        // if (properties.getSerialConsistencyLevel() != null) {
+        //     options.setSerialConsistencyLevel(properties.getSerialConsistencyLevel());
+        // }
         options.setFetchSize(properties.getFetchSize());
         return options;
     }
 
     private SocketOptions getSocketOptions(CassandraProperties properties) {
         SocketOptions options = new SocketOptions();
-        options.setConnectTimeoutMillis(properties.getConnectTimeoutMillis());
-        options.setReadTimeoutMillis(properties.getReadTimeoutMillis());
+        // options.setConnectTimeoutMillis(properties.getConnectTimeoutMillis());
+        // options.setReadTimeoutMillis(properties.getReadTimeoutMillis());
         return options;
     }
 

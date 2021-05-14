@@ -23,8 +23,8 @@ eureka:
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
         lease-renewal-interval-in-seconds: 5
         lease-expiration-duration-in-seconds: 10
-        status-page-url-path: ${management.context-path}/info
-        health-check-url-path: ${management.context-path}/health
+        status-page-url-path: ${management.server.servlet.context-path}/info
+        health-check-url-path: ${management.server.servlet.context-path}/health
         metadata-map:
             zone: primary # This is needed for the load balancer
             profile: ${spring.profiles.active}
@@ -54,8 +54,9 @@ hystrix:
 
 management:
     context-path: /management
-    security:
-        roles: PODIUM_ADMIN
+    server:
+        servlet:
+            context-path: /management
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -71,6 +72,8 @@ spring:
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    main:
+        allow-bean-definition-overriding: true
     messages:
         basename: i18n/messages
     mvc:
@@ -87,23 +90,18 @@ spring:
     data:
         elasticsearch:
             properties:
-                cluster.routing.allocation.disk.watermark.high: 99%
-    http:
-        multipart:
-            max-file-size: 50MB
-            max-request-size: 50MB
-
-security:
-    basic:
-        enabled: false
-    oauth2:
-        resource:
-            filter-order: 3
+                cluster.routing.allocation.disk.watermark.high: 95%
+    servlet:
+        http:
+            multipart:
+                max-file-size: 50MB
+                max-request-size: 50MB
 
 server:
-    session:
-        cookie:
-            http-only: true
+    servlet:
+        session:
+            cookie:
+                http-only: true
 
 hazelcast:
     phone:

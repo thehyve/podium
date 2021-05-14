@@ -215,8 +215,8 @@ public class RoleService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Role : {}", id);
-        roleRepository.delete(id);
-        roleSearchRepository.delete(id);
+        roleRepository.deleteById(id);
+        roleSearchRepository.deleteById(id);
     }
 
     /**

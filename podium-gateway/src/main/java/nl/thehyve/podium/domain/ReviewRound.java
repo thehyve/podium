@@ -85,10 +85,20 @@ public class ReviewRound implements Serializable {
 
     @CreatedDate
     @Column(name = "start_date", nullable = false)
-    private ZonedDateTime startDate = ZonedDateTime.now();
+    // FIXME:
+    // ZonedDateTime is no longer supported;
+    // LocalDateTime is not supported yet;
+    // Switch to a better type matching "TIMESTAMP WITHOUT TIME ZONE" when possible
+    @Setter(AccessLevel.NONE)
+    private java.util.Date startDate = new java.util.Date();
 
     @Column(name = "end_date")
-    private ZonedDateTime endDate;
+    // FIXME:
+    // ZonedDateTime is no longer supported;
+    // LocalDateTime is not supported yet;
+    // Switch to a better type matching "TIMESTAMP WITHOUT TIME ZONE" when possible
+    @Setter(AccessLevel.NONE)
+    private java.util.Date endDate;
 
     @Column(name = "initiated_by")
     private UUID initiatedBy;
@@ -109,5 +119,13 @@ public class ReviewRound implements Serializable {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
         }
+    }
+
+    public void setEndDate(ZonedDateTime endDate) {
+        if (endDate == null) {
+            this.endDate = null;
+            return;
+        }
+        this.endDate = java.util.Date.from(endDate.toInstant());
     }
 }

@@ -46,35 +46,14 @@ public class CustomAuditEventRepository implements AuditEventRepository {
     private AuditEventConverter auditEventConverter;
 
     @Override
-    public List<AuditEvent> find(Date after) {
-        Iterable<PersistentAuditEvent> persistentAuditEvents =
-            persistenceAuditEventRepository.findByEventDateAfter(after);
-        return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
-    }
-
-    @Override
-    public List<AuditEvent> find(String principal, Date after) {
-        Iterable<PersistentAuditEvent> persistentAuditEvents;
-        if (principal == null && after == null) {
-            persistentAuditEvents = persistenceAuditEventRepository.findAll();
-        } else if (after == null) {
-            persistentAuditEvents = persistenceAuditEventRepository.findByPrincipal(principal);
-        } else {
-            persistentAuditEvents =
-                persistenceAuditEventRepository.findByPrincipalAndEventDateAfter(principal, after);
-        }
-        return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
-    }
-
-    @Override
-    public List<AuditEvent> find(String principal, Date after, String type) {
+    public List<AuditEvent> find(String principal, Instant after, String type) {
         EventType eventType = type == null ? null : EventType.fromName(type);
         return findByEventType(principal, after, eventType);
     }
 
-    public List<AuditEvent> findByEventType(String principal, Date after, EventType type) {
+    public List<AuditEvent> findByEventType(String principal, Instant after, EventType type) {
         Iterable<PersistentAuditEvent> persistentAuditEvents =
-            persistenceAuditEventRepository.findByPrincipalAndEventDateAfterAndEventType(principal, after, type);
+            persistenceAuditEventRepository.findByPrincipalAndEventDateAfterAndEventType(principal, Date.from(after), type);
         return auditEventConverter.convertToAuditEvent(persistentAuditEvents);
     }
 
@@ -87,7 +66,7 @@ public class CustomAuditEventRepository implements AuditEventRepository {
             PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent();
             persistentAuditEvent.setPrincipal(event.getPrincipal());
             persistentAuditEvent.setEventType(EventType.fromName(event.getType()));
-            persistentAuditEvent.setEventDate(event.getTimestamp());
+            persistentAuditEvent.setEventDate(Date.from(event.getTimestamp()));
             persistentAuditEvent.setData(auditEventConverter.convertDataToStrings(event.getData()));
             persistenceAuditEventRepository.save(persistentAuditEvent);
         }

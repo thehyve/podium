@@ -24,7 +24,7 @@ import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
-import org.elasticsearch.action.suggest.SuggestResponse;
+// import org.elasticsearch.action.suggest.SuggestResponse;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+// import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,8 +76,8 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    // @Autowired
+    // private ElasticsearchTemplate elasticsearchTemplate;
 
     @Autowired
     private EntityManager entityManager;
@@ -451,7 +451,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public ManagedUserRepresentation getUserWithAuthorities(Long id) {
-        User user = userRepository.findOne(id);
+        User user = userRepository.findById(id).get();
         entityManager.refresh(user);
         user.getAuthorities().size(); // eagerly load the association
         return userMapper.userToManagedUserVM(user);
@@ -517,15 +517,16 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<SearchUser> suggestUsers(String query) {
 
-        CompletionSuggestionBuilder completionSuggestionBuilder
-            = new CompletionSuggestionBuilder("fullname-suggest")
-            .text(query)
-            .field("fullNameSuggest");
+        return null;
+        // CompletionSuggestionBuilder completionSuggestionBuilder
+        //     = new CompletionSuggestionBuilder("fullname-suggest")
+        //     .text(query)
+        //     .field("fullNameSuggest");
 
-        SuggestResponse suggestResponse = elasticsearchTemplate.suggest(completionSuggestionBuilder, SearchUser.class);
-        CompletionSuggestion completionSuggestion = suggestResponse.getSuggest().getSuggestion("fullname-suggest");
-        List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
+        // SuggestResponse suggestResponse = elasticsearchTemplate.suggest(completionSuggestionBuilder, SearchUser.class);
+        // CompletionSuggestion completionSuggestion = suggestResponse.getSuggest().getSuggestion("fullname-suggest");
+        // List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
 
-        return userMapper.completionSuggestOptionsToSearchUsers(options);
+        // return userMapper.completionSuggestOptionsToSearchUsers(options);
     }
 }

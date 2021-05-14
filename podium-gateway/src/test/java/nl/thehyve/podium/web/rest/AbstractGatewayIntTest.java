@@ -42,15 +42,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTest {
 
     static List<UserRepresentation> nonEmptyUserRepresentationList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+        return null;
+        // return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
     static List<RequestRepresentation> nonEmptyRequestList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+        return null;
+        // return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
     static List<RequestFileRepresentation> nonEmptyRequestFileList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+        return null;
+        // return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
     }
 
     @Autowired

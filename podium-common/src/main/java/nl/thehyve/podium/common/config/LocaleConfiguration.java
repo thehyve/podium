@@ -11,7 +11,6 @@
 package nl.thehyve.podium.common.config;
 
 import nl.thehyve.podium.common.config.locale.AngularCookieLocaleResolver;
-import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +23,11 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 @Configuration
 public class LocaleConfiguration extends WebMvcConfigurerAdapter implements EnvironmentAware {
 
-    @SuppressWarnings("unused")
-    private RelaxedPropertyResolver propertyResolver;
-
     @Override
     public void setEnvironment(Environment environment) {
-        this.propertyResolver = new RelaxedPropertyResolver(environment, "spring.messages.");
+        // RelaxedPropertyResolver is no longer available
+        // as the Environment takes care of that automatically:
+        // env.getProperty("com.foo.my-bar") will find a com.foo.myBar property.
     }
 
     @Bean(name = "localeResolver")

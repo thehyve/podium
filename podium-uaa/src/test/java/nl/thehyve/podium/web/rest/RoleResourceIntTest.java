@@ -100,11 +100,12 @@ public class RoleResourceIntTest {
      * Create an entity for this test.
      */
     public Role createEntity() throws UserAccountException {
-        Authority authority = authorityRepository.findOne(AuthorityConstants.REVIEWER);
-        if (authority == null) {
-            authority = new Authority(AuthorityConstants.REVIEWER);
-            authorityRepository.save(authority);
-        }
+        Authority authority = authorityRepository.findById(AuthorityConstants.REVIEWER)
+            .orElseGet(() -> {
+                Authority reviewerAuthority = new Authority(AuthorityConstants.REVIEWER);
+                authorityRepository.save(reviewerAuthority);
+                return reviewerAuthority;
+            });
         Role role = new Role(authority);
         User user;
         Optional<User> object = userService.getDomainUserWithAuthoritiesByLogin("test");
@@ -185,7 +186,7 @@ public class RoleResourceIntTest {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
 
         // Update the role
-        Role updatedRole = roleRepository.findOne(role.getId());
+        Role updatedRole = roleRepository.findById(role.getId()).get();
 
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -198,7 +199,7 @@ public class RoleResourceIntTest {
         Role testRole = roleList.get(roleList.size() - 1);
 
         // Validate the Role in Elasticsearch
-        Role roleEs = roleSearchRepository.findOne(testRole.getId());
+        Role roleEs = roleSearchRepository.findById(testRole.getId()).get();
         assertThat(roleEs).isEqualToComparingFieldByField(testRole);
     }
 

@@ -50,6 +50,9 @@ spring:
             hibernate.cache.hazelcast.instance_name: podiumGateway
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
+    elasticsearch:
+        rest:
+            uris: http://localhost:9300
     data:
         cassandra:
             contactPoints: localhost
@@ -57,10 +60,10 @@ spring:
             compression: LZ4
             keyspaceName: podiumGateway
             repositories:
-                enabled: false
+                type: NONE
         elasticsearch:
-            cluster-name:
-            cluster-nodes:
+            cluster-name: docker-cluster
+            cluster-nodes: localhost:9300
             properties:
                 path:
                   logs: target/elasticsearch/log
@@ -72,12 +75,11 @@ spring:
         username:
         password:
     messages:
-        cache-seconds: 1
+        cache-duration: 1
     thymeleaf:
         cache: false
-
-liquibase:
-    contexts: dev
+    liquibase:
+        contexts: dev
 
 server:
     port: 8080

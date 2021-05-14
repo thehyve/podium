@@ -40,7 +40,11 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @CreatedDate
     @Column(name = "created_date", nullable = false)
     @JsonIgnore
-    private ZonedDateTime createdDate = ZonedDateTime.now();
+    // FIXME:
+    // ZonedDateTime is no longer supported;
+    // LocalDateTime is not supported yet;
+    // Switch to a better type matching "TIMESTAMP WITHOUT TIME ZONE" when possible
+    private java.util.Date createdDate = new java.util.Date();
 
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
@@ -50,7 +54,11 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @LastModifiedDate
     @Column(name = "last_modified_date")
     @JsonIgnore
-    private ZonedDateTime lastModifiedDate = ZonedDateTime.now();
+    // FIXME:
+    // ZonedDateTime is no longer supported;
+    // LocalDateTime is not supported yet;
+    // Switch to a better type matching "TIMESTAMP WITHOUT TIME ZONE" when possible
+    private java.util.Date lastModifiedDate = new java.util.Date();
 
     public String getCreatedBy() {
         return createdBy;
@@ -61,11 +69,18 @@ public abstract class AbstractAuditingEntity implements Serializable {
     }
 
     public ZonedDateTime getCreatedDate() {
-        return createdDate;
+        if (createdDate == null) {
+            return null;
+        }
+        return createdDate.toInstant().atZone(java.time.ZoneId.systemDefault());
     }
 
     public void setCreatedDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
+        if (createdDate == null) {
+            this.createdDate = null;
+            return;
+        }
+        this.createdDate = java.util.Date.from(createdDate.toInstant());
     }
 
     public String getLastModifiedBy() {
@@ -77,10 +92,17 @@ public abstract class AbstractAuditingEntity implements Serializable {
     }
 
     public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
+        if (lastModifiedDate == null) {
+            return null;
+        }
+        return lastModifiedDate.toInstant().atZone(java.time.ZoneId.systemDefault());
     }
 
     public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+        if (lastModifiedDate == null) {
+            this.lastModifiedBy = null;
+            return;
+        }
+        this.lastModifiedDate = java.util.Date.from(lastModifiedDate.toInstant());
     }
 }
