@@ -92,9 +92,6 @@ spring:
 
     mail:
         host: localhost
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
     liquibase:

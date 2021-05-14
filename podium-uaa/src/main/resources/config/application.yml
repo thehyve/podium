@@ -59,9 +59,6 @@ spring:
         allow-bean-definition-overriding: true
     messages:
         basename: i18n/messages
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
     data:

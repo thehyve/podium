@@ -38,7 +38,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -85,20 +85,11 @@ public class ReviewRound implements Serializable {
 
     @CreatedDate
     @Column(name = "start_date", nullable = false)
-    // FIXME:
-    // ZonedDateTime is no longer supported;
-    // LocalDateTime is not supported yet;
-    // Switch to a better type matching "TIMESTAMP WITHOUT TIME ZONE" when possible
     @Setter(AccessLevel.NONE)
-    private java.util.Date startDate = new java.util.Date();
+    private LocalDateTime startDate = LocalDateTime.now();
 
     @Column(name = "end_date")
-    // FIXME:
-    // ZonedDateTime is no longer supported;
-    // LocalDateTime is not supported yet;
-    // Switch to a better type matching "TIMESTAMP WITHOUT TIME ZONE" when possible
-    @Setter(AccessLevel.NONE)
-    private java.util.Date endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "initiated_by")
     private UUID initiatedBy;
@@ -119,13 +110,5 @@ public class ReviewRound implements Serializable {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID();
         }
-    }
-
-    public void setEndDate(ZonedDateTime endDate) {
-        if (endDate == null) {
-            this.endDate = null;
-            return;
-        }
-        this.endDate = java.util.Date.from(endDate.toInstant());
     }
 }

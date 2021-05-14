@@ -59,9 +59,6 @@ spring:
                 cluster.routing.allocation.disk.watermark.high: 95%
     mail:
         host: localhost
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
 
