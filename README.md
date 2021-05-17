@@ -79,7 +79,7 @@ Go to your `podium-registry` folder and start the registry with `mvn`.
 The user interface of the registry will be available at [http://localhost:8761](http://localhost:8761).
 
 2. **Start ElasticSearch**
-Run `docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.8.15`.
+Run `docker run --name podium-elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.8.15`.
 
 3. **Start Podium UAA**<br>
 Open a new terminal and navigate to the `podium-uaa` folder and start the UAA service with 
