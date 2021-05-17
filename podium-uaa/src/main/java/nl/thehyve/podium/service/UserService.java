@@ -39,7 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -99,7 +99,7 @@ public class UserService {
             return false;
         }
         Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
-        ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
+        LocalDateTime keyValidPeriod = LocalDateTime.now().minusSeconds(activationKeyValidity);
 
         User user = foundUser.get();
 
@@ -128,7 +128,7 @@ public class UserService {
             // Filter for expired activation keys
             .filter(user -> {
                 Long activationKeyValidity = uaaProperties.getSecurity().getActivationKeyValiditySeconds();
-                ZonedDateTime keyValidPeriod = ZonedDateTime.now().minusSeconds(activationKeyValidity);
+                LocalDateTime keyValidPeriod = LocalDateTime.now().minusSeconds(activationKeyValidity);
                 return user.getActivationKeyDate().isBefore(keyValidPeriod);
             });
         if (!userOptional.isPresent()) {
@@ -136,7 +136,7 @@ public class UserService {
         }
         User user = userOptional.get();
         user.setActivationKey(RandomUtil.generateActivationKey());
-        user.setActivationKeyDate(ZonedDateTime.now());
+        user.setActivationKeyDate(LocalDateTime.now());
         user = save(user);
         UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
         mailService.sendVerificationEmail(userRepresentation, user.getActivationKey());
@@ -148,7 +148,7 @@ public class UserService {
 
         Optional<User> userOptional = userRepository.findOneByDeletedIsFalseAndResetKey(key)
             .filter(user -> {
-                ZonedDateTime oneDayAgo = ZonedDateTime.now().minusHours(24);
+                LocalDateTime oneDayAgo = LocalDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
            });
         if (!userOptional.isPresent()) {
@@ -180,7 +180,7 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setResetKey(RandomUtil.generateResetKey());
-            user.setResetDate(ZonedDateTime.now());
+            user.setResetDate(LocalDateTime.now());
             ManagedUserRepresentation userVM = userMapper.userToManagedUserVM(user);
             mailService.sendPasswordResetMail(userVM, user.getResetKey());
         } else {
@@ -241,7 +241,7 @@ public class UserService {
             newUser.setAdminVerified(false);
             // new user gets registration key
             newUser.setActivationKey(RandomUtil.generateActivationKey());
-            newUser.setActivationKeyDate(ZonedDateTime.now());
+            newUser.setActivationKeyDate(LocalDateTime.now());
             roles.add(role);
             newUser.setRoles(roles);
             newUser = save(newUser);
@@ -277,7 +277,7 @@ public class UserService {
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
-        user.setResetDate(ZonedDateTime.now());
+        user.setResetDate(LocalDateTime.now());
         user.setEmailVerified(false);
         user.setAdminVerified(true);
         save(user);

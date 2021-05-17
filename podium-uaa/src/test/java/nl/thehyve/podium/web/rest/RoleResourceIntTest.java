@@ -155,7 +155,7 @@ public class RoleResourceIntTest {
         // Get all the roleList
         restRoleMockMvc.perform(get("/api/roles?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(role.getId().intValue())));
     }
 
@@ -167,7 +167,7 @@ public class RoleResourceIntTest {
         // Get the role
         restRoleMockMvc.perform(get("/api/roles/{id}", role.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(role.getId().intValue()));
     }
 
@@ -243,7 +243,7 @@ public class RoleResourceIntTest {
         // Search the role
         restRoleMockMvc.perform(get("/api/_search/roles?query=id:" + role.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(role.getId().intValue())));
     }
 

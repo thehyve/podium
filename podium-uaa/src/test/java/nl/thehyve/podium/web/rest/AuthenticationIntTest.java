@@ -152,7 +152,7 @@ public class AuthenticationIntTest {
                 .param("password", AccountResourceIntTest.VALID_PASSWORD)
         )
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.token_type").value("bearer"))
         .andExpect(jsonPath("$.access_token").isNotEmpty());
     }
@@ -169,7 +169,7 @@ public class AuthenticationIntTest {
             .param("password", testPassword)
         )
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.token_type").value("bearer"))
         .andExpect(jsonPath("$.access_token").isNotEmpty());
     }
@@ -177,7 +177,7 @@ public class AuthenticationIntTest {
     @Test
     @Transactional
     public void testAccountLockedAfterFailedAttempts() throws Exception {
-        // 4 times "Bad credentials"
+        // 4 times "Invalid credentials."
         for(int i = 0; i < 4; i++) {
             log.info("Attempt {}", i);
             mockMvc.perform(
@@ -189,8 +189,8 @@ public class AuthenticationIntTest {
                 .param("password", incorrectPassword)
             )
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.error_description").value("Bad credentials"));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.error_description").value("Invalid credentials."));
         }
         // 5th time "The user account is blocked."
         mockMvc.perform(
@@ -202,7 +202,7 @@ public class AuthenticationIntTest {
             .param("password", incorrectPassword)
         )
         .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.error_description").value("The user account is locked."));
         // Also blocked with correct credentials
         mockMvc.perform(
@@ -214,14 +214,14 @@ public class AuthenticationIntTest {
             .param("password", testPassword)
         )
         .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.error_description").value("The user account is locked."));
     }
 
     @Test
     @Transactional
     public void testAccountStillLockedAfterTimeout() throws Exception {
-        // 4 times "Bad credentials"
+        // 4 times "Invalid credentials."
         for(int i = 0; i < 4; i++) {
             log.info("Attempt {}", i);
             mockMvc.perform(
@@ -233,8 +233,8 @@ public class AuthenticationIntTest {
                 .param("password", incorrectPassword)
             )
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.error_description").value("Bad credentials"));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.error_description").value("Invalid credentials."));
         }
         // 5th time "The user account is locked."
         mockMvc.perform(
@@ -246,7 +246,7 @@ public class AuthenticationIntTest {
             .param("password", incorrectPassword)
         )
         .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.error_description").value("The user account is locked."));
         // Sleep for 4 seconds
         Thread.sleep(4 * 1000);
@@ -260,14 +260,14 @@ public class AuthenticationIntTest {
             .param("password", testPassword)
         )
         .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.error_description").value("The user account is locked."));
     }
 
     @Test
     @Transactional
     public void testAccountAvailableAfterUnlock() throws Exception {
-        // 4 times "Bad credentials"
+        // 4 times "Invalid credentials."
         for(int i = 0; i < 4; i++) {
             log.info("Attempt {}", i);
             mockMvc.perform(
@@ -279,8 +279,8 @@ public class AuthenticationIntTest {
                 .param("password", incorrectPassword)
             )
             .andExpect(status().isBadRequest())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.error_description").value("Bad credentials"));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.error_description").value("Invalid credentials."));
         }
         // 5th time "The user account is locked."
         mockMvc.perform(
@@ -292,7 +292,7 @@ public class AuthenticationIntTest {
             .param("password", incorrectPassword)
         )
         .andExpect(status().isBadRequest())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.error_description").value("The user account is locked."));
         // Unlock account
         mockMvc.perform(

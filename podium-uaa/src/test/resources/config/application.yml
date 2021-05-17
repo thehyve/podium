@@ -48,15 +48,9 @@ spring:
             hibernate.hbm2ddl.auto: validate
     main:
         allow-bean-definition-overriding: true
-    data:
-        elasticsearch:
-            cluster-name: docker-cluster
-            cluster-nodes: localhost:9300
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
-                cluster.routing.allocation.disk.watermark.high: 95%
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
     mail:
         host: localhost
     thymeleaf:

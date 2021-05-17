@@ -14,7 +14,6 @@ import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * A DTO for the PrincipalInvestigator entity.

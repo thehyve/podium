@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.common.web.rest.errors;
 
+import com.fasterxml.jackson.databind.exc.*;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -19,6 +20,7 @@ import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.http.converter.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -128,13 +130,26 @@ public class ExceptionTranslator {
         return builder.body(errorVM);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorRepresentation handleMessageNotReadable(HttpMessageNotReadableException e) {
+        log.error("Message not readable: {}", e.getMessage());
+        ErrorRepresentation dto = new ErrorRepresentation(ErrorConstants.ERR_VALIDATION);
+        if (e.getCause() instanceof PropertyBindingException) {
+            PropertyBindingException cause = (PropertyBindingException)e.getCause();
+            dto.add("request", cause.getPropertyName(), cause.getMessage());
+        }
+        return dto;
+    }
+
     @ExceptionHandler(InvalidRequest.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorRepresentation handleInvalidRequest(InvalidRequest e) {
         log.error("Invalid request: " + e.getMessage());
         ErrorRepresentation dto = new ErrorRepresentation(ErrorConstants.ERR_VALIDATION);
-        for (ConstraintViolation violation : e.getConstraintViolations()) {
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
             dto.add("request", violation.getPropertyPath().toString(), violation.getMessage());
         }
         return dto;

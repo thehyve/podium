@@ -20,7 +20,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,11 +35,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -129,14 +126,14 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private String activationKey;
 
     @Column(name = "activation_key_date", nullable = true)
-    private ZonedDateTime activationKeyDate = null;
+    private LocalDateTime activationKeyDate = null;
 
     @Size(max = 20)
     @Column(name = "reset_key", length = 20)
     private String resetKey;
 
     @Column(name = "reset_date", nullable = true)
-    private ZonedDateTime resetDate = null;
+    private LocalDateTime resetDate = null;
 
     @Column(name="deleted")
     @Getter(AccessLevel.NONE)
@@ -158,7 +155,7 @@ public class User extends AbstractAuditingEntity implements AuthenticatedUser, U
     private boolean accountLocked = false;
 
     @Column(name = "account_lock_date", nullable = true)
-    private ZonedDateTime accountLockDate = null;
+    private LocalDateTime accountLockDate = null;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)

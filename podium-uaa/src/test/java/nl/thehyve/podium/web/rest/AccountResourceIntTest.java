@@ -133,7 +133,7 @@ public class AccountResourceIntTest extends AbstractAuthorisedUserIntTest {
         restUserMockMvc.perform(get("/api/account")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.login").value("test"))
                 .andExpect(jsonPath("$.firstName").value("john"))
                 .andExpect(jsonPath("$.lastName").value("doe"))
@@ -442,7 +442,7 @@ public class AccountResourceIntTest extends AbstractAuthorisedUserIntTest {
 
         Thread.sleep(1000);
         verify(mockMailService).sendUserRegisteredEmail(
-            anyCollectionOf(ManagedUserRepresentation.class), any(ManagedUserRepresentation.class));
+            anyCollection(), any(UserRepresentation.class));
     }
 
     @Test
@@ -499,7 +499,7 @@ public class AccountResourceIntTest extends AbstractAuthorisedUserIntTest {
 
         Thread.sleep(1000);
         verify(mockMailService).sendUserRegisteredEmail(
-            anyCollectionOf(ManagedUserRepresentation.class), any(ManagedUserRepresentation.class));
+            anyCollection(), any(UserRepresentation.class));
     }
 
     @Test
@@ -571,7 +571,7 @@ public class AccountResourceIntTest extends AbstractAuthorisedUserIntTest {
     public void testSensitiveFieldsNotSaved() throws Exception {
         User protectedUser = testService.createUser("protectedUser", AuthorityConstants.RESEARCHER);
         ManagedUserRepresentation userVM = userMapper.userToManagedUserVM(protectedUser);
-        ManagedUserRepresentation updatedUserVM = userMapper.userToManagedUserVM(protectedUser);
+        UserRepresentation updatedUserVM = userMapper.userToUserDTO(protectedUser);
 
         // Change non-sensitive user data
         updatedUserVM.setDepartment("New department");
