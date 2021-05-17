@@ -51,9 +51,8 @@ spring:
         password:
     thymeleaf:
         cache: true
-
-liquibase:
-    contexts: prod
+    liquibase:
+        contexts: prod
 
 server:
     port: 9999
