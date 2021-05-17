@@ -78,11 +78,14 @@ mvn clean install
 Go to your `podium-registry` folder and start the registry with `mvn`.
 The user interface of the registry will be available at [http://localhost:8761](http://localhost:8761).
 
-2. **Start Podium UAA**<br>
+2. **Start ElasticSearch**
+Run `docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.8.15`.
+
+3. **Start Podium UAA**<br>
 Open a new terminal and navigate to the `podium-uaa` folder and start the UAA service with 
 `mvn`. The UAA service will be listening to port 9999.
 
-3. **Start Podium Gateway**<br>
+4. **Start Podium Gateway**<br>
 Open a new terminal and run the following commands in the `podium-gateway` folder:
 ```bash
 # start the podium gateway service
