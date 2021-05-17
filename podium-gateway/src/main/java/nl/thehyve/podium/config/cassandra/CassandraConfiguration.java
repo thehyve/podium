@@ -56,22 +56,10 @@ public class CassandraConfiguration {
         if (properties.getUsername() != null) {
             builder.withCredentials(properties.getUsername(), properties.getPassword());
         }
-        // if (properties.getCompression() != null) {
-        //     builder.withCompression(properties.getCompression());
-        // }
-        // if (properties.getLoadBalancingPolicy() != null) {
-        //     LoadBalancingPolicy policy = instantiate(properties.getLoadBalancingPolicy());
-        //     builder.withLoadBalancingPolicy(policy);
-        // }
+        if (properties.getCompression() != null) {
+            builder.withCompression(properties.getCompression());
+        }
         builder.withQueryOptions(getQueryOptions(properties));
-        // if (properties.getReconnectionPolicy() != null) {
-        //     ReconnectionPolicy policy = instantiate(properties.getReconnectionPolicy());
-        //     builder.withReconnectionPolicy(policy);
-        // }
-        // if (properties.getRetryPolicy() != null) {
-        //     RetryPolicy policy = instantiate(properties.getRetryPolicy());
-        //     builder.withRetryPolicy(policy);
-        // }
         builder.withSocketOptions(getSocketOptions(properties));
         if (properties.isSsl()) {
             builder.withSSL();
