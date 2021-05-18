@@ -22,7 +22,9 @@ info:
         version: #project.version#
 
 management:
-    context-path: /management
+    server:
+      servlet:
+        context-path: /management
 
 ribbon:
     eureka:
@@ -81,15 +83,9 @@ spring:
             keyspaceName: cassandra_unit_keyspace
             repositories:
                 type: NONE
-        elasticsearch:
-            cluster-name: docker-cluster
-            cluster-nodes: localhost:9300
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
-                cluster.routing.allocation.disk.watermark.high: 95%
-
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
     mail:
         host: localhost
     thymeleaf:

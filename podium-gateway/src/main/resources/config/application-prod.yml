@@ -49,10 +49,10 @@ spring:
             compression: LZ4
             keyspaceName: podiumGateway
             repositories:
-                enabled: false
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
+                type: NONE
+    elasticsearch:
+        rest:
+            uris: http://localhost:9300
     mail:
         host: localhost
         port: 25
