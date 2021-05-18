@@ -154,11 +154,3 @@ podium:
         upload-dir: ./podium_uploads
     access:
         request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-# ===================================================================
-
-application:
