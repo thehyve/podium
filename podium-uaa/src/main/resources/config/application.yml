@@ -61,10 +61,9 @@ spring:
         basename: i18n/messages
     thymeleaf:
         mode: XHTML
-    data:
-        elasticsearch:
-            properties:
-                cluster.routing.allocation.disk.watermark.high: 95%
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
 
 server:
     servlet:

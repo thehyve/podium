@@ -49,9 +49,6 @@ spring:
             hibernate.cache.hazelcast.instance_name: podiumUaa
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
-    elasticsearch:
-        rest:
-            uris: http://localhost:9200
     mail:
         host: localhost
         port: 25

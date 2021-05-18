@@ -7,6 +7,7 @@
 
 package nl.thehyve.podium.service;
 
+import com.fasterxml.jackson.databind.*;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
@@ -24,7 +25,10 @@ import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import nl.thehyve.podium.service.util.RandomUtil;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
-// import org.elasticsearch.action.suggest.SuggestResponse;
+import org.elasticsearch.action.search.*;
+import org.elasticsearch.client.*;
+import org.elasticsearch.search.builder.*;
+import org.elasticsearch.search.suggest.*;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
@@ -33,12 +37,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-// import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,8 +81,8 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    // @Autowired
-    // private ElasticsearchTemplate elasticsearchTemplate;
+    @Autowired
+    private RestHighLevelClient elasticsearchClient;
 
     @Autowired
     private EntityManager entityManager;
@@ -87,9 +92,8 @@ public class UserService {
      * If the activation key has expired an exception is thrown.
      *
      * @param key The activation key.
-     * @throws VerificationKeyExpired Thrown when the used verification key has expired.
-     *
      * @return true iff the verification was successful.
+     * @throws VerificationKeyExpired Thrown when the used verification key has expired.
      */
     public boolean verifyRegistration(String key) throws VerificationKeyExpired {
         log.debug("Verifying user for activation key {}", key);
@@ -150,9 +154,9 @@ public class UserService {
             .filter(user -> {
                 LocalDateTime oneDayAgo = LocalDateTime.now().minusHours(24);
                 return user.getResetDate().isAfter(oneDayAgo);
-           });
+            });
         if (!userOptional.isPresent()) {
-           return false;
+            return false;
         }
         User user = userOptional.get();
         if (!user.isEmailVerified()) {
@@ -194,7 +198,7 @@ public class UserService {
      * Throws a {@link UserAccountException} if the e-mail address or login are already in use.
      *
      * @param updatedUserData the updated user account data.
-     * @param userId the id of the user to be updated. Can be {@code null} for new accounts.
+     * @param userId          the id of the user to be updated. Can be {@code null} for new accounts.
      * @throws UserAccountException if the e-mail address or login are already in use.
      */
     private void checkForExistingLoginAndEmail(UserRepresentation updatedUserData, Long userId) throws UserAccountException {
@@ -222,6 +226,7 @@ public class UserService {
 
     /**
      * Registers a new user account.
+     *
      * @param managedUserRepresentation the user account details.
      * @throws UserAccountException if the username or email address is already in use.
      */
@@ -266,7 +271,7 @@ public class UserService {
         user = userMapper.safeUpdateUserWithUserDTO(userData, user);
         if (userData.getAuthorities() != null) {
             Set<Role> roles = new HashSet<>();
-            userData.getAuthorities().forEach( authority -> {
+            userData.getAuthorities().forEach(authority -> {
                 Role role = roleService.findRoleByAuthorityName(authority);
                 if (role != null) {
                     roles.add(role);
@@ -301,7 +306,6 @@ public class UserService {
     }
 
     /**
-     *
      * @param userData user data to update
      * @return Updated user data as UserRepresentation
      * @throws UserAccountException if login or email already in use.
@@ -336,7 +340,7 @@ public class UserService {
         }
         Set<Role> managedRoles = user.getRoles();
         managedRoles.removeIf(role -> !role.getAuthority().isOrganisationAuthority());
-        userData.getAuthorities().forEach( authority -> {
+        userData.getAuthorities().forEach(authority -> {
             if (!AuthorityConstants.isOrganisationAuthority(authority)) {
                 log.info("Adding role: {}", authority);
                 Role role = roleService.findRoleByAuthorityName(authority);
@@ -490,12 +494,12 @@ public class UserService {
      * Fetch users that are associated with an organisation role for any of the organisations
      * with uuid in organisationUuids.
      *
-     * @param pageable pagination information.
+     * @param pageable          pagination information.
      * @param organisationUuids the uuids of the organisations to fetch the users for.
      * @return a page with users.
      */
     @Transactional(readOnly = true)
-    public Page<ManagedUserRepresentation> getUsersForOrganisations(Pageable pageable, UUID ... organisationUuids) {
+    public Page<ManagedUserRepresentation> getUsersForOrganisations(Pageable pageable, UUID... organisationUuids) {
         return userRepository.findAllByOrganisations(Arrays.asList(organisationUuids), pageable)
             .map(user -> userMapper.userToManagedUserVM(user));
     }
@@ -503,8 +507,8 @@ public class UserService {
     /**
      * Search for the organisation corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @return the list of entities
+     * @param query the query of the search
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public List<SearchUser> search(String query) {
@@ -515,18 +519,16 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<SearchUser> suggestUsers(String query) {
-
-        return null;
-        // CompletionSuggestionBuilder completionSuggestionBuilder
-        //     = new CompletionSuggestionBuilder("fullname-suggest")
-        //     .text(query)
-        //     .field("fullNameSuggest");
-
-        // SuggestResponse suggestResponse = elasticsearchTemplate.suggest(completionSuggestionBuilder, SearchUser.class);
-        // CompletionSuggestion completionSuggestion = suggestResponse.getSuggest().getSuggestion("fullname-suggest");
-        // List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
-
-        // return userMapper.completionSuggestOptionsToSearchUsers(options);
+    public List<SearchUser> suggestUsers(String query) throws IOException {
+        CompletionSuggestionBuilder completionSuggestionBuilder
+            = new CompletionSuggestionBuilder("fullNameSuggest")
+            .text(query);
+        SuggestBuilder suggest = new SuggestBuilder().addSuggestion("fullname-suggest", completionSuggestionBuilder);
+        SearchRequest searchRequest = new SearchRequest("searchuser")
+            .source(new SearchSourceBuilder().suggest(suggest));
+        CompletionSuggestion completionSuggestion = elasticsearchClient.search(searchRequest, RequestOptions.DEFAULT)
+            .getSuggest().getSuggestion("fullname-suggest");
+        List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
+        return userMapper.completionSuggestOptionsToSearchUsers(options);
     }
 }
