@@ -53,7 +53,6 @@ hystrix:
                         timeoutInMilliseconds: 10000
 
 management:
-    context-path: /management
     server:
         servlet:
             context-path: /management
@@ -84,10 +83,9 @@ spring:
             token-service-id: podiumuaa
             client-id: internal
             client-secret: internal
-    data:
-        elasticsearch:
-            properties:
-                cluster.routing.allocation.disk.watermark.high: 95%
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
     servlet:
         http:
             multipart:
@@ -154,11 +152,3 @@ podium:
         upload-dir: ./podium_uploads
     access:
         request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-# ===================================================================
-
-application:

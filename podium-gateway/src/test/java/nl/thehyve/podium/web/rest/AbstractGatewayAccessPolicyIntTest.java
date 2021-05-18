@@ -1,9 +1,7 @@
 package nl.thehyve.podium.web.rest;
 
-import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.resource.InternalRequestResource;
-import nl.thehyve.podium.common.resource.InternalUserResource;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.SerialisedUser;
@@ -27,13 +25,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static nl.thehyve.podium.common.test.Action.format;
 import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -54,9 +49,6 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
 
     @MockBean
     UserClientService userClientService;
-
-    @MockBean
-    InternalUserResource internalUserResource;
 
     @MockBean
     AuditService auditService;
@@ -268,14 +260,9 @@ public abstract class AbstractGatewayAccessPolicyIntTest extends AbstractGateway
                 .willReturn(userEntry.getValue());
         }
 
-        for(Map.Entry<String, SerialisedUser> userEntry: userStore.entrySet()) {
-            given(this.internalUserResource.getAuthenticatedUserByLogin(eq(userEntry.getKey())))
-                    .willReturn(ResponseEntity.ok(userEntry.getValue()));
-        }
-
         // Mock mail sending
         doNothing().when(this.mailService).sendEmail(anyString(), anyString(), anyString(), anyBoolean(), anyBoolean());
-        doNothing().when(this.mailService).sendSubmissionNotificationToRequester(anyObject(), anyListOf(RequestRepresentation.class));
+        doNothing().when(this.mailService).sendSubmissionNotificationToRequester(any(), anyList());
 
         // Mock audit service calls
         doNothing().when(this.auditService).publishEvent(any());

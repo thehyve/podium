@@ -127,11 +127,3 @@ podium:
         request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
             - researcher:researcher
             - test:test
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-# ===================================================================
-
-application:
