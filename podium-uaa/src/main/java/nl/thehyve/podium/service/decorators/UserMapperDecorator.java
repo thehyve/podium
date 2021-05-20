@@ -76,13 +76,7 @@ public abstract class UserMapperDecorator implements UserMapper {
 
         SearchUser searchUser = new SearchUser();
         searchUser.setFullName(entry.getText().toString());
-
-        // try {
-        //     JSONObject uuidObject = new JSONObject(entry.getPayloadAsString());
-        //     searchUser.setUuid((String) uuidObject.get("uuid"));
-        // } catch(Exception ex) {
-
-        // }
+        searchUser.setUuid((String) entry.getHit().getSourceAsMap().get("uuid"));
 
         return searchUser;
     }

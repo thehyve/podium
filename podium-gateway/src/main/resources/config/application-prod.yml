@@ -50,9 +50,6 @@ spring:
             keyspaceName: podiumGateway
             repositories:
                 type: NONE
-    elasticsearch:
-        rest:
-            uris: http://localhost:9300
     mail:
         host: localhost
         port: 25

@@ -158,11 +158,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.jhipster</groupId>
-            <artifactId>jhipster</artifactId>
-            <version>1.1.11</version>
-        </dependency>
-        <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
         </dependency>

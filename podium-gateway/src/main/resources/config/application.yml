@@ -146,6 +146,7 @@ podium:
         contact-email:
         license:
         license-url:
+        protocols:
     ribbon:
         display-on-active-profiles: dev
     files:
