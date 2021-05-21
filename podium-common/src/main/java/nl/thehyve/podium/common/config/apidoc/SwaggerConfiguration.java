@@ -7,8 +7,6 @@
 
 package nl.thehyve.podium.common.config.apidoc;
 
-import com.fasterxml.classmate.TypeResolver;
-// import io.github.jhipster.config.apidoc.PageableParameterBuilderPlugin;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import org.slf4j.Logger;
@@ -17,19 +15,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
-import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.schema.TypeNameExtractor;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,9 +37,7 @@ import java.util.HashSet;
  * have access to the Swagger view.
  */
 @Configuration
-@ConditionalOnClass({ ApiInfo.class, BeanValidatorPluginsConfiguration.class })
-@EnableSwagger2WebMvc
-@Import(BeanValidatorPluginsConfiguration.class)
+@ConditionalOnClass({ ApiInfo.class })
 @Profile(PodiumConstants.SPRING_PROFILE_SWAGGER)
 public class SwaggerConfiguration {
 
