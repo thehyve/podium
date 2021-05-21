@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -119,7 +119,7 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
                 log.warn("Account still locked for user {}. Access denied.", user.getLogin());
                 throw new UserAccountLockedException("The user account is locked.");
             } else {
-                long intervalSeconds = Duration.between(user.getAccountLockDate(), ZonedDateTime.now()).abs().getSeconds();
+                long intervalSeconds = Duration.between(user.getAccountLockDate(), LocalDateTime.now()).abs().getSeconds();
                 log.debug("Account locked. interval = {} seconds (locking period is {} seconds)",
                     intervalSeconds,
                     uaaProperties.getSecurity().getAccountLockingPeriodSeconds());
@@ -156,7 +156,7 @@ public class CustomServerAuthenticationProvider implements AuthenticationProvide
         if (user.getFailedLoginAttempts() >= uaaProperties.getSecurity().getMaxFailedLoginAttempts()) {
             // block account
             user.setAccountLocked(true);
-            user.setAccountLockDate(ZonedDateTime.now());
+            user.setAccountLockDate(LocalDateTime.now());
             userService.save(user);
             mailService.sendAccountLockedMail(userMapper.userToUserDTO(user));
             throw new UserAccountLockedException("The user account is locked.");

@@ -23,8 +23,8 @@ eureka:
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
         lease-renewal-interval-in-seconds: 5
         lease-expiration-duration-in-seconds: 10
-        status-page-url-path: ${management.context-path}/info
-        health-check-url-path: ${management.context-path}/health
+        status-page-url-path: ${management.server.servlet.context-path}/info
+        health-check-url-path: ${management.server.servlet.context-path}/health
         metadata-map:
             zone: primary # This is needed for the load balancer
             profile: ${spring.profiles.active}
@@ -53,9 +53,9 @@ hystrix:
                         timeoutInMilliseconds: 10000
 
 management:
-    context-path: /management
-    security:
-        roles: PODIUM_ADMIN
+    server:
+        servlet:
+            context-path: /management
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -71,11 +71,10 @@ spring:
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    main:
+        allow-bean-definition-overriding: true
     messages:
         basename: i18n/messages
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
     security:
@@ -84,26 +83,20 @@ spring:
             token-service-id: podiumuaa
             client-id: internal
             client-secret: internal
-    data:
-        elasticsearch:
-            properties:
-                cluster.routing.allocation.disk.watermark.high: 99%
-    http:
-        multipart:
-            max-file-size: 50MB
-            max-request-size: 50MB
-
-security:
-    basic:
-        enabled: false
-    oauth2:
-        resource:
-            filter-order: 3
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
+    servlet:
+        http:
+            multipart:
+                max-file-size: 50MB
+                max-request-size: 50MB
 
 server:
-    session:
-        cookie:
-            http-only: true
+    servlet:
+        session:
+            cookie:
+                http-only: true
 
 hazelcast:
     phone:
@@ -153,17 +146,10 @@ podium:
         contact-email:
         license:
         license-url:
+        protocols:
     ribbon:
         display-on-active-profiles: dev
     files:
         upload-dir: ./podium_uploads
     access:
         request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-# ===================================================================
-
-application:

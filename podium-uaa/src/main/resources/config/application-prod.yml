@@ -40,10 +40,6 @@ spring:
             hibernate.cache.hazelcast.instance_name: podiumUaa
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
-    data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
     mail:
         host: localhost
         port: 25
@@ -51,9 +47,8 @@ spring:
         password:
     thymeleaf:
         cache: true
-
-liquibase:
-    contexts: prod
+    liquibase:
+        contexts: prod
 
 server:
     port: 9999

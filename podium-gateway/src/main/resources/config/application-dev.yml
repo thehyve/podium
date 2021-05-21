@@ -57,14 +57,7 @@ spring:
             compression: LZ4
             keyspaceName: podiumGateway
             repositories:
-                enabled: false
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
+                type: NONE
 
     mail:
         host: localhost
@@ -72,12 +65,11 @@ spring:
         username:
         password:
     messages:
-        cache-seconds: 1
+        cache-duration: 1
     thymeleaf:
         cache: false
-
-liquibase:
-    contexts: dev
+    liquibase:
+        contexts: dev
 
 server:
     port: 8080
@@ -125,11 +117,3 @@ podium:
         request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
             - researcher:researcher
             - test:test
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-# ===================================================================
-
-application:

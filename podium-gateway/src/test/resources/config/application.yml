@@ -17,6 +17,15 @@ eureka:
         appname: podiumGateway
         instanceId: podiumGateway:${spring.application.instance_id:${random.value}}
 
+info:
+    project:
+        version: #project.version#
+
+management:
+    server:
+      servlet:
+        context-path: /management
+
 ribbon:
     eureka:
         enabled: false
@@ -30,6 +39,8 @@ podiumuaa:
         listOfServers: localhost:8089
 
 spring:
+    profiles:
+        active: test
     application:
         name: podiumGateway
     autoconfigure:
@@ -55,11 +66,14 @@ spring:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         properties:
+            hibernate.jdbc.lob.non_contextual_creation: true
             hibernate.id.new_generator_mappings: true
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: validate
+    main:
+        allow-bean-definition-overriding: true
     data:
         cassandra:
             contactPoints: localhost
@@ -68,33 +82,16 @@ spring:
             compression: NONE
             keyspaceName: cassandra_unit_keyspace
             repositories:
-                enabled: false
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
-                cluster.routing.allocation.disk.watermark.high: 99%
-
+                type: NONE
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
     mail:
         host: localhost
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
-
-liquibase:
-    contexts: test
-
-security:
-    basic:
-        enabled: false
-    oauth2:
-        resource:
-            filter-order: 3
+    liquibase:
+        contexts: test
 
 server:
     port: 10344

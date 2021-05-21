@@ -12,7 +12,7 @@ package nl.thehyve.podium.common.service.dto;
 
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,9 +26,9 @@ public class ReviewRoundRepresentation {
 
     private List<ReviewFeedbackRepresentation> reviewFeedback;
 
-    private ZonedDateTime startDate;
+    private LocalDateTime startDate;
 
-    private ZonedDateTime endDate;
+    private LocalDateTime endDate;
 
     private UUID initiatedBy;
 }

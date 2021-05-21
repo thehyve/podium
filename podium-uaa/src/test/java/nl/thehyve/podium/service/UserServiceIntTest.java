@@ -20,7 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,7 +58,7 @@ public class UserServiceIntTest {
         ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
 
-        ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
+        LocalDateTime daysAgo = LocalDateTime.now().minusHours(25);
         String resetKey = RandomUtil.generateResetKey();
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);
@@ -77,7 +77,7 @@ public class UserServiceIntTest {
         ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
 
-        ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(25);
+        LocalDateTime daysAgo = LocalDateTime.now().minusHours(25);
         user.setResetDate(daysAgo);
         user.setResetKey("1234");
         userRepository.save(user);
@@ -91,7 +91,7 @@ public class UserServiceIntTest {
         ManagedUserRepresentation testUserData = createTestUser();
         User user = userService.createUser(testUserData);
         String oldPassword = user.getPassword();
-        ZonedDateTime daysAgo = ZonedDateTime.now().minusHours(2);
+        LocalDateTime daysAgo = LocalDateTime.now().minusHours(2);
         String resetKey = RandomUtil.generateResetKey();
         user.setResetDate(daysAgo);
         user.setResetKey(resetKey);

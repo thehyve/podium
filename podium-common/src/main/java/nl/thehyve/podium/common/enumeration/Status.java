@@ -14,6 +14,7 @@ public interface Status extends Classifier {
      * @param <S> the status type.
      * @return true iff the current status is in the list of allowed statuses.
      */
+    @SafeVarargs
     static <S extends Status> boolean isCurrentStatusAllowed(S currentStatus, S ... allowedStatuses) {
         return Arrays.stream(allowedStatuses).anyMatch(status ->
             status == currentStatus

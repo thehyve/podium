@@ -1,0 +1,11 @@
+@startuml
+
+(*) --> "Validation"
+"Revision" ->[Resubmit] "Validation"
+"Validation" ->[Invalid] "Closed"
+"Validation" --> "Review"
+"Review" ->[Approve/reject] "Closed"
+"Review" ->[Revise] "Revision"
+"Validation" ->[Revise] "Revision"
+
+@enduml

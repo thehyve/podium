@@ -98,8 +98,8 @@ public class TestService {
                 roles.add(role);
             }
         }
-        roleSearchRepository.delete(roles);
-        roleRepository.delete(roles);
+        roleSearchRepository.deleteAll(roles);
+        roleRepository.deleteAll(roles);
 
         // Delete all users except "admin" and "system"
         List<User> users = new ArrayList<>();
@@ -119,8 +119,8 @@ public class TestService {
         }
 
         List<SearchUser> searchUsers = userMapper.usersToSearchUsers(users);
-        userSearchRepository.delete(searchUsers);
-        userRepository.delete(users);
+        userSearchRepository.deleteAll(searchUsers);
+        userRepository.deleteAll(users);
 
         // Delete all organisations
         organisationRepository.deleteAll();

@@ -18,6 +18,7 @@ cache:
 env:
   global:
     - NODE_VERSION=14.16.1
+    - MAVEN_OPTS='-Xmx1g'
     - PROFILE=dev
     - RUN_PODIUM=1
     - PROTRACTOR=1
@@ -41,6 +42,10 @@ before_install:
   - sudo /etc/init.d/mysql stop
   - sudo /etc/init.d/postgresql stop
   - chmod +x $PODIUM_SCRIPTS/*
+  - curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.15.deb -o elasticsearch.deb
+  - sudo dpkg -i --force-confnew elasticsearch.deb
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo service elasticsearch restart
 
 install:
   - mvn install -DskipTests -q
@@ -61,4 +66,4 @@ notifications:
   webhooks:
     on_success: change
     on_failure: always
-    on_start: false
+    on_start: never

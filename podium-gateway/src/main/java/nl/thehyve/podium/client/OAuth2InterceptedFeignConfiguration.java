@@ -8,7 +8,6 @@
 package nl.thehyve.podium.client;
 
 import feign.RequestInterceptor;
-import io.github.jhipster.security.uaa.LoadBalancedResourceDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.resource.*;
 
 import javax.enterprise.context.RequestScoped;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class OAuth2InterceptedFeignConfiguration {
     private final Logger log = LoggerFactory.getLogger(OAuth2InterceptedFeignConfiguration.class);
 
     @Autowired(required = false)
-    private LoadBalancedResourceDetails loadBalancedResourceDetails;
+    private OAuth2ProtectedResourceDetails oAuth2ProtectedResourceDetails;
 
     @Autowired
     @Qualifier("requestAuth2ClientContext")
@@ -37,8 +37,8 @@ public class OAuth2InterceptedFeignConfiguration {
     @Profile("!test")
     @RequestScoped
     @Bean(name = "oauth2RequestInterceptor")
-    public RequestInterceptor getOAuth2RequestInterceptor() throws IOException {
-        log.info("Creating new request interceptor with context {} and resource {}", requestAuth2ClientContext, loadBalancedResourceDetails);
-        return new OAuth2FeignRequestInterceptor(requestAuth2ClientContext, loadBalancedResourceDetails);
+    public RequestInterceptor getOAuth2RequestInterceptor() {
+        log.info("Creating new request interceptor with context {} and resource {}", requestAuth2ClientContext, oAuth2ProtectedResourceDetails);
+        return new OAuth2FeignRequestInterceptor(requestAuth2ClientContext, oAuth2ProtectedResourceDetails);
     }
 }

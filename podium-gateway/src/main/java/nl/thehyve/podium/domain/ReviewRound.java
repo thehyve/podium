@@ -38,7 +38,7 @@ import javax.persistence.OrderColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -85,10 +85,11 @@ public class ReviewRound implements Serializable {
 
     @CreatedDate
     @Column(name = "start_date", nullable = false)
-    private ZonedDateTime startDate = ZonedDateTime.now();
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime startDate = LocalDateTime.now();
 
     @Column(name = "end_date")
-    private ZonedDateTime endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "initiated_by")
     private UUID initiatedBy;

@@ -136,7 +136,7 @@ public class ReviewRoundService {
 
             // Finalize an open review round.
             if (reviewRound != null && reviewRound.getEndDate() == null) {
-                reviewRound.setEndDate(ZonedDateTime.now());
+                reviewRound.setEndDate(LocalDateTime.now());
                 reviewRoundRepository.save(reviewRound);
                 reviewRoundSearchRepository.save(reviewRound);
             }

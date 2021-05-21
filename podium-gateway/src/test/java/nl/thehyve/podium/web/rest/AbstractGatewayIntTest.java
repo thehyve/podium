@@ -18,39 +18,29 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.*;
 import java.util.*;
 
 import static nl.thehyve.podium.web.rest.RequestDataHelper.setRequestData;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTest {
 
     static List<UserRepresentation> nonEmptyUserRepresentationList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+        return argThat(argument -> argument != null && !argument.isEmpty());
     }
 
     static List<RequestRepresentation> nonEmptyRequestList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
-    }
-
-    static List<RequestFileRepresentation> nonEmptyRequestFileList() {
-        return argThat(allOf(org.hamcrest.Matchers.isA(Collection.class), hasSize(greaterThan(0))));
+        return argThat(argument -> argument != null && !argument.isEmpty());
     }
 
     @Autowired
@@ -540,7 +530,7 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
 
         HttpHeaders header = new HttpHeaders();
         if (encodeAuthentication) {
-            String base64 = new String(Base64.encode(authentication.getBytes()), Charset.forName("UTF-8"));
+            String base64 = new String(Base64.getEncoder().encode(authentication.getBytes()), StandardCharsets.UTF_8);
             header.add("Authorization", String.format("Basic %s", base64));
         } else {
             header.add("Authorization", String.format("Basic %s", authentication));

@@ -177,7 +177,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         log.info("testOrganisation: {}", testOrganisation);
 
         // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
 
         log.info("organisationEs: {}", organisationEs);
 
@@ -259,7 +259,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/organisations?sort=id,desc")
             .with(token(bbmriAdmin)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisationA.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
@@ -274,7 +274,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/organisations/admin")
             .with(token(adminOrganisationA)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(result -> {
                 List<OrganisationRepresentation> organisations =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), organisationListTypeReference);
@@ -294,7 +294,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/users/organisations")
             .with(token(adminOrganisationA)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(result -> {
                 log.warn("OUTPUT: {}", result.getResponse().getContentAsString());
                 List<ManagedUserRepresentation> users =
@@ -308,7 +308,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/users/organisations")
             .with(token(adminOrganisationAandB)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(result -> {
                 List<ManagedUserRepresentation> users =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), userListTypeReference);
@@ -322,7 +322,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/users/organisations/{uuid}", organisationA.getUuid())
             .with(token(adminOrganisationAandB)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(result -> {
                 List<ManagedUserRepresentation> users =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), userListTypeReference);
@@ -341,7 +341,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/organisations/admin")
             .with(token(adminOrganisationAandB)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(result -> {
                 List<OrganisationRepresentation> organisations =
                     mapper.readValue(result.getResponse().getContentAsByteArray(), organisationListTypeReference);
@@ -362,7 +362,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/organisations/uuid/{uuid}", organisationA.getUuid())
             .with(token(bbmriAdmin)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(organisationA.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.shortName").value(DEFAULT_SHORT_NAME));
@@ -405,7 +405,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
 
         // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
         assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
         assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
@@ -437,7 +437,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         int databaseSizeBeforeUpdate = organisationRepository.findAll().size();
 
         // Update the organisation
-        Organisation updatedOrganisation = organisationRepository.findOne(organisationA.getId());
+        Organisation updatedOrganisation = organisationRepository.findById(organisationA.getId()).get();
 
         mockMvc.perform(
             put("/api/organisations/{uuid}/activation?value={activate}", organisationA.getUuid(),
@@ -454,7 +454,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
 
         // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findOne(testOrganisation.getId());
+        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
         assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
         assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
@@ -473,7 +473,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .andExpect(status().isOk());
 
         // Validate Elasticsearch is empty
-        boolean organisationExistsInEs = organisationSearchRepository.exists(organisationA.getId());
+        boolean organisationExistsInEs = organisationSearchRepository.existsById(organisationA.getId());
         assertThat(organisationExistsInEs).isFalse();
 
         // Validate the database is empty
@@ -490,7 +490,7 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         mockMvc.perform(get("/api/_search/organisations?query=id:" + organisationA.getId())
             .with(token(bbmriAdmin)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(organisationA.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));

@@ -489,8 +489,8 @@ public class RequestService {
     }
 
     void deleteRequest(Long id) {
-        requestRepository.delete(id);
-        requestSearchRepository.delete(id);
+        requestRepository.deleteById(id);
+        requestSearchRepository.deleteById(id);
     }
 
     /**

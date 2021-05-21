@@ -25,8 +25,8 @@ eureka:
         instanceId: podiumUaa:${spring.application.instance_id:${random.value}}
         lease-renewal-interval-in-seconds: 5
         lease-expiration-duration-in-seconds: 10
-        status-page-url-path: ${management.context-path}/info
-        health-check-url-path: ${management.context-path}/health
+        status-page-url-path: ${management.server.servlet.context-path}/info
+        health-check-url-path: ${management.server.servlet.context-path}/health
         metadata-map:
             profile: ${spring.profiles.active}
             version: ${info.project.version}
@@ -37,9 +37,9 @@ ribbon:
     NFLoadBalancerRuleClassName: com.netflix.loadbalancer.WeightedResponseTimeRule
 
 management:
-    context-path: /management
-    security:
-        roles: ADMIN
+    server:
+        servlet:
+            context-path: /management
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
@@ -55,29 +55,23 @@ spring:
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    main:
+        allow-bean-definition-overriding: true
     messages:
         basename: i18n/messages
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
-    data:
-        elasticsearch:
-            properties:
-                cluster.routing.allocation.disk.watermark.high: 99%
-
-security:
-    basic:
-        enabled: false
-    oauth2:
-        resource:
-            filter-order: 3
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
 
 server:
-    session:
-        cookie:
-            http-only: true
+    servlet:
+        session:
+            cookie:
+                http-only: true
+    tomcat:
+        additional-tld-skip-patterns: "*.jar"
 
 hazelcast:
     phone:
@@ -115,16 +109,16 @@ podium:
             Website: <a href="https://trait.health-ri.nl">https://trait.health-ri.nl</a>
          - |
             Telefoon: +31 (0)881167500
-    swagger:
-        title: Podium UAA API
-        description: API documentation for the user management and authentication component of the Podium request portal.
-        version: 1.0.2
-        termsOfServiceUrl:
-        contactName:
-        contactUrl: https://github.com/thehyve/podium
-        contactEmail:
-        license:
-        licenseUrl:
+    # swagger:
+    #     title: Podium UAA API
+    #     description: API documentation for the user management and authentication component of the Podium request portal.
+    #     version: 1.0.2
+    #     termsOfServiceUrl:
+    #     contactName:
+    #     contactUrl: https://github.com/thehyve/podium
+    #     contactEmail:
+    #     license:
+    #     licenseUrl:
 
 uaa:
     security:

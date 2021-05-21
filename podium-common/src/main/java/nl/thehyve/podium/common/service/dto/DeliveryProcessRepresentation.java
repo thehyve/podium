@@ -14,7 +14,7 @@ import nl.thehyve.podium.common.enumeration.RequestType;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,9 +36,9 @@ public class DeliveryProcessRepresentation implements Serializable {
     @Size(max = 2000)
     private String reference;
 
-    private ZonedDateTime createdDate;
+    private LocalDateTime createdDate;
 
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     private List<PodiumEventRepresentation> historicEvents;
 
