@@ -31,7 +31,6 @@ import org.springframework.core.annotation.Order;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
-@Order(SecurityProperties.BASIC_AUTH_ORDER)
 public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final Logger log = LoggerFactory.getLogger(UaaWebSecurityConfiguration.class);
@@ -44,7 +43,7 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new FakeBCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Autowired
@@ -92,16 +91,3 @@ public class UaaWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 }
 
-class FakeBCryptPasswordEncoder extends BCryptPasswordEncoder {
-    private final Logger log = LoggerFactory.getLogger(FakeBCryptPasswordEncoder.class);
-
-    @Override
-    public java.lang.String encode(java.lang.CharSequence rawPassword) {
-        return super.encode(rawPassword);
-    }
-    
-    @Override
-    public boolean matches(java.lang.CharSequence rawPassword, java.lang.String encodedPassword) {
-        return true;
-    }
-}

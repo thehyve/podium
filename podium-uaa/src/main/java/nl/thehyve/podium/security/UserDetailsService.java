@@ -35,9 +35,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Transactional
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
-        // FIXME: revert
-        String lowercaseLogin = "admin";
-        // String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
+        String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         Optional<User> userFromDatabase = userService.getDomainUserWithAuthoritiesByLogin(lowercaseLogin);
         if (!userFromDatabase.isPresent()) {
             throw new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database");
