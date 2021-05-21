@@ -67,8 +67,11 @@
     <logger name="org.flowable.engine.impl" level="WARN"/>
     <logger name="org.flowable.engine.impl.db" level="WARN"/>
     <logger name="org.flowable.engine.impl.interceptor" level="WARN"/>
-    <logger name="org.flowable.spring.SpringTransactionInterceptor" level="WARN" />
-    <logger name="com.hazelcast.internal.diagnostics.HealthMonitor" level="WARN"/>
+    <logger name="org.flowable.impl" level="WARN"/>
+    <logger name="org.flowable.job" level="WARN"/>
+    <logger name="org.flowable.spring.common.SpringTransactionInterceptor" level="WARN" />
+    <logger name="org.flowable.idm.spring.SpringTransactionInterceptor" level="WARN" />
+    <logger name="com.hazelcast.internal" level="WARN"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
