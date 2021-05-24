@@ -43,8 +43,6 @@ spring:
         active: test
     application:
         name: podiumGateway
-    autoconfigure:
-        exclude: org.springframework.boot.autoconfigure.data.cassandra.CassandraDataAutoConfiguration, org.springframework.boot.autoconfigure.cassandra.CassandraAutoConfiguration
     jackson:
         serialization.write_dates_as_timestamps: false
     cache:
@@ -74,15 +72,6 @@ spring:
             hibernate.hbm2ddl.auto: validate
     main:
         allow-bean-definition-overriding: true
-    data:
-        cassandra:
-            contactPoints: localhost
-            port: 0
-            protocolVersion: V4
-            compression: NONE
-            keyspaceName: cassandra_unit_keyspace
-            repositories:
-                type: NONE
     elasticsearch:
         rest:
             uris: http://localhost:9200

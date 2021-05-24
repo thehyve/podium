@@ -43,7 +43,6 @@
         <commons-codec.version>1.10</commons-codec.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
-        <datastax-driver.version>3.0.1</datastax-driver.version>
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
         <flowable.version>6.2.1</flowable.version>
         <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
