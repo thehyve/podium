@@ -23,7 +23,7 @@ public class AuditEventRepresentation {
     }
 
     public AuditEventRepresentation(AuditEvent event) {
-        this.timestamp = event.getTimestamp();
+        this.timestamp = Date.from(event.getTimestamp());
         this.principal = event.getPrincipal();
         this.type = event.getType();
         this.data = event.getData();
@@ -31,7 +31,7 @@ public class AuditEventRepresentation {
 
     @JsonIgnore
     public AuditEvent asAuditEvent() {
-        return new AuditEvent(timestamp, principal, type, data);
+        return new AuditEvent(timestamp.toInstant(), principal, type, data);
     }
 
 }

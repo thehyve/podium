@@ -52,7 +52,7 @@ public class SearchUser implements Serializable {
 
     private String specialism;
 
-    @CompletionField(maxInputLength = 60, payloads = true)
+    @CompletionField(maxInputLength = 60)
     private Completion fullNameSuggest;
 
     private String fullName;

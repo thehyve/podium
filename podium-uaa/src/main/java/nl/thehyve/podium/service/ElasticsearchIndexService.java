@@ -24,11 +24,11 @@ import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import org.elasticsearch.indices.IndexAlreadyExistsException;
+import org.elasticsearch.ResourceAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -66,7 +66,7 @@ public class ElasticsearchIndexService {
     private OrganisationSearchRepository organisationSearchRepository;
 
     @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private ElasticsearchOperations elasticsearchTemplate;
 
     public ElasticsearchIndexService() {
 
@@ -111,7 +111,7 @@ public class ElasticsearchIndexService {
         elasticsearchTemplate.deleteIndex(searchEntityClass);
         try {
             elasticsearchTemplate.createIndex(searchEntityClass);
-        } catch (IndexAlreadyExistsException e) {
+        } catch (ResourceAlreadyExistsException e) {
             // Do nothing. Index was already concurrently recreated by some other service.
         }
 
@@ -124,7 +124,7 @@ public class ElasticsearchIndexService {
                 List<T> entities = (List<T>) m.invoke(jpaRepository);
 
                 List<S> searchEntities = mapperFunction.apply(entities);
-                elasticsearchRepository.save(searchEntities);
+                elasticsearchRepository.saveAll(searchEntities);
             } catch (Exception e) {
                 log.error("Elasticsearch indexer error: {}", e);
             }

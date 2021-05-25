@@ -26,8 +26,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -60,11 +62,11 @@ public class OrganisationService {
 
     @Transactional(readOnly = true)
     public Set<Authority> findOrganisationAuthorities() {
-        Set<Authority> result = new LinkedHashSet<>(3);
-        result.add(authorityRepository.findOne(AuthorityConstants.ORGANISATION_ADMIN));
-        result.add(authorityRepository.findOne(AuthorityConstants.ORGANISATION_COORDINATOR));
-        result.add(authorityRepository.findOne(AuthorityConstants.REVIEWER));
-        return result;
+        List<String> roles = Arrays.asList(
+            AuthorityConstants.ORGANISATION_ADMIN,
+            AuthorityConstants.ORGANISATION_COORDINATOR,
+            AuthorityConstants.REVIEWER);
+        return new LinkedHashSet<>(authorityRepository.findAllById(roles));
     }
 
     /**
@@ -274,7 +276,7 @@ public class OrganisationService {
 
         organisation.setDeleted(true);
         organisationRepository.save(organisation);
-        organisationSearchRepository.delete(organisation.getId());
+        organisationSearchRepository.deleteById(organisation.getId());
     }
 
     /**

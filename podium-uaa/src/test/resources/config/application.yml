@@ -18,6 +18,8 @@ eureka:
         instanceId: podiumUaa:${spring.application.instance_id:${random.value}}
 
 spring:
+    profiles:
+        active: test
     application:
         name: podiumUaa
     jackson:
@@ -44,32 +46,17 @@ spring:
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: validate
-    data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
-                cluster.routing.allocation.disk.watermark.high: 99%
+    main:
+        allow-bean-definition-overriding: true
+    elasticsearch:
+        rest:
+            uris: http://localhost:9200
     mail:
         host: localhost
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
         mode: XHTML
-
-liquibase:
-    contexts: test
-
-security:
-    basic:
-        enabled: false
-    oauth2:
-        resource:
-            filter-order: 3
+    liquibase:
+        contexts: test
 
 server:
     port: 10344

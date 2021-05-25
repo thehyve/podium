@@ -248,7 +248,7 @@ public class DraftService {
         // Delete old request files
         for (RequestFile requestFile: requestFiles) {
             requestFileService.deleteFileFromFileSystem(requestFile);
-            requestFileRepository.delete(requestFile.getId());
+            requestFileRepository.delete(requestFile);
         }
 
         requestService.deleteRequest(request.getId());

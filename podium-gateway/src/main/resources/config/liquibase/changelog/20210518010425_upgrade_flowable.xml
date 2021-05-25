@@ -1,0 +1,99 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="gijs@thehyve.nl" id="20210518010425-1">
+        <comment>
+            Update the Activiti/Flowable schema to be compatible with Flowable version 6.2.1.
+        </comment>
+        <update tableName="act_id_property">
+            <column name="value_" value="6.2.1.0"/>
+            <where>name_='schema.version'</where>
+        </update>
+        <update tableName="act_ge_property">
+            <column name="value_" value="6.2.1.0"/>
+            <where>name_='schema.version'</where>
+        </update>
+        <addColumn tableName="act_hi_taskinst">
+            <column name="rev_" type="integer" defaultValue="1"/>
+            <column name="task_def_id_" type="varchar(64)"/>
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="propagated_stage_inst_id_" type="varchar(255)"/>
+            <column name="last_updated_time_" type="timestamp"/>
+        </addColumn>
+        <createIndex indexName="act_idx_hi_task_scope" tableName="act_hi_taskinst">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex indexName="act_idx_hi_task_sub_scope" tableName="act_hi_taskinst">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex indexName="act_idx_hi_task_scope_def" tableName="act_hi_taskinst">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <addColumn tableName="act_hi_varinst">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex indexName="act_idx_hi_var_scope_id_type" tableName="act_hi_varinst">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex indexName="act_idx_hi_var_sub_id_type" tableName="act_hi_varinst">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <addColumn tableName="act_hi_procinst">
+            <column name="rev_" type="integer" defaultValue="1"/>
+            <column name="callback_id_" type="varchar(255)"/>
+            <column name="callback_type_" type="varchar(255)"/>
+            <column name="reference_id_" type="varchar(255)"/>
+            <column name="reference_type_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_hi_actinst">
+            <column name="rev_" type="integer" defaultValue="1"/>
+            <column name="transaction_order_" type="integer"/>
+        </addColumn>
+        <addColumn tableName="act_ru_job">
+            <column name="category_" type="varchar(255)"/>
+            <column name="element_id_" type="varchar(255)"/>
+            <column name="element_name_" type="varchar(255)"/>
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="correlation_id_" type="varchar(255)"/>
+            <column name="custom_values_id_" type="varchar(64)"/>
+            <column name="create_time_" type="timestamp"/>
+        </addColumn>
+        <addColumn tableName="act_ru_execution">
+            <column name="start_act_id_" type="varchar(255)"/>
+            <column name="lock_owner_" type="varchar(255)"/>
+            <column name="callback_id_" type="varchar(255)"/>
+            <column name="callback_type_" type="varchar(255)"/>
+            <column name="reference_id_" type="varchar(255)"/>
+            <column name="reference_type_" type="varchar(255)"/>
+            <column name="propagated_stage_inst_id_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_task">
+            <column name="task_def_id_" type="varchar(64)"/>
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="propagated_stage_inst_id_" type="varchar(255)"/>
+            <column name="sub_task_count_" type="integer"/>
+        </addColumn>
+        <addColumn tableName="act_ru_variable">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

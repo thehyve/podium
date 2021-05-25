@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -282,7 +283,7 @@ public class UserResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/_suggest/users")
     @Timed
-    public ResponseEntity<List<SearchUser>> suggest(@RequestParam String query) {
+    public ResponseEntity<List<SearchUser>> suggest(@RequestParam String query) throws IOException {
         List<SearchUser> list = userService.suggestUsers(query);
         return ResponseEntity.ok(list);
     }

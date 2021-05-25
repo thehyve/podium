@@ -15,7 +15,7 @@ import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -42,9 +42,9 @@ public class RequestRepresentation implements IdentifiableRequest, Serializable 
     @Valid
     private RequestDetailRepresentation requestDetail;
 
-    private ZonedDateTime createdDate;
+    private LocalDateTime createdDate;
 
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     private PodiumEventRepresentation latestEvent;
 

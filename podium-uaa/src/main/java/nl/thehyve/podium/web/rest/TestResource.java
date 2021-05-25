@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Profile({"dev", "test"})
 @RestController
@@ -78,7 +78,7 @@ public class TestResource {
             user.setAdminVerified(userData.isAdminVerified());
             user.setAccountLocked(userData.isAccountLocked());
             if (user.isAccountLocked()) {
-                user.setAccountLockDate(ZonedDateTime.now());
+                user.setAccountLockDate(LocalDateTime.now());
             }
             user = userService.save(user);
             userService.changePassword(user, userData.getPassword());

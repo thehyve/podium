@@ -4,7 +4,7 @@ import lombok.Data;
 import nl.thehyve.podium.common.enumeration.RequestFileType;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -19,9 +19,9 @@ public class RequestFileRepresentation implements Serializable {
 
     private RequestRepresentation request;
 
-    private ZonedDateTime createdDate;
+    private LocalDateTime createdDate;
 
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     private Long fileByteSize;
 

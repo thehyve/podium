@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -72,7 +73,7 @@ public class InternalAuditServerIntTest {
 
     public static AuditEvent createEvent() {
         //Instant instant = Instant.parse("2015-08-04T10:11:30");
-        Date date = new Date(); //Date.from(instant);
+        Instant date = Instant.now(); //Date.from(instant);
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("sourceStatus", RequestReviewStatus.Review);
         data.put("targetStatus", RequestReviewStatus.Revision);

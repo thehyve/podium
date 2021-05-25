@@ -7,7 +7,7 @@
 
 package nl.thehyve.podium.config.jcache;
 
-import com.codahale.metrics.JmxAttributeGauge;
+// import com.codahale.metrics.JmxAttributeGauge;
 import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricSet;
 
@@ -45,10 +45,10 @@ public class JCacheGaugeSet implements MetricSet {
             ObjectName objectName = objectInstance.getObjectName();
             String cacheName = objectName.getKeyProperty("Cache");
 
-            for (String statsName : availableStatsNames) {
-                JmxAttributeGauge jmxAttributeGauge = new JmxAttributeGauge(objectName, statsName);
-                gauges.put(name(cacheName, toDashCase(statsName)), jmxAttributeGauge);
-            }
+            // for (String statsName : availableStatsNames) {
+            //     JmxAttributeGauge jmxAttributeGauge = new JmxAttributeGauge(objectName, statsName);
+            //     gauges.put(name(cacheName, toDashCase(statsName)), jmxAttributeGauge);
+            // }
         }
 
         return Collections.unmodifiableMap(gauges);
