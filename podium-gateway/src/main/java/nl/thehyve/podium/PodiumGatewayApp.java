@@ -12,7 +12,7 @@ import nl.thehyve.podium.common.config.DefaultProfileUtil;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import org.flowable.spring.boot.RestApiAutoConfiguration;
-import org.flowable.spring.boot.SecurityAutoConfiguration;
+import org.flowable.spring.boot.FlowableSecurityAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -36,7 +36,7 @@ import java.util.Collection;
     @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class))
 @EnableAutoConfiguration(exclude = {
     RestApiAutoConfiguration.class,
-    SecurityAutoConfiguration.class})
+    FlowableSecurityAutoConfiguration.class})
 @EnableConfigurationProperties({PodiumProperties.class, LiquibaseProperties.class})
 @EnableDiscoveryClient
 @EnableZuulProxy

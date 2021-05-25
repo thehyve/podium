@@ -1,0 +1,645 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <changeSet author="gijs@thehyve.nl" id="20210525122943-1">
+        <comment>
+            Update the Activiti/Flowable schema to be compatible with Flowable version 6.6.0.
+        </comment>
+        <!-- Update version to 6.6.0.0 -->
+        <update tableName="act_id_property">
+            <column name="value_" value="6.6.0.0"/>
+            <where>name_='schema.version'</where>
+        </update>
+        <update tableName="act_ge_property">
+            <column name="value_" value="6.6.0.0"/>
+            <where>name_='schema.version'</where>
+        </update>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="common.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="identitylink.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="task.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="variable.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="job.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="entitylink.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="eventsubscription.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+        <insert tableName="act_ge_property">
+            <column name="name_" value="batch.schema.version"/>
+            <column name="value_" value="6.6.0.0"/>
+        </insert>
+
+        <!-- From 6.0.1 to 6.1.0 -->
+        <createTable tableName="act_ru_history_job">
+            <column name="id_" type="varchar(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="rev_" type="integer"/>
+            <column name="lock_exp_time_" type="timestamp"/>
+            <column name="lock_owner_" type="varchar(255)"/>
+            <column name="retries_" type="integer"/>
+            <column name="exception_stack_id_" type="varchar(64)"/>
+            <column name="exception_msg_" type="varchar(4000)"/>
+            <column name="handler_type_" type="varchar(255)"/>
+            <column name="handler_cfg_" type="varchar(4000)"/>
+            <column name="adv_handler_cfg_id_" type="varchar(64)"/>
+            <column name="tenant_id_" type="varchar(255)" defaultValue=""/>
+            <column name="create_time_" type="timestamp"/>
+        </createTable>
+
+        <!-- From 6.1.0 to 6.1.1 -->
+        <update tableName="act_ru_job">
+            <column name="create_time_" valueDate="${now}"/>
+        </update>
+        <addColumn tableName="act_ru_timer_job">
+            <column name="create_time_" type="timestamp" valueDate="${now}"/>
+        </addColumn>
+        <addColumn tableName="act_ru_suspended_job">
+            <column name="create_time_" type="timestamp" valueDate="${now}"/>
+        </addColumn>
+        <addColumn tableName="act_ru_deadletter_job">
+            <column name="create_time_" type="timestamp" valueDate="${now}"/>
+        </addColumn>
+
+        <!-- From 6.1.2 to 6.2.0 -->
+        <createIndex tableName="act_ru_task" indexName="act_idx_task_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_task" indexName="act_idx_task_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_task" indexName="act_idx_task_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_variable" indexName="act_idx_ru_var_scope_id_type">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_variable" indexName="act_idx_ru_var_sub_id_type">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+
+        <!-- From 6.2.0 to 6.2.1 -->
+        <addColumn tableName="act_ru_timer_job">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="custom_values_id_" type="varchar(64)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_suspended_job">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="custom_values_id_" type="varchar(64)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_deadletter_job">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="custom_values_id_" type="varchar(64)"/>
+        </addColumn>
+        <createIndex tableName="act_ru_job" indexName="act_idx_job_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_job" indexName="act_idx_job_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_job" indexName="act_idx_job_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_job" indexName="act_idx_job_custom_values_id">
+            <column name="custom_values_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_timer_job" indexName="act_idx_tjob_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_timer_job" indexName="act_idx_tjob_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_timer_job" indexName="act_idx_tjob_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_timer_job" indexName="act_idx_tjob_custom_values_id">
+            <column name="custom_values_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_suspended_job" indexName="act_idx_sjob_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_suspended_job" indexName="act_idx_sjob_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_suspended_job" indexName="act_idx_sjob_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_suspended_job" indexName="act_idx_sjob_custom_values_id">
+            <column name="custom_values_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_deadletter_job" indexName="act_idx_djob_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_deadletter_job" indexName="act_idx_djob_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_deadletter_job" indexName="act_idx_djob_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_deadletter_job" indexName="act_idx_djob_custom_values_id">
+            <column name="custom_values_id_"/>
+        </createIndex>
+        <addForeignKeyConstraint constraintName="act_fk_job_custom_values"
+                                 baseTableName="act_ru_job" baseColumnNames="custom_values_id_"
+                                 referencedTableName="act_ge_bytearray" referencedColumnNames="id_"/>
+        <addForeignKeyConstraint constraintName="act_fk_timer_job_custom_values"
+                                 baseTableName="act_ru_timer_job" baseColumnNames="custom_values_id_"
+                                 referencedTableName="act_ge_bytearray" referencedColumnNames="id_"/>
+        <addForeignKeyConstraint constraintName="act_fk_suspended_job_custom_values"
+                                 baseTableName="act_ru_suspended_job" baseColumnNames="custom_values_id_"
+                                 referencedTableName="act_ge_bytearray" referencedColumnNames="id_"/>
+        <addForeignKeyConstraint constraintName="act_fk_deadletter_job_custom_values"
+                                 baseTableName="act_ru_deadletter_job" baseColumnNames="custom_values_id_"
+                                 referencedTableName="act_ge_bytearray" referencedColumnNames="id_"/>
+
+        <!-- From 6.2.1 to 6.3.0 -->
+        <addColumn tableName="act_ru_identitylink">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex indexName="act_idx_ident_lnk_scope" tableName="act_ru_identitylink">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex indexName="act_idx_ident_lnk_scope_def" tableName="act_ru_identitylink">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+
+        <addColumn tableName="act_hi_identitylink">
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex indexName="act_idx_hi_ident_lnk_scope" tableName="act_hi_identitylink">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex indexName="act_idx_hi_ident_lnk_scope_def" tableName="act_hi_identitylink">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+
+        <addColumn tableName="act_re_deployment">
+            <column name="derived_from_" type="varchar(64)"/>
+            <column name="derived_from_root_" type="varchar(64)"/>
+        </addColumn>
+
+        <addColumn tableName="act_re_procdef">
+            <column name="derived_from_" type="varchar(64)"/>
+            <column name="derived_from_root_" type="varchar(64)"/>
+            <column name="derived_version_" type="integer" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <dropUniqueConstraint tableName="act_re_procdef" constraintName="act_uniq_procdef"/>
+        <addUniqueConstraint tableName="act_re_procdef" constraintName="act_uniq_procdef"
+                             columnNames="key_,version_, derived_version_, tenant_id_"/>
+
+        <!-- From 6.3.0 to 6.3.1 -->
+        <addColumn tableName="act_ru_history_job">
+            <column name="scope_type_" type="varchar(255)"/>
+        </addColumn>
+
+        <addColumn tableName="act_re_deployment">
+            <column name="parent_deployment_id_" type="varchar(255)"/>
+        </addColumn>
+
+        <!-- From 6.4.0 to 6.4.1 -->
+        <createTable tableName="act_hi_tsk_log">
+            <column name="id_" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="type_" type="varchar(64)"/>
+            <column name="task_id_" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_stamp_" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id_" type="varchar(255)"/>
+            <column name="data_" type="varchar(4000)"/>
+            <column name="execution_id_" type="varchar(64)"/>
+            <column name="proc_inst_id_" type="varchar(64)"/>
+            <column name="proc_def_id_" type="varchar(64)"/>
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="tenant_id_" type="varchar(255)" defaultValue=""/>
+        </createTable>
+        <createTable tableName="act_ru_entitylink">
+            <column name="id_" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rev_" type="integer"/>
+            <column name="create_time_" type="timestamp"/>
+            <column name="link_type_" type="varchar(255)"/>
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="ref_scope_id_" type="varchar(255)"/>
+            <column name="ref_scope_type_" type="varchar(255)"/>
+            <column name="ref_scope_definition_id_" type="varchar(255)"/>
+            <column name="hierarchy_type_" type="varchar(255)"/>
+        </createTable>
+        <createIndex tableName="act_ru_entitylink" indexName="act_idx_ent_lnk_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+            <column name="link_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_entitylink" indexName="act_idx_ent_lnk_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+            <column name="link_type_"/>
+        </createIndex>
+        <createTable tableName="act_hi_entitylink">
+            <column name="id_" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="link_type_" type="varchar(255)"/>
+            <column name="create_time_" type="timestamp"/>
+            <column name="scope_id_" type="varchar(255)"/>
+            <column name="scope_type_" type="varchar(255)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="ref_scope_id_" type="varchar(255)"/>
+            <column name="ref_scope_type_" type="varchar(255)"/>
+            <column name="ref_scope_definition_id_" type="varchar(255)"/>
+            <column name="hierarchy_type_" type="varchar(255)"/>
+        </createTable>
+        <createIndex tableName="act_hi_entitylink" indexName="act_idx_hi_ent_lnk_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+            <column name="link_type_"/>
+        </createIndex>
+        <createIndex tableName="act_hi_entitylink" indexName="act_idx_hi_ent_lnk_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+            <column name="link_type_"/>
+        </createIndex>
+
+        <createTable tableName="act_ru_actinst">
+            <column name="id_" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rev_" type="integer"/>
+            <column name="proc_def_id_" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_inst_id_" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="execution_id_" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="act_id_" type="varchar(255)"/>
+            <column name="task_id_" type="varchar(64)"/>
+            <column name="call_proc_inst_id_" type="varchar(64)"/>
+            <column name="act_name_" type="varchar(255)"/>
+            <column name="act_type_" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_" type="varchar(255)"/>
+            <column name="start_time_" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time_" type="timestamp"/>
+            <column name="duration_" type="bigint"/>
+            <column name="delete_reason_" type="varchar(4000)"/>
+            <column name="tenant_id_" type="varchar(255)" defaultValue=""/>
+        </createTable>
+        <createIndex tableName="act_ru_actinst" indexName="act_idx_ru_acti_start">
+            <column name="start_time_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_actinst" indexName="act_idx_ru_acti_proc">
+            <column name="proc_inst_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_actinst" indexName="act_idx_ru_acti_proc_act">
+            <column name="proc_inst_id_"/>
+            <column name="act_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_actinst" indexName="act_idx_ru_acti_exec">
+            <column name="execution_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_actinst" indexName="act_idx_ru_acti_exec_act">
+            <column name="execution_id_"/>
+            <column name="act_id_"/>
+        </createIndex>
+
+        <!-- From 6.4.1 to 6.4.2 -->
+        <addColumn tableName="act_ru_timer_job">
+            <column name="element_id_" type="varchar(255)"/>
+            <column name="element_name_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_suspended_job">
+            <column name="element_id_" type="varchar(255)"/>
+            <column name="element_name_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_deadletter_job">
+            <column name="element_id_" type="varchar(255)"/>
+            <column name="element_name_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_event_subscr">
+            <column name="sub_scope_id_" type="varchar(64)"/>
+            <column name="scope_id_" type="varchar(64)"/>
+            <column name="scope_definition_id_" type="varchar(64)"/>
+            <column name="scope_type_" type="varchar(64)"/>
+        </addColumn>
+
+        <!-- From 6.4.2 to 6.5.0 -->
+        <addColumn tableName="act_hi_identitylink">
+            <column name="sub_scope_id_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex tableName="act_hi_identitylink" indexName="act_idx_hi_ident_lnk_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+
+        <addColumn tableName="act_ru_identitylink">
+            <column name="sub_scope_id_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex tableName="act_ru_identitylink" indexName="act_idx_ident_lnk_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+
+        <createTable tableName="flw_ru_batch">
+            <column name="id_" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rev_" type="integer"/>
+            <column name="type_" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="search_key_" type="varchar(255)"/>
+            <column name="search_key2_" type="varchar(255)"/>
+            <column name="create_time_" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complete_time_" type="timestamp"/>
+            <column name="status_" type="varchar(255)"/>
+            <column name="batch_doc_id_" type="varchar(64)"/>
+            <column name="tenant_id_" type="varchar(255)" defaultValue=""/>
+        </createTable>
+
+        <createTable tableName="flw_ru_batch_part">
+            <column name="id_" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rev_" type="integer"/>
+            <column name="batch_id_" type="varchar(64)"/>
+            <column name="type_" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scope_id_" type="varchar(64)"/>
+            <column name="sub_scope_id_" type="varchar(64)"/>
+            <column name="scope_type_" type="varchar(64)"/>
+            <column name="search_key_" type="varchar(255)"/>
+            <column name="search_key2_" type="varchar(255)"/>
+            <column name="create_time_" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complete_time_" type="timestamp"/>
+            <column name="status_" type="varchar(255)"/>
+            <column name="result_doc_id_" type="varchar(64)"/>
+            <column name="tenant_id_" type="varchar(255)" defaultValue=""/>
+        </createTable>
+        <createIndex tableName="flw_ru_batch_part" indexName="flw_idx_batch_part">
+            <column name="batch_id_"/>
+        </createIndex>
+        <addForeignKeyConstraint constraintName="flw_fk_batch_part_parent"
+                                 baseTableName="flw_ru_batch_part" baseColumnNames="batch_id_"
+                                 referencedTableName="flw_ru_batch" referencedColumnNames="id_"/>
+
+        <createTable tableName="flw_event_deployment">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name_" type="varchar(255)"/>
+            <column name="category_" type="varchar(255)"/>
+            <column name="deploy_time_" type="timestamp"/>
+            <column name="tenant_id_" type="varchar(255)"/>
+            <column name="parent_deployment_id_" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="flw_event_resource">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name_" type="varchar(255)"/>
+            <column name="deployment_id_" type="varchar(255)"/>
+            <column name="resource_bytes_" type="blob"/>
+            <column name="tenant_id_" type="varchar(255)"/>
+            <column name="parent_deployment_id_" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="flw_event_definition">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name_" type="varchar(255)"/>
+            <column name="version_" type="integer"/>
+            <column name="key_" type="varchar(255)"/>
+            <column name="category_" type="varchar(255)"/>
+            <column name="deployment_id_" type="varchar(255)"/>
+            <column name="tenant_id_" type="varchar(255)"/>
+            <column name="resource_name_" type="varchar(255)"/>
+            <column name="description_" type="varchar(255)"/>
+        </createTable>
+        <createIndex tableName="flw_event_definition" indexName="act_idx_event_def_uniq" unique="true">
+            <column name="key_"/>
+            <column name="version_"/>
+            <column name="tenant_id_"/>
+        </createIndex>
+
+        <createTable tableName="flw_channel_definition">
+            <column name="id_" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name_" type="varchar(255)"/>
+            <column name="version_" type="integer"/>
+            <column name="key_" type="varchar(255)"/>
+            <column name="category_" type="varchar(255)"/>
+            <column name="deployment_id_" type="varchar(255)"/>
+            <column name="create_time_" type="timestamp"/>
+            <column name="tenant_id_" type="varchar(255)"/>
+            <column name="resource_name_" type="varchar(255)"/>
+        </createTable>
+        <createIndex tableName="flw_channel_definition" indexName="act_idx_channel_def_uniq" unique="true">
+            <column name="key_"/>
+            <column name="version_"/>
+            <column name="tenant_id_"/>
+        </createIndex>
+
+        <!-- From 6.5.0 to 6.6.0 -->
+        <addColumn tableName="act_ru_entitylink">
+            <column name="root_scope_id_" type="varchar(255)"/>
+            <column name="root_scope_type_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex tableName="act_ru_entitylink" indexName="act_idx_ent_lnk_root_scope">
+            <column name="root_scope_id_"/>
+            <column name="root_scope_type_"/>
+            <column name="link_type_"/>
+        </createIndex>
+        <addColumn tableName="act_hi_entitylink">
+            <column name="root_scope_id_" type="varchar(255)"/>
+            <column name="root_scope_type_" type="varchar(255)"/>
+            <column name="sub_scope_id_" type="varchar(255)"/>
+            <column name="parent_element_id_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex tableName="act_hi_entitylink" indexName="act_idx_hi_ent_lnk_root_scope">
+            <column name="root_scope_id_"/>
+            <column name="root_scope_type_"/>
+            <column name="link_type_"/>
+        </createIndex>
+
+        <addColumn tableName="act_ru_timer_job">
+            <column name="category_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_suspended_job">
+            <column name="category_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_deadletter_job">
+            <column name="category_" type="varchar(255)"/>
+        </addColumn>
+
+        <createTable tableName="act_ru_external_job">
+            <column name="id_" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="rev_" type="integer"/>
+            <column name="category_" type="varchar(255)"/>
+            <column name="type_" type="varchar(255)"/>
+            <column name="lock_exp_time_" type="timestamp"/>
+            <column name="lock_owner_" type="varchar(255)"/>
+            <column name="exclusive_" type="boolean"/>
+            <column name="execution_id_" type="varchar(64)"/>
+            <column name="process_instance_id_" type="varchar(64)"/>
+            <column name="proc_def_id_" type="varchar(64)"/>
+            <column name="element_id_" type="varchar(255)"/>
+            <column name="element_name_" type="varchar(255)"/>
+            <column name="scope_id_" type="varchar(64)"/>
+            <column name="sub_scope_id_" type="varchar(64)"/>
+            <column name="scope_type_" type="varchar(64)"/>
+            <column name="scope_definition_id_" type="varchar(255)"/>
+            <column name="retries_" type="integer"/>
+            <column name="exception_stack_id_" type="varchar(64)"/>
+            <column name="exception_msg_" type="varchar(4000)"/>
+            <column name="duedate_" type="timestamp"/>
+            <column name="repeat_" type="varchar(255)"/>
+            <column name="handler_type_" type="varchar(255)"/>
+            <column name="handler_cfg_" type="varchar(4000)"/>
+            <column name="custom_values_id_" type="varchar(64)"/>
+            <column name="create_time_" type="timestamp"/>
+            <column name="tenant_id_" type="varchar(255)" defaultValue=""/>
+        </createTable>
+        <createIndex tableName="act_ru_external_job" indexName="act_idx_external_job_exception_stack_id">
+            <column name="exception_stack_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_external_job" indexName="act_idx_external_job_custom_values_id">
+            <column name="custom_values_id_"/>
+        </createIndex>
+        <addForeignKeyConstraint constraintName="act_fk_external_job_exception"
+                                 baseTableName="act_ru_external_job" baseColumnNames="exception_stack_id_"
+                                 referencedTableName="act_ge_bytearray" referencedColumnNames="id_"/>
+        <addForeignKeyConstraint constraintName="act_fk_external_job_custom_values"
+                                 baseTableName="act_ru_external_job" baseColumnNames="custom_values_id_"
+                                 referencedTableName="act_ge_bytearray" referencedColumnNames="id_"/>
+        <createIndex tableName="act_ru_external_job" indexName="act_idx_ejob_scope">
+            <column name="scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_external_job" indexName="act_idx_ejob_sub_scope">
+            <column name="sub_scope_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_external_job" indexName="act_idx_ejob_scope_def">
+            <column name="scope_definition_id_"/>
+            <column name="scope_type_"/>
+        </createIndex>
+
+        <addColumn tableName="act_ru_timer_job">
+            <column name="correlation_id_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_suspended_job">
+            <column name="correlation_id_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_deadletter_job">
+            <column name="correlation_id_" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="act_ru_external_job">
+            <column name="correlation_id_" type="varchar(255)"/>
+        </addColumn>
+        <createIndex tableName="act_ru_job" indexName="act_idx_job_correlation_id">
+            <column name="correlation_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_timer_job" indexName="act_idx_timer_job_correlation_id">
+            <column name="correlation_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_suspended_job" indexName="act_idx_suspended_job_correlation_id">
+            <column name="correlation_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_deadletter_job" indexName="act_idx_deadletter_job_correlation_id">
+            <column name="correlation_id_"/>
+        </createIndex>
+        <createIndex tableName="act_ru_external_job" indexName="act_idx_external_job_correlation_id">
+            <column name="correlation_id_"/>
+        </createIndex>
+
+        <addColumn tableName="act_ru_execution">
+            <column name="external_worker_job_count_" type="integer"/>
+        </addColumn>
+        <addColumn tableName="act_ru_actinst">
+            <column name="transaction_order_" type="integer"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
