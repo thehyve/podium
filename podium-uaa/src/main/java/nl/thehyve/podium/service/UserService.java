@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.fasterxml.jackson.databind.*;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +44,6 @@ import javax.persistence.EntityManager;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service class for managing users.
@@ -502,20 +496,6 @@ public class UserService {
     public Page<ManagedUserRepresentation> getUsersForOrganisations(Pageable pageable, UUID... organisationUuids) {
         return userRepository.findAllByOrganisations(Arrays.asList(organisationUuids), pageable)
             .map(user -> userMapper.userToManagedUserVM(user));
-    }
-
-    /**
-     * Search for the organisation corresponding to the query.
-     *
-     * @param query the query of the search
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public List<SearchUser> search(String query) {
-        log.debug("Request to search users for query {}", query);
-        return StreamSupport
-            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

@@ -16,7 +16,6 @@ import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
-import nl.thehyve.podium.repository.search.ReviewFeedbackSearchRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.mapper.ReviewFeedbackMapper;
@@ -54,9 +53,6 @@ public class ReviewService {
 
     @Autowired
     private ReviewFeedbackRepository reviewFeedbackRepository;
-
-    @Autowired
-    private ReviewFeedbackSearchRepository reviewFeedbackSearchRepository;
 
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
@@ -255,7 +251,6 @@ public class ReviewService {
 
         feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackBody, feedback);
         feedback = reviewFeedbackRepository.save(feedback);
-        reviewFeedbackSearchRepository.save(feedback);
         entityManager.flush();
         entityManager.refresh(request);
 

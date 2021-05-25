@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;
@@ -124,26 +123,4 @@ public class RoleResource {
         log.debug("REST request to get Role : {}", id);
         return ResponseEntity.ok(roleService.findOne(id));
     }
-
-    /**
-     * SEARCH  /_search/roles?query=:query : search for the role corresponding
-     * to the query.
-     *
-     * @param query the query of the role search
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/_search/roles")
-    @Timed
-    public ResponseEntity<List<RoleRepresentation>> searchRoles(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of Roles for query {}", query);
-        Page<RoleRepresentation> page = roleService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/roles");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-
 }

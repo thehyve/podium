@@ -8,13 +8,16 @@
  *
  */
 
-package nl.thehyve.podium.common.config;
+package nl.thehyve.podium.config;
 
 import org.elasticsearch.client.*;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.*;
 import org.springframework.data.elasticsearch.core.*;
+import org.springframework.data.elasticsearch.repository.config.*;
 
 @Configuration
+@EnableElasticsearchRepositories("nl.thehyve.podium.repository.search")
 public class ElasticSearchConfiguration {
     @Bean
     public ElasticsearchOperations elasticsearchTemplate(RestHighLevelClient client) {

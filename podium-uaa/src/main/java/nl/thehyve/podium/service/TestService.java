@@ -18,8 +18,6 @@ import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
 import nl.thehyve.podium.repository.UserRepository;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
-import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.mapper.UserMapper;
@@ -62,16 +60,10 @@ public class TestService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private RoleSearchRepository roleSearchRepository;
-
-    @Autowired
     RoleService roleService;
 
     @Autowired
     private OrganisationRepository organisationRepository;
-
-    @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
 
     @Autowired
     OrganisationService organisationService;
@@ -98,7 +90,6 @@ public class TestService {
                 roles.add(role);
             }
         }
-        roleSearchRepository.deleteAll(roles);
         roleRepository.deleteAll(roles);
 
         // Delete all users except "admin" and "system"
@@ -124,7 +115,6 @@ public class TestService {
 
         // Delete all organisations
         organisationRepository.deleteAll();
-        organisationSearchRepository.deleteAll();
     }
 
     /**
@@ -237,6 +227,4 @@ public class TestService {
         }
         return user;
     }
-
-
 }

@@ -399,24 +399,4 @@ public class RequestResource {
         RequestRepresentation requestRepresentation = requestService.closeRequest(user, uuid, message);
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
-
-    /**
-     * SEARCH  /_search/requests?query=:query : search for the request corresponding
-     * to the query.
-     *
-     * @param query the query of the request search
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/requests")
-    @Timed
-    public ResponseEntity<List<RequestRepresentation>> searchRequests(@RequestParam("query") String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of Requests for query {}", query);
-        Page<RequestRepresentation> page = requestService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/requests");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

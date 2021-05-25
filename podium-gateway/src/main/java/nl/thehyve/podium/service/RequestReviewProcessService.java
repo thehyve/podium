@@ -15,7 +15,6 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.RequestReviewProcess;
 import nl.thehyve.podium.repository.RequestReviewProcessRepository;
-import nl.thehyve.podium.repository.search.RequestReviewProcessSearchRepository;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -92,9 +91,6 @@ public class RequestReviewProcessService {
     @Autowired
     private RequestReviewProcessRepository requestReviewProcessRepository;
 
-    @Autowired
-    private RequestReviewProcessSearchRepository requestReviewProcessSearchRepository;
-
     /**
      * Finds request.
      * @param processInstanceId
@@ -131,7 +127,6 @@ public class RequestReviewProcessService {
         requestReviewProcess.setDecision((ReviewProcessOutcome) variables.get("decision"));
         requestReviewProcess = requestReviewProcessRepository.save(requestReviewProcess);
         // save to elastic search as well
-        requestReviewProcessSearchRepository.save(requestReviewProcess);
         return requestReviewProcess;
     }
 
