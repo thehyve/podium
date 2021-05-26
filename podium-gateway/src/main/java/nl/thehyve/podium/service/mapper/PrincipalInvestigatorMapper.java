@@ -7,11 +7,9 @@
 
 package nl.thehyve.podium.service.mapper;
 
+import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.domain.PrincipalInvestigator;
-import nl.thehyve.podium.common.service.dto.PrincipalInvestigatorRepresentation;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -40,7 +38,11 @@ public interface PrincipalInvestigatorMapper {
         @MappingTarget PrincipalInvestigator principalInvestigator
     );
 
+    @Named("clonePrincipalInvestigator")
     @Mapping(target = "id", ignore = true)
-    PrincipalInvestigator clone(PrincipalInvestigator principalInvestigator);
+    PrincipalInvestigator clonePrincipalInvestigator(PrincipalInvestigator principalInvestigator);
 
+    @Named("safePrincipalInvestigatorDTOToPrincipalInvestigator")
+    @Mapping(target = "id", ignore = true)
+    PrincipalInvestigator safePrincipalInvestigatorDTOToPrincipalInvestigator(PrincipalInvestigatorRepresentation principalInvestigator);
 }

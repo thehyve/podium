@@ -12,10 +12,7 @@ import nl.thehyve.podium.common.service.dto.RequestDetailRepresentation;
 import nl.thehyve.podium.service.util.DefaultMapper;
 import nl.thehyve.podium.service.util.MinimalMapper;
 import nl.thehyve.podium.service.util.SafeRequestDetail;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 
 import java.util.HashSet;
 
@@ -37,12 +34,13 @@ public abstract class RequestDetailMapper {
     @DefaultMapper
     public abstract RequestDetail requestDetailRepresentationToRequestDetail(RequestDetailRepresentation requestDetailRepresentation);
 
+    @Named("cloneRequestDetail")
     @DefaultMapper
     @Mappings({
         @Mapping(target = "id", ignore = true),
-        @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+        @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clonePrincipalInvestigator")
     })
-    public abstract RequestDetail clone(RequestDetail requestDetail);
+    public abstract RequestDetail cloneRequestDetail(RequestDetail requestDetail);
 
     /**
      * Safely transform requestDetail representation to a requestDetail entity
@@ -55,7 +53,7 @@ public abstract class RequestDetailMapper {
         @Mapping(target = "id", ignore = true),
         @Mapping(target = "requestType", ignore = true),
         @Mapping(target = "combinedRequest", ignore = true),
-        @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "clone")
+        @Mapping(source = "principalInvestigator", target = "principalInvestigator", qualifiedByName = "safePrincipalInvestigatorDTOToPrincipalInvestigator")
     })
     public abstract RequestDetail processingRequestDetailDtoToRequestDetail(
         RequestDetailRepresentation requestDetailRepresentation, @MappingTarget RequestDetail requestDetail
