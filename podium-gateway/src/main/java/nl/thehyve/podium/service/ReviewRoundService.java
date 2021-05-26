@@ -11,8 +11,6 @@
 package nl.thehyve.podium.service;
 
 import com.codahale.metrics.annotation.Timed;
-import feign.FeignException;
-import nl.thehyve.podium.client.InternalUserClient;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -23,8 +21,6 @@ import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
 import nl.thehyve.podium.repository.ReviewRoundRepository;
-import nl.thehyve.podium.repository.search.ReviewFeedbackSearchRepository;
-import nl.thehyve.podium.repository.search.ReviewRoundSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +48,6 @@ public class ReviewRoundService {
 
     @Autowired
     private ReviewFeedbackRepository reviewFeedbackRepository;
-
-    @Autowired
-    private ReviewRoundSearchRepository reviewRoundSearchRepository;
-
-    @Autowired
-    private ReviewFeedbackSearchRepository reviewFeedbackSearchRepository;
 
     @Autowired
     private SecurityService securityService;
@@ -113,14 +103,12 @@ public class ReviewRoundService {
             feedback.setDate(ZonedDateTime.now());
 
             reviewFeedbackRepository.save(feedback);
-            reviewFeedbackSearchRepository.save(feedback);
 
             // Add the feedback to the round.
             reviewRound.getReviewFeedback().add(feedback);
         }
 
         reviewRoundRepository.save(reviewRound);
-        reviewRoundSearchRepository.save(reviewRound);
 
         return reviewRound;
     }
@@ -138,7 +126,6 @@ public class ReviewRoundService {
             if (reviewRound != null && reviewRound.getEndDate() == null) {
                 reviewRound.setEndDate(LocalDateTime.now());
                 reviewRoundRepository.save(reviewRound);
-                reviewRoundSearchRepository.save(reviewRound);
             }
         }
 

@@ -15,7 +15,6 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.OrganisationRepository;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.slf4j.Logger;
@@ -34,8 +33,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 /**
  * Service Implementation for managing Organisation.
  */
@@ -47,9 +44,6 @@ public class OrganisationService {
 
     @Autowired
     private OrganisationRepository organisationRepository;
-
-    @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
 
     @Autowired
     private AuthorityRepository authorityRepository;
@@ -122,7 +116,6 @@ public class OrganisationService {
         }
 
         SearchOrganisation searchOrganisation = organisationMapper.organisationToSearchOrganisation(organisation);
-        organisationSearchRepository.save(searchOrganisation);
         return organisation;
     }
 
@@ -276,21 +269,5 @@ public class OrganisationService {
 
         organisation.setDeleted(true);
         organisationRepository.save(organisation);
-        organisationSearchRepository.deleteById(organisation.getId());
     }
-
-    /**
-     * Search for the organisation corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable Pagination object of the requested page
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<SearchOrganisation> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Organisations for query {}", query);
-        Page<SearchOrganisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
-    }
-
 }

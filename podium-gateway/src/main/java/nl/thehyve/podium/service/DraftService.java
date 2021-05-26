@@ -178,7 +178,7 @@ public class DraftService {
             Request organisationRequest = requestMapper.clone(request);
 
             // Create organisation revision details
-            RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());
+            RequestDetail revisionDetail = requestDetailMapper.cloneRequestDetail(request.getRequestDetail());
             organisationRequest.setRevisionDetail(revisionDetail);
 
             try {

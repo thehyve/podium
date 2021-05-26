@@ -11,10 +11,8 @@ import org.flowable.engine.common.AbstractEngineConfiguration;
 import org.flowable.spring.SpringProcessEngineConfiguration;
 import org.flowable.spring.boot.ProcessEngineConfigurationConfigurer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile(value = "!h2")
 public class ProcessEngineConfiguration implements ProcessEngineConfigurationConfigurer {
     @Override
     public void configure(SpringProcessEngineConfiguration config) {

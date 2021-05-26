@@ -8,7 +8,6 @@
 package nl.thehyve.podium.web.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.enumeration.RequestType;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -19,8 +18,6 @@ import nl.thehyve.podium.common.test.web.rest.TestUtil;
 import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.OrganisationRepository;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.service.TestService;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
@@ -74,9 +71,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
 
     @Autowired
     private OrganisationService organisationService;
-
-    @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
 
     @Autowired
     private TestService testService;
@@ -175,14 +169,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         assertThat(testOrganisation.isDeleted()).isEqualTo(DEFAULT_DELETED);
 
         log.info("testOrganisation: {}", testOrganisation);
-
-        // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
-
-        log.info("organisationEs: {}", organisationEs);
-
-        assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
-        assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
 
     @Test
@@ -403,11 +389,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         Organisation testOrganisation = organisationRepository.findByUuidAndDeletedFalse(organisationA.getUuid());
         assertThat(testOrganisation.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testOrganisation.getShortName()).isEqualTo(UPDATED_SHORT_NAME);
-
-        // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
-        assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
-        assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
 
     @Test
@@ -452,11 +433,6 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
         assertThat(organisationList).hasSize(databaseSizeBeforeUpdate);
         Organisation testOrganisation = organisationRepository.findByUuidAndDeletedFalse(organisationA.getUuid());
         assertThat(testOrganisation.isActivated()).isEqualTo(UPDATED_ACTIVATED);
-
-        // Validate the Organisation in Elasticsearch
-        SearchOrganisation organisationEs = organisationSearchRepository.findById(testOrganisation.getId()).get();
-        assertThat(organisationEs).isEqualToIgnoringGivenFields(testOrganisation, "uuid");
-        assertThat(organisationEs.getUuid()).isEqualTo(testOrganisation.getUuid().toString());
     }
 
     @Test
@@ -472,28 +448,9 @@ public class OrganisationResourceIntTest extends AbstractAuthorisedUserIntTest {
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean organisationExistsInEs = organisationSearchRepository.existsById(organisationA.getId());
-        assertThat(organisationExistsInEs).isFalse();
-
         // Validate the database is empty
         int databaseSize = organisationService.count().intValue();
         assertThat(databaseSize).isEqualTo(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
-    public void searchOrganisation() throws Exception {
-        setupData();
-
-        // Search the organisation
-        mockMvc.perform(get("/api/_search/organisations?query=id:" + organisationA.getId())
-            .with(token(bbmriAdmin)))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(organisationA.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].shortName").value(hasItem(DEFAULT_SHORT_NAME)));
     }
 
     @Test

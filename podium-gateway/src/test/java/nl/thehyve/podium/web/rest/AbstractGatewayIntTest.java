@@ -9,7 +9,6 @@ import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.common.test.AbstractAuthorisedUserIntTest;
 import nl.thehyve.podium.repository.RequestRepository;
-import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.service.*;
 import org.junit.Assert;
 import org.mockito.internal.util.collections.Sets;
@@ -48,9 +47,6 @@ public abstract class AbstractGatewayIntTest extends AbstractAuthorisedUserIntTe
 
     @Autowired
     RequestRepository requestRepository;
-
-    @Autowired
-    RequestSearchRepository requestSearchRepository;
 
     @Autowired
     WebApplicationContext context;

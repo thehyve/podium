@@ -260,21 +260,6 @@ public class UserResource {
     }
 
     /**
-     * SEARCH  /_search/users/:query : search for the User corresponding
-     * to the query.
-     *
-     * @param query the query to search
-     * @return the result of the search
-     */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/_search/users")
-    @Timed
-    public ResponseEntity<List<SearchUser>> search(@RequestParam String query) {
-        List<SearchUser> list = userService.search(query);
-        return ResponseEntity.ok(list);
-    }
-
-    /**
      * SUGGEST  /_suggest/users/:query : Get user suggestions for string
      *
      * @param query the query to search

@@ -17,7 +17,6 @@ import nl.thehyve.podium.common.enumeration.RequestType;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -37,7 +36,6 @@ import java.util.UUID;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "deliveryprocess")
 @Data
 public class DeliveryProcess extends AbstractAuditingEntity {
 

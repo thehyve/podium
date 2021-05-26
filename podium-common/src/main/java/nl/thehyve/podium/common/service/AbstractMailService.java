@@ -2,7 +2,6 @@ package nl.thehyve.podium.common.service;
 
 import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
-import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
 import javax.validation.constraints.NotNull;
+import java.nio.charset.*;
 import java.util.Locale;
 
 /**
@@ -90,7 +90,7 @@ public abstract class AbstractMailService {
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
-            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, CharEncoding.UTF_8);
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name());
             message.setTo(to);
             message.setFrom(podiumProperties.getMail().getFrom());
             message.setSubject(HtmlUtils.htmlUnescape(subject));

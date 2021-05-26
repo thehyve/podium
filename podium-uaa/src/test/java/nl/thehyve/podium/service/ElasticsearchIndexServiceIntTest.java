@@ -13,7 +13,6 @@ package nl.thehyve.podium.service;
 import nl.thehyve.podium.PodiumUaaApp;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,17 +46,12 @@ public class ElasticsearchIndexServiceIntTest {
     private UserSearchRepository userSearchRepository;
 
     @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
-
-    @Autowired
     private TestService testService;
 
     @Test
     public void assertThatEntitiesAreMapped() throws Exception {
-        Long beforeIndexSearchOrganisations = organisationSearchRepository.count();
         Long beforeIndexSearchUsers = userSearchRepository.count();
 
-        assertThat(beforeIndexSearchOrganisations).isEqualTo(0);
         assertThat(beforeIndexSearchUsers).isEqualTo(0);
 
         Organisation organisation = testService.createOrganisation("Test organisation");
@@ -68,12 +62,8 @@ public class ElasticsearchIndexServiceIntTest {
         Future future = elasticsearchIndexService.reindexAll();
         future.get();
 
-        Long afterIndexSearchOrganisations = organisationSearchRepository.count();
         Long afterIndexSearchUsers = userSearchRepository.count();
 
-        assertThat(afterIndexSearchOrganisations).isEqualTo(1);
         assertThat(afterIndexSearchUsers).isEqualTo(2);
-
     }
-
 }

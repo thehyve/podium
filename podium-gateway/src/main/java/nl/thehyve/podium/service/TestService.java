@@ -8,7 +8,6 @@
 package nl.thehyve.podium.service;
 
 import nl.thehyve.podium.repository.RequestRepository;
-import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +31,6 @@ public class TestService {
     private RequestRepository requestRepository;
 
     @Autowired
-    private RequestSearchRepository requestSearchRepository;
-
-    @Autowired
     EntityManager entityManager;
 
     /**
@@ -44,7 +40,6 @@ public class TestService {
     public void clearDatabase() {
         // Delete all requests
         requestRepository.deleteAll();
-        requestSearchRepository.deleteAll();
     }
 
 }

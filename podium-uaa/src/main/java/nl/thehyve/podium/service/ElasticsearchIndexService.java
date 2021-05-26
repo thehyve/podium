@@ -14,15 +14,10 @@ package nl.thehyve.podium.service;
  * Created by bernd on 25/03/2017.
  */
 import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.UserRepository;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.slf4j.Logger;
@@ -57,15 +52,6 @@ public class ElasticsearchIndexService {
     private UserSearchRepository userSearchRepository;
 
     @Autowired
-    private OrganisationRepository organisationRepository;
-
-    @Autowired
-    private OrganisationMapper organisationMapper;
-
-    @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
-
-    @Autowired
     private ElasticsearchOperations elasticsearchTemplate;
 
     public ElasticsearchIndexService() {
@@ -75,13 +61,6 @@ public class ElasticsearchIndexService {
     @Async
     @Timed
     public Future<String> reindexAll() {
-
-        // Reindex Organisations to SearchOrganisations
-        reindexForClass(
-            Organisation.class, organisationRepository,
-            SearchOrganisation.class, organisationSearchRepository,
-            (List<Organisation> organisations) -> organisationMapper.organisationsToSearchOrganisations(organisations));
-
         // Reindex Users -> SearchUsers
         reindexForClass(
             User.class, userRepository,

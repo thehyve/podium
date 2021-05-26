@@ -14,7 +14,6 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.DeliveryProcess;
 import nl.thehyve.podium.repository.DeliveryProcessRepository;
-import nl.thehyve.podium.repository.search.DeliveryProcessSearchRepository;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -90,9 +89,6 @@ public class DeliveryProcessService {
     @Autowired
     private DeliveryProcessRepository deliveryProcessRepository;
 
-    @Autowired
-    private DeliveryProcessSearchRepository deliveryProcessSearchRepository;
-
     /**
      * Finds request.
      * @param processInstanceId
@@ -129,7 +125,6 @@ public class DeliveryProcessService {
         deliveryProcess.setOutcome((DeliveryProcessOutcome) variables.get("outcome"));
         deliveryProcess = deliveryProcessRepository.save(deliveryProcess);
         // save to elastic search as well
-        deliveryProcessSearchRepository.save(deliveryProcess);
         return deliveryProcess;
     }
 

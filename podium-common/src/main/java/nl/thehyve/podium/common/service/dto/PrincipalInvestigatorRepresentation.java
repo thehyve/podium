@@ -10,9 +10,8 @@ package nl.thehyve.podium.common.service.dto;
 
 import lombok.Data;
 import nl.thehyve.podium.common.validation.Required;
-import org.hibernate.validator.constraints.Email;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 /**

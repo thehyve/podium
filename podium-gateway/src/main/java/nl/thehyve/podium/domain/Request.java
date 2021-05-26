@@ -21,7 +21,6 @@ import nl.thehyve.podium.common.enumeration.RequestStatus;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -44,7 +43,6 @@ import java.util.*;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "request")
 @Data
 public class Request extends AbstractAuditingEntity implements Serializable, IdentifiableUser, IdentifiableRequest {
 

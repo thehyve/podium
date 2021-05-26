@@ -17,7 +17,6 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.RoleRepository;
-import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.RoleMapper;
@@ -72,9 +71,6 @@ public class RoleResourceIntTest {
     private RoleMapper roleMapper;
 
     @Autowired
-    private RoleSearchRepository roleSearchRepository;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -127,7 +123,6 @@ public class RoleResourceIntTest {
 
     @Before
     public void initTest() throws UserAccountException {
-        roleSearchRepository.deleteAll();
         role = createEntity();
     }
 
@@ -197,10 +192,6 @@ public class RoleResourceIntTest {
         List<Role> roleList = roleRepository.findAll();
         assertThat(roleList).hasSize(databaseSizeBeforeUpdate);
         Role testRole = roleList.get(roleList.size() - 1);
-
-        // Validate the Role in Elasticsearch
-        Role roleEs = roleSearchRepository.findById(testRole.getId()).get();
-        assertThat(roleEs).isEqualToComparingFieldByField(testRole);
     }
 
     @Test
@@ -233,18 +224,6 @@ public class RoleResourceIntTest {
         // Validate the database is not empty
         List<Role> roleList = roleRepository.findAll();
         assertThat(roleList).hasSize(databaseSizeBeforeDelete);
-    }
-
-    @Test
-    public void searchRole() throws Exception {
-        // Initialize the database
-        roleService.save(role);
-
-        // Search the role
-        restRoleMockMvc.perform(get("/api/_search/roles?query=id:" + role.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(role.getId().intValue())));
     }
 
     @Test
