@@ -63,6 +63,8 @@
     <logger name="liquibase" level="WARN"/>
     <logger name="LiquibaseSchemaResolver" level="INFO"/>
     <logger name="sun.rmi.transport" level="WARN"/>
+    <logger name="org.flowable.common.engine" level="WARN"/>
+    <logger name="org.flowable.common.spring" level="WARN"/>
     <logger name="org.flowable.engine" level="WARN"/>
     <logger name="org.flowable.engine.impl" level="WARN"/>
     <logger name="org.flowable.engine.impl.db" level="WARN"/>
