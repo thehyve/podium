@@ -76,7 +76,7 @@ spring:
     messages:
         basename: i18n/messages
     thymeleaf:
-        mode: XHTML
+        mode: HTML
     security:
         client-authorization:
             access-token-uri: http://podiumuaa/oauth/token

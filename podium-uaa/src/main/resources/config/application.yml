@@ -60,7 +60,7 @@ spring:
     messages:
         basename: i18n/messages
     thymeleaf:
-        mode: XHTML
+        mode: HTML
     elasticsearch:
         rest:
             uris: http://localhost:9200
