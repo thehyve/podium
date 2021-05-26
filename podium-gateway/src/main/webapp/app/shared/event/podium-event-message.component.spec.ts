@@ -9,22 +9,18 @@
  */
 
 import { ComponentFixture, TestBed, waitForAsync, inject } from '@angular/core/testing';
-import { PodiumEventMessageComponent } from '../../../../../../main/webapp/app/shared/event/podium-event-message.component';
-import { PodiumEvent } from '../../../../../../main/webapp/app/shared/event/podium-event';
-import { RequestBase } from '../../../../../../main/webapp/app/shared/request/request-base';
-import { RequestDetail } from '../../../../../../main/webapp/app/shared/request/request-detail';
-import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
-import { RequestAccessService } from '../../../../../../main/webapp/app/shared/request/request-access.service';
-import { BaseRequestOptions } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
-import { MockPrincipal } from '../../../helpers/mock-principal.service';
-import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
-import { AccountService } from '../../../../../../main/webapp/app/core/auth/account.service';
-import { RequestReviewProcess } from '../../../../../../main/webapp/app/shared/request/request-review-process';
-import {
-    RequestOverviewStatusOption
-} from '../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
-import { PodiumTestModule } from '../../../test.module';
+
+import { PodiumTestModule } from '../test/test.module';
+import { User } from '../user/user.model';
+import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
+import { AccountService } from '../../core/auth/account.service';
+import { RequestAccessService } from '../request/request-access.service';
+import { RequestService } from '../request/request.service';
+import { RequestReviewProcess } from '../request/request-review-process';
+import { RequestDetail } from '../request/request-detail';
+import { RequestBase } from '../request/request-base';
+import { PodiumEvent } from './podium-event';
+import { PodiumEventMessageComponent } from './podium-event-message.component';
 
 describe('PodiumEventMessageComponent (templateUrl)', () => {
     let comp: PodiumEventMessageComponent;
@@ -35,9 +31,6 @@ describe('PodiumEventMessageComponent (templateUrl)', () => {
         TestBed.configureTestingModule({
             imports: [PodiumTestModule],
             providers: [
-                BaseRequestOptions,
-                MockBackend,
-                MockPrincipal,
                 AccountService,
                 RequestService,
                 RequestAccessService,

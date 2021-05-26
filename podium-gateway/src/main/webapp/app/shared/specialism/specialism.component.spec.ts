@@ -8,9 +8,10 @@
  *
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { SpecialismComponent } from '../../../../../../main/webapp/app/shared/specialism/specialism.component';
 import { FormsModule } from '@angular/forms';
-import { PodiumTestModule } from '../../../test.module';
+
+import { PodiumTestModule } from '../test/test.module';
+import { SpecialismComponent } from './specialism.component';
 
 describe('SpecialismComponent (templateUrl)', () => {
 

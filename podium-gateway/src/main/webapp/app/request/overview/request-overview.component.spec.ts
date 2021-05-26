@@ -8,20 +8,17 @@
  *
  */
 
-import { ComponentFixture, TestBed, waitForAsync, inject, fakeAsync } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
-import { BaseRequestOptions } from '@angular/http';
-import { RequestOverviewComponent } from '../../../../../../main/webapp/app/request/overview/request-overview.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiParseLinks, JhiEventManager } from 'ng-jhipster';
-import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
-import { RequestService } from '../../../../../../main/webapp/app/shared/request/request.service';
-import { RequestFormService } from '../../../../../../main/webapp/app/request/form/request-form.service';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MockRouter } from '../../../helpers/mock-route.service';
-import { AccountService } from '../../../../../../main/webapp/app/core/auth/account.service';
-import { Observable } from 'rxjs';
-import { PodiumTestModule } from '../../../test.module';
+import { of } from 'rxjs';
+
+import { EventManager } from '../../core/util/event-manager.service';
+import { AccountService } from '../../core/auth/account.service';
+import { RequestFormService } from '../form/request-form.service';
+import { PodiumTestModule } from '../../shared/test/test.module';
+import { RequestService } from '../../shared/request/request.service';
+import { RequestOverviewComponent } from './request-overview.component';
 
 describe('Component Tests', () => {
     describe('Request Overview Component', () => {
@@ -35,15 +32,8 @@ describe('Component Tests', () => {
                 declarations: [RequestOverviewComponent],
                 providers: [
                     RequestService,
-                    {
-                        provide: Router,  useClass: MockRouter
-                    },
-                    JhiParseLinks,
-                    MockBackend,
                     RequestFormService,
-                    BaseRequestOptions,
-                    JhiEventManager,
-                    Principal,
+                    EventManager,
                     {
                         provide: NgbModal,
                         useValue: null
@@ -51,7 +41,7 @@ describe('Component Tests', () => {
                     {
                         provide: ActivatedRoute,
                         useValue: {
-                            data: Observable.from([{
+                            data: of([{
                                 'pagingParams': {},
                             }]),
                             snapshot: {
@@ -78,6 +68,7 @@ describe('Component Tests', () => {
             });
             it('should load submitted requests and register change in requests', () => {
                 comp.ngOnInit();
+                comp.ngAfterViewInit();
                 expect(comp.registerChanges).toHaveBeenCalled();
             });
         });

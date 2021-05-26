@@ -8,23 +8,21 @@
  *
  */
 
-import { RequestReviewPanelComponent }
-    from '../../../../../../../main/webapp/app/shared/request/request-review-panel/request-review-panel.component';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { RequestDetail } from '../../../../../../../main/webapp/app/shared/request/request-detail';
-import { RequestReviewDecision } from '../../../../../../../main/webapp/app/shared/request/request-review-decision';
-import { User } from '../../../../../../../main/webapp/app/shared/user/user.model';
-import { RequestReviewFeedback } from '../../../../../../../main/webapp/app/shared/request/request-review-feedback';
-import { ReviewRound } from '../../../../../../../main/webapp/app/shared/request/review-round';
-import { RequestService } from '../../../../../../../main/webapp/app/shared/request/request.service';
-import { MockBackend } from '@angular/http/testing';
-import { BaseRequestOptions } from '@angular/http';
-import { PodiumEventMessage } from '../../../../../../../main/webapp/app/shared/event/podium-event-message';
-import { Principal } from '../../../../../../../main/webapp/app/shared/auth/principal.service';
-import { AccountService } from '../../../../../../../main/webapp/app/core/auth/account.service';
-import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
-import { PodiumTestModule } from '../../../../test.module';
+
+import { PodiumTestModule } from '../../test/test.module';
+
+import { AccountService } from '../../../core/auth/account.service';
+import { PodiumEventMessage } from '../../event/podium-event-message';
+import { User } from '../../user/user.model';
+import { RequestAccessService } from '../request-access.service';
+import { RequestDetail } from '../request-detail';
+import { RequestReviewDecision } from '../request-review-decision';
+import { RequestReviewFeedback } from '../request-review-feedback';
+import { ReviewRound } from '../review-round';
+import { RequestService } from '../request.service';
+import { RequestReviewPanelComponent } from './request-review-panel.component';
 
 describe('RequestReviewPanelComponent (templateUrl)', () => {
 
@@ -39,10 +37,7 @@ describe('RequestReviewPanelComponent (templateUrl)', () => {
                 PodiumTestModule
             ],
             providers: [
-                MockBackend,
-                BaseRequestOptions,
                 RequestService,
-                Principal,
                 AccountService,
                 RequestAccessService
             ],

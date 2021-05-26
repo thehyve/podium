@@ -9,19 +9,17 @@
  */
 
 import { ComponentFixture, TestBed, waitForAsync, inject } from '@angular/core/testing';
-import { BaseRequestOptions } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
-import { RequestProgressBarComponent }
-    from '../../../../../../../main/webapp/app/request/main-detail/progress-bar/request-progress-bar.component';
-import { JhiLanguageService } from 'ng-jhipster';
-import { RequestBase } from '../../../../../../../main/webapp/app/shared/request/request-base';
-import { RequestReviewProcess } from '../../../../../../../main/webapp/app/shared/request/request-review-process';
-import { RequestService } from '../../../../../../../main/webapp/app/shared/request/request.service';
-import { RequestAccessService } from '../../../../../../../main/webapp/app/shared/request/request-access.service';
+
+import { PodiumTestModule } from '../../../shared/test/test.module';
+
+import { RequestProgressBarComponent } from './request-progress-bar.component';
+import { RequestBase } from '../../../shared/request/request-base';
+import { RequestReviewProcess } from '../../../shared/request/request-review-process';
+import { RequestService } from '../../../shared/request/request.service';
+import { RequestAccessService } from '../../../shared/request/request-access.service';
 import {
     RequestOverviewStatusOption,
-} from '../../../../../../../main/webapp/app/shared/request/request-status/request-status.constants';
-import { PodiumTestModule } from '../../../../test.module';
+} from '../../../shared/request/request-status/request-status.constants';
 
 describe('RequestProgressBarComponent', () => {
     let comp: RequestProgressBarComponent;
@@ -32,8 +30,6 @@ describe('RequestProgressBarComponent', () => {
         TestBed.configureTestingModule({
             imports: [PodiumTestModule],
             providers: [
-                BaseRequestOptions,
-                MockBackend,
                 RequestService,
                 RequestAccessService
             ],
@@ -60,9 +56,8 @@ describe('RequestProgressBarComponent', () => {
     });
 
     it('should construct', waitForAsync(
-        inject([JhiLanguageService, RequestService, RequestAccessService],
-            (jhiLanguageService, requestService, requestAccessService) => {
-                expect(jhiLanguageService).toBeDefined();
+        inject([RequestService, RequestAccessService],
+            (requestService, requestAccessService) => {
                 expect(requestService).toBeDefined();
                 expect(requestAccessService).toBeDefined();
                 expect(comp.requestSubscription).toBeDefined();

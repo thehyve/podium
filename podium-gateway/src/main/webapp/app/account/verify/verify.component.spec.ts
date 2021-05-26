@@ -8,12 +8,12 @@
  *
  */
 import { TestBed, waitForAsync, tick, fakeAsync, inject } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { MockActivatedRoute, MockRouter } from '../../../../../test/javascript/spec/helpers/mock-route.service';
+
+import { PodiumTestModule } from '../../shared/test/test.module';
 import { Verify } from './verify.service';
 import { VerifyComponent } from './verify.component';
-import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
 
 describe('Component Tests', () => {
@@ -30,12 +30,8 @@ describe('Component Tests', () => {
                     Verify,
                     {
                         provide: ActivatedRoute,
-                        useValue: new MockActivatedRoute({'key': 'ABC123'})
+                        useValue: { queryParams: of({'key': 'ABC123'}) },
                     },
-                    {
-                        provide: Router,
-                        useValue: new MockRouter()
-                    }
                 ]
             }).overrideTemplate(VerifyComponent, '')
                 .compileComponents();

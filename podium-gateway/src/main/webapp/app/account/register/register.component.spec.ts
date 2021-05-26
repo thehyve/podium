@@ -8,20 +8,15 @@
  *
  */
 import { ComponentFixture, TestBed, waitForAsync, inject, tick, fakeAsync } from '@angular/core/testing';
-import {ElementRef, Renderer2} from '@angular/core';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import {Observable, of} from 'rxjs';
+import { of, throwError } from 'rxjs';
 
-import { MockLanguageService } from '../../../../../test/javascript/spec/helpers/mock-language.service';
+import { PodiumTestModule } from '../../shared/test/test.module';
+
 import { Register } from './register.service';
 import { RegisterComponent } from './register.component';
-import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
-import { MockRouter } from '../../../../../test/javascript/spec/helpers/mock-route.service';
 import { MessageService } from '../../shared/message/message.service';
 
-// FIXME
-xdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('RegisterComponent', () => {
         let fixture: ComponentFixture<RegisterComponent>;
@@ -34,21 +29,6 @@ xdescribe('Component Tests', () => {
                 providers: [
                     Register,
                     MessageService,
-                    {
-                        provide: Router,
-                        useClass: MockRouter
-                    },
-                    {
-                        provide: Renderer2,
-                        useValue: null
-                    },
-                    {
-                        provide: ElementRef,
-                        useValue: null
-                    }, {
-                        provide: TranslateService,
-                        useValue: null
-                    }
                 ]
             }).overrideTemplate(RegisterComponent, '')
                 .compileComponents();
@@ -60,7 +40,7 @@ xdescribe('Component Tests', () => {
         });
 
         it('should ensure the two passwords entered match', function () {
-            comp.registerForm.setValue({'password': 'password', 'confirmPassword': 'non-matching'});
+            comp.registerForm.patchValue({'password': 'password', 'confirmPassword': 'non-matching'});
 
             comp.register();
 
@@ -69,24 +49,23 @@ xdescribe('Component Tests', () => {
 
         it('should update success to OK after creating an account',
             inject([Register],
-              fakeAsync((service: Register, mockTranslate: MockLanguageService) => {
+              fakeAsync((service: Register) => {
                   spyOn(service, 'save').and.returnValue(of({}));
                   spyOn(comp, 'processSuccess');
 
-                  comp.registerForm.setValue({'password': 'password', 'confirmPassword': 'password'});
+                  comp.registerForm.patchValue({'password': 'password', 'confirmPassword': 'password'});
 
                   comp.register();
                   tick();
 
-                  expect(service.save).toHaveBeenCalledWith({
+                  expect(service.save).toHaveBeenCalledWith(expect.objectContaining({
                       specialism: '',
                       password: 'password',
                       langKey: 'en'
-                  });
+                  }));
 
                   expect(comp.processSuccess).toHaveBeenCalled();
 
-                  expect(mockTranslate.getCurrentSpy).toHaveBeenCalled();
                   expect(comp.errorUserExists).toBeNull();
                   expect(comp.error).toBeNull();
               })
@@ -96,11 +75,11 @@ xdescribe('Component Tests', () => {
         it('should notify of user existence upon 400/login already in use',
             inject([Register],
                 fakeAsync((service: Register) => {
-                    spyOn(service, 'save').and.returnValue(Observable.throw({
+                    spyOn(service, 'save').and.returnValue(throwError({
                         status: 400,
                         _body: 'login already in use'
                     }));
-                    comp.registerForm.setValue({'password': 'password', 'confirmPassword': 'password'});
+                    comp.registerForm.patchValue({'password': 'password', 'confirmPassword': 'password'});
 
                     comp.register();
                     tick();
@@ -114,10 +93,10 @@ xdescribe('Component Tests', () => {
         it('should notify of generic error',
             inject([Register],
                 fakeAsync((service: Register) => {
-                    spyOn(service, 'save').and.returnValue(Observable.throw({
+                    spyOn(service, 'save').and.returnValue(throwError({
                         status: 503
                     }));
-                    comp.registerForm.setValue({'password': 'password', 'confirmPassword': 'password'});
+                    comp.registerForm.patchValue({'password': 'password', 'confirmPassword': 'password'});
 
                     comp.register();
                     tick();

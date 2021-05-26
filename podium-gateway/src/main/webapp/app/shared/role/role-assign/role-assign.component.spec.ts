@@ -9,25 +9,17 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
-import { AlertService } from '../../../../../../main/webapp/app/core/util/alert.service';
-import { MockLanguageService } from '../../../helpers/mock-language.service';
-import { BaseRequestOptions, Http } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
-import { RoleAssignComponent } from '../../../../../../main/webapp/app/shared/role/role-assign/role-assign.component';
-import { RoleService } from '../../../../../../main/webapp/app/shared/role/role.service';
-import { User } from '../../../../../../main/webapp/app/shared/user/user.model';
-import { Role } from '../../../../../../main/webapp/app/shared/role/role.model';
-import { UserService } from '../../../../../../main/webapp/app/shared/user/user.service';
-import { MockAlertService } from '../../../helpers/mock-alert.service';
-import { MockPrincipal } from '../../../helpers/mock-principal.service';
-import { Principal } from '../../../../../../main/webapp/app/shared/auth/principal.service';
-import { MockEventManager } from '../../../helpers/mock-event-manager.service';
-import { Observable } from 'rxjs';
-import { PodiumTestModule } from '../../../test.module';
-import { Organisation } from '../../../../../../main/webapp/app/shared/organisation/organisation.model';
-import { MockTranslateService } from '../../../helpers/MockTranslateService';
-import { TranslateService } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
+
+import { PodiumTestModule } from '../../test/test.module';
+import { AccountService } from '../../../core/auth/account.service';
+import { EventManager } from '../../../core/util/event-manager.service';
+import { Organisation } from '../../organisation/organisation.model';
+import { User } from '../../user/user.model';
+import { UserService } from '../../user/user.service';
+import { Role } from '../role.model';
+import { RoleService } from '../role.service';
+import { RoleAssignComponent } from './role-assign.component';
 
 describe('RoleAssignComponent', () => {
 
@@ -84,39 +76,14 @@ describe('RoleAssignComponent', () => {
                 PodiumTestModule
             ],
             providers: [
-                BaseRequestOptions,
-                MockBackend,
+                RoleService,
                 UserService,
                 {
-                    provide: Http,
-                    useFactory: (backendInstance: MockBackend, defaultOptions: BaseRequestOptions) => {
-                        return new Http(backendInstance, defaultOptions);
-                    },
-                    deps: [MockBackend, BaseRequestOptions]
-                },
-                {
-                    provide: TranslateService,
-                    useClass: MockTranslateService
-                },
-                {
-                    provide: JhiLanguageService,
-                    useClass: MockLanguageService
-                },
-                {
-                    provide: Principal,
-                    useClass: MockPrincipal
-                },
-                {
-                    provide: RoleService,
-                    useClass: RoleService
-                },
-                {
-                    provide: AlertService,
-                    useClass: MockAlertService
-                },
-                {
-                    provide: JhiEventManager,
-                    useClass: MockEventManager
+                    provide: EventManager,
+                    useValue: {
+                        broadcast: () => {},
+                        destroy: () => {},
+                    }
                 }
             ],
             declarations: [RoleAssignComponent],
@@ -129,8 +96,8 @@ describe('RoleAssignComponent', () => {
         fixture = TestBed.createComponent(RoleAssignComponent);
         comp = fixture.componentInstance;
         roleService = fixture.debugElement.injector.get(RoleService);
-        mockPrincipal = fixture.debugElement.injector.get(Principal);
-        spyOn(roleService, 'findAllRolesForOrganisation').and.returnValue(Observable.of(dummyRoles));
+        mockPrincipal = fixture.debugElement.injector.get(AccountService);
+        spyOn(roleService, 'findAllRolesForOrganisation').and.returnValue(of(dummyRoles));
     });
 
     it('should not have user promises, organisation users or organisation roles', () => {
@@ -141,12 +108,12 @@ describe('RoleAssignComponent', () => {
 
     it('should retrieve and convert the roles with users', () => {
         comp.organisation = dummyOrganisation;
-        mockPrincipal.setResponse(dummyBbmriAdmin);
+        mockPrincipal.mockIdentity(of(dummyBbmriAdmin));
 
         spyOn(comp, 'registerChangeInRoles');
 
         comp.ngOnInit();
-        expect(mockPrincipal.identitySpy).toHaveBeenCalled();
+        expect(mockPrincipal.identity).toHaveBeenCalled();
         expect(comp.registerChangeInRoles).toHaveBeenCalled();
     });
 
@@ -158,7 +125,7 @@ describe('RoleAssignComponent', () => {
 
         // Set spies
         spyOn(comp, 'updateRole').and.returnValue(
-            Observable.create((observer) => {
+            new Observable((observer) => {
                 observer.next();
             })
         );

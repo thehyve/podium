@@ -8,14 +8,14 @@
  *
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
+
+import { PodiumTestModule } from '../../shared/test/test.module';
+
 import { AccountService } from '../../core/auth/account.service';
 import { SettingsComponent } from './settings.component';
-import { MockAccountService } from '../../../../../test/javascript/spec/helpers/mock-account.service';
-import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
-// FIXME
-xdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('SettingsComponent', () => {
 
@@ -27,12 +27,6 @@ xdescribe('Component Tests', () => {
             TestBed.configureTestingModule({
                 imports: [PodiumTestModule],
                 declarations: [SettingsComponent],
-                providers: [
-                    {
-                        provide: AccountService,
-                        useClass: MockAccountService
-                    },
-                ]
             }).overrideTemplate(SettingsComponent, '')
                 .compileComponents();
         }));
@@ -54,15 +48,16 @@ xdescribe('Component Tests', () => {
                 langKey: 'en',
                 login: 'john'
             };
-            mockAuth.setResponse(accountValues);
+            mockAuth.mockIdentity(of(accountValues));
+            mockAuth.mockSave(of(undefined));
 
             // WHEN
             comp.settingsAccount = accountValues;
             comp.save();
 
             // THEN
-            expect(mockAuth.identitySpy).toHaveBeenCalled();
-            expect(mockAuth.saveSpy).toHaveBeenCalledWith(accountValues);
+            expect(mockAuth.identity).toHaveBeenCalled();
+            expect(mockAuth.save).toHaveBeenCalledWith(accountValues);
             expect(comp.settingsAccount).toEqual(accountValues);
         });
 
@@ -72,7 +67,8 @@ xdescribe('Component Tests', () => {
                 firstName: 'John',
                 lastName: 'Doe'
             };
-            mockAuth.setResponse(accountValues);
+            mockAuth.mockIdentity(of(accountValues));
+            mockAuth.mockSave(of(undefined));
 
             // WHEN
             comp.save();
@@ -84,7 +80,7 @@ xdescribe('Component Tests', () => {
 
         it('should notify of error upon failed save', function () {
             // GIVEN
-            mockAuth.saveSpy.and.returnValue(throwError('ERROR'));
+            mockAuth.mockSave(throwError('ERROR'));
 
             // WHEN
             comp.save();

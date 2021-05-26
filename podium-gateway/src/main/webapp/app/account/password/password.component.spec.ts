@@ -9,13 +9,14 @@
  */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+
+import { PodiumTestModule } from '../../shared/test/test.module';
+
 import { PasswordComponent } from './password.component';
 import { Password } from './password.service';
 import { AccountService } from '../../core/auth/account.service';
-import { PodiumTestModule } from '../../../../../test/javascript/spec/test.module';
 
-// FIXME
-xdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('PasswordComponent', () => {
 
