@@ -618,11 +618,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar-maven-plugin.version}</version>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -823,29 +818,6 @@
                 <dependency>
                     <groupId>io.dropwizard.metrics</groupId>
                     <artifactId>metrics-graphite</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <!--
-                Profile for monitoring the application with Prometheus.
-            -->
-            <id>prometheus</id>
-            <dependencies>
-                <dependency>
-                    <groupId>io.prometheus</groupId>
-                    <artifactId>simpleclient</artifactId>
-                    <version>${prometheus-simpleclient.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>io.prometheus</groupId>
-                    <artifactId>simpleclient_dropwizard</artifactId>
-                    <version>${prometheus-simpleclient.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>io.prometheus</groupId>
-                    <artifactId>simpleclient_servlet</artifactId>
-                    <version>${prometheus-simpleclient.version}</version>
                 </dependency>
             </dependencies>
         </profile>
