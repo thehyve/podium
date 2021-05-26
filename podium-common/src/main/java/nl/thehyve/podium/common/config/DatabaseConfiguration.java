@@ -28,9 +28,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @AutoConfigureBefore({HibernateJpaAutoConfiguration.class})
 @AutoConfigureAfter({LiquibaseConfiguration.class})
 public class DatabaseConfiguration {
-
-    private final Logger log = LoggerFactory.getLogger(DatabaseConfiguration.class);
-
     @Bean
     public Hibernate5Module hibernate5Module() {
         return new Hibernate5Module();
