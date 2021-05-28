@@ -14,8 +14,6 @@ import { PodiumGatewaySharedModule } from '../shared/shared.module';
 import { adminRoute } from './admin-routing.module';
 import { AuditsComponent } from './audits/audits.component';
 import { LogsComponent } from './logs/logs.component';
-import { MetricsModalThreadsComponent } from './metrics/blocks/metrics-modal-threads/metrics-modal-threads.component';
-import { PdmMetricsMonitoringComponent } from './metrics/metrics.component';
 import { PdmHealthCheckComponent } from './health/health.component';
 import { PdmConfigurationComponent } from './configuration/configuration.component';
 import { PdmDocsComponent } from './docs/docs.component';
@@ -36,14 +34,11 @@ import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-mo
         PdmHealthCheckComponent,
         PdmDocsComponent,
         PdmGatewayComponent,
-        PdmMetricsMonitoringComponent,
-        MetricsModalThreadsComponent,
         PdmElasticsearchComponent,
         PdmElasticsearchModalComponent
     ],
     entryComponents: [
-        PdmElasticsearchModalComponent,
-        MetricsModalThreadsComponent,
+        PdmElasticsearchModalComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
