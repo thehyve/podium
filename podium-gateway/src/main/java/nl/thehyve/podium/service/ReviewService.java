@@ -1,6 +1,5 @@
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -34,7 +33,6 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-@Timed
 public class ReviewService {
 
     private final Logger log = LoggerFactory.getLogger(ReviewService.class);
@@ -203,7 +201,6 @@ public class ReviewService {
      * @throws ActionNotAllowed when the request is not in status 'Review', the feedback is not part of the request, or
      * the feedback has already been saved before.
      */
-    @Timed
     public RequestRepresentation saveReviewFeedback(
         AuthenticatedUser user,
         UUID requestUuid,

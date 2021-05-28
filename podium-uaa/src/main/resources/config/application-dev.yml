@@ -31,6 +31,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaaDev
+        hikari:
+            jdbc-url: ${spring.datasource.url}
         name: podiumUaa
         username: podiumUser
         password: podiumUser
@@ -69,6 +71,8 @@ server:
 # ===================================================================
 
 podium:
+    registry:
+        password: admin
     cache: # Hibernate 2nd level cache, used by CacheConfiguration
         hazelcast:
             timeToLiveSeconds: 3600
@@ -80,19 +84,6 @@ podium:
     mail: # specific Podium mail property, for standard properties see MailProperties
         from: podium@localhost
         baseUrl: http://127.0.0.1:8080
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: podiumUaa
-        prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false

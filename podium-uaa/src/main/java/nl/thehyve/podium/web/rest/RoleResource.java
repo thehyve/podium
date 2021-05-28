@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -64,7 +63,6 @@ public class RoleResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation(authorities= {AuthorityConstants.ORGANISATION_ADMIN})
     @PutMapping("/roles")
-    @Timed
     public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation roleRepresentation) {
         log.debug("REST request to update Role : {}", roleRepresentation);
         if (roleRepresentation.getId() == null) {
@@ -85,7 +83,6 @@ public class RoleResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/roles")
-    @Timed
     public ResponseEntity<List<RoleRepresentation>> getAllRoles(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Roles");
@@ -103,7 +100,6 @@ public class RoleResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation
     @GetMapping("/roles/organisation/{uuid}")
-    @Timed
     public ResponseEntity<List<RoleRepresentation>> getOrganisationRoles(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get all Roles of Organisation {}", uuid);
         List<RoleRepresentation> roles = roleService.findAllByOrganisationUUID(uuid);
@@ -118,7 +114,6 @@ public class RoleResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/roles/{id}")
-    @Timed
     public ResponseEntity<RoleRepresentation> getRole(@PathVariable Long id) {
         log.debug("REST request to get Role : {}", id);
         return ResponseEntity.ok(roleService.findOne(id));

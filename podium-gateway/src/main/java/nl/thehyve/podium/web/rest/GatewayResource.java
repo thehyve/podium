@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.service.dto.RouteRepresentation;
@@ -50,7 +49,6 @@ public class GatewayResource {
      */
     @GetMapping("/routes")
     @SecuredByAuthority(AuthorityConstants.PODIUM_ADMIN)
-    @Timed
     public ResponseEntity<List<RouteRepresentation>> activeRoutes() {
         List<Route> routes = routeLocator.getRoutes();
         List<RouteRepresentation> routeRepresentations = new ArrayList<>();

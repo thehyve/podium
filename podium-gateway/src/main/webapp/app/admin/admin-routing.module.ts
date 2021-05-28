@@ -13,7 +13,6 @@ import { configurationRoute } from './configuration/configuration.route';
 import { docsRoute } from './docs/docs.route';
 import { healthRoute } from './health/health.route';
 import { logsRoute } from './logs/logs.route';
-import { metricsRoute } from './metrics/metrics.route';
 import { gatewayRoute } from './gateway/gateway.route';
 import { UserRouteAccessService } from '../core/auth/user-route-access.service';
 import { elasticsearchRoute } from './elasticsearch/elasticsearch.route';
@@ -25,7 +24,6 @@ let ADMIN_ROUTES = [
     healthRoute,
     logsRoute,
     gatewayRoute,
-    metricsRoute,
     elasticsearchRoute
 ];
 

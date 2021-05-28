@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -60,7 +59,6 @@ public class RequestTemplateResource {
      */
     @PostMapping("/public/requests/templates")
     @Public
-    @Timed
     public ResponseEntity<URI> createRequestTemplate(
         @Valid @RequestBody RequestTemplateRepresentation requestTemplateRepresentation,
         @RequestHeader("Authorization") String authorization)
@@ -103,7 +101,6 @@ public class RequestTemplateResource {
      */
     @GetMapping("/requests/templates/{uuid}")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
-    @Timed
     public ResponseEntity<RequestTemplateRepresentation> getRequestTemplate(@PathVariable("uuid") UUID uuid){
         RequestTemplateRepresentation requestTemplateRepresentation =
             requestTemplateService.getTemplate(uuid);

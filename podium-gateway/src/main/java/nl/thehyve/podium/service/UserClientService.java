@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import feign.FeignException;
 import nl.thehyve.podium.client.InternalUserClient;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
@@ -27,13 +26,11 @@ public class UserClientService {
     @Autowired
     InternalUserClient internalUserClient;
 
-    @Timed
     public UserRepresentation findUserByUuid(UUID userUuid) throws FeignException {
         log.info("Fetching user through Feign ...");
         return internalUserClient.getUser(userUuid).getBody();
     }
 
-    @Timed
     @Cacheable("remoteUsers")
     public UserRepresentation findUserByUuidCached(UUID userUuid) throws FeignException {
         log.info("Fetching user through Feign ...");

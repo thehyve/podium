@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
@@ -52,7 +51,6 @@ public class RequestReviewResource {
      */
     @GetMapping("/requests/{uuid}/validate")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestRepresentation> validateRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         log.debug("REST request to validate request process for : {} ", uuid);
@@ -72,7 +70,6 @@ public class RequestReviewResource {
      */
     @PostMapping("/requests/{uuid}/reject")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestRepresentation> rejectRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
     ) throws ActionNotAllowed {
@@ -92,7 +89,6 @@ public class RequestReviewResource {
      */
     @GetMapping("/requests/{uuid}/approve")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestRepresentation> approveRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         log.debug("REST request to approve request process for : {} ", uuid);
@@ -112,7 +108,6 @@ public class RequestReviewResource {
      */
     @PostMapping("/requests/{uuid}/requestRevision")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestRepresentation> requestRevision(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
     ) throws ActionNotAllowed {
@@ -134,7 +129,6 @@ public class RequestReviewResource {
      */
     @PutMapping("/requests/{uuid}/review")
     @SecuredByRequestOrganisationReviewer
-    @Timed
     public ResponseEntity<RequestRepresentation> submitReviewFeedback(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid,
         @RequestBody ReviewFeedbackRepresentation feedback

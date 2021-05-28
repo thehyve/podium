@@ -11,6 +11,10 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+info:
+    project:
+        version: #project.version#
+
 eureka:
     client:
         enabled: true

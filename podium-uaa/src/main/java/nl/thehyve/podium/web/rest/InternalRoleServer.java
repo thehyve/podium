@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.resource.InternalRoleResource;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
@@ -48,7 +47,6 @@ public class InternalRoleServer implements InternalRoleResource {
     private UserMapper userMapper;
 
     @Override
-    @Timed
     public ResponseEntity<List<UserRepresentation>> getOrganisationRoleUsers(
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid,
         @PathVariable("authority") String authority) {

@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -66,7 +65,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/drafts")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getAllDraftsForUser(@ApiParam Pageable pageable) throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("Get all request drafts for current user : {}", user);
@@ -83,7 +81,6 @@ public class RequestResource {
      */
     @PostMapping("/requests/drafts")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
-    @Timed
     public ResponseEntity<RequestRepresentation> createDraft() throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("POST /requests/drafts (user: {})", user);
@@ -102,7 +99,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
-    @Timed
     public ResponseEntity<RequestRepresentation> getDraft(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -119,7 +115,6 @@ public class RequestResource {
      */
     @PutMapping("/requests/drafts")
     @SecuredByRequestOwner
-    @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(
         @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -137,7 +132,6 @@ public class RequestResource {
      */
     @PostMapping("/requests/drafts/validate")
     @AnyAuthorisedUser
-    @Timed
     public ResponseEntity<Void> validateDraft(@RequestBody @Valid RequestRepresentation request) {
         if (request == null) {
             throw new IllegalArgumentException("Empty request body.");
@@ -154,7 +148,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/drafts/{uuid}/submit")
     @SecuredByRequestOwner
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed, IOException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -172,7 +165,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/requester")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getRequesterRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -192,7 +184,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/status/{status}/requester")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getRequesterRequestsByStatus(
         @PathVariable("status") OverviewStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -211,7 +202,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/counts/requester")
     @SecuredByAuthority(AuthorityConstants.RESEARCHER)
-    @Timed
     public ResponseEntity<Map<OverviewStatus, Long>> getRequesterRequestCounts() {
         log.debug("REST request to request counts");
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -226,7 +216,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/counts/reviewer")
     @SecuredByAuthority(AuthorityConstants.REVIEWER)
-    @Timed
     public ResponseEntity<Map<OverviewStatus, Long>> getReviewerRequestCounts() {
         log.debug("REST request to request counts for reviewer");
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -244,7 +233,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/reviewer")
     @SecuredByAuthority(AuthorityConstants.REVIEWER)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getReviewerRequests(@ApiParam Pageable pageable)
         throws URISyntaxException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -262,7 +250,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/counts/coordinator")
     @SecuredByAuthority(AuthorityConstants.ORGANISATION_COORDINATOR)
-    @Timed
     public ResponseEntity<Map<OverviewStatus, Long>> getCoordinatorRequestCounts() {
         log.debug("REST request to request counts for organisation coordinator");
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -281,7 +268,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/status/{status}/coordinator")
     @SecuredByAuthority(AuthorityConstants.ORGANISATION_COORDINATOR)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequests(
         @PathVariable("status") OverviewStatus status, @ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -304,7 +290,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/organisation/{uuid}/reviewer")
     @SecuredByOrganisation(authorities = AuthorityConstants.REVIEWER)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getReviewerRequestsForOrganisation(
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid, @ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -328,7 +313,6 @@ public class RequestResource {
      */
     @GetMapping("/requests/status/{status}/organisation/{uuid}/coordinator")
     @SecuredByOrganisation(authorities = AuthorityConstants.ORGANISATION_COORDINATOR)
-    @Timed
     public ResponseEntity<List<RequestRepresentation>> getCoordinatorRequestsForOrganisation(
         @PathVariable("status") OverviewStatus status,
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid,
@@ -354,7 +338,6 @@ public class RequestResource {
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
     @SecuredByRequestOrganisationReviewer
-    @Timed
     public ResponseEntity<RequestRepresentation> getRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) {
         RequestRepresentation request = requestService.findRequest(uuid);
@@ -370,7 +353,6 @@ public class RequestResource {
      */
     @DeleteMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
-    @Timed
     public ResponseEntity<Void> deleteDraft(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -390,7 +372,6 @@ public class RequestResource {
      */
     @PostMapping("/requests/{uuid}/close")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestRepresentation> closeRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody(required = false) MessageRepresentation message
     ) throws ActionNotAllowed {

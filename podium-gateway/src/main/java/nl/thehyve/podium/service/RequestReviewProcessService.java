@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -206,7 +205,6 @@ public class RequestReviewProcessService {
         throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
-    @Timed
     public RequestReviewProcess start(AuthenticatedUser user) {
         log.info("Creating request review process instance for user {}", user.getName());
 

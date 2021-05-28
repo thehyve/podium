@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.resource.InternalAuditResource;
 import nl.thehyve.podium.common.security.annotations.Public;
 import nl.thehyve.podium.common.service.dto.AuditEventRepresentation;
@@ -37,7 +36,6 @@ public class InternalAuditServer implements InternalAuditResource {
     }
 
     @Override
-    @Timed
     public ResponseEntity add(@RequestBody AuditEventRepresentation event) {
         auditEventService.add(event.asAuditEvent());
         return ResponseEntity.status(HttpStatus.CREATED).build();

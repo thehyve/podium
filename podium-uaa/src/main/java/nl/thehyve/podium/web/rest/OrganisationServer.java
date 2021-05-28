@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -54,7 +53,6 @@ import java.util.stream.Collectors;
  * REST controller for managing Organisation.
  */
 @SecuredByAuthority({AuthorityConstants.BBMRI_ADMIN})
-@Timed
 @RestController
 public class OrganisationServer implements OrganisationResource {
 

@@ -26,6 +26,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         name: podiumUaa
+        hikari:
+            jdbc-url: ${spring.datasource.url}
 #        username: podiumUser
 #        password: podiumUser
     jpa:
@@ -73,19 +75,6 @@ podium:
         client-authorization:
             clientId: internal
             clientSecret: internal
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: false
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: podiumUaa
-        prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false
