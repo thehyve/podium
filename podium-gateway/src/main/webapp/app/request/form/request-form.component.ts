@@ -8,9 +8,9 @@
  *
  */
 
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { RequestFormService } from './request-form.service';
 import { RequestDetail } from '../../shared/request/request-detail';
@@ -40,7 +40,7 @@ import { RequestTemplate } from '../../shared/request/request-template';
     styleUrls: ['request-form.scss']
 })
 
-export class RequestFormComponent implements OnInit {
+export class RequestFormComponent implements OnInit, OnDestroy {
 
     private currentUser: User;
 
@@ -73,6 +73,8 @@ export class RequestFormComponent implements OnInit {
 
     private revisionId: string;
 
+    private requestUpdateSubscription: Subscription = null;
+
     constructor(private requestFormService: RequestFormService,
                 private requestAccessService: RequestAccessService,
                 private requestService: RequestService,
@@ -94,6 +96,12 @@ export class RequestFormComponent implements OnInit {
             this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
         });
+    }
+
+    ngOnDestroy() {
+        if (this.requestUpdateSubscription !== null) {
+            this.requestUpdateSubscription.unsubscribe();
+        }
     }
 
     onFinishedUploadAttachment(success: boolean) {
@@ -134,7 +142,7 @@ export class RequestFormComponent implements OnInit {
         if (this.router.url.substring(0, 13) === '/requests/new' && !this.isInRevision) {
             this.initializeBaseRequest();
         } else {
-            this.activatedRoute.paramMap
+            this.requestUpdateSubscription = this.activatedRoute.paramMap
                 .pipe(switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid'))))
                 .subscribe(
                     request => {
