@@ -15,7 +15,6 @@ import { UserGroupAuthority } from '../../authority/authority.constants';
 import {
     RequestOverviewStatusOption
 } from '../request-status/request-status.constants';
-import { Response } from '@angular/http';
 import { Subject, Subscription } from 'rxjs';
 
 @Component({
@@ -38,12 +37,12 @@ export class RequestStatusSidebarComponent implements OnInit {
     public userGroupAuthority: UserGroupAuthority;
 
     @Input()
-    public pageParams: Function;
+    public pageParams: any;
 
     @Input()
     public toggled: boolean;
 
-    public counts = {};
+    public counts: { [status: string]: number } = {};
 
     constructor(
         private overviewService: OverviewService
@@ -72,8 +71,8 @@ export class RequestStatusSidebarComponent implements OnInit {
 
     fetchCounts() {
         this.overviewService.getRequestCountsForUserGroupAuthority(this.userGroupAuthority)
-            .subscribe((res: Response) => {
-                this.counts = res.json();
+            .subscribe((res) => {
+                this.counts = res;
             });
     }
 

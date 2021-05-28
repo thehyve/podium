@@ -9,20 +9,20 @@
   -->
 
 <div class="content-wrapper" *ngIf="allConfiguration && configuration">
-    <h2 jhiTranslate="configuration.title">Configuration</h2>
+    <h2 [translate]="'configuration.title'"></h2>
 
-    <span jhiTranslate="configuration.filter">Filter (by prefix)</span> <input type="text" [(ngModel)]="filter" class="form-control">
+    <span [translate]="'configuration.filter'"></span> <input type="text" [(ngModel)]="filter" class="form-control">
     <label>Spring configuration</label>
     <table class="table table-sm table-striped table-bordered table-responsive"
         style="table-layout:fixed">
         <thead>
         <tr class="row">
-            <th class="col-sm-4" (click)="orderProp = 'prefix'; reverse=!reverse"><span jhiTranslate="configuration.table.prefix">Prefix</span></th>
-            <th class="col-sm-8" (click)="orderProp = 'properties'; reverse=!reverse" jhiTranslate="configuration.table.properties">Properties</th>
+            <th class="col-sm-4" (click)="orderProp = 'prefix'; reverse=!reverse"><span [translate]="'configuration.table.prefix'"></span></th>
+            <th class="col-sm-8" (click)="orderProp = 'properties'; reverse=!reverse" [translate]="'configuration.table.properties'"></th>
         </tr>
         </thead>
 
-        <tr *ngFor="let entry of (configuration | pureFilter:filter:'prefix' | orderBy:orderProp:reverse)">
+        <tr *ngFor="let entry of (configuration)">
             <td><span>{{entry.prefix}}</span></td>
             <td>
                 <div class="row" *ngFor="let key of keys(entry.properties)">

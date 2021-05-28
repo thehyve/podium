@@ -7,62 +7,60 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
-import { Account, Principal } from '../shared';
-import { Ng2DeviceService } from 'ng2-device-detector';
-import { RedirectService } from '../shared/auth/redirect.service';
+import { EventManager } from '../core/util/event-manager.service';
+import { Account } from '../core/auth/account.model';
+import { AccountService } from '../core/auth/account.service';
+import { RedirectService } from '../core/auth/redirect.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-home',
     templateUrl: './home.component.html',
     styleUrls: [
-        'home.scss'
+        'home.component.scss'
     ]
-
 })
-export class PdmHomeComponent implements OnInit {
+export class PdmHomeComponent implements OnInit, OnDestroy {
     account: Account;
     modalRef: NgbModalRef;
-    deviceInfo: any;
+    authenticationSuccessEvents: Subscription;
 
     constructor(
-        private principal: Principal,
-        private eventManager: JhiEventManager,
+        private accountService: AccountService,
+        private eventManager: EventManager,
         private redirectService: RedirectService,
-        private deviceService: Ng2DeviceService
     ) {
 
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.account = account;
+            if (this.isAuthenticated()) {
+                this.redirectService.redirectUser();
+            }
         });
         this.registerAuthenticationSuccess();
+    }
 
-        if (this.isAuthenticated()) {
-            this.redirectService.redirectUser();
-        }
-
-        this.deviceInfo = this.deviceService.getDeviceInfo();
+    ngOnDestroy() {
+        this.authenticationSuccessEvents.unsubscribe();
     }
 
     registerAuthenticationSuccess() {
-        this.eventManager.subscribe('authenticationSuccess', (message) => {
-            this.principal.identity().then((account) => {
+        this.authenticationSuccessEvents = this.eventManager.subscribe('authenticationSuccess', (message) => {
+            if (this.isAuthenticated()) {
+                this.redirectService.redirectUser();
+            }
+            this.accountService.identity().subscribe((account) => {
                 this.account = account;
             });
         });
     }
 
     isAuthenticated() {
-        return this.principal.isAuthenticated();
+        return this.accountService.isAuthenticated();
     }
-
-    isBrowserIE(): boolean {
-        return this.deviceInfo.browser === 'ie';
-    }
-
 }

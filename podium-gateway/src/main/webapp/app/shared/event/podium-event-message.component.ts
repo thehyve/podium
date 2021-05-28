@@ -13,7 +13,7 @@ import { RequestService } from '../request/request.service';
 import { RequestBase } from '../request/request-base';
 import { PodiumEvent } from './podium-event';
 import { RequestAccessService } from '../request/request-access.service';
-import { RequestOverviewStatusOption, RequestStatusOptions } from '../request/request-status/request-status.constants';
+import { RequestOverviewStatusOption } from '../request/request-status/request-status.constants';
 import { Subscription } from 'rxjs';
 import { RequestStatusUpdateAction } from '../status-update/request-update-action';
 

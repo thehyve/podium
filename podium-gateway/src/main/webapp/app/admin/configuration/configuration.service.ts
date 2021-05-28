@@ -7,21 +7,20 @@
  * See the file LICENSE in the root of this repository.
  *
  */
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PdmConfigurationService {
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     get(): Observable<any> {
-        return this.http.get('management/configprops').map((res: Response) => {
+        return this.http.get('management/configprops').pipe(map((propertiesObject) => {
             let properties: any[] = [];
-
-            const propertiesObject = res.json();
 
             for (let key in propertiesObject) {
                 if (propertiesObject.hasOwnProperty(key)) {
@@ -31,16 +30,14 @@ export class PdmConfigurationService {
 
             return properties.sort((propertyA, propertyB) => {
                 return (propertyA.prefix === propertyB.prefix) ? 0 :
-                       (propertyA.prefix < propertyB.prefix) ? -1 : 1;
+                    (propertyA.prefix < propertyB.prefix) ? -1 : 1;
             });
-        });
+        }));
     }
 
     getEnv(): Observable<any> {
-        return this.http.get('management/env').map((res: Response) => {
+        return this.http.get('management/env').pipe(map((propertiesObject) => {
             let properties: any = {};
-
-            const propertiesObject = res.json();
 
             for (let key in propertiesObject) {
                 if (propertiesObject.hasOwnProperty(key)) {
@@ -49,7 +46,7 @@ export class PdmConfigurationService {
 
                     for (let valKey in valsObject) {
                         if (valsObject.hasOwnProperty(valKey)) {
-                            vals.push({key: valKey, val: valsObject[valKey]});
+                            vals.push({ key: valKey, val: valsObject[valKey] });
                         }
                     }
                     properties[key] = vals;
@@ -57,6 +54,6 @@ export class PdmConfigurationService {
             }
 
             return properties;
-        });
+        }));
     }
 }

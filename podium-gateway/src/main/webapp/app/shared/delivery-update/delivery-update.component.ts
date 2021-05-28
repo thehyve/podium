@@ -9,8 +9,7 @@
  */
 import { Component } from '@angular/core';
 import { DeliveryStatusUpdateAction } from './delivery-update-action';
-import { RequestBase, RequestService } from '../request';
-import { Response } from '@angular/http';
+import { RequestBase } from '../request/request-base';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeliveryReference } from '../delivery/delivery-reference';
 import { Delivery } from '../delivery/delivery';
@@ -51,20 +50,19 @@ export class DeliveryStatusUpdateDialogComponent {
     confirmStatusUpdate() {
         if (this.statusUpdateAction === DeliveryStatusUpdateAction.Release) {
             return this.deliveryService.releaseDelivery(this.request.uuid, this.delivery.uuid, this.releaseMessage)
-                .subscribe((res) => this.onSuccess(res));
+                .subscribe(() => this.onSuccess());
         }
 
         if (this.statusUpdateAction === DeliveryStatusUpdateAction.Cancel) {
             return this.deliveryService.cancelDelivery(this.request.uuid, this.delivery.uuid, this.cancelledMessage)
-                .subscribe((res) => this.onSuccess(res));
+                .subscribe(() => this.onSuccess());
         }
 
         this.activeModal.dismiss(new Error('Unknown status update action'));
     }
 
     getHeaderTranslation() {
-        let requestId = this.request.id;
-        return '{requestId: \'' + requestId + '\'}';
+        return { requestId: this.request.id };
     };
 
     getSubmitTooltip(): string {
@@ -77,7 +75,15 @@ export class DeliveryStatusUpdateDialogComponent {
         return '';
     }
 
-    onSuccess(res: Response) {
+    onSuccess() {
         this.activeModal.close(true);
+    }
+
+    get isCancel() {
+        return this.statusUpdateAction === DeliveryStatusUpdateAction.Cancel;
+    }
+
+    get isRelease() {
+        return this.statusUpdateAction === DeliveryStatusUpdateAction.Release;
     }
 }

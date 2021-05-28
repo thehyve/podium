@@ -1,0 +1,78 @@
+<!--
+  ~ Copyright (c) 2017. The Hyve and respective contributors
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~
+  ~ See the file LICENSE in the root of this repository.
+  ~
+  -->
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="alert alert-danger"
+            *ngIf="authenticationError && !(userAccountLocked || emailNotVerified || accountNotVerified)"
+        >
+            <strong>Failed to sign in!</strong>
+            Please check your credentials and try again.
+            <br/>
+            <br/>
+            <a class="alert-link" (click)="requestResetPassword()">Did you forget your password?</a>
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && userAccountLocked">
+            <strong>Your user account is locked!</strong>
+            <br/>
+            Please contact the servicedesk.
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && emailNotVerified">
+            <strong>Your email address has not been verified.</strong>
+            <br/>
+            Please use the link in the verification email sent to you at registration.
+        </div>
+        <div class="alert alert-danger" *ngIf="authenticationError && accountNotVerified">
+            <strong>Your user account has not been verified by BBMRI yet.</strong>
+            <br/>
+            You will be notified by email when your account is verified.
+        </div>
+        <form class="form-signin" role="form"
+            (ngSubmit)="login()"
+            [formGroup]="loginForm"
+        >
+            <h2 class="form-signin-heading">Sign in</h2>
+            <label for="username" class="sr-only">Username</label>
+            <input
+                type="text"
+                class="form-control"
+                name="username"
+                id="username"
+                placeholder="Your username"
+                formControlName="username"
+                #username
+            />
+
+            <label for="password" class="sr-only">Password</label>
+            <input
+                type="password"
+                class="form-control"
+                name="password"
+                id="password"
+                placeholder="Your password"
+                formControlName="password"
+            />
+
+            <div class="checkbox">
+                <label class="form-check-label" for="rememberMe">
+                    <input type="checkbox" name="rememberMe" id="rememberMe"
+                        class="form-check-input" formControlName="rememberMe" />
+                    <span>Remember me</span>
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <hr>
+            <a class="btn btn-secondary btn-block" routerLink="/register">Register a new account</a>
+            <br>
+            Forgot your password? <br>
+            <a tabindex="" class="alert-link" routerLink="/reset/request">Request a password reset link</a>.
+        </form>
+    </div>
+</div>

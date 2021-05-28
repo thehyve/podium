@@ -9,32 +9,24 @@
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PodiumGatewaySharedModule } from '../shared';
-import {
-    adminRoute,
-    AuditsComponent,
-    LogsComponent,
-    PdmMetricsMonitoringModalComponent,
-    PdmMetricsMonitoringComponent,
-    PdmHealthModalComponent,
-    PdmHealthCheckComponent,
-    PdmConfigurationComponent,
-    PdmDocsComponent,
-    AuditsService,
-    PdmConfigurationService,
-    PdmHealthService,
-    PdmMetricsService,
-    GatewayRoutesService,
-    PdmGatewayComponent,
-    LogsService
-} from './';
+import { TranslateModule } from '@ngx-translate/core';
+import { PodiumGatewaySharedModule } from '../shared/shared.module';
+import { adminRoute } from './admin-routing.module';
+import { AuditsComponent } from './audits/audits.component';
+import { LogsComponent } from './logs/logs.component';
+import { MetricsModalThreadsComponent } from './metrics/blocks/metrics-modal-threads/metrics-modal-threads.component';
+import { PdmMetricsMonitoringComponent } from './metrics/metrics.component';
+import { PdmHealthCheckComponent } from './health/health.component';
+import { PdmConfigurationComponent } from './configuration/configuration.component';
+import { PdmDocsComponent } from './docs/docs.component';
+import { PdmGatewayComponent } from './gateway/gateway.component';
 import { PdmElasticsearchComponent } from './elasticsearch/elasticsearch.component';
 import { PdmElasticsearchModalComponent } from './elasticsearch/elasticsearch-modal.component';
-import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedModule,
+        TranslateModule.forChild(),
         RouterModule.forChild(adminRoute)
     ],
     declarations: [
@@ -42,28 +34,17 @@ import { PdmElasticsearchService } from './elasticsearch/elasticsearch.service';
         LogsComponent,
         PdmConfigurationComponent,
         PdmHealthCheckComponent,
-        PdmHealthModalComponent,
         PdmDocsComponent,
         PdmGatewayComponent,
         PdmMetricsMonitoringComponent,
-        PdmMetricsMonitoringModalComponent,
+        MetricsModalThreadsComponent,
         PdmElasticsearchComponent,
         PdmElasticsearchModalComponent
     ],
     entryComponents: [
-        PdmHealthModalComponent,
         PdmElasticsearchModalComponent,
-        PdmMetricsMonitoringModalComponent,
+        MetricsModalThreadsComponent,
     ],
-    providers: [
-        AuditsService,
-        PdmConfigurationService,
-        PdmHealthService,
-        PdmMetricsService,
-        GatewayRoutesService,
-        LogsService,
-        PdmElasticsearchService
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class PodiumGatewayAdminModule {}
+export class PodiumGatewayAdminModule { }

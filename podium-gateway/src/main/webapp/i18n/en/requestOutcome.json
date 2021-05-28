@@ -1,7 +1,7 @@
 {
     "requestOutcome" : {
         "Delivered": "Delivered",
-        "Partially_Delivered": "Partially Delivered",
+        "Partially_Delivered": "Partially delivered",
         "Cancelled": "Cancelled",
         "Rejected": "Rejected",
         "Approved": "Approved",

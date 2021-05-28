@@ -8,38 +8,26 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes, CanActivate } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
+import { Resolve, ActivatedRouteSnapshot, Routes } from '@angular/router';
+import { parseAscending, parsePage, parsePredicate } from '../../../shared/util/pagination-util';
 import { UserMgmtComponent } from './user-management.component';
 import { UserDialogComponent } from './user-management-dialog.component';
 import { UserDeleteDialogComponent } from './user-management-delete-dialog.component';
 import { UserUnlockDialogComponent } from './user-management-unlock-dialog.component';
-import { Principal } from '../../../shared/auth/principal.service';
-import { UserRouteAccessService } from '../../../shared/auth/user-route-access-service';
-
-
-@Injectable()
-export class UserResolve implements CanActivate {
-
-  constructor(private principal: Principal) { }
-
-  canActivate() {
-    return this.principal.identity().then(account => this.principal.hasAnyAuthority(['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']));
-  }
-}
+import { UserRouteAccessService } from '../../../core/auth/user-route-access.service';
 
 @Injectable()
 export class UserResolvePagingParams implements Resolve<any> {
 
-  constructor(private paginationUtil: JhiPaginationUtil) {}
+  constructor() {}
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  resolve(route: ActivatedRouteSnapshot) {
       let page = route.queryParams['page'] ? route.queryParams['page'] : '1';
       let sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'createdDate,desc';
       return {
-          page: this.paginationUtil.parsePage(page),
-          predicate: this.paginationUtil.parsePredicate(sort),
-          ascending: this.paginationUtil.parseAscending(sort)
+          page: parsePage(page),
+          predicate: parsePredicate(sort),
+          ascending: parseAscending(sort)
     };
   }
 }

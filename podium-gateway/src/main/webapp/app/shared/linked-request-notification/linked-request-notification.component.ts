@@ -12,7 +12,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { RequestBase } from '../request/request-base';
 import { RequestAccessService } from '../request/request-access.service';
 import { RequestService } from '../request/request.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'pdm-linked-notification',

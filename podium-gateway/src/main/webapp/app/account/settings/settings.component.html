@@ -11,11 +11,13 @@
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h2 jhiTranslate="settings.title" translateValues="{username: '{{settingsAccount.login}}'}"
-                *ngIf="settingsAccount">User settings for [<b>{{settingsAccount.login}}</b>]</h2>
+            <h2 [innerHTML]="'settings.title' | translate:{username: settingsAccount.login}"
+                *ngIf="settingsAccount">
+            </h2>
 
-            <div class="alert alert-success" *ngIf="success" jhiTranslate="settings.messages.success">
-                <strong>Settings saved!</strong>
+            <div class="alert alert-success"
+                *ngIf="success"
+                [translate]="'settings.messages.success'">
             </div>
 
             <pdm-alert-error></pdm-alert-error>
@@ -24,8 +26,10 @@
 
                 <!--First name-->
                 <div class="form-group">
-                    <label class="form-control-label" for="firstName" jhiTranslate="settings.form.firstname">First
-                        Name</label>
+                    <label class="form-control-label"
+                        for="firstName"
+                        [translate]="'settings.form.firstname'">
+                    </label>
                     <input type="text" class="form-control" id="firstName" name="firstName"
                            placeholder="{{'settings.form.firstname.placeholder' | translate}}"
                            [(ngModel)]="settingsAccount.firstName" minlength=1 maxlength=50 #firstNameInput="ngModel"
@@ -33,26 +37,25 @@
                     <div *ngIf="firstNameInput.dirty && firstNameInput.invalid">
                         <small class="form-text text-danger"
                                *ngIf="firstNameInput.errors.required"
-                               jhiTranslate="settings.messages.validate.firstname.required">
-                            Your first name is required.
+                               [translate]="'settings.messages.validate.firstname.required'">
                         </small>
                         <small class="form-text text-danger"
                                *ngIf="firstNameInput.errors.minlength"
-                               jhiTranslate="settings.messages.validate.firstname.minlength">
-                            Your first name is required to be at least 1 character.
+                               [translate]="'settings.messages.validate.firstname.minlength'">
                         </small>
                         <small class="form-text text-danger"
                                *ngIf="firstNameInput.errors.maxlength"
-                               jhiTranslate="settings.messages.validate.firstname.maxlength">
-                            Your first name cannot be longer than 50 characters.
+                               [translate]="'settings.messages.validate.firstname.maxlength'">
                         </small>
                     </div>
                 </div>
 
                 <!--Last name-->
                 <div class="form-group">
-                    <label class="form-control-label" for="lastName" jhiTranslate="settings.form.lastname">Last
-                        Name</label>
+                    <label class="form-control-label"
+                        for="lastName"
+                        [translate]="'settings.form.lastname'">
+                    </label>
                     <input type="text" class="form-control" id="lastName" name="lastName"
                            placeholder="{{'settings.form.lastname.placeholder' | translate}}"
                            [(ngModel)]="settingsAccount.lastName" minlength=1 maxlength=50 #lastNameInput="ngModel"
@@ -60,25 +63,23 @@
                     <div *ngIf="lastNameInput.dirty && lastNameInput.invalid">
                         <small class="form-text text-danger"
                                *ngIf="lastNameInput.errors.required"
-                               jhiTranslate="settings.messages.validate.lastname.required">
-                            Your last name is required.
+                               [translate]="'settings.messages.validate.lastname.required'">
                         </small>
                         <small class="form-text text-danger"
                                *ngIf="lastNameInput.errors.minlength"
-                               jhiTranslate="settings.messages.validate.lastname.minlength">
-                            Your last name is required to be at least 1 character.
+                               [translate]="'settings.messages.validate.lastname.minlength'">
                         </small>
                         <small class="form-text text-danger"
                                *ngIf="lastNameInput.errors.maxlength"
-                               jhiTranslate="settings.messages.validate.lastname.maxlength">
-                            Your last name cannot be longer than 50 characters.
+                               [translate]="'settings.messages.validate.lastname.maxlength'">
                         </small>
                     </div>
                 </div>
 
                 <!--E-mail-->
                 <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="global.form.email">E-mail</label>
+                    <label class="form-control-label" [translate]="'global.form.email'">
+                    </label>
                     <div class="form-control-static">{{settingsAccount.email}}</div>
                 </div>
 
@@ -152,7 +153,7 @@
                 </div>
 
                 <button type="submit" [disabled]="settingsForm.form.invalid" class="btn btn-primary"
-                        jhiTranslate="settings.form.button">Save
+                        [translate]="'settings.form.button'">
                 </button>
             </form>
         </div>

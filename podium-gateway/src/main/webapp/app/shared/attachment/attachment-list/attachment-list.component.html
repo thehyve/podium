@@ -2,11 +2,11 @@
     <table class="table">
         <thead>
         <tr>
-            <th jhiTranslate="attachments.list.name">Name</th>
-            <th jhiTranslate="attachments.list.type">Type</th>
-            <th jhiTranslate="attachments.list.uploader">Uploader</th>
-            <th jhiTranslate="attachments.list.size">Size</th>
-            <th jhiTranslate="attachments.list.uploadDate">Uploaded date</th>
+            <th [translate]="'attachments.list.name'"></th>
+            <th [translate]="'attachments.list.type'"></th>
+            <th [translate]="'attachments.list.uploader'"></th>
+            <th [translate]="'attachments.list.size'"></th>
+            <th [translate]="'attachments.list.uploadDate'"></th>
             <th>&nbsp;</th>
         </tr>
         </thead>
@@ -19,10 +19,10 @@
                         (change)="onAttachmentTypeChange(attachment, attachmentType.value)"
                         *ngIf="canEdit(attachment)">
                     <option *ngFor="let attachmentType of attachmentTypes" value="{{attachmentType.value}}"
-                            jhiTranslate="attachments.option.{{attachmentType.label}}">
+                            [translate]="'attachments.option.' + attachmentType.label">
                     </option>
                 </select>
-                <span *ngIf="!canEdit(attachment)" jhiTranslate="attachments.option.{{attachment.requestFileType}}"></span>
+                <span *ngIf="!canEdit(attachment)" [translate]="'attachments.option.' + attachment.requestFileType"></span>
             </td>
             <td>{{attachment.uploader?.login}}</td>
             <td>{{formatBytes(attachment.fileByteSize, 1)}}</td>
@@ -38,7 +38,7 @@
     </table>
 
     <div class="form-text text-danger" *ngFor="let err of error">
-        <span jhiTranslate="attachments.list.validate.fileTypes">Please set file types</span>
+        <span [translate]="'attachments.list.validate.fileTypes'"></span>
         <strong>{{err.filename}}</strong>
     </div>
 

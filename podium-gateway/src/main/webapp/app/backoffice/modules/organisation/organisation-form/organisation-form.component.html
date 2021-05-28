@@ -12,7 +12,7 @@
     <div class="container-fluid">
         <div class="col-sm-12 col-md-12 col-lg-12 col-xl-8 offset-xl-2 card-container">
             <h2>
-                <span jhiTranslate="organisation.detail.title">Organisation</span>
+                <span [translate]="'organisation.detail.title'"></span>
             </h2>
 
             <tabset>
@@ -22,9 +22,9 @@
                             <pdm-alert-error></pdm-alert-error>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="organisation.name"
-                                       for="field_name">
-                                    Name
+                                <label class="form-control-label"
+                                    [translate]="'organisation.name'"
+                                    for="field_name">
                                 </label>
                                 <input type="text" class="form-control" name="name" id="field_name"
                                        [(ngModel)]="organisation.name"
@@ -32,30 +32,28 @@
                                 <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                                     <small class="form-text text-danger"
                                            [hidden]="!editForm.controls.name?.errors?.required"
-                                           jhiTranslate="entity.validation.required">
-                                        This field is required.
+                                           [translate]="'entity.validation.required'">
                                     </small>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="organisation.shortName"
-                                       for="field_shortName">
-                                    Short Name
+                                <label class="form-control-label"
+                                    [translate]="'organisation.shortName'"
+                                    for="field_shortName">
                                 </label>
                                 <input type="text" class="form-control" name="shortName" id="field_shortName"
                                        [(ngModel)]="organisation.shortName"
                                        required maxlength="50" />
                                 <div [hidden]="!(editForm.controls.shortName?.dirty && editForm.controls.shortName?.invalid)">
                                     <small class="form-text text-danger"
-                                           [hidden]="!editForm.controls.shortName?.errors?.required"
-                                           jhiTranslate="entity.validation.required">
-                                        This field is required.
+                                        [hidden]="!editForm.controls.shortName?.errors?.required"
+                                        [translate]="'entity.validation.required'">
                                     </small>
                                     <small class="form-text text-danger"
-                                           [hidden]="!editForm.controls.shortName?.errors?.maxlength"
-                                           jhiTranslate="entity.validation.maxlength" translateValues="{ max: 50 }">
-                                        This field cannot be longer than 50 characters.
+                                        [hidden]="!editForm.controls.shortName?.errors?.maxlength"
+                                        [translate]="'entity.validation.maxlength'"
+                                        [translateParams]="{ max: 50 }">
                                     </small>
                                 </div>
                             </div>
@@ -71,27 +69,25 @@
                                                    id="requestTypes"
                                                    value="{{requestType.value}}"
                                                    [checked]="organisation.requestTypes.indexOf(requestType.value) !== -1"
-                                                   (change)="updateRequestType(requestType, $event)"
+                                                   (change)="updateRequestType(requestType)"
                                                    required />
-                                            {{requestType.value | capitalize}}
+                                            {{requestType.value}}
                                         </label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-control-label" jhiTranslate="organisation.activated">
-                                    Active
+                                <label class="form-control-label"
+                                    [translate]="'organisation.activated'">
                                 </label>
-                                <ui-switch [(ngModel)]="organisation.activated" name="organisation_active"
-                                           [disabled]="isOrganisationAdmin(currentAccount)"
-                                           ngDefaultControl size="small" class="float-xs-right"></ui-switch>
+                                <input type="checkbox"
+                                    [(ngModel)]="organisation.activated" name="organisation_active"
+                                    [disabled]="isOrganisationAdmin(currentAccount)" />
 
                                 <div *ngIf="isOrganisationAdmin(currentAccount) && !organisation.activated">
                                     <small class="form-text text-danger"
-                                           jhiTranslate="organisation.organisationAdminInactive">
-                                        Your organisation requires all fields to be filled in and has a user assigned
-                                        for each of the roles. Contact the BBMRI admin to validate your organisation.
+                                           [translate]="'organisation.organisationAdminInactive'">
                                     </small>
                                 </div>
                             </div>
@@ -99,17 +95,17 @@
                             <div class="action-footer-container">
                                 <button type="button" class="btn btn-default" (click)="cancel()">
                                     <span class="material-icons">cancel</span>&nbsp;
-                                    <span jhiTranslate="entity.action.cancel">Cancel</span>
+                                    <span [translate]="'entity.action.cancel'"></span>
                                 </button>
                                 <button type="submit" [disabled]="editForm.form.invalid || isSaving"
                                         *ngIf="!organisation.uuid" class="btn btn-primary float-xs-right">
                                     <span class="material-icons">save</span>&nbsp;
-                                    <span jhiTranslate="entity.action.create">Create</span>
+                                    <span [translate]="'entity.action.create'"></span>
                                 </button>
                                 <button type="submit" [disabled]="editForm.form.invalid || isSaving"
                                         *ngIf="organisation.uuid" class="btn btn-primary float-xs-right">
                                     <span class="material-icons">save</span>&nbsp;
-                                    <span jhiTranslate="entity.action.save">Save</span>
+                                    <span [translate]="'entity.action.save'"></span>
                                 </button>
                             </div>
                         </form>

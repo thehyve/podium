@@ -8,10 +8,10 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestBase } from '../../../shared/request/request-base';
 import { Delivery } from '../../../shared/delivery/delivery';
-import { Response } from '@angular/http';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestOutcome } from '../../../shared/request/request-outcome';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
@@ -58,14 +58,14 @@ export class RequestFinalizeDialogComponent implements OnInit {
      *
      * @param res the response holding the request
      */
-    onSuccess(res: Response) {
+    onSuccess(res: HttpResponse<RequestBase>) {
         console.log('Success finalizing ', res);
-        this.request = res.json();
+        this.request = res.body;
         this.requestService.requestUpdateEvent(this.request);
         this.activeModal.close();
     }
 
-    onError(err: Response) {
+    onError(err: HttpErrorResponse) {
         console.log('err when finalizing ', err);
     }
 
@@ -81,8 +81,7 @@ export class RequestFinalizeDialogComponent implements OnInit {
      * @returns {string} the formatted object holding the requestId
      */
     getHeaderTranslation() {
-        let requestId = this.request.id;
-        return '{requestId: \'' + requestId + '\'}';
+        return { requestId: this.request.id };
     };
 
 

@@ -13,5 +13,4 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class OverviewServiceConfig {
     resourceUrl: string;
-    resourceSearchUrl: string;
 }

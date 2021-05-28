@@ -8,7 +8,6 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { GatewayRoutesService } from './gateway-routes.service';
 import { GatewayRoute } from './gateway-route.model';
 
@@ -20,7 +19,7 @@ import { GatewayRoute } from './gateway-route.model';
 export class PdmGatewayComponent implements OnInit {
 
     gatewayRoutes: GatewayRoute[];
-    updatingRoutes: Boolean;
+    updatingRoutes: boolean;
 
     constructor(
         private gatewayRoutesService: GatewayRoutesService

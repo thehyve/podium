@@ -9,25 +9,25 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { RequestDetail } from '../../../shared/request/request-detail';
 import { RequestBase } from '../../../shared/request/request-base';
 import { RequestService } from '../../../shared/request/request.service';
 import { RequestAccessService } from '../../../shared/request/request-access.service';
 import { RequestOverviewStatusOption } from '../../../shared/request/request-status/request-status.constants';
 import { RequestFormService } from '../../form/request-form.service';
-import { Response } from '@angular/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestReviewDecision } from '../../../shared/request/request-review-decision';
 import { RequestUpdateReviewDialogComponent } from '../../../shared/status-update/request-update-review-dialog.component';
 import { RequestStatusUpdateAction } from '../../../shared/status-update/request-update-action';
 import { RequestUpdateStatusDialogComponent } from '../../../shared/status-update/request-update-status-dialog.component';
-import { Principal } from '../../../shared/auth/principal.service';
+import { AccountService } from '../../../core/auth/account.service';
 import { User } from '../../../shared/user/user.model';
 import { RequestFinalizeDialogComponent } from '../request-finalize-dialog/request-finalize-dialog.component';
 import { Delivery } from '../../../shared/delivery/delivery';
 import { Subscription } from 'rxjs';
 import { DeliveryService } from '../../../shared/delivery/delivery.service';
-import { JhiAlertService } from 'ng-jhipster';
+import { AlertService } from '../../../core/util/alert.service';
 
 @Component({
     selector: 'pdm-request-detail',
@@ -55,8 +55,8 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         private requestAccessService: RequestAccessService,
         private requestFormService: RequestFormService,
         private modalService: NgbModal,
-        private principal: Principal,
-        private alertService: JhiAlertService
+        private accountService: AccountService,
+        private alertService: AlertService
     ) {
     }
 
@@ -95,7 +95,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+        this.authenticationSubscription = this.accountService.getAuthenticationState().subscribe(
             (identity: User) => {
                 this.currentUser = identity;
                 this.checkIsInRevision(this.request);
@@ -126,6 +126,9 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
      * @param request the request
      */
     private checkIsInRevision(request) {
+        if (!request) {
+            return;
+        }
         if (this.isRevisionStatusForRequester(request)) {
             this.isInRevision = true;
             this.requestFormService.request = request;
@@ -142,7 +145,7 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         modalRef.componentInstance.request = this.request;
         modalRef.componentInstance.currentUser = this.currentUser;
         modalRef.componentInstance.reviewStatus = decision;
-        modalRef.result.then(result => {
+        modalRef.result.then(() => {
             this.requestService.requestUpdateEvent(this.request);
             this.isUpdating = false;
         }, (reason) => {
@@ -338,8 +341,8 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         return this.isRequestCoordinator() || this.isRequestingResearcher();
     }
 
-    onSuccess(response: Response) {
-        this.request = response.json();
+    onSuccess(response: HttpResponse<RequestBase>) {
+        this.request = response.body;
         this.isUpdating = false;
         this.requestService.requestUpdateEvent(this.request);
     }

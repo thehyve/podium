@@ -9,8 +9,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiLanguageService } from 'ng-jhipster';
-import { PdmMetricsMonitoringModalComponent } from './metrics-modal.component';
+import { MetricsModalThreadsComponent } from './blocks/metrics-modal-threads/metrics-modal-threads.component';
 import { PdmMetricsService } from './metrics.service';
 
 @Component({
@@ -68,7 +67,7 @@ export class PdmMetricsMonitoringComponent implements OnInit {
 
     refreshThreadDumpData () {
         this.metricsService.threadDump().subscribe((data) => {
-            const modalRef  = this.modalService.open(PdmMetricsMonitoringModalComponent, { size: 'lg'});
+            const modalRef  = this.modalService.open(MetricsModalThreadsComponent, { size: 'lg'});
             modalRef.componentInstance.threadDump = data;
             modalRef.result.then((result) => {
                 console.log(`Closed with: ${result}`);

@@ -18,7 +18,7 @@ import { Organisation } from '../organisation/organisation.model';
 
 export class RequestBase implements Request {
 
-    dateCreated?: Date = new Date();
+    createdDate?: Date = new Date();
     dateLastModified?: Date = new Date();
     uuid?: string;
     id?: string;

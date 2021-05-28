@@ -31,7 +31,7 @@
                    [isDisabled]="toggled">
                      {{ status.icon }}
                 </i>
-                <span jhiTranslate="requestSidebar.status.{{ status.option }}"></span>
+                <span [translate]="'requestSidebar.status.' + status.option"></span>
                 <span class="badge badge-secondary float-right">
                     {{ counts[status.option] || '0' }}
                 </span>

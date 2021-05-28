@@ -7,41 +7,33 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { UserResolvePagingParams, UserResolve } from './user-management.route';
+import { UserResolvePagingParams } from './user-management.route';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PodiumGatewaySharedModule } from '../../../shared/shared.module';
 import { PodiumGatewayAdminModule } from '../../../admin/admin.module';
 import { RouterModule } from '@angular/router';
+import { UserMgmtComponent } from './user-management.component';
 import {
-    UserMgmtComponent,
     UserDialogComponent,
-    UserMgmtDialogComponent,
+    UserMgmtDialogComponent
+} from './user-management-dialog.component';
+import {
     UserDeleteDialogComponent,
-    UserMgmtDeleteDialogComponent,
+    UserMgmtDeleteDialogComponent
+} from './user-management-delete-dialog.component';
+import {
     UserUnlockDialogComponent,
     UserMgmtUnlockDialogComponent,
-    UserModalService
-} from './';
-import { customHttpProvider } from '../../../blocks/interceptor/http.provider';
+} from './user-management-unlock-dialog.component';
 import { UserMgmtRoutingModule } from './user-management.routing';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { Http } from '@angular/http';
-import { HttpLoaderFactory } from '../../../shared/shared-libs.module';
-import { PodiumAuthModule } from '../../../shared/auth/auth.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
     imports: [
-        TranslateModule.forChild({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [Http]
-            }
-        }),
+        TranslateModule.forChild(),
         PodiumGatewayAdminModule,
         PodiumGatewaySharedModule,
         UserMgmtRoutingModule,
-        PodiumAuthModule
     ],
     declarations: [
         UserMgmtComponent,
@@ -58,10 +50,7 @@ import { PodiumAuthModule } from '../../../shared/auth/auth.module';
         UserMgmtUnlockDialogComponent,
     ],
     providers: [
-        customHttpProvider(),
         UserResolvePagingParams,
-        UserResolve,
-        UserModalService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     exports: [

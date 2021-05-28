@@ -10,9 +10,13 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PodiumGatewaySharedModule } from '../shared';
-import { requestRoute, RequestFormService, RequestFormComponent, RequestFormSubmitDialogComponent } from './';
-import { RequestOverviewComponent } from './overview';
+import { TranslateModule } from '@ngx-translate/core';
+import { PodiumGatewaySharedModule } from '../shared/shared.module';
+import { requestRoute } from './request.route';
+import { RequestFormComponent } from './form/request-form.component';
+import { RequestFormService } from './form/request-form.service';
+import { RequestFormSubmitDialogComponent } from './form/request-form-submit-dialog.component';
+import { RequestOverviewComponent } from './overview/request-overview.component';
 import { RequestMainDetailComponent } from './main-detail/request-main-detail.component';
 import { RequestDetailComponent } from './main-detail/detail/request-detail.component';
 import { RequestActionToolbarComponent } from '../shared/request/action-bars/request-action-toolbar/request-action-toolbar.component';
@@ -32,6 +36,7 @@ import { RequestFinalizeDialogComponent } from './main-detail/request-finalize-d
 
 @NgModule({
     imports: [
+        TranslateModule.forChild({}),
         CommonModule,
         PodiumGatewaySharedModule,
         RouterModule.forChild(requestRoute)

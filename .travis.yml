@@ -17,7 +17,7 @@ cache:
 
 env:
   global:
-    - NODE_VERSION=10.20.0
+    - NODE_VERSION=14.16.1
     - MAVEN_OPTS='-Xmx1g'
     - PROFILE=dev
     - RUN_PODIUM=1

@@ -7,23 +7,23 @@
 
 <form name="submitForm" (ngSubmit)="confirmSubmit(request)">
     <div class="modal-header">
-        <h4 class="modal-title" jhiTranslate="request.submit.title">Confirm request submission</h4>
+        <h4 class="modal-title" [translate]="'request.submit.title'"></h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
-        <p jhiTranslate="request.submit.question">Are you sure you want to submit this request?</p>
+        <p [translate]="'request.submit.question'"></p>
         <p><strong>Title:</strong> {{request.requestDetail.title}}</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary test-cancel-btn" data-dismiss="modal" (click)="clear()">
             <span class="material-icons">cancel</span>&nbsp;
-            <span jhiTranslate="request.action.cancel">Cancel</span>
+            <span [translate]="'request.action.cancel'"></span>
         </button>
         <button type="submit" class="btn btn-primary test-submit-btn">
             <span class="material-icons">send</span>&nbsp;
-            <span jhiTranslate="request.action.submit">Submit</span>
+            <span [translate]="'request.action.submit'"></span>
         </button>
     </div>
 </form>

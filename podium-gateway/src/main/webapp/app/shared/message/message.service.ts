@@ -10,7 +10,7 @@
 import { Message } from './message.model';
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MessageService {
 
     private message: Message;

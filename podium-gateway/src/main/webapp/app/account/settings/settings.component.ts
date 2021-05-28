@@ -8,8 +8,8 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
+import { AccountService } from '../../core/auth/account.service';
+import { Account } from '../../core/auth/account.model';
 import { User } from '../../shared/user/user.model';
 
 @Component({
@@ -21,39 +21,20 @@ export class SettingsComponent implements OnInit {
     error: string;
     success: string;
     settingsAccount: User;
-    languages: any[];
 
-    static copyAccount (account): any {
-        return {
-            activated: account.activated,
-            specialism: account.specialism,
-            jobTitle: account.jobTitle,
-            department: account.department,
-            institute: account.institute,
-            telephone: account.telephone,
-            email: account.email,
-            firstName: account.firstName,
-            langKey: account.langKey,
-            lastName: account.lastName,
-            login: account.login,
-            imageUrl: account.imageUrl
-        };
+    static copyAccount(account: Account): User {
+        return { ...account };
     }
 
     constructor(
         private account: AccountService,
-        private principal: Principal,
-        private languageService: JhiLanguageService,
-        private languageHelper: JhiLanguageHelper
+        private accountService: AccountService,
     ) {
     }
 
     ngOnInit () {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.settingsAccount = SettingsComponent.copyAccount(account);
-        });
-        this.languageHelper.getAll().then((languages) => {
-            this.languages = languages;
         });
     }
 
@@ -61,13 +42,8 @@ export class SettingsComponent implements OnInit {
         this.account.save(this.settingsAccount).subscribe(() => {
             this.error = null;
             this.success = 'OK';
-            this.principal.identity(true).then((account) => {
+            this.accountService.identity(true).subscribe((account) => {
                 this.settingsAccount = SettingsComponent.copyAccount(account);
-            });
-            this.languageService.getCurrent().then((current) => {
-                if (this.settingsAccount.langKey !== current) {
-                    this.languageService.changeLanguage(this.settingsAccount.langKey);
-                }
             });
         }, () => {
             this.success = null;
