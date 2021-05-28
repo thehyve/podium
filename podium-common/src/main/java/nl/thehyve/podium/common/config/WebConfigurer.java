@@ -13,7 +13,6 @@ package nl.thehyve.podium.common.config;
 // import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.servlet.InstrumentedFilter;
 import com.codahale.metrics.servlets.MetricsServlet;
-import com.hazelcast.core.HazelcastInstance;
 import nl.thehyve.podium.common.web.filter.CachingHttpHeadersFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,15 +49,12 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
 
     private final PodiumProperties podiumProperties;
 
-    private final HazelcastInstance hazelcastInstance;
-
     // private MetricRegistry metricRegistry;
 
-    public WebConfigurer(Environment env, PodiumProperties podiumProperties, HazelcastInstance hazelcastInstance) {
+    public WebConfigurer(Environment env, PodiumProperties podiumProperties) {
 
         this.env = env;
         this.podiumProperties = podiumProperties;
-        this.hazelcastInstance = hazelcastInstance;
     }
 
     @Override
