@@ -1,5 +1,12 @@
 # Installation instructions for Podium
 
+## Dependencies
+
+Podium requires:
+- PostgreSQL server
+- Elasticsearch 7
+- OpenJDK 8
+
 ## Prepare database
 
 Run `sudo -u postgres psql` and execute these commands to create the
@@ -23,7 +30,7 @@ openssl rand -base64 32
 ### Create podium system user
 
 ```bash
-sudo adduser --disabled-login podium
+sudo adduser --system podium
 ```
 
 ### Download application archives
@@ -32,7 +39,7 @@ sudo adduser --disabled-login podium
 sudo -iu podium
 REPO=https://repo.thehyve.nl/service/local/artifact/maven/redirect?r=releases
 REGISTRY_VERSION=1.0.4
-PODIUM_VERSION=1.0.0
+PODIUM_VERSION=1.0.4
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-registry&v=${REGISTRY_VERSION}&p=war" -o podium-registry.war
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-uaa&v=${PODIUM_VERSION}&p=war" -o podium-uaa.war
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-gateway&v=${PODIUM_VERSION}&p=war" -o podium-gateway.war
@@ -54,14 +61,14 @@ Place the following startup scripts in the home directory `/home/podium`:
     #!/usr/bin/env bash
     
     cd "$( dirname "${BASH_SOURCE[0]}" )"
-    java -jar -server -Djava.awt.headless=true -Xms1g -Xmx1g  -Dspring.profiles.active=prod -Djava.security.egd=file:///dev/urandom -Dspring.config.location=/home/podium/uaa-config.yml /home/podium/podium-uaa.war
+    java -jar -server -Djava.awt.headless=true -Xms1g -Xmx1g  -Dspring.profiles.active=prod -Djava.security.egd=file:///dev/urandom -Dspring.config.location=classpath:config/application.yml,classpath:config/application-prod.yml,/home/podium/uaa-config.yml /home/podium/podium-uaa.war
     ```
 - `/home/podium/start_gateway`:
     ```bash
     #!/usr/bin/env bash
     
     cd "$( dirname "${BASH_SOURCE[0]}" )"
-    java -jar -server -Djava.awt.headless=true -Xms2g -Xmx2g -Dspring.profiles.active=prod -Djava.security.egd=file:///dev/urandom -Dserver.port=8082 -Dspring.config.location=/home/podium/gateway-config.yml /home/podium/podium-gateway.war
+    java -jar -server -Djava.awt.headless=true -Xms2g -Xmx2g -Dspring.profiles.active=prod -Djava.security.egd=file:///dev/urandom -Dserver.port=8082 -Dspring.config.location=classpath:config/application.yml,classpath:config/application-prod.yml,/home/podium/gateway-config.yml /home/podium/podium-gateway.war
     ```
 
 Make the scripts executable:
@@ -69,22 +76,9 @@ Make the scripts executable:
 chmod +x start_*
 ```
 
-### Configure the registry repository
-
-The preferred way to serve a configuration repository to the registry is _using a local directory_;
-
-The structure of the repository has to be as in the [example configuration repository](https://github.com/thehyve/podium-example-config).
-The location can be specified in the configuration file of the registry, see `registry-config.yml` below.
-
-
 ### Config files
 - `/home/podium/registry-config.yml`:
     ```yaml
-    cloud:
-        config:
-            server:
-                native:
-                    search-locations: file:./central-config
     podium:
         security:
             authentication:
@@ -107,7 +101,6 @@ The location can be specified in the configuration file of the registry, see `re
             baseUrl: https://example.com
         registry:
             password: change-admin-password-in-production
-
     ```
 - `/home/podium/gateway-config.yml`:<br>
    Here also the token can be configured for the [Molgenis Biobank Directory] integration,
