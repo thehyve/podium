@@ -10,7 +10,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ServiceNotAvailable;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -62,7 +61,6 @@ public class ReviewRoundService {
      * @param request The request to create the reviewround for.
      * @return ReviewRound with all the assigned reviewers.
      */
-    @Timed
     public ReviewRound createReviewRoundForRequest(Request request) {
         log.debug("Creating review round for request {}", request.getUuid());
 

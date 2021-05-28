@@ -92,8 +92,6 @@ podium:
         core-pool-size: 2
         max-pool-size: 50
         queue-capacity: 10000
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
     mail:
         from: podiumGateway@localhost
         base-url: http://127.0.0.1:10344

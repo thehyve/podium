@@ -30,7 +30,6 @@ public class PodiumProperties {
     private final Mail mail = new Mail();
     private final Security security = new Security();
     private final Swagger swagger = new Swagger();
-    private final Metrics metrics = new Metrics();
     private final CorsConfiguration cors = new CorsConfiguration();
     private final Gateway gateway = new Gateway();
     private final Ribbon ribbon = new Ribbon();
@@ -66,10 +65,6 @@ public class PodiumProperties {
 
     public Swagger getSwagger() {
         return this.swagger;
-    }
-
-    public Metrics getMetrics() {
-        return this.metrics;
     }
 
     public CorsConfiguration getCors() {
@@ -223,137 +218,6 @@ public class PodiumProperties {
 
             public void setQueueSize(int queueSize) {
                 this.queueSize = queueSize;
-            }
-        }
-    }
-
-    public static class Metrics {
-        private final Metrics.Jmx jmx = new Metrics.Jmx();
-        private final Metrics.Graphite graphite = new Metrics.Graphite();
-        private final Metrics.Prometheus prometheus = new Metrics.Prometheus();
-        private final Metrics.Logs logs = new Metrics.Logs();
-
-        public Metrics() {
-        }
-
-        public Metrics.Jmx getJmx() {
-            return this.jmx;
-        }
-
-        public Metrics.Graphite getGraphite() {
-            return this.graphite;
-        }
-
-        public Metrics.Prometheus getPrometheus() {
-            return this.prometheus;
-        }
-
-        public Metrics.Logs getLogs() {
-            return this.logs;
-        }
-
-        public static class Logs {
-            private boolean enabled = false;
-            private long reportFrequency = 60L;
-
-            public Logs() {
-            }
-
-            public long getReportFrequency() {
-                return this.reportFrequency;
-            }
-
-            public void setReportFrequency(int reportFrequency) {
-                this.reportFrequency = (long)reportFrequency;
-            }
-
-            public boolean isEnabled() {
-                return this.enabled;
-            }
-
-            public void setEnabled(boolean enabled) {
-                this.enabled = enabled;
-            }
-        }
-
-        public static class Prometheus {
-            private boolean enabled = false;
-            private String endpoint = "/prometheusMetrics";
-
-            public Prometheus() {
-            }
-
-            public boolean isEnabled() {
-                return this.enabled;
-            }
-
-            public void setEnabled(boolean enabled) {
-                this.enabled = enabled;
-            }
-
-            public String getEndpoint() {
-                return this.endpoint;
-            }
-
-            public void setEndpoint(String endpoint) {
-                this.endpoint = endpoint;
-            }
-        }
-
-        public static class Graphite {
-            private boolean enabled = false;
-            private String host = "localhost";
-            private int port = 2003;
-            private String prefix = "podiumApplication";
-
-            public Graphite() {
-            }
-
-            public boolean isEnabled() {
-                return this.enabled;
-            }
-
-            public void setEnabled(boolean enabled) {
-                this.enabled = enabled;
-            }
-
-            public String getHost() {
-                return this.host;
-            }
-
-            public void setHost(String host) {
-                this.host = host;
-            }
-
-            public int getPort() {
-                return this.port;
-            }
-
-            public void setPort(int port) {
-                this.port = port;
-            }
-
-            public String getPrefix() {
-                return this.prefix;
-            }
-
-            public void setPrefix(String prefix) {
-                this.prefix = prefix;
-            }
-        }
-
-        public static class Jmx {
-            private boolean enabled = true;
-
-            public Jmx() {
-            }
-
-            public boolean isEnabled() {
-                return this.enabled;
-            }
-
-            public void setEnabled(boolean enabled) {
-                this.enabled = enabled;
             }
         }
     }

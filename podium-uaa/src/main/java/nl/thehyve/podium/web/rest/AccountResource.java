@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.Public;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -55,7 +53,6 @@ public class AccountResource {
     @Public
     @PostMapping(path = "/register",
                     produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    @Timed
     public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserRepresentation managedUserRepresentation) throws UserAccountException {
         userService.registerUser(managedUserRepresentation);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -71,7 +68,6 @@ public class AccountResource {
      */
     @Public
     @GetMapping("/verify")
-    @Timed
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
         try {
             if (userService.verifyRegistration(key)) {
@@ -86,7 +82,6 @@ public class AccountResource {
 
     @Public
     @GetMapping("/reverify")
-    @Timed
     public ResponseEntity<String> renewVerification(@RequestParam(value = "key") String key) {
         if (userService.renewVerificationKey(key)) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -104,7 +99,6 @@ public class AccountResource {
      */
     @AnyAuthorisedUser
     @GetMapping("/account")
-    @Timed
     public ResponseEntity<UserRepresentation> getAccount() {
         UserRepresentation user = userService.getUserWithAuthorities();
         if (user == null) {
@@ -122,7 +116,6 @@ public class AccountResource {
      */
     @AnyAuthorisedUser
     @PostMapping("/account")
-    @Timed
     public UserRepresentation saveAccount(@Valid @RequestBody UserRepresentation userDTO) throws UserAccountException {
         return userService.updateUserAccount(userDTO);
     }
@@ -137,7 +130,6 @@ public class AccountResource {
     @PostMapping(path = "/account/change_password",
         consumes = MediaType.TEXT_PLAIN_VALUE,
         produces = MediaType.TEXT_PLAIN_VALUE)
-    @Timed
     public ResponseEntity<?> changePassword(@RequestBody String password) {
         if (!PasswordValidator.validate(password)) {
             return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
@@ -156,7 +148,6 @@ public class AccountResource {
     @PostMapping(path = "/account/reset_password/init",
         consumes = MediaType.TEXT_PLAIN_VALUE,
         produces = MediaType.TEXT_PLAIN_VALUE)
-    @Timed
     public ResponseEntity<?> requestPasswordReset(@RequestBody String mail) {
         userService.requestPasswordReset(mail);
         return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
@@ -172,7 +163,6 @@ public class AccountResource {
     @Public
     @PostMapping(path = "/account/reset_password/finish",
         produces = MediaType.TEXT_PLAIN_VALUE)
-    @Timed
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordRepresentation keyAndPassword) {
         if (userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -180,5 +170,4 @@ public class AccountResource {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

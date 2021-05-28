@@ -60,7 +60,6 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
-        <metrics-spring.version>3.1.3</metrics-spring.version>
         <node.version>v14.16.1</node.version>
         <!-- These remain empty unless the corresponding profile is active -->
         <profile.no-liquibase />

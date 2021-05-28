@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -34,7 +33,6 @@ import java.util.Map;
 
 @Service
 @Transactional
-@Timed
 public class DeliveryProcessService {
 
     public enum DeliveryTask {

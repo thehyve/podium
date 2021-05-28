@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.resource.InternalUserResource;
 import nl.thehyve.podium.common.security.SerialisedUser;
@@ -43,7 +42,6 @@ public class InternalUserServer implements InternalUserResource {
     private UserMapper userMapper;
 
     @Override
-    @Timed
     public ResponseEntity<UserRepresentation> getUser(
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid) {
         Optional<ManagedUserRepresentation> userOptional = userService.getUserByUuid(uuid);
@@ -54,7 +52,6 @@ public class InternalUserServer implements InternalUserResource {
     }
 
     @Override
-    @Timed
     public ResponseEntity<SerialisedUser> getAuthenticatedUserByLogin(@PathVariable("login") String login) {
         Optional<ManagedUserRepresentation> userOptional = userService.getUserWithAuthoritiesByLogin(login);
         if (!userOptional.isPresent()) {
@@ -66,5 +63,4 @@ public class InternalUserServer implements InternalUserResource {
                 user.getUuid(), user.getLogin(), user.getAuthorities(), user.getOrganisationAuthorities())
         );
     }
-
 }

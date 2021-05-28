@@ -13,7 +13,6 @@ package nl.thehyve.podium.service;
 /**
  * Created by bernd on 25/03/2017.
  */
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.UserRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
@@ -59,7 +58,6 @@ public class ElasticsearchIndexService {
     }
 
     @Async
-    @Timed
     public Future<String> reindexAll() {
         // Reindex Users -> SearchUsers
         reindexForClass(

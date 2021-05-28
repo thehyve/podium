@@ -1,6 +1,5 @@
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-@Timed
 public class DraftService {
 
     private final Logger log = LoggerFactory.getLogger(DraftService.class);

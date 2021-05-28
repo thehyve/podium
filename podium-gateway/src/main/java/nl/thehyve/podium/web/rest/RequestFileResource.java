@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
@@ -66,7 +65,6 @@ public class RequestFileResource {
     @PostMapping("/requests/{uuid}/files")
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestFileRepresentation> addFile(@RequestUuidParameter @PathVariable("uuid") UUID uuid,
                                           @RequestParam("file") MultipartFile file) throws ActionNotAllowed, IOException {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -92,7 +90,6 @@ public class RequestFileResource {
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
     @SecuredByRequestOrganisationReviewer
-    @Timed
     public ResponseEntity<InputStreamResource> downloadFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
                                           @PathVariable("fileuuid") UUID fileUuid) throws IOException{
         log.debug("REST request to download file {} for request {} ", fileUuid, requestUuid);
@@ -113,7 +110,6 @@ public class RequestFileResource {
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
     @SecuredByRequestOrganisationReviewer
-    @Timed
     public ResponseEntity<List<RequestFileRepresentation>> listFiles(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid) {
         log.debug("REST request to retrieve the list of files for request {} ", requestUuid);
         //Get list sorted by created date so the order shown on a request page is always the same.
@@ -132,7 +128,6 @@ public class RequestFileResource {
     @DeleteMapping("/requests/{uuid}/files/{fileuuid}")
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<Void> deleteFile(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
             @PathVariable("fileuuid") UUID fileUuid) throws IOException, ResourceNotFound {
         log.debug("REST request to delete file {} for request {} ", fileUuid, requestUuid);
@@ -152,7 +147,6 @@ public class RequestFileResource {
     @PutMapping("/requests/{uuid}/files/{fileuuid}/type")
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestFileRepresentation> setFileType(@RequestUuidParameter @PathVariable("uuid") UUID requestUuid,
                                                                  @PathVariable("fileuuid") UUID fileUuid,
                                                                  @RequestBody RequestFileRepresentation requestFileRepresentation) {

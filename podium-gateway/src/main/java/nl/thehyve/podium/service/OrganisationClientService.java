@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import feign.FeignException;
 import nl.thehyve.podium.client.InternalRoleClient;
 import nl.thehyve.podium.client.OrganisationClient;
@@ -37,7 +36,6 @@ public class OrganisationClientService {
     @Autowired
     InternalRoleClient internalRoleClient;
 
-    @Timed
     public List<OrganisationRepresentation> findAllOrganisations() throws URISyntaxException, FeignException {
         log.debug("Fetching all organisations through Feign ...");
         ResponseEntity<List<OrganisationRepresentation>> response = organisationClient.getAllOrganisations();
@@ -49,7 +47,6 @@ public class OrganisationClientService {
         }
     }
 
-    @Timed
     public OrganisationRepresentation findOrganisationByUuid(UUID organisationUuid) throws FeignException {
         log.debug("Fetching organisation through Feign ...");
         ResponseEntity<OrganisationRepresentation> response = organisationClient.getOrganisation(organisationUuid);
@@ -63,14 +60,12 @@ public class OrganisationClientService {
         }
     }
 
-    @Timed
     @Cacheable("remoteOrganisations")
     public OrganisationRepresentation findOrganisationByUuidCached(UUID organisationUuid) throws FeignException {
         log.debug("Fetching organisation through Feign ...");
         return findOrganisationByUuid(organisationUuid);
     }
 
-    @Timed
     public List<UserRepresentation> findUsersByRole(UUID organisationUuid, String authority) {
         log.debug("Fetching organisation users through Feign ...");
         ResponseEntity<List<UserRepresentation>> response = internalRoleClient.getOrganisationRoleUsers(organisationUuid, authority);

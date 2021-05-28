@@ -14,7 +14,6 @@ package nl.thehyve.podium.web.rest;
  * Created by bernd on 25/03/2017.
  */
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.service.SecurityService;
@@ -54,7 +53,6 @@ public class ElasticsearchIndexResource {
     @SecuredByAuthority({ AuthorityConstants.PODIUM_ADMIN })
     @GetMapping(value = "/elasticsearch/index",
         produces = MediaType.TEXT_PLAIN_VALUE)
-    @Timed
     public ResponseEntity<Void> reindexAll() throws URISyntaxException {
         log.info("REST request to reindex Elasticsearch by user : {}", SecurityService.getCurrentUserLogin());
         elasticsearchIndexService.reindexAll();

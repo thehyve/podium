@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;
@@ -46,7 +45,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-@Timed
 public class RequestService {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
