@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.cache.CacheManager;
@@ -30,7 +29,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.*;
 
 import javax.annotation.PreDestroy;
 
@@ -93,7 +92,7 @@ public class CacheConfiguration {
             log.debug("Configuring Hazelcast clustering for instanceId: {}", serviceId);
 
             // In development, everything goes through 127.0.0.1, with a different port
-            if (env.acceptsProfiles(PodiumConstants.SPRING_PROFILE_DEVELOPMENT)) {
+            if (env.acceptsProfiles(Profiles.of(PodiumConstants.SPRING_PROFILE_DEVELOPMENT))) {
                 log.debug("Application is running with the \"dev\" profile, Hazelcast " +
                         "cluster will only work with localhost instances");
 

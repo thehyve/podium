@@ -54,7 +54,7 @@ spring:
     mail:
         host: localhost
     thymeleaf:
-        mode: XHTML
+        mode: HTML
     liquibase:
         contexts: test
 

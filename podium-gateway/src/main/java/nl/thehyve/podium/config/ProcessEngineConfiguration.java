@@ -7,15 +7,21 @@
 
 package nl.thehyve.podium.config;
 
-import org.flowable.engine.common.AbstractEngineConfiguration;
+import nl.thehyve.podium.common.config.*;
 import org.flowable.spring.SpringProcessEngineConfiguration;
-import org.flowable.spring.boot.ProcessEngineConfigurationConfigurer;
+import org.flowable.spring.boot.*;
+import org.slf4j.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.boot.autoconfigure.liquibase.*;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ProcessEngineConfiguration implements ProcessEngineConfigurationConfigurer {
+@AutoConfigureAfter({LiquibaseConfiguration.class, LiquibaseAutoConfiguration.class})
+public class ProcessEngineConfiguration implements EngineConfigurationConfigurer<SpringProcessEngineConfiguration> {
+    private final Logger log = LoggerFactory.getLogger(ProcessEngineConfiguration.class);
     @Override
     public void configure(SpringProcessEngineConfiguration config) {
-        config.setDatabaseSchemaUpdate(AbstractEngineConfiguration.DB_SCHEMA_UPDATE_FALSE);
+        log.info("Configuring Process Engine Configuration ...");
+        config.setDatabaseSchemaUpdate("false");
     }
 }

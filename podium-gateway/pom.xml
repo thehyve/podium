@@ -54,7 +54,7 @@
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-hibernate52</artifactId>
+            <artifactId>hazelcast-hibernate53</artifactId>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
@@ -211,17 +211,8 @@
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
-            <artifactId>flowable-spring-boot-starter-basic</artifactId>
+            <artifactId>flowable-spring-boot-starter-process</artifactId>
             <version>${flowable.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-envers</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>

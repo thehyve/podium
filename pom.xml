@@ -40,7 +40,7 @@
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
         <commons-io.version>2.5</commons-io.version>
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
-        <flowable.version>6.2.1</flowable.version>
+        <flowable.version>6.6.0</flowable.version>
         <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <javassist.version>3.28.0-GA</javassist.version>
@@ -72,9 +72,7 @@
 
         <!-- Spring properties -->
         <spring-cloud.version>Hoxton.SR11</spring-cloud.version>
-        <!-- <spring-security.version>5.0.0.RELEASE</spring-security.version> -->
         <spring-security-oauth.version>2.2.6.RELEASE</spring-security-oauth.version>
-        <!-- <spring-data-elasticsearch.version>3.2.6.RELEASE</spring-data-elasticsearch.version> -->
         <yarn.version>v1.22.4</yarn.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <javax-servlet-api.version>3.1.0</javax-servlet-api.version>

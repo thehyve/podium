@@ -71,12 +71,14 @@ spring:
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    liquibase:
+        enabled: true
     main:
         allow-bean-definition-overriding: true
     messages:
         basename: i18n/messages
     thymeleaf:
-        mode: XHTML
+        mode: HTML
     security:
         client-authorization:
             access-token-uri: http://podiumuaa/oauth/token
