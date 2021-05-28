@@ -71,6 +71,8 @@ server:
 # ===================================================================
 
 podium:
+    registry:
+        password: admin
     cache: # Hibernate 2nd level cache, used by CacheConfiguration
         hazelcast:
             timeToLiveSeconds: 3600

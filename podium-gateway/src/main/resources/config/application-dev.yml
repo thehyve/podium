@@ -81,6 +81,8 @@ server:
 # ===================================================================
 
 podium:
+    registry:
+        password: admin
     gateway:
         rate-limiting: # Read the documentation in the GatewayConfiguration class before enabling.
             enabled: false
