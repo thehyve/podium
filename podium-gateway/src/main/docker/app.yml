@@ -26,17 +26,6 @@ services:
         extends:
             file: postgresql.yml
             service: podiumgateway-postgresql
-    # Uncomment to have Cassandra working with the gateway
-    # podiumgateway-cassandra:
-    #     extends:
-    #         file: cassandra-cluster.yml
-    #         service: podiumgateway-cassandra
-    # podiumgateway-cassandra-migration:
-    #     extends:
-    #         file: cassandra-migration.yml
-    #         service: podiumgateway-cassandra-migration
-    #     environment:
-    #         - CREATE_KEYSPACE_SCRIPT=create-keyspace-prod.cql
     podiumgateway-elasticsearch:
         extends:
             file: elasticsearch.yml
