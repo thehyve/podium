@@ -31,6 +31,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaaDev
+        hikari:
+            jdbc-url: ${spring.datasource.url}
         name: podiumUaa
         username: podiumUser
         password: podiumUser

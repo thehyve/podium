@@ -26,6 +26,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         name: podiumUaa
+        hikari:
+            jdbc-url: ${spring.datasource.url}
 #        username: podiumUser
 #        password: podiumUser
     jpa:
