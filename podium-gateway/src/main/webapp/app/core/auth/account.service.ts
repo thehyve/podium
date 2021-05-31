@@ -27,7 +27,7 @@ export class AccountService {
         private config: ApplicationConfigService,
         private http: HttpClient,
         private stateStorageService: StateStorageService,
-        private router: Router,
+        private router: Router
     ) {}
 
     authenticate(identity: Account | null): void {
@@ -62,7 +62,7 @@ export class AccountService {
                 tap((account: Account | null) => {
                     this.authenticate(account);
                     if (account) {
-                        this.navigateToStoredUrl();
+                        this.redirectUser();
                     }
                 }),
                 shareReplay()
@@ -92,14 +92,43 @@ export class AccountService {
         return this.http.get<Account>(url);
     }
 
-    private navigateToStoredUrl(): void {
+    private redirectUser(): void {
+        // If login is successful:
+        //   if previousState is set: go to stored previousState and clear previousState;
+        //   otherwise, navigate to default page for the user role.
         // previousState can be set in the authExpiredInterceptor and in the userRouteAccessService
-        // if login is successful, go to stored previousState and clear previousState
         const previousUrl = this.stateStorageService.getUrl();
         if (previousUrl) {
             this.stateStorageService.clearUrl();
-            this.router.navigateByUrl(previousUrl);
+            this.router.navigateByUrl(previousUrl).then();
+        } else {
+            this.redirectToDefaultPage();
         }
+    }
+
+    redirectToDefaultPage() {
+        Promise.all([
+            this.hasAuthority('ROLE_PODIUM_ADMIN'),
+            this.hasAuthority('ROLE_BBMRI_ADMIN'),
+            this.hasAuthority('ROLE_ORGANISATION_ADMIN'),
+            this.hasAuthority('ROLE_ORGANISATION_COORDINATOR'),
+            this.hasAuthority('ROLE_REVIEWER'),
+            this.hasAuthority('ROLE_RESEARCHER')
+        ]).then(res => {
+            if (res[0] || res[1]) {
+                this.router.navigate(['/admin/user-management']);
+            } else if (res[2]) {
+                this.router.navigate(['/organisation/management']);
+            } else if (res[3]) {
+                this.router.navigate(['/requests/my-organisations']);
+            } else if (res[4]) {
+                this.router.navigate(['/requests/my-reviews']);
+            } else if (res[5]) {
+                this.router.navigate(['/requests/my-requests']);
+            } else {
+                this.router.navigate(['/']);
+            }
+        });
     }
 
     save(account: any): Observable<any> {
