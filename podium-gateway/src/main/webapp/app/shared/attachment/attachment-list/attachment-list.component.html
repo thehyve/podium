@@ -19,7 +19,7 @@
                         (change)="onAttachmentTypeChange(attachment, attachmentType.value)"
                         *ngIf="canEdit(attachment)">
                     <option *ngFor="let attachmentType of attachmentTypes" value="{{attachmentType.value}}"
-                            [translate]="'attachments.option.' + attachmentType.label">
+                            [innerHTML]="'attachments.option.' + attachmentType.label | translate">
                     </option>
                 </select>
                 <span *ngIf="!canEdit(attachment)" [translate]="'attachments.option.' + attachment.requestFileType"></span>
