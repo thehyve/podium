@@ -67,7 +67,9 @@
                     <span>Remember me</span>
                 </label>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="loginForm.invalid">
+                Sign in
+            </button>
             <hr>
             <a class="btn btn-secondary btn-block" routerLink="/register">Register a new account</a>
             <br>
