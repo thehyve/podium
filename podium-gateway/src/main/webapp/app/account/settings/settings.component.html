@@ -17,7 +17,12 @@
 
             <div class="alert alert-success"
                 *ngIf="success"
-                [translate]="'settings.messages.success'">
+                [innerHTML]="'settings.messages.success' | translate">
+            </div>
+
+            <div class="alert alert-danger"
+                 *ngIf="error"
+                 [innerHTML]="'settings.messages.error.fail' | translate">
             </div>
 
             <pdm-alert-error></pdm-alert-error>
@@ -104,8 +109,21 @@
 
                 <!--Institute-->
                 <div class="form-group">
-                    <label  class="form-control-label">Institute</label>
-                    <div class="form-control-static">{{settingsAccount.institute}}</div>
+                    <label class="form-control-label"for="institute">Institute</label>
+                    <input type="text" class="form-control" [(ngModel)]="settingsAccount.institute" id="institute"
+                           #institute="ngModel" name="institute" required minlength="1" maxlength="150"
+                           placeholder="{{'global.form.institute.placeholder' | translate}}">
+                    <div *ngIf="institute.dirty && institute.invalid">
+                        <small class="form-text text-danger" *ngIf="institute.errors.required">
+                            Your institute is required.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="institute.errors.minlength">
+                            Your institute is required to be at least 1 character.
+                        </small>
+                        <small class="form-text text-danger" *ngIf="institute.errors.maxlength">
+                            Your institute cannot be longer than 150 characters.
+                        </small>
+                    </div>
                 </div>
 
                 <!--Department-->

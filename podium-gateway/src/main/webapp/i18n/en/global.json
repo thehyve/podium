@@ -108,6 +108,7 @@
                     "required": "Your password is required.",
                     "minlength": "Your password is required to be at least 8 characters.",
                     "maxlength": "Your password cannot be longer than 1000 characters.",
+                    "requirements": "Your password must be at least 8 characters length, containing alphanumeric and non-alphanumeric characters.",
                     "strength": "Password strength:"
                 },
                 "confirmpassword": {
