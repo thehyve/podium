@@ -287,11 +287,13 @@
                         *ngIf="registerForm.get('password')!.invalid && (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)"
                     >
                         <small class="form-text text-danger"
+                            *ngIf="registerForm.get('password')?.errors?.required"
                             [translate]="'global.messages.validate.newpassword.required'">
                         </small>
 
-                        <small class="form-text text-danger" *ngIf="registerForm.get('password')?.errors?.minlength">
-                        Your password is required to be at least 4 characters.
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('password')?.errors?.minlength"
+                            [translate]="'global.messages.validate.newpassword.minlength'">
                         </small>
 
                         <small class="form-text text-danger"
