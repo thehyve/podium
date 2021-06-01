@@ -253,11 +253,9 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         let modalRef = this.modalService.open(RequestUpdateStatusDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.statusUpdateAction = action;
-        modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
+        modalRef.result.then(() => {
             this.isUpdating = false;
-        }, (reason) => {
-            console.log(`Dismissed ${reason}`);
+        }, () => {
             this.isUpdating = false;
         });
     }
@@ -272,11 +270,9 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         let modalRef = this.modalService.open(RequestFinalizeDialogComponent, {size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.request = request;
         modalRef.componentInstance.deliveries = deliveries;
-        modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
+        modalRef.result.then(() => {
             this.isUpdating = false;
-        }, (reason) => {
-            console.log(`Dismissed ${reason}`);
+        }, () => {
             this.isUpdating = false;
         });
     }
@@ -351,5 +347,4 @@ export class RequestDetailComponent implements OnInit, OnDestroy {
         this.isUpdating = false;
         this.alertService.error(error.error, error.message, null);
     }
-
 }

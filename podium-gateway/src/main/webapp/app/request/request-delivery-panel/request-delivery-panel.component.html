@@ -46,27 +46,28 @@
                     <span>{{ getNotes(delivery)?.description }}</span>
                 </td>
                 <td>
-                    <div class="btn-group pull-right" dropdown
+                    <div class="btn-group pull-right"
                          *ngIf="isActionable(delivery)">
                         <button type="button" class="btn btn-outline-primary test-delivery-action-btn"
                                 (click)="performAction(primaryStateOptions[delivery.status][delivery.type].action, delivery)">
                             {{ primaryStateOptions[delivery.status][delivery.type].label }}
                         </button>
-                        <button type="button" dropdownToggle
-                                *ngIf="!isOnlyRequester()"
-                                [ngClass]="'test-dropdown-toggle-' + delivery.type" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split">
-                            <span class="caret"></span>
-                            <span class="sr-only">Delivery actions</span>
-                        </button>
-                        <ul *dropdownMenu [ngClass]="'test-dropdown-menu-' + delivery.type" class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li role="menuitem"
-                                *ngFor="let option of secondaryStateOptions[delivery.status][delivery.type]">
-                                <a href="javascript:void(0);" class="dropdown-item"
-                                   (click)="performAction(option.action, delivery)">
+                        <div class="btn-group" ngbDropdown role="group" display="dynamic" placement="bottom-right">
+                            <button class="btn btn-outline-primary dropdown-toggle-split"
+                                    ngbDropdownToggle
+                                    *ngIf="!isOnlyRequester()"
+                                    [ngClass]="'test-dropdown-toggle-' + delivery.type">
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right"
+                                 ngbDropdownMenu
+                                 [ngClass]="'test-dropdown-menu-' + delivery.type">
+                                <a ngbDropdownItem
+                                        *ngFor="let option of secondaryStateOptions[delivery.status][delivery.type]"
+                                        (click)="performAction(option.action, delivery)">
                                     {{ option.label }}
                                 </a>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </td>
             </tr>
