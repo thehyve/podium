@@ -21,7 +21,7 @@
                         <span [translate]="'request.toolbar.saveDraft'"></span>
                     </button>
                     <button type="submit" class="btn btn-success" id="submit-draft-btn"
-                            [disabled]="!canSubmitDraft()" (click)="submitDraft()">
+                            [disabled]="!canSubmit()" (click)="submitDraft()">
                         <span [translate]="'request.toolbar.submit'"></span>
                     </button>
                 </div>
@@ -58,7 +58,7 @@
                                 <span [translate]="'request.toolbar.save'"></span>
                             </button>
                             <button type="submit" class="btn btn-success" id="submit-request-btn"
-                                    [disabled]="!form.form.valid" (click)="submitRequest()">
+                                    [disabled]="!canSubmit()" (click)="submitRequest()">
                                 <span [translate]="'request.toolbar.saveAndSubmit'"></span>
                             </button>
                         </div>

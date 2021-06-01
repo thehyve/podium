@@ -118,7 +118,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         return this.checks.validation && this.request.hasAttachmentsTypes;
     }
 
-    canSubmitDraft() {
+    canSubmit() {
         return this.form.form.valid && this.request.hasAttachmentsTypes;
     }
 
