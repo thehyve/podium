@@ -189,7 +189,7 @@
                 <!--Institute-->
                 <div class="form-group">
                     <label  class="form-control-label" for="institute" >Institute</label>
-                    <input 
+                    <input
                         type="text"
                         class="form-control"
                         id="institute"
@@ -217,7 +217,7 @@
                 <!--Department-->
                 <div class="form-group">
                     <label  class="form-control-label" for="department" >Department</label>
-                    <input 
+                    <input
                         type="text"
                         class="form-control"
                         id="department"
@@ -246,7 +246,7 @@
                 <!--Function (Job Title)-->
                 <div class="form-group">
                     <label  class="form-control-label" for="jobTitle" >Function</label>
-                    <input 
+                    <input
                         type="text"
                         class="form-control"
                         id="jobTitle"
@@ -280,7 +280,7 @@
                 </div>
 
                 <br>
-                <h3>Create Password</h3>
+                <h3>Create password</h3>
 
                 <!--Password-->
                 <div class="form-group">
@@ -296,8 +296,8 @@
                         *ngIf="registerForm.get('password')!.invalid && (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)"
                     >
                         <small class="form-text text-danger"
-                            *ngIf="registerForm.get('password')?.errors?.required"
-                            [translate]="'global.messages.validate.newpassword.required'">
+                            *ngIf="registerForm.get('password')?.errors?.maxlength"
+                            [translate]="'global.messages.validate.newpassword.maxlength'">
                         </small>
 
                         <small class="form-text text-danger"
