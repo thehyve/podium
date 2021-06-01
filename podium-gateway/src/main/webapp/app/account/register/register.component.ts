@@ -35,21 +35,20 @@ export class RegisterComponent implements AfterViewInit {
         login: [
             '',
             [
-                Validators.required,
                 Validators.minLength(1),
                 Validators.maxLength(50),
                 Validators.pattern('^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$'),
             ],
         ],
-        firstName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-        lastName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-        email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(50)]],
-        confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(50)]],
-        telephone: ['', [Validators.required, Validators.maxLength(15), Validators.pattern('^[0-9]+$')]],
-        institute: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]],
-        department: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]],
-        jobTitle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(150)]],
+        firstName: ['', [Validators.minLength(1), Validators.maxLength(50)]],
+        lastName: ['', [Validators.minLength(1), Validators.maxLength(50)]],
+        email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+        password: ['', [Validators.minLength(8), Validators.maxLength(1000)]],
+        confirmPassword: ['', [Validators.minLength(8), Validators.maxLength(1000)]],
+        telephone: ['', [Validators.maxLength(15), Validators.pattern('^[0-9]+$')]],
+        institute: ['', [Validators.minLength(1), Validators.maxLength(150)]],
+        department: ['', [Validators.minLength(1), Validators.maxLength(150)]],
+        jobTitle: ['', [Validators.minLength(1), Validators.maxLength(150)]],
     });
 
     constructor(
@@ -94,6 +93,10 @@ export class RegisterComponent implements AfterViewInit {
                 (error) => this.processError(error)
             );
         }
+    }
+
+    get submitDisabled() {
+        return this.registerForm.invalid || !this.specialism;
     }
 
     public processSuccess() {

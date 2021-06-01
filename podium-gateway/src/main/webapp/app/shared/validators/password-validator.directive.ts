@@ -38,7 +38,7 @@ function validatePasswordFactory(): ValidatorFn {
 }
 
 @Directive({
-    selector: '[pdmPasswordValidator][ngModel]',
+    selector: '[pdmPasswordValidator]',
     providers: [
         {provide: NG_VALIDATORS, useExisting: PasswordValidatorDirective, multi: true}
     ]
