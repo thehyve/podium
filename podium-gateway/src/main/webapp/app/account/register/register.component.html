@@ -301,16 +301,6 @@
                         </small>
 
                         <small class="form-text text-danger"
-                            *ngIf="registerForm.get('password')?.errors?.minlength"
-                            [translate]="'global.messages.validate.newpassword.minlength'">
-                        </small>
-
-                        <small class="form-text text-danger"
-                            *ngIf="registerForm.get('password')?.errors?.maxlength"
-                            [translate]="'global.messages.validate.newpassword.maxlength'">
-                        </small>
-
-                        <small class="form-text text-danger"
                             *ngIf="registerForm.get('password')?.errors?.passwordValidator"
                             [translate]="'global.messages.validate.newpassword.requirements'">
                         </small>
@@ -324,6 +314,7 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                         placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
                         formControlName="confirmPassword"
+                        [pdmPasswordMatches]="registerForm.get('password')"
                         required
                     />
 
@@ -335,6 +326,11 @@
                     >
                         <small class="form-text text-danger" *ngIf="registerForm.get('confirmPassword')?.errors?.required"
                             [translate]="'global.messages.validate.confirmpassword.required'">
+                        </small>
+
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('confirmPassword')?.errors?.pdmPasswordMatches"
+                            [translate]="'global.messages.validate.confirmpassword.shouldMatch'">
                         </small>
                     </div>
                 </div>
