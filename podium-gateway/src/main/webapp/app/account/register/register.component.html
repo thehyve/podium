@@ -75,6 +75,7 @@
                         id="firstName" name="firstName"
                         placeholder="{{'global.form.firstName.placeholder' | translate}}"
                         formControlName="firstName"
+                        required
                     />
                     <div *ngIf="registerForm.get('firstName')!.invalid && (registerForm.get('firstName')!.dirty || registerForm.get('firstName')!.touched)">
                         <small class="form-text text-danger"
@@ -101,6 +102,7 @@
                         id="lastName" name="lastName"
                         placeholder="{{'global.form.lastName.placeholder' | translate}}"
                         formControlName="lastName"
+                        required
                     />
                     <div *ngIf="registerForm.get('lastName')!.invalid && (registerForm.get('lastName')!.dirty || registerForm.get('lastName')!.touched)">
                         <small class="form-text text-danger"
@@ -128,6 +130,7 @@
                         name="email"
                         placeholder="Your email"
                         formControlName="email"
+                        required
                     />
 
                     <div *ngIf="registerForm.get('email')!.invalid && (registerForm.get('email')!.dirty || registerForm.get('email')!.touched)">
@@ -136,12 +139,8 @@
                             [translate]="'global.messages.validate.email.required'">
                         </small>
                         <small class="form-text text-danger"
-                            *ngIf="registerForm.get('email')?.errors?.email"
+                            *ngIf="registerForm.get('email')?.errors?.email || registerForm.get('email')?.errors?.minlength"
                             [translate]="'global.messages.validate.email.invalid'">
-                        </small>
-                        <small class="form-text text-danger"
-                            *ngIf="registerForm.get('email')?.errors?.minlength"
-                            [translate]="'global.messages.validate.email.minlength'">
                         </small>
                         <small class="form-text text-danger"
                             *ngIf="registerForm.get('email')?.errors?.maxlength"
@@ -162,6 +161,7 @@
                         name="telephone"
                         formControlName="telephone"
                         placeholder="{{'global.form.telephone.placeholder' | translate}}"
+                        required
                     />
                     <div *ngIf="registerForm.get('telephone')!.invalid && (registerForm.get('telephone')!.dirty || registerForm.get('telephone')!.touched)">
                         <small class="form-text text-danger"
@@ -185,13 +185,14 @@
                 <!--Institute-->
                 <div class="form-group">
                     <label  class="form-control-label" for="institute" >Institute</label>
-                    <input 
+                    <input
                         type="text"
                         class="form-control"
                         id="institute"
                         name="institute"
                         formControlName="institute"
                         placeholder="{{'global.form.institute.placeholder' | translate}}"
+                        required
                     />
                     <div *ngIf="registerForm.get('institute')!.invalid && (registerForm.get('institute')!.dirty || registerForm.get('institute')!.touched)">
                         <small class="form-text text-danger"
@@ -212,13 +213,14 @@
                 <!--Department-->
                 <div class="form-group">
                     <label  class="form-control-label" for="department" >Department</label>
-                    <input 
+                    <input
                         type="text"
                         class="form-control"
                         id="department"
                         name="department"
                         formControlName="department"
                         placeholder="{{'global.form.department.placeholder' | translate}}"
+                        required
                     />
                     <div *ngIf="registerForm.get('department')!.invalid && (registerForm.get('department')!.dirty || registerForm.get('department')!.touched)">
                         <small class="form-text text-danger"
@@ -240,13 +242,14 @@
                 <!--Function (Job Title)-->
                 <div class="form-group">
                     <label  class="form-control-label" for="jobTitle" >Function</label>
-                    <input 
+                    <input
                         type="text"
                         class="form-control"
                         id="jobTitle"
                         name="jobTitle"
                         formControlName="jobTitle"
                         placeholder="{{'global.form.jobTitle.placeholder' | translate}}"
+                        required
                     />
                     <div *ngIf="registerForm.get('jobTitle')!.invalid && (registerForm.get('jobTitle')!.dirty || registerForm.get('jobTitle')!.touched)">
                         <small class="form-text text-danger"
@@ -273,7 +276,7 @@
                 </div>
 
                 <br>
-                <h3>Create Password</h3>
+                <h3>Create password</h3>
 
                 <!--Password-->
                 <div class="form-group">
@@ -281,22 +284,21 @@
                     <input type="password" class="form-control" id="password" name="password"
                         placeholder="{{'global.form.newpassword.placeholder' | translate}}"
                         formControlName="password"
+                        required
+                        pdmPasswordValidator
                     />
 
                     <div
                         *ngIf="registerForm.get('password')!.invalid && (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)"
                     >
                         <small class="form-text text-danger"
-                            [translate]="'global.messages.validate.newpassword.required'">
-                        </small>
-
-                        <small class="form-text text-danger" *ngIf="registerForm.get('password')?.errors?.minlength">
-                        Your password is required to be at least 4 characters.
+                            *ngIf="registerForm.get('password')?.errors?.maxlength"
+                            [translate]="'global.messages.validate.newpassword.maxlength'">
                         </small>
 
                         <small class="form-text text-danger"
-                            *ngIf="registerForm.get('password')?.errors?.maxlength"
-                            [translate]="'global.messages.validate.newpassword.maxlength'">
+                            *ngIf="registerForm.get('password')?.errors?.passwordValidator"
+                            [translate]="'global.messages.validate.newpassword.requirements'">
                         </small>
                     </div>
                     <pdm-password-strength-bar [passwordToCheck]="registerForm.get('password')!.value"></pdm-password-strength-bar>
@@ -308,6 +310,8 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
                         placeholder="{{'global.form.confirmpassword.placeholder' | translate}}"
                         formControlName="confirmPassword"
+                        [pdmPasswordMatches]="registerForm.get('password')"
+                        required
                     />
 
                     <div
@@ -319,10 +323,16 @@
                         <small class="form-text text-danger" *ngIf="registerForm.get('confirmPassword')?.errors?.required"
                             [translate]="'global.messages.validate.confirmpassword.required'">
                         </small>
+
+                        <small class="form-text text-danger"
+                            *ngIf="registerForm.get('confirmPassword')?.errors?.pdmPasswordMatches"
+                            [translate]="'global.messages.validate.confirmpassword.shouldMatch'">
+                        </small>
                     </div>
                 </div>
 
-                <button type="submit" [disabled]="registerForm.invalid"
+                <button type="submit"
+                    [disabled]="submitDisabled"
                     class="btn btn-primary"
                     [translate]="'register.form.button'">
                 </button>

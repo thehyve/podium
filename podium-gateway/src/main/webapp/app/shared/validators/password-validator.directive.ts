@@ -17,8 +17,8 @@ function validatePasswordFactory(): ValidatorFn {
 
         // (                        # Start of group
         //  (?=.*\d)                # must contains one digit from 0-9
-        //  (?=.*[@A-Za-z])         # must contains one lowercase characters
-        //  (?=.*[^a-zA-Z0-9 ])     # must contains one special symbols in the list "@#$%"
+        //  (?=.*[@A-Za-z])         # must contains one alphabetical character
+        //  (?=.*[^a-zA-Z0-9 ])     # must contains one special symbol
         //  .                       # match anything with previous condition checking
         //  {8}                     # length at least 8 characters
         // )                        # End of group
@@ -38,7 +38,7 @@ function validatePasswordFactory(): ValidatorFn {
 }
 
 @Directive({
-    selector: '[pdmPasswordValidator][ngModel]',
+    selector: '[pdmPasswordValidator]',
     providers: [
         {provide: NG_VALIDATORS, useExisting: PasswordValidatorDirective, multi: true}
     ]

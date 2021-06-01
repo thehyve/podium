@@ -163,7 +163,7 @@ public class AccountResource {
     @Public
     @PostMapping(path = "/account/reset_password/finish",
         produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordRepresentation keyAndPassword) {
+    public ResponseEntity<String> finishPasswordReset(@Valid @RequestBody KeyAndPasswordRepresentation keyAndPassword) {
         if (userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
