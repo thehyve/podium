@@ -85,28 +85,23 @@ public class ElasticsearchIndexService {
         Class<S> searchEntityClass, ElasticsearchRepository<S, ID> elasticsearchRepository,
         Function<List<T>, List<S>> mapperFunction
     ) {
-        elasticsearchTemplate.deleteIndex(searchEntityClass);
-        try {
-            elasticsearchTemplate.createIndex(searchEntityClass);
-        } catch (ResourceAlreadyExistsException e) {
-            // Do nothing. Index was already concurrently recreated by some other service.
-        }
-
-        elasticsearchTemplate.putMapping(searchEntityClass);
+        IndexOperations indexOps = elasticsearchTemplate.indexOps(searchEntityClass);
+        indexOps.delete();
+        indexOps.create();
+        indexOps.putMapping(indexOps.createMapping(searchEntityClass));
         long count = jpaRepository.count();
         if (count > 0) {
             try {
                 // Fetch all entities using reflection
-                Method m = jpaRepository.getClass().getMethod("findAll");
+                Method m = jpaRepository.getClass().getMethod("findAllByDeletedIsFalse");
                 List<T> entities = (List<T>) m.invoke(jpaRepository);
 
                 List<S> searchEntities = mapperFunction.apply(entities);
                 elasticsearchRepository.saveAll(searchEntities);
             } catch (Exception e) {
-                log.error("Elasticsearch indexer error: {}", e);
+                log.error("Elasticsearch indexer error", e);
             }
         }
         log.info("Elasticsearch: Indexed {} rows for {}", count, entityClass.getSimpleName());
     }
-
 }

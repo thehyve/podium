@@ -406,7 +406,8 @@ public class UserService {
         }
         User user = userOptional.get();
         user.setDeleted(true);
-        save(user);
+        userRepository.save(user);
+        userSearchRepository.deleteById(user.getId());
         log.debug("Deleted User: {}", user);
     }
 
