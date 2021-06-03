@@ -8,24 +8,23 @@ import { Component, Input } from '@angular/core';
     template: ` <div>Showing {{ first }} - {{ second }} of {{ total }} items.</div> `,
 })
 export class ItemCountComponent {
-    /**
-     * @param params  Contains parameters for component:
-     *                    page          Current page number
-     *                    totalItems    Total number of items
-     *                    itemsPerPage  Number of items per page
-     */
-    @Input() set params(params: { page?: number; totalItems?: number; itemsPerPage?: number; }) {
-        if (params.page !== undefined && params.totalItems !== undefined && params.itemsPerPage !== undefined) {
-            this.first = (params.page - 1) * params.itemsPerPage === 0 ? 1 : (params.page - 1) * params.itemsPerPage + 1;
-            this.second = params.page * params.itemsPerPage < params.totalItems ? params.page * params.itemsPerPage : params.totalItems;
-        } else {
-            this.first = undefined;
-            this.second = undefined;
+    @Input() itemsPerPage?: number;
+    @Input() page?: number;
+    @Input() total?: number;
+
+    get first() {
+        let { itemsPerPage, page, total } = this;
+        if (page === undefined || total === undefined || itemsPerPage === undefined) {
+            return undefined;
         }
-        this.total = params.totalItems;
+        return (page - 1) * itemsPerPage === 0 ? 1 : (page - 1) * itemsPerPage + 1;
     }
 
-    first?: number;
-    second?: number;
-    total?: number;
+    get second() {
+        let { itemsPerPage, page, total } = this;
+        if (page === undefined || total === undefined || itemsPerPage === undefined) {
+            return undefined;
+        }
+        return page * itemsPerPage < total ? page * itemsPerPage : total;
+    }
 }
