@@ -81,8 +81,8 @@ export class PodiumLoginComponent implements OnInit, AfterViewInit {
                 this.userAccountLocked = false;
                 this.emailNotVerified = false;
                 this.accountNotVerified = false;
-                if (err && err._body) {
-                    let response =  JSON.parse(err._body);
+                if (err && err.error) {
+                    let response = err.error;
                     switch (response.error_description) {
                         case 'The user account is locked.':
                             this.userAccountLocked = true;
