@@ -15,6 +15,7 @@ import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Login } from '../../login/login.model';
+import { StateStorageService } from "./state-storage.service";
 
 @Injectable({ providedIn: 'root' })
 export class AuthServerProvider {
@@ -22,6 +23,7 @@ export class AuthServerProvider {
         private http: HttpClient,
         private $localStorage: LocalStorageService,
         private $sessionStorage: SessionStorageService,
+        private stateStorageService: StateStorageService,
         private applicationConfigService: ApplicationConfigService
     ) { }
 
@@ -54,6 +56,7 @@ export class AuthServerProvider {
 
     logout(): Observable<void> {
         return new Observable(observer => {
+            this.stateStorageService.clearUrl();
             this.$localStorage.clear('authenticationToken');
             this.$sessionStorage.clear('authenticationToken');
             observer.complete();
