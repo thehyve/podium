@@ -24,6 +24,7 @@ export class UserRouteAccessService implements CanActivate {
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+        this.stateStorageService.storeUrl(state.url);
         return this.accountService.identity().pipe(
             map(account => {
                 const authorities = route.data['authorities'];
@@ -40,7 +41,6 @@ export class UserRouteAccessService implements CanActivate {
                     return false;
                 }
 
-                this.stateStorageService.storeUrl(state.url);
                 this.router.navigate(['/']);
                 return false;
             })
