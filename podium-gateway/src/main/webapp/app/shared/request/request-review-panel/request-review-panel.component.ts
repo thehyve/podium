@@ -8,7 +8,7 @@
  *
  */
 
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output, OnDestroy } from '@angular/core';
 import { RequestReviewFeedback } from '../request-review-feedback';
 import { RequestReviewDecision } from '../request-review-decision';
 import { RequestService } from '../request.service';
@@ -16,10 +16,12 @@ import { RequestBase } from '../request-base';
 import { Subscription } from 'rxjs';
 import { RequestAccessService } from '../request-access.service';
 import { AccountService } from '../../../core/auth/account.service';
+import { RequestOverviewStatusOption } from '../request-status/request-status.constants';
 
 @Component({
     selector: 'pdm-request-review-panel',
-    templateUrl: './request-review-panel.component.html'
+    templateUrl: './request-review-panel.component.html',
+    styleUrls: ['request-review-panel.component.scss']
 })
 
 export class RequestReviewPanelComponent implements OnInit, OnDestroy {
@@ -29,6 +31,9 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
 
     @Input()
     request: RequestBase;
+
+    @Output() reviewAdviseApproved = new EventEmitter();
+    @Output() reviewAdviseRejected = new EventEmitter();
 
     private optionStyles = [
         {style: 'badge-success', advise: RequestReviewDecision.Approved},
@@ -41,10 +46,6 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
         private accountService: AccountService,
         private requestAccessService: RequestAccessService
     ) {
-        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
-            this.request = request;
-            this.setRequestReviewFeedback();
-        });
     }
 
     toggleAdviseStyle(advise: RequestReviewDecision): string {
@@ -55,6 +56,10 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.requestSubscription = this.requestService.onRequestUpdate.subscribe((request: RequestBase) => {
+            this.request = request;
+            this.setRequestReviewFeedback();
+        });
         this.setRequestReviewFeedback();
     }
 
@@ -69,17 +74,38 @@ export class RequestReviewPanelComponent implements OnInit, OnDestroy {
     }
 
     setRequestReviewFeedback() {
-        if (this.request.reviewRound) {
-            if (this.requestAccessService.isReviewerFor(this.request)) {
-                this.accountService.identity().subscribe((account) => {
-                    this.lastReviewFeedback = [
-                        this.requestService.getLastReviewFeedbackByUser(this.request, account)
-                    ];
-                });
-            } else {
-                this.lastReviewFeedback = this.request.reviewRound.reviewFeedback;
-            }
+        if (!this.request.reviewRound) {
+            return;
+        }
+        let isReviewer = this.requestAccessService.isReviewerFor(this.request);
+        let isCoordinator = this.requestAccessService.isCoordinatorFor(this.request);
+        if (isReviewer && !isCoordinator) {
+            this.accountService.identity().subscribe((account) => {
+                this.lastReviewFeedback = [
+                    this.requestService.getLastReviewFeedbackByUser(this.request, account)
+                ];
+            });
+        } else {
+            this.lastReviewFeedback = this.request.reviewRound.reviewFeedback;
         }
     }
-}
 
+    isReviewable(): boolean {
+        if (!this.request.reviewRound) {
+            return false;
+        }
+        let isInReview = RequestAccessService.isRequestStatus(this.request, RequestOverviewStatusOption.Review);
+        if (!isInReview) {
+            return false;
+        }
+        return this.requestAccessService.isReviewable(this.request.reviewRound.reviewFeedback);
+    }
+
+    reviewApproved() {
+        this.reviewAdviseApproved.emit(true);
+    }
+
+    reviewRejected() {
+        this.reviewAdviseRejected.emit(true);
+    }
+}

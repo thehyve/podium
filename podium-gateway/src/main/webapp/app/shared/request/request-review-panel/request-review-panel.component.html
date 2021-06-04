@@ -34,4 +34,18 @@
         </tr>
         </tbody>
     </table>
+
+
+    <!-- Reviewer actions -->
+    <div *ngIf="isReviewable()">
+        <!-- Review -->
+        <div class="review-actions">
+            <button type="button" class="btn btn-outline-danger" (click)="reviewRejected()">
+                <span [translate]="'request.toolbar.adviseReject'"></span>
+            </button>
+            <button type="button" class="btn btn-outline-success" (click)="reviewApproved()">
+                <span [translate]="'request.toolbar.adviseApprove'"></span>
+            </button>
+        </div>
+    </div>
 </div>

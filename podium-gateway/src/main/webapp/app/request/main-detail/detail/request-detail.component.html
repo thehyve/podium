@@ -108,9 +108,12 @@
                 </table>
             </div>
 
-            <pdm-request-review-panel [reviewRound]="request.reviewRound"
-                                      [request]="request"
-                                      *ngIf="showReviewPanel()">
+            <pdm-request-review-panel *ngIf="showReviewPanel()"
+                [request]="request"
+
+                (reviewAdviseApproved)="submitReview(RequestReviewDecision.Approved)"
+                (reviewAdviseRejected)="submitReview(RequestReviewDecision.Rejected)"
+            >
             </pdm-request-review-panel>
 
             <pdm-request-delivery-panel [request]="request" *ngIf="request && showDeliveryPanel()">
@@ -122,8 +125,6 @@
                 (rejectChange)="rejectRequest()"
                 (requireRevisionChange)="requireRequestRevision()"
                 (validateRequestChange)="validateRequest()"
-                (reviewAdviseApproved)="submitReview(RequestReviewDecision.Approved)"
-                (reviewAdviseRejected)="submitReview(RequestReviewDecision.Rejected)"
                 (closeRequestChange)="closeRequest()"
                 (approveRequestChange)="approveRequest()"
                 (startDeliveryChange)="startRequestDelivery()"
