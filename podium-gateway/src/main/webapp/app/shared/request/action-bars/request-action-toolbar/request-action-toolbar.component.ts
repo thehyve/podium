@@ -58,8 +58,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() submitRequestChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
-    @Output() reviewAdviseApproved = new EventEmitter();
-    @Output() reviewAdviseRejected = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
     @Output() closeRequestChange = new EventEmitter();
     @Output() finalizeRequestChange = new EventEmitter();
@@ -142,13 +140,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         return this.requestAccessService.isRequesterOf(this.request);
     }
 
-    isReviewable(): boolean {
-        if (!this.request.reviewRound) {
-            return false;
-        }
-        return this.requestAccessService.isReviewable(this.request.reviewRound.reviewFeedback);
-    }
-
     saveDraft() {
         this.saveDraftChange.emit(true);
     }
@@ -187,14 +178,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     submitRequest() {
         this.submitRequestChange.emit(true);
-    }
-
-    reviewApproved() {
-        this.reviewAdviseApproved.emit(true);
-    }
-
-    reviewRejected() {
-        this.reviewAdviseRejected.emit(true);
     }
 
     startDelivery() {

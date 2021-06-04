@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '../../core/util/alert.service';
 import { RequestBase } from '../../shared/request/request-base';
@@ -25,13 +25,13 @@ import { RequestOverviewStatusOption } from '../../shared/request/request-status
     encapsulation: ViewEncapsulation.None
 })
 
-export class RequestMainDetailComponent implements AfterViewInit {
+export class RequestMainDetailComponent implements OnInit {
 
     /**
      * Setup component as ViewChild to access methods inside child.
      * Used for review and method accessors in sibling components
      */
-    @ViewChild(RequestDetailComponent)
+    @ViewChild(RequestDetailComponent, { static: true })
     private requestDetail: RequestDetailComponent;
 
     public _request: RequestBase;
@@ -64,7 +64,7 @@ export class RequestMainDetailComponent implements AfterViewInit {
         return this._request;
     }
 
-    ngAfterViewInit() {
+    ngOnInit() {
         this.attachments = [];
         this.route.data
             .subscribe((data: { request: RequestBase }) => {

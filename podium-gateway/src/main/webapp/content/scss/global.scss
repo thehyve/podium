@@ -389,6 +389,15 @@ form {
             color: #99a1a7;
         }
 
+        &:disabled {
+            background-color: #dadada;
+            cursor: not-allowed;
+
+            &+span {
+                color: #dadada;
+                cursor: not-allowed;
+            }
+        }
     }
 
     .checkbox-group {
