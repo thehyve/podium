@@ -15,7 +15,6 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.OrganisationRepository;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +114,6 @@ public class OrganisationService {
             organisation.setRoles(roles);
         }
 
-        SearchOrganisation searchOrganisation = organisationMapper.organisationToSearchOrganisation(organisation);
         return organisation;
     }
 
