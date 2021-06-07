@@ -110,10 +110,12 @@ public class UserService {
         user.setActivationKeyDate(null);
         user = save(user);
 
-        UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
-        // Notify BBMRI admin
-        Collection<ManagedUserRepresentation> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
-        mailService.sendUserRegisteredEmail(administrators, userRepresentation);
+        if (!user.isAdminVerified()) {
+            UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
+            // Notify BBMRI admins (if the user was not created by an admin)
+            Collection<ManagedUserRepresentation> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
+            mailService.sendUserRegisteredEmail(administrators, userRepresentation);
+        }
 
         log.debug("Activated user: {}", user);
         return true;
@@ -161,8 +163,10 @@ public class UserService {
             SearchUser searchUser = userMapper.userToSearchUser(user);
             userSearchRepository.save(searchUser);
             log.debug("Activated user: {}", user);
+        }
 
-            // Notify BBMRI admin
+        if (!user.isAdminVerified()) {
+            // Notify BBMRI admins (if the user was not created by an admin)
             UserRepresentation userRepresentation = userMapper.userToUserDTO(user);
             Collection<ManagedUserRepresentation> administrators = this.getUsersByAuthority(AuthorityConstants.BBMRI_ADMIN);
             mailService.sendUserRegisteredEmail(administrators, userRepresentation);
