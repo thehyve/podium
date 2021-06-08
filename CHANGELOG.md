@@ -1,0 +1,13 @@
+# Changelog
+
+## [Unreleased - 1.0.4]
+- Angular updated from `4.4.7` to `11.2.5`;
+- Spring Boot updated from `1.5.22.RELEASE` to `2.3.11.RELEASE`;
+- Flowable updated from `6.0.0` to `6.6.0`;
+- Minimum Node.js version bumped to `14.16.1`;
+- Bugs fixed:
+  * User deletion no longer breaks the organisation permission view;
+  * Request details page shows all reviews for users with mixed reviewer+coordinator permissions;
+  * BBMRI admins no longer receive a request to validate a new user when the user was created by an admin;
+- JHipster Translate dropped in favor of Ngx-translate.
+  (Resolves [issue #300](https://github.com/thehyve/podium/issues/300))
