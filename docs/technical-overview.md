@@ -65,13 +65,13 @@ Liquibase is used to initialize/update PostgreSQL DB automatically.
 
 Spring profile, data sources, caching options and other configuration parameters are defined in yaml files included in project resources.
 
-Current Podium UAA version: 1.0.2; supported JDK version: 8.
+Current Podium UAA version: 1.0.4; supported JDK version: 8.
 
 
 ### Gateway Frontend
 
 Gateway Frontend is a user-facing Angular application.
-Supported NodeJS version: 8.12.0+.
+Supported NodeJS version: 14.16.1+.
 Internationalization is supported, but only English translations are present.
 
 #### General Pages
@@ -146,7 +146,7 @@ Liquibase is used to initialize/update PostgreSQL DB automatically.
 
 Spring profile, data sources, caching options and other configuration parameters are defined in yaml files included in project resources.
 
-Current Gateway Server version: 1.0.2; supported JDK version: 8.
+Current Gateway Server version: 1.0.4; supported JDK version: 8.
 
 
 ### Podium Common Package
