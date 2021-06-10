@@ -29,7 +29,9 @@ export class UserRouteAccessService implements CanActivate {
                 const authorities = route.data['authorities'];
 
                 if (!authorities || authorities.length === 0 || this.accountService.hasAnyAuthority(authorities)) {
-                    this.stateStorageService.storeUrl(state.url);
+                    if (route.data['rememberPage'] !== false) {
+                        this.stateStorageService.storeUrl(state.url);
+                    }
                     return true;
                 }
 
@@ -41,7 +43,9 @@ export class UserRouteAccessService implements CanActivate {
                     return false;
                 }
 
-                this.stateStorageService.storeUrl(state.url);
+                if (route.data['rememberPage'] !== false) {
+                    this.stateStorageService.storeUrl(state.url);
+                }
                 this.router.navigate(['/']);
                 return false;
             })
