@@ -17,7 +17,7 @@ export const passwordResetFinishRoute: Route = {
   data: {
     authorities: [],
     pageTitle: 'global.menu.account.password',
-    rememberPage: false,
+    rememberPage: false
   },
   canActivate: [UserRouteAccessService]
 };

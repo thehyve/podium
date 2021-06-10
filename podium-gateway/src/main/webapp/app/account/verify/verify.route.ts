@@ -16,7 +16,8 @@ export const verifyRoute: Route = {
   component: VerifyComponent,
   data: {
     authorities: [],
-    pageTitle: 'verify.title'
+    pageTitle: 'verify.title',
+    rememberPage: false
   },
   canActivate: [UserRouteAccessService]
 };
