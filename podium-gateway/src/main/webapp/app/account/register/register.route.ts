@@ -16,7 +16,8 @@ export const registerRoute: Route = {
   component: RegisterComponent,
   data: {
     authorities: [],
-    pageTitle: 'register.title'
+    pageTitle: 'register.title',
+    rememberPage: false
   },
   canActivate: [UserRouteAccessService]
 };
