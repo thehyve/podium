@@ -11,3 +11,12 @@
   * BBMRI admins no longer receive a request to validate a new user when the user was created by an admin;
 - JHipster Translate dropped in favor of Ngx-translate.
   (Resolves [issue #300](https://github.com/thehyve/podium/issues/300))
+
+## [1.0.2]
+Dependencies updates.
+
+## [1.0.1]
+Fix for issue [#279](https://github.com/thehyve/podium/issues/279).
+
+## [1.0.0]
+First official release.
