@@ -145,7 +145,7 @@ podium:
         default-include-pattern: /api/.*
         title: Podium Gateway API
         description: API documentation for the gateway component of the Podium request portal.
-        version: 1.0.4
+        version: 1.0.5
         terms-of-service-url:
         contact-name:
         contact-url: https://github.com/thehyve/podium
