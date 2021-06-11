@@ -10,22 +10,26 @@
 
 <form name="deleteForm" (ngSubmit)="confirmUnlock(user)">
     <div class="modal-header">
-        <h4 class="modal-title" jhiTranslate="entity.unlock.title">Confirm unlock operation</h4>
+        <h4 class="modal-title"
+            [translate]="'entity.unlock.title'">
+        </h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
     <div class="modal-body">
         <pdm-alert-error></pdm-alert-error>
-        <p jhiTranslate="userManagement.unlock.question" translateValues="{login: '{{user.login}}'}">Are you sure you want to unlock this User?</p>
+        <p [translate]="'userManagement.unlock.question'"
+            [translateParams]="{login: user.login}">
+        </p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="material-icons">cancel</span>&nbsp;
-            <span jhiTranslate="entity.action.cancel">Cancel</span>
+            <span [translate]="'entity.action.cancel'"></span>
         </button>
         <button type="submit" class="btn btn-danger">
             <span class="material-icons">lock_open</span>&nbsp;
-            <span jhiTranslate="entity.action.unlock">Unlock</span>
+            <span [translate]="'entity.action.unlock'"></span>
         </button>
     </div>
 </form>

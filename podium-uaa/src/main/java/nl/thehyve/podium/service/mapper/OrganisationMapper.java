@@ -12,7 +12,6 @@ package nl.thehyve.podium.service.mapper;
 
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.domain.Organisation;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.util.UuidMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,8 +26,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = { UuidMapper.class })
 public interface OrganisationMapper {
     OrganisationRepresentation organisationToOrganisationDTO(Organisation organisation);
-
-    List<OrganisationRepresentation> organisationsToOrganisationDTOs(List<Organisation> organisations);
 
     @Mappings({
         @Mapping(target = "uuid", ignore = true),
@@ -46,10 +43,4 @@ public interface OrganisationMapper {
         OrganisationRepresentation organisationRepresentation,
         @MappingTarget Organisation organisation
     );
-
-    List<Organisation> createOrganisationsFromOrganisationDTOs(List<OrganisationRepresentation> organisationRepresentations);
-
-    SearchOrganisation organisationToSearchOrganisation(Organisation organisation);
-
-    List<SearchOrganisation> organisationsToSearchOrganisations(List<Organisation> organisations);
 }

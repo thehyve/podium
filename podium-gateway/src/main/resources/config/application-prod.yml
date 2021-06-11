@@ -27,6 +27,8 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
+        hikari:
+            jdbc-url: ${spring.datasource.url}
         #        username: podiumUser
         #        password: podiumUser
     jpa:
@@ -49,10 +51,7 @@ spring:
             compression: LZ4
             keyspaceName: podiumGateway
             repositories:
-                enabled: false
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
+                type: NONE
     mail:
         host: localhost
         port: 25
@@ -60,9 +59,8 @@ spring:
         password:
     thymeleaf:
         cache: true
-
-liquibase:
-    contexts: prod
+    liquibase:
+        contexts: prod
 
 server:
     port: 8080
@@ -79,8 +77,6 @@ server:
 
 podium:
     gateway:
-        rate-limiting: # Warning! Read the documentation in the GatewayConfiguration class.
-            enabled: false
         authorized-microservices-endpoints: # Access Control Policy, if left empty for a route, all endpoints will be accessible
             app1: /api # recommended prod configuration
     http:
@@ -90,19 +86,6 @@ podium:
         hazelcast: # Hazelcast distributed cache
             time-to-live-seconds: 3600
             backup-count: 1
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: podiumGateway
-        prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false
@@ -112,14 +95,3 @@ podium:
         spectator-metrics: # Reports Spectator Circuit Breaker metrics in the logs
             enabled: false
             # edit spring.metrics.export.delay-millis to set report frequency
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-#
-# More documentation is available at:
-# https://podium.github.io/common-application-properties/
-# ===================================================================
-
-application:

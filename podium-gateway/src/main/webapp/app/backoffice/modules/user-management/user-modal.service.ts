@@ -9,9 +9,10 @@
  */
 import { Injectable, Component } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { User, UserService } from '../../../shared';
+import { User } from '../../../shared/user/user.model';
+import { UserService } from '../../../shared/user/user.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserModalService {
     private isOpen = false;
     constructor (
@@ -35,11 +36,9 @@ export class UserModalService {
     userModalRef(component: Component, user: User): NgbModalRef {
         let modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.user = user;
-        modalRef.result.then(result => {
-            console.log(`Closed with: ${result}`);
+        modalRef.result.then(() => {
             this.isOpen = false;
-        }, (reason) => {
-            console.log(`Dismissed ${reason}`);
+        }, () => {
             this.isOpen = false;
         });
         return modalRef;

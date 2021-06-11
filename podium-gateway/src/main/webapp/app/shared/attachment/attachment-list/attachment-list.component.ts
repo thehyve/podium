@@ -12,10 +12,12 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, S
 import { AttachmentService } from '../attachment.service';
 import { Attachment } from '../attachment.model';
 import { AttachmentTypes } from '../attachment.constants';
-import { Principal, User } from '../../';
+import { User } from '../../user/user.model';
+import { AccountService } from '../../../core/auth/account.service';
 import { FormatHelper } from '../../util/format-helper';
-import { Subscription } from 'rxjs/Rx';
-import { RequestAccessService, RequestBase } from '../../request';
+import { Subscription } from 'rxjs';
+import { RequestAccessService } from '../../request/request-access.service';
+import { RequestBase } from '../../request/request-base';
 
 const ATTACHMENT_TYPES = [
     {label: AttachmentTypes[AttachmentTypes.NONE], value: AttachmentTypes.NONE},
@@ -49,7 +51,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
         return attachment.owner && (user.uuid === attachment.owner.uuid);
     }
 
-    constructor(private principal: Principal,
+    constructor(private accountService: AccountService,
                 private attachmentService: AttachmentService,
                 private requestAccessService: RequestAccessService) {
         this.attachmentTypes = ATTACHMENT_TYPES;
@@ -59,7 +61,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.accountSubscription = this.principal.getAuthenticationState()
+        this.accountSubscription = this.accountService.getAuthenticationState()
             .subscribe(
                 (identity) => this.account = identity
             );
@@ -94,7 +96,7 @@ export class AttachmentListComponent implements OnChanges, OnInit, OnDestroy {
     onAttachmentTypeChange(attachment: Attachment, newType: AttachmentTypes) {
         attachment.requestFileType = newType;
         this.attachmentService.setAttachmentType(attachment).subscribe(
-            response => {
+            () => {
                 this.onFileTypeChange.emit(attachment);
             }
         );

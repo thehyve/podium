@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.annotations.*;
@@ -52,7 +51,6 @@ public class RequestRevisionResource {
      */
     @PutMapping("/requests")
     @SecuredByRequestOwner
-    @Timed
     public ResponseEntity<RequestRepresentation> updateRevisionRequest(
         @RequestParameter @RequestBody RequestRepresentation request) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
@@ -70,7 +68,6 @@ public class RequestRevisionResource {
      */
     @GetMapping("/requests/{uuid}/submit")
     @SecuredByRequestOwner
-    @Timed
     public ResponseEntity<RequestRepresentation> submitRevisedRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid
     ) throws ActionNotAllowed {

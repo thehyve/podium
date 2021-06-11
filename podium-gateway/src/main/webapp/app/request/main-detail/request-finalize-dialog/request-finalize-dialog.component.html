@@ -13,8 +13,8 @@
         <div class="modal-header finalize-header">
             <h4 class="modal-title">
                 <span class="material-icons">assignment</span>
-                <span jhiTranslate="request.finalize.header" translateValues="{{getHeaderTranslation()}}">
-                    Finalize request header
+                <span [translate]="'request.finalize.header'"
+                    [translateParams]="getHeaderTranslation()">
                 </span>
             </h4>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -23,24 +23,22 @@
         <div class="modal-body">
             <pdm-alert-error></pdm-alert-error>
 
-            <h4 jhiTranslate="request.finalize.body.header">
-                Completing this step will result in the closing of the request
+            <h4 [translate]="'request.finalize.body.header'">
             </h4>
-            <p jhiTranslate="request.finalize.body.info">
-                The outcome of the request depends on whether all the requested materials have been received by the researcher.
+            <p [translate]="'request.finalize.body.info'">
             </p>
 
             <div [ngSwitch]="expectedOutcome" class="finalize-outcome">
-                <p *ngSwitchCase="outcomeOptions.Delivered" jhiTranslate="request.finalize.body.full_delivery">
-                    All requested types have been released or received, therefore the request will be marked as 'Delivered'.
+                <p *ngSwitchCase="outcomeOptions.Delivered"
+                    [translate]="'request.finalize.body.full_delivery'">
                 </p>
 
-                <p *ngSwitchCase="outcomeOptions.Partially_Delivered" jhiTranslate="request.finalize.body.partial_delivery">
-                    Not all requested types have released or received, therefore the request will be marked as 'Partially delivered'.
+                <p *ngSwitchCase="outcomeOptions.Partially_Delivered"
+                    [translate]="'request.finalize.body.partial_delivery'">
                 </p>
 
-                <p *ngSwitchCase="outcomeOptions.Cancelled" jhiTranslate="request.finalize.body.no_delivery">
-                    None of the requested types have been released or received, therefore the request will be marked as 'Cancelled'.
+                <p *ngSwitchCase="outcomeOptions.Cancelled"
+                    [translate]="'request.finalize.body.no_delivery'">
                 </p>
             </div>
 
@@ -48,12 +46,12 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">
                 <span class="material-icons">keyboard_backspace</span>&nbsp;
-                <span jhiTranslate="delivery.actions.cancel">Cancel</span>
+                <span [translate]="'delivery.actions.cancel'"></span>
             </button>
             <button type="submit" class="btn btn-success">
                 <span class="material-icons">done_all</span>
                 &nbsp;
-                <span jhiTranslate="request.finalize.actions.submit">Submit</span>
+                <span [translate]="'request.finalize.actions.submit'"></span>
             </button>
         </div>
     </form>

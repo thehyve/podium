@@ -73,18 +73,18 @@
             }
         },
         "detail": {
-            "pageTitle": "Request Details",
+            "pageTitle": "Request details",
             "pageHeader": "Request {{requestId}} to {{ organisation }}",
             "title": "Title",
             "background": "Background",
-            "researchQuestion": "Research Question(s)",
-            "hypothesis": "Hypothesis",
+            "researchQuestion": "Research question(s)",
+            "hypothesis": "Hypothesis / goals",
             "methods": "Methods",
-            "relatedRequestNumber": "Related Request Number",
-            "principalInvestigator": "Principal Investigator",
-            "searchQuery": "Search Criteria",
-            "isLinked": "Linked Request",
-            "requestTypes": "Request Types",
+            "relatedRequestNumber": "Related request number",
+            "principalInvestigator": "Principal investigator",
+            "searchQuery": "Search criteria",
+            "isLinked": "Linked request",
+            "requestTypes": "Request types",
             "organisations": "Organisation(s)",
             "organisation": "Organisation"
         },
@@ -130,13 +130,13 @@
         },
         "form": {
             "header": {
-                "new": "New Request",
-                "edit": "Edit Request",
-                "researchProposal": "Research Proposal",
+                "new": "New request",
+                "edit": "Edit request",
+                "researchProposal": "Research proposal",
                 "researchProposalTooltip": "Necessary information to understand research question and therefore helps in the approval/review process of your request.",
-                "principalInvestigator": "Principal Investigator Details",
-                "requestDetails": "Request Details",
-                "additionalInformation": "Additional Information",
+                "principalInvestigator": "Principal investigator details",
+                "requestDetails": "Request details",
+                "additionalInformation": "Additional information",
                 "organisations": "Organisation(s)",
                 "selectDraft": "Select draft or create new request",
                 "attachments": "Attachments"
@@ -149,7 +149,7 @@
                 "placeholder": "Title of your research"
             },
             "requestType": {
-                "label": "Request Type(s)*",
+                "label": "Request type(s)*",
                 "footnote": "* Changing this value will clear organisation selection.",
                 "tooltip": "Based on your request type(s) selection, only organisations will be shown that have the requested request type(s) available."
             },
@@ -158,7 +158,7 @@
                 "tooltip": "Select one or more organisation(s) to submit your request to. By holding the control button you can select multiple organisations."
             },
             "isLinked": {
-                "label": "Linked Request",
+                "label": "Linked request",
                 "tooltip": "A linked request is a request composed of (different) data types from different organizations for which the resulting datasets needs to be linked by subject and/or sample. (eg. materials from PALGA and data from PHARMO)",
                 "placeHolder": "Indicator whether or not your request is a linked request",
                 "yes": "Yes",
@@ -169,11 +169,11 @@
                 "placeholder": "Your research background description"
             },
             "researchQuestion": {
-                "label": "Research Question(s)",
+                "label": "Research question(s)",
                 "placeholder": "Your research question(s)"
             },
             "hypothesis": {
-                "label": "Hypothesis / Goals",
+                "label": "Hypothesis / goals",
                 "placeholder": "Your research hypothesis and / or goals"
             },
             "methods": {
@@ -181,7 +181,7 @@
                 "placeholder": "Your research methods that will be applied to answer proposed research question"
             },
             "relatedRequestNumber": {
-                "label": "Related Request Number",
+                "label": "Related request number",
                 "placeholder": "Relates to request with number..."
             },
             "principalInvestigator": {
@@ -204,7 +204,7 @@
             },
 
             "searchQuery": {
-                "label": "Search Criteria",
+                "label": "Search criteria",
                 "placeholder": "eg. DNA samples from male patients >50 year with Prostate Cancer"
             },
 

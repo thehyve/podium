@@ -9,11 +9,9 @@
  */
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { JhiParseLinks, JhiLanguageService } from 'ng-jhipster';
 import { Audit } from './audit.model';
 import { AuditsService } from './audits.service';
-import { ITEMS_PER_PAGE } from '../../shared';
-import { PaginationConfig } from '../../blocks/config/uib-pagination.config';
+import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
 
 @Component({
   selector: 'pdm-audit',
@@ -23,7 +21,6 @@ export class AuditsComponent implements OnInit {
     audits: Audit[];
     fromDate: string;
     itemsPerPage: any;
-    links: any;
     page: number;
     orderProp: string;
     reverse: boolean;
@@ -33,9 +30,7 @@ export class AuditsComponent implements OnInit {
 
     constructor(
         private auditsService: AuditsService,
-        private parseLinks: JhiParseLinks,
         @Inject(LOCALE_ID) private locale: string,
-        private paginationConfig: PaginationConfig
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.page = 1;
@@ -63,8 +58,7 @@ export class AuditsComponent implements OnInit {
         this.auditsService.query({page: this.page - 1, size: this.itemsPerPage,
             fromDate: this.fromDate, toDate: this.toDate}).subscribe(res => {
 
-            this.audits = res.json();
-            this.links = this.parseLinks.parse(res.headers.get('link'));
+            this.audits = res.body;
             this.totalItems = + res.headers.get('X-Total-Count');
         });
     }
@@ -95,7 +89,7 @@ export class AuditsComponent implements OnInit {
         audits = audits.slice(0).sort((a, b) => {
             if (a[this.orderProp] < b[this.orderProp]) {
                 return -1;
-            } else if ([b[this.orderProp] < a[this.orderProp]]) {
+            } else if (b[this.orderProp] < a[this.orderProp]) {
                 return 1;
             } else {
                 return 0;

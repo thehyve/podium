@@ -24,8 +24,7 @@ import org.mapstruct.Mappings;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +38,8 @@ public interface UserMapper {
 
     @Mapping(target = "password", ignore = true)
     ManagedUserRepresentation userToManagedUserVM(User user);
+
+    UserRepresentation managedUserVMToUserDTO(ManagedUserRepresentation user);
 
     @IterableMapping(elementTargetType = ManagedUserRepresentation.class)
     List<ManagedUserRepresentation> usersToManagedUserVMs(List<User> user);

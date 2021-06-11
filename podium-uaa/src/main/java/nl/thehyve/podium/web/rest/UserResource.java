@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -43,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +100,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PostMapping("/users")
-    @Timed
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to save User : {}", userData);
 
@@ -119,7 +118,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users")
-    @Timed
     public ResponseEntity<ManagedUserRepresentation> updateUser(@Valid @RequestBody UserRepresentation userData) throws UserAccountException {
         log.debug("REST request to update User : {}", userData);
         userService.updateUser(userData);
@@ -139,7 +137,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @PutMapping("/users/uuid/{uuid}/unlock")
-    @Timed
     public ResponseEntity<ManagedUserRepresentation> unlockUser(@PathVariable UUID uuid) {
         log.debug("REST request to unlock User : {}", uuid);
         ManagedUserRepresentation user = userService.unlockAccount(uuid);
@@ -158,7 +155,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users")
-    @Timed
     public ResponseEntity<List<ManagedUserRepresentation>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<ManagedUserRepresentation> page = userService.getUsers(pageable);
@@ -176,7 +172,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users/organisations")
-    @Timed
     public ResponseEntity<List<ManagedUserRepresentation>> getOrganisationUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         UUID[] organisationUuids = AccessCheckHelper.getOrganisationUuidsForUserAndRole(
@@ -197,7 +192,6 @@ public class UserResource {
      */
     @SecuredByOrganisation(authorities = {AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users/organisations/{uuid}")
-    @Timed
     public ResponseEntity<List<ManagedUserRepresentation>> getUsersForOrganisation(
         @OrganisationUuidParameter @PathVariable UUID uuid,
         @ApiParam Pageable pageable)
@@ -215,7 +209,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/users/{login:" + PodiumConstants.LOGIN_REGEX + "}")
-    @Timed
     public ResponseEntity<ManagedUserRepresentation> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         Optional<ManagedUserRepresentation> userOptional = userService.getUserWithAuthoritiesByLogin(login);
@@ -233,7 +226,6 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/users/uuid/{uuid}")
-    @Timed
     public ResponseEntity<ManagedUserRepresentation> getUserByUuid(@PathVariable UUID uuid) {
         log.debug("REST request to get User : {}", uuid);
         Optional<ManagedUserRepresentation> userOptional = userService.getUserByUuid(uuid);
@@ -251,26 +243,10 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @DeleteMapping("/users/{login:" + PodiumConstants.LOGIN_REGEX + "}")
-    @Timed
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteByLogin(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("userManagement.deleted", login)).build();
-    }
-
-    /**
-     * SEARCH  /_search/users/:query : search for the User corresponding
-     * to the query.
-     *
-     * @param query the query to search
-     * @return the result of the search
-     */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/_search/users")
-    @Timed
-    public ResponseEntity<List<SearchUser>> search(@RequestParam String query) {
-        List<SearchUser> list = userService.search(query);
-        return ResponseEntity.ok(list);
     }
 
     /**
@@ -281,8 +257,7 @@ public class UserResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN, AuthorityConstants.ORGANISATION_ADMIN})
     @GetMapping("/_suggest/users")
-    @Timed
-    public ResponseEntity<List<SearchUser>> suggest(@RequestParam String query) {
+    public ResponseEntity<List<SearchUser>> suggest(@RequestParam String query) throws IOException {
         List<SearchUser> list = userService.suggestUsers(query);
         return ResponseEntity.ok(list);
     }

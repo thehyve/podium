@@ -8,21 +8,18 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Response, Http } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
-import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
-import { Principal } from '../../../shared';
+import { Subscription } from 'rxjs';
+import { parseLinks } from '../../../shared/util/parse-links-util';
+import { EventManager } from '../../../core/util/event-manager.service';
+import { AccountService } from '../../../core/auth/account.service';
+import { Account } from '../../../core/auth/account.model';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
-import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
 import { Organisation } from '../../../shared/organisation/organisation.model';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
-
-let overviewConfig: OverviewServiceConfig = {
-    resourceUrl: 'podiumuaa/api/organisations',
-    resourceSearchUrl: 'podiumuaa/api/_search/organisations'
-};
+import { ApplicationConfigService } from '../../../core/config/application-config.service';
 
 @Component({
     selector: 'pdm-organisation',
@@ -30,18 +27,27 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: Http) => {
-                return new OverviewService(http, overviewConfig);
+            useFactory: (
+                config: ApplicationConfigService,
+                http: HttpClient,
+            ) => {
+                let serviceConfig = {
+                    getEndpoint(path: string) {
+                        return config.getUaaEndpoint(`api/organisations/${path}`);
+                    },
+                };
+                return new OverviewService(serviceConfig, http);
             },
             deps: [
-                Http
+                ApplicationConfigService,
+                HttpClient
             ]
         }
     ]
 })
 export class OrganisationComponent extends Overview implements OnInit, OnDestroy {
 
-    currentAccount: any;
+    currentAccount: Account;
     organisations: Organisation[];
     error: any;
     success: any;
@@ -51,22 +57,22 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     constructor(
         private organisationService: OrganisationService,
         private overviewService: OverviewService,
-        private parseLinks:  JhiParseLinks,
-        private principal: Principal,
+        private accountService: AccountService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router,
-        private eventManager:  JhiEventManager
+        private eventManager: EventManager
     ) {
         super(router, activatedRoute);
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
-            (res: Response) => this.processAvailableOrganisations(res.json(), res.headers)
+            (res: HttpResponse<Organisation[]>) =>
+                this.processAvailableOrganisations(res.body, res.headers)
         );
     }
 
     ngOnInit() {
         this.fetchOrganisations();
-        this.principal.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentAccount = account;
         });
 
@@ -83,7 +89,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         }
     }
 
-    trackUuid (index: number, item: Organisation) {
+    trackUuid(index: number, item: Organisation) {
         return item.uuid;
     }
 
@@ -96,7 +102,7 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
     fetchOrganisations() {
         this.overviewService
             .findOrganisationsForOverview(this.getPageParams())
-            .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
+            .subscribe((res) => this.overviewService.overviewUpdateEvent(res));
     }
 
     transitionOrganisations() {
@@ -104,10 +110,10 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         this.fetchOrganisations();
     }
 
-    toggleActivated (organisation) {
+    toggleActivated(organisation) {
         organisation.activated = !organisation.activated;
         this.organisationService.activate(organisation.uuid, organisation.activated).subscribe(
-            (res: Response) => {
+            (res) => {
                 if (res.status === 200) {
                     this.error = null;
                     this.success = 'OK';
@@ -120,8 +126,8 @@ export class OrganisationComponent extends Overview implements OnInit, OnDestroy
         );
     }
 
-    private processAvailableOrganisations(organisations, headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+    private processAvailableOrganisations(organisations: Organisation[], headers) {
+        this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.organisations = organisations;

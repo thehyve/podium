@@ -1,0 +1,8 @@
+@startuml
+
+(*) --> "Preparation"
+"Preparation" ->[Cancel] "Closed"
+"Preparation" ->[Release] "Released"
+"Released" ->[Received/cancelled] "Closed"
+
+@enduml

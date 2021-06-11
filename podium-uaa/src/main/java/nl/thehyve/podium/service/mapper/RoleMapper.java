@@ -36,7 +36,9 @@ public interface RoleMapper {
     List<RoleRepresentation> rolesToRoleDTOs(List<Role> role);
 
     default Set<UUID> uuidsFromUsers (Set<User> users) {
-        return users.stream().map(User::getUuid)
+        return users.stream()
+            .filter(u -> !u.isDeleted())
+            .map(User::getUuid)
             .collect(Collectors.toSet());
     }
 

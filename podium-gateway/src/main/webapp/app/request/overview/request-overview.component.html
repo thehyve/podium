@@ -27,11 +27,11 @@
         </div>
 
         <h2>
-            <span jhiTranslate="{{pageHeader}}">My requests</span>
+            <span [translate]="pageHeader"></span>
             <button type="button" *ngIf="isResearcherRoute()"
                     class="btn btn-outline-primary new-request pull-right" (click)="createNewRequest()">
                 <i class="material-icons">add_circle_outline</i>
-                <span jhiTranslate="request.action.new">New request</span>
+                <span [translate]="'request.action.new'"></span>
             </button>
         </h2>
 
@@ -76,7 +76,7 @@
                 </thead>
                 <tbody>
                 <tr [ngClass]="'test-request-row-'+ request.requestDetail.title"
-                    *ngFor="let request of availableRequests; trackBy: trackId">
+                    *ngFor="let request of availableRequests; trackBy: getRequestId">
                     <td>
                             <span class="material-icons md-18"
                                   *ngIf="getIconForLinkedRequest(request.requestDetail.combinedRequest)">link</span>
@@ -88,7 +88,7 @@
                         {{request.requestDetail.title || '-'}}
                     </td>
                     <td class="test-status" *ngIf="isActiveStatus(statusSidebarOptions.All)">
-                        <span jhiTranslate="requestSidebar.status.{{ request.status }}"></span>
+                        <span [translate]="'requestSidebar.status.' + request.status"></span>
                     </td>
                     <td>
                         <ul class="overview-list-cell test-requestTypes">
@@ -120,12 +120,12 @@
                             <button type="button" class="btn btn-primary btn-sm test-edit-btn"
                                     (click)="editRequest(request)">
                                 <i class="material-icons md-18">edit</i>
-                                <span class="d-none d-lg-inline-flex" jhiTranslate="request.action.edit">Edit</span>
+                                <span class="d-none d-lg-inline-flex" [translate]="'request.action.edit'"></span>
                             </button>
                             <button type="submit" class="btn btn-danger btn-sm test-remove-btn"
                                     (click)="deleteDraft(request)">
                                 <i class="material-icons md-18">remove_circle_outline</i>
-                                <span class="d-none d-lg-inline-flex" jhiTranslate="request.action.delete">Remove</span>
+                                <span class="d-none d-lg-inline-flex" [translate]="'request.action.delete'"></span>
                             </button>
                         </div>
                         <button type="button"
@@ -133,7 +133,7 @@
                                 (click)="navigateToRequestDetail(request)"
                                 *ngIf="request.status !== 'Draft'">
                             <i class="material-icons md-18">assignment_ind</i>
-                            <span class="d-none d-lg-inline-flex" jhiTranslate="request.action.details">Details</span>
+                            <span class="d-none d-lg-inline-flex" [translate]="'request.action.details'"></span>
                         </button>
                     </td>
                 </tr>

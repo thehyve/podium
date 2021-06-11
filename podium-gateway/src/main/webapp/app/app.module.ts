@@ -1,37 +1,43 @@
-import './vendor.ts';
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { Ng2Webstorage } from 'ng2-webstorage';
-import { customHttpProvider } from './blocks/interceptor/http.provider';
-import { PaginationConfig } from './blocks/config/uib-pagination.config';
-import { TypeaheadModule } from 'ngx-bootstrap';
+import { NgModule, LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import locale from '@angular/common/locales/en';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateModule, TranslateService, TranslateLoader, MissingTranslationHandler } from '@ngx-translate/core';
+import { NgxWebstorageModule } from 'ngx-webstorage';
+import { httpInterceptorProviders } from './core/interceptor/http.provider';
+import { translatePartialLoader, missingTranslationHandler } from './config/translation.config';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { PodiumGatewayRequestModule } from './request/request.module';
 import { PodiumGatewayBbmriBackofficeModule } from './backoffice/bbmri/bbmri-backoffice.module';
 import { PodiumGatewayOrganisationBackofficeModule } from './backoffice/organisation/organisation-backoffice.module';
 import { PodiumGatewayPodiumBackofficeModule } from './backoffice/podium/podium-backoffice.module';
-import { PodiumGatewaySharedModule, UserRouteAccessService } from './shared';
+import { PodiumGatewaySharedModule } from './shared/shared.module';
+import { UserRouteAccessService } from './core/auth/user-route-access.service';
 import { PodiumGatewayAdminModule } from './admin/admin.module';
 import { PodiumGatewayAccountModule } from './account/account.module';
 import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
-import { OrganisationService } from './shared/organisation/organisation.service';
 import { CommonModule } from '@angular/common';
-import { RoleService } from './shared/role/role.service';
-import { PdmMainComponent } from './main/main.component';
-import { PageRibbonComponent } from './shared/profiles/page-ribbon.component';
-import { AppRoutingModule } from './app.route';
+import { PdmMainComponent } from './layouts/main/main.component';
+import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
+import {
+    AppRoutingModule,
+    AppErrorRoutingModule
+} from './app-routing.module';
 import { PdmHomeComponent } from './home/home.component';
-import { FooterComponent } from './shared/footer/footer.component';
+import { FooterComponent } from './layouts/footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { NotFoundRoutingModule } from './shared/not-found/not-found.route';
-import { RedirectService } from './shared/auth/redirect.service';
+import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 
 @NgModule({
     imports: [
+        BrowserModule,
+        HttpClientModule,
         CommonModule,
         TypeaheadModule.forRoot(),
         BreadcrumbsModule.forRoot(),
-        Ng2Webstorage.forRoot({ prefix: 'pdm', separator: '-'}),
-        BrowserModule,
+        NgxWebstorageModule.forRoot({ prefix: 'pdm', separator: '-' }),
         AppRoutingModule,
         PodiumGatewaySharedModule,
         PodiumGatewayAdminModule,
@@ -40,26 +46,44 @@ import { RedirectService } from './shared/auth/redirect.service';
         PodiumGatewayBbmriBackofficeModule,
         PodiumGatewayOrganisationBackofficeModule,
         PodiumGatewayPodiumBackofficeModule,
-        NotFoundRoutingModule
+        AppErrorRoutingModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: translatePartialLoader,
+                deps: [HttpClient],
+            },
+            missingTranslationHandler: {
+                provide: MissingTranslationHandler,
+                useFactory: missingTranslationHandler,
+            },
+        }),
     ],
     declarations: [
         DashboardComponent,
         PdmMainComponent,
         PageRibbonComponent,
         PdmHomeComponent,
-        FooterComponent
+        FooterComponent,
+        ActiveMenuDirective,
     ],
     providers: [
-        { provide: Window, useValue: window },
-        { provide: Document, useValue: document },
-        customHttpProvider(),
-        PaginationConfig,
+        Title,
+        { provide: LOCALE_ID, useValue: 'en' },
+        httpInterceptorProviders,
         UserRouteAccessService,
-        OrganisationService,
-        RedirectService,
-        RoleService
     ],
-    bootstrap: [ PdmMainComponent ],
-    exports: []
+    bootstrap: [PdmMainComponent],
+    exports: [
+        BrowserAnimationsModule
+    ]
 })
-export class PodiumGatewayAppModule {}
+export class PodiumGatewayAppModule {
+    constructor(
+        translateService: TranslateService
+    ) {
+        registerLocaleData(locale);
+        translateService.setDefaultLang('en');
+        translateService.use('en');
+    }
+}

@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -20,15 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.UUID;
+import java.nio.charset.*;
+import java.util.*;
 
 /**
  * REST controller for managing requests templates.
@@ -62,21 +59,22 @@ public class RequestTemplateResource {
      */
     @PostMapping("/public/requests/templates")
     @Public
-    @Timed
     public ResponseEntity<URI> createRequestTemplate(
         @Valid @RequestBody RequestTemplateRepresentation requestTemplateRepresentation,
         @RequestHeader("Authorization") String authorization)
         throws URISyntaxException {
 
-        if(!authorization.substring(0, 6).equals("Basic ")){
+        if(!authorization.startsWith("Basic ")){
             throw new AccessDenied("No Auth provided");
         }
         // Turn base64 string into normal string with a username:password format
-        String base64 = authorization.substring(6, authorization.length());
-        if (!Base64.isBase64(base64.getBytes())) {
+        String base64 = authorization.substring(6);
+        String id;
+        try {
+            id = new String(Base64.getDecoder().decode(base64.getBytes()), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
             throw new AccessDenied("Token is not base64 encoded.");
         }
-        String id = new String(Base64.decode(base64.getBytes()), Charset.forName("UTF-8"));
 
         List<String> allowedIds = podiumProperties.getAccess().getRequestTemplate();
 
@@ -103,7 +101,6 @@ public class RequestTemplateResource {
      */
     @GetMapping("/requests/templates/{uuid}")
     @SecuredByAuthority({AuthorityConstants.RESEARCHER})
-    @Timed
     public ResponseEntity<RequestTemplateRepresentation> getRequestTemplate(@PathVariable("uuid") UUID uuid){
         RequestTemplateRepresentation requestTemplateRepresentation =
             requestTemplateService.getTemplate(uuid);

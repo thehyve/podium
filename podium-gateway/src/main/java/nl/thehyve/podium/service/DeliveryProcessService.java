@@ -7,22 +7,20 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.DeliveryProcess;
 import nl.thehyve.podium.repository.DeliveryProcessRepository;
-import nl.thehyve.podium.repository.search.DeliveryProcessSearchRepository;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.task.DelegationState;
-import org.flowable.engine.task.IdentityLinkType;
-import org.flowable.engine.task.Task;
+import org.flowable.task.api.DelegationState;
+import org.flowable.identitylink.service.IdentityLinkType;
+import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,6 @@ import java.util.Map;
 
 @Service
 @Transactional
-@Timed
 public class DeliveryProcessService {
 
     public enum DeliveryTask {
@@ -69,7 +66,7 @@ public class DeliveryProcessService {
     }
 
     private static final Map<DeliveryStatus, DeliveryTask> taskForStatus = new HashMap<>(3);
-    {
+    static {
         taskForStatus.put(DeliveryStatus.Preparation, DeliveryTask.Preparation);
         taskForStatus.put(DeliveryStatus.Released, DeliveryTask.Released);
     }
@@ -89,9 +86,6 @@ public class DeliveryProcessService {
 
     @Autowired
     private DeliveryProcessRepository deliveryProcessRepository;
-
-    @Autowired
-    private DeliveryProcessSearchRepository deliveryProcessSearchRepository;
 
     /**
      * Finds request.
@@ -129,7 +123,6 @@ public class DeliveryProcessService {
         deliveryProcess.setOutcome((DeliveryProcessOutcome) variables.get("outcome"));
         deliveryProcess = deliveryProcessRepository.save(deliveryProcess);
         // save to elastic search as well
-        deliveryProcessSearchRepository.save(deliveryProcess);
         return deliveryProcess;
     }
 

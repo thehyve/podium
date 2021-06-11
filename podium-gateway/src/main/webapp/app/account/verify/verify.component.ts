@@ -9,7 +9,6 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
 import { Verify } from './verify.service';
 
 @Component({
@@ -54,7 +53,7 @@ export class VerifyComponent implements OnInit {
         this.verify.renew(this.verifyKey).subscribe(() => {
             this.error = null;
             this.renewSuccess = 'OK';
-        }, (error) => {
+        }, () => {
             this.success = null;
             this.renewError = 'ERROR';
         });

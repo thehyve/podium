@@ -11,7 +11,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({name: 'enumKeys'})
 export class EnumKeysPipe implements PipeTransform {
-    transform(value, args: string[]): any {
+    transform(value): any {
 
         let keys = [];
         for (let enumMember in value) {

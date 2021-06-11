@@ -8,7 +8,7 @@
   ~
   -->
 
-<h4><span jhiTranslate="role.home.title">Roles</span></h4>
+<h4><span [translate]="'role.home.title'"></span></h4>
 
 <div class="container-fluid" *ngIf="organisationRoles">
     <div class="row">
@@ -22,9 +22,9 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th jhiTranslate="role.users">User</th>
-                            <th jhiTranslate="role.role">Role</th>
-                            <th jhiTranslate="role.options">Options</th>
+                            <th [translate]="'role.users'"></th>
+                            <th [translate]="'role.role'"></th>
+                            <th [translate]="'role.options'"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,7 +46,7 @@
                                 <!-- Authority select -->
                                 <select class="form-control field-user-authority"
                                         name="authority-{{ user.uuid }}-{{i}}"
-                                        (change)="userAuthorityChange(user, $event)"
+                                        (change)="userAuthorityChange(user)"
                                         [(ngModel)]="user.authority"
                                         [disabled]="isAdminOfOrganisation(user, currentAccount)">
                                     <option [ngValue]="undefined" disabled selected>Please select a role</option>
@@ -62,7 +62,7 @@
                                     (click)="update(user)">
                                     <i class="material-icons">update</i>
                                 </span>
-                                <span class="role-option success test-add" tooltip="Add user role" *ngIf="canAdd(user, currentAccount)"
+                                <span class="role-option success test-add" tooltip="Add user role" *ngIf="canAdd(user)"
                                     (click)="save(user)">
                                     <i class="material-icons">add</i>
                                 </span>

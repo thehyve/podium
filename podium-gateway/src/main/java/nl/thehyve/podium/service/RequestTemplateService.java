@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.service.dto.RequestTemplateRepresentation;
 import nl.thehyve.podium.domain.RequestTemplate;
 import nl.thehyve.podium.repository.RequestTemplateRepository;
@@ -23,7 +22,6 @@ import java.util.*;
  */
 @Service
 @Transactional
-@Timed
 public class RequestTemplateService {
 
     @Autowired

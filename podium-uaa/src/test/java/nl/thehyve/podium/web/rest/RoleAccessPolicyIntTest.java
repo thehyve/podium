@@ -53,11 +53,6 @@ public class RoleAccessPolicyIntTest extends AbstractUaaAccessPolicyIntTest {
         actions.add(newAction()
             .setUrl(format(ROLE_ROUTE, "/%d", reviewerBRole.getId()))
             .allow(podiumAdmin, bbmriAdmin));
-        // GET /_search/roles
-        actions.add(newAction()
-            .setUrl(ROLE_SEARCH_ROUTE)
-            .set("query", "admin")
-            .allow(podiumAdmin, bbmriAdmin));
         // POST /roles. Not allowed!
         actions.add(newAction()
             .setUrl(ROLE_ROUTE).setMethod(HttpMethod.POST)

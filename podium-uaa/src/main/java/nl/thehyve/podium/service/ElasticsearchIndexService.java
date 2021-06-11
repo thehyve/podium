@@ -13,22 +13,16 @@ package nl.thehyve.podium.service;
 /**
  * Created by bernd on 25/03/2017.
  */
-import com.codahale.metrics.annotation.Timed;
-import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.User;
-import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.UserRepository;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
 import nl.thehyve.podium.repository.search.UserSearchRepository;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.search.SearchUser;
-import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import nl.thehyve.podium.service.mapper.UserMapper;
-import org.elasticsearch.indices.IndexAlreadyExistsException;
+import org.elasticsearch.ResourceAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -57,31 +51,14 @@ public class ElasticsearchIndexService {
     private UserSearchRepository userSearchRepository;
 
     @Autowired
-    private OrganisationRepository organisationRepository;
-
-    @Autowired
-    private OrganisationMapper organisationMapper;
-
-    @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
-
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private ElasticsearchOperations elasticsearchTemplate;
 
     public ElasticsearchIndexService() {
 
     }
 
     @Async
-    @Timed
     public Future<String> reindexAll() {
-
-        // Reindex Organisations to SearchOrganisations
-        reindexForClass(
-            Organisation.class, organisationRepository,
-            SearchOrganisation.class, organisationSearchRepository,
-            (List<Organisation> organisations) -> organisationMapper.organisationsToSearchOrganisations(organisations));
-
         // Reindex Users -> SearchUsers
         reindexForClass(
             User.class, userRepository,
@@ -108,28 +85,23 @@ public class ElasticsearchIndexService {
         Class<S> searchEntityClass, ElasticsearchRepository<S, ID> elasticsearchRepository,
         Function<List<T>, List<S>> mapperFunction
     ) {
-        elasticsearchTemplate.deleteIndex(searchEntityClass);
-        try {
-            elasticsearchTemplate.createIndex(searchEntityClass);
-        } catch (IndexAlreadyExistsException e) {
-            // Do nothing. Index was already concurrently recreated by some other service.
-        }
-
-        elasticsearchTemplate.putMapping(searchEntityClass);
+        IndexOperations indexOps = elasticsearchTemplate.indexOps(searchEntityClass);
+        indexOps.delete();
+        indexOps.create();
+        indexOps.putMapping(indexOps.createMapping(searchEntityClass));
         long count = jpaRepository.count();
         if (count > 0) {
             try {
                 // Fetch all entities using reflection
-                Method m = jpaRepository.getClass().getMethod("findAll");
+                Method m = jpaRepository.getClass().getMethod("findAllByDeletedIsFalse");
                 List<T> entities = (List<T>) m.invoke(jpaRepository);
 
                 List<S> searchEntities = mapperFunction.apply(entities);
-                elasticsearchRepository.save(searchEntities);
+                elasticsearchRepository.saveAll(searchEntities);
             } catch (Exception e) {
-                log.error("Elasticsearch indexer error: {}", e);
+                log.error("Elasticsearch indexer error", e);
             }
         }
         log.info("Elasticsearch: Indexed {} rows for {}", count, entityClass.getSimpleName());
     }
-
 }

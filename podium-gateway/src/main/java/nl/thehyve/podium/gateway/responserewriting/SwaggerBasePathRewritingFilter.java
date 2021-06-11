@@ -13,7 +13,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.netflix.zuul.filters.post.SendResponseFilter;
-import springfox.documentation.swagger2.web.Swagger2Controller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +25,11 @@ import java.util.zip.GZIPInputStream;
  */
 public class SwaggerBasePathRewritingFilter extends SendResponseFilter {
 
+    final static String DEFAULT_URL = "/v2/api-docs";
+
     private final Logger log = LoggerFactory.getLogger(SwaggerBasePathRewritingFilter.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String filterType() {
@@ -45,7 +46,7 @@ public class SwaggerBasePathRewritingFilter extends SendResponseFilter {
      */
     @Override
     public boolean shouldFilter() {
-        return RequestContext.getCurrentContext().getRequest().getRequestURI().endsWith(Swagger2Controller.DEFAULT_URL);
+        return RequestContext.getCurrentContext().getRequest().getRequestURI().endsWith(DEFAULT_URL);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class SwaggerBasePathRewritingFilter extends SendResponseFilter {
             if (response != null) {
                 LinkedHashMap<String, Object> map = this.mapper.readValue(response, LinkedHashMap.class);
 
-                String basePath = requestUri.replace(Swagger2Controller.DEFAULT_URL,"");
+                String basePath = requestUri.replace(DEFAULT_URL,"");
                 map.put("basePath",basePath);
                 log.debug("Swagger-docs: rewritten Base URL with correct micro-service route: {}", basePath);
                 return mapper.writeValueAsString(map);

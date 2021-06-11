@@ -16,16 +16,12 @@ import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.repository.OrganisationRepository;
 import nl.thehyve.podium.repository.RoleRepository;
-import nl.thehyve.podium.repository.search.RoleSearchRepository;
-import nl.thehyve.podium.common.security.AuthorityConstants;
-import nl.thehyve.podium.common.service.dto.RoleRepresentation;
 import nl.thehyve.podium.service.mapper.RoleMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +30,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Role.
@@ -53,9 +47,6 @@ public class RoleService {
     private OrganisationRepository organisationRepository;
 
     @Autowired
-    private RoleSearchRepository roleSearchRepository;
-
-    @Autowired
     private RoleMapper roleMapper;
 
     @Autowired
@@ -71,7 +62,6 @@ public class RoleService {
     public Role save(Role role) {
         log.debug("Request to save Role : {}", role);
         Role result = roleRepository.save(role);
-        roleSearchRepository.save(result);
         return result;
     }
 
@@ -215,21 +205,7 @@ public class RoleService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Role : {}", id);
-        roleRepository.delete(id);
-        roleSearchRepository.delete(id);
-    }
-
-    /**
-     * Search for the role corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable Pagination object of the requested page
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<RoleRepresentation> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Roles for query {}", query);
-        return roleSearchRepository.search(queryStringQuery(query), pageable).map(role -> roleMapper.roleToRoleDTO(role));
+        roleRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)

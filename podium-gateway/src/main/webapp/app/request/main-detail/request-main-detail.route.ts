@@ -8,7 +8,7 @@
  *
  */
 import { Route } from '@angular/router';
-import { UserRouteAccessService } from '../../shared/auth/user-route-access-service';
+import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { RequestMainDetailComponent } from './request-main-detail.component';
 import { RequestDetailResolver } from './request-main-detail-resolver.service';
 

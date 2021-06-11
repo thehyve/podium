@@ -7,34 +7,49 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
-import { Principal } from './principal.service';
+import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { AccountService } from '../../core/auth/account.service';
 
 @Directive({
-    selector: '[pdmHasAnyAuthority]'
+    selector: '[pdmHasAnyAuthority]',
 })
-export class HasAnyAuthorityDirective {
-    private authorities: string[];
+export class HasAnyAuthorityDirective implements OnDestroy {
+    private authorities!: string | string[];
+
+    private readonly destroy$ = new Subject<void>();
 
     constructor(
-        private principal: Principal,
+        private accountService: AccountService,
         private templateRef: TemplateRef<any>,
         private viewContainerRef: ViewContainerRef
     ) {}
 
-    @Input() set pdmHasAnyAuthority(value: string|string[]) {
-        this.authorities = typeof value === 'string' ? [ <string> value ] : <string[]> value;
+    @Input()
+    set pdmHasAnyAuthority(value: string | string[]) {
+        this.authorities = value;
         this.updateView();
         // Get notified each time authentication state changes.
-        this.principal.getAuthenticationState().subscribe(identity => this.updateView());
+        this.accountService
+            .getAuthenticationState()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.updateView();
+            });
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     private updateView(): void {
-        this.principal.hasAnyAuthority(this.authorities).then(result => {
-            this.viewContainerRef.clear();
-            if (result) {
-                this.viewContainerRef.createEmbeddedView(this.templateRef);
-            }
-        });
+        const hasAnyAuthority = this.accountService.hasAnyAuthority(this.authorities);
+        this.viewContainerRef.clear();
+        if (hasAnyAuthority) {
+            this.viewContainerRef.createEmbeddedView(this.templateRef);
+        }
     }
 }

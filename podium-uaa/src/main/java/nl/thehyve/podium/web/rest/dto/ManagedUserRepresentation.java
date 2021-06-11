@@ -10,7 +10,7 @@ package nl.thehyve.podium.web.rest.dto;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.validation.ValidPassword;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.
@@ -21,11 +21,11 @@ public class ManagedUserRepresentation extends UserRepresentation {
 
     private String createdBy;
 
-    private ZonedDateTime createdDate;
+    private LocalDateTime createdDate;
 
     private String lastModifiedBy;
 
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @ValidPassword
     private String password;
@@ -53,11 +53,11 @@ public class ManagedUserRepresentation extends UserRepresentation {
         this.createdBy = createdBy;
     }
 
-    public ZonedDateTime getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(ZonedDateTime createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -69,11 +69,11 @@ public class ManagedUserRepresentation extends UserRepresentation {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public ZonedDateTime getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 

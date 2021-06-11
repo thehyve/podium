@@ -32,6 +32,8 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         #url: jdbc:h2:file:./target/h2db/db/podiumgateway;DB_CLOSE_DELAY=-1
         url: jdbc:postgresql://localhost:5432/podiumGatewayDev
+        hikari:
+            jdbc-url: ${spring.datasource.url}
         username: podiumUser
         password: podiumUser
     h2:
@@ -57,14 +59,7 @@ spring:
             compression: LZ4
             keyspaceName: podiumGateway
             repositories:
-                enabled: false
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
+                type: NONE
 
     mail:
         host: localhost
@@ -72,12 +67,11 @@ spring:
         username:
         password:
     messages:
-        cache-seconds: 1
+        cache-duration: 1
     thymeleaf:
         cache: false
-
-liquibase:
-    contexts: dev
+    liquibase:
+        contexts: dev
 
 server:
     port: 8080
@@ -87,6 +81,8 @@ server:
 # ===================================================================
 
 podium:
+    registry:
+        password: admin
     gateway:
         rate-limiting: # Read the documentation in the GatewayConfiguration class before enabling.
             enabled: false
@@ -99,19 +95,6 @@ podium:
     mail: # specific Podium mail property, for standard properties see MailProperties
         from: podium@localhost
         base-url: http://127.0.0.1:8080
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite: # Use the "graphite" Maven profile to have the Graphite dependencies
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: podiumGateway
-        prometheus: # Use the "prometheus" Maven profile to have the Prometheus dependencies
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false
@@ -125,11 +108,3 @@ podium:
         request-template: # Configure Basic Authentication for the /api/public/requests/template endpoint.
             - researcher:researcher
             - test:test
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the PodiumProperties above
-# ===================================================================
-
-application:

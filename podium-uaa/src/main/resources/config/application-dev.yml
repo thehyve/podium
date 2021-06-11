@@ -20,7 +20,7 @@ eureka:
 spring:
     profiles:
         active: dev
-        include: swagger
+        # include: swagger
     devtools:
         restart:
             enabled: true
@@ -31,6 +31,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:postgresql://localhost:5432/podiumUaaDev
+        hikari:
+            jdbc-url: ${spring.datasource.url}
         name: podiumUaa
         username: podiumUser
         password: podiumUser
@@ -49,26 +51,17 @@ spring:
             hibernate.cache.hazelcast.instance_name: podiumUaa
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
-    data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
-            properties:
-                path:
-                  logs: target/elasticsearch/log
-                  data: target/elasticsearch/data
     mail:
         host: localhost
         port: 25
         username:
         password:
     messages:
-        cache-seconds: 1
+        cache-duration: 1
     thymeleaf:
         cache: false
-
-liquibase:
-    contexts: dev
+    liquibase:
+        contexts: dev
 
 server:
     port: 9999
@@ -78,6 +71,8 @@ server:
 # ===================================================================
 
 podium:
+    registry:
+        password: admin
     cache: # Hibernate 2nd level cache, used by CacheConfiguration
         hazelcast:
             timeToLiveSeconds: 3600
@@ -89,19 +84,6 @@ podium:
     mail: # specific Podium mail property, for standard properties see MailProperties
         from: podium@localhost
         baseUrl: http://127.0.0.1:8080
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: podiumUaa
-        prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false

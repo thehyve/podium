@@ -12,7 +12,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { OrganisationService } from '../../../shared/organisation/organisation.service';
 import { Organisation } from '../../../shared/organisation/organisation.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OrganisationPopupService {
     private isOpen = false;
     constructor (

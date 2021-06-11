@@ -8,47 +8,37 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import { Role } from './role.model';
-import { HttpHelper } from '../util/http-helper';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable()
+import { ApplicationConfigService } from '../../core/config/application-config.service';
+import { Role } from './role.model';
+
+@Injectable({ providedIn: 'root' })
 export class RoleService {
 
-    private resourceUrl = 'podiumuaa/api/roles';
-    private resourceSearchUrl = 'podiumuaa/api/_search/roles';
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private http: Http) { }
+    private getUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/roles/${path}`);
+    }
 
     update(role: Role): Observable<Role> {
         let copy: Role = Object.assign({}, role);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
+        let url = this.getUrl('');
+        return this.http.put<Role>(url, copy);
     }
 
     find(id: number): Observable<Role> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
-        });
+        let url = this.getUrl(String(id));
+        return this.http.get<Role>(url);
     }
 
     findAllRolesForOrganisation(uuid: string): Observable<Role[]> {
-        return this.http.get(`${this.resourceUrl}/organisation/${uuid}`).map((res: Response) => {
-            return res.json();
-        });
-    }
-
-    query(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-        ;
-    }
-
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-        ;
+        let url = this.getUrl(`organisation/${uuid}`);
+        return this.http.get<Role[]>(url);
     }
 }

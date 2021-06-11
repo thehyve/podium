@@ -14,13 +14,13 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.search.SearchUser;
 import nl.thehyve.podium.service.mapper.UserMapper;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.elasticsearch.core.completion.Completion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.*;
 
 public abstract class UserMapperDecorator implements UserMapper {
 
@@ -31,24 +31,22 @@ public abstract class UserMapperDecorator implements UserMapper {
     @Override
     public SearchUser userToSearchUser(User user) {
         SearchUser searchUser = delegate.userToSearchUser(user);
-        String[] fullname = { searchUser.getFirstName(), searchUser.getLastName()};
-        Completion fullNameCompletion = new Completion(fullname);
-
-        // Set the elasticsearch payload as json
-        JSONObject userUUID = new JSONObject();
-
-        try {
-            userUUID.put("uuid", searchUser.getUuid());
-            fullNameCompletion.setPayload(userUUID.toString());
-        } catch(Exception ex) {
-            //
-        }
-
-        String outputString
-            = searchUser.getFirstName() + " " + searchUser.getLastName() + " (" + searchUser.getEmail() + ")";
-
-        fullNameCompletion.setOutput(outputString);
-
+        String fullName = Stream.of(
+            searchUser.getFirstName(),
+            searchUser.getLastName(),
+            "(" + searchUser.getEmail() + ")")
+            .filter(part -> part != null && !part.isEmpty())
+            .collect(Collectors.joining(" "));
+        searchUser.setFullName(fullName);
+        String[] inputs = Stream.of(
+            fullName,
+            searchUser.getFirstName(),
+            searchUser.getLastName(),
+            searchUser.getLogin(),
+            searchUser.getEmail())
+            .filter(part -> part != null && !part.isEmpty())
+            .toArray(String[]::new);
+        Completion fullNameCompletion = new Completion(inputs);
         searchUser.setFullNameSuggest(fullNameCompletion);
         return searchUser;
     }
@@ -75,14 +73,8 @@ public abstract class UserMapperDecorator implements UserMapper {
         }
 
         SearchUser searchUser = new SearchUser();
-        searchUser.setFullName(entry.getText().toString());
-
-        try {
-            JSONObject uuidObject = new JSONObject(entry.getPayloadAsString());
-            searchUser.setUuid((String) uuidObject.get("uuid"));
-        } catch(Exception ex) {
-
-        }
+        searchUser.setFullName(entry.getHit().getSourceAsMap().getOrDefault("fullName", "").toString());
+        searchUser.setUuid((String) entry.getHit().getSourceAsMap().get("uuid"));
 
         return searchUser;
     }

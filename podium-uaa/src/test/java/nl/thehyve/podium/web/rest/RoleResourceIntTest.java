@@ -17,7 +17,6 @@ import nl.thehyve.podium.domain.User;
 import nl.thehyve.podium.exceptions.UserAccountException;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.RoleRepository;
-import nl.thehyve.podium.repository.search.RoleSearchRepository;
 import nl.thehyve.podium.service.RoleService;
 import nl.thehyve.podium.service.UserService;
 import nl.thehyve.podium.service.mapper.RoleMapper;
@@ -72,9 +71,6 @@ public class RoleResourceIntTest {
     private RoleMapper roleMapper;
 
     @Autowired
-    private RoleSearchRepository roleSearchRepository;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -100,11 +96,12 @@ public class RoleResourceIntTest {
      * Create an entity for this test.
      */
     public Role createEntity() throws UserAccountException {
-        Authority authority = authorityRepository.findOne(AuthorityConstants.REVIEWER);
-        if (authority == null) {
-            authority = new Authority(AuthorityConstants.REVIEWER);
-            authorityRepository.save(authority);
-        }
+        Authority authority = authorityRepository.findById(AuthorityConstants.REVIEWER)
+            .orElseGet(() -> {
+                Authority reviewerAuthority = new Authority(AuthorityConstants.REVIEWER);
+                authorityRepository.save(reviewerAuthority);
+                return reviewerAuthority;
+            });
         Role role = new Role(authority);
         User user;
         Optional<User> object = userService.getDomainUserWithAuthoritiesByLogin("test");
@@ -126,7 +123,6 @@ public class RoleResourceIntTest {
 
     @Before
     public void initTest() throws UserAccountException {
-        roleSearchRepository.deleteAll();
         role = createEntity();
     }
 
@@ -154,7 +150,7 @@ public class RoleResourceIntTest {
         // Get all the roleList
         restRoleMockMvc.perform(get("/api/roles?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(role.getId().intValue())));
     }
 
@@ -166,7 +162,7 @@ public class RoleResourceIntTest {
         // Get the role
         restRoleMockMvc.perform(get("/api/roles/{id}", role.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(role.getId().intValue()));
     }
 
@@ -185,7 +181,7 @@ public class RoleResourceIntTest {
         int databaseSizeBeforeUpdate = roleRepository.findAll().size();
 
         // Update the role
-        Role updatedRole = roleRepository.findOne(role.getId());
+        Role updatedRole = roleRepository.findById(role.getId()).get();
 
         restRoleMockMvc.perform(put("/api/roles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -196,10 +192,6 @@ public class RoleResourceIntTest {
         List<Role> roleList = roleRepository.findAll();
         assertThat(roleList).hasSize(databaseSizeBeforeUpdate);
         Role testRole = roleList.get(roleList.size() - 1);
-
-        // Validate the Role in Elasticsearch
-        Role roleEs = roleSearchRepository.findOne(testRole.getId());
-        assertThat(roleEs).isEqualToComparingFieldByField(testRole);
     }
 
     @Test
@@ -232,18 +224,6 @@ public class RoleResourceIntTest {
         // Validate the database is not empty
         List<Role> roleList = roleRepository.findAll();
         assertThat(roleList).hasSize(databaseSizeBeforeDelete);
-    }
-
-    @Test
-    public void searchRole() throws Exception {
-        // Initialize the database
-        roleService.save(role);
-
-        // Search the role
-        restRoleMockMvc.perform(get("/api/_search/roles?query=id:" + role.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(role.getId().intValue())));
     }
 
     @Test

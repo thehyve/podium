@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.thehyve.podium.common.IdentifiableUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
@@ -37,7 +38,8 @@ public class CustomUserAuthenticationConverter implements UserAuthenticationConv
     private static final String UUID_KEY = "uuid";
     private static final String ORGANISATION_ROLES_KEY = "organisation_roles";
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public Map<String, ?> convertUserAuthentication(Authentication authentication) {

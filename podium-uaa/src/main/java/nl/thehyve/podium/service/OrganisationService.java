@@ -15,8 +15,6 @@ import nl.thehyve.podium.domain.Organisation;
 import nl.thehyve.podium.domain.Role;
 import nl.thehyve.podium.repository.AuthorityRepository;
 import nl.thehyve.podium.repository.OrganisationRepository;
-import nl.thehyve.podium.repository.search.OrganisationSearchRepository;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.mapper.OrganisationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +24,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Organisation.
@@ -47,9 +45,6 @@ public class OrganisationService {
     private OrganisationRepository organisationRepository;
 
     @Autowired
-    private OrganisationSearchRepository organisationSearchRepository;
-
-    @Autowired
     private AuthorityRepository authorityRepository;
 
     @Autowired
@@ -60,11 +55,11 @@ public class OrganisationService {
 
     @Transactional(readOnly = true)
     public Set<Authority> findOrganisationAuthorities() {
-        Set<Authority> result = new LinkedHashSet<>(3);
-        result.add(authorityRepository.findOne(AuthorityConstants.ORGANISATION_ADMIN));
-        result.add(authorityRepository.findOne(AuthorityConstants.ORGANISATION_COORDINATOR));
-        result.add(authorityRepository.findOne(AuthorityConstants.REVIEWER));
-        return result;
+        List<String> roles = Arrays.asList(
+            AuthorityConstants.ORGANISATION_ADMIN,
+            AuthorityConstants.ORGANISATION_COORDINATOR,
+            AuthorityConstants.REVIEWER);
+        return new LinkedHashSet<>(authorityRepository.findAllById(roles));
     }
 
     /**
@@ -119,8 +114,6 @@ public class OrganisationService {
             organisation.setRoles(roles);
         }
 
-        SearchOrganisation searchOrganisation = organisationMapper.organisationToSearchOrganisation(organisation);
-        organisationSearchRepository.save(searchOrganisation);
         return organisation;
     }
 
@@ -274,21 +267,5 @@ public class OrganisationService {
 
         organisation.setDeleted(true);
         organisationRepository.save(organisation);
-        organisationSearchRepository.delete(organisation.getId());
     }
-
-    /**
-     * Search for the organisation corresponding to the query.
-     *
-     * @param query the query of the search
-     * @param pageable Pagination object of the requested page
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<SearchOrganisation> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Organisations for query {}", query);
-        Page<SearchOrganisation> result = organisationSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
-    }
-
 }

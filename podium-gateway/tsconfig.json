@@ -1,22 +1,32 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
+        "target": "es2015",
+        "module": "es2020",
         "moduleResolution": "node",
         "sourceMap": true,
-        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "removeComments": false,
+        "strict": false,
         "noImplicitAny": false,
-        "suppressImplicitAnyIndexErrors": true,
-        "outDir": "target/www/app",
-        "lib": ["es6", "dom"],
-        "typeRoots": [
-            "node_modules/@types"
-        ]
+        "noImplicitReturns": false,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+        "strictPropertyInitialization": false,
+        "suppressExcessPropertyErrors": true,
+        "outDir": "target/classes/static/app",
+        "lib": ["es2019", "dom"],
+        "baseUrl": "./",
+        "paths": {
+            "app/*": ["src/main/webapp/app/*"]
+        },
+        "importHelpers": true,
+        "downlevelIteration": true,
+        "declaration": false,
+        "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "src/main/webapp/app",
-        "src/test/javascript"
-    ]
+    "angularCompilerOptions": {
+        "strictInjectionParameters": false,
+        "strictTemplates": false,
+        "strictInputAccessModifiers": false,
+        "preserveWhitespaces": true
+    }
 }

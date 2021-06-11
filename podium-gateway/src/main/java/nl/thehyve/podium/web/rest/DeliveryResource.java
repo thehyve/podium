@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.annotations.*;
@@ -56,7 +55,6 @@ public class DeliveryResource {
     @GetMapping("/requests/{requestUuid}/deliveries")
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<List<DeliveryProcessRepresentation>> getDeliveryProcesses(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid
     ) throws URISyntaxException, ActionNotAllowed {
@@ -77,7 +75,6 @@ public class DeliveryResource {
      */
     @GetMapping("/requests/{requestUuid}/startDelivery")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<RequestRepresentation> startDelivery(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid
     ) throws URISyntaxException, ActionNotAllowed {
@@ -100,7 +97,6 @@ public class DeliveryResource {
      */
     @PostMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/release")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<DeliveryProcessRepresentation> releaseDelivery(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid,
         @PathVariable("deliveryProcessUuid") UUID deliveryProcessUuid,
@@ -125,7 +121,6 @@ public class DeliveryResource {
      */
     @PostMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/cancel")
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<DeliveryProcessRepresentation> cancelDelivery(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid,
         @PathVariable("deliveryProcessUuid") UUID deliveryProcessUuid,
@@ -150,7 +145,6 @@ public class DeliveryResource {
     @GetMapping("/requests/{requestUuid}/deliveries/{deliveryProcessUuid}/received")
     @SecuredByRequestOwner
     @SecuredByRequestOrganisationCoordinator
-    @Timed
     public ResponseEntity<DeliveryProcessRepresentation> deliveryReceived(
         @RequestUuidParameter @PathVariable("requestUuid") UUID requestUuid,
         @PathVariable("deliveryProcessUuid") UUID deliveryProcessUuid

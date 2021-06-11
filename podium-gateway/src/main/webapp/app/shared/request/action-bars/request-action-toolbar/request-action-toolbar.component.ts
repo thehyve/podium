@@ -8,11 +8,9 @@
  *
  */
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
-import { Form, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { RequestBase } from '../../request-base';
 import {
-    RequestStatusOptions, RequestReviewStatusOptions,
     RequestOverviewStatusOption
 } from '../../request-status/request-status.constants';
 import { RequestAccessService } from '../../request-access.service';
@@ -48,7 +46,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     @Input() form: NgForm;
     @Input() request: RequestBase;
-    @Input() isUpdating: false;
+    @Input() isUpdating: boolean;
 
     @Output() resetChange = new EventEmitter();
     @Output() cancelChange = new EventEmitter();
@@ -60,8 +58,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
     @Output() submitRequestChange = new EventEmitter();
     @Output() validateRequestChange = new EventEmitter();
     @Output() requireRevisionChange = new EventEmitter();
-    @Output() reviewAdviseApproved = new EventEmitter();
-    @Output() reviewAdviseRejected = new EventEmitter();
     @Output() startDeliveryChange = new EventEmitter();
     @Output() closeRequestChange = new EventEmitter();
     @Output() finalizeRequestChange = new EventEmitter();
@@ -120,7 +116,7 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
         return this.checks.validation && this.request.hasAttachmentsTypes;
     }
 
-    canSubmitDraft() {
+    canSubmit() {
         return this.form.form.valid && this.request.hasAttachmentsTypes;
     }
 
@@ -142,13 +138,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     isRequestingResearcher(): boolean {
         return this.requestAccessService.isRequesterOf(this.request);
-    }
-
-    isReviewable(): boolean {
-        if (!this.request.reviewRound) {
-            return false;
-        }
-        return this.requestAccessService.isReviewable(this.request.reviewRound.reviewFeedback);
     }
 
     saveDraft() {
@@ -189,14 +178,6 @@ export class RequestActionToolbarComponent implements OnInit, OnDestroy {
 
     submitRequest() {
         this.submitRequestChange.emit(true);
-    }
-
-    reviewApproved() {
-        this.reviewAdviseApproved.emit(true);
-    }
-
-    reviewRejected() {
-        this.reviewAdviseRejected.emit(true);
     }
 
     startDelivery() {

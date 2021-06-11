@@ -13,7 +13,6 @@ import lombok.Setter;
 import nl.thehyve.podium.common.domain.AbstractAuditingEntity;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -26,7 +25,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "request_template")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "requesttemplate")
 @Data
 public class RequestTemplate extends AbstractAuditingEntity {
     @Id

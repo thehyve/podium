@@ -26,6 +26,8 @@ spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
         name: podiumUaa
+        hikari:
+            jdbc-url: ${spring.datasource.url}
 #        username: podiumUser
 #        password: podiumUser
     jpa:
@@ -40,10 +42,6 @@ spring:
             hibernate.cache.hazelcast.instance_name: podiumUaa
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
-    data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes:
     mail:
         host: localhost
         port: 25
@@ -51,9 +49,8 @@ spring:
         password:
     thymeleaf:
         cache: true
-
-liquibase:
-    contexts: prod
+    liquibase:
+        contexts: prod
 
 server:
     port: 9999
@@ -78,19 +75,6 @@ podium:
         client-authorization:
             clientId: internal
             clientSecret: internal
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: false
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: podiumUaa
-        prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
-            reportFrequency: 60 # in seconds
     logging:
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false

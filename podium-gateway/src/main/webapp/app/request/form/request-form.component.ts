@@ -8,18 +8,18 @@
  *
  */
 
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { RequestFormService } from './request-form.service';
-import {
-    RequestDetail,
-    RequestType,
-    PrincipalInvestigator,
-    RequestBase,
-    RequestService,
-    Principal,
-    User
-} from '../../shared';
+import { RequestDetail } from '../../shared/request/request-detail';
+import { RequestType } from '../../shared/request/request-type';
+import { PrincipalInvestigator } from '../../shared/request/principal-investigator';
+import { RequestBase } from '../../shared/request/request-base';
+import { RequestService } from '../../shared/request/request.service';
+import { User } from '../../shared/user/user.model';
+import { AccountService } from '../../core/auth/account.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestFormSubmitDialogComponent } from './request-form-submit-dialog.component';
 import { OrganisationSelectorComponent } from '../../shared/organisation-selector/organisation-selector.component';
@@ -32,7 +32,6 @@ import { AttachmentComponent } from '../../shared/attachment/upload-attachment/a
 import { AttachmentListComponent } from '../../shared/attachment/attachment-list/attachment-list.component';
 import { NgForm } from '@angular/forms';
 import { OrganisationService } from '../../shared/organisation/organisation.service';
-import { Observable } from 'rxjs/Observable';
 import { RequestTemplate } from '../../shared/request/request-template';
 
 @Component({
@@ -41,7 +40,7 @@ import { RequestTemplate } from '../../shared/request/request-template';
     styleUrls: ['request-form.scss']
 })
 
-export class RequestFormComponent implements OnInit {
+export class RequestFormComponent implements OnInit, OnDestroy {
 
     private currentUser: User;
 
@@ -74,12 +73,14 @@ export class RequestFormComponent implements OnInit {
 
     private revisionId: string;
 
+    private requestUpdateSubscription: Subscription = null;
+
     constructor(private requestFormService: RequestFormService,
                 private requestAccessService: RequestAccessService,
                 private requestService: RequestService,
                 private router: Router,
                 private activatedRoute: ActivatedRoute,
-                private principal: Principal,
+                private accountService: AccountService,
                 private modalService: NgbModal,
                 private attachmentService: AttachmentService,
                 private organisationService: OrganisationService) {
@@ -90,11 +91,17 @@ export class RequestFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentUser = account;
             this.requestTypeOptions = RequestType;
             this.initializeRequestForm();
         });
+    }
+
+    ngOnDestroy() {
+        if (this.requestUpdateSubscription !== null) {
+            this.requestUpdateSubscription.unsubscribe();
+        }
     }
 
     onFinishedUploadAttachment(success: boolean) {
@@ -135,16 +142,16 @@ export class RequestFormComponent implements OnInit {
         if (this.router.url.substring(0, 13) === '/requests/new' && !this.isInRevision) {
             this.initializeBaseRequest();
         } else {
-            this.activatedRoute.paramMap
-                .switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid')))
+            this.requestUpdateSubscription = this.activatedRoute.paramMap
+                .pipe(switchMap((params: ParamMap) => this.requestService.findByUuid(params.get('uuid'))))
                 .subscribe(
                     request => {
                         this.requestFormService.request = request;
                         this.selectRequest(this.requestFormService.request);
                         this.getAttachments(this.requestFormService.request);
                     },
-                    error => {
-                        this.onError(error);
+                    (err) => {
+                        this.onError(err);
                         this.router.navigate(['404'])
                     }
                 );
@@ -173,25 +180,24 @@ export class RequestFormComponent implements OnInit {
 
             // Get organisations by uuid
             for (let collection of requestTemplate.organisations) {
-                let obx = this.organisationService.findByUuid(collection)
-                    .map((res: Organisation) => res)
-                    .catch((error, caught) => {
+                let obx = this.organisationService.findByUuid(collection).pipe(
+                    map((res: Organisation) => res),
+                    catchError(() => {
                         this.listOfInvalidOrganisationUUID.push(collection);
-                        return Observable.of({});
-                    });
+                        return of({});
+                    }));
                 organisationObservables.push(obx);
             }
 
             // Display as selected organisation when uuids are matched
-            Observable.forkJoin(organisationObservables).subscribe(
+            forkJoin(organisationObservables).subscribe(
                 dataArray => {
                     this.requestBase.organisations = dataArray.filter(obj => {
                         return Object.keys(obj).length > 0;
                     });
                     this.organisationSelectorComponent.organisations = this.requestBase.organisations;
                 },
-                error => {
-                },
+                () => {},
                 () => {
                     // TODO: Display invalid uuids in error alert
                     if (this.listOfInvalidOrganisationUUID.length) {
@@ -219,13 +225,13 @@ export class RequestFormComponent implements OnInit {
                             this.requestService.getTemplateByUuid(params['template_uuid'])
                                 .subscribe(
                                     (requestTemplate) => this.populateRequestDetails(requestTemplate),
-                                    (error) => this.onError(error)
+                                    (err) => this.onError(err)
                                 )
                         }
                     });
                     this.getAttachments(requestBase);
                 },
-                (error) => this.onError('Error initializing base request')
+                () => this.onError('Error initializing base request')
             );
     }
 
@@ -257,7 +263,7 @@ export class RequestFormComponent implements OnInit {
             && RequestAccessService.isRequestStatus(requestBase, RequestOverviewStatusOption.Revision);
     }
 
-    updateRequestType(selectedRequestType, event) {
+    updateRequestType(selectedRequestType) {
         let _idx = this.requestDetail.requestType.indexOf(selectedRequestType.value);
         if (_idx < 0) {
             this.requestDetail.requestType.push(selectedRequestType.value);
@@ -324,7 +330,7 @@ export class RequestFormComponent implements OnInit {
         this.requestBase.requestDetail.principalInvestigator = this.requestDetail.principalInvestigator;
         this.requestService.saveRequestRevision(this.requestBase)
         // Submit the request
-            .flatMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid))
+            .pipe(mergeMap(() => this.requestService.submitRequestRevision(this.requestBase.uuid)))
             .subscribe(
                 (res) => this.onSuccess(res),
                 (err) => this.onError(err)
@@ -363,7 +369,8 @@ export class RequestFormComponent implements OnInit {
         this.requestService.requestUpdateEvent(result);
     }
 
-    private onError(error) {
+    private onError(err: any) {
+        console.error(err);
         this.isUpdating = false;
         this.error = 'ERROR';
         this.success = null;

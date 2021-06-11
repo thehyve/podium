@@ -36,11 +36,9 @@
     <logger name="javax.mail" level="WARN"/>
     <logger name="javax.xml.bind" level="WARN"/>
     <logger name="ch.qos.logback" level="WARN"/>
-    <logger name="com.codahale.metrics" level="WARN"/>
     <logger name="com.netflix" level="WARN"/>
-    <logger name="com.ryantenney" level="WARN"/>
     <logger name="com.sun" level="WARN"/>
-    <logger name="com.zaxxer" level="WARN"/>
+    <logger name="com.zaxxer" level="ERROR"/>
     <logger name="io.undertow" level="WARN"/>
     <logger name="io.undertow.websockets.jsr" level="ERROR"/>
     <logger name="org.apache" level="WARN"/>
@@ -50,6 +48,7 @@
     <logger name="org.hibernate.validator" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
     <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
+    <logger name="org.postgresql" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.springframework.web" level="WARN"/>
     <logger name="org.springframework.security" level="WARN"/>
@@ -57,16 +56,22 @@
     <logger name="org.thymeleaf" level="WARN"/>
     <logger name="org.xnio" level="WARN"/>
     <logger name="springfox" level="WARN"/>
+    <logger name="Validator" level="INFO"/>
     <logger name="sun.rmi" level="WARN"/>
     <logger name="liquibase" level="WARN"/>
     <logger name="LiquibaseSchemaResolver" level="INFO"/>
     <logger name="sun.rmi.transport" level="WARN"/>
+    <logger name="org.flowable.common.engine" level="WARN"/>
+    <logger name="org.flowable.common.spring" level="WARN"/>
     <logger name="org.flowable.engine" level="WARN"/>
     <logger name="org.flowable.engine.impl" level="WARN"/>
     <logger name="org.flowable.engine.impl.db" level="WARN"/>
     <logger name="org.flowable.engine.impl.interceptor" level="WARN"/>
-    <logger name="org.flowable.spring.SpringTransactionInterceptor" level="WARN" />
-    <logger name="com.hazelcast.internal.diagnostics.HealthMonitor" level="WARN"/>
+    <logger name="org.flowable.impl" level="WARN"/>
+    <logger name="org.flowable.job" level="WARN"/>
+    <logger name="org.flowable.spring.common.SpringTransactionInterceptor" level="WARN" />
+    <logger name="org.flowable.idm.spring.SpringTransactionInterceptor" level="WARN" />
+    <logger name="com.hazelcast.internal" level="WARN"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>

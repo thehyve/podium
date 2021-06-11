@@ -8,20 +8,20 @@
  *
  */
 
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
-import { Principal } from '../auth/principal.service';
+import { Injectable, OnDestroy } from '@angular/core';
+import { AccountService } from '../../core/auth/account.service';
 import { User } from '../user/user.model';
 import { RequestBase } from './request-base';
 import { OrganisationAuthorityOptions } from '../authority/authority.constants';
 import {
-    RequestStatusOptions, RequestReviewStatusOptions,
+    RequestReviewStatusOptions,
     RequestOverviewStatusOption
 } from './request-status/request-status.constants';
 import { RequestReviewFeedback } from './request-review-feedback';
 import { RequestReviewDecision } from './request-review-decision';
 import { Subscription } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RequestAccessService implements OnDestroy {
 
     private currentUser: User;
@@ -58,7 +58,7 @@ export class RequestAccessService implements OnDestroy {
     }
 
     constructor(
-        private principal: Principal
+        private accountService: AccountService
     ) {
         this.registerChangeInAuthentication();
     }
@@ -70,7 +70,7 @@ export class RequestAccessService implements OnDestroy {
     }
 
     registerChangeInAuthentication() {
-        this.authenticationSubscription = this.principal.getAuthenticationState().subscribe(
+        this.authenticationSubscription = this.accountService.getAuthenticationState().subscribe(
             (identity) => {
                 this.currentUser = identity;
             },

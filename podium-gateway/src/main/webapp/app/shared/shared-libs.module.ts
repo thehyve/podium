@@ -8,66 +8,32 @@
  *
  */
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule, Http } from '@angular/http';
 import { CommonModule } from '@angular/common';
-import { NgJhipsterModule } from 'ng-jhipster';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CookieModule } from 'ngx-cookie';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { UiSwitchModule } from 'angular2-ui-switch';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import { Ng2DeviceDetectorModule } from 'ng2-device-detector';
-
-export function HttpLoaderFactory(http: Http) {
-    return new TranslateHttpLoader(http, 'i18n/', '.json');
-}
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
     imports: [
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [Http]
-            },
-        }),
-        NgbModule.forRoot(),
-        NgJhipsterModule.forRoot({
-            i18nEnabled: true,
-            defaultI18nLang: 'en'
-        }),
-        InfiniteScrollModule,
+        CommonModule,
+        FormsModule,
         TooltipModule.forRoot(),
         TabsModule.forRoot(),
-        UiSwitchModule,
-        BsDropdownModule.forRoot(),
-        CookieModule.forRoot(),
-        Ng2DeviceDetectorModule.forRoot()
     ],
     exports: [
+        CommonModule,
         NgbModule,
         FormsModule,
-        HttpModule,
         CommonModule,
-        NgJhipsterModule,
         InfiniteScrollModule,
         TooltipModule,
         TabsModule,
-        UiSwitchModule,
-        BsDropdownModule
-    ]
+        FontAwesomeModule,
+        ReactiveFormsModule,
+    ],
 })
-export class PodiumGatewaySharedLibsModule {
-    constructor(private translate: TranslateService) {
-        translate.addLangs(['en']);
-        translate.setDefaultLang('en');
+export class PodiumGatewaySharedLibsModule { }
 
-        let browserLang = translate.getBrowserLang();
-        translate.use(browserLang.match(/en/) ? browserLang : 'en');
-    }
-}

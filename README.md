@@ -78,11 +78,14 @@ mvn clean install
 Go to your `podium-registry` folder and start the registry with `mvn`.
 The user interface of the registry will be available at [http://localhost:8761](http://localhost:8761).
 
-2. **Start Podium UAA**<br>
+2. **Start ElasticSearch**
+Run `docker run --name podium-elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.6.2`.
+
+3. **Start Podium UAA**<br>
 Open a new terminal and navigate to the `podium-uaa` folder and start the UAA service with 
 `mvn`. The UAA service will be listening to port 9999.
 
-3. **Start Podium Gateway**<br>
+4. **Start Podium Gateway**<br>
 Open a new terminal and run the following commands in the `podium-gateway` folder:
 ```bash
 # start the podium gateway service
@@ -140,7 +143,7 @@ User interface unit tests are run by [Karma] and written with [Jasmine].
 They're located in `src/test/javascript/` in each of the service folders and can be run with:
 
 ```bash
-npm run test
+yarn test
 ```
 
 ### End to end (e2e) testing
@@ -152,8 +155,10 @@ They can only be run against a development environment.
 The reason for this is that the setup steps makes use of routes from podium-uaa [TestResource]. These routes are excluded for production.
 
 **1. Install protractor:**
+
+Part of the dev dependencies:
 ```bash
-npm install --global protractor
+yarn install
 ```
 
 **2. Run a development [environment](#development)**
@@ -164,13 +169,13 @@ npm install --global protractor
 cd podium-gateway/src/test/javascript/
 
 # Run all tests
-protractor
+npx protractor
 
 # Run tests for a specific feature file
-protractor --specs=e2e/features/bbmri-admin-organisations.feature
+npx protractor --specs=e2e/features/bbmri-admin-organisations.feature
 ```
 
-By default the test suite expects the user interface to be available at port 9000.
+By default the test suite expects the user interface to be available at port 8080.
 To change this, set the `baseUrl` setting in [protractor.conf.js](podium-gateway/src/test/javascript/protractor.conf.js).
 
 #### Adding tests

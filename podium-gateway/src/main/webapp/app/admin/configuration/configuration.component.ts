@@ -8,7 +8,6 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
 import { PdmConfigurationService } from './configuration.service';
 
 @Component({

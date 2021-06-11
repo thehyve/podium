@@ -155,8 +155,8 @@ public abstract class RequestMapper {
     public abstract List<RequestRepresentation> detailedRequestsToRequestDTOs(List<Request> requests);
 
     @Mappings({
-        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "clone"),
-        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "clone"),
+        @Mapping(source = "requestDetail", target = "requestDetail", qualifiedByName = "cloneRequestDetail"),
+        @Mapping(source = "revisionDetail", target = "revisionDetail", qualifiedByName = "cloneRequestDetail"),
         @Mapping(target = "id", ignore = true),
         @Mapping(target = "uuid", ignore = true),
         @Mapping(target = "historicEvents", ignore = true),

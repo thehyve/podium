@@ -9,8 +9,9 @@
  */
 import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
+import { EventManager, EventWithContent } from '../../core/util/event-manager.service';
+import { AlertService } from '../../core/util/alert.service';
 import { FieldError } from './field-error';
 
 @Component({
@@ -27,13 +28,13 @@ export class PdmAlertErrorComponent implements OnDestroy {
     alerts: any[];
     cleanHttpErrorListener: Subscription;
 
-    constructor(private alertService: JhiAlertService,
-                private eventManager: JhiEventManager,
+    constructor(private alertService: AlertService,
+                private eventManager: EventManager,
                 private translateService: TranslateService) {
         this.alerts = [];
 
         this.cleanHttpErrorListener = eventManager.subscribe('podiumGatewayApp.httpError', (response) => {
-            let httpResponse = response.content;
+            let httpResponse = (response as EventWithContent<any>).content;
             switch (httpResponse.status) {
                 // connection refused, server not reachable
                 case 0:
@@ -87,7 +88,6 @@ export class PdmAlertErrorComponent implements OnDestroy {
                     msg: key,
                     params: data,
                     timeout: 5000,
-                    toast: this.alertService.isToast(),
                     scoped: true
                 },
                 this.alerts

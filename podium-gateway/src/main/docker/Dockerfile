@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:8-jre-slim
 
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     PODIUM_SLEEP=0

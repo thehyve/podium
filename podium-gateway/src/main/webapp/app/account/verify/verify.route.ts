@@ -8,7 +8,7 @@
  *
  */
 import { Route } from '@angular/router';
-import { UserRouteAccessService } from '../../shared';
+import { UserRouteAccessService } from '../../core/auth/user-route-access.service';
 import { VerifyComponent } from './verify.component';
 
 export const verifyRoute: Route = {
@@ -16,7 +16,8 @@ export const verifyRoute: Route = {
   component: VerifyComponent,
   data: {
     authorities: [],
-    pageTitle: 'verify.title'
+    pageTitle: 'verify.title',
+    rememberPage: false
   },
   canActivate: [UserRouteAccessService]
 };

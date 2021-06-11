@@ -11,7 +11,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UploadOutput, UploadFile, UploadInput, humanizeBytes, UploaderOptions } from 'ngx-uploader';
 import { MAX_UPLOAD_SIZE } from '../attachment.constants';
-import { RequestBase } from '../../request';
+import { RequestBase } from '../../request/request-base';
 import { AttachmentService } from '../attachment.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class AttachmentComponent {
     uploadInput = new EventEmitter<UploadInput>();
     options: UploaderOptions;
     files: UploadFile[];
-    humanizeBytes: Function;
+    humanizeBytes: any;
     dragOver: boolean;
     error: any[];
 

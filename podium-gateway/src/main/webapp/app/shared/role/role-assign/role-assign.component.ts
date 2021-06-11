@@ -8,18 +8,21 @@
  *
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
-import { Observable, Subscription } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { EventManager } from '../../../core/util/event-manager.service';
+import { AlertService } from '../../../core/util/alert.service';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { Role } from '../role.model';
 import { RoleService } from '../role.service';
 import { User } from '../../../shared/user/user.model';
 import { UserService } from '../../../shared/user/user.service';
-import { Principal } from '../../../shared';
+import { AccountService } from '../../../core/auth/account.service';
+import { Account } from '../../../core/auth/account.model';
 import { Authority } from '../../../shared/authority/authority';
 import { ORGANISATION_AUTHORITIES_MAP, ORGANISATION_AUTHORITIES } from '../../../shared/authority/authority.constants';
 import { OrganisationUser } from '../../user/organisation-user.model';
-import { Response } from '@angular/http';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -29,7 +32,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class RoleAssignComponent implements OnInit, OnDestroy {
 
-    currentAccount: any;
+    currentAccount: Account;
     users: { [uuid: string]: User; };
 
     authoritiesMap: { [token: string]: Authority; };
@@ -48,10 +51,10 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     constructor(
         private roleService: RoleService,
         private userService: UserService,
-        private alertService: JhiAlertService,
+        private alertService: AlertService,
         private translateService: TranslateService,
-        private principal: Principal,
-        private eventManager: JhiEventManager
+        private accountService: AccountService,
+        private eventManager: EventManager
     ) {
 
         this.authoritiesMap = ORGANISATION_AUTHORITIES_MAP;
@@ -60,12 +63,12 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.principal.identity().then((account: User) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentAccount = account;
         });
 
         this.registerChangeInRoles();
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK' });
     }
 
     ngOnDestroy() {
@@ -105,13 +108,13 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     public generateOrganisationUser(user: User, role: Role): OrganisationUser {
         let orgUser: OrganisationUser = new OrganisationUser();
 
-        if ( user ) {
+        if (user) {
             orgUser.fullName = user.firstName + ' ' + user.lastName;
             orgUser.uuid = user.uuid;
             orgUser.searchTerm = orgUser.fullName;
         }
 
-        if ( role ) {
+        if (role) {
             orgUser.previousAuthority = role.authority;
             orgUser.authority = role.authority;
             orgUser.isSaved = user.uuid != null;
@@ -132,12 +135,12 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         /**
          * User typeahead datasource observable
          */
-        return Observable.create((observer: any) => {
+        return new Observable((observer: any) => {
             // Runs on every search
             // each organisation user has a 'searchTerm' property that is used as the input and is bound to [(ngModel)]
             // when user types into the input .next is called with the value from the input
-            observer.next({query: organisationUser.searchTerm });
-        }).mergeMap((term: any) => this.userService.suggest(term));
+            observer.next({ query: organisationUser.searchTerm });
+        }).pipe(mergeMap((term: any) => this.userService.suggest(term)));
     }
 
     /**
@@ -149,7 +152,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         // Find and Update role by authority
         let role = this.getRoleByAuthority(user.authority);
         this.updateRole(role, user, false).subscribe(
-            (res) => { this.onSaveSuccess(res, false); },
+            () => { this.onSaveSuccess(false); },
             (err) => { this.onError(err); }
         );
     }
@@ -166,15 +169,15 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         let previousRole = this.getRoleByAuthority(user.previousAuthority);
 
         this.updateRole(previousRole, user, true).subscribe(
-            (previousRes: Response) => {
+            () => {
                 // Add new role
                 let role = this.getRoleByAuthority(user.authority);
                 this.updateRole(role, user, false).subscribe(
-                    (res: Response) => { this.onSaveSuccess(res, false); },
-                    (err: Response) => { this.onError(err); },
+                    () => { this.onSaveSuccess(false); },
+                    (err) => { this.onError(err); },
                 );
             },
-            (err: Response) => { this.onError(err); }
+            (err) => { this.onError(err); }
         );
     }
 
@@ -187,8 +190,8 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         let role = this.getRoleByAuthority(user.authority);
 
         this.updateRole(role, user, true).subscribe(
-            (res: Response) => { this.onSaveSuccess(res, true); },
-            (err: Response) => { this.onError(err); }
+            () => { this.onSaveSuccess(true); },
+            (err) => { this.onError(err); }
         );
     }
 
@@ -239,7 +242,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
      *
      * @param user The UUID of the user
      * @param role The role the user originated from
-     * @returns {Promise<Response>}
      */
     public getPromiseForUserOfRole(user: string, role: Role): Promise<User> {
         let promise: Promise<User> = this.userService.findByUuid(user).toPromise();
@@ -259,7 +261,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     }
 
     public updateRole(role: Role, user: OrganisationUser, remove: boolean) {
-        return Observable.create((observer) => {
+        return new Observable((observer) => {
             if (role) {
                 let userIdx = role.users.indexOf(user.uuid);
 
@@ -269,7 +271,7 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                 } else {
                     // Check if role already has user
                     if (userIdx > -1) {
-                        this.onError({message: 'Cannot add user ' + user.fullName + ' to the same role twice.'});
+                        this.onError({ message: 'Cannot add user ' + user.fullName + ' to the same role twice.' });
                     } else {
                         role.users.push(user.uuid);
                     }
@@ -281,27 +283,23 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
                         (res: Role) => {
                             observer.next(res);
                         },
-                        (res: Response) => {
-                            return Observable.throw(res.json());
+                        (res: HttpErrorResponse) => {
+                            return throwError(res.error);
                         }
                     );
             } else {
-                this.onError({message: 'Cannot find role for authority ' + user.authority });
+                this.onError({ message: 'Cannot find role for authority ' + user.authority });
             }
         });
     }
 
-    private onSaveSuccess(res: Response, isDelete: boolean) {
+    private onSaveSuccess(isDelete: boolean) {
         let notification = isDelete ? 'roleAssign.deleted' : 'roleAssign.saved';
         this.alertService.success(this.translateService.instant(notification));
-        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'userRolesModification', content: 'OK' });
     }
 
-    private onError (error) {
-        this.alertService.error(error.message, null, null);
-    }
-
-    private onSaveError (error) {
+    private onError(error: { message: string; }) {
         this.alertService.error(error.message, null, null);
     }
 
@@ -314,14 +312,14 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
     /**
      * Template features
      */
-    public userAuthorityChange(orgUser: OrganisationUser, event: any) {
+    public userAuthorityChange(orgUser: OrganisationUser) {
         orgUser.isDirty = false;
         if ((orgUser.authority !== orgUser.previousAuthority) && orgUser.isSaved) {
             orgUser.isDirty = true;
         }
     }
 
-    public canAdd(orgUser: OrganisationUser, currentUser: User): boolean {
+    public canAdd(orgUser: OrganisationUser): boolean {
         if (orgUser.uuid && orgUser.previousAuthority !== orgUser.authority && !orgUser.isSaved) {
             return true;
         }

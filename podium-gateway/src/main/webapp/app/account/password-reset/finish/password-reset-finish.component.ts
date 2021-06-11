@@ -7,10 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
 import { PasswordResetFinish } from './password-reset-finish.service';
 
 @Component({
@@ -18,6 +17,8 @@ import { PasswordResetFinish } from './password-reset-finish.service';
     templateUrl: './password-reset-finish.component.html'
 })
 export class PasswordResetFinishComponent implements OnInit, AfterViewInit {
+    @ViewChild("passwordInput") passwordInput: ElementRef;
+
     confirmPassword: string;
     error: string;
     keyMissing: boolean;
@@ -29,8 +30,6 @@ export class PasswordResetFinishComponent implements OnInit, AfterViewInit {
     constructor(
         private passwordResetFinish: PasswordResetFinish,
         private route: ActivatedRoute,
-        private elementRef: ElementRef,
-        private renderer: Renderer,
         private router: Router
     ) {
            }
@@ -44,9 +43,7 @@ export class PasswordResetFinishComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        if (this.elementRef.nativeElement.querySelector('#password') != null) {
-          this.renderer.invokeElementMethod(this.elementRef.nativeElement.querySelector('#password'), 'focus', []);
-        }
+        this.passwordInput?.nativeElement?.focus?.();
     }
 
     finishReset() {

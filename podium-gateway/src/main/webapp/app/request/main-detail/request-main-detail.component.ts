@@ -8,9 +8,9 @@
  *
  */
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { JhiAlertService } from 'ng-jhipster';
-import { RequestBase } from '../../shared/request/request-base';
 import { ActivatedRoute } from '@angular/router';
+import { AlertService } from '../../core/util/alert.service';
+import { RequestBase } from '../../shared/request/request-base';
 import { RequestService } from '../../shared/request/request.service';
 import { RequestDetailComponent } from './detail/request-detail.component';
 import { Attachment } from '../../shared/attachment/attachment.model';
@@ -31,7 +31,7 @@ export class RequestMainDetailComponent implements OnInit {
      * Setup component as ViewChild to access methods inside child.
      * Used for review and method accessors in sibling components
      */
-    @ViewChild(RequestDetailComponent)
+    @ViewChild(RequestDetailComponent, { static: true })
     private requestDetail: RequestDetailComponent;
 
     public _request: RequestBase;
@@ -45,7 +45,7 @@ export class RequestMainDetailComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private requestService: RequestService,
-        private alertService: JhiAlertService,
+        private alertService: AlertService,
         private attachmentService: AttachmentService,
         private requestAccessService: RequestAccessService
     ) {
@@ -126,6 +126,9 @@ export class RequestMainDetailComponent implements OnInit {
      * @returns {boolean}
      */
     canChangeAttachments() {
+        if (!this.request) {
+            return false;
+        }
         let isRequester = this.requestAccessService.isRequesterOf(this.request);
         let isCoordinator = this.requestAccessService.isCoordinatorFor(this.request);
         let isInRevision = this.isInRevision();
@@ -135,6 +138,9 @@ export class RequestMainDetailComponent implements OnInit {
     }
 
     canViewAttachmentTab() {
+        if (!this.request) {
+            return false;
+        }
         return !this.isInRevision() || this.requestAccessService.isCoordinatorFor(this.request);
     }
 

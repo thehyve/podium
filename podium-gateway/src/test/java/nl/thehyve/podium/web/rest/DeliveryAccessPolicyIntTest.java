@@ -109,7 +109,7 @@ public class DeliveryAccessPolicyIntTest extends AbstractGatewayAccessPolicyIntT
         actions.add(newAction()
             .setUrls(getUrlsForUsers(deliveryRequests, delivery3, "/%s/deliveries/%s/release"))
             .setMethod(HttpMethod.POST)
-            .body(new MessageRepresentation())
+            .body(new DeliveryReferenceRepresentation())
             .allow(coordinatorOrganisationA, coordinatorOrganisationAandB));
         // GET /api/requests/{requestUuid}/startDelivery
         actions.add(newAction()

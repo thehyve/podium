@@ -12,18 +12,15 @@ import nl.thehyve.podium.common.config.DefaultProfileUtil;
 import nl.thehyve.podium.common.config.PodiumConstants;
 import nl.thehyve.podium.common.config.PodiumProperties;
 import org.flowable.spring.boot.RestApiAutoConfiguration;
-import org.flowable.spring.boot.SecurityAutoConfiguration;
+import org.flowable.spring.boot.FlowableSecurityAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.MetricsDropwizardAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -38,11 +35,8 @@ import java.util.Collection;
 @ComponentScan(excludeFilters =
     @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class))
 @EnableAutoConfiguration(exclude = {
-    MetricFilterAutoConfiguration.class,
-    MetricRepositoryAutoConfiguration.class,
-    MetricsDropwizardAutoConfiguration.class,
     RestApiAutoConfiguration.class,
-    SecurityAutoConfiguration.class})
+    FlowableSecurityAutoConfiguration.class})
 @EnableConfigurationProperties({PodiumProperties.class, LiquibaseProperties.class})
 @EnableDiscoveryClient
 @EnableZuulProxy
@@ -97,10 +91,5 @@ public class PodiumGatewayApp {
             InetAddress.getLocalHost().getHostAddress(),
             env.getProperty("server.port"),
             env.getActiveProfiles());
-
-        String configServerStatus = env.getProperty("configserver.status");
-        log.info("\n----------------------------------------------------------\n\t" +
-                "Config Server: \t{}\n----------------------------------------------------------",
-            (configServerStatus == null) ? "Not found or not setup for this application" : configServerStatus);
     }
 }

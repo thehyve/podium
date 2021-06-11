@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.resource.InternalUserResource;
 import nl.thehyve.podium.common.security.SerialisedUser;
@@ -15,6 +14,7 @@ import nl.thehyve.podium.common.security.annotations.AnyAuthorisedUser;
 import nl.thehyve.podium.common.security.annotations.OrganisationUuidParameter;
 import nl.thehyve.podium.common.service.dto.UserRepresentation;
 import nl.thehyve.podium.service.UserService;
+import nl.thehyve.podium.service.mapper.*;
 import nl.thehyve.podium.web.rest.dto.ManagedUserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,19 +38,20 @@ public class InternalUserServer implements InternalUserResource {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
-    @Timed
     public ResponseEntity<UserRepresentation> getUser(
         @OrganisationUuidParameter @PathVariable("uuid") UUID uuid) {
         Optional<ManagedUserRepresentation> userOptional = userService.getUserByUuid(uuid);
         if (!userOptional.isPresent()) {
             throw new ResourceNotFound("User not found with uuid " + uuid.toString());
         }
-        return ResponseEntity.ok(userOptional.get());
+        return ResponseEntity.ok(userMapper.managedUserVMToUserDTO(userOptional.get()));
     }
 
     @Override
-    @Timed
     public ResponseEntity<SerialisedUser> getAuthenticatedUserByLogin(@PathVariable("login") String login) {
         Optional<ManagedUserRepresentation> userOptional = userService.getUserWithAuthoritiesByLogin(login);
         if (!userOptional.isPresent()) {
@@ -62,5 +63,4 @@ public class InternalUserServer implements InternalUserResource {
                 user.getUuid(), user.getLogin(), user.getAuthorities(), user.getOrganisationAuthorities())
         );
     }
-
 }

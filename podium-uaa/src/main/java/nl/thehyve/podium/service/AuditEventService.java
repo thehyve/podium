@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -63,11 +64,11 @@ public class AuditEventService {
     }
 
     public Optional<AuditEvent> find(Long id) {
-        return Optional.ofNullable(persistenceAuditEventRepository.findOne(id)).map
+        return persistenceAuditEventRepository.findById(id).map
             (auditEventConverter::convertToAuditEvent);
     }
 
-    public List<AuditEvent> find(String principal, Date after, EventType type) {
+    public List<AuditEvent> find(String principal, Instant after, EventType type) {
         return customAuditEventRepository.findByEventType(principal, after, type);
     }
 

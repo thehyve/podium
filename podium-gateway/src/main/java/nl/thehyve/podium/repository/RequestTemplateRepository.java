@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.repository;
 
-import com.codahale.metrics.annotation.Timed;
 
 import nl.thehyve.podium.domain.RequestTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,7 +17,6 @@ import java.util.UUID;
  * Spring Data JPA repository for the Request Template entity.
  */
 @SuppressWarnings("unused")
-@Timed
 public interface RequestTemplateRepository extends JpaRepository<RequestTemplate,Long> {
 
     RequestTemplate findOneByUuid(UUID requestUuid);

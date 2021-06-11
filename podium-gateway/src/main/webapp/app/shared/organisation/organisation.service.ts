@@ -8,75 +8,55 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 import { Organisation } from './organisation.model';
-import { HttpHelper } from '../util/http-helper';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OrganisationService {
 
-    private resourceUrl = 'podiumuaa/api/organisations';
-    private resourceSearchUrl = 'podiumuaa/api/_search/organisations';
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private http: Http) { }
-
-    create(organisation: Organisation): Observable<Response> {
-        let copy: Organisation = Object.assign({}, organisation);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
+    private getUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/organisations/${path}`);
     }
 
-    update(organisation: Organisation): Observable<Response> {
+    create(organisation: Organisation): Observable<Organisation> {
         let copy: Organisation = Object.assign({}, organisation);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
-        });
+        let url = this.getUrl('')
+        return this.http.post<Organisation>(url, copy);
     }
 
-    find(id: number): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
-        });
+    update(organisation: Organisation): Observable<Organisation> {
+        let copy: Organisation = Object.assign({}, organisation);
+        let url = this.getUrl('');
+        return this.http.put<Organisation>(url, copy);
     }
 
     findAllAvailable(): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/available`).map((res: Response) => {
-            return res.json();
-        });
+        let url = this.getUrl('available');
+        return this.http.get<Organisation>(url);
     }
 
     findByUuid(uuid: string): Observable<Organisation> {
-        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => {
-            return res.json();
+        let url = this.getUrl(`uuid/${uuid}`);
+        return this.http.get<Organisation>(url);
+    }
+
+    activate(uuid: string, activate: boolean): Observable<HttpResponse<any>> {
+        let url = this.getUrl(`${uuid}/activation?value=${activate}`)
+        return this.http.put(url, {}, {
+            observe: 'response'
         });
     }
 
-    query(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceUrl}/admin`, options);
-    }
-
-    activate(uuid: string, activate: boolean): Observable<Response> {
-        return this.http.put(`${this.resourceUrl}/${uuid}/activation?value=${activate}`, {}).map((res: Response) => {
-            return res.json();
-        });
-    }
-
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
-    }
-
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options);
-    }
-
-    findAll(): Observable<Response> {
-        return this.http.get(`${this.resourceUrl}`).map((res: Response) => {
-            return res.json();
-        });
+    delete(uuid: string): Observable<any> {
+        let url = this.getUrl(uuid);
+        return this.http.delete(url);
     }
 
     jsonArrayToOrganisations(arr: any) {

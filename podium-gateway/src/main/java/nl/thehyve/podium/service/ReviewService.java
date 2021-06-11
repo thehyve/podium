@@ -1,6 +1,5 @@
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.*;
 import nl.thehyve.podium.common.exceptions.AccessDenied;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -16,7 +15,6 @@ import nl.thehyve.podium.domain.ReviewFeedback;
 import nl.thehyve.podium.domain.ReviewRound;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.ReviewFeedbackRepository;
-import nl.thehyve.podium.repository.search.ReviewFeedbackSearchRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
 import nl.thehyve.podium.service.mapper.ReviewFeedbackMapper;
@@ -35,7 +33,6 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-@Timed
 public class ReviewService {
 
     private final Logger log = LoggerFactory.getLogger(ReviewService.class);
@@ -54,9 +51,6 @@ public class ReviewService {
 
     @Autowired
     private ReviewFeedbackRepository reviewFeedbackRepository;
-
-    @Autowired
-    private ReviewFeedbackSearchRepository reviewFeedbackSearchRepository;
 
     @Autowired
     private RequestReviewProcessService requestReviewProcessService;
@@ -207,7 +201,6 @@ public class ReviewService {
      * @throws ActionNotAllowed when the request is not in status 'Review', the feedback is not part of the request, or
      * the feedback has already been saved before.
      */
-    @Timed
     public RequestRepresentation saveReviewFeedback(
         AuthenticatedUser user,
         UUID requestUuid,
@@ -255,7 +248,6 @@ public class ReviewService {
 
         feedback = reviewFeedbackMapper.safeUpdateReviewFeedbackFromDTO(feedbackBody, feedback);
         feedback = reviewFeedbackRepository.save(feedback);
-        reviewFeedbackSearchRepository.save(feedback);
         entityManager.flush();
         entityManager.refresh(request);
 

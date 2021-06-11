@@ -7,31 +7,28 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { OverviewServiceConfig } from '../../shared/overview/overview.service.config';
-import { OverviewService } from '../../shared';
-import { RequestBase } from '../../shared/request';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+
+import { OverviewService } from '../../shared/overview/overview.service';
+import { RequestBase } from '../../shared/request/request-base';
 import { Router, ActivatedRoute } from '@angular/router';
-import { RequestFormService } from '../form';
+import { RequestFormService } from '../form/request-form.service';
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RequestDraftDeleteModalComponent } from './delete-request-draft-modal.component';
 import { RequestOverviewPath } from './request-overview.constants';
-import { Response, Http } from '@angular/http';
-import { Overview } from '../../shared';
+import { Overview } from '../../shared/overview/overview';
 import { RequestStatusSidebarComponent } from '../../shared/request/status-sidebar/status-sidebar.component';
-import { UserGroupAuthority } from '../../shared';
+import { UserGroupAuthority } from '../../shared/authority/authority.constants';
 import {
     RequestStatusSidebarOptions
 } from '../../shared/request/status-sidebar/status-sidebar-options';
-import { RequestType } from '../../shared/request';
-import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
-import { RequestOverviewStatusOption } from '../../shared/request/request-status';
-
-let overviewConfig: OverviewServiceConfig = {
-    resourceUrl: 'api/requests',
-    resourceSearchUrl: 'api/_search/requests'
-};
+import { RequestType } from '../../shared/request/request-type';
+import { parseLinks } from '../../shared/util/parse-links-util';
+import { EventManager } from '../../core/util/event-manager.service';
+import { RequestOverviewStatusOption } from '../../shared/request/request-status/request-status.constants';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
 /**
  * Request overview component.
@@ -44,16 +41,25 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: Http) => {
-                return new OverviewService(http, overviewConfig);
+            useFactory: (
+                config: ApplicationConfigService,
+                http: HttpClient,
+            ) => {
+                let serviceConfig = {
+                    getEndpoint(path: string) {
+                        return config.getEndpointFor(`api/requests/${path}`);
+                    },
+                };
+                return new OverviewService(serviceConfig, http);
             },
             deps: [
-                Http
+                ApplicationConfigService,
+                HttpClient
             ]
         }
     ]
 })
-export class RequestOverviewComponent extends Overview implements OnInit, OnDestroy {
+export class RequestOverviewComponent extends Overview implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild(RequestStatusSidebarComponent)
     private requestSidebarComponent: RequestStatusSidebarComponent;
@@ -72,8 +78,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
     constructor(
         private requestFormService: RequestFormService,
-        private eventManager: JhiEventManager,
-        private parseLinks: JhiParseLinks,
+        private eventManager: EventManager,
         private modalService: NgbModal,
         private overviewService: OverviewService,
         protected router: Router,
@@ -84,8 +89,9 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.activeStatus = this.overviewService.activeStatus || RequestOverviewStatusOption.All;
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
-            (res: Response) => this.processAvailableRequests(res.json(), res.headers),
-            (err): any => this.onError(err)
+            (res: HttpResponse<RequestBase[]>) =>
+                this.processAvailableRequests(res.body, res.headers),
+            () => this.onError()
         );
     }
 
@@ -103,7 +109,9 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
             default:
                 console.error('No user group authority', this.routePath);
         }
+    }
 
+    ngAfterViewInit() {
         this.registerChanges();
 
         this.fetchRequestsFor(this.activeStatus);
@@ -129,7 +137,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
     registerChanges() {
         this.eventSubscriber = this.eventManager
             .subscribe('requestListModification',
-                (response) => this.fetchRequestsFor(this.activeStatus));
+                () => this.fetchRequestsFor(this.activeStatus));
 
 
         this.sidebarSubscription = this.requestSidebarComponent.onStatusChange.subscribe(
@@ -161,8 +169,8 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         this.router.navigate(['./requests/detail', request.uuid]);
     }
 
-    processAvailableRequests(requests, headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+    processAvailableRequests(requests: RequestBase[], headers) {
+        this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.availableRequests = requests;
@@ -185,7 +193,7 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
 
         this.overviewService
             .findRequestsForOverview(this.getPageParams(), option, this.userGroupAuthority)
-            .subscribe((res: Response) => {
+            .subscribe((res) => {
                 this.overviewService.overviewUpdateEvent(res);
                 this.activeStatus = this.overviewService.activeStatus;
             });
@@ -220,16 +228,20 @@ export class RequestOverviewComponent extends Overview implements OnInit, OnDest
         return this.activeStatus === activeStatus.option;
     }
 
-    private onSuccess(result) {
+    private onSuccess() {
         this.error = null;
         this.success = 'SUCCESS';
         window.scrollTo(0, 0);
     }
 
-    private onError(error) {
+    private onError() {
         this.error = 'ERROR';
         this.success = null;
         window.scrollTo(0, 0);
+    }
+
+    getRequestId(_index, request: RequestBase) {
+        return request.id;
     }
 
 }

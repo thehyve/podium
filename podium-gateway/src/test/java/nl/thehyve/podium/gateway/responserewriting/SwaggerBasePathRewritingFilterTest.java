@@ -16,8 +16,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import static nl.thehyve.podium.gateway.responserewriting.SwaggerBasePathRewritingFilter.DEFAULT_URL;
 import static org.junit.Assert.*;
-import static springfox.documentation.swagger2.web.Swagger2Controller.DEFAULT_URL;
 
 /**
  * Tests SwaggerBasePathRewritingFilter class.

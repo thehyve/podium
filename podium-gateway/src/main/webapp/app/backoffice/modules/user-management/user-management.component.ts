@@ -8,22 +8,19 @@
  *
  */
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Response, Http } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
-import { Principal } from '../../../shared/auth/principal.service';
+import { parseLinks } from '../../../shared/util/parse-links-util';
+import { EventManager } from '../../../core/util/event-manager.service';
+import { AccountService } from '../../../core/auth/account.service';
+import { Account } from '../../../core/auth/account.model';
 import { UserService } from '../../../shared/user/user.service';
 import { User } from '../../../shared/user/user.model';
 import { Overview } from '../../../shared/overview/overview';
 import { OverviewService } from '../../../shared/overview/overview.service';
-import { OverviewServiceConfig } from '../../../shared/overview/overview.service.config';
 import { Subscription } from 'rxjs';
 import { UserGroupAuthority } from '../../../shared/authority/authority.constants';
-
-let overviewConfig: OverviewServiceConfig = {
-    resourceUrl: 'podiumuaa/api/users',
-    resourceSearchUrl: 'podiumuaa/api/_search/users'
-};
+import { ApplicationConfigService } from '../../../core/config/application-config.service';
 
 @Component({
     selector: 'pdm-user-mgmt',
@@ -31,18 +28,27 @@ let overviewConfig: OverviewServiceConfig = {
     providers: [
         {
             provide: OverviewService,
-            useFactory: (http: Http) => {
-                return new OverviewService(http, overviewConfig);
+            useFactory: (
+                config: ApplicationConfigService,
+                http: HttpClient,
+            ) => {
+                let serviceConfig = {
+                    getEndpoint(path: string) {
+                        return config.getUaaEndpoint(`api/users/${path}`);
+                    },
+                };
+                return new OverviewService(serviceConfig, http);
             },
             deps: [
-                Http
+                ApplicationConfigService,
+                HttpClient
             ]
         }
     ]
 })
 export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
-    currentAccount: any;
+    currentAccount: Account;
     users: User[];
     error: any;
     success: any;
@@ -52,10 +58,8 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     constructor(
         private userService: UserService,
-        private parseLinks: JhiParseLinks,
-        private alertService: JhiAlertService,
-        private principal: Principal,
-        private eventManager: JhiEventManager,
+        private accountService: AccountService,
+        private eventManager: EventManager,
         private overviewService: OverviewService,
         protected activatedRoute: ActivatedRoute,
         protected router: Router
@@ -63,13 +67,14 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
         super(router, activatedRoute);
 
         this.overviewSubscription = this.overviewService.onOverviewUpdate.subscribe(
-            (res: Response) => this.processAvailableUsers(res.json(), res.headers)
+            (res: HttpResponse<User[]>) =>
+                this.processAvailableUsers(res.body, res.headers)
         );
     }
 
     ngOnInit() {
         this.userGroupAuthority = this.activatedRoute.snapshot.data['userAuthorityGroup'];
-        this.principal.identity().then((account) => {
+        this.accountService.identity().subscribe((account) => {
             this.currentAccount = account;
             this.fetchUsers();
             this.registerChangeInUsers();
@@ -92,7 +97,7 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
         });
     }
 
-    unlock (user) {
+    unlock(user) {
         this.userService.unlock(user).subscribe(
             response => {
                 if (response.status === 200) {
@@ -113,17 +118,17 @@ export class UserMgmtComponent extends Overview implements OnInit, OnDestroy {
 
     fetchUsers() {
         this.overviewService.findUsersForOverview(this.userGroupAuthority, this.getPageParams())
-            .subscribe((res: Response) => this.overviewService.overviewUpdateEvent(res));
+            .subscribe((res) => this.overviewService.overviewUpdateEvent(res));
     }
 
-    processAvailableUsers (users: User[], headers) {
-        this.links = this.parseLinks.parse(headers.get('link'));
+    processAvailableUsers(users: User[], headers) {
+        this.links = parseLinks(headers.get('link'));
         this.totalItems = headers.get('x-total-count');
         this.queryCount = this.totalItems;
         this.users = users;
     }
 
-    trackIdentity (index, item: User) {
+    trackIdentity(index, item: User) {
         return item.id;
     }
 }

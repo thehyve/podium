@@ -7,50 +7,42 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { SessionStorageService } from 'ng2-webstorage';
-import {
-    PodiumGatewaySharedLibsModule,
-    PodiumGatewaySharedCommonModule,
-    UserService,
-    LoginService,
-    LoginModalService,
-    MessageService,
-    EmailValidatorDirective,
-    PasswordValidatorDirective,
-    PasswordMatchesDirective,
-    WordLengthValidatorDirective,
-    PodiumLoginComponent,
-    SpecialismComponent
-} from './';
-import { RequestService } from './request/request.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { SessionStorageService } from 'ngx-webstorage';
+import { PodiumGatewaySharedCommonModule } from './shared-common.module';
+import { PodiumGatewaySharedLibsModule } from './shared-libs.module';
+import { EmailValidatorDirective } from './validators/email-validator.directive';
+import { PasswordMatchesDirective } from './validators/password-matches.directive';
+import { PasswordValidatorDirective } from './validators/password-validator.directive';
+import { WordLengthValidatorDirective } from './validators/word-length-validator.directive';
+import { SpecialismComponent } from './specialism/specialism.component';
 import { EnumKeysPipe } from './pipes/enumKeys';
 import { OrganisationSelectorComponent } from './organisation-selector/organisation-selector.component';
-import { RequestAccessService } from './request/request-access.service';
 import { RequestReviewPanelComponent } from './request/request-review-panel/request-review-panel.component';
 import { PodiumEventMessageComponent } from './event/podium-event-message.component';
 import { LinkedRequestNotificationComponent } from './linked-request-notification/linked-request-notification.component';
-import { PodiumAuthModule } from './auth/auth.module';
-import { FindLanguageFromKeyPipe } from './language/language.pipe';
-import { ActiveMenuDirective } from './navbar/active-menu.directive';
 import { CompletedComponent } from './completed/completed.component';
-import { PdmErrorComponent } from './error/error.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { ProfileService } from './profiles/profile.service';
+import { PdmErrorComponent } from '../layouts/error/error.component';
+import { NavbarComponent } from '../layouts/navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { AttachmentComponent } from './attachment/upload-attachment/attachment.component';
-import { NgUploaderModule } from 'ngx-uploader';
-import { AttachmentService } from './attachment/attachment.service';
+import { NgxUploaderModule } from 'ngx-uploader';
 import { AttachmentListComponent } from './attachment/attachment-list/attachment-list.component';
+import { PodiumLoginComponent } from '../login/login.component';
+import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import { SortByDirective } from './sort/sort-by.directive';
+import { SortDirective } from './sort/sort.directive';
+import { ItemCountComponent } from './pagination/item-count.component';
 
 @NgModule({
     imports: [
         PodiumGatewaySharedLibsModule,
         PodiumGatewaySharedCommonModule,
-        PodiumAuthModule,
         RouterModule,
-        NgUploaderModule,
+        TranslateModule.forChild(),
+        NgxUploaderModule,
     ],
     declarations: [
         AttachmentComponent,
@@ -61,32 +53,24 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
         EmailValidatorDirective,
         PodiumEventMessageComponent,
         LinkedRequestNotificationComponent,
+        HasAnyAuthorityDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
         EnumKeysPipe,
-        FindLanguageFromKeyPipe,
-        ActiveMenuDirective,
         CompletedComponent,
         PdmErrorComponent,
         NavbarComponent,
         AttachmentListComponent,
+        SortByDirective,
+        SortDirective,
+        ItemCountComponent,
     ],
     providers: [
-        ProfileService,
-        LoginService,
-        LoginModalService,
-        MessageService,
         SessionStorageService,
-        UserService,
-        RequestService,
-        RequestAccessService,
-        AttachmentService,
         DatePipe
     ],
-    entryComponents: [PodiumLoginComponent],
     exports: [
-        PodiumAuthModule,
         PodiumGatewaySharedCommonModule,
         PodiumGatewaySharedLibsModule,
         PodiumLoginComponent,
@@ -98,13 +82,15 @@ import { AttachmentListComponent } from './attachment/attachment-list/attachment
         PodiumEventMessageComponent,
         LinkedRequestNotificationComponent,
         EmailValidatorDirective,
+        HasAnyAuthorityDirective,
         PasswordValidatorDirective,
         PasswordMatchesDirective,
         WordLengthValidatorDirective,
+        SortByDirective,
+        SortDirective,
         DatePipe,
         EnumKeysPipe,
-        ActiveMenuDirective,
-        FindLanguageFromKeyPipe,
+        ItemCountComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 

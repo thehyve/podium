@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.SecuredByAuthority;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
@@ -36,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Profile({"dev", "test"})
 @RestController
@@ -68,7 +67,6 @@ public class TestResource {
      * @throws UserAccountException if login or email already in use.
      */
     @PostMapping("users")
-    @Timed
     public ResponseEntity<?> createUser(@Valid @RequestBody ManagedUserRepresentation userData) throws UserAccountException {
         log.debug("REST request to save test User : {}", userData);
 
@@ -78,7 +76,7 @@ public class TestResource {
             user.setAdminVerified(userData.isAdminVerified());
             user.setAccountLocked(userData.isAccountLocked());
             if (user.isAccountLocked()) {
-                user.setAccountLockDate(ZonedDateTime.now());
+                user.setAccountLockDate(LocalDateTime.now());
             }
             user = userService.save(user);
             userService.changePassword(user, userData.getPassword());
@@ -101,7 +99,6 @@ public class TestResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("organisations")
-    @Timed
     public ResponseEntity<OrganisationRepresentation> createOrganisation(@Valid @RequestBody OrganisationRepresentation organisationData) throws URISyntaxException {
         log.debug("REST request to save test Organisation : {}", organisationData);
         if (organisationData.getId() != null) {
@@ -134,7 +131,6 @@ public class TestResource {
      * @return status code {@link HttpStatus#CREATED}.
      */
     @PostMapping("roles/assign")
-    @Timed
     public ResponseEntity<?> assignUsersToRole(@RequestBody TestRoleRepresentation roleData) {
         testService.assignUsersToRole(roleData);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -144,9 +140,7 @@ public class TestResource {
      * GET /test/clearDatabase : Clears database except admin and system user accounts.
      */
     @GetMapping("clearDatabase")
-    @Timed
     public void clearDatabase() {
         testService.clearDatabase();
     }
-
 }

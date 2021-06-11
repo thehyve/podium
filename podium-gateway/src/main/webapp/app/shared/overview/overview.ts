@@ -9,7 +9,7 @@
  */
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { ITEMS_PER_PAGE } from '../constants/pagination.constants';
+import { ITEMS_PER_PAGE } from '../../config/pagination.constants';
 import { RequestOverviewPath } from '../../request/overview/request-overview.constants';
 import { RouterHelper } from '../util/router-helper';
 
@@ -18,17 +18,17 @@ import { RouterHelper } from '../util/router-helper';
  */
 export abstract class Overview {
 
-    protected currentSearch: any;
-    protected queryCount: any;
-    protected itemsPerPage: any = ITEMS_PER_PAGE;
-    protected page: any;
-    protected pageHeader: string;
-    protected predicate: any;
-    protected previousPage: any;
-    protected reverse: any = false;
-    protected totalItems: any;
-    protected links: any;
-    protected routePath: any;
+    currentSearch: any;
+    queryCount: any;
+    itemsPerPage: any = ITEMS_PER_PAGE;
+    page: any;
+    pageHeader: string;
+    predicate: any;
+    previousPage: any;
+    reverse: any = false;
+    totalItems: any;
+    links: any;
+    routePath: any;
 
     constructor(
         protected router: Router,
@@ -55,7 +55,7 @@ export abstract class Overview {
      *
      * @returns {string[]}
      */
-    protected sort() {
+    sort() {
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
@@ -64,7 +64,7 @@ export abstract class Overview {
      *
      * @returns {any} composed object holding the parameters.
      */
-    protected getPageParams(): any {
+    getPageParams(): any {
         let params: any = {
             size: this.itemsPerPage,
             sort: this.sort()
@@ -79,11 +79,9 @@ export abstract class Overview {
         return params;
     };
 
-    protected transition() {
+    transition() {
         // Transition with queryParams
         // Update the URL with the new parameters
-        let params = this.getPageParams();
-
         this.router.navigate([RouterHelper.getNavUrlForRouter(this.router)], {
             queryParams: {
                 page: this.page,
@@ -94,14 +92,14 @@ export abstract class Overview {
         });
     }
 
-    protected loadPage(page: number, callback: Function) {
+    loadPage(page: number, callback: () => any) {
         if (page !== this.previousPage) {
             this.previousPage = page;
             callback();
         }
     }
 
-    protected resetPagingParams() {
+    resetPagingParams() {
         this.page = 1;
         this.predicate = 'createdDate';
         this.reverse = false;
@@ -109,7 +107,7 @@ export abstract class Overview {
         this.itemsPerPage = ITEMS_PER_PAGE;
     }
 
-    protected search (query, callback) {
+    search (query, callback) {
         if (!query) {
             return this.clear(callback);
         }
@@ -128,7 +126,7 @@ export abstract class Overview {
         callback();
     }
 
-    protected clear(callback: Function) {
+    clear(callback: () => any) {
         this.page = 0;
         this.currentSearch = '';
         this.router.navigate([RouterHelper.getNavUrlForRouter(this.router), {
@@ -138,15 +136,15 @@ export abstract class Overview {
         callback();
     }
 
-    protected isResearcherRoute(): boolean {
+    isResearcherRoute(): boolean {
         return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_RESEARCHER;
     }
 
-    protected isCoordinatorRoute(): boolean {
+    isCoordinatorRoute(): boolean {
         return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_COORDINATOR;
     }
 
-    protected isReviewerRoute(): boolean {
+    isReviewerRoute(): boolean {
         return this.routePath === RequestOverviewPath.REQUEST_OVERVIEW_REVIEWER;
     }
 }

@@ -8,7 +8,6 @@
 package nl.thehyve.podium.repository;
 
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.domain.RequestFile;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +18,6 @@ import java.util.UUID;
 /**
  * Spring Data JPA repository for the RequestFile entity.
  */
-@Timed
 public interface RequestFileRepository extends JpaRepository<RequestFile, Long> {
 
     RequestFile findOneByRequestAndUuidAndDeletedFalse(Request request, UUID requestFileUuid);

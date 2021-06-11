@@ -12,7 +12,6 @@ import nl.thehyve.podium.common.enumeration.RequestType;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.Parameter;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -29,7 +28,6 @@ import java.util.Set;
 @Entity
 @Table(name = "request_detail")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "requestdetail")
 @Data
 public class RequestDetail implements Serializable {
 

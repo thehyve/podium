@@ -10,12 +10,12 @@
 
 <div class="delivery-status-update-container">
     <form #statusUpdateForm="ngForm" class="form" role="form" (ngSubmit)="confirmStatusUpdate()">
-        <div class="modal-header" [ngClass]="{'cancel-header': statusUpdateAction == 'Cancel', 'release-header': statusUpdateAction == 'Release'}">
+        <div class="modal-header" [ngClass]="{'cancel-header': isCancel, 'release-header': isRelease}">
             <h4 class="modal-title">
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">warning</span>
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
-                <span jhiTranslate="delivery.update.{{statusUpdateAction}}.{{delivery.type}}.header" translateValues="{{getHeaderTranslation()}}">
-                    Delivery update header
+                <span class="material-icons" *ngIf="isCancel">warning</span>
+                <span class="material-icons" *ngIf="isRelease">local_shipping</span>
+                <span [translate]="'delivery.update.' + statusUpdateAction + '.' + delivery.type + '.header'"
+                    [translateParams]="getHeaderTranslation()">
                 </span>
             </h4>
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -28,7 +28,8 @@
                 <div *ngSwitchCase="statusUpdateOptions.Release">
                     <div class="form-group">
                         <label for="reference"
-                               jhiTranslate="delivery.update.form.referenceLabel">Reference</label>
+                               [translate]="'delivery.update.form.referenceLabel'">
+                        </label>
 
                         <input type="text" class="form-control" name="reference" id="reference"
                                required minlength="1" maxlength="2000" #reference="ngModel"
@@ -40,7 +41,8 @@
                 <div *ngSwitchCase="statusUpdateOptions.Cancel">
                     <div class="form-group">
                         <label for="messageSummary"
-                               jhiTranslate="delivery.update.form.eventMessageSummaryLabel">Summary</label>
+                               [translate]="'delivery.update.form.eventMessageSummaryLabel'">
+                        </label>
 
                         <input type="text" class="form-control" name="messageSummary" id="messageSummary"
                                required minlength="1" maxlength="50" #messageSummary="ngModel"
@@ -49,7 +51,8 @@
                     </div>
                     <div class="form-group">
                         <label for="messageDescription"
-                               jhiTranslate="delivery.update.form.eventMessageDescriptionLabel">Description</label>
+                               [translate]="'delivery.update.form.eventMessageDescriptionLabel'">
+                        </label>
 
                         <textarea type="text" class="form-control" name="messageDescription" id="messageDescription"
                                   autocomplete="off" minlength="1" maxlength="500" rows="4"
@@ -65,19 +68,19 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">
                 <span class="material-icons">keyboard_backspace</span>&nbsp;
-                <span jhiTranslate="delivery.actions.cancel">Cancel</span>
+                <span [translate]="'delivery.actions.cancel'"></span>
             </button>
             <button type="submit" [disabled]="!statusUpdateForm.form.valid"
                     tooltip="{{getSubmitTooltip()}}"
                     [isDisabled]="statusUpdateForm.form.valid" class="btn"
                     [ngClass]="{
-                        'btn-danger': statusUpdateAction == 'Cancel',
-                        'btn-success': statusUpdateAction == 'Release'
+                        'btn-danger': isCancel,
+                        'btn-success': isRelease
                     }">
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Cancel'">cancel</span>
-                <span class="material-icons" *ngIf="statusUpdateAction == 'Release'">local_shipping</span>
+                <span class="material-icons" *ngIf="isCancel">cancel</span>
+                <span class="material-icons" *ngIf="isRelease">local_shipping</span>
                 &nbsp;
-                <span jhiTranslate="delivery.actions.submit" class="test-submit-btn">Submit</span>
+                <span [translate]="'delivery.actions.submit'" class="test-submit-btn"></span>
             </button>
         </div>
     </form>

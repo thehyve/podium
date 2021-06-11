@@ -8,55 +8,60 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { User } from './user.model';
-import { HttpHelper } from '../util/http-helper';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService {
-    private resourceUrl = 'podiumuaa/api/users';
-    private resourceSearchUrl = 'podiumuaa/api/_search/users';
-    private resourceSuggestUrl = 'podiumuaa/api/_suggest/users';
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
-    constructor(private http: Http) { }
-
-    create(user: User): Observable<Response> {
-        return this.http.post(this.resourceUrl, user);
+    private getUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/users/${path}`);
     }
 
-    update(user: User): Observable<Response> {
-        return this.http.put(this.resourceUrl, user);
+    private getSuggestUrl(path: string) {
+        return this.config.getUaaEndpoint(`api/_suggest/users/${path}`);
     }
 
-    unlock(user: User): Observable<Response> {
-        return this.http.put(`${this.resourceUrl}/uuid/${user.uuid}/unlock`, {});
+    create(user: User): Observable<any> {
+        let url = this.getUrl('');
+        return this.http.post(url, user);
+    }
+
+    update(user: User): Observable<any> {
+        let url = this.getUrl('');
+        return this.http.put(url, user);
+    }
+
+    unlock(user: User): Observable<any> {
+        let url = this.getUrl(`uuid/${user.uuid}/unlock`);
+        return this.http.put(url, {});
     }
 
     find(login: string): Observable<User> {
-        return this.http.get(`${this.resourceUrl}/${login}`).map((res: Response) => res.json());
+        let url = this.getUrl(login);
+        return this.http.get<User>(url);
     }
 
     findByUuid(uuid: string): Observable<User> {
-        return this.http.get(`${this.resourceUrl}/uuid/${uuid}`).map((res: Response) => res.json());
+        let url = this.getUrl(`uuid/${uuid}`);
+        return this.http.get<User>(url);
     }
 
-    query(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(this.resourceUrl, options);
+    suggest(req?: any): Observable<any> {
+        let url = this.getSuggestUrl('');
+        return this.http.get(url, {
+            params: req
+        });
     }
 
-    search(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceSearchUrl}`, options).map((res: Response) => res);
-    }
-
-    suggest(req?: any): Observable<Response> {
-        let options = HttpHelper.createRequestOption(req);
-        return this.http.get(`${this.resourceSuggestUrl}`, options).map((res: Response) => res.json());
-    }
-
-    delete(login: string): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${login}`);
+    delete(login: string): Observable<any> {
+        let url = this.getUrl(login);
+        return this.http.delete(url);
     }
 }

@@ -8,9 +8,8 @@
  *
  */
 import { Component, OnInit } from '@angular/core';
-import { Principal } from '../shared';
+import { AccountService } from '../core/auth/account.service';
 import { User } from '../shared/user/user.model';
-import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'pdm-dashboard',
@@ -24,13 +23,13 @@ export class DashboardComponent implements OnInit {
     user: User;
 
     constructor(
-        private principal: Principal
+        private accountServie: AccountService
     ) {
 
     }
 
     ngOnInit() {
-        this.principal.identity().then((account) => {
+        this.accountServie.identity().subscribe((account) => {
             this.user = account;
         });
     }

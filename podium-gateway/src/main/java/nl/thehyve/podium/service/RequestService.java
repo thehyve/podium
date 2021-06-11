@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.config.FilterValues;
 import nl.thehyve.podium.common.enumeration.*;
@@ -22,7 +21,6 @@ import nl.thehyve.podium.common.service.dto.*;
 import nl.thehyve.podium.domain.Request;
 import nl.thehyve.podium.repository.RequestRepository;
 import nl.thehyve.podium.repository.SummaryEntry;
-import nl.thehyve.podium.repository.search.RequestSearchRepository;
 import nl.thehyve.podium.security.RequestAccessCheckHelper;
 import nl.thehyve.podium.service.mapper.RequestDetailMapper;
 import nl.thehyve.podium.service.mapper.RequestMapper;
@@ -42,14 +40,11 @@ import javax.validation.ValidatorFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 /**
  * Service Implementation for managing Request.
  */
 @Service
 @Transactional
-@Timed
 public class RequestService {
 
     private final Logger log = LoggerFactory.getLogger(RequestService.class);
@@ -62,9 +57,6 @@ public class RequestService {
 
     @Autowired
     private RequestDetailMapper requestDetailMapper;
-
-    @Autowired
-    private RequestSearchRepository requestSearchRepository;
 
     @Autowired
     private NotificationService notificationService;
@@ -271,7 +263,7 @@ public class RequestService {
         RequestDetailRepresentation requestData = requestDetailMapper.requestDetailToRequestDetailRepresentation(request.getRevisionDetail());
         validateRequest(requestData);
 
-        request.setRequestDetail(requestDetailMapper.clone(request.getRevisionDetail()));
+        request.setRequestDetail(requestDetailMapper.cloneRequestDetail(request.getRevisionDetail()));
 
         // Update the request details with the updated revision details
         requestRepository.save(request);
@@ -489,8 +481,7 @@ public class RequestService {
     }
 
     void deleteRequest(Long id) {
-        requestRepository.delete(id);
-        requestSearchRepository.delete(id);
+        requestRepository.deleteById(id);
     }
 
     /**
@@ -559,19 +550,5 @@ public class RequestService {
         statusUpdateEventService.publishStatusUpdate(user, sourceStatus, request, message);
 
         return requestMapper.detailedRequestToRequestDTO(request);
-    }
-
-    /**
-     * Search for the request corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<RequestRepresentation> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Requests for query {}", query);
-        Page<Request> result = requestSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(requestMapper::overviewRequestToRequestDTO);
     }
 }

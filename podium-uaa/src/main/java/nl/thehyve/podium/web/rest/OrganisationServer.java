@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.InvalidRequest;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
@@ -22,7 +21,6 @@ import nl.thehyve.podium.common.security.annotations.SecuredByOrganisation;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.OrganisationRepresentation;
 import nl.thehyve.podium.common.web.rest.util.HeaderUtil;
-import nl.thehyve.podium.search.SearchOrganisation;
 import nl.thehyve.podium.service.OrganisationService;
 import nl.thehyve.podium.common.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -55,7 +53,6 @@ import java.util.stream.Collectors;
  * REST controller for managing Organisation.
  */
 @SecuredByAuthority({AuthorityConstants.BBMRI_ADMIN})
-@Timed
 @RestController
 public class OrganisationServer implements OrganisationResource {
 
@@ -265,24 +262,5 @@ public class OrganisationServer implements OrganisationResource {
 
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, uuid.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/organisations?query=:query : search for the organisation corresponding
-     * to the query.
-     *
-     * @param query the query of the organisation search
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/organisations")
-    public ResponseEntity<List<SearchOrganisation>> searchOrganisations(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of Organisations for query {}", query);
-        Page<SearchOrganisation> page = organisationService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/organisations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }
 

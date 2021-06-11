@@ -1,6 +1,6 @@
 {
     "health": {
-        "title": "Health Checks",
+        "title": "Health checks",
         "refresh.button": "Refresh",
         "stacktrace": "Stacktrace",
         "details": {
@@ -11,9 +11,9 @@
             "error": "Error"
         },
         "indicator": {
-            "discoveryComposite": "Discovery Composite",
-            "refreshScope": "Microservice Refresh Scope",
-            "configServer": "Microservice Config Server",
+            "discoveryComposite": "Discovery composite",
+            "refreshScope": "Microservice refresh scope",
+            "configServer": "Microservice config server",
             "hystrix": "Hystrix",
             "diskSpace": "Disk space",
             "mail": "Email",

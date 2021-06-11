@@ -1,18 +1,18 @@
 <div class="request-action-wrapper" *ngIf="hasLastReviewFeedback()">
-    <h3 jhiTranslate="request.review.title">Review</h3>
+    <h3 [translate]="'request.review.title'"></h3>
     <table class="table">
         <thead>
         <tr>
-            <th jhiTranslate="request.review.reviewerName">Name</th>
-            <th jhiTranslate="request.review.date">Date</th>
-            <th jhiTranslate="request.review.result">Result</th>
-            <th jhiTranslate="request.review.comment">Comment</th>
+            <th [translate]="'request.review.reviewerName'"></th>
+            <th [translate]="'request.review.date'"></th>
+            <th [translate]="'request.review.result'"></th>
+            <th [translate]="'request.review.comment'"></th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let feedback of lastReviewFeedback">
             <th scope="row">{{feedback.reviewer.firstName}} {{feedback.reviewer.lastName}}</th>
-            <td>{{feedback.date | date:'short'}}</td>
+            <td>{{feedback.date | date:"dd-MM-yyyy',' HH:mm"}}</td>
             <td>
                 <span class="badge" [ngClass]="toggleAdviseStyle(feedback.advice)">{{feedback.advice}}</span>
             </td>
@@ -28,10 +28,24 @@
         <tr>
             <td colspan="4" class="no-results transparent-bg">
                 <div class="alert alert-info">
-                    <span jhiTranslate="request.review.noResults">No active reviews found</span>
+                    <span [translate]="'request.review.noResults'"></span>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
+
+
+    <!-- Reviewer actions -->
+    <div *ngIf="isReviewable()">
+        <!-- Review -->
+        <div class="review-actions">
+            <button type="button" class="btn btn-outline-danger" (click)="reviewRejected()">
+                <span [translate]="'request.toolbar.adviseReject'"></span>
+            </button>
+            <button type="button" class="btn btn-outline-success" (click)="reviewApproved()">
+                <span [translate]="'request.toolbar.adviseApprove'"></span>
+            </button>
+        </div>
+    </div>
 </div>

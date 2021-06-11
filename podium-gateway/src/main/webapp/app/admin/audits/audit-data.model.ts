@@ -8,9 +8,8 @@
  *
  */
 
-export class AuditData {
-    constructor(
-        public remoteAddress: string,
-        public sessionId: string
-    ) { }
+export interface AuditData {
+    message: string;
+    remoteAddress: string;
+    sessionId: string;
 }

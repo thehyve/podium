@@ -8,29 +8,29 @@
  *
  */
 import { Injectable } from '@angular/core';
-import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ApplicationConfigService } from '../../core/config/application-config.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class Verify {
 
-    constructor (private http: Http) {}
+    constructor (
+        private config: ApplicationConfigService,
+        private http: HttpClient,
+    ) {}
 
     get(key: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('key', key);
-
-        return this.http.get('podiumuaa/api/verify', {
-            search: params
-        }).map((res: Response) => res);
+        let url = this.config.getUaaEndpoint('api/verify');
+        return this.http.get(url, {
+            params: { key }
+        });
     }
 
     renew(key: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('key', key);
-
-        return this.http.get('podiumuaa/api/reverify', {
-            search: params
-        }).map((res: Response) => res);
+        let url = this.config.getUaaEndpoint('api/reverify');
+        return this.http.get(url, {
+            params: { key }
+        });
     }
 }

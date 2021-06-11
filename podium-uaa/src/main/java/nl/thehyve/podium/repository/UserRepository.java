@@ -29,6 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByDeletedIsFalseAndEmailVerifiedIsFalseAndCreatedDateBefore(ZonedDateTime dateTime);
 
+    List<User> findAllByDeletedIsFalse();
+
     @Query(value = "select distinct user from User user" +
         " left join fetch user.roles r" +
         " left join fetch r.authority a" +

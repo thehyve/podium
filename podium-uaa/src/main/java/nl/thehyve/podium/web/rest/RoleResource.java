@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthorityConstants;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;
@@ -65,7 +63,6 @@ public class RoleResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation(authorities= {AuthorityConstants.ORGANISATION_ADMIN})
     @PutMapping("/roles")
-    @Timed
     public ResponseEntity<RoleRepresentation> updateRole(@OrganisationParameter @RequestBody RoleRepresentation roleRepresentation) {
         log.debug("REST request to update Role : {}", roleRepresentation);
         if (roleRepresentation.getId() == null) {
@@ -86,7 +83,6 @@ public class RoleResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/roles")
-    @Timed
     public ResponseEntity<List<RoleRepresentation>> getAllRoles(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Roles");
@@ -104,7 +100,6 @@ public class RoleResource {
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @SecuredByOrganisation
     @GetMapping("/roles/organisation/{uuid}")
-    @Timed
     public ResponseEntity<List<RoleRepresentation>> getOrganisationRoles(@OrganisationUuidParameter @PathVariable UUID uuid) {
         log.debug("REST request to get all Roles of Organisation {}", uuid);
         List<RoleRepresentation> roles = roleService.findAllByOrganisationUUID(uuid);
@@ -119,31 +114,8 @@ public class RoleResource {
      */
     @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
     @GetMapping("/roles/{id}")
-    @Timed
     public ResponseEntity<RoleRepresentation> getRole(@PathVariable Long id) {
         log.debug("REST request to get Role : {}", id);
         return ResponseEntity.ok(roleService.findOne(id));
     }
-
-    /**
-     * SEARCH  /_search/roles?query=:query : search for the role corresponding
-     * to the query.
-     *
-     * @param query the query of the role search
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @SecuredByAuthority({AuthorityConstants.PODIUM_ADMIN, AuthorityConstants.BBMRI_ADMIN})
-    @GetMapping("/_search/roles")
-    @Timed
-    public ResponseEntity<List<RoleRepresentation>> searchRoles(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of Roles for query {}", query);
-        Page<RoleRepresentation> page = roleService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/roles");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-
 }

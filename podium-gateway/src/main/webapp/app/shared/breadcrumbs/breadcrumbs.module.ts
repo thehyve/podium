@@ -8,7 +8,8 @@
  *
  */
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ModuleWithProviders } from '@angular/core';
-import { BreadcrumbComponent, BreadcrumbService } from './';
+import { BreadcrumbComponent } from './breadcrumbs.component';
+import { BreadcrumbService } from './breadcrumbs.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -28,7 +29,7 @@ import { CommonModule } from '@angular/common';
 
 })
 export class BreadcrumbsModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<BreadcrumbsModule> {
         return {
             ngModule: BreadcrumbsModule,
             providers: [

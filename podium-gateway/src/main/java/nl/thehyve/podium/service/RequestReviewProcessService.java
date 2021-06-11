@@ -7,7 +7,6 @@
 
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import nl.thehyve.podium.common.enumeration.ReviewProcessOutcome;
 import nl.thehyve.podium.common.enumeration.RequestReviewStatus;
 import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
@@ -15,15 +14,14 @@ import nl.thehyve.podium.common.exceptions.ResourceNotFound;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.domain.RequestReviewProcess;
 import nl.thehyve.podium.repository.RequestReviewProcessRepository;
-import nl.thehyve.podium.repository.search.RequestReviewProcessSearchRepository;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.task.DelegationState;
-import org.flowable.engine.task.IdentityLinkType;
-import org.flowable.engine.task.Task;
+import org.flowable.task.api.DelegationState;
+import org.flowable.identitylink.service.IdentityLinkType;
+import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +68,7 @@ public class RequestReviewProcessService {
     }
 
     private static final Map<RequestReviewStatus, ReviewTask> taskForStatus = new HashMap<>(3);
-    {
+    static {
         taskForStatus.put(RequestReviewStatus.Validation, ReviewTask.Validation);
         taskForStatus.put(RequestReviewStatus.Review, ReviewTask.Review);
         taskForStatus.put(RequestReviewStatus.Revision, ReviewTask.Revision);
@@ -91,9 +89,6 @@ public class RequestReviewProcessService {
 
     @Autowired
     private RequestReviewProcessRepository requestReviewProcessRepository;
-
-    @Autowired
-    private RequestReviewProcessSearchRepository requestReviewProcessSearchRepository;
 
     /**
      * Finds request.
@@ -131,7 +126,6 @@ public class RequestReviewProcessService {
         requestReviewProcess.setDecision((ReviewProcessOutcome) variables.get("decision"));
         requestReviewProcess = requestReviewProcessRepository.save(requestReviewProcess);
         // save to elastic search as well
-        requestReviewProcessSearchRepository.save(requestReviewProcess);
         return requestReviewProcess;
     }
 
@@ -211,7 +205,6 @@ public class RequestReviewProcessService {
         throw ActionNotAllowed.forStatus(requestReviewProcess.getStatus());
     }
 
-    @Timed
     public RequestReviewProcess start(AuthenticatedUser user) {
         log.info("Creating request review process instance for user {}", user.getName());
 

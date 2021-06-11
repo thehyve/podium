@@ -1,6 +1,5 @@
 package nl.thehyve.podium.service;
 
-import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Sets;
 import nl.thehyve.podium.common.IdentifiableUser;
 import nl.thehyve.podium.common.enumeration.OverviewStatus;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-@Timed
 public class DraftService {
 
     private final Logger log = LoggerFactory.getLogger(DraftService.class);
@@ -178,7 +176,7 @@ public class DraftService {
             Request organisationRequest = requestMapper.clone(request);
 
             // Create organisation revision details
-            RequestDetail revisionDetail = requestDetailMapper.clone(request.getRequestDetail());
+            RequestDetail revisionDetail = requestDetailMapper.cloneRequestDetail(request.getRequestDetail());
             organisationRequest.setRevisionDetail(revisionDetail);
 
             try {
@@ -248,7 +246,7 @@ public class DraftService {
         // Delete old request files
         for (RequestFile requestFile: requestFiles) {
             requestFileService.deleteFileFromFileSystem(requestFile);
-            requestFileRepository.delete(requestFile.getId());
+            requestFileRepository.delete(requestFile);
         }
 
         requestService.deleteRequest(request.getId());

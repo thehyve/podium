@@ -8,12 +8,11 @@
  *
  */
 import {
-    Component, Input, Output, EventEmitter, OnInit, ViewChild, AfterViewInit, OnChanges,
-    SimpleChanges
+    Component, Input, Output, EventEmitter, OnInit, ViewChild, AfterViewInit
 } from '@angular/core';
-import { Response } from '@angular/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RequestType } from '../request/request-type';
-import { Observable } from 'rxjs';
+import { throwError } from 'rxjs';
 import { OrganisationService } from '../organisation/organisation.service';
 import { NgForm, NgModel } from '@angular/forms';
 
@@ -48,7 +47,7 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
     @Output() organisationChange = new EventEmitter();
 
     private static onError (error) {
-        return Observable.throw(new Error(error.status));
+        return throwError(new Error(error.status));
     }
 
     constructor(
@@ -102,8 +101,8 @@ export class OrganisationSelectorComponent implements OnInit, AfterViewInit {
                         this.organisationService.convertUuidsToOrganisations(this.organisations, this.allOrganisations);
                     this.loadOrganisationsByRequestTypes();
                 },
-                (res: Response) => {
-                    return OrganisationSelectorComponent.onError(res.json());
+                (res: HttpErrorResponse) => {
+                    return OrganisationSelectorComponent.onError(res.error);
                 }
             );
     }
