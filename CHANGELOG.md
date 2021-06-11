@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased - 1.0.4]
+## [1.0.4]
 - Angular updated from `4.4.7` to `11.2.5`;
 - Spring Boot updated from `1.5.22.RELEASE` to `2.3.11.RELEASE`;
 - Flowable updated from `6.0.0` to `6.6.0`;
