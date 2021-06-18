@@ -12,7 +12,7 @@
     <h2>
         <span [translate]="'organisation.home.title'"></span>
         <button class="btn btn-primary float-right create-organisation"
-                *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
+                *pdmHasAnyAuthority="['ROLE_BBMRI_ADMIN']"
                 [routerLink]="['./new']">
             <span class="material-icons">add_circle_outline</span>
             <span class="d-none d-md-inline-flex"
@@ -60,7 +60,7 @@
                             </span>
                         </button>
                         <button type="button" class="btn btn-sm test-activation-btn"
-                                *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
+                                *pdmHasAnyAuthority="['ROLE_BBMRI_ADMIN']"
                                 [ngClass]="{'btn-warning': !organisation.activated, 'btn-success': organisation.activated}"
                                 (click)="toggleActivated (organisation)">
                             <i *ngIf="!organisation.activated" class="material-icons">pause_circle_filled</i>
@@ -75,7 +75,7 @@
                             </span>
                         </button>
                         <button type="submit"
-                                *pdmHasAnyAuthority="['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN']"
+                                *pdmHasAnyAuthority="['ROLE_BBMRI_ADMIN']"
                                 [routerLink]="['./', { outlets: { popup: 'detail/'+ organisation.uuid + '/delete'} }]"
                                 class="btn btn-danger btn-sm test-delete-btn">
                             <span class="material-icons">remove_circle_outline</span>
