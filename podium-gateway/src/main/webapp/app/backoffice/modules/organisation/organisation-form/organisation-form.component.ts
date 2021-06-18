@@ -113,9 +113,8 @@ export class OrganisationFormComponent implements OnInit {
         }
     }
 
-    isOrganisationAdmin (currentUser: User) {
-        if (currentUser) {
-            return currentUser.authorities.indexOf('ROLE_ORGANISATION_ADMIN') > -1;
-        }
+    get canActivateOrganisation() {
+        let authorities = this.currentAccount?.authorities || [];
+        return authorities.includes('ROLE_PODIUM_ADMIN') || authorities.includes('ROLE_BBMRI_ADMIN');
     }
 }
