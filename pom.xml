@@ -20,7 +20,7 @@
 
     <groupId>nl.thehyve.podium</groupId>
     <artifactId>podium</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <name>Podium</name>
     <packaging>pom</packaging>
 
