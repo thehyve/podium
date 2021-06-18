@@ -84,12 +84,6 @@
                                 <input type="checkbox"
                                     [(ngModel)]="organisation.activated" name="organisation_active"
                                     [disabled]="!canActivateOrganisation" />
-
-                                <div *ngIf="!canActivateOrganisation && !organisation.activated">
-                                    <small class="form-text text-danger"
-                                        [innerHTML]="'organisation.organisationAdminInactive' | translate">
-                                    </small>
-                                </div>
                             </div>
 
                             <div class="action-footer-container">
