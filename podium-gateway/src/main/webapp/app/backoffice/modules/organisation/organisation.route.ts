@@ -40,7 +40,7 @@ export const organisationRoute: Routes = [
             'pagingParams': OrganisationResolvePagingParams
         },
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
+            authorities: ['ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'organisation.home.title',
             breadcrumb: 'overview'
         },
@@ -50,7 +50,7 @@ export const organisationRoute: Routes = [
         path: 'new',
         component: OrganisationFormComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_BBMRI_ADMIN'],
             pageTitle: 'organisation.detail.title',
             breadcrumb: 'new organisation'
         },
@@ -60,7 +60,7 @@ export const organisationRoute: Routes = [
         path: 'detail/:uuid/delete',
         component: OrganisationDeletePopupComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN'],
+            authorities: ['ROLE_BBMRI_ADMIN'],
             pageTitle: 'organisation.home.title'
         },
         outlet: 'popup',
@@ -70,7 +70,7 @@ export const organisationRoute: Routes = [
         path: 'edit/:uuid',
         component: OrganisationFormComponent,
         data: {
-            authorities: ['ROLE_PODIUM_ADMIN', 'ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
+            authorities: ['ROLE_BBMRI_ADMIN', 'ROLE_ORGANISATION_ADMIN'],
             pageTitle: 'organisation.detail.title',
             breadcrumb: 'edit organisation'
         },

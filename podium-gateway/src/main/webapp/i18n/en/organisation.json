@@ -16,8 +16,6 @@
         "shortName": "Short name",
         "activated": "Activated",
         "deactivated": "Deactivated",
-        "organisationAdminInactive":
-            "Your organisation requires all fields to be filled in and has a user assigned for each of the roles.<br />Contact the BBMRI admin to validate your organisation.",
         "saved": "Successfully saved organisation",
         "updated": "Successfully updated organisation",
         "created": "A new organisation is created with identifier {{ param }}",
