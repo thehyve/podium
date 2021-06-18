@@ -115,6 +115,6 @@ export class OrganisationFormComponent implements OnInit {
 
     get canActivateOrganisation() {
         let authorities = this.currentAccount?.authorities || [];
-        return authorities.includes('ROLE_PODIUM_ADMIN') || authorities.includes('ROLE_BBMRI_ADMIN');
+        return authorities.includes('ROLE_BBMRI_ADMIN');
     }
 }
