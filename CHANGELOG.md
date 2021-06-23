@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.6]
+- Requests to public endpoints no longer send the Authorization header;
+- Login issue fixed (an expired/invalid auth token no longer breaks the app);
+
 ## [1.0.5]
 - Unnecessary error message removed from the Organization Form view;
 - Podium Admin no longer can access organization management pages;
