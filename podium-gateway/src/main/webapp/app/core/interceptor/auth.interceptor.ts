@@ -23,11 +23,24 @@ export class AuthInterceptor implements HttpInterceptor {
     ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const serverApiUrl = this.applicationConfigService.getEndpointFor('');
-        if (!request.url || (request.url.startsWith('http') && !(serverApiUrl && request.url.startsWith(serverApiUrl)))) {
+        let doNotInjectBearerTokenForUrls = [
+            // Login
+            'oauth/token',
+            // Password reset
+            'api/account/reset_password/finish',
+            'api/account/reset_password/init',
+            // Registration and email confirmation
+            'api/register',
+            'api/verify',
+            'api/reverify',
+        ].map(e => this.applicationConfigService.getUaaEndpoint(e));
+        if (doNotInjectBearerTokenForUrls.includes(request.url)) {
             return next.handle(request);
         }
-
+        if (request.url.startsWith('i18n/')) {
+            return next.handle(request);
+        }
+        
         const token: string | null = this.localStorage.retrieve('authenticationToken') ?? this.sessionStorage.retrieve('authenticationToken');
         if (token) {
             request = request.clone({
