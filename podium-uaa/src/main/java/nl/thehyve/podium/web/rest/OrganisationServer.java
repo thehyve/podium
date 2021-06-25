@@ -195,20 +195,18 @@ public class OrganisationServer implements OrganisationResource {
     }
 
     /**
-     * GET  /organisations/available : get all the organisations.
+     * GET  /organisations/available : get all the active organisations.
      *
-     * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of organisations in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @AnyAuthorisedUser
     @GetMapping("/organisations/available")
-    public ResponseEntity<List<OrganisationRepresentation>> getActiveOrganisations(@ApiParam Pageable pageable)
+    public ResponseEntity<List<OrganisationRepresentation>> getActiveOrganisations()
         throws URISyntaxException {
-        log.debug("REST request to get a page of Organisations");
-        Page<OrganisationRepresentation> page = organisationService.findAllAvailable(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/organisations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        log.debug("REST request to get all active Organisations");
+        List<OrganisationRepresentation> organisations = organisationService.findAllAvailable();
+        return new ResponseEntity<>(organisations, HttpStatus.OK);
     }
 
     /**

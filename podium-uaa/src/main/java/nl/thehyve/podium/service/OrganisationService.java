@@ -144,14 +144,15 @@ public class OrganisationService {
     /**
      * Get active organisations.
      *
-     * @param pageable the pagination information
      * @return list of entities
      */
     @Transactional(readOnly = true)
-    public Page<OrganisationRepresentation> findAllAvailable(Pageable pageable) {
+    public List<OrganisationRepresentation> findAllAvailable() {
         log.debug("Request to get all active organisations");
-        Page<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalse(pageable);
-        return result.map(organisationMapper::organisationToOrganisationDTO);
+        List<Organisation> result = organisationRepository.findAllByActivatedTrueAndDeletedFalse();
+        return result.stream()
+            .map(organisationMapper::organisationToOrganisationDTO)
+            .collect(Collectors.toList());
     }
 
     /**
