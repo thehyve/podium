@@ -12,8 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Spring Data JPA repository for the Organisation entity.
@@ -33,7 +32,7 @@ public interface OrganisationRepository extends JpaRepository<Organisation,Long>
 
     Organisation findByShortNameAndDeletedFalse(String shortName);
 
-    Page<Organisation> findAllByActivatedTrueAndDeletedFalse(Pageable pageable);
+    List<Organisation> findAllByActivatedTrueAndDeletedFalse();
 
     Page<Organisation> findAllByActivatedTrueAndDeletedFalseAndUuidIn(Collection<UUID> organisationUuids, Pageable pageable);
 

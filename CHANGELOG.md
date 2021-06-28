@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.7]
+- Return all active organisations instead of just the first page of 20. (Resolves issue [PODIUM-307](https://thehyve.atlassian.net/browse/PODIUM-307).)
+
 ## [1.0.6]
 - Requests to public endpoints no longer send the Authorization header;
 - Login issue fixed (an expired/invalid auth token no longer breaks the app);
