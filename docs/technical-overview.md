@@ -65,7 +65,7 @@ Liquibase is used to initialize/update PostgreSQL DB automatically.
 
 Spring profile, data sources, caching options and other configuration parameters are defined in yaml files included in project resources.
 
-Current Podium UAA version: 1.0.4; supported JDK version: 8.
+Current Podium UAA version: 1.0.7; supported JDK version: 8.
 
 
 ### Gateway Frontend
@@ -146,7 +146,7 @@ Liquibase is used to initialize/update PostgreSQL DB automatically.
 
 Spring profile, data sources, caching options and other configuration parameters are defined in yaml files included in project resources.
 
-Current Gateway Server version: 1.0.4; supported JDK version: 8.
+Current Gateway Server version: 1.0.7; supported JDK version: 8.
 
 
 ### Podium Common Package

@@ -39,7 +39,7 @@ sudo adduser --system podium
 sudo -iu podium
 REPO=https://repo.thehyve.nl/service/local/artifact/maven/redirect?r=releases
 REGISTRY_VERSION=1.0.4
-PODIUM_VERSION=1.0.4
+PODIUM_VERSION=1.0.7
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-registry&v=${REGISTRY_VERSION}&p=war" -o podium-registry.war
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-uaa&v=${PODIUM_VERSION}&p=war" -o podium-uaa.war
 curl -L "${REPO}&g=nl.thehyve.podium&a=podium-gateway&v=${PODIUM_VERSION}&p=war" -o podium-gateway.war
