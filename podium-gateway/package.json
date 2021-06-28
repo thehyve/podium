@@ -1,6 +1,6 @@
 {
   "name": "podium-gateway",
-  "version": "1.0.7",
+  "version": "1.0.8-SNAPSHOT",
   "description": "Podium Gateway Request Portal",
   "private": true,
   "cacheDirectories": [
