@@ -4,7 +4,7 @@
 
 Podium requires:
 - PostgreSQL server
-- Elasticsearch 7
+- [Elasticsearch 7](https://www.elastic.co/guide/en/elasticsearch/reference/7.x/install-elasticsearch.html)
 - OpenJDK 8
 
 ## Prepare database
@@ -15,13 +15,13 @@ required databases and users:
 ```sql
 create database "podiumUaa";
 create database "podiumGateway";
-create role "podiumUaa" with password '<choose a secret>';
-create role "podiumGateway" with password '<choose another secret>';
+create role "podiumUaa" with password '<choose a secret>' login;
+create role "podiumGateway" with password '<choose another secret>' login;
 grant all on database "podiumUaa" to "podiumUaa";
 grant all on database "podiumGateway" to "podiumGateway";
 ```
 Use a password manager to generate strong random passwords, or, e.g.,:
-```commandline
+```shell
 openssl rand -base64 32
 ```
 
@@ -29,20 +29,21 @@ openssl rand -base64 32
 
 ### Create podium system user
 
-```bash
+```shell
 sudo adduser --system podium
 ```
 
 ### Download application archives
 
-```commandline
-sudo -iu podium
+```shell
+sudo -su podium
+cd /home/podium
 REPO=https://repo.thehyve.nl/service/local/artifact/maven/redirect?r=releases
 REGISTRY_VERSION=1.0.4
 PODIUM_VERSION=1.0.7
-curl -L "${REPO}&g=nl.thehyve.podium&a=podium-registry&v=${REGISTRY_VERSION}&p=war" -o podium-registry.war
-curl -L "${REPO}&g=nl.thehyve.podium&a=podium-uaa&v=${PODIUM_VERSION}&p=war" -o podium-uaa.war
-curl -L "${REPO}&g=nl.thehyve.podium&a=podium-gateway&v=${PODIUM_VERSION}&p=war" -o podium-gateway.war
+curl -f -L "${REPO}&g=nl.thehyve.podium&a=podium-registry&v=${REGISTRY_VERSION}&p=war" -o podium-registry.war
+curl -f -L "${REPO}&g=nl.thehyve.podium&a=podium-uaa&v=${PODIUM_VERSION}&p=war" -o podium-uaa.war
+curl -f -L "${REPO}&g=nl.thehyve.podium&a=podium-gateway&v=${PODIUM_VERSION}&p=war" -o podium-gateway.war
 ```
 
 ### Startup scripts
@@ -54,7 +55,7 @@ Place the following startup scripts in the home directory `/home/podium`:
     #!/usr/bin/env bash
     
     cd "$( dirname "${BASH_SOURCE[0]}" )"
-    java -jar -server -Djava.awt.headless=true -Xms200m -Xmx200m -Dspring.profiles.active=prod -Djava.security.egd=file:///dev/urandom -Dspring.config.location=/home/podium/registry-config.yml /home/podium/podium-registry.war
+    java -jar -server -Djava.awt.headless=true -Xms200m -Xmx200m -Dspring.profiles.active=prod,native -Djava.security.egd=file:///dev/urandom -Dspring.config.location=/home/podium/registry-config.yml /home/podium/podium-registry.war
     ```
 - `/home/podium/start_uaa`:
     ```bash
@@ -72,7 +73,7 @@ Place the following startup scripts in the home directory `/home/podium`:
     ```
 
 Make the scripts executable:
-```bash
+```shell
 chmod +x start_*
 ```
 
@@ -177,7 +178,7 @@ We use `systemd` to define and control the different services of Podium.
 ### Starting the services
 
 The services can be started with the following commands:
-```bash
+```shell
 sudo systemctl start podium-registry.service
 sudo systemctl start podium-uaa.service
 sudo systemctl start podium-gateway.service
@@ -186,7 +187,7 @@ sudo systemctl start podium-gateway.service
 ### Status and logging
 
 The status of the services can be checked with `systemctl status`:
-```bash
+```shell
 systemctl status podium-registry.service
 systemctl status podium-uaa.service
 systemctl status podium-gateway.service
@@ -204,7 +205,7 @@ The status of the services can also be checked using the web interface
 of the registry at http://localhost:8761.
 This port should not be accessible from outside. To view this page,
 you can forward the port via ssh:
-```bash
+```shell
 ssh -L 8761:localhost:8761 ${servername}
 ```
 
