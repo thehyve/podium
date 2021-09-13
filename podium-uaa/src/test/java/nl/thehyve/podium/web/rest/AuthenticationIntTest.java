@@ -152,7 +152,7 @@ public class AuthenticationIntTest {
                 .param("password", AccountResourceIntTest.VALID_PASSWORD)
         )
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.token_type").value("bearer"))
         .andExpect(jsonPath("$.access_token").isNotEmpty());
     }
@@ -169,7 +169,7 @@ public class AuthenticationIntTest {
             .param("password", testPassword)
         )
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.token_type").value("bearer"))
         .andExpect(jsonPath("$.access_token").isNotEmpty());
     }

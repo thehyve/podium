@@ -71,8 +71,8 @@
         <sortpom-maven-plugin.version>2.5.0</sortpom-maven-plugin.version>
 
         <!-- Spring properties -->
-        <spring-cloud.version>Hoxton.SR11</spring-cloud.version>
-        <spring-security-oauth.version>2.2.6.RELEASE</spring-security-oauth.version>
+        <spring-cloud.version>Hoxton.SR12</spring-cloud.version>
+        <spring-security-oauth.version>2.3.5.RELEASE</spring-security-oauth.version>
         <yarn.version>v1.22.4</yarn.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
