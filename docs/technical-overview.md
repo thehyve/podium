@@ -65,7 +65,7 @@ Liquibase is used to initialize/update PostgreSQL DB automatically.
 
 Spring profile, data sources, caching options and other configuration parameters are defined in yaml files included in project resources.
 
-Current Podium UAA version: 1.0.7; supported JDK version: 8.
+Current Podium UAA version: 1.0.7; supported JDK version: 8; Spring Boot version: 2.3.11[<sup>1</sup>](#note-1); Spring Cloud Version: Hoxton[<sup>2</sup>](#note-2).
 
 
 ### Gateway Frontend
@@ -146,7 +146,7 @@ Liquibase is used to initialize/update PostgreSQL DB automatically.
 
 Spring profile, data sources, caching options and other configuration parameters are defined in yaml files included in project resources.
 
-Current Gateway Server version: 1.0.7; supported JDK version: 8.
+Current Gateway Server version: 1.0.7; supported JDK version: 8; Spring Boot version: 2.3.11[<sup>1</sup>](#note-1); Spring Cloud Version: Hoxton[<sup>2</sup>](#note-2).
 
 
 ### Podium Common Package
@@ -259,6 +259,9 @@ The Registry Backend might also be considered redundand, since both UAA and Gate
 A note on ElasticSearch usage: it is possible to query ES index via the exposed API endpoints, but it seems that most, if not all, ES methods are not used within the app. E.g. `RequestService` class of the Gateway Frontend includes a `search` method calling `GET api/_search/requests` — but this method is never invoked.
 It might be possible to get rid of the ElasticSearch dependency.
 
+<a name="note-1"><sup>[1]</sup></a>: Spring Boot 2.3 [is supported until Feb 15, 2022](https://github.com/spring-projects/spring-boot/wiki/Supported-Versions#released-versions).
+
+<a name="note-2"><sup>[2]</sup></a>: Spring Cloud Hoxton [is supported until Feb 28, 2022](https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions#supported-releases).
 
 [//]: # (References)
 
